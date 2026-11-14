@@ -31,3 +31,20 @@ def test_fss_validation_and_empty_event_convention():
     with pytest.raises(ValueError):
         fractions_skill_score([[1]], [[1, 2]], 0.5)
     assert fractions_skill_score([[0, 0]], [[0, 0]], 0.5) == 1.0
+
+from verification import crps_ensemble, rank_histogram
+
+def test_crps_ensemble_matches_absolute_error_for_single_member():
+    assert crps_ensemble([2.0], 5.0) == pytest.approx(3.0)
+
+def test_crps_ensemble_perfect_symmetric_ensemble():
+    assert crps_ensemble([0.0, 2.0], 1.0) == pytest.approx(0.5)
+
+def test_rank_histogram_ties_share_mass_across_spanned_ranks():
+    counts = rank_histogram([[1, 2, 3], [2, 2, 4]], [0, 2])
+    assert counts == pytest.approx([1.0, 1/3, 1/3, 1/3])
+    assert sum(counts) == pytest.approx(2.0)
+
+def test_rank_histogram_requires_equal_ensemble_sizes():
+    with pytest.raises(ValueError):
+        rank_histogram([[1, 2], [1]], [1, 2])
