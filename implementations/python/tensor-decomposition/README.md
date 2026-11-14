@@ -5,6 +5,7 @@ This directory contains dense NumPy teaching implementations:
 - Tucker truncated HOSVD and HOOI for fully observed dense tensors of order two or higher.
 - Tensor-train SVD (TT-SVD), with optional internal-rank cap and relative Frobenius truncation budget.
 - A data-consistent TT-SVD completion heuristic for partially observed dense tensors.
+- FFT-based third-order t-SVD with frequency-domain factors, reconstruction and tubal-rank truncation.
 
 Run python -m pytest -q from this directory.
 
@@ -23,3 +24,7 @@ It supports mean or zero initialization and returns the missing-value change his
 ## Scope and caveats
 
 These implementations do not provide sparse/out-of-core TT, TT-cross, tensor-network optimization, Bayesian completion, robust losses, nonnegative constraints, automatic rank selection, uncertainty estimates or production-scale performance. A low-rank fit is a modeling assumption, not evidence that the missing entries are identifiable.
+
+## Third-order t-SVD
+
+`t_svd.py` implements the classical circular-convolution t-product construction: FFT along mode three, reduced matrix SVD on each frontal frequency slice, and inverse-FFT reconstruction. Its truncation parameter is tubal rank, not CP rank, Tucker multilinear rank or TT rank. The implementation is dense and does not solve missing-data completion.
