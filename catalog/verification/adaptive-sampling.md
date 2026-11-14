@@ -4,4 +4,4 @@
 - **Active learning:** Settles, B. (2009), “Active Learning Literature Survey,” University of Wisconsin–Madison Technical Report 1648. Used as a broad survey reference, not as a source for the specific greedy spatial acquisition heuristic.
 - **Implementation boundary:** uncertainty-plus-nearest-selected-distance is an explicit greedy heuristic; it is not Gaussian-process Bayesian optimization, adaptive cluster sampling, or a statistically representative map-validation design.
 - **Rights:** metadata and links only; no source text or figures copied.
-- **Status:** core reference identities checked; implementation and tests authored; CI and independent review pending.
+- **Status:** core reference identities checked; implementation and regression tests authored; deterministic local smoke checks for spatial selection, UCB1, GP-UCB, expected improvement and duplicate-observation jitter passed; repository CI and independent review pending.
