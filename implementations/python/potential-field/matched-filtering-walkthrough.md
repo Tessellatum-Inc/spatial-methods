@@ -31,9 +31,17 @@ Multiply the 2D Fourier transform of the observed grid by W_j(k), then inverse t
 
 The radial model is evaluated at positive radial wavenumbers. The zero-frequency coefficient is special, particularly when n is negative. This implementation explicitly assigns the DC mean to a caller-selected layer (dc_layer, default 0). This convention preserves the total mean but is a bookkeeping choice, not a physical inference about which source depth generated the regional mean.
 
-The caller supplies B, z and n for each equivalent layer. The code does not fit a radial power spectrum, estimate the number of layers, identify source types, design azimuthal filters or perform the nonlinear iterative fitting described in the USGS workflow.
+The matched-bandpass decomposition caller supplies B, z and n for each equivalent layer. A separate bounded radial-spectrum utility now computes annular mean Fourier amplitude and fits a *single* spectral segment by testing n in {-1, 0, 1} and solving log(A)=log(B)+n log(k)-zk by least squares. It returns B, z, n, log-RMSE and log-space R-squared, and supports a caller-selected wavenumber band. It is a diagnostic single-segment fit: it does not estimate the number of layers, jointly fit multiple overlapping segments, design azimuthal filters or perform the nonlinear iterative multi-layer fitting described in the USGS workflow.
 
-## 4. Interpretation and limitations
+## 4. Radial spectrum and bounded single-layer fit
+
+`radial_average_amplitude` bins the positive radial wavenumbers from a regular-grid FFT and returns the mean Fourier amplitude and number of coefficients per annulus. `fit_single_layer_spectrum` fits the log-linear single-layer model for each allowed discrete exponent and selects the smallest log-space residual. Restrict the wavenumber range to a visually defensible approximately straight segment; the selected segment and exponent are assumptions to inspect, not automatic geological classifications. The log-linear fit does not account for correlated Fourier coefficients, anisotropy, spectral leakage or uncertainty in choosing the fitting band.
+
+- [Radial-spectrum implementation](radial_spectrum.py)
+- [Radial-spectrum tests](test_radial_spectrum.py)
+- [Radial-spectrum lab](../../../notebooks/potential-field-radial-spectrum-lab.ipynb)
+
+## 5. Interpretation and limitations
 
 - Equivalent-layer depths represent average/maximal depth interpretations under the assumed statistical source model, not exact depths of individual geological bodies.
 - The method assumes a regular grid and uses a 2D FFT, so periodic boundary effects and edge treatment matter.
