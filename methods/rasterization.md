@@ -154,6 +154,6 @@ For a supercover implementation, compare returned cells against a slower cell-by
 - Xiaolin Wu (1991), “An Efficient Antialiasing Technique,” *Computer Graphics*, 25(4), 143–152. [DOI record](https://doi.org/10.1145/127719.122734).
 - Amanatides, J. and Woo, A. (1987), “A Fast Voxel Traversal Algorithm for Ray Tracing,” *Eurographics*. [DOI record](https://doi.org/10.2312/egtp.19871000).
 
-## Scope
+## Implemented teaching baselines
 
-This is a method-selection and algorithm-contract lesson. It does not claim to implement DDA, Bresenham, Wu, scanline fill, supercover traversal or exact fractional coverage. The next implementation unit should choose one task and make its cell, edge, corner and NoData semantics executable in tests.
+The [Python package](../implementations/python/rasterization/README.md) now provides DDA, all-octant Bresenham, Wu antialiased lines, conservative supercover segment traversal and even–odd scanline polygon fill. Their coordinate, rounding, boundary and cell-selection contracts are stated in the package README and tests. They are grid-coordinate algorithms, not a geospatial rasterization engine: affine transforms, CRS handling, polygon holes, exact fractional coverage, clipping masks and NoData semantics remain outside the implementation.
