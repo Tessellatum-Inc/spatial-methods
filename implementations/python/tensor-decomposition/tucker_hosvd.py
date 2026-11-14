@@ -60,3 +60,44 @@ def tucker_hosvd(tensor, ranks):
     error = 0.0 if norm_x == 0 else float(np.linalg.norm(x - reconstruction) / norm_x)
     return {"core": core, "factors": factors, "reconstruction": reconstruction,
             "relative_error": error, "multilinear_rank": tuple(checked)}
+
+
+def tucker_hooi(tensor, ranks, max_iter=100, tolerance=1e-8):
+    """Refine a Tucker model with higher-order orthogonal iteration (HOOI).
+
+    Starts from truncated HOSVD and cyclically updates each mode subspace
+    using the leading left singular vectors after projecting onto the other
+    current mode subspaces. Returns the same model fields as tucker_hosvd,
+    plus an error_history and iteration count.
+    """
+    if not isinstance(max_iter, (int, np.integer)) or isinstance(max_iter, (bool, np.bool_)) or max_iter < 1:
+        raise ValueError("max_iter must be a positive integer")
+    if not np.isfinite(tolerance) or tolerance < 0:
+        raise ValueError("tolerance must be finite and nonnegative")
+    x = np.asarray(tensor, dtype=float)
+    initial = tucker_hosvd(x, ranks)
+    factors = [factor.copy() for factor in initial["factors"]]
+    norm_x = float(np.linalg.norm(x))
+    errors = [initial["relative_error"]]
+    if norm_x == 0:
+        initial.update({"error_history": errors, "iterations": 0})
+        return initial
+    for iteration in range(int(max_iter)):
+        for mode, rank in enumerate(initial["multilinear_rank"]):
+            projected = x.copy()
+            for other, factor in enumerate(factors):
+                if other != mode:
+                    projected = _mode_product(projected, factor.T, other)
+            u, _, _ = np.linalg.svd(_unfold(projected, mode), full_matrices=False)
+            factors[mode] = u[:, :rank]
+        core = x.copy()
+        for mode, factor in enumerate(factors):
+            core = _mode_product(core, factor.T, mode)
+        reconstruction = tucker_reconstruct(core, factors)
+        error = float(np.linalg.norm(x - reconstruction) / norm_x)
+        errors.append(error)
+        if errors[-2] - errors[-1] <= tolerance * max(1.0, errors[-2]):
+            break
+    return {"core": core, "factors": factors, "reconstruction": reconstruction,
+            "relative_error": errors[-1], "multilinear_rank": initial["multilinear_rank"],
+            "error_history": errors, "iterations": iteration + 1}
