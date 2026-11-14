@@ -6,3 +6,6 @@
 - **Implementation scope:** finite univariate observations, piecewise-constant mean, SSE segment cost. CUSUM threshold calibration, penalty selection, spatial dependence, seasonality, sensor discontinuities and missingness remain outside the package.
 - **Rights:** bibliographic metadata and DOI links only; no article text or figures copied.
 - **Status:** identity and core bibliography checked; technical scope documented; deterministic regression checks and exhaustive comparisons against brute-force optimal segmentations on randomized small series passed in a local validation run. Repository CI execution and independent code review remain pending.
+
+- **BOCPD:** Adams, R. P., & MacKay, D. J. C. (2007), “Bayesian Online Changepoint Detection,” arXiv:0710.3742. Primary arXiv and author-lab bibliography records checked. The implementation is a narrower conjugate Gaussian known-observation-variance / unknown-mean model with constant hazard; it is not the full Student-t unknown-variance variant.
+- **BOCPD validation:** deterministic regime-shift, posterior-range, run-length-cap and invalid-input checks added; local smoke checks showed the posterior change probability responds to a synthetic mean shift. Repository CI and independent review remain pending.
