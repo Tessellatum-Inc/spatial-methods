@@ -4,7 +4,7 @@
 - **Source pages:** 24–26
 - **Source transcription:** [pages 21–25](../../source-inventory/pages-21-25.md) and [pages 26–30](../../source-inventory/pages-26-30.md)
 - **Review state:** source entries extracted into this index; the source describes these as methods borrowed from adjacent fields
-- **Current canonical records:** [point-pattern second-order statistics](../../methods/point-pattern-second-order-statistics.md) and tested [Python baselines](../../implementations/python/point-process/README.md)
+- **Current canonical records:** [point-pattern second-order statistics](../../methods/point-pattern-second-order-statistics.md) and tested [Python baselines](../../implementations/python/point-process/README.md); [NMF](../../methods/nonnegative-matrix-factorization.md) and tested [factorization code](../../implementations/python/matrix-factorization/README.md)
 
 The source explicitly frames these as methods from adjacent fields that spatial analysts regularly borrow. That is useful context: explain the original method first, then show what changes when it is applied to spatial data.
 
@@ -21,7 +21,7 @@ The source explicitly frames these as methods from adjacent fields that spatial 
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| NMF, ICA, MAF (maximum autocorrelation factors), dictionary learning, sparse coding, compressive sensing | Matrix factorisation / representation and signal-processing methods | 25 | Not checked — intake only |
+| NMF, ICA, MAF (maximum autocorrelation factors), dictionary learning, sparse coding, compressive sensing | Matrix factorisation / representation and signal-processing methods | 25 | [NMF lesson](../../methods/nonnegative-matrix-factorization.md) and tested [Python implementation](../../implementations/python/matrix-factorization/README.md) cover Euclidean multiplicative updates; ICA, MAF, dictionary learning, sparse coding and compressive sensing remain open | Partial — related record exists; source-entry review pending
 | Tensor decomposition: CP, Tucker, tensor train; low-rank spatiotemporal completion | Tensor factorisation / completion methods | 25 | Not checked — intake only |
 | Kalman variants: EKF, UKF, ensemble square-root filters, RTS smoothing, particle smoothing | State estimation and smoothing algorithms | 25 | Not checked — intake only |
 
