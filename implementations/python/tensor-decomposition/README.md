@@ -1,20 +1,25 @@
 # Tensor decomposition baselines
 
-This directory contains two distinct dense NumPy teaching implementations:
+This directory contains dense NumPy teaching implementations:
+- CP/PARAFAC-ALS for fully observed unconstrained three-way tensors.
+- Tucker truncated HOSVD and HOOI for fully observed dense tensors of order two or higher.
+- Tensor-train SVD (TT-SVD), with optional internal-rank cap and relative Frobenius truncation budget.
+- A data-consistent TT-SVD completion heuristic for partially observed dense tensors.
 
-- CP/PARAFAC-ALS (cp_als.py): a sum of rank-one components with one shared component index.
-- Tucker truncated HOSVD and HOOI (tucker_hosvd.py): mode-specific subspaces and a smaller interaction core, with HOOI iterative refinement.
+Run python -m pytest -q from this directory.
 
-Run with `python -m pytest -q` from this directory.
+## Tensor-train decomposition
 
-## Tucker/HOSVD and HOOI scope
+TT-SVD factorizes a dense tensor into cores G_k with shape (r_k, n_k, r_{k+1}), with boundary ranks one. It performs a sequence of matrix SVDs and truncates each internal rank. max_rank caps every internal rank. tolerance is a relative Frobenius truncation budget distributed across the N-1 splits; rank caps can increase the achieved error beyond that budget. The algorithm is dense and its cost is dominated by unfolding SVDs.
 
-The implementation supports finite, fully observed dense tensors of order two or higher. Truncated HOSVD computes leading left singular vectors of each mode unfolding and projects the tensor to a core. HOOI starts from that model and cyclically updates each mode subspace to reduce reconstruction error. Factor columns are orthonormal. Both return a reconstruction and relative Frobenius error; HOOI also returns its error history and sweep count.
+## Missing-data completion
 
-Truncated HOSVD is not generally the best-fit Tucker approximation for a requested multilinear rank. HOOI is an iterative local refinement, not a guarantee of the global optimum; results can depend on initialization and local stationary points. Neither implementation includes missing-data completion, sparse tensors, constraints, regularization, automatic rank selection or uncertainty estimates. Dense unfoldings and SVDs can be expensive.
+tt_complete alternates between:
+1. projecting the current filled tensor onto a rank-capped TT-SVD model; and
+2. restoring observed entries exactly.
 
-## CP/PARAFAC scope
+It supports mean or zero initialization and returns the missing-value change history. Observed RMSE is zero by construction and is not a measure of predictive quality. This is a simple alternating-projection heuristic, not a global optimizer, uncertainty model, or a reproduction of a specialized tensor completion algorithm. Results depend on rank, observation mask, initialization and stopping rule. Use held-out observed entries to assess predictive error.
 
-The CP implementation is a small dense, fully observed, unconstrained three-way ALS baseline. It does not support missing entries, sparse tensors, nonnegativity, regularization, streaming or automatic rank selection. ALS can be sensitive to initialization and ill-conditioning; reconstruction error does not establish factor identifiability.
+## Scope and caveats
 
-These are learning implementations, not production-scale tensor libraries or substitutes for validating model assumptions in a spatial application.
+These implementations do not provide sparse/out-of-core TT, TT-cross, tensor-network optimization, Bayesian completion, robust losses, nonnegative constraints, automatic rank selection, uncertainty estimates or production-scale performance. A low-rank fit is a modeling assumption, not evidence that the missing entries are identifiable.
