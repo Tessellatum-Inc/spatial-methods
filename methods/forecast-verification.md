@@ -39,7 +39,7 @@ Fractions Skill Score (FSS) thresholds forecast and observed fields, computes th
 \]
 Here \(f_i\) and \(o_i\) are forecast and observed neighborhood event fractions. FSS ranges from zero to one when its denominator is positive. It is scale-dependent: report the threshold, neighborhood geometry/size, grid spacing and domain. A high score at a large neighborhood does not mean the forecast is accurate at the native grid scale.
 
-The [Python package](../implementations/python/forecast-verification/README.md) implements square clipped neighborhoods at boundaries and assumes both grids have already been aligned. It does not implement object-based SAL/MODE, CRPS decomposition, rank histograms or uncertainty intervals.
+For ensemble forecasts, the [Python package](../implementations/python/forecast-verification/README.md) also includes empirical-ensemble CRPS and a tie-aware rank histogram. CRPS is a proper score for the predictive distribution; rank histograms diagnose ensemble calibration but can be misleading when dependence, observation error or sample dependence is ignored. The package implements square clipped neighborhoods at boundaries and assumes both grids have already been aligned. It does not implement object-based SAL/MODE, CRPS decomposition, spatial uncertainty intervals or significance tests.
 
 ## Sources
 
