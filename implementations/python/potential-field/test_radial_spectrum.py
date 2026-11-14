@@ -6,7 +6,7 @@ from radial_spectrum import radial_average_amplitude, fit_single_layer_spectrum
 
 def test_radial_average_returns_positive_non_dc_bins():
     y, x = np.mgrid[:48, :48]
-    grid = np.sin(2 * np.pi * x / 8) + 0.4 * np.cos(2 * np.pi * y / 12)
+    grid = np.sin(2 * np.pi * x / 8) + 0.4 * np.cos(2 * np.pi * y / 12) + 0.01 * np.random.default_rng(5).normal(size=x.shape)
     result = radial_average_amplitude(grid, 1, 1, n_bins=24, min_count=1)
     assert result["wavenumber"].size > 4
     assert np.all(result["wavenumber"] > 0)
