@@ -266,6 +266,44 @@ jobs:
             directory: implementations/python/convex-decomposition
             pythonpath: "../ear-clipping"
 
+
+          - example: distribution-shift
+            directory: implementations/python/distribution-shift
+            pythonpath: ""
+          - example: point-process
+            directory: implementations/python/point-process
+            pythonpath: ""
+          - example: matrix-factorization
+            directory: implementations/python/matrix-factorization
+            pythonpath: ""
+          - example: network-resilience
+            directory: implementations/python/network-resilience
+            pythonpath: ""
+          - example: gnss-ambiguity
+            directory: implementations/python/gnss-ambiguity
+            pythonpath: ""
+          - example: regional-dynamics
+            directory: implementations/python/regional-dynamics
+            pythonpath: ""
+          - example: voronoi-lloyd
+            directory: implementations/python/voronoi-lloyd
+            pythonpath: ""
+          - example: state-estimation
+            directory: implementations/python/state-estimation
+            pythonpath: ""
+          - example: spatial-smoothing
+            directory: implementations/python/spatial-smoothing
+            pythonpath: ""
+          - example: spatial-intensity
+            directory: implementations/python/spatial-intensity
+            pythonpath: ""
+          - example: tensor-decomposition
+            directory: implementations/python/tensor-decomposition
+            pythonpath: ""
+          - example: spatial-regression
+            directory: implementations/python/spatial-regression
+            pythonpath: ""
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -395,6 +433,17 @@ jobs:
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/proximity-graphs-delaunay-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/electre-i-kernel-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/ecef-enu-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/network-edge-failure-and-reliability-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/gnss-melbourne-wubbena-cycle-slip-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/tensor-train-decomposition-and-completion-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/graph-fused-spatial-regression-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/nonlinear-kalman-ekf-ukf-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/bootstrap-particle-filter-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/spatial-thin-plate-spline-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/spatial-and-spacetime-kde-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/regional-dynamics-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/lloyd-cvt-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/cp-parafac-tensor-decomposition-lab.ipynb
 
   clipper2:
     name: Clipper2 C# offset checks
