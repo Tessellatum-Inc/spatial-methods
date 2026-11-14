@@ -26,7 +26,7 @@ def test_correlated_covariance():
     assert r["parameter_covariance"].shape==(2,2)
 
 @pytest.mark.parametrize("A,y",[
-    ([[1,0],[1,1]],[1,2]), ([[1],[1],[1]],[1,2,3]),
+    ([[1,0],[1,1]],[1,2]), ([[1,1],[1,1],[1,1]],[1,2,3]),
     ([[1,0],[1,1],[1,2]],[1,2]), ([[1],[1],[1]],[1,2,float("nan")]),
 ])
 def test_invalid_models(A,y):
