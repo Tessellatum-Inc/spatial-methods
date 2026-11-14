@@ -27,3 +27,4 @@ def test_invalid_attacks_and_tolerance():
     with pytest.raises(ValueError): motter_lai_cascade(g,[1,1],tolerance=.2)
     with pytest.raises(ValueError): motter_lai_cascade(g,[99],tolerance=.2)
     with pytest.raises(ValueError): motter_lai_cascade(g,[1],tolerance=-.1)
+    with pytest.raises(ValueError): motter_lai_cascade(g,[1],tolerance=float('nan'))
