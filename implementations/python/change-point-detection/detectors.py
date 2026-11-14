@@ -1,7 +1,7 @@
 """Univariate mean-shift detectors; dependency-free Python teaching baselines."""
 from __future__ import annotations
 
-from math import isfinite, sqrt
+from math import isfinite
 from typing import Iterable
 
 
@@ -91,15 +91,15 @@ def binary_segmentation(values: Iterable[float], *, max_changes: int,
 def pelt(values: Iterable[float], *, penalty: float, min_size: int = 2) -> list[int]:
     """PELT for piecewise-constant means with squared-error segment cost.
 
-    Uses the K=0 pruning condition valid for this segment cost. Complexity is
-    linear in n under the usual conditions, but worst-case quadratic. No
-    distribution-free penalty selection or false-positive guarantee is implied.
+    Uses K=0 pruning for min_size=1. For min_size>1, uses exact unpruned
+    dynamic programming because naive pruning can violate the minimum-length
+    constraint. No automatic penalty calibration or false-alarm guarantee is implied.
     """
     x = _series(values)
     n = len(x)
     if not isfinite(penalty) or penalty < 0:
         raise ValueError("penalty must be finite and non-negative")
-    if isinstance(min_size, bool) or min_size < 1:
+    if not isinstance(min_size, int) or isinstance(min_size, bool) or min_size < 1:
         raise ValueError("min_size must be a positive integer")
     s, q = _prefix(x)
     inf = float("inf")
