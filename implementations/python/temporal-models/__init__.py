@@ -1,3 +1,7 @@
-"""Robust trend, rank-based change detection and HMM decoding baselines."""
+"""Robust trend, decomposition, filtering and HMM decoding baselines."""
 from .models import theil_sen, pettitt, viterbi
-__all__ = ["theil_sen", "pettitt", "viterbi"]
+from .kalman import kalman_local_level, rts_local_level
+from .stl import stl_decompose
+
+__all__ = ["theil_sen", "pettitt", "viterbi", "kalman_local_level",
+           "rts_local_level", "stl_decompose"]
