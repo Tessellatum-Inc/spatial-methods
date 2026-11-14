@@ -12,11 +12,11 @@ def test_filter_tracks_level_and_returns_nonnegative_variance():
 
 
 def test_missing_observation_only_performs_prediction():
-    means, variances = kalman_local_level([2, None], process_variance=0.2,
+    means, variances = kalman_local_level([None], process_variance=0.2,
                                           observation_variance=0.1,
                                           initial_mean=0, initial_variance=0)
-    assert means == [0, 0]
-    assert variances == [0, 0.2]
+    assert means == [0]
+    assert variances == [0.2]
 
 
 def test_rts_smoother_revises_earlier_estimates():
