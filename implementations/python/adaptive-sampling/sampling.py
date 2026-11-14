@@ -80,3 +80,95 @@ def ucb1_arm(counts: Sequence[int], rewards: Sequence[float]) -> int:
     scores = [float(rewards[i]) / counts[i] + sqrt(2.0 * log(total) / counts[i])
               for i in range(len(counts))]
     return max(range(len(scores)), key=lambda i: (scores[i], -i))
+
+
+def gp_select_next(observed_x: Sequence[Sequence[float]], observed_y: Sequence[float],
+                   candidates: Sequence[Sequence[float]], *,
+                   length_scale: float = 1.0, signal_variance: float = 1.0,
+                   noise: float = 1e-6, beta: float = 2.0,
+                   acquisition: str = "ucb") -> tuple[int, list[float], list[float]]:
+    """Select a finite candidate using an RBF Gaussian-process posterior.
+
+    Returns (candidate_index, posterior_means, posterior_standard_deviations).
+    Maximizes the latent function. Acquisition is 'ucb' or 'ei'. This is a
+    small dense exact-GP baseline: O(n^3 + m*n^2), not a scalable GP system.
+    """
+    from math import erf, pi
+    X = [tuple(float(v) for v in row) for row in observed_x]
+    C = [tuple(float(v) for v in row) for row in candidates]
+    y = [float(v) for v in observed_y]
+    if not X or len(X) != len(y) or not C:
+        raise ValueError("observations and candidates must be non-empty and aligned")
+    dim = len(X[0])
+    if dim == 0 or any(len(row) != dim for row in X + C):
+        raise ValueError("all coordinate vectors must have the same non-zero dimension")
+    if any(not isfinite(v) for row in X + C for v in row) or any(not isfinite(v) for v in y):
+        raise ValueError("coordinates and observations must be finite")
+    if not isfinite(length_scale) or length_scale <= 0 or not isfinite(signal_variance) or signal_variance <= 0:
+        raise ValueError("length_scale and signal_variance must be positive and finite")
+    if not isfinite(noise) or noise < 0 or not isfinite(beta) or beta < 0:
+        raise ValueError("noise and beta must be finite and non-negative")
+    if acquisition not in ("ucb", "ei"):
+        raise ValueError("acquisition must be 'ucb' or 'ei'")
+
+    def kernel(a, b):
+        squared = sum((u-v)**2 for u, v in zip(a, b))
+        return signal_variance * exp(-0.5 * squared / (length_scale**2))
+
+    # Cholesky factorization of K(X,X) + noise*I with adaptive numerical jitter.
+    n = len(X)
+    K = [[kernel(X[i], X[j]) + (noise if i == j else 0.0)
+          for j in range(n)] for i in range(n)]
+    L = [[0.0] * n for _ in range(n)]
+    jitter = 1e-12
+    for attempt in range(8):
+        try:
+            for i in range(n):
+                for j in range(i + 1):
+                    value = K[i][j] + (jitter if i == j else 0.0)
+                    value -= sum(L[i][k] * L[j][k] for k in range(j))
+                    if i == j:
+                        if value <= 0:
+                            raise ArithmeticError("kernel matrix is not positive definite")
+                        L[i][j] = sqrt(value)
+                    else:
+                        L[i][j] = value / L[j][j]
+            break
+        except ArithmeticError:
+            jitter *= 10.0
+            L = [[0.0] * n for _ in range(n)]
+    else:
+        raise ValueError("could not stabilize Gaussian-process covariance matrix")
+
+    # Solve K^-1 y via forward/back substitution.
+    z = [0.0] * n
+    for i in range(n):
+        z[i] = (y[i] - sum(L[i][j] * z[j] for j in range(i))) / L[i][i]
+    alpha = [0.0] * n
+    for i in range(n - 1, -1, -1):
+        alpha[i] = (z[i] - sum(L[j][i] * alpha[j] for j in range(i + 1, n))) / L[i][i]
+
+    means, stds, acquisitions = [], [], []
+    best_observed = max(y)
+    normal_cdf = lambda value: 0.5 * (1.0 + erf(value / sqrt(2.0)))
+    normal_pdf = lambda value: exp(-0.5 * value * value) / sqrt(2.0 * pi)
+    for point in C:
+        k = [kernel(row, point) for row in X]
+        mean = sum(k[i] * alpha[i] for i in range(n))
+        v = [0.0] * n
+        for i in range(n):
+            v[i] = (k[i] - sum(L[i][j] * v[j] for j in range(i))) / L[i][i]
+        variance = max(0.0, signal_variance - sum(value * value for value in v))
+        std = sqrt(variance)
+        if acquisition == "ucb":
+            score = mean + beta * std
+        elif std <= 1e-12:
+            score = max(0.0, mean - best_observed)
+        else:
+            improvement = mean - best_observed
+            zscore = improvement / std
+            score = improvement * normal_cdf(zscore) + std * normal_pdf(zscore)
+        means.append(mean)
+        stds.append(std)
+        acquisitions.append(score)
+    return max(range(len(C)), key=lambda i: (acquisitions[i], -i)), means, stds
