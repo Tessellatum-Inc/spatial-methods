@@ -4,7 +4,7 @@
 - **Source pages:** 24–26
 - **Source transcription:** [pages 21–25](../../source-inventory/pages-21-25.md) and [pages 26–30](../../source-inventory/pages-26-30.md)
 - **Review state:** source entries extracted into this index; the source describes these as methods borrowed from adjacent fields
-- **Current canonical records:** none yet
+- **Current canonical records:** [point-pattern second-order statistics](../../methods/point-pattern-second-order-statistics.md) and tested [Python baselines](../../implementations/python/point-process/README.md)
 
 The source explicitly frames these as methods from adjacent fields that spatial analysts regularly borrow. That is useful context: explain the original method first, then show what changes when it is applied to spatial data.
 
@@ -15,7 +15,7 @@ The source explicitly frames these as methods from adjacent fields that spatial 
 | GAM and GAMM with spatial smooths (thin plate, Duchon splines, soap film smoothers), Bayesian P-splines | Generalised additive models / spatial smoothing bases | 25 | Not checked — intake only |
 | Penalized spatial regression: geographically weighted LASSO, spatial LASSO, fused LASSO on graphs, spatially varying coefficients with regularization | Regularised regression methods / graph penalties | 25 | Not checked — intake only |
 | Intensity estimation: Voronoi and Delaunay-based estimators, STKDE (space-time KDE), prospective hotspot mapping | Spatial intensity estimators / hotspot methods | 25 | Not checked — intake only |
-| Palm distributions, nearest neighbor distance distributions, inhomogeneous K and pair correlation functions | Point-process summary statistics | 25 | Not checked — intake only |
+| Palm distributions, nearest neighbor distance distributions, inhomogeneous K and pair correlation functions | Point-process summary statistics | 25 | [Point-pattern lesson](../../methods/point-pattern-second-order-statistics.md) and tested [Python package](../../implementations/python/point-process/README.md) cover nearest-neighbor distances, homogeneous rectangular translation-corrected K and numerical pair correlation; Palm distributions and inhomogeneous K remain open | Partial — related record exists; source-entry review pending
 
 ## Matrix and tensor methods for spatial data
 
