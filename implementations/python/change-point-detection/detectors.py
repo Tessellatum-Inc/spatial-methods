@@ -61,9 +61,9 @@ def binary_segmentation(values: Iterable[float], *, max_changes: int,
     """
     x = _series(values)
     n = len(x)
-    if isinstance(max_changes, bool) or max_changes < 0:
+    if not isinstance(max_changes, int) or isinstance(max_changes, bool) or max_changes < 0:
         raise ValueError("max_changes must be a non-negative integer")
-    if isinstance(min_size, bool) or min_size < 1:
+    if not isinstance(min_size, int) or isinstance(min_size, bool) or min_size < 1:
         raise ValueError("min_size must be a positive integer")
     if not isfinite(penalty) or penalty < 0:
         raise ValueError("penalty must be finite and non-negative")
