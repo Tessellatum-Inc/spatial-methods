@@ -5,8 +5,8 @@ This dependency-free package contains:
 - **Theil–Sen:** median of all pairwise slopes, with median intercept; resistant to some outliers but quadratic in sample count in this direct implementation.
 - **Pettitt:** rank-based single change-point statistic with average ranks for ties and an approximate p-value. It tests one dominant distributional change; it is not a multiple-change segmentation method.
 - **Viterbi:** log-space decoding for a discrete-emission hidden Markov model with explicit start, transition and emission probabilities.
-- **Kalman / RTS:** scalar local-level Kalman filtering and Rauch–Tung–Striebel smoothing, with prediction-only handling of missing observations; see the [methods lesson](../../methods/kalman-temporal-filtering.md).
-- **STL-style decomposition:** local-linear LOESS seasonal-subseries filtering, low-pass adjustment, iterative trend extraction and optional robust weights; see the [STL lesson](../../methods/stl-seasonal-trend-decomposition.md).
+- **Kalman / RTS:** scalar local-level Kalman filtering and Rauch–Tung–Striebel smoothing, with prediction-only handling of missing observations; see the [methods lesson](../../../methods/kalman-temporal-filtering.md).
+- **STL-style decomposition:** local-linear LOESS seasonal-subseries filtering, low-pass adjustment, iterative trend extraction and optional robust weights; see the [STL lesson](../../../methods/stl-seasonal-trend-decomposition.md).
 
 Run from this directory:
 
