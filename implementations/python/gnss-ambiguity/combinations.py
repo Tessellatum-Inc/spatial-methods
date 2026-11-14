@@ -38,3 +38,29 @@ def wide_lane(first_cycles, second_cycles, frequency_1, frequency_2):
     if any(not isfinite(v) for v in a+b):
         raise ValueError("phase cycles must be finite")
     return [x-y for x,y in zip(a,b)]
+
+def melbourne_wubbena(first_phase_cycles, second_phase_cycles,
+                      first_code_metres, second_code_metres,
+                      frequency_1, frequency_2, speed_of_light=299792458.0):
+    """Return Melbourne-Wubbena wide-lane observable in wide-lane cycles.
+
+    Carrier phases are in cycles; code pseudoranges are in metres. The
+    combination is (L1-L2) - ((f1-f2)/c) * (f1*P1+f2*P2)/(f1+f2).
+    Receiver/satellite hardware biases remain; code noise and multipath can
+    be substantial. This is an observable, not an ambiguity-fixed solution.
+    """
+    f1, f2 = _check(frequency_1, frequency_2)
+    c = float(speed_of_light)
+    if not isfinite(c) or c <= 0:
+        raise ValueError("speed_of_light must be finite and positive")
+    l1 = [float(v) for v in first_phase_cycles]
+    l2 = [float(v) for v in second_phase_cycles]
+    p1 = [float(v) for v in first_code_metres]
+    p2 = [float(v) for v in second_code_metres]
+    if not l1 or not (len(l1) == len(l2) == len(p1) == len(p2)):
+        raise ValueError("all observable sequences must have equal non-zero length")
+    if any(not isfinite(v) for v in l1 + l2 + p1 + p2):
+        raise ValueError("observables must be finite")
+    code_narrow_lane = [(f1*a + f2*b)/(f1+f2) for a,b in zip(p1,p2)]
+    return [(a-b) - ((f1-f2)/c)*pn
+            for a,b,pn in zip(l1,l2,code_narrow_lane)]
