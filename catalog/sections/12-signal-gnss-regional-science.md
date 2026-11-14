@@ -4,7 +4,7 @@
 - **Source pages:** 24–26
 - **Source transcription:** [pages 21–25](../../source-inventory/pages-21-25.md) and [pages 26–30](../../source-inventory/pages-26-30.md)
 - **Review state:** source entries extracted into this index; the source describes these as methods borrowed from adjacent fields
-- **Current canonical records:** [point-pattern second-order statistics](../../methods/point-pattern-second-order-statistics.md) and tested [Python baselines](../../implementations/python/point-process/README.md); [NMF](../../methods/nonnegative-matrix-factorization.md) and tested [factorization code](../../implementations/python/matrix-factorization/README.md); [network percolation](../../methods/network-percolation-resilience.md) and tested [resilience baselines](../../implementations/python/network-resilience/README.md)
+- **Current canonical records:** [GNSS integer least-squares search](../../methods/gnss-integer-ambiguity-resolution.md) and tested [sphere-search implementation](../../implementations/python/gnss-ambiguity/README.md); [point-pattern second-order statistics](../../methods/point-pattern-second-order-statistics.md) and tested [Python baselines](../../implementations/python/point-process/README.md); [NMF](../../methods/nonnegative-matrix-factorization.md) and tested [factorization code](../../implementations/python/matrix-factorization/README.md); [network percolation](../../methods/network-percolation-resilience.md) and tested [resilience baselines](../../implementations/python/network-resilience/README.md)
 
 The source explicitly frames these as methods from adjacent fields that spatial analysts regularly borrow. That is useful context: explain the original method first, then show what changes when it is applied to spatial data.
 
@@ -29,7 +29,7 @@ The source explicitly frames these as methods from adjacent fields that spatial 
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Ambiguity resolution (LAMBDA), cycle slip detection, ionosphere-free and geometry-free combinations, PPP-AR | GNSS ambiguity and signal-processing methods | 25 | Not checked — intake only |
+| Ambiguity resolution (LAMBDA), cycle slip detection, ionosphere-free and geometry-free combinations, PPP-AR | GNSS ambiguity and signal-processing methods | 25 | [GNSS ILS lesson](../../methods/gnss-integer-ambiguity-resolution.md) and tested [Cholesky sphere-search baseline](../../implementations/python/gnss-ambiguity/README.md) cover small-dimensional integer least squares, not LAMBDA; cycle-slip detection, combinations and PPP-AR remain open | Partial — related record exists; source-entry review pending
 | Multipath mitigation, RAIM and fault detection, Baarda data snooping, least squares collocation | GNSS error mitigation / integrity monitoring / geodetic estimation | 25 | Not checked — intake only |
 | Time transfer, clock modeling, kinematic positioning with INS integration (loosely and tightly coupled) | Timing and positioning models / sensor-fusion architectures | 25 | Not checked — intake only |
 
