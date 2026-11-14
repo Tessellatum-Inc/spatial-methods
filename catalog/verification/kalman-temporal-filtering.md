@@ -4,4 +4,4 @@
 - **RTS smoother:** Rauch, H. E., Tung, F., & Striebel, C. T. (1965), “Maximum Likelihood Estimates of Linear Dynamic Systems,” *AIAA Journal* 3(8), 1445–1450, DOI 10.2514/3.3166. Bibliographic record checked.
 - **Implementation boundary:** scalar local-level random walk only; missing observations are prediction-only updates. RTS is retrospective smoothing and must not be represented as causal online filtering.
 - **Rights:** bibliographic metadata and DOI links only; no article text or figures copied.
-- **Status:** source identities checked; scalar filter/smoother implementation and regression tests authored; local test execution, CI and independent review pending.
+- **Status:** source identities checked; scalar filter/smoother implementation and regression tests authored; deterministic local regression checks passed, including prediction-only missing-data handling and backward smoothing; repository CI and independent review pending.
