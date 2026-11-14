@@ -7,7 +7,7 @@ NumPy teaching implementations for balanced regional panels:
 - LISA/Moran-quadrant state transitions (HH, HL, LH, LL);
 - cross-sectional sigma-dispersion by period.
 
-Run with `python -m pytest -q` from this directory.
+Run with `python -m pytest -q --import-mode=importlib` from this directory.
 
 ## Conventions and limitations
 
