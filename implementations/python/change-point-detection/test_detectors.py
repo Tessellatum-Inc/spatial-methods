@@ -49,4 +49,9 @@ def test_invalid_penalty_and_nonfinite_data_rejected():
 
 def test_pelt_rejects_impossible_minimum_segment_size():
     with pytest.raises(ValueError):
-        pelt([0, 1, 2], penalty=1, min_size=2)
+        pelt([0, 1, 2], penalty=1, min_size=4)
+
+
+def test_segmentation_rejects_non_integer_min_size():
+    with pytest.raises(ValueError):
+        pelt([0, 1, 2, 3], penalty=1, min_size=1.5)
