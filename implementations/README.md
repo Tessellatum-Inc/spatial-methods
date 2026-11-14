@@ -129,9 +129,12 @@ Each implementation should state:
 - [Road-routing baselines](python/road-routing/README.md): edge-based turn restrictions, turn penalties and FIFO time-dependent earliest-arrival search.
 - [Nonseparable space-time covariance](python/nonseparable-space-time-covariance/README.md): a Gneiting-class Euclidean space-time covariance implementation with tests, intern walkthrough and notebook.
 
+### GNSS and integrity monitoring
+- [Residual-based snapshot RAIM/FDE](python/gnss-raim/README.md): known-covariance weighted least squares, global residual chi-square detection and single-measurement leave-one-out exclusion candidates. This is an educational baseline, not certified RAIM and it does not compute protection levels.
+
 ## Automated checks
 
-The [Python examples workflow](../.github/workflows/python-tests.yml) is configured to run the test suites for all seventy-five Python example packages and the Clipper2 C# smoke test, and execute all sixty-three learning notebooks on relevant pushes and pull requests, using Python 3.13. The Local Moran notebook uses PySAL's maintained implementation rather than presenting a new from-scratch implementation. The Bentley–Ottmann job also adds the sibling segment-intersection package to `PYTHONPATH`.
+The [Python examples workflow](../.github/workflows/python-tests.yml) is configured to run the test suites for all 103 Python example packages and the Clipper2 C# smoke test, and execute all 108 learning notebooks on relevant pushes and pull requests, using Python 3.13. The Local Moran notebook uses PySAL's maintained implementation rather than presenting a new from-scratch implementation. The Bentley–Ottmann job also adds the sibling segment-intersection package to `PYTHONPATH`.
 
 A successful automated run means the tests in the repository passed in that environment. It does not prove correctness for every possible geometry or make a restricted teaching implementation production-ready. Always read the input contract and limitations before adapting an example.
 
