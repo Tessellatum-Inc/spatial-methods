@@ -42,7 +42,7 @@ def test_crps_ensemble_perfect_symmetric_ensemble():
 
 def test_rank_histogram_ties_share_mass_across_spanned_ranks():
     counts = rank_histogram([[1, 2, 3], [2, 2, 4]], [0, 2])
-    assert counts == pytest.approx([1.0, 1/3, 1/3, 1/3])
+    assert counts == pytest.approx([4/3, 1/3, 1/3, 0.0])
     assert sum(counts) == pytest.approx(2.0)
 
 def test_rank_histogram_requires_equal_ensemble_sizes():
