@@ -93,3 +93,16 @@ These notes record bounded checks against publisher or institutional bibliograph
 - **Implementation:** no new spline or Kalman implementation is claimed.
 - **Rights:** DOI and institutional links only; no source figures or text reproduced.
 - **Remaining work:** verify the Schneider fitting method as its own algorithm; expand NURBS basis and knot multiplicity treatment; build separate spline and state-space implementations with numerical and geometry-specific tests.
+
+
+## Section 10 — Kernel two-sample testing and spatial distribution shift
+
+**Source entry:** “Kernel two-sample tests and domain divergence metrics for spatial distribution shift” (source page 22).
+
+- **Identity:** maximum mean discrepancy (MMD) is the RKHS integral-probability-metric statistic used for two-sample distribution comparison. The source row is broader than MMD and also names domain-divergence metrics; those other metrics remain separate review tasks.
+- **Bibliography:** confirmed: Gretton, A., Borgwardt, K. M., Rasch, M. J., Schölkopf, B. and Smola, A. (2012), “A Kernel Two-Sample Test,” *Journal of Machine Learning Research*, 13, 723–773. The JMLR publisher record confirms the authors, title, volume and page range: https://jmlr.org/papers/v13/gretton12a.html.
+- **Technical claims checked:** the cited paper defines MMD through the largest difference in expectations over the unit ball of an RKHS and develops two-sample tests. Its ordinary permutation calibration assumes exchangeability; it does not by itself justify row-wise label permutation for spatially dependent observations.
+- **Implementation:** the repository provides unbiased MMD and energy-distance statistics, a row-level permutation baseline for exchangeable independent rows, and a whole-block MMD permutation baseline for equal-sized blocks. The block procedure preserves observations within each block and permutes block labels. It is valid only under a defensible independent/exchangeable-block null with comparable sampling/measurement designs. Arbitrary raster tiles are not thereby independent; cross-block dependence, confounding and non-stationarity are not corrected. The nearest-neighbour applicability envelope is a transparent teaching baseline, not an exact implementation of the Meyer–Pebesma area-of-applicability method.
+- **Rights:** link to the JMLR paper only; no article text or figure is reproduced.
+- **Review date:** 14 November 2026.
+- **Remaining work:** separately verify energy-distance references, block/cluster randomisation designs, domain classifiers, kernel mean matching and the applicability-area method. This note does not verify every method in the grouped source entry.
