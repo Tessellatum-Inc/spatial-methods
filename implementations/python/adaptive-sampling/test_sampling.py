@@ -1,5 +1,5 @@
-import pytest
-from sampling import select_spatial_batch, ucb1_arm
+import math\nimport pytest
+from sampling import select_spatial_batch, ucb1_arm, gp_select_next
 
 
 def test_spatial_selection_starts_with_highest_uncertainty_then_diversifies():
@@ -35,3 +35,35 @@ def test_invalid_sampling_inputs_rejected():
         select_spatial_batch([(0, 0), (1, 1)], [1], 1)
     with pytest.raises(ValueError):
         ucb1_arm([1, -1], [0, 0])
+
+
+def test_gp_ucb_returns_finite_posterior_and_candidate():
+    idx, means, stds = gp_select_next(
+        [(0.0,), (1.0,)], [0.0, 1.0],
+        [(0.0,), (0.5,), (1.5,)], acquisition="ucb", beta=2.0,
+    )
+    assert idx in range(3)
+    assert len(means) == len(stds) == 3
+    assert all(math.isfinite(v) for v in means + stds)
+    assert all(v >= 0 for v in stds)
+
+
+def test_gp_expected_improvement_selects_from_candidate_set():
+    idx, means, stds = gp_select_next(
+        [(0.0,), (1.0,)], [0.0, 1.0],
+        [(0.25,), (1.5,)], acquisition="ei",
+    )
+    assert idx in (0, 1)
+
+
+def test_gp_handles_duplicate_observations_with_jitter():
+    idx, means, stds = gp_select_next(
+        [(0.0,), (0.0,)], [1.0, 1.0],
+        [(0.5,), (1.0,)], noise=0.0,
+    )
+    assert idx in (0, 1)
+
+
+def test_gp_rejects_invalid_acquisition():
+    with pytest.raises(ValueError):
+        gp_select_next([(0.0,)], [1.0], [(1.0,)], acquisition="thompson")
