@@ -16,8 +16,9 @@ def test_high_tolerance_prevents_additional_overload_failures():
 
 def test_zero_tolerance_can_trigger_synchronous_cascade():
     result=motter_lai_cascade(graph_with_alternate_route(),[1],tolerance=0)
-    assert result['failed_nodes'] >= {1}
-    assert result['additional_failures']>=0
+    assert result['failed_nodes'] >= {1,3}
+    assert result['additional_failures']>=1
+    assert result['failure_rounds'][1] == (3,)
     assert result['cascade_size']<=5
 
 def test_invalid_attacks_and_tolerance():
