@@ -500,6 +500,7 @@ jobs:
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=. notebooks/least-squares-collocation-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=. notebooks/spatial-block-permutation-mmd-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=. notebooks/ensemble-transform-kalman-filter-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=. notebooks/regional-beta-convergence-lab.ipynb
 
   clipper2:
     name: Clipper2 C# offset checks
