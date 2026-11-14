@@ -1,9 +1,20 @@
-# Three-way CP/PARAFAC decomposition
+# Tensor decomposition baselines
 
-A dense NumPy implementation of canonical polyadic (CP/PARAFAC) decomposition using alternating least squares (ALS). It approximates a fully observed 3D tensor as a sum of rank-one outer products.
+This directory contains two distinct dense NumPy teaching implementations:
+
+- CP/PARAFAC-ALS (cp_als.py): a sum of rank-one components with one shared component index.
+- Tucker truncated HOSVD (tucker_hosvd.py): mode-specific subspaces and a smaller interaction core.
 
 Run with `python -m pytest -q` from this directory.
 
-## Scope and caveats
+## Tucker/HOSVD scope
 
-This is a small, dense, unconstrained teaching baseline. It uses pseudoinverse updates of the Hadamard product of factor Gram matrices. It does not support missing entries, sparse tensors, nonnegativity, regularization, streaming updates, automatic rank selection, robust losses, or Tucker/tensor-train formats. CP-ALS can be sensitive to initialization, ill-conditioning and local minima; a low reconstruction error does not establish that factors are scientifically identifiable or unique. Large arrays can exceed memory because dense unfoldings and reconstruction tensors are materialized.
+Supports finite, fully observed dense tensors of order two or higher. It computes leading left singular vectors of each mode unfolding, projects the tensor to a core, and reconstructs the truncated approximation. Factor columns are orthonormal. The returned relative Frobenius error describes the supplied input and ranks.
+
+Truncated HOSVD is not generally the best-fit Tucker approximation for a requested multilinear rank. Higher-order orthogonal iteration (HOOI) can refine the subspaces. This implementation does not include HOOI, missing-data completion, sparse tensors, constraints, regularization, automatic rank selection or uncertainty estimates. Dense unfoldings and SVDs can be expensive.
+
+## CP/PARAFAC scope
+
+The CP implementation is a small dense, fully observed, unconstrained three-way ALS baseline. It does not support missing entries, sparse tensors, nonnegativity, regularization, streaming or automatic rank selection. ALS can be sensitive to initialization and ill-conditioning; reconstruction error does not establish factor identifiability.
+
+These are learning implementations, not production-scale tensor libraries or substitutes for validating model assumptions in a spatial application.
