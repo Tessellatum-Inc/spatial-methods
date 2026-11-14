@@ -68,7 +68,7 @@ The source explicitly frames these as methods from adjacent fields that spatial 
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Power diagrams, centroidal Voronoi tessellation (Lloyd's algorithm), capacity-constrained Voronoi, semi-discrete optimal transport | Geometric partitioning / tessellation / optimal transport methods | 26 | Not checked — intake only |
+| Power diagrams, centroidal Voronoi tessellation (Lloyd's algorithm), capacity-constrained Voronoi, semi-discrete optimal transport | Geometric partitioning / tessellation / optimal transport methods | 26 | [Discrete Lloyd CVT lesson](../../methods/discrete-centroidal-voronoi-lloyd.md), [NumPy implementation](../../implementations/python/voronoi-lloyd/README.md), tests and notebook cover weighted Lloyd updates over finite point samples; exact polygonal CVTs, power diagrams, capacity constraints and semi-discrete optimal transport remain open | Partial — related record exists; source-entry review pending
 | Balanced partitioning with compactness constraints, graph partitioning for equal-population districts | Constrained spatial and graph partitioning | 26 | Not checked — intake only |
 
 ## Climate analysis and attribution
