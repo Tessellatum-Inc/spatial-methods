@@ -23,7 +23,7 @@ The source describes these as further methods not listed in sections 1–9. Seve
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Change-point detection: CUSUM, PELT, binary segmentation, BEAST, Bayesian online change-point detection | Change-point detection algorithms | 21 | Not checked — intake only |
+| Change-point detection: CUSUM, PELT, binary segmentation, BEAST, Bayesian online change-point detection | Change-point detection algorithms | 21 | [Change-point detection lesson](../../methods/change-point-detection.md) and tested [Python baselines](../../implementations/python/change-point-detection/README.md) cover CUSUM, binary segmentation and SSE-PELT; BEAST and Bayesian online detection remain unimplemented | Partial — related record exists; source-entry review pending |
 | Trend and seasonality: STL, seasonal-trend decomposition, Prophet, Theil-Sen, Pettitt test, ARIMA, Kalman filtering of EO series | Time-series decomposition / tests / forecasting and filtering methods | 21 | Not checked — intake only |
 | Hidden Markov models and Viterbi decoding for state sequences (map matching, land cover trajectories) | Probabilistic sequence models / decoding algorithm | 21 | Not checked — intake only |
 
