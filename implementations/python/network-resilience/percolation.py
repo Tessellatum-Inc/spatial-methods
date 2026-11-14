@@ -4,6 +4,8 @@ import random
 
 def _graph(adjacency):
     graph={node:set(neighbors) for node,neighbors in adjacency.items()}
+    if not graph:
+        raise ValueError("graph must contain at least one node")
     for node,neighbors in graph.items():
         if node in neighbors:
             raise ValueError("self-loops are not supported")
