@@ -1,6 +1,7 @@
 """Motter–Lai-style overload cascades on undirected unweighted graphs."""
 from __future__ import annotations
 from collections import deque
+import math
 
 def _graph(adjacency):
     g={u:set(vs) for u,vs in adjacency.items()}
@@ -40,7 +41,7 @@ def motter_lai_cascade(adjacency, attacked_nodes, *, tolerance=0.2, max_rounds=N
     original=_graph(adjacency); attacked=list(attacked_nodes)
     if not attacked or len(set(attacked))!=len(attacked) or any(v not in original for v in attacked):
         raise ValueError("attacked_nodes must be a nonempty unique subset of graph nodes")
-    if tolerance<0: raise ValueError("tolerance must be nonnegative")
+    if not math.isfinite(tolerance) or tolerance<0: raise ValueError("tolerance must be finite and nonnegative")
     if max_rounds is not None and (isinstance(max_rounds,bool) or int(max_rounds)!=max_rounds or max_rounds<1):
         raise ValueError("max_rounds must be a positive integer or None")
     baseline=node_betweenness_load(original)
