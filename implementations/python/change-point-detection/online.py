@@ -1,6 +1,6 @@
 """Bayesian online change-point detection with known variance and unknown mean."""
 from __future__ import annotations
-from math import exp, isfinite, log, pi, sqrt
+from math import exp, isfinite, log, pi
 from typing import Iterable
 
 
@@ -50,8 +50,8 @@ def bocpd_normal_mean(values: Iterable[float], *, observation_variance: float,
         fresh_z = value - prior_mean
         fresh_log_pred = (log_norm_const - 0.5 * log(1.0 + 1.0 / prior_kappa)
                           - 0.5 * fresh_z * fresh_z / fresh_variance)
-        log_growth = [log(p) + log(1.0 - hazard) + lp
-                      for p, lp in zip(probs, predictive) if p > 0]
+        log_growth = [(log(p) if p > 0 else float('-inf')) + log(1.0 - hazard) + lp
+                      for p, lp in zip(probs, predictive)]
         log_cp = log(hazard) + fresh_log_pred
         log_weights = [log_cp] + log_growth
         peak = max(log_weights)
