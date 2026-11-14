@@ -5,6 +5,8 @@ Dependency-free, transparent implementations for a small subset of the Section 1
 - **Contingency table:** hits, misses, false alarms, correct negatives, probability of detection (POD), false alarm ratio (FAR), critical success index (CSI), and equitable threat score (ETS).
 - **Brier score:** mean squared error of binary-event probabilities.
 - **ROC AUC:** rank-based area under the receiver operating characteristic curve, with average ranks for tied scores.
+- **Ensemble CRPS:** empirical-ensemble continuous ranked probability score.
+- **Rank histogram:** ensemble rank counts with tie mass fractionally shared across admissible ranks.
 - **Fractions Skill Score (FSS):** thresholded fields compared through square-neighborhood event fractions, including gridpoint radius zero.
 
 Run from this directory with `python -m pytest -q`.
