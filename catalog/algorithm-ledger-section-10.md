@@ -100,6 +100,7 @@ A shared family lesson or notebook is not counted as a separate derivation for e
 | Adaptive sampling | Active learning for map validation | One-round uncertainty-per-cost batch selector with minimum spatial separation and tests | Implemented / tested candidate; iterative model-update loop and sampling-design review pending |
 | Distribution shift | Kernel two-sample tests / MMD | Unbiased Gaussian-kernel MMD, tests, walkthrough and notebook added | Implemented / tested candidate; spatial null design remains open |
 | Distribution shift | Energy distance | Unbiased sample energy-distance statistic and tests added | Implemented / tested candidate; spatial null design remains open |
+| Distribution shift | Area of Applicability (bounded baseline) | Nearest-neighbour predictor-space envelope; training leave-one-out distance threshold, optional feature weights, tests and lab; not a reference-equivalent Meyer–Pebesma DI | Implemented / tested candidate; model-derived weights and spatial-CV threshold calibration remain open |
 | Distribution shift | Domain-classifier divergence | `implementations/python/domain-classifier-shift/` standardised logistic-regression classifier with out-of-fold ROC AUC and balanced accuracy; optional StratifiedGroupKFold; tests, walkthrough and lab | Implemented / tested candidate; classifier/feature sensitivity and spatial grouping review pending |
 
 ## What this audit says right now
@@ -242,7 +243,7 @@ Nearest-neighbour gridding and Delaunay piecewise-linear triangulation gridding 
 Optical-flow update: the package now includes single-scale dense local Lucas–Kanade plus OpenCV-backed Farnebäck and DIS and scikit-image TV-L1 wrappers. Synthetic translation tests and a shared lab are present; broader benchmark and independent validation remain open.
 
 
-Distribution-shift update: unbiased Gaussian-kernel MMD, energy distance and a reproducible exchangeability-based permutation test now have executable implementations, tests, walkthrough and a lab. The permutation procedure is explicitly not spatially valid under autocorrelation; block-aware inference remains open.
+Distribution-shift update: unbiased Gaussian-kernel MMD, energy distance and a reproducible exchangeability-based permutation test have executable implementations, tests, walkthrough and a lab. A nearest-neighbour predictor-space applicability envelope adds a bounded AOA-style extrapolation flag with tests and a lab; it is not the reference Meyer–Pebesma dissimilarity-index method. The permutation procedure is explicitly not spatially valid under autocorrelation; block-aware inference remains open.
 
 
 Opheim update: a constrained moving-strip variant is now implemented and tested. Its half-width and minimum/maximum radial-distance conventions are explicit; it does not claim to reproduce the road-network-specific improved Opheim variant. Zhao–Saalfeld remains open.
