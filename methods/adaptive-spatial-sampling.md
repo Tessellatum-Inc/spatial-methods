@@ -27,7 +27,7 @@ Untried arms are selected first. This is a basic stationary multi-armed bandit p
 
 ## Code
 
-The [Python package](../implementations/python/adaptive-sampling/README.md) provides the greedy spatial selector and UCB1 with input validation and tests.
+The [Python package](../implementations/python/adaptive-sampling/README.md) provides the greedy spatial selector, UCB1 and a finite-candidate Gaussian-process optimizer using an RBF kernel with UCB or expected-improvement acquisition. The GP implementation uses dense Cholesky factorization and has cubic training cost; it is intended for small teaching examples, not large spatial datasets.
 
 ## What remains outside this implementation
 
