@@ -11,7 +11,7 @@ This dependency-free package contains:
 Run from this directory:
 
 ```bash
-python -m pytest -q
+python -m pytest -q --import-mode=importlib
 ```
 
 Theil–Sen requires numeric paired observations and at least two distinct x-values. Pettitt assumes an ordered independent sequence under its usual null calibration; serial dependence and ties affect inference. Viterbi does not estimate HMM parameters, handle continuous emissions or replace model validation. The Kalman package is scalar/local-level only; it does not provide general matrix-state models or estimate noise parameters.
