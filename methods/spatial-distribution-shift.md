@@ -64,6 +64,8 @@ A characteristic kernel such as the Gaussian RBF can distinguish different proba
 
 The unbiased estimator above is derived for independent samples. A standard random permutation test is not automatically valid for spatially autocorrelated observations. Its null distribution relies on exchangeability of the pooled sample labels. For spatial data, the permutation unit and exchangeability assumptions must reflect the sampling design: for example, whole spatial blocks or independently sampled regions may be the relevant units. Blocks must be defined before looking at the test result, and their size must be justified against the dependence range and deployment question.
 
+A bounded [whole-block MMD permutation implementation](../implementations/python/distribution-shift/block_permutation.py), with [tests](../implementations/python/distribution-shift/test_block_permutation.py) and a [lab](../notebooks/spatial-block-permutation-mmd-lab.ipynb), accepts source and target arrays shaped as equal-sized blocks. It permutes block labels while preserving every row within its block. This is defensible only when blocks are mutually independent and exchangeable under the null and have comparable sampling/measurement designs. It does not make arbitrary raster tiles independent, and it does not correct confounding, non-stationarity or cross-block dependence.
+
 ## 3. Energy distance
 
 Energy distance compares distributions using expected pairwise distances:
