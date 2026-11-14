@@ -48,6 +48,8 @@ def bootstrap_particle_filter(observations, initial_particles, transition,
     The reported moments are weighted posterior moments before resampling.
     """
     zs = list(observations)
+    if not zs:
+        raise ValueError("observations must be nonempty")
     particles = np.asarray(initial_particles, dtype=float)
     if particles.ndim != 2 or particles.shape[0] < 2 or particles.shape[1] < 1 or not np.all(np.isfinite(particles)):
         raise ValueError("initial_particles must be a finite N-by-state matrix with N >= 2")
