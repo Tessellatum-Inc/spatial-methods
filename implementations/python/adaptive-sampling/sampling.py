@@ -1,6 +1,6 @@
 """Greedy spatial active-learning and multi-armed bandit teaching baselines."""
 from __future__ import annotations
-from math import isfinite, log, sqrt
+from math import exp, isfinite, log, sqrt
 from typing import Sequence
 
 
