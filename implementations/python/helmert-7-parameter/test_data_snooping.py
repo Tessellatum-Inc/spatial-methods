@@ -37,3 +37,14 @@ def test_invalid_covariance_and_threshold():
     with pytest.raises(ValueError): adjust_and_snoop(A,y,covariance=np.ones((3,3)))
     with pytest.raises(ValueError): adjust_and_snoop(A,y,sigma0=0)
     with pytest.raises(ValueError): adjust_and_snoop(A,y,critical_value=-1)
+
+def test_zero_redundancy_observations_have_undefined_local_w_statistic():
+    # The first two observations uniquely determine both parameters; the
+    # third carries all residual redundancy. This is valid, not a bad model.
+    A=np.array([[1.,0.],[0.,1.],[0.,0.]])
+    y=np.array([2.,3.,.5])
+    r=adjust_and_snoop(A,y)
+    assert np.isnan(r["standardized_residuals"][0])
+    assert np.isnan(r["standardized_residuals"][1])
+    assert np.isfinite(r["standardized_residuals"][2])
+    np.testing.assert_allclose(r["redundancy_numbers"],[0.,0.,1.])
