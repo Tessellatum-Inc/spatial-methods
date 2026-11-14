@@ -1,6 +1,6 @@
 # Source review dashboard
 
-Snapshot: 15 November 2026 (22 item-level section indexes; Section 12 now includes a partial regional-distribution-dynamics row)
+Snapshot: 15 November 2026 (22 item-level section indexes; Section 12 includes partial regional-distribution-dynamics and discrete Lloyd CVT rows)
 
 This dashboard counts the source-entry review labels in the 22 item-level section indexes. It is an inventory of review progress, not a claim that the entries have been technically verified.
 
@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 694 | Rows with a source-entry review status in the section indexes |
-| Partial | 58 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 636 | The source wording is preserved, but no independent review is recorded |
+| Partial | 59 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 635 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -30,7 +30,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 9 — Geodesy, cartography and infrastructure | 39 | 1 | 38 |
 | 10 — Classical statistical and computational additions | 30 | 14 | 16 |
 | 11 — GeoAI and computer-vision additions | 26 | 0 | 26 |
-| 12 — Signal, GNSS and regional science | 28 | 5 | 23 |
+| 12 — Signal, GNSS and regional science | 28 | 6 | 22 |
 | 13 — GeoFM workflows, urban mobility and LLMs | 29 | 0 | 29 |
 | 14 — Databases, graphics, morphology and hazards | 33 | 0 | 33 |
 | 15 — Vision, registration and vector extraction | 33 | 0 | 33 |
@@ -41,7 +41,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 20 — Indices, microwave, events and information | 25 | 2 | 23 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 2 | 24 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 2 | 26 |
-| **Total** | **694** | **58** | **636** |
+| **Total** | **694** | **59** | **635** |
 
 ## How to interpret this
 
