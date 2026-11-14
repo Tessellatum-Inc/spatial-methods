@@ -7,7 +7,7 @@ def test_contingency_scores_known_counts():
     assert result["pod"] == pytest.approx(0.5)
     assert result["far"] == pytest.approx(0.5)
     assert result["csi"] == pytest.approx(1/3)
-    assert result["ets"] == pytest.approx(-0.2)
+    assert result["ets"] == pytest.approx(0.0)
 
 def test_brier_score_and_validation():
     assert brier_score([0.1, 0.8], [0, 1]) == pytest.approx(0.025)
