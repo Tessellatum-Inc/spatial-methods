@@ -18,7 +18,7 @@ Run tests from this directory with: python -m pytest -q
 
 ## Limitations
 
-These are fixed-bandwidth product-kernel teaching estimators. They do not implement edge correction, adaptive bandwidths, anisotropy, bandwidth selection, directional/network kernels, Voronoi/Delaunay estimators, prospective hotspot inference, significance testing or uncertainty intervals. Near boundaries, uncorrected kernels lose mass outside the observation window and can bias intensity downward. Use a projected metric coordinate system; longitude/latitude degrees are not planar distance units. Time zones, irregular observation exposure and censoring require explicit treatment.
+These are fixed-bandwidth product-kernel teaching estimators. They do not implement edge correction, adaptive bandwidths, anisotropy, bandwidth selection, directional/network kernels, Delaunay-based estimators, prospective hotspot inference, significance testing or uncertainty intervals. A separate Voronoi module provides a bounded-window inverse-cell-area baseline, without boundary correction. Near boundaries, uncorrected kernels lose mass outside the observation window and can bias intensity downward. Use a projected metric coordinate system; longitude/latitude degrees are not planar distance units. Time zones, irregular observation exposure and censoring require explicit treatment.
 
 
 ## Voronoi intensity
