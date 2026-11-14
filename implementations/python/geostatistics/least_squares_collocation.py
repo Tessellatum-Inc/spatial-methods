@@ -31,6 +31,10 @@ def least_squares_collocation(observations, design, signal_covariance,
         raise ValueError("covariance matrices must be finite")
     if not np.allclose(C,C.T,atol=1e-10) or not np.allclose(R,R.T,atol=1e-10):
         raise ValueError("signal and noise covariance matrices must be symmetric")
+    for name, matrix in (("signal_covariance",C),("noise_covariance",R)):
+        scale=max(1.0,float(np.max(np.abs(matrix))))
+        if np.min(np.linalg.eigvalsh(matrix)) < -1e-10*scale:
+            raise ValueError(f"{name} must be positive semidefinite")
     S=C+R
     try: np.linalg.cholesky(S)
     except np.linalg.LinAlgError as exc: raise ValueError("combined observation covariance must be positive definite") from exc
@@ -39,6 +43,8 @@ def least_squares_collocation(observations, design, signal_covariance,
     q=C0.shape[0]
     if C00.shape!=(q,q) or not np.all(np.isfinite(C00)) or not np.allclose(C00,C00.T,atol=1e-10):
         raise ValueError("target_signal_covariance must be finite, symmetric and n_targets by n_targets")
+    if np.min(np.linalg.eigvalsh(C00)) < -1e-10*max(1.0,float(np.max(np.abs(C00)))):
+        raise ValueError("target_signal_covariance must be positive semidefinite")
     H0=np.ones((q,p)) if target_design is None and p==1 else np.asarray(target_design,dtype=float) if target_design is not None else None
     if H0 is None or H0.shape!=(q,p) or not np.all(np.isfinite(H0)):
         raise ValueError("target_design is required and must have shape (n_targets, n_parameters)")
