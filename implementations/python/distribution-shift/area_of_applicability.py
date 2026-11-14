@@ -5,7 +5,6 @@ Meyer & Pebesma's Area of Applicability dissimilarity-index workflow.
 """
 from __future__ import annotations
 import numpy as np
-from scipy.spatial.distance import cdist
 
 
 def fit_applicability_envelope(training_features, *, feature_weights=None,
