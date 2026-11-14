@@ -1,11 +1,10 @@
-# GNSS integer ambiguity least squares
+# GNSS ambiguity and dual-frequency baselines
 
-Implements the integer least-squares objective
-\[
-\check{a}=\arg\min_{z\in\mathbb Z^n}(\hat a-z)^TQ_{\hat a}^{-1}(\hat a-z)
-\]
-using Cholesky-based sphere enumeration, returning the best and second-best integer candidates and their objective values.
+This package contains two deliberately bounded pieces:
 
-This is **not the LAMBDA method**: it does not decorrelate ambiguities with an integer unimodular transformation or implement the production LAMBDA/MLAMBDA reduction and search. It is an exact low-dimensional reference search for a supplied positive-definite float covariance. Highly correlated or high-dimensional cases can be computationally expensive. A ratio is returned as a diagnostic only; operational acceptance thresholds and validation depend on the full GNSS model, observation quality and integrity requirements.
+- **Integer least squares:** Cholesky-based sphere enumeration for the two best integer candidates, given a float ambiguity vector and positive-definite covariance. This is not LAMBDA decorrelation.
+- **Dual-frequency combinations:** geometry-free difference, first-order ionosphere-free range combination, and wide-lane phase difference.
 
-Run with `python -m pytest -q` from this directory. The code does not ingest raw carrier-phase observations, estimate float ambiguities, detect cycle slips or produce a position solution.
+All range observables are expected in metres; wide-lane inputs are phase cycles. The ionosphere-free formula removes the first-order dispersive ionospheric term under the standard frequency-squared model. It does not remove higher-order ionosphere, multipath, hardware biases, noise or modelling errors. The geometry-free combination retains ionospheric content and is useful in quality-control workflows, but is not itself a cycle-slip detector.
+
+Run tests with `python -m pytest -q` from this directory. These are teaching components, not a raw-observation GNSS processor; there is no ambiguity float estimator, LAMBDA reduction, cycle-slip detector, PPP-AR engine or integrity monitor.
