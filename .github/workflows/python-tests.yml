@@ -505,6 +505,8 @@ jobs:
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/voronoi-point-intensity-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/regional-gravity-ppml-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/harris-market-potential-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/third-order-tensor-svd-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/network-cascading-overload-lab.ipynb
 
   clipper2:
     name: Clipper2 C# offset checks
