@@ -470,6 +470,7 @@ jobs:
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/electre-i-kernel-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/ecef-enu-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/network-edge-failure-and-reliability-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/network-cascading-overload-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/gnss-melbourne-wubbena-cycle-slip-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/tensor-train-decomposition-and-completion-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/graph-fused-spatial-regression-lab.ipynb
