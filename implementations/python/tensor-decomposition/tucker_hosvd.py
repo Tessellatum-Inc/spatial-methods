@@ -41,11 +41,12 @@ def tucker_hosvd(tensor, ranks):
     if len(ranks) != x.ndim:
         raise ValueError("ranks must contain one value per tensor mode")
     checked = []
-    for rank, size in zip(ranks, x.shape):
+    for mode, rank in enumerate(ranks):
+        max_rank = min(x.shape[mode], int(x.size // x.shape[mode]))
         if not isinstance(rank, (int, np.integer)) or isinstance(rank, (bool, np.bool_)):
             raise ValueError("each multilinear rank must be an integer")
-        if rank < 1 or rank > size:
-            raise ValueError("each rank must be between 1 and its mode size")
+        if rank < 1 or rank > max_rank:
+            raise ValueError("each rank must not exceed its mode-unfolding matrix rank bound")
         checked.append(int(rank))
     factors = []
     for mode, rank in enumerate(checked):
