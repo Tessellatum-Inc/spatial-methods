@@ -37,7 +37,11 @@ def fit_applicability_envelope(training_features, *, feature_weights=None,
             raise ValueError("feature_weights must have positive sum")
         weights = weights / total
     z = (x - np.min(x, axis=0)) / scales
-    pairwise = cdist(z, z, metric=distance)
+    delta = np.abs(z[:, None, :] - z[None, :, :])
+    if distance == "manhattan":
+        pairwise = np.sum(delta * weights[None, None, :], axis=2)
+    else:
+        pairwise = np.sqrt(np.sum(delta**2 * weights[None, None, :], axis=2))
     np.fill_diagonal(pairwise, np.inf)
     loo = np.min(pairwise, axis=1)
     threshold = float(np.quantile(loo, q))
