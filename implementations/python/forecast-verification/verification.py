@@ -97,3 +97,40 @@ def fractions_skill_score(forecast, observed, threshold, radius=1):
     if worst == 0:
         return 1.0 if fbs == 0 else None
     return 1.0 - fbs/worst
+
+def crps_ensemble(ensemble, observation):
+    """Empirical-ensemble CRPS using the finite-ensemble fair sample formula.
+
+    CRPS = mean(|x_m-y|) - (1/(2 M^2)) sum_{m,n}|x_m-x_n|.
+    """
+    members = [float(v) for v in ensemble]
+    y = float(observation)
+    if not members or not isfinite(y) or any(not isfinite(v) for v in members):
+        raise ValueError("ensemble and observation must be finite and ensemble non-empty")
+    first = sum(abs(v-y) for v in members) / len(members)
+    pairwise = sum(abs(a-b) for a in members for b in members) / (2 * len(members)**2)
+    return first - pairwise
+
+def rank_histogram(ensembles, observations):
+    """Expected ensemble rank counts with ties fractionally shared.
+
+    Returns M+1 bins for M-member ensembles. Each case contributes one total
+    count; if the observation ties k members, its mass is shared equally over
+    the k+1 ranks spanned by that tie.
+    """
+    _same_length(ensembles, observations)
+    member_count = len(ensembles[0])
+    if member_count < 1 or any(len(e) != member_count for e in ensembles):
+        raise ValueError("all ensembles must have the same positive member count")
+    counts = [0.0] * (member_count + 1)
+    for ensemble, observation in zip(ensembles, observations):
+        members = [float(v) for v in ensemble]
+        y = float(observation)
+        if not isfinite(y) or any(not isfinite(v) for v in members):
+            raise ValueError("ensemble members and observations must be finite")
+        lower = sum(v < y for v in members)
+        ties = sum(v == y for v in members)
+        mass = 1.0 / (ties + 1)
+        for rank in range(lower, lower + ties + 1):
+            counts[rank] += mass
+    return counts
