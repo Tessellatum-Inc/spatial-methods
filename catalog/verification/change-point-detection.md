@@ -5,4 +5,4 @@
 - **Killick, Fearnhead & Eckley (2012), PELT:** “Optimal Detection of Changepoints With a Linear Computational Cost,” *JASA* 107(500), 1590–1598. DOI 10.1080/01621459.2012.737745. The package implements the SSE mean-shift objective with K=0 pruning; linear expected complexity is conditional, with quadratic worst case.
 - **Implementation scope:** finite univariate observations, piecewise-constant mean, SSE segment cost. CUSUM threshold calibration, penalty selection, spatial dependence, seasonality, sensor discontinuities and missingness remain outside the package.
 - **Rights:** bibliographic metadata and DOI links only; no article text or figures copied.
-- **Status:** identity and core bibliography checked; technical scope documented; local tests authored. CI execution and independent code review still pending.
+- **Status:** identity and core bibliography checked; technical scope documented; deterministic regression checks and exhaustive comparisons against brute-force optimal segmentations on randomized small series passed in a local validation run. Repository CI execution and independent code review remain pending.
