@@ -61,7 +61,7 @@ def lisa_transition_matrix(values,weights):
         sd=row.std()
         if sd==0: raise ValueError("each period must have nonzero cross-sectional variance")
         z=(row-row.mean())/sd; lag=w@z
-        states[t]=np.select([(z>=0)&(lag>=0),(z>=0)&(lag<0),(z<0)&(lag>=0)],[0,1,2],default=3)
+        states[t]=np.select([(z>0)&(lag>0),(z>0)&(lag<=0),(z<=0)&(lag>0)],[0,1,2],default=3)
     c=_counts(states,4)
     return {"labels":("HH","HL","LH","LL"),"counts":c,"probabilities":_probabilities(c),"states":states}
 
