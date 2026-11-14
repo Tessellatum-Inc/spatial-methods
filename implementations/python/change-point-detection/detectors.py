@@ -115,8 +115,9 @@ def pelt(values: Iterable[float], *, penalty: float, min_size: int = 2) -> list[
                  for start in eligible]
         best[end], previous[end] = min(costs)
         # K=0 pruning: a start that cannot beat the current optimum is removed.
-        candidates = [start for start in eligible
-                      if best[start] + _sse(s, q, start, end) < best[end]]
+        candidates = ([start for start in candidates if end - start < min_size]
+                      + [start for start in eligible
+                         if best[start] + _sse(s, q, start, end) < best[end]])
         if best[end] < inf:
             candidates.append(end)
     if previous[n] < 0:
