@@ -31,7 +31,7 @@ Report the spatial weights, diagnostics and model specification when moving beyo
 
 ## Reproduction
 
-Run from implementations/python/regional-dynamics/beta_convergence.py:
+Run from implementations/python/regional-dynamics:
 
 ~~~bash
 python -m pytest -q --import-mode=importlib
