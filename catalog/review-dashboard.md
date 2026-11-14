@@ -1,6 +1,6 @@
 # Source review dashboard
 
-Snapshot: 14 November 2026 (recounted against all 22 section indexes; includes MMD, change-point detection, temporal trend, HMM, mesh-geodesics and adaptive-sampling partial rows)
+Snapshot: 14 November 2026 (recounted against all 22 section indexes; includes MMD, change-point detection, temporal trend, HMM, mesh-geodesics, adaptive-sampling and forecast-verification partial rows)
 
 This dashboard counts the source-entry review labels in the 22 item-level section indexes. It is an inventory of review progress, not a claim that the entries have been technically verified.
 
@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 694 | Rows with a source-entry review status in the section indexes |
-| Partial | 50 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 644 | The source wording is preserved, but no independent review is recorded |
+| Partial | 52 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 642 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -28,7 +28,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 7 — Domain modeling | 48 | 1 | 47 |
 | 8 — GeoAI | 54 | 2 | 52 |
 | 9 — Geodesy, cartography and infrastructure | 39 | 1 | 38 |
-| 10 — Classical statistical and computational additions | 30 | 11 | 19 |
+| 10 — Classical statistical and computational additions | 30 | 13 | 17 |
 | 11 — GeoAI and computer-vision additions | 26 | 0 | 26 |
 | 12 — Signal, GNSS and regional science | 28 | 0 | 28 |
 | 13 — GeoFM workflows, urban mobility and LLMs | 29 | 0 | 29 |
