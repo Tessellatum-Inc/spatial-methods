@@ -3,13 +3,6 @@ from __future__ import annotations
 import numpy as np
 
 
-def _matrix(value, shape, name):
-    a = np.asarray(value, dtype=float)
-    if a.shape != shape or not np.all(np.isfinite(a)):
-        raise ValueError(f"{name} must be a finite matrix with shape {shape}")
-    return 0.5 * (a + a.T) if name in ("Q", "R", "P") else a
-
-
 def _covariance(value, size, name):
     a = np.asarray(value, dtype=float)
     if a.shape != (size, size) or not np.all(np.isfinite(a)):
@@ -30,9 +23,10 @@ def _state(value, name):
 def _solve_spd(a, b):
     """Solve SPD system without explicitly forming an inverse."""
     try:
-        return np.linalg.solve(a, b)
+        L = np.linalg.cholesky(a)
+        return np.linalg.solve(L.T, np.linalg.solve(L, b))
     except np.linalg.LinAlgError as exc:
-        raise ValueError("innovation covariance is singular; check noise and model") from exc
+        raise ValueError("innovation covariance must be positive definite; check noise and model") from exc
 
 
 def ekf_step(mean, covariance, observation, transition, observation_model,
