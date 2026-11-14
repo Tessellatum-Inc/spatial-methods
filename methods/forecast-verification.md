@@ -45,6 +45,6 @@ For ensemble forecasts, the [Python package](../implementations/python/forecast-
 
 - Roberts, N. M., & Lean, H. W. (2008). “Scale-Selective Verification of Rainfall Accumulations from High-Resolution Forecasts of Convective Events.” *Monthly Weather Review*, 136, 78–97. [Paper](https://centaur.reading.ac.uk/31220/1/Roberts2008a.pdf). FSS.
 - Brier, G. W. (1950). “Verification of Forecasts Expressed in Terms of Probability.” *Monthly Weather Review*, 78, 1–3. DOI: [10.1175/1520-0493(1950)078<0001:VOFEIT>2.0.CO;2](https://doi.org/10.1175/1520-0493(1950)078%3C0001:VOFEIT%3E2.0.CO;2). Brier score.
-- Wilks, D. S. (2011). *Statistical Methods in the Atmospheric Sciences*, 3rd ed. Academic Press. Categorical and probabilistic verification definitions.
+- Hamill, T. M. (2001). “Interpretation of Rank Histograms for Verifying Ensemble Forecasts.” *Monthly Weather Review*, 129, 550–560. [DOI](https://doi.org/10.1175/1520-0493(2001)129%3C0550:IORHFV%3E2.0.CO;2). Rank histograms and their interpretation.\n- Wilks, D. S. (2011). *Statistical Methods in the Atmospheric Sciences*, 3rd ed. Academic Press. Categorical and probabilistic verification definitions.
 
 No source text or figures are reproduced.
