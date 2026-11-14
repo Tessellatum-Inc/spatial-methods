@@ -399,8 +399,8 @@ jobs:
         run: |
           python -m ipykernel install --user --name python3
           mkdir -p /tmp/notebook-output
-          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=120 notebooks/global-morans-i-lab.ipynb
-          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=120 notebooks/gearys-c-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=120 --ExecutePreprocessor.cwd=. notebooks/global-morans-i-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=120 --ExecutePreprocessor.cwd=. notebooks/gearys-c-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=. notebooks/local-morans-i-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=. notebooks/local-geary-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=. notebooks/getis-ord-gi-star-lab.ipynb
@@ -499,6 +499,7 @@ jobs:
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=. notebooks/baarda-data-snooping-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=. notebooks/least-squares-collocation-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=. notebooks/spatial-block-permutation-mmd-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=. notebooks/ensemble-transform-kalman-filter-lab.ipynb
 
   clipper2:
     name: Clipper2 C# offset checks
