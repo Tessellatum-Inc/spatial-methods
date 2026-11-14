@@ -41,7 +41,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 20 — Indices, microwave, events and information | 25 | 2 | 23 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 2 | 24 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 2 | 26 |
-| **Total** | **694** | **63** | **631** |
+| **Total** | **694** | **64** | **630** |
 
 ## How to interpret this
 
