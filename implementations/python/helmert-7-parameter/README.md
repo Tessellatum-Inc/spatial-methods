@@ -34,3 +34,7 @@ The result is approximately [3657660.78, 255778.43, 5201387.75] metres.
 - This is not a full CRS operation: geographic/geocentric conversion, ellipsoid selection, datum grids, area of use and coordinate epochs are outside scope.
 
 See the [method lesson](../../../methods/helmert-7-parameter.md) and [intern walkthrough](implementation-walkthrough.md).
+
+## Baarda-style data snooping
+
+The companion module data_snooping.py provides a full-rank weighted linear least-squares adjustment, global residual quadratic statistic, residual covariance/redundancy numbers and standardized local w statistics. It accepts a full observation covariance/cofactor matrix and a caller-supplied local critical value. It does not automatically delete observations, implement Pope's tau test, or perform robust/iterative adjustment. See the [data-snooping lesson](../../../methods/baarda-data-snooping.md) and [lab notebook](../../../notebooks/baarda-data-snooping-lab.ipynb).
