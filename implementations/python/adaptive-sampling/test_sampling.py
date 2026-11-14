@@ -1,4 +1,5 @@
-import math\nimport pytest
+import math
+import pytest
 from sampling import select_spatial_batch, ucb1_arm, gp_select_next
 
 
