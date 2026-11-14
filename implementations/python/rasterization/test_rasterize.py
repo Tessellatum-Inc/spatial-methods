@@ -28,3 +28,7 @@ def test_scanline_fill_rectangle_by_cell_centres():
 def test_scanline_fill_rejects_degenerate_polygon():
     with pytest.raises(ValueError):
         scanline_fill([(0,0),(1,1)],3,3)
+
+def test_supercover_includes_cells_touching_integer_endpoint():
+    cells=set(supercover_line((0,0),(2,0)))
+    assert {(-1,-1),(-1,0),(0,-1),(0,0),(1,-1),(1,0),(2,-1),(2,0)}.issubset(cells)
