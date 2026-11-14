@@ -44,3 +44,12 @@ Do not map every per-pixel alarm as an independent event without controlling spa
 - Killick, R., Fearnhead, P., & Eckley, I. A. (2012). “Optimal Detection of Changepoints With a Linear Computational Cost.” *Journal of the American Statistical Association*, 107(500), 1590–1598. DOI: [10.1080/01621459.2012.737745](https://doi.org/10.1080/01621459.2012.737745). PELT and penalized optimal partitioning.
 
 The references establish the method families; they do not validate this teaching implementation for every data-generating process. No paper figures or text are reproduced here.
+
+
+## Bayesian online change-point detection
+
+The package also includes a bounded BOCPD baseline, following Adams and MacKay (2007). It tracks the posterior distribution over the current run length as each observation arrives. The implementation uses a Gaussian likelihood with **known fixed observation variance** and a Normal prior over each segment mean, plus a constant hazard. It reports the posterior mass at run length zero and the MAP run length.
+
+This is a narrower conjugate model than the unknown-mean-and-variance Student-t BOCPD often used in examples. It is online and causal, unlike retrospective segmentation, but its output depends strongly on the hazard, prior and variance assumptions. It does not model seasonality, autocorrelation, missingness or spatial dependence. See the [model README](../implementations/python/change-point-detection/online-README.md).
+
+Reference: Adams, R. P., & MacKay, D. J. C. (2007). “Bayesian Online Changepoint Detection.” arXiv:0710.3742. [arXiv record](https://arxiv.org/abs/0710.3742).
