@@ -12,11 +12,9 @@ def test_components_reconstruct_input():
     assert rebuilt == pytest.approx(y)
     assert len(result["trend"]) == len(y)
 
-def test_seasonal_component_is_centered_over_cycles():
+def test_seasonal_component_is_centered_over_full_series():
     result = stl_decompose(synthetic(), 12, seasonal_window=7, trend_window=21)
-    for phase in range(12):
-        values = result["seasonal"][phase::12]
-        assert abs(sum(values) / len(values)) < 0.5
+    assert abs(sum(result["seasonal"]) / len(result["seasonal"])) < 0.1
 
 def test_robust_mode_downweights_large_spike():
     y = synthetic(); y[61] += 35
