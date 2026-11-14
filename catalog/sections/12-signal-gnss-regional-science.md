@@ -4,9 +4,9 @@
 - **Source pages:** 24–26
 - **Source transcription:** [pages 21–25](../../source-inventory/pages-21-25.md) and [pages 26–30](../../source-inventory/pages-26-30.md)
 - **Review state:** source entries extracted into this index; the source describes these as methods borrowed from adjacent fields
-- **Current canonical records:** [GNSS integer least-squares search](../../methods/gnss-integer-ambiguity-resolution.md) and tested [sphere-search implementation](../../implementations/python/gnss-ambiguity/README.md); [dual-frequency GNSS combinations](../../methods/gnss-dual-frequency-combinations.md); [GNSS integer least-squares search](../../methods/gnss-integer-ambiguity-resolution.md) and tested [sphere-search implementation](../../implementations/python/gnss-ambiguity/README.md); [point-pattern second-order statistics](../../methods/point-pattern-second-order-statistics.md) and tested [Python baselines](../../implementations/python/point-process/README.md); [NMF](../../methods/nonnegative-matrix-factorization.md) and tested [factorization code](../../implementations/python/matrix-factorization/README.md); [network percolation](../../methods/network-percolation-resilience.md) and tested [resilience baselines](../../implementations/python/network-resilience/README.md)
+- **Current canonical records:** [GNSS integer least-squares search](../../methods/gnss-integer-ambiguity-resolution.md), [dual-frequency GNSS combinations](../../methods/gnss-dual-frequency-combinations.md), [point-pattern second-order statistics](../../methods/point-pattern-second-order-statistics.md), [nonnegative matrix factorization](../../methods/nonnegative-matrix-factorization.md), [network percolation and resilience](../../methods/network-percolation-resilience.md), and [regional distribution dynamics](../../methods/regional-distribution-dynamics.md), with implementations and learning notebooks linked from their respective method pages.
 
-The source explicitly frames these as methods from adjacent fields that spatial analysts regularly borrow. That is useful context: explain the original method first, then show what changes when it is applied to spatial data.
+The source explicitly frames these as methods from adjacent fields that spatial analysts regularly borrow. Explain the original method first, then show what changes when it is applied to spatial data.
 
 ## Smoothing and semiparametric spatial models
 
@@ -54,7 +54,7 @@ The source explicitly frames these as methods from adjacent fields that spatial 
 |---|---|---:|--- |
 | Garin-Lowry and Lowry models, input-output and spatial CGE models, quantitative spatial equilibrium (Rosen-Roback style) | Regional economic models / spatial equilibrium frameworks | 26 | Not checked — intake only |
 | Gravity trade models (PPML estimation), market access, spatial price equilibrium | Trade and interaction models / estimation methods | 26 | Not checked — intake only |
-| Regional convergence analysis, spatial Markov chains, LISA transitions, spatial dynamics of income distributions | Regional convergence and spatial transition analysis | 26 | Not checked — intake only |
+| Regional convergence analysis, spatial Markov chains, LISA transitions, spatial dynamics of income distributions | Regional convergence and spatial transition analysis | 26 | [Regional distribution dynamics lesson](../../methods/regional-distribution-dynamics.md), [NumPy implementations](../../implementations/python/regional-dynamics/README.md), tests and lab notebook cover pooled-quantile Markov transitions, spatial Markov conditioning, descriptive LISA quadrant transitions and sigma-dispersion; beta-convergence models, inferential LISA and spatial panel econometrics remain open | Partial — related record exists; source-entry review pending
 
 ## Network resilience and infrastructure risk
 
