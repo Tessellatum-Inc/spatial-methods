@@ -44,7 +44,7 @@ A first reproducible point-data baseline is now available: [spatial cross-valida
 |---|---|---:|--- |
 | [Spatial cross-validation](../../methods/spatial-cross-validation.md), NNDM, kNNDM, buffered leave-one-out, spatial k-fold by clustering, blockCV, spatial+temporal leave-out | Spatial and spatiotemporal validation designs | 21 | Partial — related record exists; source-entry review pending |
 | Adaptive and Bayesian sampling: Bayesian optimization on spatial fields, multi-armed bandits for survey design, adaptive cluster sampling, active learning for map validation | Adaptive sampling / active learning / survey design | 22 | Not checked — intake only |
-| Kernel two-sample tests and domain divergence metrics for spatial distribution shift | Distribution-shift tests / domain comparison metrics | 22 | Not checked — intake only |
+| [Kernel two-sample tests and spatial distribution shift](../../methods/spatial-distribution-shift.md) | Distribution-shift tests / domain comparison metrics | 22 | Partial — MMD identity and core citation checked; other named metrics and spatial-null designs remain pending |
 
 ## Geophysical gridding and potential field processing
 
