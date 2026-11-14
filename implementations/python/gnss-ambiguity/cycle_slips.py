@@ -61,7 +61,8 @@ def detect_geometry_free_slips(values, epochs=None, window=7, threshold=0.08, ma
         residuals[i]=residual
         if abs(residual)>threshold:
             flags[i]=True
-            # Do not let the flagged jump contaminate subsequent predictions.
+            # Start a new arc at the flagged epoch; never fit across the jump.
+            accepted=[i]
         else:
             accepted.append(i)
     return {"flags":flags,"residuals":residuals,"accepted_indices":np.asarray(accepted,dtype=int)}
