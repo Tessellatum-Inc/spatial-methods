@@ -13,7 +13,7 @@ This package contains small NumPy implementations of the extended Kalman filter 
 - Single-step functions expose innovation, innovation covariance, gain and predicted moments.
 - Sequence runners return filtered means, covariances and per-observation diagnostics.
 
-Run tests from this directory with `python -m pytest -q`.
+Run tests from this directory with `python -m pytest -q --import-mode=importlib`.
 
 ## Explicit limits
 
