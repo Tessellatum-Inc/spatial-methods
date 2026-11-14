@@ -1,6 +1,6 @@
 # Source review dashboard
 
-Snapshot: 14 November 2026 (recounted against all 22 section indexes; includes MMD, change-point detection, temporal trend, HMM, mesh-geodesics, adaptive-sampling, forecast-verification and optical-flow partial rows)
+Snapshot: 14 November 2026 (recounted against all 22 section indexes; includes MMD, change-point detection, temporal trend, HMM, mesh-geodesics, adaptive-sampling, forecast-verification, optical-flow and point-process partial rows)
 
 This dashboard counts the source-entry review labels in the 22 item-level section indexes. It is an inventory of review progress, not a claim that the entries have been technically verified.
 
@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 694 | Rows with a source-entry review status in the section indexes |
-| Partial | 53 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 641 | The source wording is preserved, but no independent review is recorded |
+| Partial | 54 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 640 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -30,7 +30,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 9 — Geodesy, cartography and infrastructure | 39 | 1 | 38 |
 | 10 — Classical statistical and computational additions | 30 | 14 | 16 |
 | 11 — GeoAI and computer-vision additions | 26 | 0 | 26 |
-| 12 — Signal, GNSS and regional science | 28 | 0 | 28 |
+| 12 — Signal, GNSS and regional science | 28 | 1 | 27 |
 | 13 — GeoFM workflows, urban mobility and LLMs | 29 | 0 | 29 |
 | 14 — Databases, graphics, morphology and hazards | 33 | 0 | 33 |
 | 15 — Vision, registration and vector extraction | 33 | 0 | 33 |
@@ -41,7 +41,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 20 — Indices, microwave, events and information | 25 | 2 | 23 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 2 | 24 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 2 | 26 |
-| **Total** | **694** | **53** | **641** |
+| **Total** | **694** | **54** | **640** |
 
 ## How to interpret this
 
