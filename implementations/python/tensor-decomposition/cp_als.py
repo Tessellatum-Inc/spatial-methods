@@ -21,8 +21,6 @@ def cp_als(tensor,rank,max_iter=200,tolerance=1e-7,seed=0):
         raise ValueError("tensor must be a finite, nonempty 3D array")
     if not isinstance(rank,int) or isinstance(rank,bool) or rank<1:
         raise ValueError("rank must be a positive integer")
-    if rank>min(x.shape):
-        raise ValueError("rank cannot exceed the smallest tensor dimension")
     if not isinstance(max_iter,int) or isinstance(max_iter,bool) or max_iter<1:
         raise ValueError("max_iter must be a positive integer")
     if not np.isfinite(tolerance) or tolerance<0:
@@ -38,7 +36,7 @@ def cp_als(tensor,rank,max_iter=200,tolerance=1e-7,seed=0):
         for mode in range(3):
             others=[i for i in range(3) if i!=mode]
             a,b=factors[others[0]],factors[others[1]]
-            kr=_khatri_rao(b,a)
+            kr=_khatri_rao(a,b)
             gram=(a.T@a)*(b.T@b)
             rhs=_unfold(x,mode)@kr
             factors[mode]=rhs@np.linalg.pinv(gram,hermitian=True)
