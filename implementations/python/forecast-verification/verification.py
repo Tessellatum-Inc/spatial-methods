@@ -99,7 +99,7 @@ def fractions_skill_score(forecast, observed, threshold, radius=1):
     return 1.0 - fbs/worst
 
 def crps_ensemble(ensemble, observation):
-    """Empirical-ensemble CRPS using the finite-ensemble fair sample formula.
+    """Empirical-distribution CRPS for a finite ensemble.
 
     CRPS = mean(|x_m-y|) - (1/(2 M^2)) sum_{m,n}|x_m-x_n|.
     """
