@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from regional_dynamics import beta_convergence
+from beta_convergence import beta_convergence
 
 
 def test_beta_convergence_recovers_negative_slope_and_speed():
