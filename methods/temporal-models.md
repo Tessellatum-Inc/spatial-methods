@@ -39,7 +39,7 @@ The implementation uses log probabilities and dynamic programming. It decodes a 
 
 ## Code and tests
 
-See [the Python package](../implementations/python/temporal-models/README.md). It includes Theil–Sen, Pettitt and discrete-emission Viterbi, with validation tests. It does not implement STL, ARIMA, Kalman/RTS smoothing, BEAST, Bayesian online change-point detection or continuous-emission HMMs.
+See [the Python package](../implementations/python/temporal-models/README.md). It includes Theil–Sen, Pettitt and discrete-emission Viterbi, with validation tests. STL-style decomposition is now covered by a separate [STL lesson](stl-seasonal-trend-decomposition.md) and educational implementation; ARIMA, Prophet, BEAST, full unknown-variance BOCPD and continuous-emission HMMs remain open.
 
 ## Spatial-data cautions
 
