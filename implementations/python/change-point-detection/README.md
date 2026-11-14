@@ -12,7 +12,7 @@ Dependency-free univariate baselines for mean changes:
 From this directory:
 
 ```bash
-python -m pytest -q
+python -m pytest -q --import-mode=importlib
 ```
 
 ## Scope and limitations
