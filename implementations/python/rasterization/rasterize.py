@@ -93,8 +93,10 @@ def supercover_line(start, end):
     conservative contract can emit multiple cells at exact grid-corner crossings.
     """
     x0,y0=_point(start); x1,y1=_point(end)
-    c0=floor(min(x0,x1)); c1=floor(max(x0,x1))
-    r0=floor(min(y0,y1)); r1=floor(max(y0,y1))
+    xmin, xmax = min(x0,x1), max(x0,x1)
+    ymin, ymax = min(y0,y1), max(y0,y1)
+    c0=floor(xmin) - (1 if xmin == floor(xmin) else 0); c1=floor(xmax)
+    r0=floor(ymin) - (1 if ymin == floor(ymin) else 0); r1=floor(ymax)
     cells=[]
     for r in range(r0,r1+1):
         for c in range(c0,c1+1):
