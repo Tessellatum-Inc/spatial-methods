@@ -19,3 +19,8 @@ Run tests from this directory with: python -m pytest -q
 ## Limitations
 
 These are fixed-bandwidth product-kernel teaching estimators. They do not implement edge correction, adaptive bandwidths, anisotropy, bandwidth selection, directional/network kernels, Voronoi/Delaunay estimators, prospective hotspot inference, significance testing or uncertainty intervals. Near boundaries, uncorrected kernels lose mass outside the observation window and can bias intensity downward. Use a projected metric coordinate system; longitude/latitude degrees are not planar distance units. Time zones, irregular observation exposure and censoring require explicit treatment.
+
+
+## Voronoi intensity
+
+The `voronoi_intensity.py` module constructs bounded rectangular-window Voronoi cells by half-plane clipping and returns inverse cell-area intensity estimates. It checks that the clipped cells partition the window. Boundary correction, resample-smoothing and Delaunay-based estimators remain open. See the [Voronoi intensity lesson](../../../methods/voronoi-point-intensity.md) and [lab notebook](../../../notebooks/voronoi-point-intensity-lab.ipynb).
