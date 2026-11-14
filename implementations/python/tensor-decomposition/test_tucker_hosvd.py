@@ -28,7 +28,7 @@ def test_zero_tensor_has_zero_error():
 
 @pytest.mark.parametrize("x,ranks", [
     (np.ones(3), (1,)), (np.ones((2, 2)), (1,)),
-    (np.ones((2, 2)), (0, 1)), (np.ones((2, 2)), (3, 1)),
+    (np.ones((2, 2)), (0, 1)), (np.ones((2, 2)), (3, 1)), (np.ones((3, 4)), (3, 4)),
     (np.full((2, 2), np.inf), (1, 1)), (np.ones((2, 2)), (True, 1)),
 ])
 def test_invalid_inputs(x, ranks):
