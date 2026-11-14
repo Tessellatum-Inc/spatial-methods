@@ -38,16 +38,24 @@ def adjust_and_snoop(design, observations, covariance=None, sigma0=1.0, critical
     xhat=Qxx@(A.T@Qinvl); residual=l-A@xhat
     Qvv=Q-A@Qxx@A.T; Qvv=(Qvv+Qvv.T)/2
     qdiag=np.diag(Qvv)
-    if np.any(qdiag<=np.finfo(float).eps*np.maximum(1.0,np.diag(Q))):
-        raise ValueError("one or more observations have zero numerical residual redundancy")
-    w=residual/(sigma0*np.sqrt(qdiag))
+    tol=100*np.finfo(float).eps*np.maximum(1.0,np.diag(Q))
+    if np.any(qdiag < -tol):
+        raise ValueError("computed residual covariance is not positive semidefinite")
+    qdiag=np.maximum(qdiag,0.0)
+    identifiable=qdiag>tol
+    w=np.full(m,np.nan)
+    w[identifiable]=residual[identifiable]/(sigma0*np.sqrt(qdiag[identifiable]))
+    if not np.any(identifiable):
+        raise ValueError("no observations have positive residual redundancy")
     global_stat=float(residual@np.linalg.solve(Q,residual)/(sigma0**2))
+    largest=int(np.nanargmax(np.abs(w)))
     return {
         "estimate":xhat, "parameter_covariance":sigma0**2*Qxx,
         "residuals":residual, "residual_covariance":sigma0**2*Qvv,
         "redundancy_numbers":np.diag(Qvv)/np.diag(Q),
         "standardized_residuals":w, "suspect_indices":np.flatnonzero(np.abs(w)>critical_value),
-        "largest_absolute_w_index":int(np.argmax(np.abs(w))),
+        "largest_absolute_w_index":largest,
         "global_statistic":global_stat, "global_degrees_of_freedom":m-n,
         "local_critical_value":float(critical_value),
+        "local_test_defined":identifiable,
     }
