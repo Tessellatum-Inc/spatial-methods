@@ -282,6 +282,9 @@ jobs:
           - example: gnss-ambiguity
             directory: implementations/python/gnss-ambiguity
             pythonpath: ""
+          - example: gnss-raim
+            directory: implementations/python/gnss-raim
+            pythonpath: ""
           - example: regional-dynamics
             directory: implementations/python/regional-dynamics
             pythonpath: ""
@@ -472,6 +475,7 @@ jobs:
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/network-edge-failure-and-reliability-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/network-cascading-overload-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/gnss-melbourne-wubbena-cycle-slip-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/gnss-residual-raim-fde-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/tensor-train-decomposition-and-completion-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/graph-fused-spatial-regression-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 --ExecutePreprocessor.cwd=.. notebooks/nonlinear-kalman-ekf-ukf-lab.ipynb
