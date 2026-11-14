@@ -33,7 +33,7 @@ The source describes these as further methods not listed in sections 1–9. Seve
 |---|---|---:|--- |
 | Fractions Skill Score, neighborhood verification, SAL (structure, amplitude, location), object-based verification (MODE) | Forecast verification metrics and methods | 21 | [Forecast verification lesson](../../methods/forecast-verification.md) and tested [Python baselines](../../implementations/python/forecast-verification/README.md) cover FSS; SAL and MODE remain unimplemented | Partial — related record exists; source-entry review pending
 | ETS, POD, FAR, CSI, Brier skill score, ROC and AUC, CRPS decomposition, rank histograms | Forecast and probabilistic evaluation metrics | 21 | [Forecast verification lesson](../../methods/forecast-verification.md) and tested [Python baselines](../../implementations/python/forecast-verification/README.md) cover ETS, POD, FAR, CSI, Brier score and ROC AUC; CRPS decomposition and rank histograms remain unimplemented | Partial — related record exists; source-entry review pending
-| Optical flow for advection: Lucas-Kanade, Farneback, DIS, variational optical flow | Motion estimation algorithms | 21 | Not checked — intake only |
+| Optical flow for advection: Lucas-Kanade, Farneback, DIS, variational optical flow | Motion estimation algorithms | 21 | [Lucas–Kanade lesson](../../methods/lucas-kanade-optical-flow.md) and tested [Python baseline](../../implementations/python/optical-flow/README.md) cover dense local least-squares flow; Farneback, DIS and variational flow remain unimplemented | Partial — related record exists; source-entry review pending
 
 ## Spatial cross-validation and sampling
 
