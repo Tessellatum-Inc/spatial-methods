@@ -304,6 +304,42 @@ jobs:
             directory: implementations/python/spatial-regression
             pythonpath: ""
 
+          - example: adaptive-sampling
+            directory: implementations/python/adaptive-sampling
+            pythonpath: ""
+          - example: change-point-detection
+            directory: implementations/python/change-point-detection
+            pythonpath: ""
+          - example: d8-flow-direction
+            directory: implementations/python/d8-flow-direction
+            pythonpath: ""
+          - example: dijkstra
+            directory: implementations/python/dijkstra
+            pythonpath: ""
+          - example: empirical-semivariogram
+            directory: implementations/python/empirical-semivariogram
+            pythonpath: ""
+          - example: forecast-verification
+            directory: implementations/python/forecast-verification
+            pythonpath: ""
+          - example: graham-scan
+            directory: implementations/python/graham-scan
+            pythonpath: ""
+          - example: mesh-geodesics
+            directory: implementations/python/mesh-geodesics
+            pythonpath: ""
+          - example: optical-flow
+            directory: implementations/python/optical-flow
+            pythonpath: ""
+          - example: ordinary-kriging
+            directory: implementations/python/ordinary-kriging
+            pythonpath: ""
+          - example: rasterization
+            directory: implementations/python/rasterization
+            pythonpath: ""
+          - example: temporal-models
+            directory: implementations/python/temporal-models
+            pythonpath: ""
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -450,6 +486,13 @@ jobs:
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/gnss-geometry-free-cycle-slip-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/network-percolation-resilience-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/tucker-hosvd-tensor-decomposition-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/adaptive-spatial-sampling-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/change-point-detection-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/forecast-verification-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/lucas-kanade-optical-flow-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/mesh-geodesics-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/rasterization-algorithms-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/temporal-models-lab.ipynb
 
   clipper2:
     name: Clipper2 C# offset checks
