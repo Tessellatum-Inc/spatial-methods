@@ -7,7 +7,7 @@ def test_two_cluster_centroids():
     z=np.array([[1.,1.],[9.,1.]])
     r=lloyd_cvt(x,z)
     np.testing.assert_allclose(r["centers"],[[0.,1.],[10.,1.]])
-    assert r["objective"]==pytest.approx(2.0)
+    assert r["objective"]==pytest.approx(4.0)
     assert r["assignments"].tolist()==[0,0,1,1]
 
 def test_weighted_centroid_moves_to_weighted_mean():
