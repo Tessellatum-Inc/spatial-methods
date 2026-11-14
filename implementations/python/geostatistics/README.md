@@ -1,11 +1,11 @@
 # Spatial interpolation: IDW and ordinary kriging
 
-This package compares two ways to estimate a continuous surface from point observations and includes an exploratory empirical semivariogram:
+This package compares two ways to estimate a continuous surface from point observations, includes an exploratory empirical semivariogram, and adds a finite-dimensional least-squares collocation (LSC) predictor:
 
 - **Inverse distance weighting (IDW):** a deterministic weighted average. Nearby observations receive greater weight.
 - **Ordinary kriging:** a linear predictor whose weights are derived from a specified stationary isotropic variogram and the unbiasedness constraint.
 
-The package is deliberately small. It does not fit variogram parameters, select a model, handle anisotropy, co-kriging, block support, measurement error or spatiotemporal covariance.
+The package is deliberately small. It does not fit variogram or LSC covariance parameters, select a model, handle anisotropy, co-kriging, block support or spatiotemporal covariance. LSC accepts supplied signal/noise covariance blocks and a fixed trend; it is not a complete physical-geodesy gravity-field workflow.
 
 ## Run
 
@@ -60,4 +60,4 @@ with $\gamma(0)=0$, partial sill $c>0$ and range scale $a>0$. The ordinary-krigi
 - This teaching implementation solves a dense linear system. It is intended for small examples, not large datasets.
 - IDW is not kriging and does not provide a model-based prediction variance.
 
-Read the [interpolation lesson](../../../algorithms/geostatistics/interpolation.md), the [empirical semivariogram method record](../../../methods/empirical-semivariogram.md) and the [intern walkthrough](implementation-walkthrough.md) before interpreting the results.
+Read the [interpolation lesson](../../../algorithms/geostatistics/interpolation.md), the [empirical semivariogram method record](../../../methods/empirical-semivariogram.md), the [least-squares collocation lesson](../../../methods/least-squares-collocation.md) and the [intern walkthrough](implementation-walkthrough.md) before interpreting the results.
