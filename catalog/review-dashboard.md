@@ -1,6 +1,6 @@
 # Source review dashboard
 
-Snapshot: 15 November 2026 (22 item-level section indexes; Section 10 includes a partial spatial distribution-shift/MMD row; Section 12 includes partial spatial smoothing, spatial/space-time intensity (including bounded-window Voronoi estimation), graph-fused spatial regression, regional-dynamics (including beta-convergence, PPML gravity and Harris market potential), discrete Lloyd CVT, tensor-decomposition, nonlinear state-estimation (including ETKF), network reliability (including cascading overload) and Baarda data-snooping rows; cycle-slip screening is an additional component of the existing GNSS row)
+Snapshot: 15 November 2026 (22 item-level section indexes; Section 10 includes a partial spatial distribution-shift/MMD row; Section 12 includes partial spatial smoothing, spatial/space-time intensity (including bounded-window Voronoi estimation), graph-fused spatial regression, regional-dynamics (including beta-convergence, PPML gravity and Harris market potential), discrete Lloyd CVT, tensor-decomposition (including FFT-based t-SVD), nonlinear state-estimation (including ETKF), network reliability (including cascading overload) and Baarda data-snooping rows; cycle-slip screening is an additional component of the existing GNSS row)
 
 This dashboard counts the source-entry review labels in the 22 item-level section indexes. It is an inventory of review progress, not a claim that the entries have been technically verified.
 
