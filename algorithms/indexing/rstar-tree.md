@@ -23,6 +23,9 @@ for equal leaf depth, parent links, bounding rectangles, minimum occupancy and
 exactly-once record storage.
 
 It is not a disk-page implementation or a complete production R*-tree.
-Deletion and condensation, bulk loading, kNN, persistence and concurrency
-remain outside scope. Envelope query results for arbitrary geometries require
+Deletion uses condense-tree processing: underfilled nodes are detached and
+their remaining entries or subtrees are reinserted at their original levels;
+a one-child root is collapsed. Record IDs remain stable and deleted IDs are
+not reused. Bulk loading, kNN, disk-page management, persistence and
+concurrency remain outside scope. Envelope query results for arbitrary geometries require
 a subsequent exact predicate test.
