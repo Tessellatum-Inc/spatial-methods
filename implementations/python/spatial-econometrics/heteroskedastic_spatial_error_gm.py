@@ -93,16 +93,16 @@ def heteroskedastic_spatial_error_gm(
 
     v = matrix @ u
     w = matrix @ v
-    row_squared_norms = np.sum(matrix * matrix, axis=1)
+    column_squared_norms = np.sum(matrix * matrix, axis=0)
 
     gamma = np.array([
-        (v @ v - np.dot(row_squared_norms, u * u)) / n,
+        (v @ v - np.dot(column_squared_norms, u * u)) / n,
         (v @ u) / n,
     ], dtype=float)
     gamma_matrix = np.array([
         [
-            2.0 * (v @ w - np.dot(row_squared_norms, u * v)) / n,
-            -(w @ w - np.dot(row_squared_norms, v * v)) / n,
+            2.0 * (v @ w - np.dot(column_squared_norms, u * v)) / n,
+            -(w @ w - np.dot(column_squared_norms, v * v)) / n,
         ],
         [
             (v @ v + w @ u) / n,
