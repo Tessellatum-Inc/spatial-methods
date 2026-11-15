@@ -223,3 +223,50 @@ def test_cross_type_methods_reject_same_type_and_bad_controls():
         cross_nearest_neighbor_cdf(pts, marks, "A", "A", [1])
     with pytest.raises(ValueError):
         cross_j_function(pts, marks, (0, 0, 10, 10), "A", "B", [1], n_samples=0)
+
+
+def test_homogeneous_poisson_simulator_is_seeded_and_inside_window():
+    from point_patterns import simulate_homogeneous_poisson
+    a = simulate_homogeneous_poisson((0, 0, 10, 5), 0.4, seed=31)
+    b = simulate_homogeneous_poisson((0, 0, 10, 5), 0.4, seed=31)
+    assert a == b
+    assert all(0 <= x <= 10 and 0 <= y <= 5 for x, y in a)
+
+
+def test_homogeneous_poisson_zero_intensity_returns_empty_pattern():
+    from point_patterns import simulate_homogeneous_poisson
+    assert simulate_homogeneous_poisson((0, 0, 1, 1), 0, seed=1) == []
+
+
+def test_thomas_simulator_is_seeded_and_clips_to_target_window():
+    from point_patterns import simulate_thomas_process
+    a = simulate_thomas_process((0, 0, 10, 10), 0.08, 8, 0.5, seed=17)
+    b = simulate_thomas_process((0, 0, 10, 10), 0.08, 8, 0.5, seed=17)
+    assert a == b
+    assert all(0 <= x <= 10 and 0 <= y <= 10 for x, y in a)
+
+
+def test_thomas_simulator_zero_parent_intensity_returns_empty_pattern():
+    from point_patterns import simulate_thomas_process
+    assert simulate_thomas_process((0, 0, 1, 1), 0, 5, 0.2, seed=3) == []
+
+
+@pytest.mark.parametrize("args", [
+    ((0, 0, 1, 1), -1), ((0, 0, 1, 1), float("nan")),
+])
+def test_homogeneous_poisson_rejects_invalid_intensity(args):
+    from point_patterns import simulate_homogeneous_poisson
+    with pytest.raises(ValueError):
+        simulate_homogeneous_poisson(args[0], args[1], seed=1)
+
+
+@pytest.mark.parametrize("params", [
+    ( -1, 2, 1), (1, -2, 1), (1, 2, 0), (1, 2, 1, 0)
+])
+def test_thomas_rejects_invalid_parameters(params):
+    from point_patterns import simulate_thomas_process
+    with pytest.raises(ValueError):
+        if len(params) == 3:
+            simulate_thomas_process((0, 0, 1, 1), *params, seed=1)
+        else:
+            simulate_thomas_process((0, 0, 1, 1), *params[:3], seed=1, buffer_sigma=params[3])
