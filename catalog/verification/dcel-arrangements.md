@@ -5,7 +5,7 @@
 - Vertex deduplication by finite coordinate pair.
 - Directed half-edge creation and reciprocal twin pairing.
 - Shared boundary pairing for adjacent faces represented with opposite edge direction.
-- Input face boundary cycles with next/previous links.
+- Input face boundary cycles with next/previous links.\n- Exact-rational orientation and segment predicates for rejecting zero-area and self-intersecting input rings.
 - Angular outgoing-edge order and exterior twin-cycle linkage.
 - Explicit invariant checker for twin, next and previous reciprocity.
 
