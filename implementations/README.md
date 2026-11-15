@@ -127,7 +127,7 @@ Each implementation should state:
 
 ### Spatial statistics
 
-- [Multiple-testing corrections](python/multiple-testing/README.md): Bonferroni, Šidák, Holm, Hochberg, BH and BY adjusted p-values with 22 test cases covering order, ties, assumptions and invalid input.
+- [Multiple-testing corrections](python/multiple-testing/README.md): Bonferroni, Šidák, Holm, Hochberg, BH and BY adjusted p-values with 27 test cases covering order, ties, assumptions and invalid input.
 - [Spatial inequality and segregation](python/spatial-inequality/README.md): weighted Gini, Theil T/L, Shannon area entropy, two-group dissimilarity and isolation/interaction indices, with 22 test cases and explicit spatial-scope boundaries.
 - [Geographic distribution summaries](python/spatial-distribution-summaries/README.md): weighted mean and geometric median centers, standard distance and covariance-based standard deviational ellipse, with 18 tests and explicit orientation/coverage conventions.
 - [Empirical Bayes area-rate smoothing](python/empirical-bayes-rates/README.md): Marshall's global and caller-neighbourhood local moment shrinkage for Poisson rates, with 16 tests and explicit exposure and adjacency assumptions.
