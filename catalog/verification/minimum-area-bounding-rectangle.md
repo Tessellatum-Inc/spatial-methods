@@ -6,11 +6,11 @@ The minimum-area enclosing rectangle of a planar point set is a standard convex-
 
 ## Implemented scope
 
-The teaching baseline constructs a monotone-chain convex hull, tests each hull-edge orientation, projects all hull vertices onto the edge direction and its normal, and selects the smallest area rectangle. This is O(h²) after hull construction.
+Two implementations are provided. The transparent baseline constructs a monotone-chain convex hull and scans all hull vertices for each hull-edge orientation, costing O(h²). The four-support rotating-calipers implementation advances the extrema along the edge direction and its normal monotonically around the hull, costing O(h) after hull construction. Seeded tests compare the calipers area with the quadratic baseline across 100 random point clouds.
 
 ## Limitations
 
-This is not the optimal linear-time rotating-calipers rectangle algorithm. It uses floating-point projections and is intended as a transparent, testable baseline. It does not solve geodesic or ellipsoidal bounding problems.
+The calipers routine uses floating-point support comparisons and is not an exact-predicate construction. It is tested against the transparent baseline, but this is not a formal proof of numerical robustness for adversarial degeneracies. It does not solve geodesic or ellipsoidal bounding problems.
 
 ## Rights
 
