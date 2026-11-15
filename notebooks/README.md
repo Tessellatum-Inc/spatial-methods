@@ -22,7 +22,7 @@ Notebooks are used when changing values, inspecting intermediate calculations or
 - [Planar point-location lab](point-location-lab.ipynb): inspect x-event lines, open slabs, face transitions, holes and boundary queries using the tested static slab locator.
 - [Ear-clipping lab](ear-clipping-lab.ipynb): inspect a concave polygon, its triangle partition, triangle count and area invariant.
 
-- [Point-pattern second-order statistics and cluster detection lab](point-pattern-second-order-statistics-lab.ipynb): compare nearest-neighbour and K summaries, point-process models, quadrat CSR, circular Poisson scans and Besag–Newell fixed-k cluster detection.
+- [Point-pattern second-order statistics and cluster detection lab](point-pattern-second-order-statistics-lab.ipynb): compare nearest-neighbour and K summaries, point-process models, quadrat CSR, circular Poisson scans, Besag–Newell fixed-k cluster detection and Tango's global distance-decay test.
 
 ### Spatial indexing
 
