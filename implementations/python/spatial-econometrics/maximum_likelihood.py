@@ -80,6 +80,10 @@ def _golden_max(function, left, right, tolerance=1e-7, max_iter=160):
 
 def _fit(y, x, w, model, grid_size, tolerance):
     n = y.size
+    if isinstance(grid_size, bool) or not isinstance(grid_size, int) or grid_size < 21:
+        raise ValueError("grid_size must be an integer of at least 21")
+    if not np.isfinite(tolerance) or tolerance <= 0:
+        raise ValueError("tolerance must be positive and finite")
     wy = w @ y
     wx = w @ x
     bounds = _validate(y, x, w)[3]
@@ -107,8 +111,6 @@ def _fit(y, x, w, model, grid_size, tolerance):
             return -np.inf
         return float(logdet - (n / 2.0) * (log(2.0 * pi) + 1.0 + log(sigma2)))
 
-    if isinstance(grid_size, bool) or not isinstance(grid_size, int) or grid_size < 21:
-        raise ValueError("grid_size must be an integer of at least 21")
     grid = np.linspace(lower, upper, grid_size)
     scores = np.array([profile(float(value)) for value in grid])
     best = int(np.argmax(scores))
@@ -129,7 +131,6 @@ def _fit(y, x, w, model, grid_size, tolerance):
             parameter, likelihood = refined_parameter, refined_likelihood
         else:
             parameter, likelihood = float(grid[best]), float(scores[best])
-    a = np.eye(n) - parameter * w
     ay = y - parameter * wy
     transformed_x = x if model == "SAR" else x - parameter * wx
     coefficients = np.linalg.lstsq(transformed_x, ay, rcond=None)[0]
