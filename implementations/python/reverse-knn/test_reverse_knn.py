@@ -22,7 +22,11 @@ def test_ties_are_inclusive():
     assert reverse_k_nearest_neighbors([(-1,0),(1,0),(0,4)], [(0,0)], 1) == [[0,1,2]]
 
 def test_duplicate_records_remain_distinct():
-    assert reverse_k_nearest_neighbors([(0,0),(0,0),(5,0)], [(1,0)], 1) == [[0,1]]
+    # For k=1 each duplicate is beaten by its coincident peer; for k=2
+    # both duplicate records and the distant record qualify.
+    data = [(0,0),(0,0),(5,0)]
+    assert reverse_k_nearest_neighbors(data, [(1,0)], 1) == [[2]]
+    assert reverse_k_nearest_neighbors(data, [(1,0)], 2) == [[0,1,2]]
 
 def test_empty_inputs_and_large_k():
     assert reverse_k_nearest_neighbors([], [(0,0)], 1) == [[]]
