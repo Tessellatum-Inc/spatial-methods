@@ -51,13 +51,13 @@ def dis(first, second, *, preset="medium", finest_scale=0, patch_size=8,
     algorithm.setFinestScale(finest_scale)
     algorithm.setPatchSize(patch_size)
     algorithm.setPatchStride(patch_stride)
-    algorithm.setGradientDescentIterations(grad_descent_iterations)
+    algorithm.setGradientDescentIterations(gradient_descent_iterations)
     algorithm.setVariationalRefinementIterations(5 if variational_refinement else 0)
     flow=algorithm.calc(a,b,None)
     return {"u":flow[...,0],"v":flow[...,1],"valid":np.isfinite(flow).all(axis=2),
             "flow":flow,"method":"dis","parameters":{
                 "preset":preset,"finest_scale":finest_scale,"patch_size":patch_size,
-                "patch_stride":patch_stride,"gradient_descent_iterations":grad_descent_iterations,
+                "patch_stride":patch_stride,"gradient_descent_iterations":gradient_descent_iterations,
                 "variational_refinement":bool(variational_refinement)}}
 
 
