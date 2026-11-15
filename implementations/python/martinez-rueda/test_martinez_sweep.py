@@ -1,5 +1,5 @@
 import pytest
-from martinez_sweep import (sweep_split_segments, classify_boundary_fragments, fragment_area_contribution, boolean_overlay_rings)
+from martinez_sweep import (sweep_split_segments, classify_boundary_fragments, fragment_area_contribution, boolean_overlay_rings, _YIntervalStatus)
 
 def test_overlapping_rectangles_split_crossed_edges():
     a=[(0,0),(4,0),(4,3),(0,3)]; b=[(2,-1),(5,-1),(5,2),(2,2)]
@@ -139,3 +139,28 @@ def test_y_interval_sweep_status_prunes_x_overlapping_but_y_disjoint_segments():
     assert result["candidate_pairs_tested"]==0
     assert result["intersection_events"]==()
     assert len(result["split_segments"])==8
+
+def test_y_interval_treap_matches_brute_force_after_insertions_and_removals():
+    import random
+    rng=random.Random(901)
+    status=_YIntervalStatus()
+    intervals={}
+    for sid in range(250):
+        low=rng.uniform(-100,100)
+        high=low+rng.uniform(0.01,20)
+        intervals[sid]=(low,high)
+        status.insert(sid,low,high)
+    for _ in range(100):
+        low=rng.uniform(-100,100)
+        high=low+rng.uniform(0.01,20)
+        expected={sid for sid,(a,b) in intervals.items() if a<=high and b>=low}
+        assert set(status.overlaps(low,high))==expected
+    removed=set(rng.sample(list(intervals),80))
+    for sid in removed:
+        status.remove(sid)
+        intervals.pop(sid)
+    for _ in range(100):
+        low=rng.uniform(-100,100)
+        high=low+rng.uniform(0.01,20)
+        expected={sid for sid,(a,b) in intervals.items() if a<=high and b>=low}
+        assert set(status.overlaps(low,high))==expected
