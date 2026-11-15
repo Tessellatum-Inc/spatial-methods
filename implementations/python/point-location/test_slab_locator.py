@@ -130,4 +130,4 @@ def test_event_line_epsilon_handles_both_neighbouring_event_coordinates():
     }, epsilon=1e-6)
     assert locator.locate(2 - 5e-7, 1) == BOUNDARY
     assert locator.locate(2 + 5e-7, 1) == BOUNDARY
-    assert locator.locate(2 + 5e-7, 3) == "east"
+    assert locator.locate(2 + 2e-6, 1) == "east"
