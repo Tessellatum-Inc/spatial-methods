@@ -1402,3 +1402,52 @@ def test_ramsey_reset_rejects_invalid_and_unidentified_models():
         ramsey_reset_test(bad, x)
     with pytest.raises(ValueError, match="positive"):
         ramsey_reset_test(1 + 2 * x[:, 1], x)
+
+
+def test_spatial_parameter_profile_interval_inverts_sar_likelihood_ratio():
+    from spatial_mle_inference import spatial_parameter_profile_interval, _profile_log_likelihood
+    rng = np.random.default_rng(55101)
+    n = 70
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    y = np.linalg.solve(np.eye(n) - 0.3 * w,
+                        x @ np.array([1.0, 0.65]) + rng.normal(scale=0.2, size=n))
+    result = spatial_parameter_profile_interval(y, x, w, model="SAR", grid_size=161)
+    assert result.model == "SAR"
+    assert result.lower < result.estimate < result.upper
+    assert not result.lower_truncated and not result.upper_truncated
+    for endpoint in (result.lower, result.upper):
+        ll = _profile_log_likelihood(y, x, w, endpoint, "SAR")
+        assert 2.0 * (result.log_likelihood_maximum - ll) == pytest.approx(
+            result.likelihood_ratio_cutoff, abs=2e-5
+        )
+
+
+def test_spatial_parameter_profile_interval_handles_sem():
+    from spatial_mle_inference import spatial_parameter_profile_interval
+    rng = np.random.default_rng(55102)
+    n = 65
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    innovation = rng.normal(scale=0.2, size=n)
+    error = np.linalg.solve(np.eye(n) - 0.25 * w, innovation)
+    y = x @ np.array([0.8, -0.4]) + error
+    result = spatial_parameter_profile_interval(y, x, w, model="SEM", grid_size=161)
+    assert result.model == "SEM"
+    assert result.lower <= result.estimate <= result.upper
+    assert result.lower < result.upper
+    assert result.likelihood_ratio_cutoff == pytest.approx(3.841458820694124)
+
+
+def test_spatial_parameter_profile_interval_rejects_invalid_options():
+    from spatial_mle_inference import spatial_parameter_profile_interval
+    n = 12
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), np.arange(n, dtype=float)])
+    y = np.sin(np.arange(n, dtype=float))
+    with pytest.raises(ValueError, match="model"):
+        spatial_parameter_profile_interval(y, x, w, model="SDM")
+    with pytest.raises(ValueError, match="cutoff"):
+        spatial_parameter_profile_interval(y, x, w, likelihood_ratio_cutoff=0)
+    with pytest.raises(ValueError, match="max_iterations"):
+        spatial_parameter_profile_interval(y, x, w, max_iterations=0)
