@@ -64,8 +64,8 @@ class DCEL:
                     pts.append((x,y))
                 if len(pts)<4 or pts[0]!=pts[-1]: raise ValueError("Rings must be closed and contain at least three edges")
                 core=pts[:-1]
-                if len(set(core))<3 or len(set(zip(core,core[1:]+core[:1])))!=len(core):
-                    raise ValueError("Rings must not repeat vertices or zero-length edges")
+                if len(set(core)) != len(core):
+                    raise ValueError("Rings must not repeat vertices")
                 if any(core[i]==core[(i+1)%len(core)] for i in range(len(core))):
                     raise ValueError("Zero-length edges are not allowed")
                 start=len(d.halfedges)
