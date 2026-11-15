@@ -185,12 +185,15 @@ def test_spatial_error_mle_recovers_synthetic_sem_parameters():
 
 def test_spatial_mle_rejects_invalid_inputs_and_grid_settings():
     from maximum_likelihood import spatial_lag_mle, spatial_error_mle
-    x = np.column_stack([np.ones(4), np.arange(4, dtype=float)])
+    x = np.column_stack([np.ones(5), np.arange(5, dtype=float)])
+    w = np.zeros((5, 5))
+    for i in range(4):
+        w[i, i + 1] = w[i + 1, i] = 1.0
     with pytest.raises(ValueError, match="at least five"):
-        spatial_lag_mle([1., 2., 3., 4.], x, CHAIN)
+        spatial_lag_mle([1., 2., 3., 4.], np.ones((4, 1)), CHAIN)
     with pytest.raises(ValueError, match="grid_size"):
-        spatial_error_mle([1., 2., 3., 4.], x, CHAIN, grid_size=5)
+        spatial_error_mle([1., 2., 3., 4., 5.], x, w, grid_size=5)
     with pytest.raises(ValueError, match="full column rank"):
-        spatial_lag_mle([1., 2., 3., 4.], np.ones((4, 2)), CHAIN)
+        spatial_lag_mle([1., 2., 3., 4., 5.], np.ones((5, 2)), w)
     with pytest.raises(ValueError, match="finite"):
-        spatial_error_mle([1., 2., float("nan"), 4.], x, CHAIN)
+        spatial_error_mle([1., 2., float("nan"), 4., 5.], x, w)
