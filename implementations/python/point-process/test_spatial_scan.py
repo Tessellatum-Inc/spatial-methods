@@ -291,3 +291,96 @@ def test_ellipse_ratio_one_matches_circular_scan_candidate_family():
         circular["log_likelihood_ratio"]
     )
     assert set(elliptical["member_indices"]) == set(circular["member_indices"])
+
+
+
+def test_flexible_scan_finds_connected_irregular_zone():
+    from spatial_scan import flexible_poisson_scan
+    coords = np.array([[0., 0.], [1., 0.], [2., 0.], [3., 0.], [4., 0.]])
+    adjacency = np.zeros((5, 5), dtype=bool)
+    for i in range(4):
+        adjacency[i, i + 1] = adjacency[i + 1, i] = True
+    cases = np.array([8, 8, 8, 1, 1])
+    population = np.full(5, 100.)
+    result = flexible_poisson_scan(
+        coords, cases, population, adjacency, max_cluster_size=3,
+        max_population_fraction=0.8, min_cases=2,
+    )
+    assert result["log_likelihood_ratio"] > 0
+    assert result["n_areas"] <= 3
+    members = set(result["member_indices"])
+    assert members
+    assert all(any(adjacency[i, j] for j in members) for i in members if i != result["root_index"])
+
+
+def test_flexible_scan_never_returns_a_disconnected_zone():
+    from spatial_scan import flexible_poisson_scan
+    coords = np.array([[0., 0.], [1., 0.], [2., 0.], [3., 0.]])
+    adjacency = np.zeros((4, 4), dtype=bool)
+    adjacency[0, 1] = adjacency[1, 0] = True
+    adjacency[2, 3] = adjacency[3, 2] = True
+    cases = np.array([0, 8, 8, 0])
+    population = np.full(4, 100.)
+    result = flexible_poisson_scan(
+        coords, cases, population, adjacency, max_cluster_size=3,
+        max_population_fraction=0.75, min_cases=2,
+    )
+    assert set(result["member_indices"]) in ({1, 2}, {0, 1, 2}, {1, 2, 3}, set())
+    if result["member_indices"]:
+        members = set(result["member_indices"])
+        reached = {next(iter(members))}
+        while True:
+            expanded = reached | {
+                j for i in reached for j in members if adjacency[i, j]
+            }
+            if expanded == reached:
+                break
+            reached = expanded
+        assert reached == members
+
+
+def test_flexible_scan_respects_candidate_size_and_is_reproducible():
+    from spatial_scan import flexible_poisson_scan, monte_carlo_flexible_poisson_scan
+    coords = np.array([[0., 0.], [1., 0.], [2., 0.], [3., 0.], [4., 0.]])
+    adjacency = np.zeros((5, 5), dtype=bool)
+    for i in range(4):
+        adjacency[i, i + 1] = adjacency[i + 1, i] = True
+    cases = np.array([8, 8, 8, 1, 1])
+    population = np.full(5, 100.)
+    result = flexible_poisson_scan(
+        coords, cases, population, adjacency, max_cluster_size=2,
+        max_population_fraction=0.8,
+    )
+    assert result["n_areas"] <= 2
+    kwargs = dict(n_simulations=19, max_cluster_size=3,
+                  max_population_fraction=0.8, rng=17)
+    a = monte_carlo_flexible_poisson_scan(coords, cases, population, adjacency, **kwargs)
+    b = monte_carlo_flexible_poisson_scan(coords, cases, population, adjacency, **kwargs)
+    assert a["p_value"] == b["p_value"]
+    np.testing.assert_array_equal(a["simulated_maxima"], b["simulated_maxima"])
+    assert 1 / 20 <= a["p_value"] <= 1
+
+
+@pytest.mark.parametrize("bad_graph", [
+    np.zeros((3, 3)),
+    np.array([[0., 1.], [0., 0.]]),
+    np.array([[1., 0.], [0., 0.]]),
+    np.array([[0., np.nan], [np.nan, 0.]]),
+])
+def test_flexible_scan_rejects_invalid_adjacency(bad_graph):
+    from spatial_scan import flexible_poisson_scan
+    coords = np.array([[0., 0.], [1., 1.]])
+    with pytest.raises(ValueError):
+        flexible_poisson_scan(coords, [1, 0], [10, 10], bad_graph)
+
+
+def test_flexible_scan_rejects_invalid_size_and_simulation_controls():
+    from spatial_scan import flexible_poisson_scan, monte_carlo_flexible_poisson_scan
+    coords = np.array([[0., 0.], [1., 1.]])
+    graph = np.array([[0, 1], [1, 0]])
+    with pytest.raises(ValueError):
+        flexible_poisson_scan(coords, [1, 0], [10, 10], graph, max_cluster_size=16)
+    with pytest.raises(ValueError):
+        monte_carlo_flexible_poisson_scan(
+            coords, [1, 0], [10, 10], graph, n_simulations=0
+        )
