@@ -77,3 +77,47 @@ def zevenbergen_thorne_slope_aspect(elevation: Sequence[Sequence[float]] | np.nd
     slope_pct[target] = np.where(valid, gradient * 100.0, np.nan)
     aspect_deg[target] = np.where(valid, aspect, np.nan)
     return {"slope_degrees": slope_deg, "slope_percent": slope_pct, "aspect_degrees": aspect_deg}
+
+
+def terrain_curvature(elevation: Sequence[Sequence[float]] | np.ndarray, *, cell_size_x: float = 1.0, cell_size_y: float = 1.0, z_factor: float = 1.0) -> dict[str, np.ndarray]:
+    """Estimate signed profile and plan curvature from a 3x3 DEM stencil.
+
+    Curvatures use central first and second differences in projected planar
+    coordinates. The sign convention is negative for a convex-down profile
+    (for example z=x**2 along an uphill profile); flat cells have undefined
+    profile and plan curvature. Borders and any 3x3 NoData window are NaN.
+    Returned curvature has inverse-horizontal-unit units.
+    """
+    dem = np.asarray(elevation, dtype=float)
+    if dem.ndim != 2 or dem.size == 0:
+        raise ValueError("elevation must be a non-empty 2D array")
+    if not np.isfinite([cell_size_x, cell_size_y, z_factor]).all():
+        raise ValueError("cell sizes and z_factor must be finite")
+    if cell_size_x <= 0 or cell_size_y <= 0 or z_factor <= 0:
+        raise ValueError("cell sizes and z_factor must be positive")
+    shape = dem.shape
+    profile = np.full(shape, np.nan)
+    plan = np.full(shape, np.nan)
+    if shape[0] < 3 or shape[1] < 3:
+        return {"profile_curvature": profile, "plan_curvature": plan}
+    a,b,c = dem[:-2,:-2],dem[:-2,1:-1],dem[:-2,2:]
+    d,e,f = dem[1:-1,:-2],dem[1:-1,1:-1],dem[1:-1,2:]
+    g,h,i = dem[2:,:-2],dem[2:,1:-1],dem[2:,2:]
+    valid = np.isfinite(a)&np.isfinite(b)&np.isfinite(c)&np.isfinite(d)&np.isfinite(e)&np.isfinite(f)&np.isfinite(g)&np.isfinite(h)&np.isfinite(i)
+    dx,dy = float(cell_size_x),float(cell_size_y)
+    zx = (f-d)/(2.0*dx)*z_factor
+    zy = (b-h)/(2.0*dy)*z_factor
+    zxx = (f-2.0*e+d)/(dx*dx)*z_factor
+    zyy = (b-2.0*e+h)/(dy*dy)*z_factor
+    # Raster rows increase southward; this corner combination is north/east positive.
+    zxy = (c-a-i+g)/(4.0*dx*dy)*z_factor
+    p2 = zx*zx + zy*zy
+    nonflat = valid & (p2 > np.finfo(float).eps)
+    numerator_profile = zxx*zx*zx + 2.0*zxy*zx*zy + zyy*zy*zy
+    numerator_plan = zxx*zy*zy - 2.0*zxy*zx*zy + zyy*zx*zx
+    profile_inner = -numerator_profile / (p2 * np.power(1.0+p2, 1.5))
+    plan_inner = -numerator_plan / (p2 * np.sqrt(1.0+p2))
+    target = (slice(1,-1),slice(1,-1))
+    profile[target] = np.where(nonflat, profile_inner, np.nan)
+    plan[target] = np.where(nonflat, plan_inner, np.nan)
+    return {"profile_curvature": profile, "plan_curvature": plan}
