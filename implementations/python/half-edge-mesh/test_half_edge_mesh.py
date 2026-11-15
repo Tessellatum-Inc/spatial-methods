@@ -41,6 +41,7 @@ def test_closed_tetrahedral_surface_has_no_boundary():
     ([(0, 1, 2), (0, 1, 3)], "inconsistent winding"),
     ([(0, 1, 2), (1, 0, 3), (0, 1, 4)], "more than two"),
     ([(0, 1, 2), (0, 1, 2)], "duplicate geometric"),
+    ([(0, 1, 2), (0, 2, 1)], "duplicate geometric"),
 ])
 def test_invalid_topology_is_rejected(faces, message):
     with pytest.raises(ValueError, match=message):
