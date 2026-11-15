@@ -47,3 +47,5 @@ These records are part of the broader [algorithm collection](../README.md). The 
 - [Quad-edge topology](quad-edge.md) — Guibas–Stolfi four-dart representation and core topological operators.
 
 - [Weiler–Atherton polygon intersection](weiler-atherton.md) — linked-boundary traversal for simple concave rings and disconnected intersection components.
+
+- [Martinez–Rueda sweep-line front end](martinez-rueda.md) — initial event-queue, segment-intersection and splitting stage; full Boolean classification and stitching remain outstanding.
