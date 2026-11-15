@@ -66,3 +66,127 @@ def spatial_impacts(
     except np.linalg.LinAlgError as exc:
         raise ValueError("I - rho W must be nonsingular") from exc
     return tuple(impacts)
+
+
+
+@dataclass(frozen=True)
+class ImpactInterval:
+    estimate: float
+    standard_error: float
+    lower: float
+    upper: float
+
+
+@dataclass(frozen=True)
+class ImpactUncertainty:
+    direct: ImpactInterval
+    indirect: ImpactInterval
+    total: ImpactInterval
+    accepted_draws: int
+    rejected_draws: int
+
+
+def spatial_impact_uncertainty(
+    weights: Sequence[Sequence[float]],
+    rho: float,
+    beta: Sequence[float],
+    covariance: Sequence[Sequence[float]],
+    gamma: Sequence[float] | None = None,
+    *,
+    draws: int = 5000,
+    confidence: float = 0.95,
+    seed: int | None = None,
+    condition_limit: float = 1e10,
+    minimum_acceptance: float = 0.5,
+) -> tuple[ImpactUncertainty, ...]:
+    """Parametric Monte Carlo intervals for SAR/SDM direct, indirect and total impacts.
+
+    The joint parameter vector is ordered [rho, beta...] when gamma is None,
+    and [rho, beta..., gamma...] otherwise. Covariance must use that exact
+    ordering. Draws producing an ill-conditioned I-rho W are rejected.
+    """
+    w = np.asarray(weights, dtype=float)
+    b = np.asarray(beta, dtype=float)
+    if w.ndim != 2 or w.shape[0] != w.shape[1] or w.shape[0] < 2:
+        raise ValueError("weights must be a square matrix with at least two units")
+    if b.ndim != 1 or b.size == 0:
+        raise ValueError("beta must be a nonempty one-dimensional vector")
+    if gamma is None:
+        g = np.zeros_like(b)
+        mean = np.concatenate([[float(rho)], b])
+    else:
+        g = np.asarray(gamma, dtype=float)
+        if g.shape != b.shape:
+            raise ValueError("gamma must have one value per beta coefficient")
+        mean = np.concatenate([[float(rho)], b, g])
+    cov = np.asarray(covariance, dtype=float)
+    if cov.shape != (mean.size, mean.size):
+        raise ValueError("covariance shape must match [rho, beta..., gamma...]")
+    if not (np.all(np.isfinite(w)) and np.all(np.isfinite(mean))
+            and np.all(np.isfinite(cov))):
+        raise ValueError("weights, parameters and covariance must be finite")
+    if not np.allclose(w, w.T, atol=1e-10, rtol=1e-10):
+        raise ValueError("weights must be symmetric for this uncertainty routine")
+    if not np.allclose(cov, cov.T, atol=1e-10, rtol=1e-10):
+        raise ValueError("covariance must be symmetric")
+    eigenvalues = np.linalg.eigvalsh((cov + cov.T) / 2.0)
+    if eigenvalues.min() < -1e-10 * max(1.0, float(np.max(np.abs(eigenvalues)))):
+        raise ValueError("covariance must be positive semidefinite")
+    if isinstance(draws, bool) or not isinstance(draws, int) or draws < 100:
+        raise ValueError("draws must be an integer of at least 100")
+    if not np.isfinite(confidence) or not 0 < confidence < 1:
+        raise ValueError("confidence must be strictly between zero and one")
+    if not np.isfinite(condition_limit) or condition_limit <= 1:
+        raise ValueError("condition_limit must be finite and greater than one")
+    if not np.isfinite(minimum_acceptance) or not 0 < minimum_acceptance <= 1:
+        raise ValueError("minimum_acceptance must be in (0, 1]")
+
+    point_impacts = spatial_impacts(w, rho, b, g)
+    rng = np.random.default_rng(seed)
+    samples = rng.multivariate_normal(mean, cov, size=draws, check_valid="raise")
+    values = [[[], [], []] for _ in range(b.size)]
+    rejected = 0
+    identity = np.eye(w.shape[0])
+    for sample in samples:
+        sampled_rho = float(sample[0])
+        system = identity - sampled_rho * w
+        try:
+            if not np.isfinite(np.linalg.cond(system)) or np.linalg.cond(system) > condition_limit:
+                rejected += 1
+                continue
+            sampled_beta = sample[1:1 + b.size]
+            sampled_gamma = (np.zeros_like(b) if gamma is None
+                             else sample[1 + b.size:1 + 2 * b.size])
+            sample_impacts = spatial_impacts(w, sampled_rho, sampled_beta, sampled_gamma)
+        except (ValueError, np.linalg.LinAlgError):
+            rejected += 1
+            continue
+        for index, impact in enumerate(sample_impacts):
+            values[index][0].append(impact.direct)
+            values[index][1].append(impact.indirect)
+            values[index][2].append(impact.total)
+
+    accepted = draws - rejected
+    if accepted < int(np.ceil(draws * minimum_acceptance)):
+        raise ValueError("too few valid parameter draws; inspect covariance and spatial-parameter support")
+    tail = (1.0 - confidence) / 2.0
+    results = []
+    for index, point in enumerate(point_impacts):
+        intervals = []
+        for component, estimate in zip(values[index],
+                                       (point.direct, point.indirect, point.total)):
+            array = np.asarray(component, dtype=float)
+            intervals.append(ImpactInterval(
+                estimate=float(estimate),
+                standard_error=float(np.std(array, ddof=1)),
+                lower=float(np.quantile(array, tail)),
+                upper=float(np.quantile(array, 1.0 - tail)),
+            ))
+        results.append(ImpactUncertainty(
+            direct=intervals[0],
+            indirect=intervals[1],
+            total=intervals[2],
+            accepted_draws=accepted,
+            rejected_draws=rejected,
+        ))
+    return tuple(results)
