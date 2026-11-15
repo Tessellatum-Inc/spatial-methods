@@ -268,7 +268,8 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
     crossings.sort(key=lambda e:(e.point[0],e.point[1],e.segment_ids))
     events.sort(key=lambda e:(e.point[0],e.point[1],0 if e.kind=="left" else 1))
     return {"segments":tuple(segments),"events":tuple(events),
-            "intersection_events":tuple(crossings),"split_segments":tuple(fragments),\n            "candidate_pairs_tested":candidate_pairs}
+            "intersection_events":tuple(crossings),"split_segments":tuple(fragments),
+            "candidate_pairs_tested":candidate_pairs}
 
 def classify_boundary_fragments(polygons, *, operation='intersection', epsilon=1e-10):
     """Select directed fragments for two polygons, each with one shell and optional holes.
