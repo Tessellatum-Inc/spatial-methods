@@ -35,9 +35,13 @@ def _intersection(s1,s2,eps):
     den=r[0]*q[1]-r[1]*q[0]; ca=(c[0]-a[0],c[1]-a[1])
     if abs(den)<=eps:
         if abs(ca[0]*r[1]-ca[1]*r[0])<=eps:
-            overlap=(max(min(a[0],b[0]),min(c[0],d[0])) <= min(max(a[0],b[0]),max(c[0],d[0]))+eps and
-                     max(min(a[1],b[1]),min(c[1],d[1])) <= min(max(a[1],b[1]),max(c[1],d[1]))+eps)
-            if overlap: raise NotImplementedError("collinear segment overlap is unsupported")
+            # A single shared endpoint is supported; reject only positive-length overlap.
+            if abs(r[0]) >= abs(r[1]):
+                overlap_length=min(max(a[0],b[0]),max(c[0],d[0]))-max(min(a[0],b[0]),min(c[0],d[0]))
+            else:
+                overlap_length=min(max(a[1],b[1]),max(c[1],d[1]))-max(min(a[1],b[1]),min(c[1],d[1]))
+            if overlap_length > eps:
+                raise NotImplementedError("collinear segment overlap is unsupported")
         return None
     t=(ca[0]*q[1]-ca[1]*q[0])/den
     u=(ca[0]*r[1]-ca[1]*r[0])/den
