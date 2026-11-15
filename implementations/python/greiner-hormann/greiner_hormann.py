@@ -46,8 +46,8 @@ def _prepare(points: Sequence[Point], name: str, eps: float) -> list[Point]:
     if len(ring) > 1 and hypot(ring[0][0] - ring[-1][0],
                                ring[0][1] - ring[-1][1]) <= eps:
         ring.pop()
-    if len(ring) < 3 or abs(_area(ring)) <= eps:
-        raise ValueError(f"{name} must have at least three vertices and non-zero area")
+    if len(ring) < 3:
+        raise ValueError(f"{name} must have at least three vertices")
     if len(set(ring)) != len(ring):
         raise ValueError(f"{name} must not repeat non-consecutive vertices")
     # Reject self-crossing rings; this implementation assumes simple polygons.
@@ -60,17 +60,28 @@ def _prepare(points: Sequence[Point], name: str, eps: float) -> list[Point]:
             c, d = ring[j], ring[(j + 1) % n]
             if _segments_intersect(a, b, c, d, eps, include_touch=True):
                 raise ValueError(f"{name} must be a simple ring")
+    if abs(_area(ring)) <= eps:
+        raise ValueError(f"{name} must have non-zero area")
     return ring if _area(ring) > 0 else list(reversed(ring))
+
+
+def _on_segment(a: Point, b: Point, p: Point, eps: float) -> bool:
+    return (min(a[0], b[0]) - eps <= p[0] <= max(a[0], b[0]) + eps
+            and min(a[1], b[1]) - eps <= p[1] <= max(a[1], b[1]) + eps)
 
 
 def _segments_intersect(a: Point, b: Point, c: Point, d: Point,
                         eps: float, include_touch: bool = False) -> bool:
-    ab_c, ab_d = _cross(a, b, c), _cross(a, b, d)
-    cd_a, cd_b = _cross(c, d, a), _cross(c, d, b)
-    if include_touch:
-        return (ab_c * ab_d <= eps and cd_a * cd_b <= eps)
-    return (ab_c > eps and ab_d < -eps or ab_c < -eps and ab_d > eps) and (
-        cd_a > eps and cd_b < -eps or cd_a < -eps and cd_b > eps)
+    o1, o2 = _cross(a, b, c), _cross(a, b, d)
+    o3, o4 = _cross(c, d, a), _cross(c, d, b)
+    proper = ((o1 > eps and o2 < -eps) or (o1 < -eps and o2 > eps)) and (
+        (o3 > eps and o4 < -eps) or (o3 < -eps and o4 > eps))
+    if proper or not include_touch:
+        return proper
+    return ((abs(o1) <= eps and _on_segment(a, b, c, eps))
+            or (abs(o2) <= eps and _on_segment(a, b, d, eps))
+            or (abs(o3) <= eps and _on_segment(c, d, a, eps))
+            or (abs(o4) <= eps and _on_segment(c, d, b, eps))
 
 
 def _inside(point: Point, ring: Sequence[Point]) -> bool:

@@ -13,7 +13,8 @@ def test_overlapping_rectangles():
     result = greiner_hormann_intersection(a, b)
     assert len(result) == 1
     assert total_area(result) == pytest.approx(12.0)
-    assert result[0] == [(2.0, 0.0), (5.0, 0.0), (5.0, 4.0), (2.0, 4.0)]
+    expected = [(2.0, 0.0), (5.0, 0.0), (5.0, 4.0), (2.0, 4.0)]
+    assert any(result[0] == expected[i:] + expected[:i] for i in range(len(expected)))
 
 
 def test_concave_subject_can_produce_disconnected_intersection():
