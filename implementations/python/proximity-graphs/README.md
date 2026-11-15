@@ -66,3 +66,8 @@ complete-graph Kruskal reference; every result is checked for tree structure
 (connectivity, acyclicity and n−1 edges), not only total length. The indexed
 Yao implementation is also compared edge-for-edge with the quadratic
 reference on tie-heavy lattice inputs and multiple cone orientations.
+
+
+## Indexed Delaunay beta-skeleton
+
+`delaunay_filtered_beta_skeleton` narrows candidate edges to a planar Delaunay triangulation, then uses a cKDTree radius query to enumerate only possible blockers in one of the two defining disks. Each candidate is still checked against both disks using the same strict-interior tolerance as the all-pairs reference. Seeded differential tests compare five beta values across general-position clouds up to 75 sites. This is expected to reduce blocker work on well-distributed data, but worst-case complexity remains quadratic; it is not the specialised optimal beta-skeleton algorithm. Qhull's choice among cocircular triangulations can omit boundary-tie candidates.
