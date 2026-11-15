@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from math import isfinite
+from numbers import Integral
 from typing import Sequence
 
 # ESRI D8 powers-of-two codes; rows increase southward.
@@ -26,7 +27,7 @@ def height_above_nearest_drainage(
     This computes HAND for an already conditioned D8 network; it does not
     extract streams, fill depressions or resolve flats.
     """
-    if not elevation or not elevation[0]:
+    if len(elevation) == 0 or len(elevation[0]) == 0:
         raise ValueError("elevation must contain at least one row and column")
     rows, cols = len(elevation), len(elevation[0])
     if any(len(row) != cols for row in elevation):
@@ -69,8 +70,9 @@ def height_above_nearest_drainage(
                     raise ValueError("NoData cells must have None direction codes")
                 continue
             code = directions[r][c]
-            if isinstance(code, bool) or not isinstance(code, int):
+            if isinstance(code, bool) or not isinstance(code, Integral):
                 raise ValueError("valid cells need integer D8 direction codes")
+            code = int(code)
             if code not in (0, *_DIRECTIONS):
                 raise ValueError("unsupported D8 direction code")
             if code == 0 or streams[r][c]:
