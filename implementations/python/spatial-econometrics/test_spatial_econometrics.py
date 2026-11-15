@@ -937,3 +937,21 @@ def test_heteroskedastic_spatial_error_gm_rejects_invalid_inputs_and_bounds():
                                           13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
                                           23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
                                           33, 34, 35, 36, 37, 38, 39, float("nan")], w)
+
+
+def test_heteroskedastic_spatial_error_gm_expansion_matches_original_zero_diagonal_moments():
+    from heteroskedastic_spatial_error_gm import heteroskedastic_spatial_error_gm
+    rng = np.random.default_rng(2719)
+    n = 90
+    w = _row_standardised_chain(n)
+    residual_predictor = rng.normal(size=n) * (0.5 + np.abs(rng.normal(size=n)))
+    fit = heteroskedastic_spatial_error_gm(residual_predictor, w)
+    innovation = residual_predictor - fit.lambda_ * (w @ residual_predictor)
+    spatial_innovation = w @ innovation
+    row_squared_norms = np.sum(w * w, axis=1)
+    direct = np.array([
+        (spatial_innovation @ spatial_innovation
+         - np.dot(row_squared_norms, innovation * innovation)) / n,
+        (spatial_innovation @ innovation) / n,
+    ])
+    np.testing.assert_allclose(fit.moment_residuals, direct, atol=1e-12)
