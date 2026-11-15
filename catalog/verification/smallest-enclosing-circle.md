@@ -10,7 +10,13 @@ The teaching package implements a randomized iterative incremental construction 
 
 ## Limitations
 
-The implementation uses floating-point containment tolerance and a local seeded random permutation. It is intended for modest teaching inputs, not a robust exact-arithmetic library or adversarially large data. Coordinates must be projected planar coordinates.
+The implementation uses a local seeded random permutation, iterative nested boundary constraints, a local-coordinate circumcircle formula and ULP-scaled containment tolerance. It is intended for teaching, not a robust exact-arithmetic library. Coordinates must be projected planar coordinates.
+
+## Differential and stress tests
+
+- 250 seeded random point sets (up to 10 points) compared against an independent oracle that enumerates singleton, diameter and circumcircle candidates.
+- 5,000-point containment stress test to exercise the iterative implementation without recursion-depth dependence.
+- Equilateral-triangle fixtures translated to large coordinate offsets and scaled from 1e-9 to unit size, checking circumcentre and radius stability within representable floating-point precision.
 
 ## Rights
 

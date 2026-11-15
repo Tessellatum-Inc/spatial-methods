@@ -5,7 +5,7 @@ Dependency-free teaching implementations for planar point sets and ordered polyl
 - Directed and symmetric Hausdorff distance for finite point sets.
 - Discrete Fréchet distance for ordered vertex sequences, using an O(mn)-time, O(n)-space dynamic program.
 - Continuous Fréchet decision via Alt–Godau free-space reachability, with distance approximation by bisection to an absolute tolerance.
-- Smallest enclosing circle using randomized iterative incremental construction with a reproducible local seed.
+- Smallest enclosing circle using randomized iterative incremental construction with a reproducible local seed, local-frame circumcircle predicates and ULP-scaled containment checks.
 - Convex-hull diameter using a rotating-calipers antipodal-pair sweep.
 - Approximate polygon pole of inaccessibility (Polylabel-style best-first subdivision), supporting holes and an explicit distance precision.
 - Approximate largest empty circle for point sites, with its centre constrained to the sites' convex hull and a Lipschitz branch-and-bound error bound.
