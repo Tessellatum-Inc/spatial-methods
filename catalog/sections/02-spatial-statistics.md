@@ -23,9 +23,9 @@ The source groups together descriptive statistics, inferential procedures, point
 
 | Topic | Coverage |
 |---|---|
-| Spatial lag (SAR/SLM), spatial error (SEM), Durbin (SDM/SLX), SAC/SARAR and general nested models | Model family and interpretation are documented; full estimation is not implemented in this repository. |
-| Classic LM-lag and LM-error specification diagnostics | Tested dense OLS-based reference implementation; robust LM variants and joint tests remain open. |
-| Direct, indirect and total impacts | Tested dense SAR/SDM impact-matrix decomposition; parameter estimation and uncertainty propagation remain open. |
+| Spatial lag (SAR/SLM), spatial error (SEM), Durbin (SDM/SLX), SDEM, SAC/SARAR and general nested models | Partial estimation coverage: SAR, SEM, SDM and SARAR/SAC concentrated ML; spatial lag and Durbin 2SLS; SLX OLS; SDEM concentrated ML. CAR, SDEM/SLX robust inference, general nested models and broader panel variants remain open. |
+| Classic and robust LM-lag / LM-error specification diagnostics | Tested dense OLS-based reference implementation including Bera–Yoon robust score variants; joint tests and finite-sample refinements remain open. |
+| Direct, indirect and total impacts | Tested dense SAR/SDM impact-matrix decomposition and parametric Monte Carlo propagation of a supplied joint coefficient covariance; covariance estimation and broader inferential diagnostics remain open. |
 
 ## First audited clustering lesson
 
