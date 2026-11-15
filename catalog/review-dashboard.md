@@ -1,6 +1,6 @@
 # Source review dashboard
 
-Snapshot: 15 November 2026 (22 item-level section indexes; Section 4 now includes a first-principles Felzenszwalb–Huttenlocher distance transform and a bounded power-law MFD routing implementation; Section 10 includes a partial spatial distribution-shift/MMD row; Section 14 includes a bounded circular Poisson scan statistic; Section 18 includes Pareto multi-criteria shortest paths; Section 12 includes partial spatial smoothing, spatial/space-time intensity (including bounded-window Voronoi estimation), graph-fused spatial regression, regional-dynamics (including beta-convergence, PPML gravity and Harris market potential), discrete Lloyd CVT, tensor-decomposition (including FFT-based t-SVD), nonlinear state-estimation (including ETKF and FFBSi particle smoothing), network reliability (including cascading overload) and Baarda data-snooping rows; cycle-slip screening is an additional component of the existing GNSS row)
+Snapshot: 15 November 2026 (22 item-level section indexes; Section 4 now includes a first-principles Felzenszwalb–Huttenlocher distance transform and a bounded power-law MFD routing implementation; Section 10 includes a partial spatial distribution-shift/MMD row; Section 14 includes a bounded circular Poisson scan statistic; Section 18 includes Pareto multi-criteria shortest paths; Section 22 includes compositional closure and log-ratio geometry; Section 12 includes partial spatial smoothing, spatial/space-time intensity (including bounded-window Voronoi estimation), graph-fused spatial regression, regional-dynamics (including beta-convergence, PPML gravity and Harris market potential), discrete Lloyd CVT, tensor-decomposition (including FFT-based t-SVD), nonlinear state-estimation (including ETKF and FFBSi particle smoothing), network reliability (including cascading overload) and Baarda data-snooping rows; cycle-slip screening is an additional component of the existing GNSS row)
 
 This dashboard counts the source-entry review labels in the 22 item-level section indexes. It is an inventory of review progress, not a claim that the entries have been technically verified.
 
@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 694 | Rows with a source-entry review status in the section indexes |
-| Partial | 70 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 624 | The source wording is preserved, but no independent review is recorded |
+| Partial | 71 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 623 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -40,7 +40,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 19 — African applications, addressing and finance | 32 | 0 | 32 |
 | 20 — Indices, microwave, events and information | 25 | 2 | 23 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 2 | 24 |
-| 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 2 | 26 |
+| 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 3 | 25 |
 | **Total** | **694** | **68** | **626** |
 
 ## How to interpret this

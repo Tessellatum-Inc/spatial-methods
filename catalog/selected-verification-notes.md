@@ -129,3 +129,14 @@ These notes record bounded checks against publisher or institutional bibliograph
 - **Limitations:** worst-case frontier size is exponential. This is not a transit-integrated route-choice model, eco-routing model, or skyline route service.
 - **Implementation status:** implementation, tests and lab are prepared; repository CI pending.
 - **Rights:** citation and DOI link only.
+
+
+## Section 22 — Compositional data and log-ratio geometry
+
+**Source entry:** “Compositional data: Aitchison geometry, log-ratio transforms, compositional kriging” (compositional statistics).
+
+- **Identity and bibliography:** confirmed: Aitchison (1982), “The statistical analysis of compositional data,” *JRSS B*, 44(2), 139–160, DOI [10.1111/j.2517-6161.1982.tb01195.x](https://doi.org/10.1111/j.2517-6161.1982.tb01195.x); Egozcue et al. (2003), “Isometric logratio transformations for compositional data analysis,” *Mathematical Geology*, 35(3), 279–300, DOI [10.1023/A:1023818214614](https://doi.org/10.1023/A:1023818214614).
+- **Technical claims:** CLR coordinates sum to zero; ILR projects log parts onto an orthonormal zero-sum basis and preserves Aitchison distance; ALR depends on the denominator part.
+- **Limitations:** zero replacement, compositional kriging, spatial dependence and regression remain open. The implementation rejects zeros rather than inserting an arbitrary pseudocount.
+- **Implementation status:** implementation, tests and lab are prepared; repository CI pending.
+- **Rights:** citations and DOI links only.

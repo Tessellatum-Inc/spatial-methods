@@ -57,6 +57,8 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Spatial statistics
 
+- [Compositional data analysis](statistics/compositional-data-analysis.md) — apply closure, CLR, ALR and ILR transforms and compare compositions with Aitchison distance.
+
 - [Circular Poisson spatial scan statistic](spatial-scan-statistic.md) — search centroid-centred circles for elevated areal case rates with a population offset and conditional multinomial Monte Carlo calibration.
 
 ## Geostatistics

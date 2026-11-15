@@ -94,6 +94,10 @@ Each implementation should state:
 
 - [EKF, scaled UKF, bootstrap particle filter and FFBSi smoother](python/state-estimation/README.md): additive-noise Gaussian filter baselines plus a particle filter with ESS-triggered systematic resampling and an offline backward-simulation smoother driven by a supplied transition log density.
 
+### Compositional data
+
+- [Compositional log-ratio transforms](python/compositional-data/README.md): closure, CLR, ALR, ILR with a Helmert basis, inverse transforms and Aitchison distance; zeros are rejected rather than silently replaced.
+
 ### Point-pattern and spatial epidemiology
 
 - [Point-pattern summaries and circular Poisson scan](python/point-process/README.md): nearest-neighbour summaries, homogeneous and supplied-intensity inhomogeneous K, numerical pair correlation, and a centroid-based population-offset Poisson scan with conditional multinomial Monte Carlo calibration.
@@ -148,7 +152,7 @@ Each implementation should state:
 
 ## Automated checks
 
-The [Python examples workflow](../.github/workflows/python-tests.yml) is configured to run the test suites for all 103 Python example packages and the Clipper2 C# smoke test, and execute all 110 learning notebooks on relevant pushes and pull requests, using Python 3.13. The Local Moran notebook uses PySAL's maintained implementation rather than presenting a new from-scratch implementation. The Bentley–Ottmann job also adds the sibling segment-intersection package to `PYTHONPATH`.
+The [Python examples workflow](../.github/workflows/python-tests.yml) is configured to run the test suites for all 104 Python example packages and the Clipper2 C# smoke test, and execute all 111 learning notebooks on relevant pushes and pull requests, using Python 3.13. The Local Moran notebook uses PySAL's maintained implementation rather than presenting a new from-scratch implementation. The Bentley–Ottmann job also adds the sibling segment-intersection package to `PYTHONPATH`.
 
 A successful automated run means the tests in the repository passed in that environment. It does not prove correctness for every possible geometry or make a restricted teaching implementation production-ready. Always read the input contract and limitations before adapting an example.
 

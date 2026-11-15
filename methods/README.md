@@ -41,6 +41,8 @@ This directory holds those foundational methods separately from individual algor
 - [Nonlinear and particle state estimation](nonlinear-kalman-ekf-ukf.md) — distinguish Gaussian EKF/UKF approximations from bootstrap particle filtering and offline FFBSi trajectory smoothing.
 - [Spatial thin-plate smoothing spline](spatial-thin-plate-smoothing-spline.md) — fit full-knot and optimally truncated low-rank thin-plate smooths with an unpenalized affine null space.
 
+- [Compositional data analysis](compositional-data-analysis.md) — use closure and log-ratio coordinates for relative data, with explicit treatment of zeros and the simplex geometry.
+
 ## How to use these records
 
 Each record should explain the question the method helps answer, its assumptions, its mathematical form, the choices that affect results, a reproducible example and its limitations. Where a method is a modelling choice rather than a single algorithm, say so explicitly.

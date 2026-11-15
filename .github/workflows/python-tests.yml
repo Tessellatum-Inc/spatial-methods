@@ -235,6 +235,9 @@ jobs:
           - example: exact-orientation
             directory: implementations/python/exact-orientation
             pythonpath: ""
+          - example: compositional-data
+            directory: implementations/python/compositional-data
+            pythonpath: ""
           - example: covariance-functions
             directory: implementations/python/covariance-functions
             pythonpath: ""
@@ -515,6 +518,7 @@ jobs:
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/harris-market-potential-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/third-order-tensor-svd-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/multi-criteria-shortest-paths-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/compositional-logratio-lab.ipynb
 
   clipper2:
     name: Clipper2 C# offset checks
