@@ -157,3 +157,67 @@ def test_empty_space_rejects_invalid_controls():
         empty_space_cdf(points, (0, 0, 1, 1), [0.1], seed=True)
     with pytest.raises(ValueError, match="radii"):
         empty_space_cdf(points, (0, 0, 1, 1), [])
+
+
+def test_cross_type_nearest_neighbor_cdf_uses_source_to_target_distances():
+    from point_patterns import cross_nearest_neighbor_cdf
+    pts = [(2, 2), (7, 7), (3, 2), (7, 8)]
+    marks = ["A", "A", "B", "B"]
+    assert cross_nearest_neighbor_cdf(pts, marks, "A", "B", [0.5, 1, 2]) == [0, 1, 1]
+
+
+def test_cross_k_translation_matches_hand_calculation_and_independence_scale():
+    from point_patterns import cross_ripley_k_translation
+    pts = [(2, 2), (7, 7), (3, 2), (7, 8)]
+    marks = ["A", "A", "B", "B"]
+    got = cross_ripley_k_translation(pts, marks, (0, 0, 10, 10), "A", "B", [0.9, 1, 2])
+    # Two cross pairs at distance one; each has overlap 90 and weight 100/90.
+    assert got[0] == 0
+    assert got[1] == pytest.approx(100 / 4 * 2 * (100 / 90))
+    assert got[2] >= got[1]
+
+
+def test_cross_pair_correlation_matches_finite_difference_of_k():
+    from point_patterns import cross_pair_correlation_from_k
+    radii = [1, 2, 3, 4]
+    k = [math.pi*r*r for r in radii]
+    got = cross_pair_correlation_from_k(radii, k)
+    assert got[1] == pytest.approx(1, abs=0.2)
+    assert got[2] == pytest.approx(1, abs=0.2)
+
+
+def test_cross_j_returns_g_f_and_j_with_seeded_empty_space_sampling():
+    from point_patterns import cross_j_function
+    pts = [(2, 2), (7, 7), (3, 2), (7, 8)]
+    marks = ["A", "A", "B", "B"]
+    a = cross_j_function(pts, marks, (0, 0, 10, 10), "A", "B",
+                         [0.5, 1, 20], n_samples=500, seed=12)
+    b = cross_j_function(pts, marks, (0, 0, 10, 10), "A", "B",
+                         [0.5, 1, 20], n_samples=500, seed=12)
+    assert a == b
+    g, f, j = a
+    assert g == [0, 1, 1]
+    assert all(0 <= value <= 1 for value in f)
+    assert math.isnan(j[-1])
+
+
+@pytest.mark.parametrize("bad_marks", [
+    ["A", "A"], ["A", "A", "A", "A"], ["A", "A", "B", None]
+])
+def test_cross_type_methods_reject_missing_or_invalid_mark_groups(bad_marks):
+    from point_patterns import cross_nearest_neighbor_cdf, cross_ripley_k_translation
+    pts = [(2, 2), (7, 7), (3, 2), (7, 8)]
+    with pytest.raises(ValueError):
+        cross_nearest_neighbor_cdf(pts, bad_marks, "A", "B", [1])
+    with pytest.raises(ValueError):
+        cross_ripley_k_translation(pts, bad_marks, (0, 0, 10, 10), "A", "B", [1])
+
+
+def test_cross_type_methods_reject_same_type_and_bad_controls():
+    from point_patterns import cross_nearest_neighbor_cdf, cross_j_function
+    pts = [(2, 2), (7, 7), (3, 2), (7, 8)]
+    marks = ["A", "A", "B", "B"]
+    with pytest.raises(ValueError):
+        cross_nearest_neighbor_cdf(pts, marks, "A", "A", [1])
+    with pytest.raises(ValueError):
+        cross_j_function(pts, marks, (0, 0, 10, 10), "A", "B", [1], n_samples=0)
