@@ -43,6 +43,8 @@ The goal is not to fill folders or publish pages quickly. The goal is a collecti
 - [x] Add a bivariate Moran's I lesson, dependency-free implementation, conditional permutation baseline, edge-case tests, implementation walkthrough and executable notebook; keep the directional statistic and pseudo-p-value convention explicit.
 - [x] Add a source-grounded Lee's L lesson, row-standardized global statistic implementation, smoothing-scalar diagnostics, edge-case tests, walkthrough and executable notebook; distinguish it from bivariate Moran's I and defer local/inferential extensions.
 - [x] Add source-grounded simple and partial Mantel test records, distance-matrix validation, label-preserving permutations, seeded Monte Carlo p-values, tests, implementation walkthrough and executable notebook; explicitly document spatial-autocorrelation failure modes and alternatives.
+- [x] Extend the point-process package with marked-pattern cross-G, rectangular translation-corrected cross-K, finite-difference cross-pair-correlation and Monte Carlo cross-J; add validation tests, a worked notebook section and a supplementary method record.
+- [x] Implement seeded homogeneous Poisson and stationary Thomas (Gaussian Neyman–Scott) simulators, including a buffer-expanded parent window; add tests, model documentation and notebook examples. Cox/log-Gaussian Cox and Gibbs/Strauss models remain open.
 - [x] Add live ipywidgets controls to compare Moran's I and Geary's C while changing values and weight style.
 - [x] Add an interactive geometry lab for point-in-polygon, segment intersection and polygon overlay.
 - [x] Add a learning path connecting global and local autocorrelation methods, including Getis-Ord hotspot analysis.
