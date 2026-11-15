@@ -117,6 +117,45 @@ def bentley_ottmann(segments: list[Segment]) -> list[tuple[int, int, ExactPoint]
     return sorted(output, key=lambda item: (item[2][0], item[2][1], item[0], item[1]))
 
 
+def bentley_ottmann_with_verticals(
+    segments: list[tuple[int, Point, Point]],
+) -> list[tuple[int, int, ExactPoint]]:
+    """Sweep integer segments including vertical ones via an exact affine shear.
+
+    The shear (x', y') = (x + k*y, y) preserves incidence and intersections.
+    A deterministic integer k is chosen so no input segment is vertical in
+    transformed coordinates. The returned coordinates are transformed back
+    exactly. All other general-position restrictions of bentley_ottmann remain.
+    """
+    if not segments:
+        return []
+    ids = [item[0] for item in segments]
+    if len(set(ids)) != len(ids):
+        raise ValueError("Segment IDs must be unique")
+    forbidden = set()
+    for _, a, b in segments:
+        if a == b:
+            raise ValueError("Segments must have distinct endpoints")
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        if dy and (-dx) % dy == 0:
+            forbidden.add((-dx) // dy)
+    shear = 1
+    while shear in forbidden:
+        shear += 1
+
+    transformed = []
+    for sid, a, b in segments:
+        pa = (a[0] + shear * a[1], a[1])
+        pb = (b[0] + shear * b[1], b[1])
+        transformed.append(Segment(sid, pa, pb))
+
+    hits = bentley_ottmann(transformed)
+    restored = []
+    for a, b, (x_sheared, y) in hits:
+        restored.append((a, b, (x_sheared - shear * y, y)))
+    return sorted(restored, key=lambda item: (item[2][0], item[2][1], item[0], item[1]))
+
+
 if __name__ == "__main__":
     demo = [Segment(1,(1,1),(9,7)), Segment(2,(1,7),(9,1)), Segment(3,(2,10),(8,2))]
     for crossing in bentley_ottmann(demo):
