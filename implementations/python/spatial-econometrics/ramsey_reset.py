@@ -7,7 +7,7 @@ functional-form misspecification; it is not a test for spatial dependence.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from math import isfinite
+from math import isfinite, lgamma
 from typing import Sequence
 
 import numpy as np
@@ -67,7 +67,7 @@ def _regularized_beta(x: float, a: float, b: float) -> float:
     if x >= 1.0:
         return 1.0
     log_front = (a * np.log(x) + b * np.log1p(-x)
-                 - (np.math.lgamma(a) + np.math.lgamma(b) - np.math.lgamma(a + b)))
+                 - (lgamma(a) + lgamma(b) - lgamma(a + b)))
     front = float(np.exp(log_front))
     if x < (a + 1.0) / (a + b + 2.0):
         return float(np.clip(front * _beta_continued_fraction(a, b, x) / a, 0.0, 1.0))
