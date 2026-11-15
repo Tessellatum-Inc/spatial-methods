@@ -193,3 +193,19 @@ def test_bidirectional_dijkstra_handles_long_directed_chain():
     path, cost = bidirectional_dijkstra(graph, 0, count - 1)
     assert path == list(range(count))
     assert cost == pytest.approx((count - 1) * 0.5)
+
+
+@pytest.mark.parametrize("algorithm,graph", [
+    (dijkstra, {0: [(1, 1e308)], 1: [(2, 1e308)], 2: []}),
+    (bellman_ford, {0: [(1, 1e308)], 1: [(2, 1e308)], 2: []}),
+    (bidirectional_dijkstra, {0: [(1, 1e308)], 1: [(2, 1e308)], 2: []}),
+])
+def test_single_source_and_bidirectional_paths_report_cost_overflow(algorithm, graph):
+    with pytest.raises(OverflowError, match="exceeds finite"):
+        algorithm(graph, 0, 2)
+
+
+def test_floyd_warshall_reports_finite_edge_path_overflow():
+    graph = {0: [(1, 1e308)], 1: [(2, 1e308)], 2: []}
+    with pytest.raises(OverflowError, match="exceeds finite"):
+        floyd_warshall(graph)
