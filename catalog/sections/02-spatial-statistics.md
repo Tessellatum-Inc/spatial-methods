@@ -68,7 +68,11 @@ The [planar Gaussian KDE lesson](../../algorithms/statistics/point-pattern-kde.m
 | Estimation: spatial GMM, spatial HAC standard errors, spatial panel and dynamic panel models, spatial probit, spatial Heckman, spatial quantile regression, spatial stochastic frontier, spatial SUR, hedonic regression, endogenous weights, Bayesian model averaging over weights | Estimators / regression models / inference methods | 4 | Not checked — intake only |
 | Bayesian: BYM, INLA/SPDE, hierarchical CAR models, spatial Dirichlet process, Gaussian process mixtures | Bayesian spatial model families / computational frameworks | 4 | Not checked — intake only |
 
-### Implemented spatial regression estimators\n\nThe [spatial econometrics package](../../implementations/python/spatial-econometrics/README.md) now includes classic LM diagnostics, spatial lag 2SLS, SAR/SDM impact decomposition, and concentrated Gaussian maximum likelihood for SAR and SEM. The ML implementation uses a conservative norm-bounded spatial-parameter interval and dense log-determinants; robust diagnostics, uncertainty estimates, scalable sparse likelihoods, and other model families remain open.\n\n## Smoothing and outlier detection
+### Implemented spatial regression estimators
+
+The [spatial econometrics package](../../implementations/python/spatial-econometrics/README.md) now includes classic LM diagnostics, spatial lag 2SLS, SAR/SDM impact decomposition, and concentrated Gaussian maximum likelihood for SAR and SEM. The ML implementation uses a conservative norm-bounded spatial-parameter interval and dense log-determinants; robust diagnostics, uncertainty estimates, scalable sparse likelihoods, and other model families remain open.
+
+## Smoothing and outlier detection
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
