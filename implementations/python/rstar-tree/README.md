@@ -7,7 +7,7 @@ On overflow, the farthest 30% (subject to minimum fill) are removed and
 reinserted at their original tree level, at most once per level in one
 top-level insertion. Stable integer record IDs are preserved.
 
-Queries return IDs whose closed axis-aligned envelopes intersect the query.
+Queries return IDs whose closed axis-aligned envelopes intersect the query. Exact best-first k-nearest search returns stable IDs and squared point-to-rectangle distances, using node-envelope lower bounds.
 Duplicate and zero-area boxes are retained. Use suitable planar coordinate
 units and refine envelope candidates with exact geometry predicates when
 indexing non-rectangular objects.
