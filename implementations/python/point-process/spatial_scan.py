@@ -590,7 +590,10 @@ def _flexible_scan_inputs(coordinates, cases, population, adjacency,
     coords, case_counts, pop, upper, minimum = _scan_inputs(
         coordinates, cases, population, max_population_fraction, min_cases
     )
-    graph = np.asarray(adjacency)
+    try:
+        graph = np.asarray(adjacency, dtype=float)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("adjacency must be a finite numeric matrix") from exc
     n = len(coords)
     if graph.shape != (n, n):
         raise ValueError("adjacency must be an N-by-N matrix matching coordinates")
@@ -650,8 +653,8 @@ def flexible_poisson_scan(
         if not np.all(np.isfinite(distances)):
             raise ValueError("coordinate range produces non-finite centroid distances")
         order = np.argsort(distances, kind="stable")
-        universe = set(int(i) for i in order[:maximum])
-        universe.add(root)
+        nearest = [int(i) for i in order if int(i) != root][:maximum - 1]
+        universe = {root, *nearest}
         seen = {frozenset((root,))}
         stack = [frozenset((root,))]
         while stack:
