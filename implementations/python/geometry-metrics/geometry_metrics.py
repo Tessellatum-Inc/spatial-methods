@@ -351,7 +351,7 @@ def continuous_frechet_decision(curve_a, curve_b, epsilon):
 
     for i in range(n):
         bottom_interval = _free_space_interval(b[0], a[i], a[i+1], epsilon)
-        if (bottom_interval is not None
+        if (bottom_interval is not None and bottom_interval[0] <= 0.0
                 and (i == 0 or (bottom_previous is not None
                                 and bottom_previous[1] >= 1.0))):
             bottom_current = (0.0, bottom_interval[1])
@@ -366,7 +366,7 @@ def continuous_frechet_decision(curve_a, curve_b, epsilon):
         for j in range(m):
             if i == 0:
                 left_interval = _free_space_interval(a[0], b[j], b[j+1], epsilon)
-                if (left_interval is not None
+                if (left_interval is not None and left_interval[0] <= 0.0
                         and (j == 0 or (left_previous is not None
                                         and left_previous[1] >= 1.0))):
                     reachable_left = (0.0, left_interval[1])
