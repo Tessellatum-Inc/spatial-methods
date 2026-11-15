@@ -40,21 +40,7 @@ Open \`impacts.py\`.
 
 The coefficients are assumed to come from a separately fitted model. The `spatial_impact_uncertainty` companion accepts a joint covariance ordered as `[rho, beta..., gamma...]` and propagates it through parametric Monte Carlo draws. It reports rejected ill-conditioned draws; it does not estimate the covariance or validate its sampling assumptions.
 
-## 4. Concentrated maximum likelihood\n\nOpen `maximum_likelihood.py`.\n\n1. SAR profiles the Gaussian likelihood over the spatial-lag parameter, including the Jacobian term `log|I-rho W|`.\n2. SEM transforms both the response and design by `I-lambda W`.\n3. SDM transforms the response by `I-rho W` and regresses on the augmented `[X, WX]` design, dropping redundant spatial-lag columns in stable order.\n4. SARAR/SAC applies both filters, `A_lambda A_rho`, to the response and `A_lambda` to the design. Its likelihood includes both log-determinants. A two-dimensional coarse grid is refined by alternating local golden-section searches around the best grid cell.\n5. All estimators use a conservative norm-bounded interval and dense matrix operations. They are teaching baselines, not scalable production likelihoods; they do not provide coefficient covariance or robust inference.\n\n## 5. Tests and verification
-
-\`test_spatial_econometrics.py\` checks the LM formulas against independently assembled matrix expressions, rejects invalid inputs, checks SAR/SDM impact identities, tests parametric impact uncertainty, and generates synthetic SAR, SDM and SARAR processes for estimator recovery tests.
-
-Run:
-
-~~~bash
-python -m pip install -r requirements.txt
-python -m pytest -q
-~~~
-
-The CI workflow includes this package and executes the companion notebook. A successful local or CI test run should be recorded separately from static inspection.
-
-
-## 5. Gaussian proper-CAR regression
+## 4. Concentrated maximum likelihood\n\nOpen `maximum_likelihood.py`.\n\n1. SAR profiles the Gaussian likelihood over the spatial-lag parameter, including the Jacobian term `log|I-rho W|`.\n2. SEM transforms both the response and design by `I-lambda W`.\n3. SDM transforms the response by `I-rho W` and regresses on the augmented `[X, WX]` design, dropping redundant spatial-lag columns in stable order.\n4. SARAR/SAC applies both filters, `A_lambda A_rho`, to the response and `A_lambda` to the design. Its likelihood includes both log-determinants. A two-dimensional coarse grid is refined by alternating local golden-section searches around the best grid cell.\n5. All estimators use a conservative norm-bounded interval and dense matrix operations. They are teaching baselines, not scalable production likelihoods; they do not provide coefficient covariance or robust inference.\n\n## 5. Gaussian proper-CAR regression
 
 Open `proper_car.py`.
 
@@ -68,7 +54,7 @@ Open `proper_car.py`.
 The dense eigendecomposition and log determinant limit this teaching estimator to small graphs. The graph must be symmetric and contain no isolated nodes; the routine does not repair the graph or choose its weights.
 
 
-## 8. Constrained intrinsic-CAR field simulation
+## 6. Constrained intrinsic-CAR field simulation
 
 Open icar.py.
 
@@ -82,7 +68,7 @@ Open icar.py.
 The conditional variance 1/(tau * degree_i) is not the marginal variance. This routine simulates a constrained field; it does not fit a regression, estimate tau or perform posterior inference. Dense eigendecomposition limits it to small teaching graphs.
 
 
-## 9. Spatial HAC covariance for OLS
+## 7. Spatial HAC covariance for OLS
 
 Open spatial_hac.py.
 
@@ -94,3 +80,16 @@ Open spatial_hac.py.
 6. Apply n/(n-k) when the finite-sample correction is enabled.
 
 The bandwidth and coordinate units must agree. The kernel controls which spatial residual pairs contribute; this does not solve omitted-variable bias, spatial endogeneity or model misspecification.
+
+## 8. Tests and verification
+
+\`test_spatial_econometrics.py\` checks the LM formulas against independently assembled matrix expressions, rejects invalid inputs, checks SAR/SDM impact identities, tests parametric impact uncertainty, and generates synthetic SAR, SDM and SARAR processes for estimator recovery tests.
+
+Run:
+
+~~~bash
+python -m pip install -r requirements.txt
+python -m pytest -q
+~~~
+
+The CI workflow includes this package and executes the companion notebook. A successful local or CI test run should be recorded separately from static inspection.
