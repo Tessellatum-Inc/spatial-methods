@@ -26,8 +26,9 @@ def test_temporal_and_spatial_thresholds_are_inclusive():
 def test_ambiguous_border_is_assigned_to_first_reached_cluster():
     points = [(0,),(0.1,),(0.2,),(1.1,),(2,),(2.1,),(2.2,)]
     times = [0]*len(points)
-    result = st_dbscan(points, times, eps_spatial=1, eps_temporal=0, min_samples=4)
+    result = st_dbscan(points, times, eps_spatial=0.95, eps_temporal=0, min_samples=4)
     assert result["labels"][3] == 0
+    assert not result["core_points"][3]
     assert result["labels"][:3] == (0,0,0)
     assert result["labels"][4:] == (1,1,1)
 

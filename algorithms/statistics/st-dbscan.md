@@ -54,6 +54,8 @@ strongly affects the result and should be justified in the measurement units.
 
 See [implementations/python/st-dbscan](../../implementations/python/st-dbscan/README.md)
 for the tested reference implementation and its deterministic border policy.
+The [source verification note](../../catalog/verification/st-dbscan.md)
+records the tested scope and remaining review items.
 
 ## Reference
 

@@ -23,4 +23,5 @@ python -m pytest -q
 
 This implementation is ST-DBSCAN, not T-DBSCAN: it uses one spatial and one
 temporal threshold, not a separate density threshold for each dimension.
-See the [canonical note](../../../algorithms/statistics/st-dbscan.md).
+See the [canonical note](../../../algorithms/statistics/st-dbscan.md) and
+[source verification record](../../../catalog/verification/st-dbscan.md).

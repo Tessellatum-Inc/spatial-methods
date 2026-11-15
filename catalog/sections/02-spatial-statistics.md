@@ -21,7 +21,7 @@ The source groups together descriptive statistics, inferential procedures, point
 
 ## First audited clustering lesson
 
-The [DBSCAN lesson](../../algorithms/statistics/dbscan.md) introduces core, border and noise points, the eps/min_samples parameters and the input-order policy for ambiguous border points. A tested O(n²) planar implementation and interactive notebook provide a small-data baseline; HDBSCAN, OPTICS and indexed large-data search remain open.
+The [DBSCAN lesson](../../algorithms/statistics/dbscan.md) introduces core, border and noise points, the eps/min_samples parameters and the input-order policy for ambiguous border points. A tested O(n²) planar implementation and interactive notebook provide a small-data baseline; HDBSCAN, OPTICS and indexed large-data search remain open. The separate [ST-DBSCAN lesson](../../algorithms/statistics/st-dbscan.md) adds a tested joint spatial-and-temporal neighbourhood baseline with deterministic border assignment; T-DBSCAN and indexed spatiotemporal search remain open.
 
 ## Point pattern analysis
 
