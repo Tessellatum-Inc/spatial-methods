@@ -20,12 +20,12 @@ A flat cell has no unique aspect. Its illumination is assigned as sin(h), the il
 
 The [Python implementation](../../implementations/python/terrain-derivatives/README.md) accepts slope and aspect arrays, sun azimuth and sun altitude. Angles are in degrees. Azimuth is clockwise from north; aspect is the downslope direction. The output is normalized illumination from zero (dark) to one (bright).
 
-## What this does not model
+## Multidirectional composite\n\nThe companion multidirectional_hillshade function averages local illumination from several azimuths at a common altitude. Its default uses four equally weighted directions (225°, 270°, 315° and 360°). This reduces the visual bias caused by one chosen light direction, but it is still not cast-shadow analysis or a physical diffuse-radiation model.\n\n## What this does not model
 
 - Terrain occlusion and cast shadows from ridges or nearby surfaces.
 - Diffuse sky illumination, atmospheric scattering or multiple light sources.
 - Solar irradiance, seasonal sun paths or energy budgets.
-- Multidirectional hillshade or ambient-occlusion rendering.
+- Ambient-occlusion rendering.
 
 Hillshade is useful for visual interpretation, but it is not a measurement of elevation, slope, landform or solar energy. A different sun azimuth can make the same landform appear quite different.
 
