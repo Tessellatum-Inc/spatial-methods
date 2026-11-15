@@ -26,6 +26,8 @@ class SpatialDiagnostics:
     sigma2_mle: float
     lm_lag: SpatialLMResult
     lm_error: SpatialLMResult
+    robust_lm_lag: SpatialLMResult | None
+    robust_lm_error: SpatialLMResult | None
     trace_term: float
     lag_denominator: float
 
@@ -101,13 +103,37 @@ def spatial_lm_diagnostics(
     lag_denominator = float(
         residualised_wx_beta @ residualised_wx_beta / sigma2 + trace_term
     )
-    lm_lag = float((residual @ wy / sigma2) ** 2 / lag_denominator)
+    lag_score = float(residual @ wy / sigma2)
+    error_score = float(residual @ we / sigma2)
+    lm_lag = float(lag_score ** 2 / lag_denominator)
+
+    # Bera-Yoon adjusted score tests (Anselin et al., 1996). When D-T is
+    # numerically zero, the two nuisance-adjusted tests are not identified.
+    robust_lag = None
+    robust_error = None
+    robust_denominator = lag_denominator - trace_term
+    if robust_denominator > np.finfo(float).eps * max(1.0, lag_denominator):
+        robust_lag_stat = float((lag_score - error_score) ** 2 / robust_denominator)
+        robust_error_denominator = trace_term * (1.0 - trace_term / lag_denominator)
+        if robust_error_denominator > np.finfo(float).eps:
+            robust_error_stat = float(
+                (error_score - trace_term * lag_score / lag_denominator) ** 2
+                / robust_error_denominator
+            )
+            robust_error = SpatialLMResult(
+                robust_error_stat, _chi_square_1_sf(robust_error_stat)
+            )
+        robust_lag = SpatialLMResult(
+            robust_lag_stat, _chi_square_1_sf(robust_lag_stat)
+        )
     return SpatialDiagnostics(
         coefficients=tuple(float(v) for v in beta),
         residuals=tuple(float(v) for v in residual),
         sigma2_mle=sigma2,
         lm_lag=SpatialLMResult(lm_lag, _chi_square_1_sf(lm_lag)),
         lm_error=SpatialLMResult(lm_error, _chi_square_1_sf(lm_error)),
+        robust_lm_lag=robust_lag,
+        robust_lm_error=robust_error,
         trace_term=trace_term,
         lag_denominator=lag_denominator,
     )
