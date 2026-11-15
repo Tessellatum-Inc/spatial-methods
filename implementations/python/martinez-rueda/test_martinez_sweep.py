@@ -229,3 +229,38 @@ def test_exact_predicate_keeps_collinear_overlap_rejection():
     b=Segment(1,0,0,(1.0,0.0),(3.0,0.0))
     with pytest.raises(NotImplementedError,match="collinear"):
         _intersection(a,b,1e-10)
+
+
+def test_seeded_exact_segment_predicates_against_independent_integer_oracle():
+    from fractions import Fraction
+    import random
+
+    rng=random.Random(20261116)
+    checked=0
+    for sid in range(1200):
+        points=[(rng.randint(-1000,1000),rng.randint(-1000,1000)) for _ in range(4)]
+        a,b,c,d=points
+        if a==b or c==d:
+            continue
+        rx,ry=b[0]-a[0],b[1]-a[1]
+        sx,sy=d[0]-c[0],d[1]-c[1]
+        den=rx*sy-ry*sx
+        if den==0:
+            continue
+        qx,qy=c[0]-a[0],c[1]-a[1]
+        t=Fraction(qx*sy-qy*sx,den)
+        u=Fraction(qx*ry-qy*rx,den)
+        expected=0<=t<=1 and 0<=u<=1
+        hit=_intersection(
+            Segment(0,0,0,a,b),Segment(1,0,0,c,d),1e-12
+        )
+        assert (hit is not None)==expected
+        if expected:
+            assert float(hit[0])==pytest.approx(float(t),abs=1e-12)
+            assert float(hit[1])==pytest.approx(float(u),abs=1e-12)
+            assert hit[2]==pytest.approx(
+                (float(Fraction(a[0])+t*rx),float(Fraction(a[1])+t*ry)),
+                abs=1e-9,
+            )
+        checked+=1
+    assert checked>=1000
