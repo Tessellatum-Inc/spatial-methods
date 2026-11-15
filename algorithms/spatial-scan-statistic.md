@@ -45,7 +45,7 @@ The notebook uses 99 replications only as a demonstration. More simulations are 
 ## Limitations
 
 - This is a circular Poisson scan with a population offset, not a full SaTScan reproduction.
-- No covariate-adjusted baseline, Bernoulli case-control model, temporal scan, elliptical or arbitrary zones, secondary clusters or polygon-boundary geometry.
+- The separate [finite-grid elliptical scan](statistics/elliptical-spatial-scan.md) extends the candidate shapes with explicit axis-ratio and orientation grids. Neither teaching baseline implements covariate adjustment, Bernoulli case-control, temporal scans, arbitrary zones, secondary clusters or polygon-boundary geometry.
 - No correction for uncertain centroids or population estimates.
 - It detects elevated-rate clusters only; low-rate cluster scans are not implemented.
 - The scan statistic's Monte Carlo calibration accounts for maximising over the implemented candidate circles, but does not justify the study design or chosen candidate-zone family.
