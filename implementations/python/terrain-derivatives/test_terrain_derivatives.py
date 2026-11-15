@@ -275,3 +275,56 @@ def test_hypsometric_curve_rejects_mismatched_mask():
     from terrain_indices import hypsometric_curve
     with pytest.raises(ValueError, match="valid_mask"):
         hypsometric_curve(np.ones((2, 2)), valid_mask=np.ones((3, 3)))
+
+
+# Cut-and-fill volume
+
+def test_cut_fill_depths_and_volumes_on_mixed_surface():
+    from terrain_indices import cut_fill_volume
+    existing = np.array([[5, 2], [4, 3]], dtype=float)
+    design = np.array([[3, 4], [4, 1]], dtype=float)
+    result = cut_fill_volume(existing, design, cell_size_x=2, cell_size_y=3)
+    np.testing.assert_allclose(result["cut_depth"], [[2, 0], [0, 2]])
+    np.testing.assert_allclose(result["fill_depth"], [[0, 2], [0, 0]])
+    assert result["cut_volume"] == pytest.approx(24)
+    assert result["fill_volume"] == pytest.approx(12)
+    assert result["net_cut_volume"] == pytest.approx(12)
+    assert result["valid_cell_count"] == 4
+
+
+def test_cut_fill_identical_surfaces_have_zero_volumes():
+    from terrain_indices import cut_fill_volume
+    dem = np.arange(9, dtype=float).reshape(3, 3)
+    result = cut_fill_volume(dem, dem)
+    assert result["cut_volume"] == 0
+    assert result["fill_volume"] == 0
+    assert result["net_cut_volume"] == 0
+
+
+def test_cut_fill_masks_nodata_and_explicitly_excluded_cells():
+    from terrain_indices import cut_fill_volume
+    existing = np.array([[5, np.nan], [2, 9]], dtype=float)
+    design = np.zeros((2, 2))
+    mask = np.array([[True, True], [False, True]])
+    result = cut_fill_volume(existing, design, valid_mask=mask)
+    np.testing.assert_allclose(result["cut_depth"], [[5, np.nan], [np.nan, 9]], equal_nan=True)
+    assert result["cut_volume"] == pytest.approx(14)
+    assert result["valid_cell_count"] == 2
+
+
+@pytest.mark.parametrize("kwargs", [
+    {"cell_size_x": 0}, {"cell_size_y": -1},
+    {"cell_size_x": float("inf")}, {"cell_size_y": float("nan")},
+])
+def test_cut_fill_rejects_invalid_cell_sizes(kwargs):
+    from terrain_indices import cut_fill_volume
+    with pytest.raises(ValueError, match="cell sizes"):
+        cut_fill_volume(np.ones((2, 2)), np.zeros((2, 2)), **kwargs)
+
+
+def test_cut_fill_rejects_shape_and_mask_mismatch():
+    from terrain_indices import cut_fill_volume
+    with pytest.raises(ValueError, match="shape"):
+        cut_fill_volume(np.ones((2, 2)), np.zeros((3, 3)))
+    with pytest.raises(ValueError, match="valid_mask"):
+        cut_fill_volume(np.ones((2, 2)), np.zeros((2, 2)), valid_mask=np.ones((3, 3)))
