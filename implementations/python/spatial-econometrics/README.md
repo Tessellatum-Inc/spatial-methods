@@ -7,7 +7,8 @@ This package contains small, dense-matrix reference implementations:
 3. **Spatial lag 2SLS** using exogenous covariates and spatial lags as instruments for endogenous Wy.
 4. **Spatial Durbin 2SLS** with higher-order spatial lags as excluded instruments.
 5. **SLX OLS and SDEM concentrated Gaussian ML** for spatially lagged covariates, with and without spatially correlated errors.
-6. **Concentrated Gaussian maximum likelihood** for SAR, SEM and SDM, plus joint two-parameter SARAR/SAC likelihood estimation.
+6. **Gaussian proper-CAR regression ML** with an eigenvalue-derived positive-definite parameter interval.
+7. **Concentrated Gaussian maximum likelihood** for SAR, SEM and SDM, plus joint two-parameter SARAR/SAC likelihood estimation.
 
 ## Run
 
@@ -24,7 +25,8 @@ python -m pytest -q
 - The SDM 2SLS estimator uses higher-order spatial lags as excluded instruments for Wy; exogeneity and relevance are assumptions, not automatically tested. It does not report standard errors or weak-instrument diagnostics.
 - The SAR/SEM/SDM ML estimators use conservative norm-bounded parameter intervals and dense log-determinants. SDM drops spatially lagged covariate columns linearly dependent on the included design. SARAR/SAC profiles both spatial parameters over a conservative rectangle using a coarse grid and alternating one-dimensional refinements.
 - The impact matrix is \(S_r=(I-\rho W)^{-1}(\beta_r I+\gamma_r W)\). Direct impact is the mean diagonal, total impact is the mean row sum, and indirect impact is total minus direct. Impact uncertainty propagates a supplied joint covariance for [rho, beta..., gamma...] through Monte Carlo; it does not estimate that covariance.
-- Proper CAR uses a symmetric non-negative adjacency matrix, no isolated nodes, and the precision τ(D - αA). It is a proper Gaussian CAR regression, not ICAR, BYM/BYM2 or Leroux CAR.\n- Dense matrices are intended for small teaching cases. These implementations do not provide a complete production inference workflow; use sparse numerical methods and maintained spatial-econometric software for larger or consequential analyses.
+- Proper CAR uses a symmetric non-negative adjacency matrix, no isolated nodes, and the precision τ(D - αA). It is a proper Gaussian CAR regression, not ICAR, BYM/BYM2 or Leroux CAR.
+- Dense matrices are intended for small teaching cases. These implementations do not provide a complete production inference workflow; use sparse numerical methods and maintained spatial-econometric software for larger or consequential analyses.
 
 Follow the [implementation walkthrough](implementation-walkthrough.md) to trace formulas, validation and tests.
 
