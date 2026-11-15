@@ -29,10 +29,12 @@ The [DBSCAN lesson](../../algorithms/statistics/dbscan.md) introduces core, bord
 |---|---|---:|--- |
 | Quadrat analysis, Clark-Evans, nearest neighbor index | Exploratory methods / spatial statistics | 3 | Partial — conditional Monte Carlo quadrat test and Clark–Evans descriptive ratio implemented; formal edge-corrected Clark–Evans inference remains open |
 | [Ripley's K and L](../../algorithms/statistics/ripley-k.md); [quadrat count test](../../algorithms/statistics/quadrat-count-test.md); G, F and J functions; pair correlation function | Point-pattern summary functions | 3 | Partial — related record exists; source-entry review pending |
-| Models: Poisson, Cox, Neyman-Scott, Gibbs and Strauss processes, log-Gaussian Cox processes, marked patterns | Stochastic point-process models | 3 | Partial — homogeneous Poisson, stationary Thomas, stationary Matérn disc-cluster and grid-discretised log-Gaussian Cox simulators implemented; Gibbs/Strauss models remain open |
+| Models: Poisson, Cox, Neyman-Scott, Gibbs and Strauss processes, log-Gaussian Cox processes, marked patterns | Stochastic point-process models | 3 | Partial — homogeneous Poisson, stationary Thomas, stationary Matérn disc-cluster, grid-discretised log-Gaussian Cox and Strauss repulsive-process simulators implemented; broader Gibbs models and fitting/inference remain open |
 | Cluster tests: Besag-Newell, Tango, SaTScan scan statistics, elliptic and flexible shapes (FleXScan) | Cluster-detection tests / scan statistics | 3 | Not checked — intake only |
 | Kernel density estimation: adaptive and variable bandwidth, Silverman and cross-validated bandwidth selection | Density estimation / bandwidth-selection methods | 3 | Not checked — intake only |
 | Network K-function, network KDE (NKDE), SANET methods | Network-constrained point-pattern methods / software-method families | 3 | Not checked — intake only |
+
+The [Strauss point-process lesson](../../algorithms/statistics/strauss-point-process.md) and point-process package now include a finite-window birth-death Metropolis–Hastings sampler for repulsive pair interactions. It is a finite-run approximation; convergence diagnostics, parameter fitting and general Gibbs models remain outside scope.
 
 ## First audited point-pattern lessons
 
