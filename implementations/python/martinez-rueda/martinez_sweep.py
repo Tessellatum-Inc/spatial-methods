@@ -55,6 +55,26 @@ def _intersection(s1,s2,eps):
 def _signed_area(ring):
     return 0.5*sum(ring[i][0]*ring[(i+1)%len(ring)][1] - ring[(i+1)%len(ring)][0]*ring[i][1] for i in range(len(ring)))
 
+def _cross(a,b,c):
+    return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])
+
+def _on_segment(a,b,p,eps):
+    return (min(a[0],b[0])-eps<=p[0]<=max(a[0],b[0])+eps and min(a[1],b[1])-eps<=p[1]<=max(a[1],b[1])+eps)
+
+def _ring_is_simple(ring,eps):
+    n=len(ring)
+    for i in range(n):
+        a,b=ring[i],ring[(i+1)%n]
+        for j in range(i+1,n):
+            if j==i or j==(i+1)%n or (j+1)%n==i: continue
+            d,e=ring[j],ring[(j+1)%n]
+            o1,o2=_cross(a,b,d),_cross(a,b,e)
+            o3,o4=_cross(d,e,a),_cross(d,e,b)
+            proper=((o1>eps and o2< -eps) or (o1< -eps and o2>eps)) and ((o3>eps and o4< -eps) or (o3< -eps and o4>eps))
+            touch=((abs(o1)<=eps and _on_segment(a,b,d,eps)) or (abs(o2)<=eps and _on_segment(a,b,e,eps)) or (abs(o3)<=eps and _on_segment(d,e,a,eps)) or (abs(o4)<=eps and _on_segment(d,e,b,eps)))
+            if proper or touch: return False
+    return True
+
 def _inside(point, ring):
     x,y=point; inside=False
     for i,a in enumerate(ring):
@@ -82,6 +102,7 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
                 pts.append((float(p[0]),float(p[1])))
             if len(pts)<3 or len(set(pts))<3: raise ValueError("rings need three distinct points")
             if abs(_signed_area(pts))<=epsilon: raise ValueError("ring area must be non-zero")
+            if not _ring_is_simple(pts,epsilon): raise ValueError("input rings must be simple and non-self-touching")
             if _signed_area(pts)<0: pts.reverse()
             for i,a in enumerate(pts):
                 b=pts[(i+1)%len(pts)]
