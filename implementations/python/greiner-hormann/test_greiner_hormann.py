@@ -91,3 +91,43 @@ def test_seeded_rotated_rectangles_against_shapely_area_oracle():
         actual = total_area(greiner_hormann_intersection(a, b))
         expected = Polygon(a).intersection(Polygon(b)).area
         assert actual == pytest.approx(expected, rel=1e-8, abs=1e-7)
+
+
+
+def test_seeded_concave_u_intersections_against_disconnected_area_oracle():
+    """Randomized concave cases where one intersection splits into two faces."""
+    rng = random.Random(20261115)
+    checked = 0
+    for _ in range(300):
+        width = rng.uniform(8.0, 30.0)
+        height = rng.uniform(8.0, 25.0)
+        arm = rng.uniform(0.5, width * 0.2)
+        base = rng.uniform(1.0, height * 0.35)
+        lower = rng.uniform(base + 0.1, height * 0.65)
+        upper = rng.uniform(lower + 0.1, height - 0.1)
+        u_shape = [
+            (0.0, 0.0), (width, 0.0), (width, height),
+            (width - arm, height), (width - arm, base),
+            (arm, base), (arm, height), (0.0, height),
+        ]
+        strip = [
+            (-1.0, lower), (width + 1.0, lower),
+            (width + 1.0, upper), (-1.0, upper),
+        ]
+        result = greiner_hormann_intersection(u_shape, strip)
+        assert len(result) == 2
+        expected = 2.0 * arm * (upper - lower)
+        assert total_area(result) == pytest.approx(expected, rel=1e-8, abs=1e-8)
+        checked += 1
+    assert checked == 300
+
+
+@pytest.mark.parametrize("bad_ring", [
+    [(0, 0), (1, 0), (float("nan"), 1)],
+    [(0, 0), (1, 0), (float("inf"), 1)],
+    [(0, 0), (1, 1)],
+])
+def test_rejects_nonfinite_or_too_short_rings(bad_ring):
+    square = [(0, 0), (2, 0), (2, 2), (0, 2)]
+    with pytest.raises(ValueError):
+        greiner_hormann_intersection(bad_ring, square)
