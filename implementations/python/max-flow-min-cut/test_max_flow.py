@@ -85,3 +85,12 @@ def test_seeded_random_graphs_match_independent_exhaustive_min_cut_oracle():
         cut, _, _ = minimum_cut(edges, 0, n - 1)
         assert actual == pytest.approx(expected)
         assert cut == pytest.approx(expected)
+
+
+def test_sub_tolerance_positive_capacity_is_not_discarded():
+    edges = [("s", "a", 1e-16), ("a", "t", 1e-16)]
+    value, _ = edmonds_karp(edges, "s", "t")
+    cut, left, right = minimum_cut(edges, "s", "t")
+    assert value == pytest.approx(1e-16, rel=1e-12)
+    assert cut == pytest.approx(value, rel=1e-12)
+    assert "s" in left and "t" in right
