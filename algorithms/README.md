@@ -107,6 +107,7 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 - [Spatial impact uncertainty](statistics/spatial-impact-uncertainty.md) — propagate a supplied joint parameter covariance into Monte Carlo intervals for direct, indirect and total impacts.
 - [Spatial lag 2SLS](statistics/spatial-lag-2sls.md) — instrument the endogenous spatially lagged response with exogenous covariates and their spatial lags.
 - [Two-step spatial-lag GMM](statistics/spatial-lag-gmm.md) — update the 2SLS weighting matrix with a heteroskedasticity-robust instrument-moment covariance and report robust standard errors and an overidentification statistic.
+- [Spatial-lag instrument diagnostics](statistics/spatial-lag-instrument-diagnostics.md) — assess excluded spatial-lag relevance with partial R-squared, classical partial F and an HC1 robust first-stage Wald F.
 - [Kelejian–Prucha spatial-error GMM](statistics/kelejian-prucha-spatial-error-gmm.md) — estimate spatial error dependence from three innovation moments, then apply feasible GLS under homoskedastic innovations.
 - [Spatial Durbin 2SLS](statistics/spatial-durbin-2sls.md) — estimate the endogenous spatial lag alongside spatially lagged covariates using higher-order spatial instruments.
 - [Concentrated SAR/SEM maximum likelihood](statistics/spatial-maximum-likelihood.md) — estimate spatial lag and spatial error parameters by profiling the Gaussian likelihood over a conservative interval.
