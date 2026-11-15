@@ -439,6 +439,43 @@ def largest_empty_circle(points, *, precision=1.0, max_cells=1_000_000):
         upper = radius + half * sqrt(2.0)
         return (-upper, x, y, half, radius)
 
+    def intersects_hull(x, y, half):
+        """Conservatively test whether an axis-aligned cell meets the hull."""
+        x0, x1 = x-half, x+half
+        y0, y1 = y-half, y+half
+        if _point_in_ring((x, y), ring):
+            return True
+        corners = ((x0,y0),(x1,y0),(x1,y1),(x0,y1))
+        if any(_point_in_ring(point, ring) for point in corners):
+            return True
+        if any(x0 <= px <= x1 and y0 <= py <= y1 for px,py in hull):
+            return True
+        # Liang–Barsky segment/rectangle clipping catches edge crossings
+        # even when neither a corner nor a hull vertex lies in the cell.
+        for a, b in zip(ring, ring[1:]):
+            dx, dy = b[0]-a[0], b[1]-a[1]
+            p_values = (-dx, dx, -dy, dy)
+            q_values = (a[0]-x0, x1-a[0], a[1]-y0, y1-a[1])
+            t0, t1 = 0.0, 1.0
+            hit = True
+            for p_value, q_value in zip(p_values, q_values):
+                if p_value == 0.0:
+                    if q_value < 0.0:
+                        hit = False
+                        break
+                else:
+                    ratio = q_value / p_value
+                    if p_value < 0.0:
+                        t0 = max(t0, ratio)
+                    else:
+                        t1 = min(t1, ratio)
+                    if t0 > t1:
+                        hit = False
+                        break
+            if hit:
+                return True
+        return False
+
     # The arithmetic mean of hull vertices is inside their convex hull.
     best_x = sum(p[0] for p in hull) / len(hull)
     best_y = sum(p[1] for p in hull) / len(hull)
@@ -463,7 +500,10 @@ def largest_empty_circle(points, *, precision=1.0, max_cells=1_000_000):
             continue
         for dx in (-child_half, child_half):
             for dy in (-child_half, child_half):
-                child = cell(x + dx, y + dy, child_half)
+                child_x, child_y = x + dx, y + dy
+                if not intersects_hull(child_x, child_y, child_half):
+                    continue
+                child = cell(child_x, child_y, child_half)
                 if -child[0] > best_radius + precision:
                     heappush(heap, child)
 
