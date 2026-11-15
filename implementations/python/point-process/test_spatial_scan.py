@@ -374,3 +374,92 @@ def test_flexible_scan_rejects_invalid_size_and_simulation_controls():
         monte_carlo_flexible_poisson_scan(
             coords, [1, 0], [10, 10], graph, n_simulations=0
         )
+
+def _is_connected_subset(members, adjacency):
+    members = set(members)
+    reached = {next(iter(members))}
+    frontier = list(reached)
+    while frontier:
+        node = frontier.pop()
+        for neighbour in members:
+            if adjacency[node, neighbour] and neighbour not in reached:
+                reached.add(neighbour)
+                frontier.append(neighbour)
+    return reached == members
+
+
+def test_flexible_scan_result_is_connected_by_graph_traversal():
+    from spatial_scan import flexible_poisson_scan
+    coords = np.array([
+        [0., 0.], [1., 0.], [2., 0.], [3., 0.], [4., 0.], [5., 0.]
+    ])
+    adjacency = np.zeros((6, 6), dtype=bool)
+    edges = [(0, 1), (1, 2), (1, 3), (3, 4), (4, 5)]
+    for left, right in edges:
+        adjacency[left, right] = adjacency[right, left] = True
+    cases = np.array([9, 8, 7, 1, 1, 1])
+    population = np.full(6, 100.)
+    result = flexible_poisson_scan(
+        coords, cases, population, adjacency, max_cluster_size=4,
+        max_population_fraction=0.8, min_cases=2,
+    )
+    assert result["member_indices"]
+    assert _is_connected_subset(result["member_indices"], adjacency)
+    assert result["root_index"] in result["member_indices"]
+
+
+def test_flexible_scan_matches_brute_force_connected_subset_enumeration():
+    from itertools import combinations
+    from math import log
+    from spatial_scan import flexible_poisson_scan
+
+    coords = np.array([
+        [0., 0.], [1., 0.], [2., 0.], [0., 1.], [1., 1.], [2., 1.]
+    ])
+    adjacency = np.zeros((6, 6), dtype=bool)
+    edges = [(0, 1), (1, 2), (0, 3), (1, 4), (2, 5), (3, 4), (4, 5)]
+    for left, right in edges:
+        adjacency[left, right] = adjacency[right, left] = True
+    cases = np.array([8, 7, 1, 6, 1, 1])
+    population = np.array([100., 100., 100., 100., 100., 100.])
+    maximum = 3
+    fraction_limit = 0.8
+    minimum = 2
+    actual = flexible_poisson_scan(
+        coords, cases, population, adjacency, max_cluster_size=maximum,
+        max_population_fraction=fraction_limit, min_cases=minimum,
+    )
+
+    total_cases = int(cases.sum())
+    total_population = float(population.sum())
+    expected_best = 0.0
+    for root in range(len(coords)):
+        distances = np.sqrt(np.sum((coords - coords[root]) ** 2, axis=1))
+        order = np.argsort(distances, kind="stable")
+        universe = [root] + [
+            int(index) for index in order if int(index) != root
+        ][:maximum - 1]
+        universe = sorted(set(universe))
+        for size in range(1, maximum + 1):
+            for subset in combinations(universe, size):
+                if root not in subset or not _is_connected_subset(subset, adjacency):
+                    continue
+                inside_cases = int(cases[list(subset)].sum())
+                inside_population = float(population[list(subset)].sum())
+                if (inside_cases < minimum
+                        or inside_population / total_population > fraction_limit
+                        or inside_population >= total_population):
+                    continue
+                expected_inside = total_cases * inside_population / total_population
+                outside_cases = total_cases - inside_cases
+                expected_outside = total_cases - expected_inside
+                if inside_cases <= expected_inside:
+                    continue
+                score = inside_cases * log(inside_cases / expected_inside)
+                if outside_cases:
+                    score += outside_cases * log(outside_cases / expected_outside)
+                expected_best = max(expected_best, score)
+
+    assert actual["log_likelihood_ratio"] == pytest.approx(expected_best)
+    if expected_best > 0:
+        assert _is_connected_subset(actual["member_indices"], adjacency)
