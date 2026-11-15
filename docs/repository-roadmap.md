@@ -375,7 +375,13 @@ The package is a stationary M/M/c teaching model, not a time-varying simulation.
 - [ ] Complete primary-source, technical-claim, reproducibility and rights review.
 - [ ] Run full CI and notebook execution on the exact release candidate commit; resolve any failure or document a narrowly scoped exclusion.
 - [ ] Complete visual, navigation, accessibility and mobile QA before publishing the first edition and beginning Patreon work.
-\n\n## Point-process model continuation — 15 November 2026\n\n- [x] Implement and test a stationary Matérn disc-cluster (Neyman–Scott) simulator, with a compact-support radius buffer, canonical algorithm lesson, intern walkthrough and executable lab example.\n- [x] Research and implement a bounded grid-discretised log-Gaussian Cox simulator with an explicit exponential covariance, mean-preserving lognormal correction, tests and a documented dense-Cholesky size limit.\n- [x] Implement a finite-window Strauss repulsive-process birth-death Metropolis–Hastings teaching sampler with hard-core and Poisson-limit checks, tests and a canonical lesson.
+
+
+## Point-process model continuation — 15 November 2026
+
+- [x] Implement and test a stationary Matérn disc-cluster (Neyman–Scott) simulator, with a compact-support radius buffer, canonical algorithm lesson, intern walkthrough and executable lab example.
+- [x] Research and implement a bounded grid-discretised log-Gaussian Cox simulator with an explicit exponential covariance, mean-preserving lognormal correction, tests and a documented dense-Cholesky size limit.
+- [x] Implement a finite-window Strauss repulsive-process birth-death Metropolis–Hastings teaching sampler with hard-core and Poisson-limit checks, tests and a canonical lesson.
 - [ ] Review general Gibbs interaction models as a separate model workstream.
 - [x] Add Besag–Newell area-centred fixed-k cluster detection with exact hypergeometric local tails, global Monte Carlo calibration, tests and a lab.
 - [x] Implement and verify Tango's global distance-decay quadratic-form test with conditional Monte Carlo inference, tests and notebook example.
