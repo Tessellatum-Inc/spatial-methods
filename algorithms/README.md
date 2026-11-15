@@ -36,6 +36,9 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Remote sensing
 
+- [Sobel and Canny edge detection](remote-sensing/edge-detection.md) — gradient estimation, non-maximum suppression and hysteresis.
+- [Mathematical morphology](remote-sensing/mathematical-morphology.md) — binary dilation, erosion, opening, closing and boundary extraction.
+- [Gabor filters](remote-sensing/gabor-filters.md) — oriented, frequency-selective filter banks for texture analysis.
 - [PCA transform](remote-sensing/pca-transform.md) — reduce correlated multispectral bands with covariance or correlation principal components; distinct from MNF.
 - [GLCM texture](remote-sensing/glcm-texture.md) — build offset-specific gray-level co-occurrence matrices and calculate common texture features.
 - [Optical spectral-index family](remote-sensing/spectral-index-family.md) — calculate vegetation, moisture, water, built-up, burn and snow indices with explicit band conventions.
