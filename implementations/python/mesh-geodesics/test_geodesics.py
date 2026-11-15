@@ -23,7 +23,8 @@ def test_shortest_path_uses_valid_edge_route():
     vertices = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
     faces = [(0, 1, 2), (0, 2, 3)]
     path, length = mesh_edge_shortest_path(vertices, faces, 1, 3)
-    assert path == [1, 2, 3]
+    # Both equal-length routes are valid; tie-breaking follows face order.
+    assert path in ([1, 2, 3], [1, 0, 3])
     assert length == pytest.approx(2.0)
 
 
