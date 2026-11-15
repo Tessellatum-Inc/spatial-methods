@@ -24,6 +24,10 @@ For finite graphs with nonnegative additive edge costs, a Pareto-optimal route c
 - No route diversity or skyline service beyond the returned Pareto frontier.
 - Equal-cost alternative paths are deduplicated to one representative path.
 
+## Implementation and tests
+
+A tested Python baseline is available in the [shortest-path package](../../implementations/python/shortest-paths/README.md), with the [Pareto label-setting module](../../implementations/python/shortest-paths/pareto_paths.py) and `test_pareto_paths.py`. The [source-verification note](../../catalog/verification/multi-criteria-shortest-paths.md) records the identity, technical scope and limitations.
+
 ## Reference
 
 Martins, E. Q. V. (1984). “On a multicriteria shortest path problem.” *European Journal of Operational Research*, 16(2), 236–245. https://doi.org/10.1016/0377-2217(84)90077-8.
