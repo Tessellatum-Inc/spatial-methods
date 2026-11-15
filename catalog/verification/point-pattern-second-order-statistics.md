@@ -1,7 +1,7 @@
 # Source verification — point-pattern second-order summaries
 
 ## Identity and bibliography
-Ripley's 1976 paper introduces second-order analysis of stationary point processes; Ripley (1977) develops modelling of spatial patterns. Baddeley, Møller and Waagepetersen (2000) introduce nonparametric interaction summaries for inhomogeneous point patterns. DOI metadata and the estimator/translation-correction structure were cross-checked against the published article and maintained spatstat Kinhom documentation.
+Ripley's 1976 paper introduces second-order analysis of stationary point processes; Ripley (1977) develops modelling of spatial patterns. Baddeley, Møller and Waagepetersen (2000) introduce nonparametric interaction summaries for inhomogeneous point patterns. DOI metadata and the estimator/translation-correction structure were cross-checked against the published article and maintained spatstat documentation. The implementation uses the unnormalised p=0 form of the translation-corrected estimator with externally supplied pointwise intensities; it does not fit the intensity surface or apply the optional spatstat normalisation factors.
 
 ## Technical scope
 The K estimator uses ordered point pairs and rectangular translation edge correction. It assumes stationarity/homogeneity and isotropy. The Poisson reference is K(r)=pi*r^2. The pair-correlation estimate differentiates the estimated K curve numerically, so it is bandwidth/radius-grid sensitive.

@@ -140,3 +140,13 @@ These notes record bounded checks against publisher or institutional bibliograph
 - **Limitations:** zero replacement, compositional kriging, spatial dependence and regression remain open. The implementation rejects zeros rather than inserting an arbitrary pseudocount.
 - **Implementation status:** implementation, tests and lab are prepared; repository CI pending.
 - **Rights:** citations and DOI links only.
+
+
+## Section 2 — Marshall empirical Bayes area-rate smoothing
+
+**Source entry:** “Empirical Bayes rate smoothing, head-banging, median polish” (source page 4).
+
+- **Identity and bibliography:** the Marshall method is confirmed: Marshall, R. J. (1991), “Mapping Disease and Mortality Rates Using Empirical Bayes Estimators,” *Journal of the Royal Statistical Society: Series C*, 40(2), 283–294, DOI [10.2307/2347593](https://doi.org/10.2307/2347593). Publisher metadata and the article's method sections were checked; the maintained spdep EBest documentation cites Marshall for the global Poisson moment estimator.
+- **Technical claims:** the article derives a global moment shrinkage estimator and a local neighbourhood variant. Global shrinkage is invariant to spatial arrangement; local shrinkage uses an explicitly defined neighbourhood and a local homogeneity assumption.
+- **Implementation:** global and local moment estimators, tests and executable lab are added. The implementation does not cover head-banging, median polish, Clayton–Kaldor iterative maximum likelihood or hierarchical CAR/BYM disease mapping.
+- **Rights:** mathematical equations are independently typeset and paraphrased; no article text or figures are reproduced.

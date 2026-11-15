@@ -87,6 +87,7 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 - [Kernel density estimation for point patterns](statistics/point-pattern-kde.md) — estimate a fixed-bandwidth planar Gaussian intensity surface and understand bandwidth and edge effects.
 - [Compositional data analysis](statistics/compositional-data-analysis.md) — apply closure, CLR, ALR and ILR transforms and compare compositions with Aitchison distance.
 - [Circular Poisson spatial scan statistic](spatial-scan-statistic.md) — search centroid-centred circles for elevated areal case rates with a population offset and conditional multinomial Monte Carlo calibration.
+- [Empirical Bayes rate smoothing](statistics/empirical-bayes-rate-smoothing.md) — shrink noisy Poisson area rates toward a global or analyst-defined local pooled mean using moment estimates.
 
 
 - [DBSCAN](statistics/dbscan.md) — identify density-connected clusters and noise in planar point data.

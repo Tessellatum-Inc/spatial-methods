@@ -42,6 +42,7 @@ This directory holds those foundational methods separately from individual algor
 - [Spatial thin-plate smoothing spline](spatial-thin-plate-smoothing-spline.md) — fit full-knot and optimally truncated low-rank thin-plate smooths with an unpenalized affine null space.
 
 - [Compositional data analysis](compositional-data-analysis.md) — use closure and log-ratio coordinates for relative data, with explicit treatment of zeros and the simplex geometry.
+- [Empirical Bayes rate smoothing](empirical-bayes-rate-smoothing.md) — estimate global and local Poisson rate shrinkage from exposure-weighted moments.
 
 ## How to use these records
 

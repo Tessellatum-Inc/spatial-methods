@@ -10,7 +10,7 @@ Compositions describe relative parts of a whole. Their natural sample space is t
 - **ILR:** project log parts onto an orthonormal basis of the zero-sum subspace, producing D−1 Euclidean coordinates.
 - **Aitchison distance:** Euclidean distance in ILR coordinates (equivalently, the norm of a CLR difference).
 
-The [implementation](../implementations/python/compositional-data/README.md) uses a Helmert orthonormal basis and checks round trips and isometry.
+The [implementation](../../implementations/python/compositional-data/README.md) uses a Helmert orthonormal basis and checks round trips and isometry.
 
 ## Zero handling
 
