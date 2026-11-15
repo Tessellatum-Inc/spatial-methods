@@ -114,6 +114,9 @@ jobs:
           - example: vp-tree
             directory: implementations/python/vp-tree
             pythonpath: ""
+          - example: ball-tree
+            directory: implementations/python/ball-tree
+            pythonpath: ""
           - example: polygon-validity
             directory: implementations/python/polygon-validity
             pythonpath: ""
