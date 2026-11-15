@@ -566,8 +566,11 @@ def minimum_area_bounding_rectangle_calipers(points):
         return {"corners": (a, b, b, a), "area": 0.0,
                 "angle_radians": atan2(b[1]-a[1], b[0]-a[0])}
 
+    origin_x, origin_y = hull[0]
+
     def dot(point, direction):
-        return point[0]*direction[0] + point[1]*direction[1]
+        return ((point[0]-origin_x)*direction[0]
+                + (point[1]-origin_y)*direction[1])
 
     def initial_support(direction, maximize):
         values = [dot(point, direction) for point in hull]
@@ -617,10 +620,10 @@ def minimum_area_bounding_rectangle_calipers(points):
         t0, t1 = dot(hull[min_v], v), dot(hull[max_v], v)
         area = max(0.0, (s1-s0)*(t1-t0))
         corners = (
-            (s0*ux+t0*v[0], s0*uy+t0*v[1]),
-            (s1*ux+t0*v[0], s1*uy+t0*v[1]),
-            (s1*ux+t1*v[0], s1*uy+t1*v[1]),
-            (s0*ux+t1*v[0], s0*uy+t1*v[1]),
+            (origin_x+s0*ux+t0*v[0], origin_y+s0*uy+t0*v[1]),
+            (origin_x+s1*ux+t0*v[0], origin_y+s1*uy+t0*v[1]),
+            (origin_x+s1*ux+t1*v[0], origin_y+s1*uy+t1*v[1]),
+            (origin_x+s0*ux+t1*v[0], origin_y+s0*uy+t1*v[1]),
         )
         candidate = {
             "corners": corners,
