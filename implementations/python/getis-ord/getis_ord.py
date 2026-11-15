@@ -22,7 +22,7 @@ class LocalGiStarResult:
     p_two_sided_normal: tuple[float, ...]
 
 
-def _values_and_weights(values, weights, *, positive=True):
+def _values_and_weights(values, weights, *, positive=True, allow_diagonal=False):
     n = len(values)
     if n < 2:
         raise ValueError("at least two observations are required")
