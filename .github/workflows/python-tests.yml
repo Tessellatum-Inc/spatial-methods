@@ -192,6 +192,9 @@ jobs:
           - example: point-location
             directory: implementations/python/point-location
             pythonpath: ""
+          - example: closest-pair
+            directory: implementations/python/closest-pair
+            pythonpath: ""
           - example: coverage-simplification
             directory: implementations/python/coverage-simplification
             pythonpath: ""
