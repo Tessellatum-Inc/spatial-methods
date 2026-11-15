@@ -44,3 +44,16 @@ def test_dnbr_sign_and_nonfinite_propagation():
     post = np.array([0.2, 0.6, 0.1])
     np.testing.assert_allclose(dnbr(pre, post)[:2], [0.6, -0.1])
     assert np.isnan(dnbr(pre, post)[2])
+
+
+def test_awei_variants_match_reference_equations_and_masking():
+    from spectral_indices import awei_sh, awei_nsh
+    blue, green, nir, swir1, swir2 = 0.1, 0.3, 0.5, 0.2, 0.05
+    expected_sh = blue + 2.5*green - 1.5*(nir+swir1) - 0.25*swir2
+    expected_nsh = 4*(green-swir1) - (0.25*nir + 2.75*swir2)
+    assert awei_sh(blue, green, nir, swir1, swir2) == pytest.approx(expected_sh)
+    assert awei_nsh(green, nir, swir1, swir2) == pytest.approx(expected_nsh)
+    masked = awei_sh(np.array([blue, blue]), np.array([green, green]),
+                     np.array([nir, nir]), np.array([swir1, swir1]),
+                     np.array([swir2, swir2]), valid_mask=np.array([True, False]))
+    assert np.isfinite(masked[0]) and np.isnan(masked[1])
