@@ -109,3 +109,8 @@ The Section 1 flows-and-trees source entry now also includes an exact Dreyfus–
 ## Implementation reconciliation — k-core and Kernighan–Lin batch
 
 The Section 1 flows-and-trees entry now links to an undirected k-core degree-peeling implementation with core-number and induced-subgraph outputs. The community-detection/partitioning entry now also links to a balanced weighted/unweighted Kernighan–Lin bisection baseline using locked swap pairs and the best positive cumulative-gain prefix. Both packages have dedicated tests, READMEs, algorithm notes and verification records, and both are included in the Python CI matrix. The two new test suites were executed in the working environment: k-core 9 passed; Kernighan–Lin 7 passed. The Python package matrix now contains 139 implementation directories; the explicit notebook execution list remains 126. These two additions do not by themselves change the source-entry review counts: the grouped Section 1 rows remain partial pending full source-entry identity, bibliography, technical-claim and rights review.
+
+
+## Louvain implementation reconciliation
+
+Added a seeded multilevel weighted Louvain reference implementation, modularity evaluator, unit tests, algorithm note, verification record and executable notebook. The implementation preserves contracted internal edge weight as self-loops between aggregation levels. The grouped Section 1 community-detection entry remains partial: Leiden, Infomap, spectral partitioning and METIS-style methods are not implemented, and independent source identity, bibliography, claims and rights review remains outstanding.
