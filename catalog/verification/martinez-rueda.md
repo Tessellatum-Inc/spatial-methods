@@ -1,7 +1,7 @@
 # Martinez–Rueda verification record
 
-Implemented: endpoint event ordering; active x-overlap candidate tracking; proper cross-source segment intersections; split-parameter collection; ordered edge fragments; midpoint inside/outside classification for intersection, union, difference and symmetric difference; reversed clip fragments for A-minus-B.
+Implemented: endpoint event ordering; active x-overlap candidate tracking; proper cross-source intersections; split-parameter collection; ordered fragments; midpoint inside/outside classification for intersection, union, difference and XOR; directed-fragment stitching into closed rings; disconnected ring outputs; clockwise hole rings for containment differences; simple-ring validation.
 
-Tests authored for overlapping/disjoint rectangles, concave crossings, shared endpoints, collinear-overlap rejection, invalid inputs, 150 seeded rectangle cases, analytic rectangle Boolean areas and containment orientation. Tests have not been executed here.
+Tests authored for overlapping/disjoint rectangles, concave crossings and disconnected intersection, shared endpoints, collinear-overlap rejection, invalid/self-crossing rings, 150 seeded rectangle cases, analytic rectangle Boolean areas/components, containment with hole orientation, disjoint union and clockwise inputs. Tests have not been executed here.
 
-Outstanding: neighbour-ordered sweep status and event scheduling, self-intersection validation, robust predicates, holes/multipart classification, operation output-ring stitching and degenerate/coincident geometry.
+Outstanding: neighbour-ordered sweep status/event scheduling, input holes and multipolygons, explicit shell/hole grouping, complete touching/coincident handling, adaptive exact predicates and broader independent differential testing.
