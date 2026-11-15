@@ -154,6 +154,9 @@ jobs:
           - example: spectral-partitioning
             directory: implementations/python/spectral-partitioning
             pythonpath: ""
+          - example: map-matching
+            directory: implementations/python/map-matching
+            pythonpath: ""
           - example: point-location
             directory: implementations/python/point-location
             pythonpath: ""
