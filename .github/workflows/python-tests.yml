@@ -93,6 +93,9 @@ jobs:
           - example: rstar-tree
             directory: implementations/python/rstar-tree
             pythonpath: ""
+          - example: hilbert-rtree
+            directory: implementations/python/hilbert-rtree
+            pythonpath: ""
           - example: spatial-join
             directory: implementations/python/spatial-join
             pythonpath: "../kd-tree"
