@@ -47,7 +47,19 @@ Under their respective null hypotheses and regularity conditions, each classic s
 
 ## Interpretation and limitations
 
-Each classic test asks whether the OLS null is locally inconsistent with one specified spatial alternative. The classic tests can both respond to the other form of dependence. Robust Bera-Yoon score tests adjust for the competing alternative. Define the scores dρ=(e'Wy/σ²), dλ=(e'We/σ²), and retain D and T above. Then the robust lag test is\n\n\\[\nRLM_{lag}=\\frac{(d_\\rho-d_\\lambda)^2}{D-T}\n\\]\n\nwhile the robust error test is\n\n\\[\nRLM_{error}=\\frac{(d_\\lambda-(T/D)d_\\rho)^2}{T(1-T/D)}.\n\\]\n\nEach is asymptotically chi-square with one degree of freedom under its null. If D-T is numerically zero, the implementation returns both robust results as unavailable rather than dividing by a degenerate adjustment term. Do not mechanically select a model from the largest statistic.
+Each classic test asks whether the OLS null is locally inconsistent with one specified spatial alternative. The classic tests can both respond to the other form of dependence. Robust Bera-Yoon score tests adjust for the competing alternative. Define the scores \(d_\rho=e'Wy/\hat\sigma^2\), \(d_\lambda=e'We/\hat\sigma^2\), and retain \(D\) and \(T\) above. Then the robust lag test is
+
+\[
+RLM_{lag}=\frac{(d_\rho-d_\lambda)^2}{D-T}
+\]
+
+while the robust error test is
+
+\[
+RLM_{error}=\frac{(d_\lambda-(T/D)d_\rho)^2}{T(1-T/D)}.
+\]
+
+Each is asymptotically chi-square with one degree of freedom under its null. If \(D-T\) is numerically zero, the implementation returns both robust results as unavailable rather than dividing by a degenerate adjustment term. Do not mechanically select a model from the largest statistic.
 
 The tests do not estimate a spatial lag or error model. In particular, OLS is generally inconsistent for a model with a spatially lagged dependent variable because (Wy) is endogenous. Use a maintained spatial econometrics package for SAR/SEM estimation, robust diagnostics, uncertainty estimates and model comparison.
 
