@@ -54,3 +54,20 @@ With a binary heap, the implementation is O(n log n) time and O(n) memory for n 
 - Wang, L. and Liu, H. (2006), *An efficient method for identifying and filling surface depressions in digital elevation models for hydrologic analysis and modelling*, International Journal of Geographical Information Science, 20(2), 193–213. https://doi.org/10.1080/13658810500433453
 
 **Scope:** heap-based eight-neighbour depression filling with explicit raster/NoData boundary seeds; no breaching or flat resolution is included.
+
+## Resolving flats after conditioning
+
+Priority-Flood filling can leave broad equal-elevation surfaces. A D8
+steepest-descent method cannot choose a strictly lower neighbour from the
+interior of such a flat. The companion flat resolver labels 8-connected
+equal-height components, seeds a multi-source breadth-first search from cells
+adjacent to strictly lower terrain, and raises each flat cell by a small
+amount proportional to its shortest BFS distance from those outlets. Each
+non-outlet cell therefore has a lower BFS parent, while outlet cells already
+touch lower terrain.
+
+The automatic perturbation uses floating-point spacing at the flat elevation
+and checks that it cannot reach an adjacent higher cell. This simple
+deterministic approach is useful for teaching and small workflows; it is not
+a substitute for more elaborate gradient construction on complex flat
+topologies, nor does it fill or breach closed depressions.
