@@ -29,6 +29,12 @@ def test_collapse_refuses_boundary_interior_mixed_edge():
     assert not changed and nv == v and nf == f
 
 
+def test_collapse_refuses_interior_chord_between_boundary_vertices():
+    v, f = square()
+    nv, nf, changed = collapse_edge(v, f, (1, 2))
+    assert not changed and nv == v and nf == f
+
+
 def test_collapse_short_interior_edge_of_closed_tetrahedron():
     v=((0.,0.,0.),(1.,0.,0.),(0.5,0.866,0.),(0.5,0.289,0.816))
     f=((0,2,1),(0,1,3),(1,2,3),(2,0,3))
