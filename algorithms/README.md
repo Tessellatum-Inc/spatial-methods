@@ -79,6 +79,7 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 - [Filter-and-refine spatial join](query-processing/filter-refine-spatial-join.md) — use a spatial index to find candidate geometry pairs, then apply the exact spatial predicate.
 
 ## Spatial statistics
+- [Lee's L](statistics/lees-l.md) — integrate the spatial smoothing of two variables with their lagged correlation.
 - [Bivariate Moran's I](statistics/bivariate-morans-i.md) — relate one variable at each location to the spatial lag of a second variable, with an explicitly scoped conditional permutation baseline.
 
 - [Ripley's K and L](statistics/ripley-k.md) — compare uncorrected pair-count summaries with the homogeneous Poisson reference across distance scales.
