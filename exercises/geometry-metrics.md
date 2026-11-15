@@ -9,6 +9,7 @@ Use the geometry-metrics package to compare two digitised routes and compute a m
 3. Add intermediate vertices to one route without changing its underlying straight segments. Observe how the discrete distance can respond to sampling.
 4. Compute the smallest enclosing circle and verify that every input point lies inside it.
 5. Repeat with a different seed and discuss numerical reproducibility.
+6. For a concave polygon with a hole, compute its pole of inaccessibility at two precision settings and compare the returned boundary clearance and cell count.
 
 ## Deliverables
 
