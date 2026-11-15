@@ -36,6 +36,8 @@ This directory holds those foundational methods separately from individual algor
 
 - [Residual-based GNSS RAIM/FDE](gnss-residual-raim-fde.md) — test a linearised measurement snapshot for global residual inconsistency and inspect single-measurement exclusion candidates, without claiming protection levels.
 
+- [GNSS LAMBDA integer ambiguity resolution](gnss-lambda-integer-ambiguity-resolution.md) — decorrelate the float ambiguity lattice with an integer-unimodular transform and search for the best integer least-squares candidates.
+
 ## How to use these records
 
 Each record should explain the question the method helps answer, its assumptions, its mathematical form, the choices that affect results, a reproducible example and its limitations. Where a method is a modelling choice rather than a single algorithm, say so explicitly.
