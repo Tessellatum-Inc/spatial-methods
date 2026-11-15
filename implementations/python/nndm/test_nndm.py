@@ -39,4 +39,4 @@ def test_zero_range_is_ordinary_loo_and_validates_inputs():
     result=nndm_loo(x,x,autocorrelation_range=0,min_train=0.5)
     assert result["n_removed"]==0
     with pytest.raises(ValueError): nndm_loo(x,x,autocorrelation_range=-1)
-    with pytest.raises(ValueError): nndm_loo(x,x,min_train=0)
+    with pytest.raises(ValueError): nndm_loo(x,x,autocorrelation_range=0,min_train=0)

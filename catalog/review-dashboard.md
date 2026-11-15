@@ -1,6 +1,6 @@
 # Source review dashboard
 
-Snapshot: 15 November 2026 (source-entry labels retained; implementation reconciliation expanded MFD routing, compositional geometry, change-point detectors and spatial sampling)
+Snapshot: 15 November 2026 (recounted after the latest Section 1 and Section 18 implementation reconciliations)
 
 This dashboard counts the source-entry review labels in the 22 item-level section indexes. It is an inventory of review progress, not a claim that the entries have been technically verified.
 
@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 694 | Rows with a source-entry review status in the section indexes |
-| Partial | 88 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 606 | The source wording is preserved, but no independent review is recorded |
+| Partial | 91 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 603 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -19,7 +19,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 
 | Section | Source entries | Partial | Intake only |
 |---:|---:|---:|---:|
-| 1 — Core GIS | 33 | 21 | 12 |
+| 1 — Core GIS | 33 | 23 | 10 |
 | 2 — Spatial statistics | 27 | 9 | 18 |
 | 3 — Geostatistics | 26 | 3 | 23 |
 | 4 — Raster, terrain and hydrology | 27 | 2 | 25 |
@@ -36,12 +36,14 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 15 — Vision, registration and vector extraction | 33 | 0 | 33 |
 | 16 — Flows, regions, deformation and marine | 25 | 0 | 25 |
 | 17 — Geometry, scalability, design and siting | 27 | 0 | 27 |
-| 18 — Moving objects, routing, transit and water | 32 | 1 | 31 |
+| 18 — Moving objects, routing, transit and water | 32 | 2 | 30 |
 | 19 — African applications, addressing and finance | 32 | 0 | 32 |
 | 20 — Indices, microwave, events and information | 25 | 2 | 23 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 2 | 24 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 2 | 26 |
 | **Total** | **694** | **84** | **610** |
+
+The latest recount on 15 November 2026 finds **91 partial**, **603 intake-only** and **zero fully verified** source-entry rows. Section 1 now has 23 partial / 10 intake-only rows; Section 18 has two partial / 30 intake-only. The total remains 694 rows. This recount was calculated directly from the status labels in all 22 section indexes; older reconciliation notes below preserve historical snapshots and should not be read as the current totals.
 
 ## How to interpret this
 

@@ -27,3 +27,7 @@ The implementation supports a rectangular window, equal-area grid, conditional m
 - Baddeley, A., Rubak, E. and Turner, R. (2015). *Spatial Point Patterns: Methodology and Applications with R*. CRC Press.
 - Baddeley, A. and Turner, R. Documentation for spatstat's quadrat test, including the Pearson statistic and conditional multinomial Monte Carlo method.
 - Myllymäki, M. et al. (2022). “Should We Condition on the Number of Points When Modelling Spatial Point Patterns?” *The International Statistical Review*, 90(3), 551–562. DOI [10.1111/insr.12501](https://doi.org/10.1111/insr.12501).
+
+## Repository implementation
+
+A dependency-light implementation is available in [`implementations/python/point-process`](../../implementations/python/point-process/README.md), in `point_patterns.py` as `quadrat_count_test`. It uses conditional multinomial Monte Carlo calibration with a plus-one upper-tail p-value and a reproducible seed. The package test suite includes quadrat-count fixtures in [`test_point_patterns.py`](../../implementations/python/point-process/test_point_patterns.py). The method is limited to a rectangular window partitioned into equal-area quadrats; it does not provide irregular-window or adaptive-grid inference.
