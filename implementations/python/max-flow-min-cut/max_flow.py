@@ -79,9 +79,6 @@ def edmonds_karp(
         while parent[v] is not None:
             u = parent[v]
             residual[u][v] -= bottleneck
-            # Clamp tiny subtraction residue; it must not create false paths.
-            if residual[u][v] < 1e-14 * max(1.0, bottleneck):
-                residual[u][v] = 0.0
             residual[v][u] = residual[v].get(u, 0.0) + bottleneck
             v = u
         flow_value += bottleneck
@@ -130,7 +127,7 @@ def minimum_cut(
         while queue and sink not in parent:
             u = queue.popleft()
             for v, remaining in residual[u].items():
-                if remaining > 1e-12 and v not in parent:
+                if remaining > 0.0 and v not in parent:
                     parent[v] = u
                     queue.append(v)
         if sink not in parent:
