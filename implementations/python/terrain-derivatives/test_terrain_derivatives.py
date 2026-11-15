@@ -88,3 +88,53 @@ def test_zevenbergen_thorne_rejects_invalid_spacing():
     from terrain_derivatives import zevenbergen_thorne_slope_aspect
     with pytest.raises(ValueError):
         zevenbergen_thorne_slope_aspect(np.ones((3, 3)), cell_size_x=0)
+
+
+def test_curvature_of_planar_surface_is_zero():
+    from terrain_derivatives import terrain_curvature
+    dem = np.fromfunction(lambda r,c: 3.0*c - 2.0*r + 7.0, (7,8), dtype=float)
+    result = terrain_curvature(dem)
+    np.testing.assert_allclose(result["profile_curvature"][1:-1,1:-1], 0, atol=1e-12)
+    np.testing.assert_allclose(result["plan_curvature"][1:-1,1:-1], 0, atol=1e-12)
+
+
+def test_profile_curvature_of_cylindrical_parabola_and_zero_plan_curvature():
+    from terrain_derivatives import terrain_curvature
+    x = np.arange(-3,4,dtype=float)
+    dem = np.tile(x*x, (7,1))
+    result = terrain_curvature(dem)
+    expected = -2.0 / (5.0 ** 1.5)
+    assert result["profile_curvature"][3,4] == pytest.approx(expected)
+    assert result["plan_curvature"][3,4] == pytest.approx(0.0, abs=1e-12)
+
+
+def test_curvature_is_invariant_to_vertical_offset_and_respects_spacing():
+    from terrain_derivatives import terrain_curvature
+    x = np.arange(-3,4,dtype=float)
+    dem = np.tile(x*x, (7,1))
+    base = terrain_curvature(dem)
+    shifted = terrain_curvature(dem + 100.0)
+    np.testing.assert_allclose(base["profile_curvature"], shifted["profile_curvature"], equal_nan=True)
+    np.testing.assert_allclose(base["plan_curvature"], shifted["plan_curvature"], equal_nan=True)
+    scaled = terrain_curvature(dem, cell_size_x=2.0)
+    assert abs(scaled["profile_curvature"][3,4]) < abs(base["profile_curvature"][3,4])
+
+
+def test_curvature_flat_cells_edges_and_nodata_are_nan():
+    from terrain_derivatives import terrain_curvature
+    dem = np.ones((5,5))
+    flat = terrain_curvature(dem)
+    assert np.isnan(flat["profile_curvature"][2,2])
+    assert np.isnan(flat["plan_curvature"][2,2])
+    assert np.isnan(flat["profile_curvature"][0,0])
+    dem[2,2] = np.nan
+    masked = terrain_curvature(dem)
+    assert np.isnan(masked["profile_curvature"][1,1])
+    assert np.isnan(masked["plan_curvature"][2,2])
+
+
+@pytest.mark.parametrize("kwargs",[{"cell_size_x":0},{"cell_size_y":-1},{"z_factor":0},{"cell_size_y":float("nan")}])
+def test_curvature_rejects_invalid_units(kwargs):
+    from terrain_derivatives import terrain_curvature
+    with pytest.raises(ValueError):
+        terrain_curvature(np.ones((3,3)), **kwargs)
