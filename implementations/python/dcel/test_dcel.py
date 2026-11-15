@@ -51,3 +51,31 @@ def test_rejects_self_intersecting_ring_with_nonzero_signed_area():
     ring = [(0, 0), (4, 4), (0, 3), (3, 0), (0, 0)]
     with pytest.raises(ValueError, match="non-adjacent edges intersect"):
         DCEL.from_faces({"crossed": [ring]})
+
+
+
+def test_rejects_crossing_boundaries_between_distinct_faces():
+    faces = {
+        "a": [[(0, 0), (4, 0), (4, 4), (0, 4), (0, 0)]],
+        "b": [[(2, -1), (5, -1), (5, 2), (2, 2), (2, -1)]],
+    }
+    with pytest.raises(ValueError, match="noded"):
+        DCEL.from_faces(faces)
+
+
+def test_rejects_t_junction_where_vertex_hits_unsplit_edge():
+    faces = {
+        "a": [[(0, 0), (4, 0), (4, 4), (0, 4), (0, 0)]],
+        "b": [[(2, 4), (3, 5), (1, 5), (2, 4)]],
+    }
+    with pytest.raises(ValueError, match="noded"):
+        DCEL.from_faces(faces)
+
+
+def test_rejects_partial_collinear_shared_boundary():
+    faces = {
+        "a": [[(0, 0), (4, 0), (4, 4), (0, 4), (0, 0)]],
+        "b": [[(2, 4), (5, 4), (5, 6), (2, 6), (2, 4)]],
+    }
+    with pytest.raises(ValueError, match="collinear overlaps"):
+        DCEL.from_faces(faces)
