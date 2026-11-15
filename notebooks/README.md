@@ -171,3 +171,7 @@ These notebooks are learning materials. For production analysis, check the input
 - [Power-law MFD flow routing](mfd-flow-routing-lab.ipynb): inspect divergent flow fractions, convergence-exponent sensitivity, rectangular cell spacing, NoData masks and sink-level accumulation conservation.
 - [Pareto multi-criteria routing](pareto-multi-criteria-routing-lab.ipynb): compute a nondominated route frontier, inspect dominated alternatives and apply preferences after the frontier is known.
 - [Circular Poisson spatial scan](spatial-scan-statistic-lab.ipynb): identify a population-adjusted elevated-rate cluster, run conditional multinomial calibration and vary the maximum population fraction.
+
+### Computational geometry metrics
+
+- [Hausdorff, discrete Fréchet and smallest enclosing circle](geometry-metrics-lab.ipynb): compare sampled point sets and ordered polylines, then inspect a minimum enclosing circle.
