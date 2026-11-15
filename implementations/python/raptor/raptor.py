@@ -33,6 +33,12 @@ def _validate(routes):
                 raise ValueError("trip times must be nondecreasing along the route")
             if trip.departures[0] < previous_first:
                 raise ValueError("trips must be sorted by first-stop departure")
+            if route.trips.index(trip) > 0:
+                prior = route.trips[route.trips.index(trip) - 1]
+                if any(trip.arrivals[i] < prior.arrivals[i] or
+                       trip.departures[i] < prior.departures[i]
+                       for i in range(len(route.stops))):
+                    raise ValueError("overtaking trips are outside this baseline's assumptions")
             previous_first = trip.departures[0]
 
 def raptor(routes: Sequence[Route], access_times: Mapping[Hashable, float], *,

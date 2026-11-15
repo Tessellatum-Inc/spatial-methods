@@ -7,8 +7,8 @@ def route(stops, times):
 def test_direct_trip_and_departure_constraint():
     r = route(("A", "B", "C"), [((0, 10, 20), (0, 10, 20)), ((30, 40, 50), (30, 40, 50))])
     result = raptor([r], {"A": 5}, max_transfers=0)
-    assert result["rounds"][1]["B"] == 10
-    assert result["rounds"][1]["C"] == 20
+    assert result["rounds"][1]["B"] == 40
+    assert result["rounds"][1]["C"] == 50
 
 def test_cannot_board_trip_that_has_departed():
     r = route(("A", "B"), [((0, 10), (0, 10))])
@@ -41,3 +41,8 @@ def test_validation():
         raptor([route(("A", "B"), [((10, 5), (10, 5))])], {"A": 0})
     with pytest.raises(ValueError):
         raptor([], {})
+
+def test_overtaking_trip_order_is_rejected():
+    r = route(("A", "B"), [((0, 20), (0, 20)), ((5, 12), (5, 12))])
+    with pytest.raises(ValueError, match="overtaking"):
+        raptor([r], {"A": 0})
