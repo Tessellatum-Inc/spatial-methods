@@ -49,6 +49,7 @@ For local bivariate clusters, use a separately specified local statistic and inf
 
 ## Runnable material
 
+- [Interactive Jupyter lab](../../notebooks/bivariate-morans-i-lab.ipynb)
 - [Python implementation](../../implementations/python/bivariate-morans-i/README.md)
 - [Implementation walkthrough](../../implementations/python/bivariate-morans-i/implementation-walkthrough.md)
 - [Tests](../../implementations/python/bivariate-morans-i/test_bivariate_morans.py)
