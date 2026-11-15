@@ -5,6 +5,7 @@ exact floating-point comparisons; it is not a robust geometry engine.
 """
 
 from enum import Enum
+from math import isfinite
 from typing import Sequence
 
 Coordinate = tuple[float, float]
