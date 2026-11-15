@@ -136,3 +136,45 @@ class STRPackedRTree:
 
     def __len__(self) -> int:
         return len(self._bounds)
+
+
+    def nearest(self, point: Iterable[float], k: int = 1) -> list[tuple[int, float]]:
+        """Return k nearest boxes as (input_index, Euclidean_distance) pairs.
+
+        Best-first branch-and-bound uses node-envelope distance as a lower
+        bound. Results are ordered by distance and then original input index.
+        """
+        from heapq import heappop, heappush
+        coordinates = tuple(float(value) for value in point)
+        if len(coordinates) != 2 or not all(isfinite(value) for value in coordinates):
+            raise ValueError("point must contain two finite coordinates")
+        if not isinstance(k, int) or isinstance(k, bool) or k < 0:
+            raise ValueError("k must be a non-negative integer")
+        if k == 0 or self._root is None:
+            return []
+
+        def distance_squared(bounds: Bounds) -> float:
+            x, y = coordinates
+            dx = max(bounds[0] - x, 0.0, x - bounds[2])
+            dy = max(bounds[1] - y, 0.0, y - bounds[3])
+            return dx * dx + dy * dy
+
+        queue = []
+        sequence = 0
+        heappush(queue, (distance_squared(self._root.bounds), sequence, self._root))
+        found: list[tuple[float, int]] = []
+        while queue:
+            lower_bound, _order, item = heappop(queue)
+            if len(found) >= k:
+                kth = sorted(found, key=lambda pair: (pair[0], pair[1]))[k - 1][0]
+                if lower_bound > kth:
+                    break
+            if isinstance(item, _Entry):
+                found.append((lower_bound, item.index))
+                continue
+            for child in item.children:
+                sequence += 1
+                heappush(queue, (distance_squared(child.bounds), sequence, child))
+
+        found.sort(key=lambda pair: (pair[0], pair[1]))
+        return [(index, sqrt(distance_sq)) for distance_sq, index in found[:k]]

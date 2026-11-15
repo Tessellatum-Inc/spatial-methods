@@ -213,3 +213,10 @@ The tree is built at initialization and cannot be updated. Queries are two-dimen
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-13 | Initial reader-facing explanation and tested STR packing example |
+
+
+## Exact k-nearest bounding-box query
+
+The immutable tree also supports best-first k-nearest search from a point to stored rectangles. The distance from a point to a closed axis-aligned box is zero when the point lies inside, otherwise it is the Euclidean distance to the closest point on the box. Each internal node envelope gives a lower bound on the distance to every descendant rectangle. A min-heap expands the smallest lower bound first; once the next lower bound is strictly greater than the current kth result, the remaining tree cannot improve the answer. Equal distances are retained and sorted by original input index.
+
+The API returns (input_index, distance) pairs, with k=0 returning an empty list. This is nearest-envelope search: for non-rectangular source geometries it does not replace exact geometry-distance refinement. Seeded differential tests compare the result with a brute-force full sort.

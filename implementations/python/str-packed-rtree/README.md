@@ -38,7 +38,7 @@ Expected output:
 python -m pytest -q
 ```
 
-The tests compare the index against a brute-force bounding-box scan across 300 generated boxes, 60 query windows and five node capacities. They also cover empty trees, boundary touches, invalid bounds and original input-index preservation.
+The tests compare range queries against a brute-force scan across 300 generated boxes, 60 query windows and five node capacities; nearest-box queries are checked against a full-sort oracle on 100 seeded queries. They also cover empty trees, boundary touches, invalid bounds and original input-index preservation.
 
 ## What this implementation does
 
@@ -48,7 +48,8 @@ The tests compare the index against a brute-force bounding-box scan across 300 g
 - sorts each slice by y-centre;
 - packs entries into leaf nodes up to the chosen capacity;
 - repeats the packing process over node bounding boxes until one root remains;
-- searches by pruning any node whose bounding box does not intersect the query.
+- searches by pruning any node whose bounding box does not intersect the query;
+- answers k-nearest box queries with best-first branch-and-bound, returning input indices and Euclidean distances.
 
 ## Important limits
 

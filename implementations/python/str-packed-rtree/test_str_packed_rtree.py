@@ -89,3 +89,54 @@ def test_tree_keeps_all_input_items():
     tree = STRPackedRTree(bounds, node_capacity=3)
     assert len(tree) == len(bounds)
     assert tree.query((-1, -1, 30, 30)) == list(range(25))
+
+
+def _point_box_distance(point, bounds):
+    x, y = point
+    dx = max(bounds[0] - x, 0.0, x - bounds[2])
+    dy = max(bounds[1] - y, 0.0, y - bounds[3])
+    return (dx * dx + dy * dy) ** 0.5
+
+
+def test_nearest_box_query_orders_by_distance_then_original_index():
+    bounds = [(2, 0, 3, 1), (-3, 0, -2, 1), (0, 0, 1, 1), (5, 5, 6, 6)]
+    tree = STRPackedRTree(bounds, node_capacity=2)
+    actual = tree.nearest((1.5, 0.5), 4)
+    assert [index for index, _distance in actual] == [0, 2, 1, 3]
+    assert [distance for _index, distance in actual] == pytest.approx(
+        [0.5, 0.5, 3.5, (3.5**2 + 4.5**2) ** 0.5]
+    )
+
+
+def test_nearest_box_query_matches_brute_force_on_seeded_boxes():
+    rng = random.Random(20261115)
+    bounds = []
+    for _ in range(240):
+        x, y = rng.uniform(-50, 50), rng.uniform(-50, 50)
+        width, height = rng.uniform(0, 8), rng.uniform(0, 8)
+        bounds.append((x, y, x + width, y + height))
+    tree = STRPackedRTree(bounds, node_capacity=4)
+    for _ in range(100):
+        point = (rng.uniform(-60, 60), rng.uniform(-60, 60))
+        k = rng.randint(0, 20)
+        expected = sorted(
+            ((_point_box_distance(point, box), i) for i, box in enumerate(bounds)),
+            key=lambda pair: (pair[0], pair[1])
+        )[:k]
+        actual = tree.nearest(point, k)
+        assert [index for index, _distance in actual] == [i for _d, i in expected]
+        assert [distance for _i, distance in actual] == pytest.approx(
+            [distance for distance, _i in expected]
+        )
+
+
+@pytest.mark.parametrize("k", [-1, True, 1.5, "2"])
+def test_nearest_box_query_rejects_invalid_k(k):
+    with pytest.raises(ValueError, match="k must"):
+        STRPackedRTree([(0, 0, 1, 1)]).nearest((0, 0), k)
+
+
+@pytest.mark.parametrize("point", [(0,), (0, 1, 2), (float("nan"), 0), (0, float("inf"))])
+def test_nearest_box_query_rejects_invalid_points(point):
+    with pytest.raises(ValueError, match="two finite"):
+        STRPackedRTree([(0, 0, 1, 1)]).nearest(point)
