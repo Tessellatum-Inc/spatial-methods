@@ -26,3 +26,55 @@ def topographic_wetness_index(specific_catchment_area, slope_degrees, *, slope_f
     beta=np.radians(np.maximum(slope[valid],slope_floor_degrees))
     result[valid]=np.log(area[valid]/np.tan(beta))
     return result
+
+
+def topographic_position_index(elevation, *, window_size: int = 3,
+                               min_valid_fraction: float = 1.0) -> np.ndarray:
+    """Return focal TPI = cell elevation - neighbourhood mean elevation.
+
+    Uses a square odd-sized window including the centre. Only complete
+    windows are evaluated, so the outer half-window border is NaN.
+    Non-finite cells are excluded from the focal mean; a result is emitted
+    only when the valid-cell fraction reaches the requested threshold and
+    the centre cell itself is finite. Integral images make this O(n) in the
+    number of raster cells, independent of window area.
+    """
+    dem = np.asarray(elevation, dtype=float)
+    if dem.ndim != 2 or dem.size == 0:
+        raise ValueError("elevation must be a non-empty 2D array")
+    if isinstance(window_size, (bool, np.bool_)) or not isinstance(
+        window_size, (int, np.integer)
+    ) or window_size < 3 or window_size % 2 == 0:
+        raise ValueError("window_size must be an odd integer of at least 3")
+    try:
+        fraction = float(min_valid_fraction)
+    except (TypeError, ValueError):
+        raise ValueError("min_valid_fraction must be in (0, 1]") from None
+    if not np.isfinite(fraction) or not 0 < fraction <= 1:
+        raise ValueError("min_valid_fraction must be in (0, 1]")
+
+    radius = window_size // 2
+    valid = np.isfinite(dem)
+    values = np.where(valid, dem, 0.0)
+
+    def window_sums(array):
+        integral = np.pad(array.cumsum(axis=0).cumsum(axis=1),
+                          ((1, 0), (1, 0)), mode="constant")
+        return (integral[window_size:, window_size:]
+                - integral[:-window_size, window_size:]
+                - integral[window_size:, :-window_size]
+                + integral[:-window_size, :-window_size])
+
+    sums = window_sums(values)
+    counts = window_sums(valid.astype(np.int64))
+    total = window_size * window_size
+    means = np.full(sums.shape, np.nan, dtype=float)
+    enough = counts >= int(np.ceil(fraction * total))
+    np.divide(sums, counts, out=means, where=enough & (counts > 0))
+
+    result = np.full(dem.shape, np.nan, dtype=float)
+    interior = dem[radius:-radius, radius:-radius]
+    usable = np.isfinite(interior) & np.isfinite(means)
+    target = result[radius:-radius, radius:-radius]
+    target[usable] = interior[usable] - means[usable]
+    return result
