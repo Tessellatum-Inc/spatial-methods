@@ -48,6 +48,18 @@ def _validate_noded_segments(segments):
         key = tuple(sorted((a, b)))
         unique[key] = (a, b)
     edges = list(unique.values())
+    # Detect positive-length collinear overlaps before generic T-junction
+    # checks, so the reported failure is stable regardless of edge order.
+    for i, (a, b) in enumerate(edges):
+        for c, d in edges[i + 1:]:
+            if _orient(a, b, c) != 0 or _orient(a, b, d) != 0:
+                continue
+            axis = 0 if abs(b[0]-a[0]) >= abs(b[1]-a[1]) else 1
+            overlap = min(max(a[axis], b[axis]), max(c[axis], d[axis])) - max(
+                min(a[axis], b[axis]), min(c[axis], d[axis])
+            )
+            if overlap > 0:
+                raise ValueError("Input boundaries must not contain partial collinear overlaps")
     for i, (a, b) in enumerate(edges):
         for c, d in edges[i + 1:]:
             if not _segments_intersect(a, b, c, d):
