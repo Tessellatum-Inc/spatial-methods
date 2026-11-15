@@ -61,6 +61,10 @@ Some applications need more than one route: a delivery planner may need several 
 
 The teaching implementation represents paths as node sequences and uses the minimum weight when parallel arcs connect the same ordered pair. It does not preserve distinct parallel-edge identities; use an edge-based path model when that distinction matters.
 
+## Multi-criteria routing
+
+When route quality has multiple additive dimensions (such as time, distance, energy or risk), a single scalar edge weight can conceal trade-offs. The [Pareto label-setting algorithm](multi-criteria-shortest-paths.md) retains all componentwise nondominated cost vectors at each node. It requires nonnegative edge costs and can have an exponentially large frontier.
+
 ## Road routing is not just A*
 
 ~~~mermaid

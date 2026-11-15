@@ -118,3 +118,14 @@ These notes record bounded checks against publisher or institutional bibliograph
 - **Limitations:** no covariate adjustment, Bernoulli model, time scan, elliptical/arbitrary zones or secondary cluster extraction. This is not a full SaTScan reproduction.
 - **Implementation status:** implementation, tests and lab are prepared; repository CI pending.
 - **Rights:** citation and DOI link only.
+
+
+## Section 18 — Pareto multi-criteria shortest paths
+
+**Source entry:** “Multi-criteria routing: Pareto label-setting (Martins), bi-objective shortest path, skyline routes, eco-routing, scenic and safe routing” (multi-objective routing).
+
+- **Identity and bibliography:** confirmed: Martins, E. Q. V. (1984), “On a multicriteria shortest path problem,” *European Journal of Operational Research*, 16(2), 236–245, DOI [10.1016/0377-2217(84)90077-8](https://doi.org/10.1016/0377-2217(84)90077-8).
+- **Technical claims:** labels accumulate nonnegative cost vectors. Componentwise dominance removes labels that cannot be Pareto-optimal; all remaining nondominated source-to-target paths are returned.
+- **Limitations:** worst-case frontier size is exponential. This is not a transit-integrated route-choice model, eco-routing model, or skyline route service.
+- **Implementation status:** implementation, tests and lab are prepared; repository CI pending.
+- **Rights:** citation and DOI link only.

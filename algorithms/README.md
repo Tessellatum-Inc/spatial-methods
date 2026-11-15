@@ -67,6 +67,7 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Shortest paths](networks/shortest-paths.md) — understand graph cost models and shortest-path families, with tested Dijkstra, A*, bidirectional Dijkstra and ALT baselines.
 - [Turn-aware and time-dependent routing](networks/turn-aware-time-dependent-routing.md) — model prohibited turns, turn penalties and FIFO travel-time functions, with tested edge-based and earliest-arrival examples.
+- [Pareto multi-criteria shortest paths](networks/multi-criteria-shortest-paths.md) — retain all nondominated paths for nonnegative additive travel-time, distance, energy or risk vectors.
 
 ## Spatial indexing
 

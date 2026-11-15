@@ -27,3 +27,13 @@ A* with a zero heuristic must return the same result as Dijkstra. Add fixtures f
 ## Step 6 — Do not overgeneralise
 
 Real routing may require edge-based state for turn restrictions, time-dependent costs, vehicle profiles and network snapping. These concerns belong in the graph model and search state, not in a map drawing layer.
+
+## 8. Pareto label-setting for multiple route criteria
+
+A scalar shortest-path algorithm assumes that all edge costs can be added into one number. A weighted sum can hide trade-offs: a route that is faster but longer may be incomparable with one that is slower but shorter.
+
+The Pareto algorithm stores multiple labels at each node. A label contains the accumulated cost vector and the path that produced it. Label A dominates label B when A is no worse in every objective and strictly better in at least one. Dominated labels can be discarded because every continuation adds the same nonnegative edge-cost vector to both.
+
+The implementation orders the queue lexicographically, removes dominated labels, and prevents repeated nodes in a path. Nonnegative costs mean a cycle cannot improve a path. The returned frontier contains every nondominated source-to-target cost vector. The optional per-node label cap raises an error if exceeded; it never returns a silently truncated frontier.
+
+The worst-case number of nondominated paths can be exponential. This is an exact multi-criteria baseline, not a polynomial-time replacement for Dijkstra. It does not choose one preferred route; a downstream decision-maker must select among the trade-offs.

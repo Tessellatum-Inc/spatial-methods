@@ -139,7 +139,7 @@ Each implementation should state:
 - [Coverage-aware polygon simplification](python/coverage-simplification/README.md): a Shapely/GEOS wrapper with input/output coverage validation and edge-matched fixtures.
 - [Fixed-grid precision operations](python/precision-grid/README.md): explicit coordinate precision reduction and GEOS fixed-grid overlay, with tests that distinguish these operations from full snap rounding.
 - [Clipper2 native offsetting in C#](clipper2-csharp/README.md): an integer-path implementation using the Clipper2 NuGet package, with an executable CI smoke test.
-- [Shortest-path baselines](python/shortest-paths/README.md): Dijkstra, A*, bidirectional Dijkstra, directed ALT landmarks, Yen's k-shortest loopless paths, Bellman–Ford and Floyd–Warshall with tests.
+- [Shortest-path baselines](python/shortest-paths/README.md): Dijkstra, A*, bidirectional Dijkstra, directed ALT landmarks, Yen's k-shortest loopless paths, Bellman–Ford, Floyd–Warshall and Pareto multi-criteria label-setting with tests.
 - [Road-routing baselines](python/road-routing/README.md): edge-based turn restrictions, turn penalties and FIFO time-dependent earliest-arrival search.
 - [Nonseparable space-time covariance](python/nonseparable-space-time-covariance/README.md): a Gneiting-class Euclidean space-time covariance implementation with tests, intern walkthrough and notebook.
 
@@ -148,7 +148,7 @@ Each implementation should state:
 
 ## Automated checks
 
-The [Python examples workflow](../.github/workflows/python-tests.yml) is configured to run the test suites for all 103 Python example packages and the Clipper2 C# smoke test, and execute all 109 learning notebooks on relevant pushes and pull requests, using Python 3.13. The Local Moran notebook uses PySAL's maintained implementation rather than presenting a new from-scratch implementation. The Bentley–Ottmann job also adds the sibling segment-intersection package to `PYTHONPATH`.
+The [Python examples workflow](../.github/workflows/python-tests.yml) is configured to run the test suites for all 103 Python example packages and the Clipper2 C# smoke test, and execute all 110 learning notebooks on relevant pushes and pull requests, using Python 3.13. The Local Moran notebook uses PySAL's maintained implementation rather than presenting a new from-scratch implementation. The Bentley–Ottmann job also adds the sibling segment-intersection package to `PYTHONPATH`.
 
 A successful automated run means the tests in the repository passed in that environment. It does not prove correctness for every possible geometry or make a restricted teaching implementation production-ready. Always read the input contract and limitations before adapting an example.
 

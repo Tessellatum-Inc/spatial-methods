@@ -4,7 +4,7 @@
 - **Source pages:** 37–39
 - **Source transcription:** [pages 36–40](../../source-inventory/pages-36-40.md)
 - **Review state:** intake extracted; names are explicitly described by the source as coming from memory and requiring verification
-- **Current canonical records:** none yet
+- **Current canonical records:** [Pareto multi-criteria shortest paths](../../algorithms/networks/multi-criteria-shortest-paths.md); none yet
 
 **Source caution:** the source says many methods are from specialised subfields and names are from memory. Treat all named methods, systems and products as leads until checked.
 
@@ -21,7 +21,7 @@
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Speedup techniques: transit node routing, highway hierarchies, reach-based routing, arc flags, PHAST and RPHAST, customizable route planning, time-dependent contraction hierarchies | Shortest-path preprocessing and acceleration methods | 37 | Not checked — intake only |
-| Multi-criteria routing: Pareto label-setting (Martins), bi-objective shortest path, skyline routes, eco-routing, scenic and safe routing | Multi-objective routing algorithms / route criteria | 37 | Not checked — intake only |
+| Multi-criteria routing: Pareto label-setting (Martins), bi-objective shortest path, skyline routes, eco-routing, scenic and safe routing | Multi-objective routing algorithms / route criteria | 37 | [Pareto label-setting baseline](../../algorithms/networks/multi-criteria-shortest-paths.md) returns nondominated paths for nonnegative additive vector costs; bi-objective specialisations, skyline route products, eco-routing, scenic/safe criteria and transit integration remain open | Partial — related record exists; source-entry review pending |
 | Active-travel quality: bicycle level of traffic stress (LTS), BLOS, wheelchair-accessible routing, walkability-weighted paths | Active mobility metrics / accessibility-aware routing | 37 | Not checked — intake only |
 | Route choice models: path-size logit, C-logit, stochastic user equilibrium, route diversity metrics | Route choice and equilibrium models / diversity measures | 37 | Not checked — intake only |
 
