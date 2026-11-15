@@ -1,4 +1,4 @@
-# Planar point-pattern summaries and circular Poisson scan
+# Planar point-pattern summaries and areal cluster detection
 
 Dependency-free functions for a bounded subset of spatial point-process analysis:
 
@@ -33,6 +33,10 @@ The package includes a birth-death Metropolis–Hastings sampler for the finite-
 The `spatial_scan.py` module implements a centroid-centred circular Poisson scan for areal case counts with population offsets. It enumerates candidate circles through tied centroid distances, applies a maximum population fraction and minimum case count, and reports the highest elevated-cluster log-likelihood ratio and relative risk. `monte_carlo_poisson_scan` conditions on the observed total cases and uses multinomial simulation with the plus-one p-value correction.
 
 See the [canonical lesson](../../../algorithms/spatial-scan-statistic.md), [intern walkthrough](implementation-walkthrough.md), [test suite](test_spatial_scan.py) and [interactive lab](../../../notebooks/spatial-scan-statistic-lab.ipynb).
+
+## Besag–Newell and Tango cluster tests
+
+The same module implements an area-centred fixed-k Besag–Newell test with exact conditional hypergeometric local tails and global Monte Carlo calibration, plus Tango's global distance-decay quadratic-form statistic with conditional multinomial Monte Carlo inference. See the [Besag–Newell lesson](../../../algorithms/statistics/besag-newell.md) and [Tango lesson](../../../algorithms/statistics/tango-clustering-test.md). Both require projected centroids and population-at-risk data; the local Besag–Newell interface is area-centred, while Tango requires a prespecified distance scale.
 
 ## Assumptions and limitations
 
