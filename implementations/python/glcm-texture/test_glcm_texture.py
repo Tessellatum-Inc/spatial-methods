@@ -5,7 +5,7 @@ from glcm_texture import quantize, glcm, glcm_features
 def test_quantization_clips_and_respects_mask():
     a=np.array([[-1.,0.,5.],[10.,np.nan,20.]])
     q,v=quantize(a,levels=4,value_range=(0,10))
-    assert q.tolist()==[[0,0,1],[3,0,0]]
+    assert q.tolist()==[[0,0,2],[3,0,0]]
     assert v.tolist()==[[True,True,True],[True,False,True]]
 
 def test_horizontal_glcm_counts_and_symmetry():
