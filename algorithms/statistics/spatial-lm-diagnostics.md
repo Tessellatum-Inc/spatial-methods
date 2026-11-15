@@ -85,7 +85,9 @@ for i in range(4):
 
 result = spatial_lm_diagnostics(y, x, w)
 print("LM lag:", result.lm_lag)
-print("LM error:", result.lm_error)\nprint("Robust LM lag:", result.robust_lm_lag)\nprint("Robust LM error:", result.robust_lm_error)
+print("LM error:", result.lm_error)
+print("Robust LM lag:", result.robust_lm_lag)
+print("Robust LM error:", result.robust_lm_error)
 ~~~
 
 ## References
