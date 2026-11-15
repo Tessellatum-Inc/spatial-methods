@@ -8,6 +8,7 @@ Dependency-free teaching implementations for planar point sets and ordered polyl
 - Smallest enclosing circle using randomized Welzl recursion with a reproducible local seed.
 - Convex-hull diameter using a rotating-calipers antipodal-pair sweep.
 - Approximate polygon pole of inaccessibility (Polylabel-style best-first subdivision), supporting holes and an explicit distance precision.
+- Approximate largest empty circle for point sites, with its centre constrained to the sites' convex hull and a Lipschitz branch-and-bound error bound.
 - Minimum-area oriented bounding rectangle from convex-hull edge orientations (transparent O(h²) baseline, not linear-time calipers).
 
 ## Run
@@ -24,3 +25,6 @@ See the [minimum-area rectangle lesson](../../../algorithms/geometry/minimum-are
 
 
 The continuous Fréchet decision routine uses the free-space diagram for polygonal curves. The distance routine bisects the decision threshold and returns an upper bound within the requested tolerance (subject to floating-point arithmetic); it is distinct from the discrete vertex-sequence dynamic program.
+
+
+The largest-empty-circle routine searches the convex hull of a non-collinear site set and maximises distance to the nearest site. It is an additive-tolerance branch-and-bound baseline, not an exact Voronoi-vertex construction for arbitrary domains.
