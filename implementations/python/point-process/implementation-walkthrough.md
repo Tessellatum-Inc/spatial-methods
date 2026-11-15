@@ -44,3 +44,8 @@ The Strauss sampler targets a finite-window Gibbs density proportional to βⁿ�
 ## 8. Detect fixed-case-count neighbourhoods
 
 The Besag–Newell routine orders each centre's areas by centroid distance and accumulates complete distance-tie groups until at least k cases are reached. It evaluates the selected neighbourhood's upper-tail hypergeometric probability conditional on the total population and case count. The global routine simulates case allocations proportional to population, repeats all local tests and compares the number of significant centres with the observed count. This is explicitly area-centred; case-centred historical variants and adjustments for multiple choices of k are not silently conflated with it.
+
+
+## 9. Test global spatial concentration with Tango
+
+Tango's statistic forms the residual vector between observed case proportions and population-proportional expected proportions, then evaluates its quadratic form under an exponential centroid-distance closeness matrix. The distance scale phi controls how quickly influence decays. The Monte Carlo test reallocates the fixed total cases according to population shares and recomputes the statistic for every replicate. Select phi before inspecting the p-value; searching across scales requires a separate multiplicity-aware design.
