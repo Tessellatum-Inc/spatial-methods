@@ -33,3 +33,4 @@ These records are part of the broader [algorithm collection](../README.md). The 
 - [Smallest enclosing circle](smallest-enclosing-circle.md) — compute the minimum-radius Euclidean circle containing a finite planar point set.
 - [Geometry metrics implementation](../../implementations/python/geometry-metrics/README.md) — tested Hausdorff, discrete Fréchet and randomized Welzl baselines.
 - [Convex-polygon diameter](convex-polygon-diameter.md) — find a farthest pair with a rotating-calipers antipodal sweep.
+- [Pole of inaccessibility / Polylabel](pole-of-inaccessibility-polylabel.md) — approximate the maximum-clearance interior point of a polygon, including holes.
