@@ -40,3 +40,65 @@ def test_bad_bounds(box):
 
 def test_bad_query():
     with pytest.raises(ValueError): RStarTree().query((0,0,1))
+
+
+def _assert_tree_invariants(tree):
+    seen = []
+    leaf_depths = set()
+
+    def visit(node, depth, is_root=False):
+        assert node.bounds is None if not node.children else node.bounds is not None
+        if not is_root:
+            assert tree.min_entries <= len(node.children) <= tree.max_entries
+        else:
+            assert len(node.children) <= tree.max_entries or not node.leaf
+        if node.leaf:
+            leaf_depths.add(depth)
+            seen.extend(item.index for item in node.children)
+            for item in node.children:
+                assert item.bounds == tree._records[item.index]
+        else:
+            assert node.children
+            for child in node.children:
+                assert child.parent is node
+                visit(child, depth + 1)
+        if node.children:
+            expected = node.children[0].bounds
+            for child in node.children[1:]:
+                expected = (
+                    min(expected[0], child.bounds[0]),
+                    min(expected[1], child.bounds[1]),
+                    max(expected[2], child.bounds[2]),
+                    max(expected[3], child.bounds[3]),
+                )
+            assert node.bounds == expected
+
+    visit(tree.root, 0, True)
+    assert len(leaf_depths) <= 1
+    assert sorted(seen) == list(range(len(tree._records)))
+
+
+def test_forced_reinsertion_preserves_all_entries_and_tree_invariants():
+    rng = random.Random(20261115)
+    tree = RStarTree(max_entries=4)
+    records = []
+    for _ in range(600):
+        x, y = rng.uniform(-100, 100), rng.uniform(-100, 100)
+        w, h = rng.uniform(0.01, 8), rng.uniform(0.01, 8)
+        box = (x, y, x + w, y + h)
+        tree.insert(box)
+        records.append(box)
+    assert tree._reinsertion_count > 0
+    _assert_tree_invariants(tree)
+    for _ in range(300):
+        x, y = rng.uniform(-110, 110), rng.uniform(-110, 110)
+        q = (x, y, x + rng.uniform(0, 12), y + rng.uniform(0, 12))
+        assert tree.query(q) == [i for i, b in enumerate(records) if intersects(b, q)]
+
+
+def test_forced_reinsertion_handles_duplicate_and_degenerate_boxes():
+    tree = RStarTree(max_entries=4)
+    for i in range(80):
+        tree.insert((0, 0, 0, 0) if i % 3 else (i, i, i, i))
+    _assert_tree_invariants(tree)
+    expected = [i for i in range(80) if i % 3 != 0 or i == 0]\n    assert tree.query((0, 0, 0, 0)) == expected
