@@ -4,7 +4,7 @@
 - **Source pages:** 35–37
 - **Source transcription:** [pages 31–35](../../source-inventory/pages-31-35.md) and [pages 36–40](../../source-inventory/pages-36-40.md)
 - **Review state:** source entries extracted into this index; not every entry independently verified
-- **Current canonical records:** mesh smoothing (partial coverage of the source mesh-processing family); several other Section 17 families remain intake-only
+- **Current canonical records:** mesh smoothing and indexed half-edge topology (partial coverage of the source mesh-processing family); remeshing, repair, ball pivoting, winged-edge and quad-edge remain outstanding
 
 This section extends computational geometry and adds scalable statistics, fast density methods, sampling design, 3D data formats, competitive location, charging infrastructure, surveillance and a representative implementation map.
 
