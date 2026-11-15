@@ -59,7 +59,8 @@ def spatial_hac_ols(
 
     differences = points[:, None, :] - points[None, :, :]
     distances = np.sqrt(np.sum(differences * differences, axis=2))
-    scaled = distances / float(bandwidth)\n    kernel = np.where(scaled < 1.0, (1.0 - scaled) ** 4 * (4.0 * scaled + 1.0), 0.0)
+    scaled = distances / float(bandwidth)
+    kernel = np.where(scaled < 1.0, (1.0 - scaled) ** 4 * (4.0 * scaled + 1.0), 0.0)
     weighted_scores = design * residual[:, None]
     meat = weighted_scores.T @ kernel @ weighted_scores
     covariance = bread @ meat @ bread
