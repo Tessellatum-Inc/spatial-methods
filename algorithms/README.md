@@ -8,7 +8,7 @@ Each record explains one method or operation, its assumptions, where it is usefu
 - [Polygon intersection](geometry/polygon-intersection.md) — construct the geometry shared by two inputs.
 - [Convex hull](geometry/convex-hull.md) — find the smallest convex set containing a finite planar point set, with Graham scan, Jarvis march (gift wrapping) and Quickhull implementations.
 - [Voronoi and Delaunay](geometry/voronoi-delaunay.md) — nearest-site regions and their Delaunay dual.
-- [Alpha shapes](geometry/alpha-shapes.md) — parameterise a non-convex point-set envelope using Delaunay triangle circumradii.
+- [Laplacian and Taubin mesh smoothing](geometry/mesh-smoothing.md) — smooth triangular surface meshes with uniform one-ring Laplacian and shrinkage-compensating Taubin passes.\n- [Alpha shapes](geometry/alpha-shapes.md) — parameterise a non-convex point-set envelope using Delaunay triangle circumradii.
 - [Segment intersection](geometry/segment-intersection.md) — determine whether two line segments cross, touch or overlap.
 - [Bentley–Ottmann](geometry/bentley-ottmann.md) — find intersecting pairs across a set of segments using a plane sweep.
 - [Polygon validity](geometry/polygon-validity.md) — check whether rings, shells, holes and multi-part geometries satisfy the chosen geometry model; includes a tested Shapely inspection and explicit-repair workflow.
