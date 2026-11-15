@@ -85,7 +85,7 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 
 - [Ripley's K and L](statistics/ripley-k.md) — compare uncorrected pair-count summaries with the homogeneous Poisson reference across distance scales.
 - [Cross-type point-pattern summaries](statistics/cross-type-point-pattern-summaries.md) — compare nearest-neighbour, K, pair-correlation and J functions between two marked event types.
-- [Homogeneous Poisson and Thomas processes](statistics/poisson-and-thomas-processes.md) — simulate a complete-spatial-randomness baseline and a Gaussian Neyman–Scott cluster process.
+- [Homogeneous Poisson and Thomas processes](statistics/poisson-and-thomas-processes.md) — simulate a complete-spatial-randomness baseline and a Gaussian Neyman–Scott cluster process.\n- [Matérn cluster process](statistics/matern-cluster-process.md) — simulate a Neyman–Scott process with Poisson parents and compact-support uniform-disc offspring.
 - [Clark–Evans nearest-neighbour index](statistics/clark-evans.md) — compare observed mean nearest-neighbour spacing with a homogeneous Poisson reference.
 - [Kernel density estimation for point patterns](statistics/point-pattern-kde.md) — estimate a fixed-bandwidth planar Gaussian intensity surface and understand bandwidth and edge effects.
 
