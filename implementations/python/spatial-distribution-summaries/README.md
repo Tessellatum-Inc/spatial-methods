@@ -24,7 +24,7 @@ print(standard_deviational_ellipse(points, weights))
 - **Standard distance:** weighted root-mean-square radial distance from the weighted mean center.
 - **Standard deviational ellipse:** eigen-decomposition of the weighted population coordinate covariance matrix. The returned semiaxes are the square roots of its eigenvalues, and orientation is counterclockwise from the positive x-axis.
 
-The ellipse's default scale is 1. For a bivariate normal distribution, multiply both semiaxes by sqrt(2) to obtain the joint 68-percent probability ellipse. This is different from treating a one-dimensional 1-SD interval as a 68-percent two-dimensional region.
+The ellipse's default scale is 1. For a bivariate normal distribution, multiply both semiaxes by approximately 1.515 to obtain the joint 68.3-percent probability ellipse. This is different from treating a one-dimensional 1-SD interval as a 68-percent two-dimensional region.
 
 ## Assumptions and limitations
 

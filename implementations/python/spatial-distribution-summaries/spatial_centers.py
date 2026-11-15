@@ -111,7 +111,7 @@ def standard_deviational_ellipse(points, weights=None, *, scale=1.0):
 
     Semiaxes are scale * sqrt(eigenvalue) for the weighted coordinate
     covariance matrix. Orientation is counterclockwise from +x in [-90, 90).
-    Use scale=sqrt(2) for the 68-percent bivariate-normal ellipse.
+    Use scale=1.515 for an approximately 68.3-percent bivariate-normal ellipse.
     """
     pts, w = _validate(points, weights)
     if isinstance(scale, bool) or not isfinite(float(scale)) or scale <= 0:
