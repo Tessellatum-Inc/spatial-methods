@@ -36,6 +36,8 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Remote sensing
 
+- [PCA transform](remote-sensing/pca-transform.md) — reduce correlated multispectral bands with covariance or correlation principal components; distinct from MNF.
+- [GLCM texture](remote-sensing/glcm-texture.md) — build offset-specific gray-level co-occurrence matrices and calculate common texture features.
 - [Optical spectral-index family](remote-sensing/spectral-index-family.md) — calculate vegetation, moisture, water, built-up, burn and snow indices with explicit band conventions.
 - [Otsu thresholding](remote-sensing/otsu-thresholding.md) — select a global two-class intensity threshold by maximising between-class variance.
 - [Normalised Difference Vegetation Index (NDVI)](remote-sensing/ndvi.md) — calculate a red/NIR spectral contrast while preserving invalid pixels and preprocessing caveats.
