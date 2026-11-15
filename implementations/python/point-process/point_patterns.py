@@ -492,7 +492,7 @@ def simulate_log_gaussian_cox_process(window, mean_intensity, variance, correlat
     points = []
     cell_area = width * height
     for index, z in enumerate(field):
-        cell_intensity = intensity * __import__("math").exp(z - var/2)
+        cell_intensity = intensity * exp(z - var/2)
         count = _poisson_count(cell_intensity * cell_area, rng)
         row, col = divmod(index, nx)
         x0, y0 = xmin + col*width, ymin + row*height
