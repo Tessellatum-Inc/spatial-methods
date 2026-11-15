@@ -91,9 +91,22 @@ Open spatial_hac.py.
 
 The bandwidth and coordinate units must agree. The kernel controls which spatial residual pairs contribute; this does not solve omitted-variable bias, spatial endogeneity or model misspecification.
 
-## 8. Tests and verification
+## 8. Two-step heteroskedasticity-robust spatial-lag GMM
 
-\`test_spatial_econometrics.py\` checks the LM formulas against independently assembled matrix expressions, rejects invalid inputs, checks SAR/SDM impact identities, tests parametric impact uncertainty, and generates synthetic SAR, SDM and SARAR processes for estimator recovery tests.
+Open spatial_gmm.py.
+
+1. Construct the structural regressors R = [Wy, X] and the instrument matrix Z = [X, WX, ..., W^q X].
+2. Remove dependent instrument columns in stable order, then check the sample-size and rank conditions for identification and a nonsingular moment covariance.
+3. Estimate the first-step GMM model using (Z'Z/N)^(-1), which yields the conventional 2SLS weighting choice.
+4. Calculate first-step residuals and estimate S = N^(-1) sum(z_i z_i' u_i^2).
+5. Use S^(-1) as the second-step efficient weighting matrix and re-estimate the structural coefficients.
+6. Recalculate the residual moment covariance for the heteroskedasticity-robust sandwich standard errors. Report the overidentification statistic and degrees of freedom when instruments exceed structural regressors.
+
+The instruments must be exogenous and relevant; rank checks do not establish either condition. This estimator handles heteroskedasticity in the IV moments but does not model spatially autocorrelated structural errors. It is not the full Kelejian–Prucha spatial-error GMM procedure.
+
+## 9. Tests and verification
+
+\`test_spatial_econometrics.py\` checks the LM formulas against independently assembled matrix expressions, rejects invalid inputs, checks SAR/SDM impact identities, tests parametric impact uncertainty, and generates synthetic SAR, SDM, SARAR and heteroskedastic SAR-GMM processes for estimator recovery tests.
 
 Run:
 
