@@ -103,3 +103,8 @@ The potential-field package now includes a bounded 2D single-thin-dike Werner de
 ## Geophysical gridding update — 14 November 2026
 
 A separate fixed-perimeter discrete biharmonic solver now minimizes squared five-point Laplacian curvature on regular grids, with affine-plane reproduction and spacing tests. It is intentionally not represented as the full Briggs scattered-data algorithm. The existing thin-plate spline remains a distinct radial-basis interpolator.
+
+
+## Section 7 implementation note — mean radiant temperature
+
+A bounded ISO 7726-style globe-thermometer MRT estimator now includes natural/forced convection selection, vectorised inputs, tests, a method derivation and an executable lab. It does not implement directional radiative-flux/view-factor MRT, UTCI, PET or a complete urban microclimate workflow. See the [method](../methods/mean-radiant-temperature.md) and [package](../implementations/python/mean-radiant-temperature/README.md).
