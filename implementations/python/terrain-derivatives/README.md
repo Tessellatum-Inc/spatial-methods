@@ -38,3 +38,8 @@ The companion `zevenbergen_thorne_slope_aspect` function uses central difference
 ## Profile and plan curvature
 
 `terrain_curvature` estimates signed profile and plan curvature from central first and second differences on a 3×3 neighbourhood. Profile curvature is measured along the steepest-slope direction; plan curvature is measured across it. Both outputs use inverse horizontal units, require positive cell spacing and a positive vertical conversion factor, and return NaN at borders, in any window containing NoData, and on flat cells where aspect/curvature directions are undefined. This is a local finite-difference teaching baseline; it does not implement multiscale curvature, robust smoothing, geographic-grid correction or geomorphon classification.
+
+
+## Topographic position index (TPI)
+
+The topographic_position_index function calculates focal TPI as the centre elevation minus the mean elevation in an odd-sized square window (including the centre). It uses integral images for O(rows × columns) work regardless of window size. The outer half-window border is always NoData. Non-finite cells are omitted from the local mean, with min_valid_fraction controlling the minimum share of valid cells required; the centre must be valid. Positive values are locally elevated (ridge-like), negative values locally depressed (valley-like), and values near zero are locally similar to the neighbourhood. TPI is scale-dependent: window size, terrain resolution and study area affect interpretation. It is not a landform classifier by itself.
