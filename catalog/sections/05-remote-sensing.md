@@ -4,7 +4,7 @@
 - **Source pages:** 7–9
 - **Source transcription:** [pages 6–10](../../source-inventory/pages-06-10.md)
 - **Review state:** source entries extracted into this index; not every entry independently verified
-- **Current canonical records:** [NDVI](../../algorithms/remote-sensing/ndvi.md), [spectral-index family](../../algorithms/remote-sensing/spectral-index-family.md), [Otsu thresholding](../../algorithms/remote-sensing/otsu-thresholding.md), [PCA transform](../../algorithms/remote-sensing/pca-transform.md), and [GLCM texture](../../algorithms/remote-sensing/glcm-texture.md). This is a partial audit; the section remains substantially incomplete.
+- **Current canonical records:** [NDVI](../../algorithms/remote-sensing/ndvi.md), [spectral-index family](../../algorithms/remote-sensing/spectral-index-family.md), [Otsu thresholding](../../algorithms/remote-sensing/otsu-thresholding.md), [PCA transform](../../algorithms/remote-sensing/pca-transform.md),  [GLCM texture](../../algorithms/remote-sensing/glcm-texture.md), [Sobel/Canny](../../algorithms/remote-sensing/edge-detection.md), [binary morphology](../../algorithms/remote-sensing/mathematical-morphology.md), and [Gabor filters](../../algorithms/remote-sensing/gabor-filters.md). This is a partial audit; the section remains substantially incomplete.
 
 The source spans raw imagery correction, spectral transforms, classification, hyperspectral analysis, radar, point clouds, photogrammetry and biophysical retrieval. These methods operate at different stages of a sensor-to-product workflow; do not collapse them into one generic “remote sensing algorithm” category.
 
@@ -30,7 +30,7 @@ The canonical records now cover the spectral-index family, global Otsu threshold
 | Vegetation and soil: [NDVI](../../algorithms/remote-sensing/ndvi.md), EVI, SAVI, NDRE, NDMI, LSWI, tasseled cap (Kauth-Thomas) | Spectral indices / transforms | 8 | Partial — related record exists; source-entry review pending |
 | Water, burn, snow, urban: NDWI, MNDWI, AWEI, NBR, dNBR, NDSI, NDBI | Spectral indices | 8 | Partial — selected bibliography checked; canonical lesson pending |
 | Transforms: [PCA](../../algorithms/remote-sensing/pca-transform.md), minimum noise fraction (MNF), Fourier, wavelet, Hough, Radon | Statistical and signal transforms | 8 | Partial — covariance/correlation PCA implementation and tests authored; MNF and other transforms remain open |
-| Texture and edges: [GLCM](../../algorithms/remote-sensing/glcm-texture.md), Gabor, Sobel, Canny, mathematical morphology, SIFT, SURF | Texture measures / filters / feature detectors and descriptors | 8 | Partial — offset-specific GLCM and six common features implemented; Gabor, Sobel, Canny, morphology, SIFT and SURF remain open |
+| Texture and edges: [GLCM](../../algorithms/remote-sensing/glcm-texture.md), Gabor, Sobel, Canny, mathematical morphology, SIFT, SURF | Texture measures / filters / feature detectors and descriptors | 8 | Partial — offset-specific GLCM and six common features implemented; SIFT and SURF remain open; Sobel/Canny, binary morphology and Gabor now have reference implementations |
 | Thresholding: Otsu, adaptive; Stumpf bathymetry; OC4 chlorophyll | Thresholding methods / retrieval algorithms | 8 | Not checked — intake only |
 | Compositing: best-pixel, medoid, maximum NDVI | Image compositing rules | 8 | Not checked — intake only |
 
