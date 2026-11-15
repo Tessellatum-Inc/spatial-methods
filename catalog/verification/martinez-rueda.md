@@ -1,7 +1,7 @@
 # Martinez–Rueda verification record
 
-Implemented: endpoint event ordering; active x-overlap candidate tracking; proper cross-source intersections; split-parameter collection; ordered fragments; midpoint inside/outside classification for intersection, union, difference and XOR; directed-fragment stitching into closed rings; disconnected ring outputs; clockwise hole rings for containment differences; simple-ring validation.
+Implemented: endpoint event ordering; active x-overlap candidate tracking; proper cross-source intersections; split-parameter collection; ordered fragments; midpoint inside/outside classification for intersection, union, difference and XOR; directed-fragment stitching into closed rings; disconnected ring outputs; clockwise hole rings; one shell plus disjoint non-nested input holes; simple-ring and ring-collection validation.
 
-Tests authored for overlapping/disjoint rectangles, concave crossings and disconnected intersection, shared endpoints, collinear-overlap rejection, invalid/self-crossing rings, 150 seeded rectangle cases, analytic rectangle Boolean areas/components, containment with hole orientation, disjoint union and clockwise inputs. Tests have not been executed here.
+Tests authored for overlapping/disjoint rectangles, concave crossings and disconnected intersection, shared endpoints, collinear-overlap rejection, invalid/self-crossing rings, 150 seeded rectangle cases, analytic rectangle Boolean areas/components, containment with hole orientation, disjoint union, clockwise input, a polygon hole with an island inside it, and invalid outside-hole rejection. Tests have not been executed here; CI was added to the Python matrix and is pending.
 
-Outstanding: neighbour-ordered sweep status/event scheduling, input holes and multipolygons, explicit shell/hole grouping, complete touching/coincident handling, adaptive exact predicates and broader independent differential testing.
+Outstanding: neighbour-ordered sweep status/event scheduling, multiple independent shells per source, complete touching/coincident handling, adaptive exact predicates and explicit Polygon/MultiPolygon shell-hole grouping.
