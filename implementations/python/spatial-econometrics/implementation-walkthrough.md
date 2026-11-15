@@ -144,3 +144,17 @@ Open `instrument_diagnostics.py`.
 6. Read the robust statistic narrowly: it is heteroskedasticity-robust under independent-observation asymptotics, not a Kleibergen–Paap rk statistic and not spatial-HAC robust.
 
 A low statistic is a warning, not a mechanical decision rule. Instrument exogeneity is a separate substantive condition; more spatial lags can add collinearity and many-instrument bias rather than useful identification.
+
+
+## 11. Spatial-lag Anderson–Rubin inference
+
+Open `spatial_lag_anderson_rubin.py`.
+
+1. Supply a candidate value \(\rho_0\) and transform the response to \(y-\rho_0Wy\).
+2. Construct \([X,WX,\ldots,W^qX]\), retaining independent columns in stable order so a lagged intercept is not counted twice.
+3. Regress the transformed response on X for the restricted model and on the full instrument matrix for the unrestricted model.
+4. Compare the two residual sums of squares to obtain the classical partial F for joint exclusion of the added spatial instruments.
+5. Calculate an HC1 sandwich covariance for the unrestricted transformed regression and form the robust Wald chi-square statistic for those same excluded coefficients.
+6. Interpret the classical test only under its iid homoskedastic Gaussian assumptions; the HC1 version is asymptotic under independent-observation sampling and does not correct spatial residual dependence.
+
+The null-size argument does not require a strong first stage, but excluded instruments must still be valid. This routine tests one candidate coefficient. Confidence-set inversion is intentionally separate because valid Anderson–Rubin sets can be unbounded or disconnected.
