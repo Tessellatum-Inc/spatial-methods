@@ -138,7 +138,7 @@ def test_delaunay_euclidean_mst_handles_collinear_and_small_inputs():
     points = [(3, 6), (-2, -4), (0, 0), (1, 2), (-1, -2)]
     result = delaunay_euclidean_mst(points)
     assert len(result) == len(points) - 1
-    assert sum(edge[2] for edge in result) == pytest.approx(4 * (5 ** 0.5))
+    assert sum(edge[2] for edge in result) == pytest.approx(5 * (5 ** 0.5))
 
 
 def test_delaunay_euclidean_mst_rejects_duplicate_and_non_finite_sites():
