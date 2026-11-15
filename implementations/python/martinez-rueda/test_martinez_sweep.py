@@ -100,3 +100,15 @@ def test_stitching_accepts_clockwise_input_rings():
     a=[(0,3),(4,3),(4,0),(0,0)]
     b=[(2,2),(5,2),(5,-1),(2,-1)]
     assert boolean_overlay_rings([[a],[b]],operation='intersection')['area']==pytest.approx(4.0)
+
+def test_concave_intersection_stitches_two_disconnected_components():
+    a=[(0,0),(6,0),(6,6),(4,6),(4,2),(2,2),(2,6),(0,6)]
+    b=[(-1,3),(7,3),(7,5),(-1,5)]
+    result=boolean_overlay_rings([[a],[b]],operation='intersection')
+    assert result['area']==pytest.approx(8.0)
+    assert len(result['rings'])==2
+
+def test_self_crossing_ring_is_rejected():
+    bowtie=[(0,0),(2,2),(0,2),(2,0)]
+    other=[(3,0),(4,0),(4,1),(3,1)]
+    with pytest.raises(ValueError): boolean_overlay_rings([[bowtie],[other]])
