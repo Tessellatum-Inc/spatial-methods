@@ -127,7 +127,7 @@ Each implementation should state:
 
 ### Spatial statistics
 
-- [Spatial inequality and segregation](python/spatial-inequality/README.md): weighted Gini, Theil T/L, Shannon area entropy, two-group dissimilarity and isolation/interaction indices, with 18 tests and explicit spatial-scope boundaries.
+- [Spatial inequality and segregation](python/spatial-inequality/README.md): weighted Gini, Theil T/L, Shannon area entropy, two-group dissimilarity and isolation/interaction indices, with 21 test cases and explicit spatial-scope boundaries.
 - [Geographic distribution summaries](python/spatial-distribution-summaries/README.md): weighted mean and geometric median centers, standard distance and covariance-based standard deviational ellipse, with 18 tests and explicit orientation/coverage conventions.
 - [Empirical Bayes area-rate smoothing](python/empirical-bayes-rates/README.md): Marshall's global and caller-neighbourhood local moment shrinkage for Poisson rates, with 16 tests and explicit exposure and adjacency assumptions.
 - [Global Moran's I in Python](python/global-morans-i/README.md): a dependency-free dense-matrix calculation, row-standardisation helper and 13 tests. It computes the statistic only; use a spatial statistics library for inference. Follow the [Global Moran's I walkthrough](python/global-morans-i/implementation-walkthrough.md).
