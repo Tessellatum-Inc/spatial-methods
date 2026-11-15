@@ -79,3 +79,24 @@ def test_rejects_partial_collinear_shared_boundary():
     }
     with pytest.raises(ValueError, match="collinear overlaps"):
         DCEL.from_faces(faces)
+
+
+def test_rejects_crossing_edges_between_faces_that_are_not_noded():
+    a = [(0, 0), (3, 0), (3, 1), (0, 1), (0, 0)]
+    b = [(1, -1), (2, -1), (2, 2), (1, 2), (1, -1)]
+    with pytest.raises(ValueError, match="must be noded"):
+        DCEL.from_faces({"a": [a], "b": [b]})
+
+
+def test_rejects_t_junction_between_face_boundaries():
+    a = [(0, 0), (3, 0), (3, 2), (0, 2), (0, 0)]
+    b = [(1, 0), (2, -1), (2, -2), (1, -2), (1, 0)]
+    with pytest.raises(ValueError, match="must be noded"):
+        DCEL.from_faces({"a": [a], "b": [b]})
+
+
+def test_rejects_partial_collinear_shared_edge_overlap():
+    a = [(0, 0), (3, 0), (3, 2), (0, 2), (0, 0)]
+    b = [(1, 0), (2, 0), (2, -1), (1, -1), (1, 0)]
+    with pytest.raises(ValueError, match="partial collinear overlaps"):
+        DCEL.from_faces({"a": [a], "b": [b]})
