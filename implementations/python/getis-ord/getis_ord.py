@@ -42,7 +42,7 @@ def _values_and_weights(values, weights, *, positive=True, allow_diagonal=False)
             value = float(raw)
             if not isfinite(value) or value < 0:
                 raise ValueError("weights must be finite and non-negative")
-            if i == j and value != 0:
+            if i == j and value != 0 and not allow_diagonal:
                 raise ValueError("global G weights must have a zero diagonal")
             clean.append(value)
         w.append(clean)
@@ -109,7 +109,7 @@ def local_getis_ord_gistar(
     variance formula is used. The returned p value is a two-sided standard
     normal approximation, clearly separated from permutation inference.
     """
-    x, w = _values_and_weights(values, weights, positive=True)
+    x, w = _values_and_weights(values, weights, positive=True, allow_diagonal=True)
     n = len(x)
     for i, row in enumerate(w):
         if any(value not in (0.0, 1.0) for value in row):
