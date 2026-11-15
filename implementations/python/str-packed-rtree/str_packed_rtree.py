@@ -7,7 +7,7 @@ geometries, refine candidates with the exact geometric predicate.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from math import ceil, isfinite, sqrt
+from math import ceil, hypot, isfinite
 from typing import Iterable, TypeAlias
 
 Bounds: TypeAlias = tuple[float, float, float, float]
@@ -158,7 +158,7 @@ class STRPackedRTree:
             x, y = coordinates
             dx = max(bounds[0] - x, 0.0, x - bounds[2])
             dy = max(bounds[1] - y, 0.0, y - bounds[3])
-            return dx * dx + dy * dy
+            return hypot(dx, dy)
 
         queue = []
         sequence = 0
@@ -182,4 +182,4 @@ class STRPackedRTree:
 
         ordered = sorted(((-d2, index) for d2, _neg_index, index in best),
                          key=lambda pair: (pair[0], pair[1]))
-        return [(index, sqrt(distance_sq)) for distance_sq, index in ordered]
+        return [(index, distance) for distance, index in ordered]

@@ -140,3 +140,8 @@ def test_nearest_box_query_rejects_invalid_k(k):
 def test_nearest_box_query_rejects_invalid_points(point):
     with pytest.raises(ValueError, match="two finite"):
         STRPackedRTree([(0, 0, 1, 1)]).nearest(point)
+
+
+def test_nearest_box_query_avoids_squared_distance_overflow():
+    tree = STRPackedRTree([(1e200, 0, 1e200, 0), (2e200, 0, 2e200, 0)])
+    assert tree.nearest((0, 0), 2) == [(0, 1e200), (1, 2e200)]
