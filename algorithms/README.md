@@ -104,6 +104,7 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 - [Geary's C](statistics/gearys-c.md) — measure global spatial autocorrelation through squared differences between neighbouring values.
 - [Spatial LM diagnostics](statistics/spatial-lm-diagnostics.md) — test classic and Bera-Yoon robust spatial lag and spatial error alternatives after an OLS null model.
 - [Spatial impacts](statistics/spatial-impacts.md) — decompose SAR/SDM marginal effects into average direct, indirect and total impacts.
+- [Spatial impact uncertainty](statistics/spatial-impact-uncertainty.md) — propagate a supplied joint parameter covariance into Monte Carlo intervals for direct, indirect and total impacts.
 - [Spatial lag 2SLS](statistics/spatial-lag-2sls.md) — instrument the endogenous spatially lagged response with exogenous covariates and their spatial lags.
 - [Spatial Durbin 2SLS](statistics/spatial-durbin-2sls.md) — estimate the endogenous spatial lag alongside spatially lagged covariates using higher-order spatial instruments.
 - [Concentrated SAR/SEM maximum likelihood](statistics/spatial-maximum-likelihood.md) — estimate spatial lag and spatial error parameters by profiling the Gaussian likelihood over a conservative interval.
