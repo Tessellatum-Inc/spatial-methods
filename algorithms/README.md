@@ -36,6 +36,9 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Remote sensing
 
+- [Minimum Noise Fraction (MNF)](remote-sensing/mnf-transform.md) — whiten estimated noise covariance before ordering spectral components by signal-to-noise.
+- [2-D Haar wavelet transform](remote-sensing/haar-wavelet.md) — decompose imagery into multiscale approximation and directional detail subbands with inverse reconstruction.
+- [Radon transform](remote-sensing/radon-transform.md) — calculate approximate line integrals over angle and offset to form a sinogram.
 - [2-D Fourier transforms and frequency filtering](remote-sensing/fourier-filtering.md) — transform imagery into spatial-frequency space and apply radial low-, high- or band-pass filters.
 - [Adaptive thresholding](remote-sensing/adaptive-thresholding.md) — derive local mean or Gaussian threshold surfaces for spatially varying backgrounds.
 - [Hough line transform](remote-sensing/hough-transform.md) — accumulate edge-pixel votes in rho-theta space and extract straight-line peaks.
