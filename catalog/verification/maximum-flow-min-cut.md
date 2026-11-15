@@ -19,3 +19,8 @@
 
 ## Limits
 This is a teaching baseline. It does not implement min-cost flow, multi-commodity flow, lower bounds, capacity scaling, push-relabel or dynamic network updates. Minimum spanning tree, Steiner tree and k-core remain separate algorithms in the grouped source entry.
+
+
+## Second independent implementation and oracle
+
+A separate Edmonds–Karp package is available at `implementations/python/max-flow-min-cut/`. Its seeded small-graph tests compare the returned value and cut capacity with exhaustive cut enumeration. This provides an independent algorithmic implementation and a separate optimality oracle; it does not replace the Dinic per-input-arc flow verification.
