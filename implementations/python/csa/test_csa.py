@@ -41,3 +41,21 @@ def test_validation():
                           Connection("U", "A", "B", 1, 2)], {"A": 0})
     with pytest.raises(ValueError):
         earliest_arrival([], {"A": 0}, minimum_transfer={"A": -1})
+
+
+def test_minimum_transfer_does_not_delay_initial_access_boarding():
+    cs = [Connection("T1", "A", "B", 5, 10)]
+    result = earliest_arrival(cs, {"A": 0}, minimum_transfer={"A": 30})
+    assert result["arrival_times"]["B"] == 10
+
+
+def test_transfer_minimum_applies_after_a_ride():
+    cs = [Connection("T1", "A", "B", 5, 10),
+          Connection("T2", "B", "C", 12, 20)]
+    blocked = earliest_arrival(cs, {"A": 0}, minimum_transfer={"B": 3})
+    assert "C" not in blocked["arrival_times"]
+    allowed = earliest_arrival(
+        [cs[0], Connection("T2", "B", "C", 13, 20)],
+        {"A": 0}, minimum_transfer={"B": 3}
+    )
+    assert allowed["arrival_times"]["C"] == 20

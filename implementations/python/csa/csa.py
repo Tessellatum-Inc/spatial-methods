@@ -36,6 +36,9 @@ def earliest_arrival(connections: Sequence[Connection],
         if not isfinite(time): raise ValueError("access times must be finite")
         arrivals[stop] = time
     onboard = set()
+    # Transfer minima apply only when the best known label came from a prior ride;
+    # initial access labels are not vehicle-to-vehicle transfers.
+    reached_by_transit = set()
     predecessors = {}
     previous_departure = float("-inf")
     for connection in connections:
@@ -46,11 +49,13 @@ def earliest_arrival(connections: Sequence[Connection],
             raise ValueError("connections must be sorted by departure time")
         previous_departure = dep
         ready = arrivals.get(connection.from_stop, float("inf"))
-        change = float(transfers.get(connection.from_stop, 0.0))
+        change = (float(transfers.get(connection.from_stop, 0.0))
+                  if connection.from_stop in reached_by_transit else 0.0)
         can_board = ready + change <= dep
         if can_board or connection.trip_id in onboard:
             if arr < arrivals.get(connection.to_stop, float("inf")):
                 arrivals[connection.to_stop] = arr
                 predecessors[connection.to_stop] = connection
+                reached_by_transit.add(connection.to_stop)
             onboard.add(connection.trip_id)
     return {"arrival_times": arrivals, "predecessors": predecessors}
