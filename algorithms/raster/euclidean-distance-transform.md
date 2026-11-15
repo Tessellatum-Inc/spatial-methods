@@ -37,7 +37,21 @@ This illustration assumes square unit cells and shows the centre-to-centre dista
 
 The exact Euclidean distance transform can be computed efficiently using separability of the squared Euclidean distance and one-dimensional lower-envelope computations. Felzenszwalb and Huttenlocher describe a linear-time method for sampled functions and grids. This differs from a chamfer transform, which uses an approximate neighbourhood metric, and from cost-distance, which accumulates costs over a movement model.
 
-The [Python example](../../implementations/python/raster-distance/README.md) wraps SciPy's `distance_transform_edt`; it does not implement the lower-envelope algorithm itself.
+### One-dimensional lower envelope
+
+For a sampled cost function \(f(i)\) and spacing \(s\), the squared transform is
+\[
+D(q)=\min_i\{f(i)+s^2(q-i)^2\}.
+\]
+Every finite sample defines a parabola. The algorithm maintains the lower envelope using two arrays: \(v\) stores the indices of the active parabolas and \(z\) stores the intersection coordinates where the active minimum changes. A new parabola removes any previous parabola whose active interval it entirely dominates. Once the envelope is built, a single forward scan evaluates the minimum at every grid index.
+
+The binary-image transform starts with \(f=0\) at target cells and \(f=+\infty\) elsewhere. The implementation skips infinite candidates, so rows with no target remain infinite during the first pass.
+
+### Separable two-dimensional transform
+
+The squared Euclidean distance separates into row and column contributions. Apply the 1-D transform to every row with column spacing, then to every column with row spacing. The result is the exact squared distance to the nearest target; take its square root for map-unit distances. The two passes require O(HW) work for a fixed 2-D grid.
+
+The [Python implementation](../../implementations/python/raster-distance/README.md) implements both the 1-D lower-envelope routine and the 2-D separable transform directly, rather than delegating to SciPy.
 
 ## Raster-specific decisions
 
@@ -50,7 +64,7 @@ The [Python example](../../implementations/python/raster-distance/README.md) wra
 
 ## Complexity and implementation
 
-The Felzenszwalb–Huttenlocher family computes the exact transform in time linear in the number of grid cells for a fixed-dimensional grid. The teaching package delegates to SciPy's compiled implementation and exposes only the grid-spacing contract.
+The Felzenszwalb–Huttenlocher family computes the exact transform in time linear in the number of grid cells for a fixed-dimensional grid. The teaching package implements the lower-envelope construction and both separable passes in NumPy/Python. The one-dimensional routine is also exposed for arbitrary finite sampled costs plus positive infinity.
 
 ## Exercises
 
@@ -62,7 +76,7 @@ The Felzenszwalb–Huttenlocher family computes the exact transform in time line
 
 ## References
 
-- Felzenszwalb, P. F. and Huttenlocher, D. P. (2012), [Distance Transforms of Sampled Functions](https://doi.org/10.4086/cgt.2012.004), Theory of Computing, 8, 415–428.
-- [SciPy `distance_transform_edt` documentation](https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.distance_transform_edt.html).
+- Felzenszwalb, P. F. and Huttenlocher, D. P. (2012), [Distance Transforms of Sampled Functions](https://doi.org/10.4086/toc.2012.v008a019), Theory of Computing, 8, 415–428.
+- The algorithm is derived from the published lower-envelope method; no source code or figures are copied.
 
 **Scope:** exact Euclidean distance on a regular 2D raster grid; no cost surface, obstacle-aware path or NoData policy is implemented.
