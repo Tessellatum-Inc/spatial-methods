@@ -62,7 +62,7 @@ The [planar Gaussian KDE lesson](../../algorithms/statistics/point-pattern-kde.m
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Lag and error: SAR, CAR, spatial lag, spatial error, SLX, SDEM, SAC/SARAR, Spatial Durbin, Manski model | Spatial regression model families | 3 | Not checked — intake only |
+| Lag and error: SAR, CAR, spatial lag, spatial error, SLX, SDEM, SAC/SARAR, Spatial Durbin, Manski model | Spatial regression model families | 3 | Partial — dense teaching estimators for SAR/SEM/SDM and joint SARAR/SAC ML are implemented; CAR, SLX/SDEM, Manski and broader model variants remain open |
 | Local and varying coefficients: GWR, MGWR, GTWR, GW principal components, GW summary statistics, spatially varying coefficient models, GeoDetector | Local modelling methods / geographically weighted methods | 3 | Not checked — intake only |
 | Diagnostics: LM-lag, LM-error and robust variants, Wald and LR tests, Moran's I on residuals, Chow and regime tests, Breusch-Pagan, Koenker, GWR significance tests | Model diagnostics / statistical tests | 3 | Not checked — intake only |
 | Estimation: spatial GMM, spatial HAC standard errors, spatial panel and dynamic panel models, spatial probit, spatial Heckman, spatial quantile regression, spatial stochastic frontier, spatial SUR, hedonic regression, endogenous weights, Bayesian model averaging over weights | Estimators / regression models / inference methods | 4 | Not checked — intake only |
@@ -70,7 +70,7 @@ The [planar Gaussian KDE lesson](../../algorithms/statistics/point-pattern-kde.m
 
 ### Implemented spatial regression estimators
 
-The [spatial econometrics package](../../implementations/python/spatial-econometrics/README.md) now includes classic and Bera-Yoon robust LM diagnostics, spatial lag 2SLS, spatial Durbin 2SLS, SAR/SDM impact decomposition with parametric Monte Carlo uncertainty intervals, and concentrated Gaussian maximum likelihood for SAR, SEM and SDM, plus joint SARAR/SAC maximum likelihood. The ML implementation uses a conservative norm-bounded spatial-parameter interval and dense log-determinants. Robust LM lag/error variants are implemented; uncertainty estimates, weak-instrument diagnostics, scalable sparse likelihoods, and other model families remain open.
+The [spatial econometrics package](../../implementations/python/spatial-econometrics/README.md) now includes classic and Bera-Yoon robust LM diagnostics, spatial lag 2SLS, spatial Durbin 2SLS, SAR/SDM impact decomposition with parametric Monte Carlo uncertainty intervals, and concentrated Gaussian maximum likelihood for SAR, SEM and SDM, plus joint SARAR/SAC maximum likelihood. The ML implementation uses a conservative norm-bounded spatial-parameter interval and dense log-determinants, including a two-parameter SARAR/SAC profile. Parametric Monte Carlo uncertainty intervals for SAR/SDM impacts now propagate a supplied joint coefficient covariance; covariance estimation, weak-instrument diagnostics, scalable sparse likelihoods, and other model families remain open.
 
 ## Smoothing and outlier detection
 
