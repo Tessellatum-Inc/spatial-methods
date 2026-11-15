@@ -150,3 +150,98 @@ def convex_polygon_diameter(points):
                 if d > best[2]:
                     best = (a, b, d)
     return best
+
+
+def _ring(values):
+    ring = _points(values, minimum=3)
+    if ring[0] != ring[-1]:
+        ring.append(ring[0])
+    if len(set(ring[:-1])) < 3:
+        raise ValueError("each polygon ring must contain at least three unique vertices")
+    return ring
+
+
+def _point_in_ring(point, ring):
+    x, y = point
+    inside = False
+    for a, b in zip(ring, ring[1:]):
+        if (a[1] > y) != (b[1] > y):
+            x_cross = a[0] + (y-a[1]) * (b[0]-a[0]) / (b[1]-a[1])
+            if x < x_cross:
+                inside = not inside
+    return inside
+
+
+def _point_segment_distance(point, a, b):
+    dx, dy = b[0]-a[0], b[1]-a[1]
+    denom = dx*dx + dy*dy
+    if denom == 0:
+        return _distance(point, a)
+    t = max(0.0, min(1.0, ((point[0]-a[0])*dx + (point[1]-a[1])*dy) / denom))
+    return hypot(point[0]-a[0]-t*dx, point[1]-a[1]-t*dy)
+
+
+def polylabel(outer_ring, holes=(), *, precision=1.0, max_cells=1_000_000):
+    """Approximate a polygon's pole of inaccessibility.
+
+    Returns (x, y, radius, cells_examined). The radius is the distance to the
+    nearest polygon boundary. Outer and hole rings must form a valid polygon.
+    Precision is an absolute planar distance tolerance.
+    """
+    from heapq import heappop, heappush
+    from math import sqrt
+    outer = _ring(outer_ring)
+    hole_rings = [_ring(r) for r in holes]
+    if not isfinite(precision) or precision <= 0:
+        raise ValueError("precision must be finite and positive")
+    if not isinstance(max_cells, int) or isinstance(max_cells, bool) or max_cells < 1:
+        raise ValueError("max_cells must be a positive integer")
+    all_rings = [outer] + hole_rings
+    min_x = min(p[0] for p in outer[:-1])
+    min_y = min(p[1] for p in outer[:-1])
+    max_x = max(p[0] for p in outer[:-1])
+    max_y = max(p[1] for p in outer[:-1])
+    width, height = max_x-min_x, max_y-min_y
+    if width == 0 or height == 0:
+        raise ValueError("polygon exterior must have positive area")
+
+    def signed_distance(point):
+        inside = _point_in_ring(point, outer) and not any(_point_in_ring(point, h) for h in hole_rings)
+        distance = min(_point_segment_distance(point, a, b)
+                       for ring in all_rings for a, b in zip(ring, ring[1:]))
+        return distance if inside else -distance
+
+    def make_cell(x, y, half):
+        d = signed_distance((x, y))
+        return (d + half*sqrt(2.0), x, y, half, d)
+
+    cell_size = min(width, height)
+    half = cell_size / 2.0
+    heap = []
+    x = min_x
+    while x < max_x:
+        y = min_y
+        while y < max_y:
+            cell = make_cell(x+half, y+half, half)
+            heappush(heap, (-cell[0], cell[1], cell[2], cell[3], cell[4]))
+            y += cell_size
+        x += cell_size
+
+    best = make_cell((min_x+max_x)/2.0, (min_y+max_y)/2.0, 0.0)
+    cells_examined = 0
+    while heap:
+        neg_max, cx, cy, half, d = heappop(heap)
+        upper_bound = -neg_max
+        cells_examined += 1
+        if cells_examined > max_cells:
+            raise RuntimeError("polylabel exceeded max_cells; relax precision or raise the limit")
+        if d > best[4]:
+            best = (upper_bound, cx, cy, half, d)
+        if upper_bound-best[4] <= precision:
+            continue
+        quarter = half/2.0
+        for dx in (-quarter, quarter):
+            for dy in (-quarter, quarter):
+                child = make_cell(cx+dx, cy+dy, quarter)
+                heappush(heap, (-child[0], child[1], child[2], child[3], child[4]))
+    return (best[1], best[2], max(0.0, best[4]), cells_examined)
