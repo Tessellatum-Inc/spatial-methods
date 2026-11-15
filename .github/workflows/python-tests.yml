@@ -92,7 +92,7 @@ jobs:
             pythonpath: ""
           - example: spatial-join
             directory: implementations/python/spatial-join
-            pythonpath: ""
+            pythonpath: "../kd-tree"
           - example: kd-tree
             directory: implementations/python/kd-tree
             pythonpath: ""
