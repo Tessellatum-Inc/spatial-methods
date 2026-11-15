@@ -77,6 +77,8 @@ class RStarTree:
             raise ValueError("infeasible minimum fill")
         self.root = _Node(True)
         self._records: list[Bounds] = []
+        self._active: list[bool] = []
+        self._active_count = 0
         self._reinsertion_count = 0
 
     def _refresh(self, node):
@@ -226,6 +228,8 @@ class RStarTree:
         box = _bounds(bounds)
         index = len(self._records)
         self._records.append(box)
+        self._active.append(True)
+        self._active_count += 1
         queue = [(_Entry(index, box), 0)]
         reinserted_levels = set()
         while queue:
@@ -258,5 +262,67 @@ class RStarTree:
                     stack.append(child)
         return sorted(found)
 
+    def delete(self, index: int) -> bool:
+        """Delete a record by stable insertion ID; return False if already absent."""
+        if isinstance(index, bool) or not isinstance(index, int):
+            raise ValueError("record ID must be an integer")
+        if index < 0 or index >= len(self._records) or not self._active[index]:
+            return False
+
+        target = _Entry(index, self._records[index])
+        leaf = None
+        stack = [self.root]
+        while stack and leaf is None:
+            node = stack.pop()
+            if node.leaf:
+                if any(item.index == index for item in node.children):
+                    leaf = node
+            else:
+                stack.extend(child for child in node.children if child.bounds is not None)
+        if leaf is None:
+            raise RuntimeError("active record is missing from the index")
+
+        leaf.children = [item for item in leaf.children if item.index != index]
+        self._active[index] = False
+        self._active_count -= 1
+        queue = []
+        node = leaf
+        while node is not self.root:
+            parent = node.parent
+            if len(node.children) < self.min_entries:
+                parent.children.remove(node)
+                level = self._node_level(node)
+                queue.extend((child, level) for child in node.children)
+                node.parent = None
+            else:
+                self._refresh(node)
+            node = parent
+
+        if not self.root.leaf and len(self.root.children) == 1:
+            self.root = self.root.children[0]
+            self.root.parent = None
+        elif not self.root.leaf and not self.root.children:
+            self.root = _Node(True)
+        else:
+            self._refresh(self.root)
+
+        # Condense-tree orphans are reinserted from highest level downward.
+        # Raise the root temporarily when a detached subtree is taller than
+        # the surviving tree; this preserves the subtree's original level.
+        queue.sort(key=lambda pair: pair[1], reverse=True)
+        no_forced_reinsert = set(range(self._node_level(self.root) + 1))
+        while queue:
+            item, target_level = queue.pop(0)
+            while self._node_level(self.root) < target_level:
+                old_root = self.root
+                self.root = _Node(False, [old_root])
+                self._refresh(self.root)
+            target_node = self._choose_node(item.bounds, target_level)
+            target_node.children.append(item)
+            if isinstance(item, _Node):
+                item.parent = target_node
+            self._adjust_after_insert(target_node, no_forced_reinsert, queue)
+        return True
+
     def __len__(self):
-        return len(self._records)
+        return self._active_count
