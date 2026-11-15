@@ -18,6 +18,7 @@ This package contains small, dense-matrix reference implementations:
 14. **Heteroskedastic spatial-error GM moments** for a supplied consistent disturbance predictor, using the two zero-diagonal quadratic restrictions of Kelejian–Prucha (2010).
 15. **Three-step heteroskedastic SARAR generalized spatial 2SLS**: initial spatial 2SLS, KP disturbance GM, and Cochrane–Orcutt transformed 2SLS.
 16. **Conley-style spatial HAC covariance for spatial-lag 2SLS**, using projected IV regressors and a compact-support Wendland kernel.
+17. **Kelejian–Prucha joint asymptotic covariance for heteroskedastic SARAR GTSLS**, including generated first-stage residual uncertainty and covariance between the final IV estimator and disturbance GM moments.
 
 ## Run
 
