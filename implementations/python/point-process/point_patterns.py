@@ -499,3 +499,53 @@ def simulate_log_gaussian_cox_process(window, mean_intensity, variance, correlat
         points.extend((rng.uniform(x0, x0+width), rng.uniform(y0, y0+height))
                       for _ in range(count))
     return points
+
+
+def simulate_strauss_process(window, beta, gamma, interaction_radius, *,
+                             burn_in=5000, n_steps=5000, seed=0):
+    """Simulate a Strauss repulsive process using birth-death Metropolis-Hastings.
+
+    The density relative to a unit-rate Poisson process is proportional to
+    beta**n * gamma**s, where s counts unordered pairs closer than the
+    interaction radius. beta is an intensity-like activity parameter and
+    0 <= gamma <= 1 controls repulsion (gamma=1 is Poisson; gamma=0 is
+    hard-core). This finite-run MCMC output is approximate, not exact.
+    """
+    if len(window) != 4:
+        raise ValueError("window must be (xmin, ymin, xmax, ymax)")
+    xmin, ymin, xmax, ymax = map(float, window)
+    if not all(isfinite(v) for v in (xmin, ymin, xmax, ymax)) or xmax <= xmin or ymax <= ymin:
+        raise ValueError("window bounds must be finite and have positive width and height")
+    activity, interaction, radius = map(float, (beta, gamma, interaction_radius))
+    if (not all(isfinite(v) for v in (activity, interaction, radius))
+            or activity < 0 or not 0 <= interaction <= 1 or radius <= 0):
+        raise ValueError("beta must be non-negative, gamma must be in [0, 1], and interaction_radius positive")
+    if any(isinstance(v, bool) or not isinstance(v, Integral) or v < 0 for v in (burn_in, n_steps)):
+        raise ValueError("burn_in and n_steps must be non-negative integers")
+    if n_steps == 0:
+        raise ValueError("n_steps must be positive")
+    if isinstance(seed, bool) or not isinstance(seed, Integral):
+        raise ValueError("seed must be an integer")
+    if activity == 0:
+        return []
+    rng = random.Random(int(seed))
+    area = (xmax - xmin) * (ymax - ymin)
+    points = []
+    for _ in range(int(burn_in) + int(n_steps)):
+        if rng.random() < 0.5:
+            candidate = (rng.uniform(xmin, xmax), rng.uniform(ymin, ymax))
+            neighbours = sum(hypot(candidate[0]-x, candidate[1]-y) < radius
+                             for x, y in points)
+            ratio = activity * area * (interaction ** neighbours) / (len(points) + 1)
+            if rng.random() < min(1.0, ratio):
+                points.append(candidate)
+        elif points:
+            index = rng.randrange(len(points))
+            x, y = points[index]
+            neighbours = sum(hypot(x-other_x, y-other_y) < radius
+                             for j, (other_x, other_y) in enumerate(points) if j != index)
+            factor = activity * area * (interaction ** neighbours)
+            ratio = float("inf") if factor == 0 else len(points) / factor
+            if rng.random() < min(1.0, ratio):
+                points.pop(index)
+    return points
