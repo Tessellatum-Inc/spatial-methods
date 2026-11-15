@@ -30,3 +30,18 @@ print(astar(graph, "A", "D", landmarks))
 A* requires an admissible heuristic for optimality. A consistent heuristic is recommended. Dijkstra and A* require finite non-negative edge weights. Bellman–Ford and Floyd–Warshall accept finite negative edges but detect and reject negative cycles. The caller is responsible for representing one-way edges, access rules, turn restrictions and the chosen cost model.
 
 Yen's algorithm returns up to k distinct loopless paths in non-decreasing cost order; this teaching graph model represents paths as node sequences and uses the minimum weight for parallel arcs. Bidirectional Dijkstra uses a reversed directed graph and a lower-bound stopping condition. ALT preprocesses distances from and to selected landmarks and applies directed triangle-inequality lower bounds. These are static-graph teaching baselines. This is not a production routing engine; it does not include contraction hierarchies, hub labels, customizable route planning, turn-expanded state, time-dependent costs or transit routing.
+
+## Pareto multi-criteria paths
+
+The companion `pareto_paths.py` module stores multiple labels per node. Each label contains an accumulated cost vector and a node path. Componentwise dominance removes labels that cannot be Pareto-optimal; equal cost vectors retain the first discovered path.
+
+~~~python
+from pareto_paths import pareto_shortest_paths
+
+frontier = pareto_shortest_paths(
+    graph, source, target, n_objectives=2,
+    max_labels_per_node=10_000,
+)
+~~~
+
+The optional per-node label cap raises an error instead of silently truncating the frontier. The number of nondominated labels can grow exponentially, so this exact output-sensitive method is intended for small and medium teaching graphs. Edge costs must be finite and nonnegative. It does not automatically model turn restrictions, time-dependent costs, multimodal transfers or stochastic route choice. See the [canonical lesson](../../../algorithms/networks/multi-criteria-shortest-paths.md) and `test_pareto_paths.py`.
