@@ -1,7 +1,7 @@
 """Classic Lagrange Multiplier diagnostics for spatial dependence after OLS.
 
-This is a dense-matrix teaching implementation of the classic LM-lag and
-LM-error tests. It does not implement robust LM variants or estimate SAR/SEM.
+This is a dense-matrix teaching implementation of classic and Bera-Yoon
+robust LM-lag/LM-error tests. It does not estimate SAR/SEM.
 """
 from __future__ import annotations
 
@@ -78,9 +78,10 @@ def spatial_lm_diagnostics(
     D = (W X beta)' M (W X beta) / sigma2 + T and M is
     the residual-maker for X. Both statistics are asymptotic chi-square(1).
 
-    These are classic (not robust) score tests. They are diagnostics, not a
-    rule that automatically selects a model. Use a maintained spatial
-    econometrics package for estimation and robust LM variants.
+    Robust variants adjust each score for the competing spatial alternative.
+    If D-T is numerically zero, both robust tests are returned as None because
+    their nuisance-adjustment denominators are not identified. These tests are
+    diagnostics, not an automatic model-selection rule.
     """
     response, design, w = _inputs(y, x, weights)
     n = response.size
