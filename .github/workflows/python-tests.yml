@@ -400,6 +400,9 @@ jobs:
           - example: d8-flow-direction
             directory: implementations/python/d8-flow-direction
             pythonpath: ""
+          - example: hand
+            directory: implementations/python/hand
+            pythonpath: ""
           - example: dasymetric-allocation
             directory: implementations/python/dasymetric-allocation
             pythonpath: ""
