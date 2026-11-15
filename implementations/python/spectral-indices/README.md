@@ -16,6 +16,7 @@ undefined (zero-denominator) pixels where applicable.
 - NDBI: SWIR1/NIR built-up contrast.
 - NBR and dNBR: NIR/SWIR2 burn ratio and pre-minus-post differenced NBR.
 - NDSI: common green/SWIR1 snow index.
+- AWEI_sh and AWEI_nsh: shadow and non-shadow automated water extraction indices.
 
 ## Run
 
