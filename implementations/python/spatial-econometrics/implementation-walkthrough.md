@@ -165,7 +165,7 @@ The null-size argument does not require a strong first stage, but excluded instr
 Open `heteroskedastic_spatial_error_gm.py`.
 
 1. Supply a consistent predictor of the regression disturbance. This matters: in a model with an endogenous spatial lag, ordinary OLS residuals are not automatically a valid predictor.
-2. Compute \(v=W\tilde u\), \(w=Wv\), and the row-wise squared norms of W.
+2. Compute \(v=W\tilde u\), \(w=Wv\), and the column-wise squared norms of W.
 3. Build the two Kelejian–Prucha (2010) moment restrictions. Their zero-diagonal quadratic-form construction removes the unknown observation-specific innovation-variance contribution from the moment expectations.
 4. Expand the two sample moments into the coefficient vector \([\lambda,\lambda^2]\) and minimise their squared residual norm with identity weighting.
 5. Constrain the search to a conservative nonsingularity interval for \(I-\lambda W\), and reject a rank-deficient moment coefficient matrix.
