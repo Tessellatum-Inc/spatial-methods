@@ -111,6 +111,7 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 - [Spatial-lag Anderson–Rubin inference](statistics/spatial-lag-anderson-rubin.md) — test a candidate spatial autoregressive coefficient with classical and HC1 robust joint-exclusion tests that do not require strong instruments.
 - [Kelejian–Prucha spatial-error GMM](statistics/kelejian-prucha-spatial-error-gmm.md) — estimate spatial error dependence from three innovation moments, then apply feasible GLS under homoskedastic innovations.
 - [Heteroskedastic spatial-error GM](statistics/heteroskedastic-spatial-error-gm.md) — estimate the spatial-error coefficient from two zero-diagonal quadratic moments that accommodate unknown diagonal innovation variances.
+- [Heteroskedastic SARAR GTSLS](statistics/heteroskedastic-sarar-gtsls.md) — estimate the SARAR(1,1) model in three steps: initial spatial 2SLS, heteroskedastic disturbance GM, and transformed 2SLS.
 - [Spatial Durbin 2SLS](statistics/spatial-durbin-2sls.md) — estimate the endogenous spatial lag alongside spatially lagged covariates using higher-order spatial instruments.
 - [Concentrated SAR/SEM maximum likelihood](statistics/spatial-maximum-likelihood.md) — estimate spatial lag and spatial error parameters by profiling the Gaussian likelihood over a conservative interval.
 - [Spatial Durbin maximum likelihood](statistics/spatial-durbin-mle.md) — estimate response feedback and lagged-covariate effects by concentrated Gaussian maximum likelihood.
