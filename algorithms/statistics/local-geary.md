@@ -83,6 +83,10 @@ For responsible interpretation:
 
 PySAL's `Geary_Local` can return a label for each unit using a selected raw significance threshold. The labels are not automatically adjusted for multiple testing. If you apply an FDR cutoff, apply it to the p-values and clearly distinguish the adjusted result from the estimator's original labels.
 
+## Dependency-light reference implementation
+
+A small dense-matrix reference implementation is available at [implementations/python/local-geary](../../implementations/python/local-geary/README.md). It calculates the raw local statistic and a reproducible conditional-permutation reference distribution. Its two-sided, centred plus-one pseudo-p-value convention is explicit and is not assumed to match every package's default inference. Use sparse graph structures for larger datasets.
+
 ## PySAL example
 
 The current PySAL guide uses the following pattern:

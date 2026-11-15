@@ -67,6 +67,9 @@ jobs:
           - example: geary-c
             directory: implementations/python/geary-c
             pythonpath: ""
+          - example: local-geary
+            directory: implementations/python/local-geary
+            pythonpath: ""
           - example: str-packed-rtree
             directory: implementations/python/str-packed-rtree
             pythonpath: ""
