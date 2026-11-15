@@ -14,8 +14,11 @@ def test_brandes_betweenness_on_directed_chain():
 def test_brandes_betweenness_on_directed_diamond():
     graph = {"A": [("B", 1), ("C", 1)], "B": [("D", 1)], "C": [("D", 1)], "D": []}
     scores = betweenness_centrality(graph)
-    assert scores["B"] == pytest.approx(1 / 6)
-    assert scores["C"] == pytest.approx(1 / 6)
+    assert scores["B"] == pytest.approx(1 / 12)
+    assert scores["C"] == pytest.approx(1 / 12)
+    raw = betweenness_centrality(graph, normalized=False)
+    assert raw["B"] == pytest.approx(0.5)
+    assert raw["C"] == pytest.approx(0.5)
     assert scores["A"] == scores["D"] == 0
 
 
@@ -34,7 +37,7 @@ def test_betweenness_handles_disconnected_and_small_graphs():
 def test_closeness_is_inward_and_reachability_corrected():
     graph = {"A": [("B", 1)], "B": [("C", 1)], "C": [], "X": []}
     scores = closeness_centrality(graph)
-    assert scores["C"] == pytest.approx(2 / 3)
+    assert scores["C"] == pytest.approx(4 / 9)
     assert scores["B"] == pytest.approx(1 / 3)
     assert scores["A"] == 0
     assert scores["X"] == 0
