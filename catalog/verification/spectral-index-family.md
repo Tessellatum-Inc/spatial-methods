@@ -7,7 +7,7 @@
 
 ## Implemented scope
 NDVI, EVI, SAVI, NDRE, NDMI, LSWI, McFeeters NDWI, MNDWI, NDBI, NBR,
-dNBR and the common green/SWIR1 NDSI formulation.
+dNBR, the common green/SWIR1 NDSI formulation, and AWEI shadow/non-shadow variants.
 
 ## Verification
 - Formula-level fixtures compare outputs with independently written scalar
