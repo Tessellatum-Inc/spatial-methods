@@ -530,6 +530,9 @@ jobs:
           cache: pip
           cache-dependency-path: notebooks/requirements.txt
 
+      - name: Check CI coverage
+        run: python scripts/check_ci_coverage.py
+
       - name: Install notebook dependencies
         run: |
           python -m pip install -r notebooks/requirements.txt
