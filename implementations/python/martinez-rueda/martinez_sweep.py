@@ -52,6 +52,29 @@ def _intersection(s1,s2,eps):
         return t,u,p,proper
     return None
 
+def _validate_polygon_rings(rings,eps):
+    if not rings: raise ValueError('each polygon source needs one shell ring')
+    shell=rings[0]
+    for hole in rings[1:]:
+        if not all(_inside(p,shell) for p in hole):
+            raise ValueError('every hole vertex must lie strictly inside the shell')
+    for i in range(len(rings)):
+        for j in range(i+1,len(rings)):
+            a,b=rings[i],rings[j]
+            for k in range(len(a)):
+                s1=Segment(0,i,k,a[k],a[(k+1)%len(a)])
+                for m in range(len(b)):
+                    s2=Segment(1,j,m,b[m],b[(m+1)%len(b)])
+                    try: hit=_intersection(s1,s2,eps)
+                    except NotImplementedError: raise ValueError('rings in one polygon may not share collinear boundary segments')
+                    if hit is not None: raise ValueError('shell and hole boundaries must not touch or cross')
+            if i>0 and (_inside(a[0],b) or _inside(b[0],a)):
+                raise ValueError('holes must be disjoint and non-nested')
+    return rings
+
+def _inside_polygon(point,rings):
+    return _inside(point,rings[0]) and not any(_inside(point,hole) for hole in rings[1:])
+
 def _signed_area(ring):
     return 0.5*sum(ring[i][0]*ring[(i+1)%len(ring)][1] - ring[(i+1)%len(ring)][0]*ring[i][1] for i in range(len(ring)))
 
@@ -94,6 +117,7 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
     if not isfinite(epsilon) or epsilon<=0: raise ValueError("epsilon must be finite and positive")
     segments=[]
     for source,rings in enumerate(polygons):
+        prepared=[]
         for rid,ring in enumerate(rings):
             pts=[]
             for p in ring:
@@ -103,7 +127,12 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
             if len(pts)<3 or len(set(pts))<3: raise ValueError("rings need three distinct points")
             if abs(_signed_area(pts))<=epsilon: raise ValueError("ring area must be non-zero")
             if not _ring_is_simple(pts,epsilon): raise ValueError("input rings must be simple and non-self-touching")
-            if _signed_area(pts)<0: pts.reverse()
+            prepared.append(pts)
+        _validate_polygon_rings(prepared,epsilon)
+        for rid,pts in enumerate(prepared):
+            area=_signed_area(pts)
+            # First ring is the shell (CCW); subsequent rings are holes (CW).
+            if (rid==0 and area<0) or (rid>0 and area>0): pts.reverse()
             for i,a in enumerate(pts):
                 b=pts[(i+1)%len(pts)]
                 if a==b: raise ValueError("zero-length edges are unsupported")
@@ -145,18 +174,20 @@ def classify_boundary_fragments(polygons, *, operation='intersection', epsilon=1
     """
     if operation not in {'intersection','union','difference','symmetric_difference'}:
         raise ValueError('unsupported Boolean operation')
-    if len(polygons)!=2 or any(len(source)!=1 for source in polygons):
-        raise NotImplementedError('classification requires one shell ring per source')
+    if len(polygons)!=2 or any(len(source)<1 for source in polygons):
+        raise NotImplementedError('classification requires two polygon sources with one shell each')
     result=sweep_split_segments(polygons,epsilon=epsilon)
     rings=[]
     for source in polygons:
-        ring=[(float(p[0]),float(p[1])) for p in source[0]]
-        if _signed_area(ring)<0: ring.reverse()
-        rings.append(ring)
+        source_rings=[[(float(p[0]),float(p[1])) for p in ring] for ring in source]
+        for rid,ring in enumerate(source_rings):
+            area=_signed_area(ring)
+            if (rid==0 and area<0) or (rid>0 and area>0): ring.reverse()
+        rings.append(source_rings)
     selected=[]
     for f in result['split_segments']:
         midpoint=((f.a[0]+f.b[0])/2,(f.a[1]+f.b[1])/2)
-        inside=_inside(midpoint,rings[1-f.source])
+        inside=_inside_polygon(midpoint,rings[1-f.source])
         if operation=='intersection':
             keep=inside
         elif operation=='union':
