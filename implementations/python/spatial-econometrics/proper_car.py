@@ -17,7 +17,8 @@ class ProperCARFit:
     alpha: float
     tau: float
     coefficients: tuple[float, ...]
-    sigma2_conditional: float
+    variance_scale: float
+    conditional_variances: tuple[float, ...]
     log_likelihood: float
     fitted: tuple[float, ...]
     residuals: tuple[float, ...]
@@ -166,12 +167,14 @@ def proper_car_mle(
     residual = response - design @ beta
     quadratic = float(residual @ precision_base @ residual)
     tau = float(n / quadratic)
-    sigma2_conditional = float(1.0 / tau)
+    variance_scale = float(1.0 / tau)
+    conditional_variances = 1.0 / (tau * degree)
     return ProperCARFit(
         alpha=float(alpha),
         tau=tau,
         coefficients=tuple(float(v) for v in beta),
-        sigma2_conditional=sigma2_conditional,
+        variance_scale=variance_scale,
+        conditional_variances=tuple(float(v) for v in conditional_variances),
         log_likelihood=float(likelihood),
         fitted=tuple(float(v) for v in design @ beta),
         residuals=tuple(float(v) for v in residual),
