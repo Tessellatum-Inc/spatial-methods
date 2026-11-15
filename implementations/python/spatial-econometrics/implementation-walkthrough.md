@@ -52,3 +52,17 @@ python -m pytest -q
 ~~~
 
 The CI workflow includes this package and executes the companion notebook. A successful local or CI test run should be recorded separately from static inspection.
+
+
+## 5. Gaussian proper-CAR regression
+
+Open `proper_car.py`.
+
+1. The model uses precision \(Q=\tau(D-\alpha A)\), with a symmetric adjacency matrix and positive node degrees.
+2. The implementation forms the symmetric normalised adjacency \(B=D^{-1/2}AD^{-1/2}\). Its extreme eigenvalues determine the interval in which \(I-\alpha B\), and therefore the precision matrix, is positive definite.
+3. For each candidate \(\alpha\), generalised least squares solves \(X^TQ_0X\hat\beta=X^TQ_0y\), where \(Q_0=D-\alpha A\).
+4. The residual quadratic form profiles out \(\tau\): \(\hat\tau=n/R(\alpha)\).
+5. The concentrated likelihood includes \(\tfrac12\log|Q_0|\) and the profiled residual term. A grid scan followed by local golden-section refinement selects \(\alpha\).
+6. The result reports the conditional mean \(X\hat\beta\), residuals, dependence parameter and precision. This is a proper Gaussian CAR model, not a singular ICAR/BYM model.
+
+The dense eigendecomposition and log determinant limit this teaching estimator to small graphs. The graph must be symmetric and contain no isolated nodes; the routine does not repair the graph or choose its weights.
