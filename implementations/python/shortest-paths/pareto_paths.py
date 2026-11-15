@@ -4,8 +4,7 @@ from __future__ import annotations
 import heapq
 import itertools
 from math import isfinite
-
-import numpy as np
+from numbers import Integral
 
 
 def pareto_shortest_paths(
@@ -20,20 +19,23 @@ def pareto_shortest_paths(
 
     graph maps each node to an iterable of (neighbour, cost_vector) edges.
     Labels are ordered lexicographically in the queue and pruned by
-    componentwise dominance. Equal-cost labels retain the first path.
+    componentwise dominance. Equal-cost labels retain the first discovered path.
     """
     if (
-        isinstance(n_objectives, (bool, np.bool_))
-        or not isinstance(n_objectives, (int, np.integer))
+        isinstance(n_objectives, bool)
+        or not isinstance(n_objectives, Integral)
         or n_objectives < 1
     ):
         raise ValueError("n_objectives must be a positive integer")
+    n_objectives = int(n_objectives)
     if max_labels_per_node is not None and (
-        isinstance(max_labels_per_node, (bool, np.bool_))
-        or not isinstance(max_labels_per_node, (int, np.integer))
+        isinstance(max_labels_per_node, bool)
+        or not isinstance(max_labels_per_node, Integral)
         or max_labels_per_node < 1
     ):
         raise ValueError("max_labels_per_node must be a positive integer or None")
+    if max_labels_per_node is not None:
+        max_labels_per_node = int(max_labels_per_node)
     try:
         hash(source)
         hash(target)
@@ -58,18 +60,17 @@ def pareto_shortest_paths(
             except TypeError as exc:
                 raise ValueError("neighbour nodes must be hashable") from exc
             try:
-                costs = np.asarray(raw_costs, dtype=float)
+                costs = tuple(float(value) for value in raw_costs)
             except (TypeError, ValueError) as exc:
                 raise ValueError("edge costs must be numeric vectors") from exc
             if (
-                costs.shape != (n_objectives,)
-                or not np.all(np.isfinite(costs))
-                or np.any(costs < 0)
+                len(costs) != n_objectives
+                or not all(isfinite(value) and value >= 0 for value in costs)
             ):
                 raise ValueError(
                     "each edge cost must be a finite nonnegative vector of n_objectives"
                 )
-            parsed_edges.append((neighbour, tuple(float(v) for v in costs)))
+            parsed_edges.append((neighbour, costs))
         adjacency[node] = parsed_edges
 
     # Entries are (unique id, cost vector, complete node path).
