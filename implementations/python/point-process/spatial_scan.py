@@ -190,3 +190,148 @@ def monte_carlo_poisson_scan(
         "n_simulations": int(n_simulations),
         "simulated_maxima": maxima,
     }
+
+
+
+def _log_combination(n, k):
+    """Log binomial coefficient for integer arguments."""
+    from math import lgamma
+    if k < 0 or k > n:
+        return float("-inf")
+    return lgamma(n + 1) - lgamma(k + 1) - lgamma(n - k + 1)
+
+
+def _hypergeometric_upper_tail(population, zone_population, total_cases, observed):
+    """P[X >= observed] for X~Hypergeometric(N, K, n), in log space."""
+    from math import exp, log
+    lower = max(0, total_cases - (population - zone_population), observed)
+    upper = min(zone_population, total_cases)
+    if lower > upper:
+        return 0.0
+    denominator = _log_combination(population, total_cases)
+    logs = [
+        _log_combination(zone_population, x)
+        + _log_combination(population - zone_population, total_cases - x)
+        - denominator
+        for x in range(lower, upper + 1)
+    ]
+    peak = max(logs)
+    probability = exp(peak) * sum(exp(value - peak) for value in logs)
+    return min(1.0, max(0.0, probability))
+
+
+def besag_newell_scan(coordinates, cases, population, *, k=10, alpha=0.05):
+    """Area-centred Besag-Newell local scan with an exact hypergeometric tail.
+
+    For each centroid, add the centre and then all equidistant nearest-centroid
+    ties until at least k cases are included. The local tail probability is
+    computed under fixed-total case allocation without replacement from the
+    total population. This is an area-centred formulation; it does not claim
+    to reproduce every case-centred convention in the 1991 paper.
+    """
+    coords = np.asarray(coordinates, dtype=float)
+    case_counts = np.asarray(cases, dtype=float)
+    pop = np.asarray(population, dtype=float)
+    if (coords.ndim != 2 or coords.shape[1] != 2 or coords.shape[0] < 2
+            or not np.all(np.isfinite(coords))):
+        raise ValueError("coordinates must be a finite N-by-2 array with N >= 2")
+    n = len(coords)
+    if (case_counts.shape != (n,) or not np.all(np.isfinite(case_counts))
+            or np.any(case_counts < 0) or np.any(case_counts != np.floor(case_counts))):
+        raise ValueError("cases must be a matching vector of nonnegative integer counts")
+    if (pop.shape != (n,) or not np.all(np.isfinite(pop))
+            or np.any(pop <= 0) or np.any(pop != np.floor(pop))):
+        raise ValueError("population must be a matching vector of positive integer counts")
+    if (isinstance(k, (bool, np.bool_)) or not isinstance(k, (int, np.integer))
+            or k < 1 or k > int(case_counts.sum())):
+        raise ValueError("k must be a positive integer no greater than total cases")
+    level = float(alpha)
+    if not isfinite(level) or not 0 < level < 1:
+        raise ValueError("alpha must be in (0, 1)")
+    total_population = int(pop.sum())
+    total_cases = int(case_counts.sum())
+    if total_population < total_cases:
+        raise ValueError("total population must be at least total cases")
+
+    results = []
+    for centre in range(n):
+        delta = coords - coords[centre]
+        distances = np.sqrt(np.sum(delta * delta, axis=1))
+        if not np.all(np.isfinite(distances)):
+            raise ValueError("coordinate range produces non-finite pair distances")
+        order = np.argsort(distances, kind="stable")
+        cumulative_cases = 0
+        cumulative_population = 0
+        members = []
+        cursor = 0
+        while cursor < n and cumulative_cases < int(k):
+            radius = float(distances[order[cursor]])
+            tolerance = 1e-12 * max(1.0, abs(radius))
+            end = cursor + 1
+            while end < n and abs(float(distances[order[end]]) - radius) <= tolerance:
+                end += 1
+            tied = [int(i) for i in order[cursor:end]]
+            members.extend(tied)
+            cumulative_cases += int(case_counts[tied].sum())
+            cumulative_population += int(pop[tied].sum())
+            cursor = end
+        if cumulative_cases < int(k):
+            raise RuntimeError("all areas were exhausted before reaching k cases")
+        p_value = _hypergeometric_upper_tail(
+            total_population, cumulative_population, total_cases, cumulative_cases
+        )
+        results.append({
+            "center_index": centre,
+            "member_indices": tuple(sorted(members)),
+            "n_areas": len(members),
+            "radius": radius,
+            "cases_inside": cumulative_cases,
+            "population_inside": cumulative_population,
+            "expected_cases_inside": total_cases * cumulative_population / total_population,
+            "p_value": p_value,
+            "is_cluster": p_value <= level,
+        })
+    return {
+        "local_results": results,
+        "significant_centres": tuple(r["center_index"] for r in results if r["is_cluster"]),
+        "n_significant": sum(r["is_cluster"] for r in results),
+        "k": int(k),
+        "alpha": level,
+        "total_cases": total_cases,
+        "total_population": total_population,
+    }
+
+
+def monte_carlo_besag_newell(coordinates, cases, population, *, k=10, alpha=0.05,
+                             n_simulations=999, rng=None):
+    """Calibrate the number of significant centres under fixed-total CSR risk.
+
+    Each replicate reallocates the observed total cases multinomially in
+    proportion to area population and reruns every local Besag-Newell test.
+    The returned global p-value uses the plus-one correction.
+    """
+    coords = np.asarray(coordinates, dtype=float)
+    case_counts = np.asarray(cases, dtype=float)
+    pop = np.asarray(population, dtype=float)
+    observed = besag_newell_scan(coords, case_counts, pop, k=k, alpha=alpha)
+    if (isinstance(n_simulations, (bool, np.bool_))
+            or not isinstance(n_simulations, (int, np.integer)) or n_simulations < 1):
+        raise ValueError("n_simulations must be a positive integer")
+    generator = np.random.default_rng(rng)
+    probabilities = pop / pop.sum()
+    simulated_counts = np.empty(int(n_simulations), dtype=int)
+    for i in range(int(n_simulations)):
+        simulated = generator.multinomial(observed["total_cases"], probabilities)
+        simulated_counts[i] = besag_newell_scan(
+            coords, simulated, pop, k=k, alpha=alpha
+        )["n_significant"]
+    exceedances = int(np.count_nonzero(
+        simulated_counts >= observed["n_significant"]
+    ))
+    return {
+        "observed": observed,
+        "simulated_significant_counts": simulated_counts,
+        "p_value": (1 + exceedances) / (int(n_simulations) + 1),
+        "n_simulations": int(n_simulations),
+        "exceedances": exceedances,
+    }
