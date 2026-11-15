@@ -71,3 +71,70 @@ def test_invalid_weights_and_grid_shape_are_rejected():
         gaussian_kde([(0.5, 0.5)], bounds=(0, 1, 0, 1), bandwidth=1, weights=[-1])
     with pytest.raises(ValueError, match="grid_shape"):
         gaussian_kde([(0.5, 0.5)], bounds=(0, 1, 0, 1), bandwidth=1, grid_shape=(0, 1))
+
+
+def test_adaptive_kde_alpha_zero_matches_fixed_estimator():
+    from point_pattern_kde import adaptive_gaussian_kde
+    points = [(1, 1), (2, 2), (3, 1)]
+    fixed, xs, ys = gaussian_kde(points, bounds=(0, 4, 0, 4), grid_shape=(7, 9), bandwidth=0.7)
+    adaptive, ax, ay, local = adaptive_gaussian_kde(
+        points, bounds=(0, 4, 0, 4), grid_shape=(7, 9), bandwidth=0.7, alpha=0
+    )
+    np.testing.assert_allclose(adaptive, fixed)
+    np.testing.assert_array_equal(ax, xs)
+    np.testing.assert_array_equal(ay, ys)
+    np.testing.assert_allclose(local, 0.7)
+
+
+def test_adaptive_kde_matches_independent_variable_bandwidth_oracle():
+    from point_pattern_kde import adaptive_gaussian_kde
+    points = np.array([(0.5, 0.5), (1.5, 1.5), (3.0, 1.0), (3.2, 1.1)])
+    density, xs, ys, local = adaptive_gaussian_kde(
+        points, bounds=(0, 4, 0, 2), grid_shape=(4, 8), bandwidth=0.8,
+        bandwidth_factor_bounds=(0.3, 3.0), chunk_size=5
+    )
+    assert np.all(local >= 0.8 * 0.3) and np.all(local <= 0.8 * 3.0)
+    for row, y in enumerate(ys):
+        for col, x in enumerate(xs):
+            expected = sum(np.exp(-((x-px)**2+(y-py)**2)/(2*h*h))/(2*np.pi*h*h)
+                           for (px, py), h in zip(points, local))
+            assert density[row, col] == pytest.approx(expected)
+
+
+def test_adaptive_kde_single_event_and_weight_scaling():
+    from point_pattern_kde import adaptive_gaussian_kde
+    args = dict(bounds=(0, 2, 0, 2), grid_shape=(3, 3), bandwidth=0.6)
+    base, _, _, local = adaptive_gaussian_kde([(1, 1)], **args)
+    weighted, _, _, weighted_local = adaptive_gaussian_kde([(1, 1)], weights=[4], **args)
+    np.testing.assert_allclose(weighted, 4 * base)
+    np.testing.assert_allclose(local, weighted_local)
+
+
+def test_loo_bandwidth_selection_matches_independent_score():
+    from point_pattern_kde import select_bandwidth_loo
+    points = np.array([(0, 0), (0.2, 0.1), (1.5, 1.2), (1.7, 1.1)])
+    candidates = [0.15, 0.4, 0.9]
+    best, scores = select_bandwidth_loo(points, candidates)
+    expected = []
+    for h in candidates:
+        values = []
+        for i, point in enumerate(points):
+            density = sum(np.exp(-np.sum((point-other)**2)/(2*h*h))/(2*np.pi*h*h)
+                          for j, other in enumerate(points) if i != j) / (len(points)-1)
+            values.append(np.log(density))
+        expected.append((h, sum(values)/len(values)))
+    assert [h for h, _ in scores] == candidates
+    assert [s for _, s in scores] == pytest.approx([s for _, s in expected])
+    assert best == max(expected, key=lambda item: item[1])[0]
+
+
+def test_loo_weighted_selection_and_invalid_inputs():
+    from point_pattern_kde import select_bandwidth_loo, adaptive_gaussian_kde
+    best, scores = select_bandwidth_loo([(0, 0), (1, 0), (2, 0)], [0.2, 1.0], weights=[1, 2, 1])
+    assert best in (0.2, 1.0) and len(scores) == 2
+    with pytest.raises(ValueError):
+        select_bandwidth_loo([(0, 0)], [1])
+    with pytest.raises(ValueError):
+        select_bandwidth_loo([(0, 0), (1, 1)], [0])
+    with pytest.raises(ValueError):
+        adaptive_gaussian_kde([(0.5, 0.5)], bounds=(0, 1, 0, 1), bandwidth=1, alpha=2)
