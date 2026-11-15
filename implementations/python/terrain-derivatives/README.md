@@ -33,3 +33,8 @@ The companion terrain_indices module calculates the conventional logarithmic TWI
 ## Zevenbergen–Thorne slope and aspect
 
 The companion `zevenbergen_thorne_slope_aspect` function uses central differences from the four cardinal neighbours rather than Horn's weighted 3×3 directional sums. It returns the same three arrays and follows the same units, border and strict NoData contract. The two estimators agree on planar surfaces but can differ on curved or noisy terrain because their neighbourhood weights differ. This is a first-derivative implementation only; it does not yet calculate profile or plan curvature.
+
+
+## Profile and plan curvature
+
+`terrain_curvature` estimates signed profile and plan curvature from central first and second differences on a 3×3 neighbourhood. Profile curvature is measured along the steepest-slope direction; plan curvature is measured across it. Both outputs use inverse horizontal units, require positive cell spacing and a positive vertical conversion factor, and return NaN at borders, in any window containing NoData, and on flat cells where aspect/curvature directions are undefined. This is a local finite-difference teaching baseline; it does not implement multiscale curvature, robust smoothing, geographic-grid correction or geomorphon classification.
