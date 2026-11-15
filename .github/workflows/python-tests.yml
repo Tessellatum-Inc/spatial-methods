@@ -302,6 +302,70 @@ jobs:
             directory: implementations/python/convex-decomposition
             pythonpath: "../ear-clipping"
 
+          - example: ais-gap-detection
+            directory: implementations/python/ais-gap-detection
+            pythonpath: ""
+          - example: arima-forecasting
+            directory: implementations/python/arima-forecasting
+            pythonpath: ""
+          - example: compositional-data
+            directory: implementations/python/compositional-data
+            pythonpath: ""
+          - example: d8-flow-direction
+            directory: implementations/python/d8-flow-direction
+            pythonpath: ""
+          - example: dasymetric-allocation
+            directory: implementations/python/dasymetric-allocation
+            pythonpath: ""
+          - example: dijkstra
+            directory: implementations/python/dijkstra
+            pythonpath: ""
+          - example: domain-classifier-shift
+            directory: implementations/python/domain-classifier-shift
+            pythonpath: ""
+          - example: empirical-semivariogram
+            directory: implementations/python/empirical-semivariogram
+            pythonpath: ""
+          - example: geometry-metrics
+            directory: implementations/python/geometry-metrics
+            pythonpath: ""
+          - example: graham-scan
+            directory: implementations/python/graham-scan
+            pythonpath: ""
+          - example: knndm
+            directory: implementations/python/knndm
+            pythonpath: ""
+          - example: mean-radiant-temperature
+            directory: implementations/python/mean-radiant-temperature
+            pythonpath: ""
+          - example: methane-emissions
+            directory: implementations/python/methane-emissions
+            pythonpath: ""
+          - example: nndm
+            directory: implementations/python/nndm
+            pythonpath: ""
+          - example: ordinary-kriging
+            directory: implementations/python/ordinary-kriging
+            pythonpath: ""
+          - example: point-process
+            directory: implementations/python/point-process
+            pythonpath: ""
+          - example: spatial-microsimulation
+            directory: implementations/python/spatial-microsimulation
+            pythonpath: ""
+          - example: spatial-privacy
+            directory: implementations/python/spatial-privacy
+            pythonpath: ""
+          - example: spatiotemporal-validation
+            directory: implementations/python/spatiotemporal-validation
+            pythonpath: ""
+          - example: stl-decomposition
+            directory: implementations/python/stl-decomposition
+            pythonpath: ""
+          - example: theil-sen
+            directory: implementations/python/theil-sen
+            pythonpath: ""
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -430,6 +494,11 @@ jobs:
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/convex-decomposition-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/proximity-graphs-delaunay-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/electre-i-kernel-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/geometry-metrics-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/pareto-multi-criteria-routing-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/spatial-scan-statistic-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/mean-radiant-temperature-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/mfd-flow-routing-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/ecef-enu-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/rasterization-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/line-clipping-lab.ipynb
