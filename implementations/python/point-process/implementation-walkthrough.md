@@ -49,3 +49,8 @@ The Besag–Newell routine orders each centre's areas by centroid distance and a
 ## 9. Test global spatial concentration with Tango
 
 Tango's statistic forms the residual vector between observed case proportions and population-proportional expected proportions, then evaluates its quadratic form under an exponential centroid-distance closeness matrix. The distance scale phi controls how quickly influence decays. The Monte Carlo test reallocates the fixed total cases according to population shares and recomputes the statistic for every replicate. Select phi before inspecting the p-value; searching across scales requires a separate multiplicity-aware design.
+
+
+## 10. Extend the scan window to ellipses
+
+The elliptical scan evaluates a finite grid of major/minor axis ratios and orientations at each areal centroid. Rotated coordinates are ranked by normalized elliptical radius, and tied prefixes define candidate zones. Each candidate is scored with the same elevated Poisson likelihood ratio as the circular scan. The Monte Carlo routine re-runs the full candidate grid for every population-proportional allocation of the fixed total cases. The finite grid is a transparent teaching approximation; it is not a full SaTScan reproduction and has no eccentricity penalty.
