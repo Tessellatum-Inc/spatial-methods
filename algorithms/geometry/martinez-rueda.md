@@ -13,3 +13,7 @@ Implemented stages:
 This is not yet the full Martinez–Rueda sweep: the status is an interval broad phase rather than the neighbour-ordered structure with dynamically scheduled intersection events, so dense/overlapping inputs can still be quadratic. Multiple independent shells per input, full touching/coincident handling, adaptive exact predicates and explicit Polygon/MultiPolygon shell-hole grouping remain outstanding. Output is a flat list of oriented rings.
 
 See [implementation and tests](../../implementations/python/martinez-rueda/README.md).
+
+## Polygon component assembly
+
+The staged implementation returns a flat oriented ring list and groups CCW shells with directly contained CW holes. Islands nested inside holes remain separate polygon components. Hole ownership is assigned to the smallest containing shell. This provides an explicit Polygon/MultiPolygon-like structure for the supported ring cases; it does not remove the broader sweep-status, robustness and touching/coincident limitations.
