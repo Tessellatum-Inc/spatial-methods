@@ -43,6 +43,7 @@ This directory holds those foundational methods separately from individual algor
 
 - [Compositional data analysis](compositional-data-analysis.md) — use closure and log-ratio coordinates for relative data, with explicit treatment of zeros and the simplex geometry.
 - [Empirical Bayes rate smoothing](empirical-bayes-rate-smoothing.md) — estimate global and local Poisson rate shrinkage from exposure-weighted moments.
+- [Weighted head-banging](weighted-head-banging.md) — robustly smooth planar values using nearly-collinear neighbour triples and weighted medians.
 - [Geographic distribution summaries](geographic-distribution-summaries.md) — compare weighted mean/geometric median centers, standard distance and standard deviational ellipse.
 - [Spatial inequality and segregation](spatial-inequality-and-segregation.md) — measure area-value inequality, population entropy and two-group segregation evenness/exposure.
 - [Multiple-testing corrections](multiple-testing-corrections.md) — control family-wise error or false discovery rate across a declared test family.

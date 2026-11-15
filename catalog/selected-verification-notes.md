@@ -191,3 +191,13 @@ These notes record bounded checks against publisher or institutional bibliograph
 - **Technical claims:** Bonferroni and Holm control FWER under arbitrary dependence; Šidák is exact under independence; Hochberg requires independence or suitable positive dependence; BH controls FDR under independence and common positive-dependence conditions; BY uses the harmonic factor for arbitrary dependence.
 - **Implementation:** six procedures return adjusted p-values in original input order and alpha-based decisions. Dutilleul's modified t-test and spatial/block bootstrap remain open.
 - **Rights:** independently implemented from published definitions; no source code is copied.
+
+
+## Section 2 — Weighted head-banging smoother
+
+**Source entry:** “Empirical Bayes rate smoothing, head-banging, median polish” (source page 4).
+
+- **Identity and bibliography:** Hansen (1991), “Head-banging: Robust smoothing in the plane,” *IEEE Transactions on Geoscience and Remote Sensing*, 29(3), 369–378; Mungiole, Pickle and Simonson (1999), “Application of a weighted head-banging algorithm to mortality data maps,” *Statistics in Medicine*, 18(23), 3201–3209, DOI 10.1002/(SICI)1097-0258(19991215)18:23<3201::AID-SIM310>3.0.CO;2-U. The public NCI Head-Bang documentation and CDC methods description were used to check the algorithm's screens, weights and parameter defaults.
+- **Technical claims:** k-nearest neighbours form nearly-collinear triples; weighted medians of lower/higher endpoints define screens; a weighted median of low screen, target and high screen updates the target. The implementation fixes geometry and triple membership, then updates synchronously.
+- **Implementation:** weighted head-banging, tests and lab added. Locations with no qualifying triples are unchanged; full software corner-point rules and automatic parameter selection remain unimplemented. Median polish remains open.
+- **Rights:** independent implementation from published descriptions and public government documentation; no software code or figures copied.
