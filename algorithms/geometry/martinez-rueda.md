@@ -4,7 +4,7 @@ Implemented stages:
 
 - X-ordered endpoint processing with an augmented dynamic y-interval treap status.
 - Expected-logarithmic status insertion/removal and expected O(log n + k) y-interval overlap reporting; y-disjoint active segments are pruned before exact intersection tests.
-- Cross-source segment intersection discovery and ordered segment splitting; pairwise segment determinants and intersection parameters use exact rational arithmetic over decimal input representations, avoiding the previous scale-dependent determinant-versus-epsilon comparison.
+- Cross-source segment intersection discovery and ordered segment splitting; pairwise segment determinants and intersection parameters use exact rational arithmetic over decimal input representations, avoiding the previous scale-dependent determinant-versus-epsilon comparison. Split-parameter ordering and deduplication are exact rather than epsilon-based, preserving distinct nearby crossings; fragment midpoints are evaluated as rational coordinates.
 - Midpoint inside/outside classification for intersection, union, difference and symmetric difference.
 - Directed-fragment stitching into closed rings, including disconnected outputs, islands and clockwise hole rings.
 - Input support for one shell plus disjoint, non-nested holes per source; ring orientation is normalized to shell-CCW / hole-CW.
