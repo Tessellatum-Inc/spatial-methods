@@ -338,3 +338,52 @@ def test_small_cholesky_factor_reconstructs_covariance():
     lower = _cholesky_lower([[4.0, 2.0], [2.0, 3.0]])
     assert lower[0] == pytest.approx([2.0, 0.0])
     assert lower[1] == pytest.approx([1.0, 2 ** 0.5])
+
+
+def test_strauss_simulator_is_seeded_and_inside_window():
+    from point_patterns import simulate_strauss_process
+    a = simulate_strauss_process((0, 0, 10, 10), 0.08, 0.35, 0.7,
+                                 burn_in=300, n_steps=500, seed=31)
+    b = simulate_strauss_process((0, 0, 10, 10), 0.08, 0.35, 0.7,
+                                 burn_in=300, n_steps=500, seed=31)
+    assert a == b
+    assert all(0 <= x <= 10 and 0 <= y <= 10 for x, y in a)
+
+
+def test_strauss_hard_core_sampler_never_returns_close_pairs():
+    from point_patterns import simulate_strauss_process
+    points = simulate_strauss_process((0, 0, 5, 5), 0.5, 0, 0.5,
+                                      burn_in=1000, n_steps=2000, seed=8)
+    for i, (x, y) in enumerate(points):
+        for other_x, other_y in points[i+1:]:
+            assert math.hypot(x-other_x, y-other_y) >= 0.5
+
+
+def test_strauss_gamma_one_has_seeded_poisson_limit():
+    from point_patterns import simulate_strauss_process
+    a = simulate_strauss_process((0, 0, 2, 2), 0.7, 1, 0.4,
+                                 burn_in=300, n_steps=500, seed=9)
+    b = simulate_strauss_process((0, 0, 2, 2), 0.7, 1, 0.4,
+                                 burn_in=300, n_steps=500, seed=9)
+    assert a == b
+    assert all(0 <= x <= 2 and 0 <= y <= 2 for x, y in a)
+
+
+@pytest.mark.parametrize("params", [
+    (-1, 0.5, 1), (1, -0.1, 1), (1, 1.1, 1), (1, 0.5, 0),
+    (float("nan"), 0.5, 1),
+])
+def test_strauss_rejects_invalid_parameters(params):
+    from point_patterns import simulate_strauss_process
+    with pytest.raises(ValueError):
+        simulate_strauss_process((0, 0, 1, 1), *params, burn_in=2, n_steps=2)
+
+
+def test_strauss_rejects_invalid_iteration_counts_and_seed():
+    from point_patterns import simulate_strauss_process
+    with pytest.raises(ValueError, match="n_steps"):
+        simulate_strauss_process((0, 0, 1, 1), 1, 0.5, 0.2, n_steps=0)
+    with pytest.raises(ValueError, match="non-negative integers"):
+        simulate_strauss_process((0, 0, 1, 1), 1, 0.5, 0.2, burn_in=-1)
+    with pytest.raises(ValueError, match="seed"):
+        simulate_strauss_process((0, 0, 1, 1), 1, 0.5, 0.2, seed=True)
