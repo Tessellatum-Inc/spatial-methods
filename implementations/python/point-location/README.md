@@ -34,3 +34,12 @@ print(locator.locate(2, 1))
 The straightforward preprocessing stores an edge event in every x-slab it crosses, so storage and construction can be O(n²) in the worst case. A query uses binary search over x-events and the slab's preordered edge groups, giving O(log n) comparisons for points strictly inside a slab. Queries on x-event lines use a boundary-aware fallback scan.
 
 This is not Seidel's randomized trapezoidal map and does not implement its expected bounds. It assumes non-crossing polygon boundaries and pairwise interior-disjoint faces. The input ring structure and polygon topology must be valid; this package does not validate arbitrary planar arrangements. It is a teaching implementation of a static slab locator. Use the [interactive point-location lab](../../../notebooks/point-location-lab.ipynb) to inspect the x-event lines, slab crossing groups, holes and boundary-query contract.
+
+
+## Randomized trapezoidal decomposition reference
+
+The adjacent `randomized_trapezoidal_map.py` module adds a second, deliberately narrower model: a set of pairwise disjoint, non-vertical segments in general position inside a bounding rectangle. It builds vertical trapezoids, a balanced x-decision tree and per-slab y-decision trees. Queries return the containing trapezoid, `BOUNDARY` on an original segment, or `None` outside the bounding box.
+
+Run the same package test command to exercise both locators.
+
+**Important algorithmic qualification:** segments are visited in a seeded random permutation, but this reference implementation rebuilds the decomposition after each insertion. It does not yet perform Seidel's local trapezoid replacement and persistent history-DAG updates, and it does not claim the classic expected (O(n\log n)) construction bound. Its purpose is to establish and test the trapezoid/search invariants under explicit general-position assumptions. The optimized incremental update algorithm remains outstanding.
