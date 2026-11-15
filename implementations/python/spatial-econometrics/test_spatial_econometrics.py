@@ -551,3 +551,53 @@ def test_proper_car_mle_rejects_invalid_graphs_and_controls():
         proper_car_mle(y, x, adjacency, grid_size=10)
     with pytest.raises(ValueError, match="full column rank"):
         proper_car_mle(y, np.ones((n, 2)), adjacency)
+
+
+
+def _icar_test_adjacency():
+    adjacency = np.zeros((7, 7))
+    for i in range(4):
+        adjacency[i, i + 1] = adjacency[i + 1, i] = 1.0
+    adjacency[5, 6] = adjacency[6, 5] = 1.0
+    return adjacency
+
+
+def test_icar_sample_enforces_componentwise_sum_to_zero_and_reproducibility():
+    from icar import icar_sample
+    adjacency = _icar_test_adjacency()
+    first = icar_sample(adjacency, precision=2.5, rng=731)
+    second = icar_sample(adjacency, precision=2.5, rng=731)
+    assert first.field == second.field
+    assert first.n_components == 2
+    assert first.component_labels[:5] == (0, 0, 0, 0, 0)
+    assert first.component_labels[5:] == (1, 1)
+    field = np.asarray(first.field)
+    assert field[:5].sum() == pytest.approx(0.0, abs=1e-12)
+    assert field[5:].sum() == pytest.approx(0.0, abs=1e-12)
+    assert np.isfinite(first.log_pseudodeterminant)
+    assert first.precision == 2.5
+
+
+def test_icar_sample_respects_precision_scale_and_returns_finite_field():
+    from icar import icar_sample
+    adjacency = _symmetric_grid_adjacency(4, 4)
+    sample = icar_sample(adjacency, precision=4.0, rng=912)
+    field = np.asarray(sample.field)
+    assert sample.n_components == 1
+    assert field.sum() == pytest.approx(0.0, abs=1e-11)
+    assert np.all(np.isfinite(field))
+    assert sample.log_pseudodeterminant > 0
+
+
+def test_icar_sample_rejects_invalid_graphs_and_precision():
+    from icar import icar_sample
+    adjacency = _symmetric_grid_adjacency(3, 4)
+    with pytest.raises(ValueError, match="symmetric"):
+        icar_sample(adjacency + np.triu(np.ones_like(adjacency), 1) * 0.1)
+    isolated = adjacency.copy()
+    isolated[0, :] = 0.0
+    isolated[:, 0] = 0.0
+    with pytest.raises(ValueError, match="positive degree"):
+        icar_sample(isolated)
+    with pytest.raises(ValueError, match="precision"):
+        icar_sample(adjacency, precision=0.0)
