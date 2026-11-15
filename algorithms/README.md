@@ -100,7 +100,8 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 - [DBSCAN](statistics/dbscan.md) — identify density-connected clusters and noise in planar point data.
 
 
-- [Global Moran's I](statistics/global-morans-i.md) — measure global spatial autocorrelation by comparing deviations from the mean across neighbouring units.\n- [Global Moran's I permutation inference](statistics/global-morans-i-permutation.md) — calibrate the global statistic against a seeded randomization distribution with one- or two-sided alternatives.
+- [Global Moran's I](statistics/global-morans-i.md) — measure global spatial autocorrelation by comparing deviations from the mean across neighbouring units.
+- [Global Moran's I permutation inference](statistics/global-morans-i-permutation.md) — calibrate the global statistic against a seeded randomization distribution with one- or two-sided alternatives.
 - [Local Moran's I conditional permutation inference](statistics/local-morans-i-permutation.md) — identify local clusters and spatial outliers with conditional randomization and FDR-adjusted p-values.
 - [Heteroskedasticity diagnostics](statistics/heteroskedasticity-diagnostics.md) — run Koenker studentized Breusch–Pagan and White auxiliary-regression tests after OLS.
 - [Ramsey RESET](statistics/ramsey-reset.md) — test whether powers of fitted values improve an OLS specification using a nested partial F test.
