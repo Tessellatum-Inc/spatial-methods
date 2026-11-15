@@ -4,13 +4,13 @@
 - **Source pages:** 7–9
 - **Source transcription:** [pages 6–10](../../source-inventory/pages-06-10.md)
 - **Review state:** source entries extracted into this index; not every entry independently verified
-- **Current canonical records:** [NDVI](../../algorithms/remote-sensing/ndvi.md), [spectral-index family](../../algorithms/remote-sensing/spectral-index-family.md), [Otsu thresholding](../../algorithms/remote-sensing/otsu-thresholding.md), [PCA transform](../../algorithms/remote-sensing/pca-transform.md),  [GLCM texture](../../algorithms/remote-sensing/glcm-texture.md), [Sobel/Canny](../../algorithms/remote-sensing/edge-detection.md), [binary morphology](../../algorithms/remote-sensing/mathematical-morphology.md), and [Gabor filters](../../algorithms/remote-sensing/gabor-filters.md). This is a partial audit; the section remains substantially incomplete.
+- **Current canonical records:** [NDVI](../../algorithms/remote-sensing/ndvi.md), [spectral-index family](../../algorithms/remote-sensing/spectral-index-family.md), [Otsu thresholding](../../algorithms/remote-sensing/otsu-thresholding.md), [PCA transform](../../algorithms/remote-sensing/pca-transform.md), [GLCM texture](../../algorithms/remote-sensing/glcm-texture.md), [Sobel/Canny](../../algorithms/remote-sensing/edge-detection.md), [binary morphology](../../algorithms/remote-sensing/mathematical-morphology.md), and [Gabor filters](../../algorithms/remote-sensing/gabor-filters.md). This is a partial audit; the section remains substantially incomplete.
 
 The source spans raw imagery correction, spectral transforms, classification, hyperspectral analysis, radar, point clouds, photogrammetry and biophysical retrieval. These methods operate at different stages of a sensor-to-product workflow; do not collapse them into one generic “remote sensing algorithm” category.
 
 ## First audited index
 
-The canonical records now cover the spectral-index family, global Otsu thresholding, covariance/correlation PCA, and offset-specific GLCM texture features. The PCA baseline is deliberately distinguished from MNF; GLCM covers six common features rather than the full Haralick set. Atmospheric correction, Fourier/wavelet/Hough/Radon transforms, Gabor/Sobel/Canny/morphology, feature detectors, classification, SAR, LiDAR, photogrammetry and retrieval remain open.
+The canonical records now cover the spectral-index family, global Otsu thresholding, covariance/correlation PCA, offset-specific GLCM texture, Sobel/Canny edges, binary morphology and Gabor filters. PCA is deliberately distinguished from MNF; GLCM covers six common features rather than the full Haralick set. Atmospheric correction, MNF, Fourier/wavelet/Hough/Radon transforms, SIFT/SURF, classification, SAR, LiDAR, photogrammetry and retrieval remain open.
 
 ## Preprocessing and correction
 
