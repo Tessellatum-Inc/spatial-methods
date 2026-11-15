@@ -430,7 +430,7 @@ def delaunay_filtered_beta_skeleton(
     import numpy as np
     from scipy.spatial import cKDTree
 
-    if isinstance(beta, bool) or not isfinite(beta) or not 1.0 <= beta <= 2.0:
+    if isinstance(beta, bool) or not isinstance(beta, (int, float)) or not isfinite(beta) or not 1.0 <= beta <= 2.0:
         raise ValueError("beta must be a finite number in [1, 2]")
     pts, edges = _delaunay_candidate_edges(points)
     coordinates = np.asarray(pts, dtype=float)
@@ -448,7 +448,7 @@ def delaunay_filtered_beta_skeleton(
         blocked = False
         # The first disk is a necessary condition for a point to block the
         # lune. query_ball_point is inclusive; the exact strict test follows.
-        for k_raw in tree.query_ball_point(c1, radius):
+        for k_raw in tree.query_ball_point(c1, np.nextafter(radius, np.inf)):
             k = int(k_raw)
             if k == i or k == j:
                 continue
