@@ -15,7 +15,7 @@ def test_single_face_has_twin_exterior_cycle():
     assert d.unbounded_face.boundary_cycles is d.unbounded_cycles
 
 def test_adjacent_faces_share_twins_and_have_consistent_cycles():
-    d=DCEL.from_faces({"west":[rect(0,0,1,1)],"east":[rect(1,0,2,1,True)]})
+    d=DCEL.from_faces({"west":[rect(0,0,1,1)],"east":[rect(1,0,2,1)]})
     assert d.validate()
     shared=[e for e in d.halfedges if d.vertices[e.origin].point==(1.0,0.0)
             and d.vertices[e.target].point==(1.0,1.0)]
