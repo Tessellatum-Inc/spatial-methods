@@ -3,7 +3,8 @@
 This package contains two small dense-matrix building blocks:
 
 1. **Classic OLS-based spatial LM diagnostics** for spatial lag and spatial error dependence.
-2. **Average impact decomposition** for spatial lag (SAR/SLM) and spatial Durbin (SDM) specifications.\n3. **Spatial lag 2SLS** using exogenous covariates and their spatial lags as instruments for the endogenous spatially lagged response.
+2. **Average impact decomposition** for spatial lag (SAR/SLM) and spatial Durbin (SDM) specifications.
+3. **Spatial lag 2SLS** using exogenous covariates and their spatial lags as instruments for the endogenous spatially lagged response.
 
 ## Run
 
