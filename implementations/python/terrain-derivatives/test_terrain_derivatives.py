@@ -138,3 +138,56 @@ def test_curvature_rejects_invalid_units(kwargs):
     from terrain_derivatives import terrain_curvature
     with pytest.raises(ValueError):
         terrain_curvature(np.ones((3,3)), **kwargs)
+
+
+# Topographic position index (TPI)
+
+def test_tpi_flat_surface_is_zero_and_edges_are_nodata():
+    from terrain_indices import topographic_position_index
+    result = topographic_position_index(np.full((7, 8), 12.0), window_size=3)
+    np.testing.assert_allclose(result[1:-1, 1:-1], 0.0)
+    assert np.isnan(result[0]).all()
+    assert np.isnan(result[:, 0]).all()
+
+
+def test_tpi_detects_ridge_and_valley_relative_to_local_mean():
+    from terrain_indices import topographic_position_index
+    dem = np.zeros((7, 7), dtype=float)
+    dem[3, 3] = 10.0
+    result = topographic_position_index(dem, window_size=3)
+    assert result[3, 3] > 0
+    dem[3, 3] = -10.0
+    result = topographic_position_index(dem, window_size=3)
+    assert result[3, 3] < 0
+
+
+def test_tpi_uses_larger_window_and_ignores_nodata_when_permitted():
+    from terrain_indices import topographic_position_index
+    dem = np.zeros((9, 9), dtype=float)
+    dem[4, 4] = 9.0
+    dem[3, 3] = np.nan
+    strict = topographic_position_index(dem, window_size=5)
+    permissive = topographic_position_index(
+        dem, window_size=5, min_valid_fraction=0.9
+    )
+    assert np.isnan(strict[4, 4])
+    assert permissive[4, 4] > 0
+
+
+@pytest.mark.parametrize("kwargs", [
+    {"window_size": 2}, {"window_size": 0}, {"window_size": 3.0},
+    {"min_valid_fraction": 0}, {"min_valid_fraction": 1.1},
+    {"min_valid_fraction": float("nan")},
+])
+def test_tpi_rejects_invalid_parameters(kwargs):
+    from terrain_indices import topographic_position_index
+    with pytest.raises(ValueError):
+        topographic_position_index(np.ones((5, 5)), **kwargs)
+
+
+def test_tpi_requires_nonempty_2d_input():
+    from terrain_indices import topographic_position_index
+    with pytest.raises(ValueError):
+        topographic_position_index(np.ones(5))
+    with pytest.raises(ValueError):
+        topographic_position_index(np.empty((0, 3)))
