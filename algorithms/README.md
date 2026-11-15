@@ -36,6 +36,9 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Remote sensing
 
+- [Vertex Component Analysis (VCA)](remote-sensing/vca-endmembers.md) — extract candidate hyperspectral endmembers under a pure-pixel linear-mixture assumption.
+- [Fully Constrained Least Squares (FCLS)](remote-sensing/fcls-unmixing.md) — estimate nonnegative per-pixel abundance fractions constrained to sum to one.
+- [Spectral matched filter](remote-sensing/spectral-matched-filter.md) — detect a known target signature against a global covariance model of background spectra.
 - [Spectral Angle Mapper and Spectral Information Divergence](remote-sensing/spectral-similarity.md) — compare pixel spectra with reference signatures using angular and information-theoretic distances.
 - [Reed–Xiaoli anomaly detection](remote-sensing/rx-anomaly.md) — score spectrally unusual pixels using global background Mahalanobis distance.
 - [Minimum Noise Fraction (MNF)](remote-sensing/mnf-transform.md) — whiten estimated noise covariance before ordering spectral components by signal-to-noise.
