@@ -97,7 +97,7 @@ Notebooks are used when changing values, inspecting intermediate calculations or
 - [Local Geary](local-geary-lab.ipynb): compare each unit with its neighbours, inspect local squared-difference values and compare raw labels with an FDR-filtered classification.
 - [Global Getis-Ord G](global-getis-ord-g-lab.ipynb): test overall concentration of positive values and inspect the permutation reference distribution.
 - [Getis-Ord Gi*](getis-ord-gi-star-lab.ipynb): calculate local hotspot and coldspot z-scores, inspect permutation p-values and apply FDR control.
-- [Spatial econometrics lab](spatial-econometrics-lab.ipynb): calculate classic LM-lag and LM-error diagnostics from an OLS null model, then decompose SAR/SDM effects into direct, indirect and total impacts.
+- [Spatial econometrics lab](spatial-econometrics-lab.ipynb): calculate classic LM-lag and LM-error diagnostics from an OLS null model, then decompose SAR/SDM effects into direct, indirect and total impacts, and estimate a synthetic spatial lag model by 2SLS.
 - [Spatial weights](spatial-weights-lab.ipynb): compare Rook and Queen contiguity, distance bands, kNN, row standardisation and isolates.
 
 ## Run a notebook
