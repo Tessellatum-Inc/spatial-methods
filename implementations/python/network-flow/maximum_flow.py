@@ -55,26 +55,52 @@ def maximum_flow_min_cut(
 
         cursor = {node: 0 for node in nodes}
 
-        def send(u, amount):
-            if u == sink:
-                return amount
-            while cursor[u] < len(adjacency[u]):
-                edge = adjacency[u][cursor[u]]
-                v, reverse_index, residual, _original = edge
-                if residual > 0 and level[v] == level[u] + 1:
-                    pushed = send(v, min(amount, residual))
-                    if pushed > 0:
+        # Iterative blocking-flow search avoids Python recursion limits on
+        # long road/transit networks while retaining Dinic's current-arc rule.
+        while True:
+            stack = [source]
+            path_edges = []
+            bottlenecks = [float("inf")]
+            pushed = 0.0
+
+            while stack:
+                u = stack[-1]
+                if u == sink:
+                    pushed = bottlenecks[-1]
+                    for path_u, edge_index in zip(stack, path_edges):
+                        edge = adjacency[path_u][edge_index]
+                        v, reverse_index = edge[0], edge[1]
                         edge[2] -= pushed
                         adjacency[v][reverse_index][2] += pushed
-                        return pushed
-                cursor[u] += 1
-            return 0.0
+                    break
 
-        while True:
-            pushed = send(source, float("inf"))
+                while cursor[u] < len(adjacency[u]):
+                    edge = adjacency[u][cursor[u]]
+                    v, _reverse_index, residual, _original = edge
+                    if residual > 0 and level[v] == level[u] + 1:
+                        break
+                    cursor[u] += 1
+
+                if cursor[u] == len(adjacency[u]):
+                    stack.pop()
+                    bottlenecks.pop()
+                    if path_edges:
+                        path_edges.pop()
+                        if stack:
+                            cursor[stack[-1]] += 1
+                    continue
+
+                edge = adjacency[u][cursor[u]]
+                v, _reverse_index, residual, _original = edge
+                path_edges.append(cursor[u])
+                stack.append(v)
+                bottlenecks.append(min(bottlenecks[-1], residual))
+
             if pushed <= 0:
                 break
             total_flow += pushed
+            if not isfinite(total_flow):
+                raise OverflowError("maximum flow value exceeds finite float range")
 
     source_side = set()
     queue = deque([source])
