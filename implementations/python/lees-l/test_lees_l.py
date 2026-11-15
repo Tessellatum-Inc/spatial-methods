@@ -13,7 +13,7 @@ def test_two_variable_lags_and_statistic_hand_calculation():
 
 
 def test_reversing_variable_order_preserves_global_lee_l():
-    w = [[0, 1, 0, 1], [1, 0, 1, 0], [0, 1, 0, 1], [1, 0, 1, 0]]
+    w = [[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 1], [0, 0, 1, 0]]
     xy = lees_l([1, 2, 4, 3], [4, 1, 3, 2], w)["L"]
     yx = lees_l([4, 1, 3, 2], [1, 2, 4, 3], w)["L"]
     assert xy == pytest.approx(yx)
