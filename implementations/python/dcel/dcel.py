@@ -92,7 +92,7 @@ class DCEL:
                 d.halfedges.append(HalfEdge(tid,v,u,eid))
                 d.halfedges[eid].twin=tid
                 d.vertices[v].outgoing.append(tid)
-        # The predecessor of the twin in CCW order keeps the incident face left.
+        # The successor of the twin in CCW order traces the exterior face on its left.
         for vertex in d.vertices:
             vertex.outgoing.sort(key=lambda e: atan2(
                 d.vertices[d.halfedges[e].target].point[1]-vertex.point[1],
@@ -101,7 +101,7 @@ class DCEL:
             if e.face is not None: continue
             at=d.vertices[e.target].outgoing
             twin_pos=at.index(e.twin)
-            e.next=at[(twin_pos-1)%len(at)]
+            e.next=at[(twin_pos+1)%len(at)]
         for e in d.halfedges:
             if e.face is None:
                 d.halfedges[e.next].prev=e.id
