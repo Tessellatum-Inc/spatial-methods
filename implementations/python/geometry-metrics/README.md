@@ -4,6 +4,7 @@ Dependency-free teaching implementations for planar point sets and ordered polyl
 
 - Directed and symmetric Hausdorff distance for finite point sets.
 - Discrete Fréchet distance for ordered vertex sequences, using an O(mn)-time, O(n)-space dynamic program.
+- Continuous Fréchet decision via Alt–Godau free-space reachability, with distance approximation by bisection to an absolute tolerance.
 - Smallest enclosing circle using randomized Welzl recursion with a reproducible local seed.
 - Convex-hull diameter using a rotating-calipers antipodal-pair sweep.
 - Approximate polygon pole of inaccessibility (Polylabel-style best-first subdivision), supporting holes and an explicit distance precision.
@@ -20,3 +21,6 @@ Coordinates must use one planar Cartesian CRS and consistent linear units. Hausd
 The diameter routine builds a monotone-chain hull in O(n log n) and sweeps antipodal pairs in O(h). It returns a farthest pair, not a minimum-area oriented bounding rectangle. Polylabel maximises signed boundary clearance with a best-first square-cell search and returns an approximate point and radius; polygon rings must be valid.
 
 See the [minimum-area rectangle lesson](../../../algorithms/geometry/minimum-area-bounding-rectangle.md), [intern walkthrough](implementation-walkthrough.md), [Hausdorff/Fréchet lesson](../../../algorithms/geometry/hausdorff-frechet.md), [smallest-circle lesson](../../../algorithms/geometry/smallest-enclosing-circle.md), [Polylabel lesson](../../../algorithms/geometry/pole-of-inaccessibility-polylabel.md), [test suite](test_geometry_metrics.py) and [interactive lab](../../../notebooks/geometry-metrics-lab.ipynb).
+
+
+The continuous Fréchet decision routine uses the free-space diagram for polygonal curves. The distance routine bisects the decision threshold and returns an upper bound within the requested tolerance (subject to floating-point arithmetic); it is distinct from the discrete vertex-sequence dynamic program.
