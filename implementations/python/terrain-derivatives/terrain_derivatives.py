@@ -39,3 +39,41 @@ def horn_slope_aspect(elevation: Sequence[Sequence[float]] | np.ndarray, *, cell
     slope_pct[target]=np.where(valid,percent,np.nan)
     aspect_deg[target]=np.where(valid,aspect,np.nan)
     return {"slope_degrees":slope_deg,"slope_percent":slope_pct,"aspect_degrees":aspect_deg}
+
+
+def zevenbergen_thorne_slope_aspect(elevation: Sequence[Sequence[float]] | np.ndarray, *, cell_size_x: float = 1.0, cell_size_y: float = 1.0, z_factor: float = 1.0) -> dict[str, np.ndarray]:
+    """Return slope degrees, percent rise and downslope aspect using central differences.
+
+    This is the Zevenbergen–Thorne first-derivative stencil: only the four
+    cardinal neighbours contribute to the gradient. Borders and any 3x3
+    window containing non-finite elevation return NaN; flat aspect is NaN.
+    """
+    dem = np.asarray(elevation, dtype=float)
+    if dem.ndim != 2 or dem.size == 0:
+        raise ValueError("elevation must be a non-empty 2D array")
+    if not np.isfinite([cell_size_x, cell_size_y, z_factor]).all():
+        raise ValueError("cell sizes and z_factor must be finite")
+    if cell_size_x <= 0 or cell_size_y <= 0 or z_factor <= 0:
+        raise ValueError("cell sizes and z_factor must be positive")
+    rows, cols = dem.shape
+    slope_deg = np.full(dem.shape, np.nan)
+    slope_pct = np.full(dem.shape, np.nan)
+    aspect_deg = np.full(dem.shape, np.nan)
+    if rows < 3 or cols < 3:
+        return {"slope_degrees": slope_deg, "slope_percent": slope_pct, "aspect_degrees": aspect_deg}
+    a, b, c = dem[:-2, :-2], dem[:-2, 1:-1], dem[:-2, 2:]
+    d, e, f = dem[1:-1, :-2], dem[1:-1, 1:-1], dem[1:-1, 2:]
+    g, h, i = dem[2:, :-2], dem[2:, 1:-1], dem[2:, 2:]
+    valid = np.isfinite(a)&np.isfinite(b)&np.isfinite(c)&np.isfinite(d)&np.isfinite(e)&np.isfinite(f)&np.isfinite(g)&np.isfinite(h)&np.isfinite(i)
+    dz_dx = (f - d) / (2.0 * cell_size_x) * z_factor
+    # Rows increase southward, so the north-positive derivative is b-h.
+    dz_dy = (b - h) / (2.0 * cell_size_y) * z_factor
+    gradient = np.hypot(dz_dx, dz_dy)
+    slope = np.degrees(np.arctan(gradient))
+    aspect = np.degrees(np.arctan2(-dz_dx, -dz_dy)) % 360.0
+    aspect = np.where(gradient == 0, np.nan, aspect)
+    target = (slice(1, -1), slice(1, -1))
+    slope_deg[target] = np.where(valid, slope, np.nan)
+    slope_pct[target] = np.where(valid, gradient * 100.0, np.nan)
+    aspect_deg[target] = np.where(valid, aspect, np.nan)
+    return {"slope_degrees": slope_deg, "slope_percent": slope_pct, "aspect_degrees": aspect_deg}
