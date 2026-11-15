@@ -31,6 +31,8 @@ class Trapezoid:
     x_right: float
     bottom_segment: int | None
     top_segment: int | None
+    left_neighbors: tuple[tuple[int, ...], ...] = ()
+    right_neighbors: tuple[tuple[int, ...], ...] = ()
 
 
 @dataclass(frozen=True)
@@ -254,7 +256,38 @@ class RandomizedTrapezoidalMap:
             root = self._build_y_tree(active, cells, mid)
             self.slabs.append((tuple(active), tuple(cells), root))
             previous = current
+        self._link_trapezoid_neighbors()
         self._x_root = self._build_x_tree(0, len(self.slabs))
+
+    def _link_trapezoid_neighbors(self) -> None:
+        \"\"\"Build reciprocal adjacency across shared vertical trapezoid sides.\"\"\"
+        xmin, ymin, xmax, ymax = self.bounds
+        ending: dict[float, list[Trapezoid]] = {}
+        starting: dict[float, list[Trapezoid]] = {}
+        for cell in self.trapezoids:
+            ending.setdefault(cell.x_right, []).append(cell)
+            starting.setdefault(cell.x_left, []).append(cell)
+        left_links = {cell.id: set() for cell in self.trapezoids}
+        right_links = {cell.id: set() for cell in self.trapezoids}
+
+        def vertical_interval(cell: Trapezoid, x: float) -> tuple[float, float]:
+            bottom = (ymin if cell.bottom_segment is None else
+                      _y_at(self.segments[cell.bottom_segment], x))
+            top = (ymax if cell.top_segment is None else
+                   _y_at(self.segments[cell.top_segment], x))
+            return bottom, top
+
+        for wall in ending.keys() & starting.keys():
+            for left_cell in ending[wall]:
+                left_bottom, left_top = vertical_interval(left_cell, wall)
+                for right_cell in starting[wall]:
+                    right_bottom, right_top = vertical_interval(right_cell, wall)
+                    if max(left_bottom, right_bottom) < min(left_top, right_top):
+                        right_links[left_cell.id].add(right_cell.id)
+                        left_links[right_cell.id].add(left_cell.id)
+        for cell in self.trapezoids:
+            cell.left_neighbors = tuple(sorted(left_links[cell.id]))
+            cell.right_neighbors = tuple(sorted(right_links[cell.id]))
 
     def _build_y_tree(self, active: list[int], cells: list[Trapezoid],
                       mid: float):
