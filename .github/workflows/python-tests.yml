@@ -139,6 +139,9 @@ jobs:
           - example: minimum-spanning-tree
             directory: implementations/python/minimum-spanning-tree
             pythonpath: ""
+          - example: steiner-tree
+            directory: implementations/python/steiner-tree
+            pythonpath: ""
           - example: point-location
             directory: implementations/python/point-location
             pythonpath: ""
