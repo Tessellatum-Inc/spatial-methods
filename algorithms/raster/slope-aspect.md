@@ -75,3 +75,16 @@ Slope is sensitive to DEM resolution and noise. Aspect becomes unstable on nearl
 - Burrough, P. A. and McDonnell, R. A. (1998), *Principles of Geographical Information Systems*, Oxford University Press.
 
 **Scope:** local Horn 3×3 slope and downslope aspect only; no curvature, multiscale derivatives, geographic-grid correction or DEM conditioning.
+
+
+## Profile and plan curvature
+
+Curvature describes how the surface bends, rather than only how steep it is. With east-positive (z_x), north-positive (z_y), second derivatives (z_{xx},z_{yy},z_{xy}), and (p^2=z_x^2+z_y^2), this implementation uses:
+
+$$k_{profile}=-\frac{z_{xx}z_x^2+2z_{xy}z_xz_y+z_{yy}z_y^2}{p^2(1+p^2)^{3/2}}$$
+
+$$k_{plan}=-\frac{z_{xx}z_y^2-2z_{xy}z_xz_y+z_{yy}z_x^2}{p^2\sqrt{1+p^2}}$$
+
+The numerators project the Hessian onto the downslope direction and its perpendicular, respectively. These are signed curvatures under the convention shown; software packages may use different signs or scaled variants. The companion `terrain_curvature` function estimates derivatives with central differences and returns inverse-horizontal-unit values. Flat cells are undefined because the directional axes cannot be selected. It uses a strict 3×3 NoData and border rule.
+
+A useful check is a plane, whose two curvatures are zero, and a cylindrical parabola (z=x^2), whose profile curvature is nonzero while plan curvature is zero. These local estimates are resolution- and noise-sensitive; they are not substitutes for multiscale terrain classification.
