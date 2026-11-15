@@ -44,3 +44,47 @@ def test_invalid_spacing_rejected(kwargs):
 
 def test_non_2d_input_rejected():
     with pytest.raises(ValueError,match="2D"): horn_slope_aspect([1,2,3])
+
+
+def test_zeigenbergen_thorne_east_rising_plane_faces_west():
+    from terrain_derivatives import zevenbergen_thorne_slope_aspect
+    dem = np.tile(np.arange(5, dtype=float), (5, 1))
+    result = zevenbergen_thorne_slope_aspect(dem)
+    assert result["slope_degrees"][2, 2] == pytest.approx(45)
+    assert result["slope_percent"][2, 2] == pytest.approx(100)
+    assert result["aspect_degrees"][2, 2] == pytest.approx(270)
+
+
+def test_zeigenbergen_thorne_north_rising_plane_faces_south():
+    from terrain_derivatives import zevenbergen_thorne_slope_aspect
+    dem = np.tile(np.arange(5, 0, -1, dtype=float)[:, None], (1, 5))
+    result = zevenbergen_thorne_slope_aspect(dem)
+    assert result["slope_degrees"][2, 2] == pytest.approx(45)
+    assert result["aspect_degrees"][2, 2] == pytest.approx(180)
+
+
+def test_zeigenbergen_thorne_matches_horn_on_planar_surface():
+    from terrain_derivatives import zevenbergen_thorne_slope_aspect
+    dem = np.fromfunction(lambda r, c: 3.0*c - 2.0*r + 7.0, (7, 8), dtype=float)
+    horn = horn_slope_aspect(dem)
+    zt = zevenbergen_thorne_slope_aspect(dem)
+    for key in horn:
+        np.testing.assert_allclose(zt[key][1:-1, 1:-1], horn[key][1:-1, 1:-1], equal_nan=True)
+
+
+def test_zeigenbergen_thorne_strict_nodata_neighbourhood_and_flat_aspect():
+    from terrain_derivatives import zevenbergen_thorne_slope_aspect
+    dem = np.ones((5, 5))
+    flat = zevenbergen_thorne_slope_aspect(dem)
+    assert flat["slope_degrees"][2, 2] == 0
+    assert np.isnan(flat["aspect_degrees"][2, 2])
+    dem[2, 2] = np.nan
+    result = zevenbergen_thorne_slope_aspect(dem)
+    assert np.isnan(result["slope_degrees"][1, 1])
+    assert np.isnan(result["slope_degrees"][2, 2])
+
+
+def test_zeigenbergen_thorne_rejects_invalid_spacing():
+    from terrain_derivatives import zevenbergen_thorne_slope_aspect
+    with pytest.raises(ValueError):
+        zevenbergen_thorne_slope_aspect(np.ones((3, 3)), cell_size_x=0)
