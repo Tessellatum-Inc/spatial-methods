@@ -13,6 +13,6 @@ def test_ppml_offset():
     y=rng.poisson(np.exp(off+x@beta)); fit=ppml(y,x,offset=off)
     assert np.allclose(fit.coefficients,beta,atol=.09)
 
-@pytest.mark.parametrize('y,x', [([-1,0,1],[[1],[1],[1]]),([1,2],[[1],[1]]),([1,2,3],[[1,0],[1,0],[1,0]])])
+@pytest.mark.parametrize('y,x', [([-1,0,1],[[1],[1],[1]]),([1,2],[[1]]),([1,2,3],[[1,0],[1,0],[1,0]])])
 def test_invalid_data(y,x):
     with pytest.raises(ValueError): ppml(np.asarray(y),np.asarray(x))
