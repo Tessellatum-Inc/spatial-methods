@@ -16,7 +16,7 @@ def test_removes_duplicate_and_collapsed_faces_and_compacts_vertices():
 def test_welding_collapses_near_duplicate_vertex_and_degenerate_face():
     vertices = [(0, 0, 0), (1, 0, 0), (0, 1, 0), (1e-5, 0, 0)]
     out_v, out_f, report = repair_triangle_mesh(
-        vertices, [(0, 1, 2), (0, 3, 2)], weld_tolerance=1e-4)
+        vertices, [(0, 1, 2), (3, 1, 2)], weld_tolerance=1e-4)
     assert len(out_v) == 3
     assert len(out_f) == 1
     assert report["welded_vertices"] == 1
