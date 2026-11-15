@@ -36,11 +36,18 @@ def weighted_gini(values, weights=None):
     mean = fsum(a * b for a, b in zip(x, w)) / total_w
     if mean == 0.0:
         return 0.0
-    numerator = fsum(
-        w[i] * w[j] * abs(x[i] - x[j])
-        for i in range(len(x)) for j in range(len(x))
-    )
-    return numerator / (2.0 * mean * total_w * total_w)
+    # Sorting turns the pairwise absolute-difference sum into a cumulative
+    # weighted sum, reducing the calculation from O(n^2) to O(n log n).
+    cumulative_weight = 0.0
+    cumulative_weighted_value = 0.0
+    contributions = []
+    for value, weight in sorted(zip(x, w), key=lambda pair: pair[0]):
+        contributions.append(
+            weight * (value * cumulative_weight - cumulative_weighted_value)
+        )
+        cumulative_weight += weight
+        cumulative_weighted_value += weight * value
+    return fsum(contributions) / (mean * total_w * total_w)
 
 
 def theil_t(values, weights=None):

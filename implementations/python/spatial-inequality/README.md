@@ -22,6 +22,8 @@ print(exposure_indices([80, 20], [20, 80]))
 
 ## What each measure means
 
+The weighted Gini uses a sorted cumulative-weight implementation with O(n log n) time rather than an explicit all-pairs O(n²) calculation.
+
 - **Weighted Gini:** inequality of nonnegative area-level values, weighted by population or another exposure.
 - **Theil T and L:** decomposable entropy-based inequality indices; T supports zero values, while L requires strictly positive values in every positive-weight area.
 - **Spatial entropy:** Shannon entropy of how a population total is distributed across supplied areas; normalized entropy is 0-1. It uses area shares, not adjacency.
