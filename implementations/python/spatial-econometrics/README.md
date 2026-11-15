@@ -1,6 +1,6 @@
 # Spatial econometrics teaching implementations
 
-This package contains two small dense-matrix building blocks:
+This package contains several small dense-matrix spatial-econometrics components:
 
 1. **Classic and Bera-Yoon robust OLS-based spatial LM diagnostics** for spatial lag and spatial error dependence.
 2. **Average impact decomposition** for spatial lag (SAR/SLM) and spatial Durbin (SDM) specifications.
