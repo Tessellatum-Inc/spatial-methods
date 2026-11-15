@@ -1,6 +1,6 @@
 # What the collection covers
 
-This matrix connects the original compendium to the work published in this repository. The terrain raster package now includes a tested integral-image topographic position index (focal elevation minus neighbourhood mean), with explicit window-scale and NoData-fraction controls; this is a local relative-relief measure, not a complete landform classifier. It is deliberately conservative: a topic is not marked researched or implemented just because its name appears in the source transcription.
+This matrix connects the original compendium to the work published in this repository. The terrain raster package now includes a tested integral-image topographic position index (focal elevation minus neighbourhood mean), with explicit window-scale and NoData-fraction controls, plus Riley's eight-neighbour square-root-of-sum-of-squares terrain ruggedness index; neither metric is a complete landform classifier. It is deliberately conservative: a topic is not marked researched or implemented just because its name appears in the source transcription.
 
 **Status key**
 
