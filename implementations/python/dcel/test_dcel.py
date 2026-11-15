@@ -20,6 +20,7 @@ def test_adjacent_faces_share_twins_and_have_consistent_cycles():
     assert len(shared)==1
     assert d.halfedges[shared[0].twin].face=="west" or d.halfedges[shared[0].twin].face=="east"
     assert len(d.vertices)==6
+    assert len(d.unbounded_cycles)==1
 
 def test_multiple_disconnected_faces_have_separate_exterior_components():
     d=DCEL.from_faces({"a":[rect(0,0,1,1)],"b":[rect(3,0,4,1)]})
