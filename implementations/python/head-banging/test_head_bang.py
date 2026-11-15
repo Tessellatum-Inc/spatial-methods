@@ -55,3 +55,20 @@ def test_invalid_parameters_rejected():
     with pytest.raises(ValueError):head_bang(pts,values,max_deviation_degrees=91)
     with pytest.raises(ValueError):head_bang(pts,values,max_iterations=0)
     with pytest.raises(ValueError):head_bang(pts,values,tolerance=-1)
+
+
+def test_two_point_pattern_has_no_triples_and_is_unchanged():
+    result = head_bang([(0, 0), (1, 1)], [4, 9])
+    assert result["smoothed_values"] == [4.0, 9.0]
+    assert result["neighbors"] == [[1], [0]]
+    assert result["converged"]
+
+
+def test_iteration_limit_reports_nonconvergence_when_value_still_changes():
+    result = head_bang(
+        [(0, 0), (-1, 0), (1, 0)], [1, 2, 9],
+        n_neighbors=2, max_triples=1, max_deviation_degrees=0,
+        max_iterations=1,
+    )
+    assert result["smoothed_values"][0] == pytest.approx(2)
+    assert not result["converged"]

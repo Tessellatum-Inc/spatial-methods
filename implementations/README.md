@@ -127,7 +127,7 @@ Each implementation should state:
 
 ### Spatial statistics
 
-- [Weighted head-banging smoother](python/head-banging/README.md): nearly-collinear triple screens with weighted medians, k-nearest neighbours and iterative smoothing; 18 focused tests.
+- [Weighted head-banging smoother](python/head-banging/README.md): nearly-collinear triple screens with weighted medians, k-nearest neighbours and iterative smoothing; 18 focused test cases.
 - [Multiple-testing corrections](python/multiple-testing/README.md): Bonferroni, Šidák, Holm, Hochberg, BH and BY adjusted p-values with 27 test cases covering order, ties, assumptions and invalid input.
 - [Spatial inequality and segregation](python/spatial-inequality/README.md): weighted Gini, Theil T/L, Shannon area entropy, two-group dissimilarity and isolation/interaction indices, with 22 test cases and explicit spatial-scope boundaries.
 - [Geographic distribution summaries](python/spatial-distribution-summaries/README.md): weighted mean and geometric median centers, standard distance and covariance-based standard deviational ellipse, with 18 tests and explicit orientation/coverage conventions.
