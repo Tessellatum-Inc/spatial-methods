@@ -25,6 +25,7 @@ class SpatialMLEFit:
     residuals: tuple[float, ...]
     rho_bounds: tuple[float, float]
     evaluations: int
+    spatial_covariate_coefficients: tuple[float, ...] = ()
 
 
 def _validate(y, x, weights):
@@ -170,3 +171,101 @@ def spatial_error_mle(y: Sequence[float], x: Sequence[Sequence[float]],
     """Concentrated Gaussian ML for y = X beta + u, u = lambda W u + epsilon."""
     response, design, w, _ = _validate(y, x, weights)
     return _fit(response, design, w, "SEM", grid_size, tolerance)
+
+
+
+def spatial_durbin_mle(y: Sequence[float], x: Sequence[Sequence[float]],
+                       weights: Sequence[Sequence[float]], *,
+                       grid_size: int = 201, tolerance: float = 1e-7) -> SpatialMLEFit:
+    """Concentrated Gaussian ML for y = rho Wy + X beta + WX gamma.
+
+    Columns of WX that are linearly dependent on X or earlier retained WX
+    columns are omitted from estimation and returned as zero gamma entries.
+    This handles, for example, the spatial lag of an intercept under
+    row-standardised weights. The rho search uses the same conservative
+    norm-bounded interval as the SAR and SEM estimators.
+    """
+    response, design, w, bounds = _validate(y, x, weights)
+    n, k = design.shape
+    if isinstance(grid_size, bool) or not isinstance(grid_size, int) or grid_size < 21:
+        raise ValueError("grid_size must be an integer of at least 21")
+    if not np.isfinite(tolerance) or tolerance <= 0:
+        raise ValueError("tolerance must be positive and finite")
+
+    wx = w @ design
+    retained = []
+    retained_indices = []
+    base_rank = np.linalg.matrix_rank(design)
+    current = design.copy()
+    for j in range(k):
+        candidate = np.column_stack([current, wx[:, j]])
+        if np.linalg.matrix_rank(candidate) > np.linalg.matrix_rank(current):
+            retained.append(wx[:, j])
+            retained_indices.append(j)
+            current = candidate
+    if current.shape[1] >= n - 1:
+        raise ValueError("SDM design must leave residual degrees of freedom")
+    if np.linalg.matrix_rank(current) < current.shape[1]:
+        raise ValueError("augmented SDM design must have full column rank")
+
+    lower, upper = bounds
+    wy = w @ response
+    evaluations = 0
+
+    def profile(rho):
+        nonlocal evaluations
+        a = np.eye(n) - rho * w
+        sign, logdet = np.linalg.slogdet(a)
+        evaluations += 1
+        if sign <= 0 or not np.isfinite(logdet):
+            return -np.inf
+        ay = response - rho * wy
+        coef, _, rank, _ = np.linalg.lstsq(current, ay, rcond=None)
+        if rank < current.shape[1]:
+            return -np.inf
+        residual = ay - current @ coef
+        sigma2 = float(residual @ residual / n)
+        if not np.isfinite(sigma2) or sigma2 <= np.finfo(float).tiny:
+            return -np.inf
+        return float(logdet - (n / 2.0) *
+                     (log(2.0 * pi) + 1.0 + log(sigma2)))
+
+    grid = np.linspace(lower, upper, grid_size)
+    scores = np.array([profile(float(v)) for v in grid])
+    best = int(np.argmax(scores))
+    if not np.isfinite(scores[best]):
+        raise ValueError("no finite likelihood found in the conservative parameter interval")
+    left = float(grid[max(0, best - 1)])
+    right = float(grid[min(grid_size - 1, best + 1)])
+    if left == right:
+        rho, likelihood, refine_evaluations = float(grid[best]), float(scores[best]), 0
+    else:
+        candidate_rho, candidate_ll, refine_evaluations = _golden_max(
+            profile, left, right, tolerance=tolerance)
+        if candidate_ll > scores[best]:
+            rho, likelihood = candidate_rho, candidate_ll
+        else:
+            rho, likelihood = float(grid[best]), float(scores[best])
+
+    ay = response - rho * wy
+    coef = np.linalg.lstsq(current, ay, rcond=None)[0]
+    transformed_residual = ay - current @ coef
+    sigma2 = float(transformed_residual @ transformed_residual / n)
+    beta = coef[:k]
+    gamma = np.zeros(k)
+    for position, original_index in enumerate(retained_indices):
+        gamma[original_index] = coef[k + position]
+    fitted = rho * wy + design @ beta + wx @ gamma
+    residuals = response - fitted
+    return SpatialMLEFit(
+        model="SDM",
+        spatial_parameter=float(rho),
+        coefficients=tuple(float(v) for v in beta),
+        sigma2_mle=sigma2,
+        log_likelihood=float(likelihood),
+        fitted=tuple(float(v) for v in fitted),
+        residuals=tuple(float(v) for v in residuals),
+        rho_bounds=(float(lower), float(upper)),
+        evaluations=int(evaluations + refine_evaluations),
+        spatial_covariate_coefficients=tuple(float(v) for v in gamma),
+    )
