@@ -209,3 +209,61 @@ def test_floyd_warshall_reports_finite_edge_path_overflow():
     graph = {0: [(1, 1e308)], 1: [(2, 1e308)], 2: []}
     with pytest.raises(OverflowError, match="exceeds finite"):
         floyd_warshall(graph)
+
+
+def test_yens_k_shortest_paths_matches_exhaustive_simple_path_oracle():
+    import random
+
+    rng = random.Random(1618033)
+    for _ in range(80):
+        count = rng.randint(3, 7)
+        graph = {node: [] for node in range(count)}
+        for u in range(count):
+            for v in range(count):
+                if u != v and rng.random() < 0.28:
+                    graph[u].append((v, round(rng.uniform(0.1, 20.0), 7)))
+
+        all_paths = []
+
+        def visit(node, path, cost):
+            if node == count - 1:
+                all_paths.append((path[:], cost))
+                return
+            for neighbour, weight in graph[node]:
+                if neighbour not in path:
+                    visit(neighbour, path + [neighbour], cost + weight)
+
+        visit(0, [0], 0.0)
+        all_paths.sort(key=lambda item: item[1])
+        k = rng.randint(1, 5)
+        actual = k_shortest_paths(graph, 0, count - 1, k)
+        expected = all_paths[:k]
+        assert len(actual) == len(expected)
+        assert [cost for _path, cost in actual] == pytest.approx(
+            [cost for _path, cost in expected]
+        )
+        assert {tuple(path) for path, _cost in actual} == {
+            tuple(path) for path, _cost in expected
+        }
+
+
+def test_directed_alt_heuristic_is_admissible_on_seeded_graphs():
+    import random
+
+    rng = random.Random(141421)
+    for _ in range(60):
+        count = rng.randint(3, 10)
+        graph = {node: [] for node in range(count)}
+        for u in range(count):
+            for v in range(count):
+                if u != v and rng.random() < 0.2:
+                    graph[u].append((v, rng.uniform(0.1, 15.0)))
+        landmarks = rng.sample(range(count), min(3, count))
+        heuristic = ALTHeuristic(graph, landmarks)
+        for goal in range(count):
+            for node in range(count):
+                _path, true_cost = dijkstra(graph, node, goal)
+                estimate = heuristic(node, goal)
+                assert estimate <= true_cost + 1e-9
+                _astar_path, astar_cost = astar(graph, node, goal, heuristic)
+                assert astar_cost == pytest.approx(true_cost)
