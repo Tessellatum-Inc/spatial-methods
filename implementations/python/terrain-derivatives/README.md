@@ -43,3 +43,8 @@ The companion `zevenbergen_thorne_slope_aspect` function uses central difference
 ## Topographic position index (TPI)
 
 The topographic_position_index function calculates focal TPI as the centre elevation minus the mean elevation in an odd-sized square window (including the centre). It uses integral images for O(rows × columns) work regardless of window size. The outer half-window border is always NoData. Non-finite cells are omitted from the local mean, with min_valid_fraction controlling the minimum share of valid cells required; the centre must be valid. Positive values are locally elevated (ridge-like), negative values locally depressed (valley-like), and values near zero are locally similar to the neighbourhood. TPI is scale-dependent: window size, terrain resolution and study area affect interpretation. It is not a landform classifier by itself.
+
+
+## Riley terrain ruggedness index (TRI)
+
+The riley_terrain_ruggedness_index function implements the eight-neighbour Riley form: the square root of the sum of squared elevation differences from the centre cell to its eight immediate neighbours. It requires a complete finite 3×3 neighbourhood and returns NaN at borders or around NoData. z_factor converts vertical values before differencing. This is not the alternative mean absolute-difference TRI variant; the formula must be stated when comparing products.
