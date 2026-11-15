@@ -12,7 +12,7 @@ return BOUNDARY; points outside the bounding box return None.
 """
 from __future__ import annotations
 
-from bisect import bisect_right
+from bisect import bisect_left
 from dataclasses import dataclass
 from math import isfinite
 from random import Random
@@ -133,6 +133,10 @@ class RandomizedTrapezoidalMap:
                 if _intersects(a, b):
                     raise ValueError("segments must be pairwise disjoint and non-touching")
         self.segments = tuple(normalised)
+        self._endpoint_segments: dict[float, set[int]] = {}
+        for sid, (a, b) in enumerate(self.segments):
+            self._endpoint_segments.setdefault(a[0], set()).add(sid)
+            self._endpoint_segments.setdefault(b[0], set()).add(sid)
         order = list(range(len(normalised)))
         Random(seed).shuffle(order)
         self.insertion_order = tuple(order)
@@ -198,15 +202,19 @@ class RandomizedTrapezoidalMap:
         xmin, ymin, xmax, ymax = self.bounds
         if x < xmin or x > xmax or y < ymin or y > ymax:
             return None
-        p = (x, y)
-        for a, b in self.segments:
-            if _on_segment(p, a, b, self.epsilon):
-                return BOUNDARY
         # Deterministic right-side convention on artificial vertical walls.
         node = self._x_root
         while isinstance(node, _XNode):
             node = node.left if x < node.split_x else node.right
-        node, _active = node
+        node, active = node
+        candidates = set(active)
+        event_pos = bisect_left(self.x_events, x)
+        for pos in (event_pos-1, event_pos):
+            if 0 <= pos < len(self.x_events) and abs(self.x_events[pos]-x) <= self.epsilon:
+                candidates.update(self._endpoint_segments.get(self.x_events[pos], ()))
+        p = (x, y)
+        if any(_on_segment(p, *self.segments[sid], self.epsilon) for sid in candidates):
+            return BOUNDARY
         while isinstance(node, _YNode):
             edge_y = _y_at(self.segments[node.segment_id], x)
             node = node.left if y < edge_y else node.right
