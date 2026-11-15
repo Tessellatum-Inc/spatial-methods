@@ -120,3 +120,43 @@ def dnbr(pre_fire_nbr, post_fire_nbr):
     if pre.shape != post.shape:
         raise ValueError("NBR arrays must have the same shape")
     return np.where(np.isfinite(pre) & np.isfinite(post), pre - post, np.nan)
+
+
+def awei_sh(blue, green, nir, swir1, swir2, *, nodata=None, valid_mask=None):
+    """AWEI shadow variant: B + 2.5G - 1.5(NIR+SWIR1) - 0.25SWIR2."""
+    bands = [np.asarray(x, dtype=float) for x in (blue, green, nir, swir1, swir2)]
+    if any(x.shape != bands[0].shape for x in bands[1:]):
+        raise ValueError("band arrays must have the same shape")
+    valid = np.logical_and.reduce([np.isfinite(x) for x in bands])
+    if valid_mask is not None:
+        mask = np.asarray(valid_mask)
+        if mask.shape != bands[0].shape:
+            raise ValueError("valid_mask must have the same shape as bands")
+        if mask.dtype != np.bool_:
+            raise TypeError("valid_mask must be boolean")
+        valid &= mask
+    if nodata is not None:
+        valid &= np.logical_and.reduce([x != nodata for x in bands])
+    b, g, n, s1, s2 = bands
+    result = b + 2.5*g - 1.5*(n+s1) - 0.25*s2
+    return np.where(valid, result, np.nan)
+
+
+def awei_nsh(green, nir, swir1, swir2, *, nodata=None, valid_mask=None):
+    """AWEI non-shadow variant: 4(G-SWIR1) - (0.25NIR + 2.75SWIR2)."""
+    bands = [np.asarray(x, dtype=float) for x in (green, nir, swir1, swir2)]
+    if any(x.shape != bands[0].shape for x in bands[1:]):
+        raise ValueError("band arrays must have the same shape")
+    valid = np.logical_and.reduce([np.isfinite(x) for x in bands])
+    if valid_mask is not None:
+        mask = np.asarray(valid_mask)
+        if mask.shape != bands[0].shape:
+            raise ValueError("valid_mask must have the same shape as bands")
+        if mask.dtype != np.bool_:
+            raise TypeError("valid_mask must be boolean")
+        valid &= mask
+    if nodata is not None:
+        valid &= np.logical_and.reduce([x != nodata for x in bands])
+    g, n, s1, s2 = bands
+    result = 4*(g-s1) - (0.25*n + 2.75*s2)
+    return np.where(valid, result, np.nan)
