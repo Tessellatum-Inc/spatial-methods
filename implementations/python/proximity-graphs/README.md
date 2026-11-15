@@ -5,7 +5,8 @@ Implements:
 - relative neighbourhood graph using the open-lune definition;
 - lune-based beta-skeleton for beta in [1,2] (beta=1 Gabriel, beta=2 RNG under the stated open-region convention);
 - Yao graph using equal-angle cones, nearest selection, deterministic tie-breaking and undirected union;
-- Euclidean minimum spanning tree using Kruskal over all point pairs.
+- Euclidean minimum spanning tree using Kruskal over all point pairs;
+- sparse Delaunay-candidate Euclidean MST (with a collinear fallback).
 
 ## Run
 
