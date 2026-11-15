@@ -41,7 +41,7 @@ Estimate \(\beta\) by least squares of \(y^*\) on \(X^*\). With residual sum of 
 \log\{SSR(\rho,\lambda)/n\}\right].
 \]
 
-The implementation searches a two-dimensional coarse grid to select a starting point, then alternates one-dimensional golden-section maximisations in each parameter. It retains the best result if coordinate refinement does not improve the coarse-grid likelihood.
+The implementation searches a two-dimensional coarse grid to select a starting point, then alternates one-dimensional golden-section maximisations within the corresponding neighbourhoods of that best grid cell. It retains the best result if coordinate refinement does not improve the coarse-grid likelihood.
 
 ## Parameter bounds and interpretation
 
