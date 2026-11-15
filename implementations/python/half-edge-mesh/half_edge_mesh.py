@@ -50,7 +50,6 @@ class HalfEdgeMesh:
 
         # First create each face's directed cycle.
         origins, face_ids, nxt, prv = [], [], [], []
-        directed = {}
         undirected = defaultdict(list)
         face_edge = []
         vertex_edge = [None] * vertex_count
@@ -59,10 +58,6 @@ class HalfEdgeMesh:
             face_edge.append(base)
             for k, u in enumerate(tri):
                 v = tri[(k + 1) % 3]
-                key = (u, v)
-                if key in directed:
-                    raise ValueError(f"directed edge {key} occurs more than once")
-                directed[key] = base + k
                 undirected[tuple(sorted((u, v)))].append((u, v, base + k))
                 origins.append(u)
                 face_ids.append(fi)
