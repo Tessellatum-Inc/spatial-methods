@@ -48,3 +48,28 @@ def test_empty_inputs_rejected(fn,args):
 def test_nonfinite_coordinates_rejected():
     with pytest.raises(ValueError):
         hausdorff_distance([(0,float("nan"))],[(0,0)])
+
+
+def test_rotating_calipers_diameter_square_and_rectangle():
+    from geometry_metrics import convex_polygon_diameter
+    a, b, d = convex_polygon_diameter([(0,0),(2,0),(2,2),(0,2)])
+    assert d == pytest.approx(2 * math.sqrt(2))
+    assert {a, b} in ({(0.0,0.0),(2.0,2.0)}, {(2.0,0.0),(0.0,2.0)})
+    assert convex_polygon_diameter([(0,0),(4,0),(4,1),(0,1)])[2] == pytest.approx(math.sqrt(17))
+
+
+def test_rotating_calipers_degenerate_and_duplicate_points():
+    from geometry_metrics import convex_polygon_diameter
+    assert convex_polygon_diameter([]) is None
+    assert convex_polygon_diameter([(2,3),(2,3)]) == ((2.0,3.0),(2.0,3.0),0.0)
+    assert convex_polygon_diameter([(0,0),(1,0),(3,0),(1,0)])[2] == 3.0
+
+
+def test_rotating_calipers_matches_brute_force_on_seeded_clouds():
+    from geometry_metrics import convex_polygon_diameter
+    import random
+    rng = random.Random(42)
+    for _ in range(30):
+        pts = [(rng.uniform(-10,10), rng.uniform(-10,10)) for _ in range(20)]
+        expected = max(math.dist(a,b) for i,a in enumerate(pts) for b in pts[i+1:])
+        assert convex_polygon_diameter(pts)[2] == pytest.approx(expected)
