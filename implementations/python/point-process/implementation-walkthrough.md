@@ -54,3 +54,8 @@ Tango's statistic forms the residual vector between observed case proportions an
 ## 10. Extend the scan window to ellipses
 
 The elliptical scan evaluates a finite grid of major/minor axis ratios and orientations at each areal centroid. Rotated coordinates are ranked by normalized elliptical radius, and tied prefixes define candidate zones. Each candidate is scored with the same elevated Poisson likelihood ratio as the circular scan. The Monte Carlo routine re-runs the full candidate grid for every population-proportional allocation of the fixed total cases. The finite grid is a transparent teaching approximation; it is not a full SaTScan reproduction and has no eccentricity penalty.
+
+
+## 11. Enumerate connected irregular scan zones
+
+The flexible scan uses a supplied symmetric areal adjacency graph. For each root centroid, it restricts candidates to the root plus its K-1 nearest other centroids, then exhaustively enumerates all connected subsets containing that root up to K areas. The same population-offset Poisson LLR scores each zone. Conditional Monte Carlo inference reallocates the fixed total cases by population and repeats the full enumeration. This implementation caps K at 15 because the candidate count grows combinatorially; it is a bounded teaching baseline, not an optimized production FleXScan engine.
