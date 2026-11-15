@@ -44,3 +44,7 @@ directions = d8_flow_direction(dem, cell_size=(10, 20))
 - The algorithm is sensitive to grid resolution, DEM noise and the selected treatment of flats and sinks.
 
 Read the [canonical lesson](../../../algorithms/raster/d8-flow-direction.md) and [intern walkthrough](implementation-walkthrough.md).
+
+## Multiple-flow-direction routing
+
+The companion `mfd_flow.py` module implements a power-law multiple-flow-direction (MFD) variant. `mfd_flow_weights` splits flow among strictly lower neighbours using slope-to-the-exponent weights; `mfd_flow_accumulation` routes contributions through the resulting acyclic graph with a topological traversal. It supports rectangular cell spacing, masks, NoData and raster-valued initial contributions. Run the same test command above to exercise both D8 and MFD. This is not D-infinity and does not resolve flats or fill depressions. See the [MFD lesson](../../../algorithms/raster/mfd-flow-routing.md).
