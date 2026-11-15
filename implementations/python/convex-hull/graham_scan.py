@@ -125,4 +125,4 @@ def quickhull(points: Sequence[Point]) -> list[Point]:
 
     upper = [p for p in unique if _cross(left, right, p) > 0]
     lower = [p for p in unique if _cross(right, left, p) > 0]
-    return [left] + chain(left, right, upper) + [right] + chain(right, left, lower)
+    # Lower chain left-to-right, then upper chain right-to-left gives CCW order.\n    return [left] + chain(left, right, lower) + [right] + chain(right, left, upper)
