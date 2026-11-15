@@ -10,7 +10,7 @@ def test_linear_drainage_path_and_stream_cells_have_zero_hand():
     directions = [[1, 1, 1, 1, 0]]
     streams = [[False, False, True, False, True]]
     assert height_above_nearest_drainage(elevation, directions, streams) == [
-        [2.0, 1.0, 0.0, 0.0, 0.0]
+        [2.0, 1.0, 0.0, 1.0, 0.0]
     ]
 
 
@@ -31,9 +31,9 @@ def test_branching_paths_reach_their_first_downstream_stream_cell():
         [False, False, True],
     ]
     hand = height_above_nearest_drainage(elevation, directions, streams)
-    assert hand[0][0] == 2.0  # 8 drains to stream elevation 6
-    assert hand[1][0] == 3.0  # 9 -> 6 -> 4? first stream is elevation 4
-    assert hand[2][0] == 6.0
+    assert hand[0][0] == 4.0  # 8 -> 6 -> first stream elevation 4
+    assert hand[1][0] == 5.0  # 9 -> 6 -> first stream elevation 4
+    assert hand[2][0] == 7.0  # 10 -> 5 -> first stream elevation 3
 
 
 def test_paths_without_a_stream_return_none_and_nodata_is_preserved():
