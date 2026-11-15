@@ -228,3 +228,50 @@ def test_riley_tri_rejects_invalid_vertical_scale(z_factor):
     from terrain_indices import riley_terrain_ruggedness_index
     with pytest.raises(ValueError):
         riley_terrain_ruggedness_index(np.ones((3, 3)), z_factor=z_factor)
+
+
+# Hypsometric curve and integral
+
+def test_hypsometric_curve_normalizes_elevation_and_area_fraction():
+    from terrain_indices import hypsometric_curve
+    dem = np.array([[0, 1, 2], [1, 2, 3]], dtype=float)
+    result = hypsometric_curve(dem)
+    np.testing.assert_allclose(result["relative_elevation"], [1, 2/3, 1/3, 0])
+    np.testing.assert_allclose(result["area_fraction_above"], [1/6, 3/6, 5/6, 1])
+    assert result["hypsometric_integral"] == pytest.approx(0.5)
+    assert result["valid_cell_count"] == 6
+
+
+def test_hypsometric_curve_excludes_nodata_and_respects_valid_mask():
+    from terrain_indices import hypsometric_curve
+    dem = np.array([[0, 1], [2, np.nan]], dtype=float)
+    result = hypsometric_curve(dem, valid_mask=np.array([[1, 1], [0, 1]], dtype=bool))
+    assert result["valid_cell_count"] == 2
+    assert result["minimum_elevation"] == 0
+    assert result["maximum_elevation"] == 1
+    assert result["hypsometric_integral"] == pytest.approx(0.5)
+
+
+def test_hypsometric_curve_is_invariant_to_positive_vertical_affine_transform():
+    from terrain_indices import hypsometric_curve
+    dem = np.arange(1, 13, dtype=float).reshape(3, 4)
+    first = hypsometric_curve(dem)
+    second = hypsometric_curve(dem * 10 + 500)
+    np.testing.assert_allclose(first["relative_elevation"], second["relative_elevation"])
+    np.testing.assert_allclose(first["area_fraction_above"], second["area_fraction_above"])
+    assert first["hypsometric_integral"] == pytest.approx(second["hypsometric_integral"])
+
+
+@pytest.mark.parametrize("dem", [
+    np.ones((2, 2)), np.array([[np.nan, 1.0]]), np.empty((0, 2)),
+])
+def test_hypsometric_curve_rejects_undefined_or_insufficient_relief(dem):
+    from terrain_indices import hypsometric_curve
+    with pytest.raises(ValueError):
+        hypsometric_curve(dem)
+
+
+def test_hypsometric_curve_rejects_mismatched_mask():
+    from terrain_indices import hypsometric_curve
+    with pytest.raises(ValueError, match="valid_mask"):
+        hypsometric_curve(np.ones((2, 2)), valid_mask=np.ones((3, 3)))
