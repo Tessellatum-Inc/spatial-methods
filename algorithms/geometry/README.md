@@ -28,3 +28,7 @@ These records are part of the broader [algorithm collection](../README.md). The 
 - [Convex decomposition implementation](../../implementations/python/convex-decomposition/README.md) — exact-predicate greedy triangle merging, tests and walkthrough.
 
 - [Delaunay-filtered proximity graphs](../../implementations/python/proximity-graphs/README.md) — sparse candidate filtering for Gabriel and RNG, with documented degeneracy limits.
+
+- [Hausdorff and Fréchet distances](hausdorff-frechet.md) — distinguish finite sampled-set Hausdorff distance from order-sensitive discrete Fréchet distance.
+- [Smallest enclosing circle](smallest-enclosing-circle.md) — compute the minimum-radius Euclidean circle containing a finite planar point set.
+- [Geometry metrics implementation](../../implementations/python/geometry-metrics/README.md) — tested Hausdorff, discrete Fréchet and randomized Welzl baselines.
