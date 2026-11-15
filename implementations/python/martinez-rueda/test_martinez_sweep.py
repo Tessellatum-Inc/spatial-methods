@@ -1,5 +1,5 @@
 import pytest
-from martinez_sweep import (sweep_split_segments, classify_boundary_fragments, fragment_area_contribution, boolean_overlay_rings, _YIntervalStatus)
+from martinez_sweep import (sweep_split_segments, classify_boundary_fragments, fragment_area_contribution, boolean_overlay_rings, _YIntervalStatus, Segment, _intersection)
 
 def test_overlapping_rectangles_split_crossed_edges():
     a=[(0,0),(4,0),(4,3),(0,3)]; b=[(2,-1),(5,-1),(5,2),(2,2)]
@@ -199,3 +199,33 @@ def test_polygon_component_assembly_rejects_orphan_hole():
     orphan=[(2,2),(2,4),(4,4),(4,2)]
     with pytest.raises(ValueError,match="no containing shell"):
         assemble_polygon_components((orphan,))
+
+
+def test_exact_rational_predicate_detects_crossing_below_epsilon_area_scale():
+    # The determinant is 2e-20, smaller than epsilon, but the segments
+    # properly cross. A dimensionally inconsistent determinant-vs-epsilon
+    # comparison used to classify these as parallel.
+    a=Segment(0,0,0,(0.0,0.0),(1e-10,1e-10))
+    b=Segment(1,0,0,(0.0,1e-10),(1e-10,0.0))
+    hit=_intersection(a,b,1e-10)
+    assert hit is not None
+    t,u,p,proper=hit
+    assert float(t)==pytest.approx(0.5)
+    assert float(u)==pytest.approx(0.5)
+    assert p==(5e-11,5e-11)
+    assert proper
+
+
+def test_exact_predicate_handles_near_parallel_but_nonparallel_segments():
+    a=Segment(0,0,0,(0.0,0.0),(1.0,1e-12))
+    b=Segment(1,0,0,(0.0,1e-12),(1.0,0.0))
+    hit=_intersection(a,b,1e-14)
+    assert hit is not None
+    assert hit[2]==pytest.approx((0.5,5e-13))
+
+
+def test_exact_predicate_keeps_collinear_overlap_rejection():
+    a=Segment(0,0,0,(0.0,0.0),(2.0,0.0))
+    b=Segment(1,0,0,(1.0,0.0),(3.0,0.0))
+    with pytest.raises(NotImplementedError,match="collinear"):
+        _intersection(a,b,1e-10)
