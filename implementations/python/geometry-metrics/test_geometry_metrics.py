@@ -134,3 +134,41 @@ def test_polylabel_guards_initial_grid_size():
     from geometry_metrics import polylabel
     with pytest.raises(RuntimeError):
         polylabel([(0,0),(100,0),(100,1),(0,1)], precision=0.1, max_cells=10)
+
+
+def test_continuous_frechet_handles_different_sampling_of_same_curve():
+    from geometry_metrics import continuous_frechet_distance, continuous_frechet_decision
+    coarse=[(0,0),(2,0)]
+    dense=[(0,0),(0.5,0),(1,0),(1.5,0),(2,0)]
+    assert continuous_frechet_decision(coarse,dense,0.0)
+    assert continuous_frechet_distance(coarse,dense,tolerance=1e-8)==pytest.approx(0.0,abs=1e-8)
+    assert discrete_frechet_distance(coarse,dense)==pytest.approx(0.5)
+
+
+def test_continuous_frechet_parallel_lines_and_threshold_decision():
+    from geometry_metrics import continuous_frechet_distance, continuous_frechet_decision
+    a=[(0,0),(1,0),(2,0)]
+    b=[(0,1),(1,1),(2,1)]
+    assert continuous_frechet_decision(a,b,1.0)
+    assert not continuous_frechet_decision(a,b,0.99)
+    assert continuous_frechet_distance(a,b,tolerance=1e-7)==pytest.approx(1.0,abs=1e-7)
+
+
+def test_continuous_frechet_is_symmetric_and_respects_endpoints():
+    from geometry_metrics import continuous_frechet_distance
+    a=[(0,0),(1,1),(2,0)]
+    b=[(0,0),(1,0),(2,0)]
+    forward=continuous_frechet_distance(a,b,tolerance=1e-7)
+    reverse=continuous_frechet_distance(b,a,tolerance=1e-7)
+    assert forward==pytest.approx(reverse,abs=1e-7)
+    assert continuous_frechet_distance([(0,0),(1,0)],[(3,0),(4,0)])==pytest.approx(3.0,abs=1e-6)
+
+
+def test_continuous_frechet_singleton_and_validation():
+    from geometry_metrics import continuous_frechet_distance, continuous_frechet_decision
+    assert continuous_frechet_distance([(0,0)],[(1,0),(2,0)])==pytest.approx(2.0)
+    assert continuous_frechet_decision([(0,0)],[(1,0),(2,0)],2.0)
+    with pytest.raises(ValueError):
+        continuous_frechet_decision([(0,0)],[(1,0)],-1)
+    with pytest.raises(ValueError):
+        continuous_frechet_distance([(0,0),(1,0)],[(0,0),(1,0)],tolerance=0)
