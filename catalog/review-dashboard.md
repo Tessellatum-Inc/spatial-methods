@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 694 | Rows with a source-entry review status in the section indexes |
-| Partial | 54 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 640 | The source wording is preserved, but no independent review is recorded |
+| Partial | 55 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 639 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -20,7 +20,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | Section | Source entries | Partial | Intake only |
 |---:|---:|---:|---:|
 | 1 — Core GIS | 33 | 16 | 17 |
-| 2 — Spatial statistics | 27 | 3 | 24 |
+| 2 — Spatial statistics | 27 | 4 | 23 |
 | 3 — Geostatistics | 26 | 3 | 23 |
 | 4 — Raster, terrain and hydrology | 27 | 2 | 25 |
 | 5 — Remote sensing | 36 | 2 | 34 |
@@ -41,7 +41,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 20 — Indices, microwave, events and information | 25 | 2 | 23 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 2 | 24 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 2 | 26 |
-| **Total** | **694** | **54** | **640** |
+| **Total** | **694** | **55** | **639** |
 
 ## How to interpret this
 
@@ -64,4 +64,4 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 The counts were assembled from the row-level labels present in all 22 section indexes on 14 November 2026. They are a dated snapshot and must be recalculated when source-entry labels are revised. They do not count canonical lesson pages, implementation inventories, software lists or supplementary methods as additional source entries.
 ## Implementation reconciliation — 15 November 2026
 
-The `compendium/section-01-geometry-continuation` branch was audited against `main`. It is divergent (2,030 commits ahead and 594 behind), so it was not merged wholesale. Selected missing algorithm assets were reconciled directly onto `main`: power-law multiple-flow-direction routing and accumulation with tests and a notebook; compositional closure/CLR/ALR/ILR and Aitchison distance with tests and a source-verification note; CUSUM, binary segmentation and PELT detector code/tests; a known-variance Gaussian BOCPD variant; and spatially diverse batch selection, UCB1 and exact RBF-GP candidate selection with tests. Two source rows were upgraded from intake-only to partial after the Section 14 Poisson scan and Section 18 Pareto routing records gained tested implementations. Implementation availability is not equivalent to full source-entry verification, and the compositional record's exact original source-row mapping remains open.
+The `compendium/section-01-geometry-continuation` branch was audited against `main`. It is divergent (2,030 commits ahead and 594 behind), so it was not merged wholesale. Selected missing algorithm assets were reconciled directly onto `main`: power-law multiple-flow-direction routing and accumulation with tests and a notebook; compositional closure/CLR/ALR/ILR and Aitchison distance with tests and a source-verification note; CUSUM, binary segmentation and PELT detector code/tests; a known-variance Gaussian BOCPD variant; and spatially diverse batch selection, UCB1 and exact RBF-GP candidate selection with tests. Three source rows were upgraded from intake-only to partial after the Section 2 point-pattern/quadrat baselines, Section 14 Poisson scan and Section 18 Pareto routing records gained tested implementations. Implementation availability is not equivalent to full source-entry verification, and the compositional record's exact original source-row mapping remains open.
