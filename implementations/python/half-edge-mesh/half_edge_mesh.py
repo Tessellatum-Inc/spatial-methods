@@ -149,3 +149,30 @@ class HalfEdgeMesh:
         for vi, h in enumerate(self.vertex_edge):
             if h is not None and self.halfedges[h].origin != vi:
                 raise ValueError(f"vertex {vi} outgoing-edge reference is invalid")
+
+        # The link of a manifold vertex is one connected path (boundary) or
+        # one connected cycle (interior). Edge-incidence checks alone miss
+        # bow-tie vertices whose incident triangle fans only touch at a point.
+        for vi in range(self.vertex_count):
+            link = {}
+            for tri in self.faces:
+                if vi in tri:
+                    others = [v for v in tri if v != vi]
+                    a, b = others
+                    link.setdefault(a, set()).add(b)
+                    link.setdefault(b, set()).add(a)
+            if not link:  # isolated vertex
+                continue
+            degrees = [len(neighbours) for neighbours in link.values()]
+            endpoints = sum(degree == 1 for degree in degrees)
+            if any(degree not in (1, 2) for degree in degrees) or endpoints not in (0, 2):
+                raise ValueError(f"vertex {vi} has a non-manifold link")
+            start = next(iter(link))
+            seen, stack = set(), [start]
+            while stack:
+                node = stack.pop()
+                if node not in seen:
+                    seen.add(node)
+                    stack.extend(link[node] - seen)
+            if len(seen) != len(link):
+                raise ValueError(f"vertex {vi} has a disconnected (non-manifold) link")
