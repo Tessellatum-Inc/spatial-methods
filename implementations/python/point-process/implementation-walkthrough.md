@@ -26,7 +26,7 @@ Each Monte Carlo replication preserves the total number of cases and draws areal
 
 ## 7. Validation and scope
 
-Tests cover nearest-neighbour summaries, translation correction, supplied-intensity K, pair-correlation calculation, quadrat boundaries and reproducibility, elevated clusters, population offsets, tied radii and invalid inputs. The scan is not a full SaTScan implementation: covariates, temporal scans, arbitrary zones, secondary clusters and polygon-boundary geometry remain outside scope. A finite-grid elliptical teaching scan is now covered in section 10.
+Tests cover nearest-neighbour summaries, translation correction, supplied-intensity K, pair-correlation calculation, quadrat boundaries and reproducibility, elevated clusters, population offsets, tied radii and invalid inputs. The scan is not a full SaTScan implementation: covariates, temporal scans, unrestricted arbitrary zones, secondary clusters and polygon-boundary geometry remain outside scope. A finite-grid elliptical teaching scan is now covered in section 10.
 
 ## Cross-type marked summaries
 
