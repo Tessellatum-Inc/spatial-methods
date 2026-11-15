@@ -116,3 +116,17 @@ python -m pytest -q
 ~~~
 
 The CI workflow includes this package and executes the companion notebook. A successful local or CI test run should be recorded separately from static inspection.
+
+
+## 9. Kelejian–Prucha spatial-error generalized moments
+
+Open `spatial_error_gmm.py`.
+
+1. Fit OLS to obtain residuals as a consistent first-step predictor of the latent spatial error.
+2. For each candidate lambda, filter the OLS residuals with (I-\lambda W), then spatially lag the filtered residuals.
+3. Match the three innovation moments: innovation variance, the variance of its spatial lag (scaled by \(\mathrm{tr}(W'W)/N\)), and the zero cross-moment between the spatially lagged innovation and the innovation.
+4. Profile the innovation variance analytically for each lambda, scan a bounded grid, and refine the best interior interval with golden-section minimisation.
+5. Apply feasible GLS by filtering both y and X with (I-\hat\lambda W). The reported covariance is the model-based iid-innovation GLS covariance.
+6. This is the homoskedastic Kelejian–Prucha (1999) GM estimator. The heteroskedastic extension requires different moment weighting and asymptotic covariance treatment; it is not claimed here.
+
+The implementation follows the three population moments and nonlinear least-squares construction in Kelejian and Prucha (1999). Dense matrices and a bounded scalar search keep it inspectable, not scalable.
