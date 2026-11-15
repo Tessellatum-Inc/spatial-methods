@@ -2,7 +2,7 @@
 
 This package contains three executable optical-flow treatments:
 
-- A single-scale dense local Lucas–Kanade teaching implementation.
+- A single-scale dense local Lucas–Kanade implementation using SciPy's vectorised local-window filters, plus a pure-Python reference implementation for small fixtures and step-by-step study.
 - A scikit-image TV-L1 variational dense-flow wrapper.
 - An OpenCV-backed Farnebäck dense-flow wrapper based on polynomial expansion.
 - An OpenCV-backed DIS dense inverse-search wrapper with explicit speed/quality preset and refinement parameters.
@@ -35,3 +35,6 @@ The wrapper calls OpenCV's DISOpticalFlow implementation and exposes the ultrafa
 Synthetic translated texture fixtures check the direction and approximate magnitude of both dense flow fields. Invalid input and parameter contracts are also tested. These fixtures do not constitute a broad benchmark across occlusion, radiometric change, large motion, textureless regions or real satellite sequences.
 
 See the [method-selection guide](../../../methods/optical-flow.md) for assumptions, failure modes and evaluation recommendations.
+
+
+The pure-Python `lucas_kanade_dense_reference` function exposes the local normal-equation accumulation directly and uses the smallest structure-tensor eigenvalue as its conditioning test. It is intentionally slower than the vectorised `lucas_kanade` function and is included as a transparent reference, not a production path.
