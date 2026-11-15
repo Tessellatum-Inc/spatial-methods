@@ -55,7 +55,7 @@ The first local-frame package now connects geodetic longitude/latitude/ellipsoid
 
 ## Section 2 implementation note
 
-Ripley's K/L now includes the rectangular-window translation correction and a conditional homogeneous-CSR simulation workflow. The latter returns pointwise quantile bands and a separate global studentised maximum-deviation Monte Carlo p-value across a preselected radius interval. Pointwise bands are not simultaneous global envelopes. Isotropic/border corrections, inhomogeneous point-process models, network KDE and specialist rank-envelope procedures remain open. See the [lesson](../algorithms/statistics/ripley-k.md), [package](../implementations/python/ripley-k/README.md), [exercise](../exercises/ripley-k-envelopes.md) and [lab](../notebooks/ripley-k-lab.ipynb).
+G/F/J nearest-neighbour functions now have a tested empirical implementation: G uses event-to-nearest-other-event distances, F uses supplied independent empty-space test locations, and J is their survival-function ratio with explicit zero-denominator handling. Ripley's K/L now includes the rectangular-window translation correction and a conditional homogeneous-CSR simulation workflow. The latter returns pointwise quantile bands and a separate global studentised maximum-deviation Monte Carlo p-value across a preselected radius interval. Pointwise bands are not simultaneous global envelopes. Isotropic/border corrections, inhomogeneous point-process models, network KDE and specialist rank-envelope procedures remain open. See the [lesson](../algorithms/statistics/ripley-k.md), [package](../implementations/python/ripley-k/README.md), [exercise](../exercises/ripley-k-envelopes.md) and [lab](../notebooks/ripley-k-lab.ipynb).
 
 
 ## Section 6 implementation note
