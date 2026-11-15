@@ -201,3 +201,10 @@ def test_largest_empty_circle_rejects_degenerate_sites_and_invalid_options():
         largest_empty_circle([(0,0),(1,0),(0,1)],precision=0)
     with pytest.raises(ValueError):
         largest_empty_circle([(0,0),(1,0),(0,1)],max_cells=0)
+
+
+def test_largest_empty_circle_respects_cell_budget():
+    from geometry_metrics import largest_empty_circle
+    sites=[(0,0),(12,0),(10,8),(2,10),(5,4)]
+    with pytest.raises(RuntimeError,match="max_cells"):
+        largest_empty_circle(sites,precision=0.001,max_cells=1)
