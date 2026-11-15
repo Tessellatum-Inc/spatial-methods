@@ -1,7 +1,6 @@
 """Bounded Gaussian column-plume inversion with fixed source and wind geometry."""
 from __future__ import annotations
 import numpy as np
-from scipy.optimize import lsq_linear
 
 
 def gaussian_column_kernel(x_coordinates, y_coordinates, source_x, source_y,
@@ -41,14 +40,18 @@ def invert_gaussian_plume(column_enhancement_kg_m2, x_coordinates, y_coordinates
                                     wind_speed_m_s, sigma_y0_m, dispersion_growth)
     if observed.shape != kernel.shape:
         raise ValueError("column and coordinate grids must have matching shapes")
-    design = np.column_stack((kernel.ravel(), np.ones(kernel.size)))
-    if np.linalg.matrix_rank(design) < 2:
+    k = kernel.ravel()
+    y = observed.ravel()
+    centred_k = k - float(np.mean(k))
+    centred_y = y - float(np.mean(y))
+    denominator = float(np.dot(centred_k, centred_k))
+    if denominator <= np.finfo(float).eps * max(1.0, float(np.dot(k, k))):
         raise ValueError("inversion is not identifiable: plume kernel and background are collinear")
-    fit = lsq_linear(design, observed.ravel(),
-                     bounds=([0.0, -np.inf], [np.inf, np.inf]), method="trf")
-    if not fit.success:
-        raise RuntimeError(f"least-squares inversion failed: {fit.message}")
-    q, background = map(float, fit.x)
+    # Eliminate the unconstrained intercept analytically, then project the
+    # emission coefficient onto its physical lower bound Q >= 0.
+    unconstrained_q = float(np.dot(centred_k, centred_y) / denominator)
+    q = max(0.0, unconstrained_q)
+    background = float(np.mean(y) - q * np.mean(k))
     plume = q * kernel
     prediction = plume + background
     residual = observed - prediction
@@ -60,5 +63,5 @@ def invert_gaussian_plume(column_enhancement_kg_m2, x_coordinates, y_coordinates
         "residual_kg_m2": residual,
         "rms_residual_kg_m2": float(np.sqrt(np.mean(residual * residual))),
         "sample_count": int(observed.size),
-        "solver_status": int(fit.status),
+        "solver_status": 1,
     }

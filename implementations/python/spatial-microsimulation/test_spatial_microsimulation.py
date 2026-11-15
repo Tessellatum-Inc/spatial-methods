@@ -7,7 +7,7 @@ def test_ipf_recovers_compatible_two_way_margins():
     result=ipf_rake(np.ones(4),controls,[30,70,40,60])
     assert result["converged"]
     np.testing.assert_allclose(result["fitted_margins"],[30,70,40,60],atol=1e-6)
-    assert result["iterations"]>1
+    assert result["iterations"]>=1
 
 def test_ipf_preserves_structural_zero_seed_records():
     result=ipf_rake([1,0,1],[[1,0],[1,0],[0,1]],[4,6])

@@ -25,7 +25,7 @@ def ipf_rake(seed_weights, constraint_matrix, target_margins, *, tolerance=1e-8,
         raise ValueError("tolerance and max_iter must be positive")
     masks=[design[:,j]==1 for j in range(design.shape[1])]
     for j,mask in enumerate(masks):
-        if not np.any(mask) and targets[j]>0: raise ValueError(f"control {j} has positive target but no seed records")
+        if not np.any(mask) and targets[j]>0: raise ValueError(f"control {j} has positive target but zero seed support (no eligible seed records)")
         if targets[j]>0 and not np.any(weights[mask]>0): raise ValueError(f"control {j} has positive target but zero seed support")
     converged=False; error=np.inf
     for iteration in range(1,int(max_iter)+1):

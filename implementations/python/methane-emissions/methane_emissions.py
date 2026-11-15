@@ -18,8 +18,8 @@ def _finite_array(values, name, ndim=2):
 
 def gaussian_plume_template(shape, sigma_cross, sigma_along, angle_radians=0.0):
     """Create a unit-peak rotated anisotropic Gaussian template."""
-    if len(shape)!=2 or any(not isinstance(n,(int,np.integer)) or n<3 for n in shape):
-        raise ValueError("shape must contain two integer dimensions >= 3")
+    if len(shape)!=2 or any(not isinstance(n,(int,np.integer)) or n<3 or n%2==0 for n in shape):
+        raise ValueError("shape must contain two odd integer dimensions >= 3")
     sx,sy=float(sigma_cross),float(sigma_along)
     angle=float(angle_radians)
     if not np.isfinite(sx) or not np.isfinite(sy) or sx<=0 or sy<=0 or not np.isfinite(angle):
