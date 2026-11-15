@@ -96,6 +96,9 @@ jobs:
           - example: spatial-join
             directory: implementations/python/spatial-join
             pythonpath: "../kd-tree"
+          - example: reverse-knn
+            directory: implementations/python/reverse-knn
+            pythonpath: "../kd-tree"
           - example: kd-tree
             directory: implementations/python/kd-tree
             pythonpath: ""
