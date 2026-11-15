@@ -298,3 +298,43 @@ def test_spatial_durbin_2sls_rejects_underidentified_complete_graph():
     y = np.array([1.0, 1.7, 1.2, 2.4, 1.9, 3.1, 2.7, 3.6, 3.0, 4.1, 3.8, 4.7])
     with pytest.raises(ValueError, match="underidentified SDM"):
         spatial_durbin_2sls(y, x, w, instrument_orders=4)
+
+
+def test_spatial_durbin_mle_recovers_synthetic_sdm_parameters():
+    from maximum_likelihood import spatial_durbin_mle
+    rng = np.random.default_rng(20261115)
+    n = 90
+    w = _row_standardised_path(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    beta = np.array([1.0, 0.7])
+    gamma = np.array([0.0, -0.25])
+    rho = 0.22
+    epsilon = rng.normal(scale=0.16, size=n)
+    y = np.linalg.solve(
+        np.eye(n) - rho * w,
+        x @ beta + (w @ x) @ gamma + epsilon,
+    )
+    fit = spatial_durbin_mle(y, x, w, grid_size=161)
+    assert fit.model == "SDM"
+    assert fit.spatial_parameter == pytest.approx(rho, abs=0.17)
+    assert fit.coefficients == pytest.approx(beta, abs=0.20)
+    assert fit.spatial_covariate_coefficients[0] == pytest.approx(0.0, abs=1e-10)
+    assert fit.spatial_covariate_coefficients[1] == pytest.approx(gamma[1], abs=0.20)
+    assert fit.sigma2_mle > 0
+    assert np.isfinite(fit.log_likelihood)
+    assert len(fit.fitted) == n
+    assert len(fit.residuals) == n
+
+
+def test_spatial_durbin_mle_rejects_rank_deficient_augmented_design():
+    from maximum_likelihood import spatial_durbin_mle
+    n = 12
+    w = (np.ones((n, n)) - np.eye(n)) / (n - 1)
+    x = np.column_stack([np.ones(n), np.linspace(-1.0, 1.0, n)])
+    y = np.array([1.0, 1.7, 1.2, 2.4, 1.9, 3.1, 2.7, 3.6, 3.0, 4.1, 3.8, 4.7])
+    # On a complete row-standardised graph, WX is in span(X), so the SDM
+    # collapses to SAR and gamma is not separately identified.
+    fit = spatial_durbin_mle(y, x, w, grid_size=41)
+    assert fit.spatial_covariate_coefficients == pytest.approx((0.0, 0.0))
+    with pytest.raises(ValueError, match="grid_size"):
+        spatial_durbin_mle(y, x, w, grid_size=10)
