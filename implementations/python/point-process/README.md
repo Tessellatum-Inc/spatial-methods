@@ -4,7 +4,7 @@ Dependency-free functions for a bounded subset of spatial point-process analysis
 
 - Nearest-neighbour distances and empirical G function; Monte Carlo empty-space F function and combined J-function estimate.
 - Cross-type G, rectangular translation-corrected cross-K, finite-difference cross pair correlation and Monte Carlo cross-J for two distinct marks.
-- Homogeneous Poisson, stationary Thomas (Gaussian Neyman–Scott), stationary Matérn disc-cluster and grid-discretised log-Gaussian Cox point-pattern simulation.
+- Homogeneous Poisson, stationary Thomas (Gaussian Neyman–Scott), stationary Matérn disc-cluster, grid-discretised log-Gaussian Cox and Strauss repulsive point-pattern simulation.
 - Homogeneous Ripley's K with rectangular translation edge correction.
 - Inhomogeneous K with externally supplied pointwise intensities and rectangular translation correction.
 - Finite-difference pair-correlation estimates from K(r).
@@ -21,6 +21,10 @@ python -m pytest -q
 ## Point-process model simulators
 
 The model simulators are intentionally separate from fitting and inference: [Poisson and Thomas process lesson](../../../algorithms/statistics/poisson-and-thomas-processes.md), [Matérn cluster process lesson](../../../algorithms/statistics/matern-cluster-process.md) and [log-Gaussian Cox process lesson](../../../algorithms/statistics/log-gaussian-cox-process.md). Thomas uses a finite Gaussian-tail buffer; Matérn uses an exact radius-sized buffer for its compact-support disc kernel; the LGCP is a small-grid piecewise-constant approximation with dense Cholesky.
+
+## Strauss interaction process
+
+The package includes a birth-death Metropolis–Hastings sampler for the finite-window Strauss model. Its density is proportional to βⁿγˢ, where s counts unordered pairs within the interaction radius. γ=1 is the Poisson limit; γ=0 is the hard-core limit. The finite MCMC run is approximate and depends on burn-in and chain length; it is not an exact sampler or fitted model. See the [canonical lesson](../../../algorithms/statistics/strauss-point-process.md) and walkthrough.
 
 ## Circular Poisson scan
 
