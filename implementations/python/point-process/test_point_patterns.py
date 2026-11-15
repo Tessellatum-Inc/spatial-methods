@@ -1,0 +1,125 @@
+import math
+import pytest
+from point_patterns import nearest_neighbor_distances, nearest_neighbor_cdf, ripley_k_translation, pair_correlation_from_k
+
+def test_nearest_neighbor_distances_for_square():
+    points=[(0,0),(1,0),(1,1),(0,1)]
+    assert nearest_neighbor_distances(points)==pytest.approx([1,1,1,1])
+    assert nearest_neighbor_cdf(points,[0.5,1,2])==pytest.approx([0,1,1])
+
+def test_translation_k_zero_below_nearest_pair_and_monotone():
+    points=[(2,2),(8,2),(2,8),(8,8)]
+    radii=[1,6,9]
+    values=ripley_k_translation(points,(0,0,10,10),radii)
+    assert values[0]==0
+    assert values[1] < values[2]
+    assert all(v>=0 for v in values)
+
+def test_k_translation_matches_hand_calculation_without_edge_loss():
+    points=[(4,4),(6,4)]
+    # For displacement (2,0), overlap fraction is 0.8; both ordered pairs count.
+    result=ripley_k_translation(points,(0,0,10,10),[2])
+    assert result[0]==pytest.approx(100/0.8)
+
+def test_pair_correlation_from_poisson_reference_curve():
+    radii=[1,2,3,4]
+    k=[math.pi*r*r for r in radii]
+    g=pair_correlation_from_k(radii,k)
+    assert g[1]==pytest.approx(1.0,abs=0.2)
+    assert g[2]==pytest.approx(1.0,abs=0.2)
+
+def test_rejects_invalid_window_and_radii():
+    with pytest.raises(ValueError):
+        ripley_k_translation([(0,0),(1,1)],(0,0,0,1),[1])
+    with pytest.raises(ValueError):
+        nearest_neighbor_cdf([(0,0),(1,1)],[-1])
+
+
+def test_inhomogeneous_k_translation_uses_pointwise_intensities_and_ordered_pairs():
+    from point_patterns import ripley_k_inhomogeneous_translation
+    points = [(4, 4), (6, 4)]
+    # Rectangle overlap is 8*10=80; both ordered pairs contribute.
+    got = ripley_k_inhomogeneous_translation(points, (0, 0, 10, 10), [1.9, 2.0],
+                                              [0.02, 0.04])
+    expected = 2.0 / (0.02 * 0.04 * 80.0)
+    assert got == pytest.approx([0.0, expected])
+
+
+def test_inhomogeneous_k_constant_intensity_matches_direct_formula():
+    from point_patterns import ripley_k_inhomogeneous_translation
+    points = [(2, 2), (5, 2), (2, 7)]
+    lam = [0.03, 0.03, 0.03]
+    got = ripley_k_inhomogeneous_translation(points, (0, 0, 10, 10), [3.0], lam)[0]
+    expected = 0.0
+    for i, (x, y) in enumerate(points):
+        for j, (a, b) in enumerate(points):
+            if i == j:
+                continue
+            overlap = (10 - abs(x-a)) * (10 - abs(y-b))
+            if math.hypot(x-a, y-b) <= 3.0:
+                expected += 1.0 / (lam[i] * lam[j] * overlap)
+    assert got == pytest.approx(expected)
+
+
+def test_inhomogeneous_k_rejects_invalid_intensity_and_count():
+    from point_patterns import ripley_k_inhomogeneous_translation
+    points = [(1, 1), (2, 2)]
+    with pytest.raises(ValueError):
+        ripley_k_inhomogeneous_translation(points, (0, 0, 5, 5), [1], [0.1])
+    with pytest.raises(ValueError):
+        ripley_k_inhomogeneous_translation(points, (0, 0, 5, 5), [1], [0.1, 0.0])
+    with pytest.raises(ValueError):
+        ripley_k_inhomogeneous_translation(points, (0, 0, 5, 5), [1], [float("nan"), 0.1])
+
+
+def test_quadrat_counts_assign_upper_and_right_boundaries_to_last_cell():
+    from point_patterns import quadrat_count_test
+    result = quadrat_count_test(
+        [(0, 0), (0.5, 0.5), (1, 1), (1, 0)],
+        (0, 0, 1, 1), nx=2, ny=2, n_simulations=99, seed=4,
+    )
+    assert result["counts"] == [[1, 1], [0, 2]]
+    assert result["expected_per_quadrat"] == pytest.approx(1.0)
+    assert result["pearson_statistic"] == pytest.approx(2.0)
+    assert result["degrees_of_freedom"] == 3
+
+
+def test_quadrat_test_is_reproducible_and_uses_plus_one_pvalue():
+    from point_patterns import quadrat_count_test
+    points = [(0.1, 0.1), (0.2, 0.2), (0.3, 0.3), (0.8, 0.8)]
+    a = quadrat_count_test(points, (0, 0, 1, 1), 2, 2, n_simulations=199, seed=42)
+    b = quadrat_count_test(points, (0, 0, 1, 1), 2, 2, n_simulations=199, seed=42)
+    assert a == b
+    assert 1 / 200 <= a["pvalue"] <= 1
+    assert sum(map(sum, a["counts"])) == len(points)
+
+
+def test_quadrat_test_supports_one_point_and_multiple_grid_shapes():
+    from point_patterns import quadrat_count_test
+    result = quadrat_count_test([(0.5, 0.5)], (0, 0, 1, 1), 3, 2, n_simulations=19, seed=1)
+    assert result["n_points"] == 1
+    assert len(result["counts"]) == 2
+    assert all(len(row) == 3 for row in result["counts"])
+
+
+@pytest.mark.parametrize("kwargs", [
+    {"nx": 0}, {"ny": 0}, {"nx": 1, "ny": 1},
+    {"nx": 2.5}, {"n_simulations": 0}, {"n_simulations": 1.5},
+    {"seed": True},
+])
+def test_quadrat_test_rejects_invalid_controls(kwargs):
+    from point_patterns import quadrat_count_test
+    with pytest.raises(ValueError):
+        quadrat_count_test([(0.2, 0.2)], (0, 0, 1, 1), **kwargs)
+
+
+def test_quadrat_test_rejects_invalid_window_points_and_duplicates():
+    from point_patterns import quadrat_count_test
+    with pytest.raises(ValueError):
+        quadrat_count_test([(0.2, 0.2)], (0, 0, 0, 1))
+    with pytest.raises(ValueError):
+        quadrat_count_test([(1.2, 0.2)], (0, 0, 1, 1))
+    with pytest.raises(ValueError):
+        quadrat_count_test([(0.2, 0.2), (0.2, 0.2)], (0, 0, 1, 1))
+    with pytest.raises(ValueError):
+        quadrat_count_test([], (0, 0, 1, 1))
