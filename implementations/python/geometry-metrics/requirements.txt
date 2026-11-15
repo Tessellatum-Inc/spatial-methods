@@ -1,1 +1,2 @@
-# Standard-library-only implementation; pytest is supplied by the repository CI workflow.
+# Standard-library-only implementation.
+pytest>=8,<9
