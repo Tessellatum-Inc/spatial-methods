@@ -50,7 +50,7 @@ The canonical records now cover the spectral-index family, global Otsu threshold
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Endmember extraction (N-FINDR, PPI, VCA), unmixing (FCLS, sparse, nonlinear, deep) | Endmember extraction / spectral unmixing methods | 8 | Not checked — intake only |
-| Anomaly and target detection: [global RX](../../algorithms/remote-sensing/rx-anomaly.md), Kernel RX, [global spectral matched filter](../../algorithms/remote-sensing/spectral-matched-filter.md), CEM, ACE, subspace methods | Detection algorithms / statistical methods | 8 | Partial — global RX baseline implemented; Kernel RX, matched filter, CEM, ACE and subspace methods remain open |
+| Anomaly and target detection: [global RX](../../algorithms/remote-sensing/rx-anomaly.md), Kernel RX, [global spectral matched filter](../../algorithms/remote-sensing/spectral-matched-filter.md), CEM, ACE, subspace methods | Detection algorithms / statistical methods | 8 | Partial — global RX and global spectral matched filter implemented; Kernel RX, CEM, ACE and subspace methods remain open |
 | [Spectral angle mapper and spectral information divergence](../../algorithms/remote-sensing/spectral-similarity.md), band selection, continuum removal, absorption feature analysis, red-edge position | Spectral similarity measures / feature selection / spectral analysis | 8 | Partial — SAM and SID implemented; band selection, continuum removal and absorption-feature analysis remain open |
 
 ## SAR and InSAR
