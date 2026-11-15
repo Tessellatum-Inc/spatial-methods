@@ -319,3 +319,25 @@ def test_exact_signed_area_preserves_orientation_at_large_coordinate_offset():
     ccw=[(base,base),(base+4,base),(base+4,base+4),(base,base+4)]
     assert _signed_area_exact(ccw)==16
     assert _signed_area_exact(list(reversed(ccw)))==-16
+
+
+def test_distinct_intersections_closer_than_epsilon_keep_separate_split_fragments():
+    from martinez_sweep import sweep_split_segments
+    delta=1e-11
+    a=[(0.0,0.0),(1.0,0.0),(1.0,1.0),(0.0,1.0)]
+    b=[(0.5,-1.0),(0.5+delta,-1.0),(0.5+delta,2.0),(0.5,2.0)]
+    result=sweep_split_segments([[a],[b]],epsilon=1e-10)
+    bottom=[f for f in result["split_segments"]
+            if f.source==0 and f.ring==0 and f.index==0]
+    assert len(bottom)==3
+    assert bottom[0].b[0] < bottom[1].a[0] or bottom[0].b[0] == bottom[1].a[0]
+    assert bottom[1].b[0] > bottom[1].a[0]
+    assert bottom[1].b[0] < bottom[2].a[0] or bottom[1].b[0] == bottom[2].a[0]
+
+
+def test_exact_point_in_ring_accepts_fraction_coordinates():
+    from fractions import Fraction
+    from martinez_sweep import _inside
+    ring=[(0,0),(2,0),(2,2),(0,2)]
+    assert _inside((Fraction(1,2),Fraction(3,2)),ring)
+    assert not _inside((Fraction(2),Fraction(1)),ring)
