@@ -25,7 +25,7 @@ This index links the algorithm dossiers to their runnable reference implementati
 
 ## Network optimisation
 
-- [Maximum flow and minimum cut](maximum-flow-min-cut.md) — Dinic's blocking-flow algorithm; [Python package](../../implementations/python/network-flow/README.md).
+- [Maximum flow and minimum cut](maximum-flow-min-cut.md) — Dinic's blocking-flow algorithm and Edmonds–Karp augmenting paths; [Dinic Python package](../../implementations/python/network-flow/README.md), [Edmonds–Karp Python package](../../implementations/python/max-flow-min-cut/README.md).
 - [Minimum spanning tree and forest](minimum-spanning-tree.md) — Kruskal with disjoint-set union; [Python package](../../implementations/python/minimum-spanning-tree/README.md).
 - [Steiner tree](steiner-tree.md) — exact Dreyfus–Wagner subset dynamic programming for small terminal sets; [Python package](../../implementations/python/steiner-tree/README.md).
 
