@@ -7,6 +7,15 @@ from math import isfinite
 from typing import Callable, Hashable, Mapping, Sequence
 
 Node = Hashable
+
+
+def _checked_add(left: float, right: float) -> float:
+    result = left + right
+    if isfinite(left) and isfinite(right) and not isfinite(result):
+        raise OverflowError("path cost accumulation exceeds finite float range")
+    return result
+
+
 Graph = Mapping[Node, Sequence[tuple[Node, float]]]
 
 
@@ -47,14 +56,14 @@ def shortest_path(graph: Graph, start: Node, goal: Node,
             return path, cost
 
         for neighbor, weight in graph.get(node, ()):
-            candidate = cost + weight
+            candidate = _checked_add(cost, weight)
             if candidate < best.get(neighbor, float("inf")):
                 estimate = float(h(neighbor, goal))
                 if not isfinite(estimate) or estimate < 0:
                     raise ValueError("heuristic values must be finite and non-negative")
                 best[neighbor] = candidate
                 previous[neighbor] = node
-                heappush(queue, (candidate + estimate, next(serial), candidate, neighbor))
+                heappush(queue, (_checked_add(candidate, estimate), next(serial), candidate, neighbor))
 
     return None, float("inf")
 
@@ -88,8 +97,8 @@ def bellman_ford(graph: Graph, start: Node, goal: Node) -> tuple[list[Node] | No
     for _ in range(max(0, len(nodes) - 1)):
         changed = False
         for u, v, weight in edges:
-            if distance[u] != float("inf") and distance[u] + weight < distance[v]:
-                distance[v] = distance[u] + weight
+            if distance[u] != float("inf") and _checked_add(distance[u], weight) < distance[v]:
+                distance[v] = _checked_add(distance[u], weight)
                 previous[v] = u
                 changed = True
         if not changed:
@@ -127,7 +136,7 @@ def floyd_warshall(graph: Graph) -> dict[tuple[Node, Node], float]:
             if dik == float("inf"):
                 continue
             for j in nodes:
-                candidate = dik + distance[(k, j)]
+                candidate = _checked_add(dik, distance[(k, j)])
                 if candidate < distance[(i, j)]:
                     distance[(i, j)] = candidate
 
@@ -195,7 +204,7 @@ def bidirectional_dijkstra(
             if node in backward_dist and distance + backward_dist[node] < best:
                 best, meeting = distance + backward_dist[node], node
             for neighbor, weight in graph.get(node, ()):
-                candidate = distance + weight
+                candidate = _checked_add(distance, weight)
                 if candidate < forward_dist.get(neighbor, float("inf")):
                     forward_dist[neighbor] = candidate
                     forward_prev[neighbor] = node
@@ -310,7 +319,7 @@ def k_shortest_paths(
             weights = [weight for neighbor, weight in graph.get(u, ()) if neighbor == v]
             if not weights:
                 raise ValueError("path contains an edge absent from the original graph")
-            total += min(weights)
+            total = _checked_add(total, min(weights))
         return total
 
     while len(accepted) < k:
@@ -341,7 +350,7 @@ def k_shortest_paths(
             key = tuple(total_path)
             if key in accepted_keys or key in candidate_keys:
                 continue
-            total_cost = path_cost(root) + spur_cost
+            total_cost = _checked_add(path_cost(root), spur_cost)
             heappush(candidates, (total_cost, next(serial), total_path))
             candidate_keys.add(key)
 
