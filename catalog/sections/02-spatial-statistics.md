@@ -70,7 +70,7 @@ The [planar Gaussian KDE lesson](../../algorithms/statistics/point-pattern-kde.m
 
 ### Implemented spatial regression estimators
 
-The [spatial econometrics package](../../implementations/python/spatial-econometrics/README.md) now includes classic and Bera-Yoon robust LM diagnostics, spatial lag 2SLS, spatial Durbin 2SLS, SAR/SDM impact decomposition, and concentrated Gaussian maximum likelihood for SAR, SEM and SDM. The ML implementation uses a conservative norm-bounded spatial-parameter interval and dense log-determinants. Robust LM lag/error variants are implemented; uncertainty estimates, weak-instrument diagnostics, scalable sparse likelihoods, and other model families remain open.
+The [spatial econometrics package](../../implementations/python/spatial-econometrics/README.md) now includes classic and Bera-Yoon robust LM diagnostics, spatial lag 2SLS, spatial Durbin 2SLS, SAR/SDM impact decomposition, and concentrated Gaussian maximum likelihood for SAR, SEM and SDM, plus joint SARAR/SAC maximum likelihood. The ML implementation uses a conservative norm-bounded spatial-parameter interval and dense log-determinants. Robust LM lag/error variants are implemented; uncertainty estimates, weak-instrument diagnostics, scalable sparse likelihoods, and other model families remain open.
 
 ## Smoothing and outlier detection
 
