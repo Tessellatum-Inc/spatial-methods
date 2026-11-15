@@ -686,7 +686,7 @@ def _advance_caliper(hull, index, dx, dy):
         current = hull[index][0] * dx + hull[index][1] * dy
         nxt_index = (index + 1) % n
         nxt = hull[nxt_index][0] * dx + hull[nxt_index][1] * dy
-        tolerance = 1e-14 * max(1.0, abs(current), abs(nxt))
+        tolerance = 8.0 * max(ulp(current), ulp(nxt))
         if nxt > current + tolerance:
             index = nxt_index
         else:
