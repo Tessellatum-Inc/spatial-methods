@@ -328,7 +328,8 @@ def continuous_frechet_decision(curve_a, curve_b, epsilon):
     """Decide whether two polygonal curves have continuous Frechet distance <= epsilon.
 
     Uses Alt–Godau free-space reachability on the parameter-space cell grid.
-    Runtime and memory are O(m*n) for m and n curve segments.
+    Runtime is O(m*n); auxiliary memory is O(min(m, n)) after orienting
+    the shorter curve as the column dimension.
     """
     a, b = _points(curve_a, minimum=1), _points(curve_b, minimum=1)
     if not isfinite(epsilon) or epsilon < 0:
@@ -339,54 +340,71 @@ def continuous_frechet_decision(curve_a, curve_b, epsilon):
         fixed, moving = (a[0], b) if len(a) == 1 else (b[0], a)
         return max(_distance(fixed, point) for point in moving) <= epsilon
 
+    # The recurrence only needs the preceding row and the preceding cell
+    # within the current row. Put the shorter curve on the column axis.
+    if len(b) > len(a):
+        a, b = b, a
     n, m = len(a)-1, len(b)-1
-    # Reachable portions of the global bottom and left boundaries.
-    bottom_boundary = [None] * n
-    for i in range(n):
-        interval = _free_space_interval(b[0], a[i], a[i+1], epsilon)
-        if interval is not None and interval[0] <= 0.0:
-            if i == 0 or (bottom_boundary[i-1] is not None and bottom_boundary[i-1][1] >= 1.0):
-                bottom_boundary[i] = (0.0, interval[1])
+    right_previous = [None] * m
+    final_top = [None] * m
+    bottom_previous = None
 
-    left_boundary = [None] * m
-    for j in range(m):
-        interval = _free_space_interval(a[0], b[j], b[j+1], epsilon)
-        if interval is not None and interval[0] <= 0.0:
-            if j == 0 or (left_boundary[j-1] is not None and left_boundary[j-1][1] >= 1.0):
-                left_boundary[j] = (0.0, interval[1])
-
-    right = [[None] * m for _ in range(n)]
-    top = [[None] * m for _ in range(n)]
     for i in range(n):
+        bottom_interval = _free_space_interval(b[0], a[i], a[i+1], epsilon)
+        if (bottom_interval is not None
+                and (i == 0 or (bottom_previous is not None
+                                and bottom_previous[1] >= 1.0))):
+            bottom_current = (0.0, bottom_interval[1])
+        else:
+            bottom_current = None
+        bottom_previous = bottom_current
+
+        right_current = [None] * m
+        top_current = [None] * m
+        left_previous = None
+
         for j in range(m):
-            reachable_bottom = bottom_boundary[i] if j == 0 else top[i][j-1]
-            reachable_left = left_boundary[j] if i == 0 else right[i-1][j]
+            if i == 0:
+                left_interval = _free_space_interval(a[0], b[j], b[j+1], epsilon)
+                if (left_interval is not None
+                        and (j == 0 or (left_previous is not None
+                                        and left_previous[1] >= 1.0))):
+                    reachable_left = (0.0, left_interval[1])
+                else:
+                    reachable_left = None
+                left_previous = reachable_left
+            else:
+                reachable_left = right_previous[j]
+
+            reachable_bottom = bottom_current if j == 0 else top_current[j-1]
             free_right = _free_space_interval(a[i+1], b[j], b[j+1], epsilon)
             free_top = _free_space_interval(b[j+1], a[i], a[i+1], epsilon)
 
             if free_right is not None:
                 if reachable_bottom is not None:
-                    right[i][j] = free_right
+                    right_current[j] = free_right
                 elif reachable_left is not None:
                     lo = max(free_right[0], reachable_left[0])
                     if lo <= free_right[1]:
-                        right[i][j] = (lo, free_right[1])
+                        right_current[j] = (lo, free_right[1])
 
             if free_top is not None:
                 if reachable_left is not None:
-                    top[i][j] = free_top
+                    top_current[j] = free_top
                 elif reachable_bottom is not None:
                     lo = max(free_top[0], reachable_bottom[0])
                     if lo <= free_top[1]:
-                        top[i][j] = (lo, free_top[1])
+                        top_current[j] = (lo, free_top[1])
 
-    final_right = right[-1][-1]
-    final_top = top[-1][-1]
+        right_previous = right_current
+        final_top = top_current
+
+    final_right = right_previous[-1]
+    last_top = final_top[-1]
     return (
         (final_right is not None and final_right[0] <= 1.0 <= final_right[1])
-        or (final_top is not None and final_top[0] <= 1.0 <= final_top[1])
+        or (last_top is not None and last_top[0] <= 1.0 <= last_top[1])
     )
-
 
 def continuous_frechet_distance(
     curve_a, curve_b, *, tolerance=1e-6, max_iterations=80
