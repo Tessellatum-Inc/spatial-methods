@@ -115,3 +115,45 @@ def riley_terrain_ruggedness_index(elevation, *, z_factor: float = 1.0) -> np.nd
     target = result[1:-1, 1:-1]
     target[valid] = np.sqrt(squared[valid])
     return result
+
+
+
+def hypsometric_curve(elevation, *, valid_mask=None):
+    """Return an empirical hypsometric curve and hypsometric integral.
+
+    The raster is treated as a regular grid with equal-area cells. Finite
+    elevations selected by valid_mask are normalized between the observed
+    minimum and maximum. Unique relative elevations are returned in
+    descending order with the fraction of valid cells at or above each
+    threshold. The integral is the mean normalized elevation. A zero-relief
+    surface has no defined normalization.
+    """
+    dem = np.asarray(elevation, dtype=float)
+    if dem.ndim != 2 or dem.size == 0:
+        raise ValueError("elevation must be a non-empty 2D array")
+    if valid_mask is None:
+        selected = np.isfinite(dem)
+    else:
+        mask = np.asarray(valid_mask, dtype=bool)
+        if mask.shape != dem.shape:
+            raise ValueError("valid_mask must match elevation shape")
+        selected = np.isfinite(dem) & mask
+    values = dem[selected]
+    if values.size < 2:
+        raise ValueError("at least two valid elevation cells are required")
+    low = float(values.min())
+    high = float(values.max())
+    relief = high - low
+    if not np.isfinite(relief) or relief <= 0:
+        raise ValueError("hypsometric curve requires positive terrain relief")
+    levels, counts = np.unique(values, return_counts=True)
+    relative = (levels - low) / relief
+    cumulative = np.cumsum(counts[::-1])[::-1] / values.size
+    return {
+        "relative_elevation": relative[::-1].astype(float),
+        "area_fraction_above": cumulative.astype(float),
+        "hypsometric_integral": float(np.mean((values - low) / relief)),
+        "valid_cell_count": int(values.size),
+        "minimum_elevation": low,
+        "maximum_elevation": high,
+    }
