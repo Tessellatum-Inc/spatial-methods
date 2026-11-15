@@ -22,3 +22,7 @@ Learning labs:
 - [GP-UCB spatial survey selection](../../../notebooks/gp-ucb-spatial-survey-lab.ipynb)
 - [UCB1 survey bandit](../../../notebooks/ucb1-survey-bandit-lab.ipynb)
 - [Spatial active learning](../../../notebooks/spatial-active-learning-lab.ipynb)
+
+## Explicit sampling and acquisition baselines
+
+The `sampling.py` module exposes three additional teaching baselines: `select_spatial_batch` greedily combines normalized uncertainty with distance-based diversity and an optional minimum separation; `ucb1_arm` selects among stationary independent reward arms using the UCB1 exploration bonus; and `gp_select_next` performs dense exact-GP candidate selection with an RBF kernel using either UCB or expected improvement. The GP implementation is intentionally small and cubic in the number of observations; it assumes known kernel hyperparameters and independent Gaussian noise. These are selection heuristics, not substitutes for design-based survey estimators or a complete active-learning evaluation protocol. The companion `test_sampling.py` covers spatial separation, UCB1, GP posterior behaviour, expected improvement and duplicate-observation jitter.
