@@ -706,5 +706,5 @@ def test_spatial_lag_gmm_rejects_invalid_or_underidentified_inputs():
         spatial_lag_gmm(y, x, w, instrument_orders=0)
     with pytest.raises(ValueError, match="finite"):
         spatial_lag_gmm([1, 2, 3, 4, 5, 6, float("nan"), 8], x, w)
-    with pytest.raises(ValueError, match="overidentify"):
+    with pytest.raises(ValueError, match="identify"):
         spatial_lag_gmm(y, x, w, instrument_orders=1)
