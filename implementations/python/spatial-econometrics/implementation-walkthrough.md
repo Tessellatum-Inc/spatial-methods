@@ -66,3 +66,17 @@ Open `proper_car.py`.
 6. The result reports the conditional mean \(X\hat\beta\), residuals, dependence parameter and precision scale and node-specific conditional variances. This is a proper Gaussian CAR model, not a singular ICAR/BYM model.
 
 The dense eigendecomposition and log determinant limit this teaching estimator to small graphs. The graph must be symmetric and contain no isolated nodes; the routine does not repair the graph or choose its weights.
+
+
+## 8. Constrained intrinsic-CAR field simulation
+
+Open icar.py.
+
+1. Validate an undirected, non-negative graph and require positive degree for every node.
+2. Find connected components by graph traversal. Each component contributes one null direction to its graph Laplacian.
+3. Form the component Laplacian D - A and eigendecompose it.
+4. Exclude the constant-vector null eigenvector. Scale independent standard-normal coefficients by the inverse square roots of the positive eigenvalues and by 1/sqrt(tau).
+5. Map the coefficients back to node space. The resulting field has a separate sum-to-zero constraint on each component.
+6. Report the component labels and log pseudo-determinant, not a fictitious ordinary determinant.
+
+The conditional variance 1/(tau * degree_i) is not the marginal variance. This routine simulates a constrained field; it does not fit a regression, estimate tau or perform posterior inference. Dense eigendecomposition limits it to small teaching graphs.
