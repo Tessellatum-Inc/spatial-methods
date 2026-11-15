@@ -147,3 +147,54 @@ def test_besag_newell_rejects_invalid_controls_and_population_smaller_than_cases
     with pytest.raises(ValueError):
         monte_carlo_besag_newell(coords, [1, 0], [10, 10], k=1,
                                  n_simulations=0)
+
+
+
+def test_tango_statistic_matches_quadratic_form_and_decays_with_distance():
+    from spatial_scan import tango_statistic
+    coords = np.array([[0., 0.], [1., 0.], [10., 0.]])
+    cases = np.array([8, 1, 1])
+    population = np.array([100., 100., 100.])
+    result = tango_statistic(coords, cases, population, phi=2.0)
+    delta = result["observed_proportions"] - result["expected_proportions"]
+    expected = float(delta @ result["closeness_matrix"] @ delta)
+    assert result["statistic"] == pytest.approx(expected)
+    assert result["closeness_matrix"][0, 1] > result["closeness_matrix"][0, 2]
+    assert np.allclose(result["closeness_matrix"], result["closeness_matrix"].T)
+    assert result["statistic"] >= 0
+
+
+def test_tango_monte_carlo_test_is_reproducible_and_plus_one_corrected():
+    from spatial_scan import monte_carlo_tango_test
+    coords = np.array([[0., 0.], [1., 0.], [10., 0.], [11., 0.]])
+    cases = np.array([12, 8, 1, 1])
+    population = np.full(4, 100.)
+    a = monte_carlo_tango_test(coords, cases, population, phi=2.0,
+                               n_simulations=39, rng=42)
+    b = monte_carlo_tango_test(coords, cases, population, phi=2.0,
+                               n_simulations=39, rng=42)
+    assert a["p_value"] == b["p_value"]
+    np.testing.assert_array_equal(a["simulated_statistics"], b["simulated_statistics"])
+    assert 1 / 40 <= a["p_value"] <= 1
+
+
+@pytest.mark.parametrize("bad", [
+    (np.array([[0., 0.]]), np.array([1]), np.array([10.])),
+    (np.array([[0., 0.], [1., 1.]]), np.array([1.5, 0]), np.array([10., 10.])),
+    (np.array([[0., 0.], [1., 1.]]), np.array([0, 0]), np.array([10., 10.])),
+    (np.array([[0., 0.], [1., 1.]]), np.array([1, 0]), np.array([10., 0.])),
+])
+def test_tango_rejects_invalid_data(bad):
+    from spatial_scan import tango_statistic
+    with pytest.raises(ValueError):
+        tango_statistic(*bad, phi=1.0)
+
+
+def test_tango_rejects_invalid_phi_and_simulation_count():
+    from spatial_scan import tango_statistic, monte_carlo_tango_test
+    coords = np.array([[0., 0.], [1., 1.]])
+    with pytest.raises(ValueError):
+        tango_statistic(coords, [1, 0], [10, 10], phi=0)
+    with pytest.raises(ValueError):
+        monte_carlo_tango_test(coords, [1, 0], [10, 10], phi=1,
+                               n_simulations=0)
