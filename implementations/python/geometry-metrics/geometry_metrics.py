@@ -677,3 +677,103 @@ def convex_polygon_minimum_width(points):
                 break
         best = min(best, current_area / edge_length)
     return 0.0 if best == float("inf") else best
+
+
+def _advance_caliper(hull, index, dx, dy):
+    """Advance a support vertex while the next vertex improves its projection."""
+    n = len(hull)
+    for _ in range(n):
+        current = hull[index][0] * dx + hull[index][1] * dy
+        nxt_index = (index + 1) % n
+        nxt = hull[nxt_index][0] * dx + hull[nxt_index][1] * dy
+        tolerance = 1e-14 * max(1.0, abs(current), abs(nxt))
+        if nxt > current + tolerance:
+            index = nxt_index
+        else:
+            break
+    return index
+
+
+def _rotating_caliper_bounds(hull, ux, uy, supports):
+    """Return four support indices for u, -u, v and -v."""
+    vx, vy = -uy, ux
+    directions = ((ux, uy), (-ux, -uy), (vx, vy), (-vx, -vy))
+    return tuple(_advance_caliper(hull, i, dx, dy)
+                 for i, (dx, dy) in zip(supports, directions))
+
+
+def minimum_area_bounding_rectangle_calipers(points):
+    """Minimum-area enclosing rectangle in O(n log n) including hull creation.
+
+    The hull is counter-clockwise. Four monotone support pointers track the
+    maximum/minimum projections on the edge direction and its normal while
+    hull-edge orientations rotate. Returns corners, area, width, height and
+    edge angle. Degenerate point and line inputs are handled explicitly.
+    """
+    hull = convex_hull(points)
+    n = len(hull)
+    if n == 0:
+        return None
+    if n == 1:
+        p = hull[0]
+        return {"corners": (p, p, p, p), "area": 0.0,
+                "width": 0.0, "height": 0.0, "angle_radians": 0.0}
+    if n == 2:
+        a, b = hull
+        return {"corners": (a, b, b, a), "area": 0.0,
+                "width": _distance(a, b), "height": 0.0,
+                "angle_radians": atan2(b[1]-a[1], b[0]-a[0])}
+
+    edges = list(zip(hull, hull[1:] + hull[:1]))
+    a0, b0 = edges[0]
+    length = hypot(b0[0]-a0[0], b0[1]-a0[1])
+    ux0, uy0 = (b0[0]-a0[0])/length, (b0[1]-a0[1])/length
+    vx0, vy0 = -uy0, ux0
+    directions = ((ux0, uy0), (-ux0, -uy0), (vx0, vy0), (-vx0, -vy0))
+    supports = tuple(max(range(n), key=lambda i, d=d: hull[i][0]*d[0]+hull[i][1]*d[1])
+                     for d in directions)
+    best = None
+    min_width = float("inf")
+    min_width_edge = None
+
+    for a, b in edges:
+        dx, dy = b[0]-a[0], b[1]-a[1]
+        edge_length = hypot(dx, dy)
+        if edge_length == 0.0:
+            continue
+        ux, uy = dx/edge_length, dy/edge_length
+        vx, vy = -uy, ux
+        supports = _rotating_caliper_bounds(hull, ux, uy, supports)
+        i_max_u, i_min_u, i_max_v, i_min_v = supports
+        max_u = hull[i_max_u][0]*ux + hull[i_max_u][1]*uy
+        min_u = -(hull[i_min_u][0]*(-ux) + hull[i_min_u][1]*(-uy))
+        max_v = hull[i_max_v][0]*vx + hull[i_max_v][1]*vy
+        min_v = -(hull[i_min_v][0]*(-vx) + hull[i_min_v][1]*(-vy))
+        width, height = max_u-min_u, max_v-min_v
+        if height < min_width:
+            min_width, min_width_edge = height, ((a, b), (vx, vy))
+        area = width*height
+        if best is None or area < best["area"]:
+            corners = (
+                (min_u*ux+min_v*vx, min_u*uy+min_v*vy),
+                (max_u*ux+min_v*vx, max_u*uy+min_v*vy),
+                (max_u*ux+max_v*vx, max_u*uy+max_v*vy),
+                (min_u*ux+max_v*vx, min_u*uy+max_v*vy),
+            )
+            best = {"corners": corners, "area": area, "width": width,
+                    "height": height, "angle_radians": atan2(uy, ux)}
+
+    best["minimum_width"] = min_width
+    best["minimum_width_edge"] = min_width_edge[0]
+    best["minimum_width_normal"] = min_width_edge[1]
+    return best
+
+
+def convex_polygon_minimum_width(points):
+    """Return minimum strip width enclosing the convex hull in O(n log n)."""
+    result = minimum_area_bounding_rectangle_calipers(points)
+    if result is None:
+        return None
+    return {"width": result["minimum_width"],
+            "support_edge": result["minimum_width_edge"],
+            "normal": result["minimum_width_normal"]}
