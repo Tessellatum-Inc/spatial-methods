@@ -61,3 +61,8 @@ same E, SE, S, SW, W, NW, N, NE channel order and shape as the MFD weights,
 so it can be passed to the existing `mfd_flow_accumulation` routine for
 topological accumulation. This is a D-infinity facet method, not the
 power-law MFD rule. Flats and depressions are not conditioned.
+
+
+## D8 stream ordering: Strahler and Shreve
+
+The companion stream_order.py module computes Strahler order and Shreve magnitude for a supplied Boolean channel mask and ESRI-coded D8 directions. It requires every in-grid downstream receiver of a channel cell to also be in the channel mask; channel links may terminate at code 0 or leave the raster. It rejects NoData stream cells and directed cycles. Non-channel cells are NaN. This is network ordering only: it does not extract a channel mask or condition the DEM. See the stream-order lesson.
