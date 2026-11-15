@@ -109,6 +109,7 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 - [Two-step spatial-lag GMM](statistics/spatial-lag-gmm.md) — update the 2SLS weighting matrix with a heteroskedasticity-robust instrument-moment covariance and report robust standard errors and an overidentification statistic.
 - [Spatial-lag instrument diagnostics](statistics/spatial-lag-instrument-diagnostics.md) — assess excluded spatial-lag relevance with partial R-squared, classical partial F and an HC1 robust first-stage Wald F.
 - [Spatial-lag Anderson–Rubin inference](statistics/spatial-lag-anderson-rubin.md) — test a candidate spatial autoregressive coefficient with classical and HC1 robust joint-exclusion tests that do not require strong instruments.
+- [Spatial HAC covariance for 2SLS](statistics/spatial-2sls-hac.md) — calculate a Conley-style compact-support spatial HAC sandwich using projected IV regressors.
 - [Kelejian–Prucha spatial-error GMM](statistics/kelejian-prucha-spatial-error-gmm.md) — estimate spatial error dependence from three innovation moments, then apply feasible GLS under homoskedastic innovations.
 - [Heteroskedastic spatial-error GM](statistics/heteroskedastic-spatial-error-gm.md) — estimate the spatial-error coefficient from two zero-diagonal quadratic moments that accommodate unknown diagonal innovation variances.
 - [Heteroskedastic SARAR GTSLS](statistics/heteroskedastic-sarar-gtsls.md) — estimate the SARAR(1,1) model in three steps: initial spatial 2SLS, heteroskedastic disturbance GM, and transformed 2SLS.
