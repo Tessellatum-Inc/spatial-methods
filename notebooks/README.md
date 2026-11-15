@@ -175,3 +175,4 @@ These notebooks are learning materials. For production analysis, check the input
 ### Computational geometry metrics
 
 - [Hausdorff, discrete Fréchet and smallest enclosing circle](geometry-metrics-lab.ipynb): compare sampled point sets and ordered polylines, inspect a minimum enclosing circle, verify a rotating-calipers diameter against brute force, and explore Polylabel inside a polygon with a hole.
+- [Geometry metrics](geometry-metrics-lab.ipynb): compare sampled point sets and ordered polylines, inspect a minimum enclosing circle, verify rotating-calipers diameter, explore Polylabel and compare oriented and axis-aligned bounding boxes.
