@@ -191,3 +191,40 @@ def test_tpi_requires_nonempty_2d_input():
         topographic_position_index(np.ones(5))
     with pytest.raises(ValueError):
         topographic_position_index(np.empty((0, 3)))
+
+
+# Riley terrain ruggedness index (TRI)
+
+def test_riley_tri_matches_eight_neighbour_definition():
+    from terrain_indices import riley_terrain_ruggedness_index
+    dem = np.zeros((5, 5), dtype=float)
+    dem[2, 2] = 3.0
+    result = riley_terrain_ruggedness_index(dem)
+    assert result[2, 2] == pytest.approx(np.sqrt(8 * 9.0))
+    assert np.isnan(result[0, 0])
+
+
+def test_riley_tri_is_zero_on_flat_and_scales_with_vertical_units():
+    from terrain_indices import riley_terrain_ruggedness_index
+    dem = np.full((5, 5), 7.0)
+    assert riley_terrain_ruggedness_index(dem)[2, 2] == 0.0
+    dem[2, 2] = 8.0
+    base = riley_terrain_ruggedness_index(dem)[2, 2]
+    doubled = riley_terrain_ruggedness_index(dem, z_factor=2)[2, 2]
+    assert doubled == pytest.approx(2 * base)
+
+
+def test_riley_tri_requires_complete_nodata_free_neighbourhood():
+    from terrain_indices import riley_terrain_ruggedness_index
+    dem = np.ones((5, 5))
+    dem[1, 1] = np.nan
+    result = riley_terrain_ruggedness_index(dem)
+    assert np.isnan(result[2, 2])
+    assert np.isnan(result[1, 1])
+
+
+@pytest.mark.parametrize("z_factor", [0, -1, float("inf"), float("nan")])
+def test_riley_tri_rejects_invalid_vertical_scale(z_factor):
+    from terrain_indices import riley_terrain_ruggedness_index
+    with pytest.raises(ValueError):
+        riley_terrain_ruggedness_index(np.ones((3, 3)), z_factor=z_factor)
