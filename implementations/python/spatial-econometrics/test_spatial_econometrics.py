@@ -288,3 +288,13 @@ def test_spatial_durbin_2sls_validates_inputs_and_instrument_order():
         spatial_durbin_2sls([1., 2., 3., 4., 5., 6., 7., float("nan")], x, w)
     with pytest.raises(ValueError, match="full column rank"):
         spatial_durbin_2sls(y, np.ones((n, 2)), w)
+
+
+def test_spatial_durbin_2sls_rejects_underidentified_complete_graph():
+    from spatial_durbin_2sls import spatial_durbin_2sls
+    n = 12
+    w = (np.ones((n, n)) - np.eye(n)) / (n - 1)
+    x = np.column_stack([np.ones(n), np.linspace(-1.0, 1.0, n)])
+    y = np.array([1.0, 1.7, 1.2, 2.4, 1.9, 3.1, 2.7, 3.6, 3.0, 4.1, 3.8, 4.7])
+    with pytest.raises(ValueError, match="underidentified SDM"):
+        spatial_durbin_2sls(y, x, w, instrument_orders=4)
