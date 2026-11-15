@@ -59,7 +59,12 @@ def louvain_communities(graph,*,resolution=1.,seed=0,max_levels=100,max_passes=1
             cu=labels[u]
             for v,w in edges.items():
                 cv=labels[v]
-                if cu!=cv: newadj[cu][cv]=newadj[cu].get(cv,0.)+w
+                if cu!=cv:
+                    newadj[cu][cv]=newadj[cu].get(cv,0.)+w
+                else:
+                    # Preserve contracted internal edges as doubled self-loop
+                    # weight so supernode strength and modularity are conserved.
+                    newadj[cu][cu]=newadj[cu].get(cu,0.)+w
         adj,members=newadj,newmem
     result=list(members.values())
     result.sort(key=lambda g:min((type(x).__name__,repr(x)) for x in g))
