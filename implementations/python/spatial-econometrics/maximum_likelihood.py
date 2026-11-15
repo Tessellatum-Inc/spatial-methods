@@ -333,12 +333,15 @@ def spatial_sarar_mle(y: Sequence[float], x: Sequence[Sequence[float]],
         raise ValueError("no finite likelihood found in the conservative parameter region")
 
     rho, lam = best_rho, best_lam
+    grid_step = float(grid[1] - grid[0])
+    rho_left, rho_right = max(lower, best_rho - grid_step), min(upper, best_rho + grid_step)
+    lam_left, lam_right = max(lower, best_lam - grid_step), min(upper, best_lam + grid_step)
     for _ in range(coordinate_iterations):
         old_rho, old_lam = rho, lam
         rho, _, rho_evaluations = _golden_max(lambda value: profile(value, lam),
-                                               lower, upper, tolerance=tolerance)
+                                               rho_left, rho_right, tolerance=tolerance)
         lam, _, lam_evaluations = _golden_max(lambda value: profile(rho, value),
-                                               lower, upper, tolerance=tolerance)
+                                               lam_left, lam_right, tolerance=tolerance)
         evaluations += rho_evaluations + lam_evaluations
         if abs(rho - old_rho) + abs(lam - old_lam) <= tolerance * (
                 1.0 + abs(rho) + abs(lam)):
