@@ -130,3 +130,17 @@ Open `spatial_error_gmm.py`.
 6. This is the homoskedastic Kelejian–Prucha (1999) GM estimator. The heteroskedastic extension requires different moment weighting and asymptotic covariance treatment; it is not claimed here.
 
 The implementation follows the three population moments and nonlinear least-squares construction in Kelejian and Prucha (1999). Dense matrices and a bounded scalar search keep it inspectable, not scalable.
+
+
+## 10. Spatial-lag first-stage instrument diagnostics
+
+Open `instrument_diagnostics.py`.
+
+1. Construct the endogenous first-stage outcome \(Wy\) and the candidate instrument set \([X,WX,\ldots,W^qX]\).
+2. Drop redundant columns in stable order. This matters for row-standardised weights, where lagged intercepts often reproduce the intercept.
+3. Estimate the restricted first stage using X only and the unrestricted first stage using all retained instruments.
+4. Compare residual sums of squares to calculate partial R-squared and the classical partial F statistic.
+5. Calculate an HC1 sandwich covariance for the unrestricted first stage and a joint Wald F statistic for the excluded instrument coefficients.
+6. Read the robust statistic narrowly: it is heteroskedasticity-robust under independent-observation asymptotics, not a Kleibergen–Paap rk statistic and not spatial-HAC robust.
+
+A low statistic is a warning, not a mechanical decision rule. Instrument exogeneity is a separate substantive condition; more spatial lags can add collinearity and many-instrument bias rather than useful identification.
