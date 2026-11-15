@@ -225,7 +225,7 @@ def test_elliptical_scan_detects_elongated_cluster_and_reports_geometry():
 def test_elliptical_scan_includes_equal_ellipse_radius_ties():
     from spatial_scan import elliptical_poisson_scan
     coords = np.array([[0., 0.], [1., 0.], [-1., 0.], [0., 5.]])
-    cases = np.array([0, 4, 4, 0])
+    cases = np.array([0, 1, 1, 0])
     population = np.full(4, 100.)
     result = elliptical_poisson_scan(
         coords, cases, population, shape_ratios=(1.,),
