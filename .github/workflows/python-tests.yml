@@ -157,6 +157,9 @@ jobs:
           - example: map-matching
             directory: implementations/python/map-matching
             pythonpath: ""
+          - example: raptor
+            directory: implementations/python/raptor
+            pythonpath: ""
           - example: point-location
             directory: implementations/python/point-location
             pythonpath: ""

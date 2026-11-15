@@ -30,7 +30,7 @@
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Line planning, network design problems, stop spacing and consolidation, bus stop siting via set covering | Transit network design / optimisation | 37 | Not checked — intake only |
-| Timetable-based and frequency-based accessibility, transfer optimization, headway analysis, GTFS-Realtime processing, transit equity analysis | Transit accessibility / timetable and frequency methods / real-time data workflows | 37 | Not checked — intake only |
+| Timetable-based and frequency-based accessibility, transfer optimization, headway analysis, GTFS-Realtime processing, transit equity analysis | Transit accessibility / timetable and frequency methods / real-time data workflows | 37 | [RAPTOR round-based routing](../../algorithms/networks/raptor.md) now has a tested timetable baseline for earliest-arrival journeys by boarding round and directed footpath transfers; GTFS ingestion, frequency-based accessibility, realtime processing and transit equity remain open | Partial — RAPTOR reference implementation exists; remaining workflows and source verification pending |
 
 ## UAV and survey flight planning
 
