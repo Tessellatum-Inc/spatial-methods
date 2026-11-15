@@ -17,7 +17,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 | Polygon decomposition: Seidel and Chazelle triangulation, monotone partition, Hertel-Mehlhorn, optimal convex partition | Polygon triangulation and decomposition algorithms | 35 | Not checked — intake only |
 | Boolean operations: Martinez-Rueda polygon clipping, 3D mesh Booleans; watchman route problem | Polygon and mesh Boolean operations / visibility path problem | 35 | Not checked — intake only |
 | Approximate geometry: geometric hashing, BBD-trees for approximate nearest neighbor, coresets for k-means | Geometric hashing / spatial index / approximation methods | 35 | Not checked — intake only |
-| Mesh processing: Laplacian and Taubin smoothing, remeshing, mesh repair, ball pivoting, half-edge, winged-edge and quad-edge data structures | Mesh-processing algorithms / mesh data structures | 35 | Partially implemented: uniform Laplacian and Taubin smoothing have runnable code and authored tests; remeshing, repair, ball pivoting and half-edge/winged-edge/quad-edge structures remain outstanding |
+| Mesh processing: Laplacian and Taubin smoothing, remeshing, mesh repair, ball pivoting, half-edge, winged-edge and quad-edge data structures | Mesh-processing algorithms / mesh data structures | 35 | Partially implemented: uniform Laplacian and Taubin smoothing, indexed triangular half-edge topology, and conservative triangle cleanup/orientation repair have runnable code and authored tests; remeshing, hole filling, ball pivoting, winged-edge and quad-edge remain outstanding |
 
 ## Scalable computation for spatial statistics
 
