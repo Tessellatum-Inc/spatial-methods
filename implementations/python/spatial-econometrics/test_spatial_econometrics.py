@@ -1545,3 +1545,58 @@ def test_spatial_impact_delta_rejects_bad_covariance_and_confidence():
         spatial_impact_delta_uncertainty(CHAIN, 0.1, [1.0], [[1.0, 2.0], [2.0, 1.0]])
     with pytest.raises(ValueError, match="confidence"):
         spatial_impact_delta_uncertainty(CHAIN, 0.1, [1.0], np.eye(2), confidence=1.0)
+
+
+
+def test_spatial_durbin_common_factor_lr_matches_nested_model_likelihoods():
+    from maximum_likelihood import spatial_durbin_mle, spatial_error_mle
+    from spatial_durbin_common_factor import spatial_durbin_common_factor_test
+    rng = np.random.default_rng(14021)
+    n = 72
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    y = np.linalg.solve(
+        np.eye(n) - 0.22 * w,
+        x @ [1.0, 0.7] + (w @ x) @ [0.0, -0.25]
+        + rng.normal(scale=0.15, size=n),
+    )
+    result = spatial_durbin_common_factor_test(y, x, w, grid_size=101)
+    unrestricted = spatial_durbin_mle(y, x, w, grid_size=101)
+    restricted = spatial_error_mle(y, x, w, grid_size=101)
+    assert result.degrees_of_freedom == 1  # WX intercept is collinear with X.
+    assert result.statistic == pytest.approx(
+        2.0 * (unrestricted.log_likelihood - restricted.log_likelihood), abs=1e-8
+    )
+    assert result.p_value == pytest.approx(
+        __import__("heteroskedasticity_diagnostics")._chi_square_sf(result.statistic, 1)
+    )
+    assert len(result.restriction_residuals) == 1
+
+
+def test_spatial_durbin_common_factor_detects_departure_from_error_restriction():
+    from spatial_durbin_common_factor import spatial_durbin_common_factor_test
+    rng = np.random.default_rng(14022)
+    n = 100
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    y = np.linalg.solve(
+        np.eye(n) - 0.18 * w,
+        x @ [0.8, 0.5] + (w @ x) @ [0.0, 0.9]
+        + rng.normal(scale=0.08, size=n),
+    )
+    result = spatial_durbin_common_factor_test(y, x, w, grid_size=121)
+    assert result.degrees_of_freedom == 1
+    assert result.statistic > 3.84
+    assert result.p_value < 0.05
+
+
+def test_spatial_durbin_common_factor_rejects_unidentified_and_bad_options():
+    from spatial_durbin_common_factor import spatial_durbin_common_factor_test
+    n = 12
+    w = _row_standardised_chain(n)
+    y = np.sin(np.arange(n, dtype=float))
+    with pytest.raises(ValueError, match="no independently identified"):
+        spatial_durbin_common_factor_test(y, np.ones((n, 1)), w)
+    x = np.column_stack([np.ones(n), np.arange(n, dtype=float)])
+    with pytest.raises(ValueError, match="grid_size"):
+        spatial_durbin_common_factor_test(y, x, w, grid_size=5)

@@ -122,6 +122,7 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 - [Spatial Durbin 2SLS](statistics/spatial-durbin-2sls.md) — estimate the endogenous spatial lag alongside spatially lagged covariates using higher-order spatial instruments.
 - [Concentrated SAR/SEM maximum likelihood](statistics/spatial-maximum-likelihood.md) — estimate spatial lag and spatial error parameters by profiling the Gaussian likelihood over a conservative interval.
 - [Spatial Durbin maximum likelihood](statistics/spatial-durbin-mle.md) — estimate response feedback and lagged-covariate effects by concentrated Gaussian maximum likelihood.
+- [Spatial Durbin common-factor test](statistics/spatial-durbin-common-factor.md) — test whether lagged-covariate coefficients satisfy the restriction that nests the spatial-error model.
 - [SARAR/SAC maximum likelihood](statistics/spatial-sarar-mle.md) — jointly estimate spatial response feedback and spatially correlated disturbances by concentrated Gaussian maximum likelihood.
 - [SLX and SDEM](statistics/slx-and-sdem.md) — estimate spatially lagged covariate effects by OLS or with a spatial-error process by concentrated ML.
 - [Gaussian proper-CAR regression](statistics/proper-car-gaussian-regression.md) — fit a Gaussian conditional autoregressive covariance model using an eigenvalue-constrained precision matrix.
