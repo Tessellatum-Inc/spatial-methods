@@ -7,7 +7,7 @@ These diagnose non-constant variance; they do not test spatial dependence.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from math import erfc, isfinite, sqrt
+from math import isfinite, lgamma
 from typing import Sequence
 
 import numpy as np
@@ -46,7 +46,7 @@ def _chi_square_sf(value: float, df: int) -> float:
             total += term
             if abs(term) <= abs(total) * 1e-14:
                 break
-        lower = total * np.exp(-x + a * np.log(x) - np.math.lgamma(a))
+        lower = total * np.exp(-x + a * np.log(x) - lgamma(a))
         return float(np.clip(1.0 - lower, 0.0, 1.0))
     b = x + 1.0 - a
     c = 1.0 / np.finfo(float).tiny
@@ -143,7 +143,6 @@ def heteroskedasticity_diagnostics(
             white_terms.append((nonconstant[:, j] * nonconstant[:, k])[:, None])
     white_design = np.column_stack(white_terms)
     # Remove linearly dependent generated columns before the auxiliary fit.
-    _, r, pivots = np.linalg.qr(white_design, mode="reduced"), None, None
     # SVD-based rank reduction keeps the fitted space unchanged.
     u, singular, _ = np.linalg.svd(white_design, full_matrices=False)
     rank = int(np.sum(singular > singular[0] * max(white_design.shape) * np.finfo(float).eps))

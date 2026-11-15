@@ -1344,3 +1344,10 @@ def test_heteroskedasticity_diagnostics_rejects_invalid_inputs():
     with pytest.raises(ValueError, match="positive variance"):
         x = np.column_stack((np.ones(20), np.arange(20)))
         heteroskedasticity_diagnostics(2 + 3 * np.arange(20), x)
+
+
+def test_chi_square_survival_function_known_critical_values():
+    from heteroskedasticity_diagnostics import _chi_square_sf
+    assert _chi_square_sf(3.841458820694124, 1) == pytest.approx(0.05, abs=2e-8)
+    assert _chi_square_sf(5.991464547107979, 2) == pytest.approx(0.05, abs=2e-8)
+    assert _chi_square_sf(0.0, 3) == pytest.approx(1.0)
