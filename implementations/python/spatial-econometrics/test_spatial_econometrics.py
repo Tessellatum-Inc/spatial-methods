@@ -98,3 +98,36 @@ def test_spatial_impacts_validate_shapes_and_singularity():
         spatial_impacts(np.ones((2, 2)), 1.0, [1.0])
     with pytest.raises(ValueError, match="finite"):
         spatial_impacts([[0, float("nan")], [1, 0]], 0.1, [1.0])
+
+def test_spatial_lag_2sls_recovers_parameters_on_synthetic_sar_data():
+    from spatial_2sls import spatial_lag_2sls
+    rng = np.random.default_rng(2026)
+    n = 80
+    weights = np.zeros((n, n))
+    for i in range(n - 1):
+        weights[i, i + 1] = weights[i + 1, i] = 1.0
+    row_sums = weights.sum(axis=1)
+    weights = weights / row_sums[:, None]
+    x_value = rng.normal(size=n)
+    x = np.column_stack([np.ones(n), x_value])
+    beta = np.array([1.2, 0.8])
+    rho = 0.3
+    error = rng.normal(scale=0.15, size=n)
+    y = np.linalg.solve(np.eye(n) - rho * weights, x @ beta + error)
+    result = spatial_lag_2sls(y, x, weights, instrument_orders=1)
+    assert result.rho == pytest.approx(rho, abs=0.18)
+    assert result.beta == pytest.approx(beta, abs=0.18)
+    assert len(result.residuals) == n
+    assert result.instruments_used >= 3
+
+
+def test_spatial_lag_2sls_rejects_underidentified_and_invalid_inputs():
+    from spatial_2sls import spatial_lag_2sls
+    x = np.column_stack([np.ones(4), [0., 1., 2., 3.]])
+    w = CHAIN
+    with pytest.raises(ValueError, match="instrument_orders"):
+        spatial_lag_2sls([1., 2., 3., 4.], x, w, instrument_orders=0)
+    with pytest.raises(ValueError, match="finite"):
+        spatial_lag_2sls([1., 2., float("nan"), 4.], x, w)
+    with pytest.raises(ValueError):
+        spatial_lag_2sls([1., 2., 3., 4.], x, np.zeros((4, 4)))
