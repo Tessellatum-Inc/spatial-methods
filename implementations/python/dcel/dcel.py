@@ -1,21 +1,65 @@
-"""Exact-coordinate DCEL builder for polygonal planar subdivisions.
+"""DCEL builder for already-noded polygonal planar subdivisions.
 
-Input faces are supplied as one or more closed boundary rings. Rings must be
-simple, consistently non-overlapping, and shared boundaries must be encoded
-once in each incident face with opposite direction. Coordinates are preserved
-as supplied (converted to finite floats); this is a topology structure, not a
-robust noding/arrangement constructor.
+This module constructs topology; it is deliberately not a noder or Boolean
+overlay engine. Input rings must be closed, simple and non-zero-area. Shared
+edges must occur once per incident face in opposite directions.
 """
 from __future__ import annotations
 from dataclasses import dataclass
-from math import atan2, isfinite, pi
+from fractions import Fraction
+from math import atan2, isfinite
 from typing import Hashable, Mapping, Sequence
+
+
+def _q(p):
+    return (Fraction(str(p[0])), Fraction(str(p[1])))
+
+
+def _orient(a, b, c):
+    return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])
+
+
+def _on_segment(a, b, p):
+    return (_orient(a, b, p) == 0 and
+            min(a[0], b[0]) <= p[0] <= max(a[0], b[0]) and
+            min(a[1], b[1]) <= p[1] <= max(a[1], b[1]))
+
+
+def _segments_intersect(a, b, c, d):
+    o1, o2, o3, o4 = _orient(a,b,c), _orient(a,b,d), _orient(c,d,a), _orient(c,d,b)
+    if ((o1 > 0 and o2 < 0) or (o1 < 0 and o2 > 0)) and ((o3 > 0 and o4 < 0) or (o3 < 0 and o4 > 0)):
+        return True
+    return ((o1 == 0 and _on_segment(a,b,c)) or
+            (o2 == 0 and _on_segment(a,b,d)) or
+            (o3 == 0 and _on_segment(c,d,a)) or
+            (o4 == 0 and _on_segment(c,d,b)))
+
+
+def _validate_simple_ring(points):
+    qpoints = [_q(p) for p in points[:-1]]
+    area2 = sum(qpoints[i][0]*qpoints[(i+1)%len(qpoints)][1] -
+                qpoints[(i+1)%len(qpoints)][0]*qpoints[i][1]
+                for i in range(len(qpoints)))
+    if area2 == 0:
+        raise ValueError("Rings must have non-zero signed area")
+    n = len(qpoints)
+    for i in range(n):
+        a, b = qpoints[i], qpoints[(i+1)%n]
+        for j in range(i+1, n):
+            # Consecutive edges (including first/last) meet at their shared endpoint.
+            if j == i+1 or (i == 0 and j == n-1):
+                continue
+            c, d = qpoints[j], qpoints[(j+1)%n]
+            if _segments_intersect(a,b,c,d):
+                raise ValueError("Rings must be simple: non-adjacent edges intersect")
+
 
 @dataclass
 class Vertex:
     id: int
     point: tuple[float, float]
     outgoing: list[int]
+
 
 @dataclass
 class HalfEdge:
@@ -27,10 +71,12 @@ class HalfEdge:
     prev: int | None = None
     face: Hashable | None = None
 
+
 @dataclass
 class Face:
     id: Hashable
     boundary_cycles: list[int]
+
 
 class DCEL:
     def __init__(self):
@@ -42,89 +88,103 @@ class DCEL:
 
     def _vertex(self, p):
         if p not in self._vertex_by_point:
-            i=len(self.vertices); self._vertex_by_point[p]=i
-            self.vertices.append(Vertex(i,p,[]))
+            i = len(self.vertices)
+            self._vertex_by_point[p] = i
+            self.vertices.append(Vertex(i, p, []))
         return self._vertex_by_point[p]
 
     @classmethod
     def from_faces(cls, faces: Mapping[Hashable, Sequence[Sequence[Sequence[float]]]]):
-        d=cls()
-        directed={}
-        pending=[]
-        for fid,rings in faces.items():
-            if fid in d.faces: raise ValueError("Face identifiers must be unique")
-            if not rings: raise ValueError("Each face needs at least one boundary ring")
-            d.faces[fid]=Face(fid,[])
+        d = cls()
+        directed = {}
+        for fid, rings in faces.items():
+            if fid in d.faces:
+                raise ValueError("Face identifiers must be unique")
+            if not rings:
+                raise ValueError("Each face needs at least one boundary ring")
+            d.faces[fid] = Face(fid, [])
             for ring in rings:
-                pts=[]
+                pts = []
                 for p in ring:
-                    if len(p)!=2: raise ValueError("Coordinates must be x,y pairs")
-                    x,y=float(p[0]),float(p[1])
-                    if not isfinite(x) or not isfinite(y): raise ValueError("Coordinates must be finite")
-                    pts.append((x,y))
-                if len(pts)<4 or pts[0]!=pts[-1]: raise ValueError("Rings must be closed and contain at least three edges")
-                core=pts[:-1]
+                    if len(p) != 2:
+                        raise ValueError("Coordinates must be x,y pairs")
+                    x, y = float(p[0]), float(p[1])
+                    if not isfinite(x) or not isfinite(y):
+                        raise ValueError("Coordinates must be finite")
+                    pts.append((x, y))
+                if len(pts) < 4 or pts[0] != pts[-1]:
+                    raise ValueError("Rings must be closed and contain at least three edges")
+                core = pts[:-1]
                 if len(set(core)) != len(core):
                     raise ValueError("Rings must not repeat vertices")
-                if any(core[i]==core[(i+1)%len(core)] for i in range(len(core))):
-                    raise ValueError("Zero-length edges are not allowed")
-                start=len(d.halfedges)
-                ids=[d._vertex(p) for p in core]
-                for i,(u,v) in enumerate(zip(ids,ids[1:]+ids[:1])):
-                    key=(u,v)
-                    if key in directed: raise ValueError("Duplicate directed edge; shared boundaries must have opposite directions")
-                    eid=len(d.halfedges); directed[key]=eid
-                    d.halfedges.append(HalfEdge(eid,u,v,-1,face=fid))
+                _validate_simple_ring(pts)
+                ids = [d._vertex(p) for p in core]
+                cycle = []
+                for u, v in zip(ids, ids[1:] + ids[:1]):
+                    key = (u, v)
+                    if key in directed:
+                        raise ValueError("Duplicate directed edge; shared boundaries must have opposite directions")
+                    eid = len(d.halfedges)
+                    directed[key] = eid
+                    d.halfedges.append(HalfEdge(eid, u, v, -1, face=fid))
                     d.vertices[u].outgoing.append(eid)
-                cycle=list(range(start,len(d.halfedges)))
-                for j,eid in enumerate(cycle):
-                    d.halfedges[eid].next=cycle[(j+1)%len(cycle)]
-                    d.halfedges[eid].prev=cycle[j-1]
-                d.faces[fid].boundary_cycles.append(start)
-                pending.append((fid,cycle))
-        # Pair opposite directed edges; create exterior twins for unpaired edges.
-        for (u,v),eid in list(directed.items()):
-            rev=directed.get((v,u))
+                    cycle.append(eid)
+                for j, eid in enumerate(cycle):
+                    d.halfedges[eid].next = cycle[(j+1) % len(cycle)]
+                    d.halfedges[eid].prev = cycle[j-1]
+                d.faces[fid].boundary_cycles.append(cycle[0])
+
+        # Pair shared boundaries; unmatched edges receive exterior twins.
+        for (u, v), eid in list(directed.items()):
+            rev = directed.get((v, u))
             if rev is not None:
-                d.halfedges[eid].twin=rev
+                d.halfedges[eid].twin = rev
             else:
-                tid=len(d.halfedges)
-                d.halfedges.append(HalfEdge(tid,v,u,eid))
-                d.halfedges[eid].twin=tid
+                tid = len(d.halfedges)
+                d.halfedges.append(HalfEdge(tid, v, u, eid))
+                d.halfedges[eid].twin = tid
                 d.vertices[v].outgoing.append(tid)
-        # The successor of the twin in CCW order traces the exterior face on its left.
+
+        # At each target, take the CCW successor of the incoming edge's twin.
         for vertex in d.vertices:
             vertex.outgoing.sort(key=lambda e: atan2(
-                d.vertices[d.halfedges[e].target].point[1]-vertex.point[1],
-                d.vertices[d.halfedges[e].target].point[0]-vertex.point[0]))
-        for e in d.halfedges:
-            if e.face is not None: continue
-            at=d.vertices[e.target].outgoing
-            twin_pos=at.index(e.twin)
-            e.next=at[(twin_pos+1)%len(at)]
-        for e in d.halfedges:
-            if e.face is None:
-                d.halfedges[e.next].prev=e.id
-        # Trace all unassigned twin cycles and label them as unbounded/exterior.
-        seen=set()
-        for e in d.halfedges:
-            if e.face is not None or e.id in seen: continue
-            start=e.id; cur=start; cycle=[]
+                d.vertices[d.halfedges[e].target].point[1] - vertex.point[1],
+                d.vertices[d.halfedges[e].target].point[0] - vertex.point[0]))
+        for edge in d.halfedges:
+            if edge.face is None:
+                outgoing = d.vertices[edge.target].outgoing
+                twin_pos = outgoing.index(edge.twin)
+                edge.next = outgoing[(twin_pos+1) % len(outgoing)]
+        for edge in d.halfedges:
+            if edge.face is None:
+                d.halfedges[edge.next].prev = edge.id
+
+        seen = set()
+        for edge in d.halfedges:
+            if edge.face is not None or edge.id in seen:
+                continue
+            start, cur = edge.id, edge.id
             while cur not in seen:
-                seen.add(cur); cycle.append(cur)
-                nxt=d.halfedges[cur].next
-                if nxt is None: raise ValueError("Incomplete exterior linkage")
-                cur=nxt
-            if cur!=start: raise ValueError("Non-manifold or inconsistent ring junction")
+                seen.add(cur)
+                nxt = d.halfedges[cur].next
+                if nxt is None:
+                    raise ValueError("Incomplete exterior linkage")
+                cur = nxt
+            if cur != start:
+                raise ValueError("Non-manifold or inconsistent ring junction")
             d.unbounded_cycles.append(start)
+        d.validate()
         return d
 
     def validate(self):
-        for e in self.halfedges:
-            if not (0<=e.twin<len(self.halfedges)): raise AssertionError("Missing twin")
-            t=self.halfedges[e.twin]
-            if t.twin!=e.id or (e.origin,e.target)!=(t.target,t.origin): raise AssertionError("Twin invariant failed")
-            if e.next is None or e.prev is None: raise AssertionError("Incomplete next/prev")
-            if self.halfedges[e.next].prev!=e.id or self.halfedges[e.prev].next!=e.id:
+        for edge in self.halfedges:
+            if not (0 <= edge.twin < len(self.halfedges)):
+                raise AssertionError("Missing twin")
+            twin = self.halfedges[edge.twin]
+            if twin.twin != edge.id or (edge.origin, edge.target) != (twin.target, twin.origin):
+                raise AssertionError("Twin invariant failed")
+            if edge.next is None or edge.prev is None:
+                raise AssertionError("Incomplete next/prev")
+            if self.halfedges[edge.next].prev != edge.id or self.halfedges[edge.prev].next != edge.id:
                 raise AssertionError("Next/prev invariant failed")
         return True
