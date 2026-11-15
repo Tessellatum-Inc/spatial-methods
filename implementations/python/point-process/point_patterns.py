@@ -187,3 +187,42 @@ def quadrat_count_test(points, window, nx=4, ny=4, *, n_simulations=999, seed=No
         "pvalue": pvalue, "simulations": int(n_simulations),
         "exceedances": exceedances, "n_points": n, "nx": nx, "ny": ny,
     }
+
+
+def empty_space_cdf(points, window, radii, *, n_samples=10000, seed=0):
+    """Estimate the empty-space F function by uniform Monte Carlo sampling.
+
+    Each random location is sampled uniformly in the rectangular window and
+    its distance to the nearest observed event is measured. This is an
+    uncorrected rectangular-window teaching estimator; boundary effects and
+    Monte Carlo error should be considered when interpreting F(r).
+    """
+    pts, (xmin, ymin, xmax, ymax) = _validate(points, window)
+    rs = [float(r) for r in radii]
+    if not rs or any(not isfinite(r) or r < 0 for r in rs):
+        raise ValueError("radii must be a non-empty sequence of finite non-negative values")
+    if isinstance(n_samples, bool) or not isinstance(n_samples, Integral) or n_samples <= 0:
+        raise ValueError("n_samples must be a positive integer")
+    if isinstance(seed, bool) or not isinstance(seed, Integral):
+        raise ValueError("seed must be an integer")
+    rng = random.Random(int(seed))
+    distances = []
+    for _ in range(int(n_samples)):
+        x = rng.uniform(xmin, xmax)
+        y = rng.uniform(ymin, ymax)
+        distances.append(min(hypot(x - px, y - py) for px, py in pts))
+    return [sum(distance <= radius for distance in distances) / len(distances)
+            for radius in rs]
+
+
+def j_function(points, window, radii, *, n_samples=10000, seed=0):
+    """Return (G, F, J) estimates, where J(r)=(1-G(r))/(1-F(r)).
+
+    G is the empirical nearest-neighbour CDF; F is the Monte Carlo empty-space
+    CDF. J is undefined when F(r)=1 and is returned as NaN at those radii.
+    """
+    g_values = nearest_neighbor_cdf(points, radii)
+    f_values = empty_space_cdf(points, window, radii, n_samples=n_samples, seed=seed)
+    j_values = [((1.0 - g) / (1.0 - f)) if f < 1.0 else float("nan")
+                for g, f in zip(g_values, f_values)]
+    return g_values, f_values, j_values

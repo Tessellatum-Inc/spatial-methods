@@ -123,3 +123,37 @@ def test_quadrat_test_rejects_invalid_window_points_and_duplicates():
         quadrat_count_test([(0.2, 0.2), (0.2, 0.2)], (0, 0, 1, 1))
     with pytest.raises(ValueError):
         quadrat_count_test([], (0, 0, 1, 1))
+
+
+def test_empty_space_f_is_reproducible_and_monotone():
+    from point_patterns import empty_space_cdf
+    points = [(0.25, 0.25), (0.75, 0.75)]
+    a = empty_space_cdf(points, (0, 0, 1, 1), [0.05, 0.2, 0.5], n_samples=500, seed=7)
+    b = empty_space_cdf(points, (0, 0, 1, 1), [0.05, 0.2, 0.5], n_samples=500, seed=7)
+    assert a == b
+    assert a == sorted(a)
+    assert all(0 <= value <= 1 for value in a)
+
+
+def test_j_function_combines_g_and_f_and_marks_undefined_tail():
+    from point_patterns import j_function
+    g, f, j = j_function(
+        [(0.25, 0.25), (0.75, 0.75)], (0, 0, 1, 1), [0.1, 2.0],
+        n_samples=200, seed=3,
+    )
+    assert g[0] == 0
+    assert f[0] <= f[1]
+    assert math.isnan(j[1])
+    if f[0] < 1:
+        assert j[0] == pytest.approx((1 - g[0]) / (1 - f[0]))
+
+
+def test_empty_space_rejects_invalid_controls():
+    from point_patterns import empty_space_cdf
+    points = [(0.2, 0.2), (0.8, 0.8)]
+    with pytest.raises(ValueError, match="n_samples"):
+        empty_space_cdf(points, (0, 0, 1, 1), [0.1], n_samples=0)
+    with pytest.raises(ValueError, match="seed"):
+        empty_space_cdf(points, (0, 0, 1, 1), [0.1], seed=True)
+    with pytest.raises(ValueError, match="radii"):
+        empty_space_cdf(points, (0, 0, 1, 1), [])
