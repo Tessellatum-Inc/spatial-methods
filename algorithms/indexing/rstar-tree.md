@@ -26,8 +26,8 @@ It is not a disk-page implementation or a complete production R*-tree.
 Deletion uses condense-tree processing: underfilled nodes are detached and
 their remaining entries or subtrees are reinserted at their original levels;
 a one-child root is collapsed. Record IDs remain stable and deleted IDs are
-not reused. Bulk loading, kNN, disk-page management, persistence and
-concurrency remain outside scope. Best-first k-nearest search is also available for point-to-rectangle distance:
+not reused. Bulk loading, disk-page management, persistence and concurrency remain
+outside scope. Best-first k-nearest search is also available for point-to-rectangle distance:
 node MBR distances provide lower bounds, and the search stops only when the
 next lower bound is strictly worse than the current kth candidate so stable
 ID tie-breaking is preserved. The returned distance is to the indexed
