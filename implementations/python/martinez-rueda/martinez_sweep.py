@@ -169,8 +169,17 @@ def _validate_polygon_rings(rings,eps):
 def _inside_polygon(point,rings):
     return _inside(point,rings[0]) and not any(_inside(point,hole) for hole in rings[1:])
 
+def _signed_area_exact(ring):
+    """Exact signed shoelace area over decimal coordinate representations."""
+    total=Fraction(0)
+    for i,a in enumerate(ring):
+        b=ring[(i+1)%len(ring)]
+        ax,ay=_fraction_point(a); bx,by=_fraction_point(b)
+        total += ax*by-bx*ay
+    return total/2
+
 def _signed_area(ring):
-    return 0.5*sum(ring[i][0]*ring[(i+1)%len(ring)][1] - ring[(i+1)%len(ring)][0]*ring[i][1] for i in range(len(ring)))
+    return float(_signed_area_exact(ring))
 
 def _fraction_point(point):
     return (Fraction(str(point[0])), Fraction(str(point[1])))
@@ -252,12 +261,12 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
                     raise ValueError("rings require finite 2D coordinates")
                 pts.append((float(p[0]),float(p[1])))
             if len(pts)<3 or len(set(pts))<3: raise ValueError("rings need three distinct points")
-            if abs(_signed_area(pts))<=epsilon: raise ValueError("ring area must be non-zero")
+            if _signed_area_exact(pts)==0: raise ValueError("ring area must be non-zero")
             if not _ring_is_simple(pts,epsilon): raise ValueError("input rings must be simple and non-self-touching")
             prepared.append(pts)
         _validate_polygon_rings(prepared,epsilon)
         for rid,pts in enumerate(prepared):
-            area=_signed_area(pts)
+            area=_signed_area_exact(pts)
             # First ring is the shell (CCW); subsequent rings are holes (CW).
             if (rid==0 and area<0) or (rid>0 and area>0): pts.reverse()
             for i,a in enumerate(pts):
@@ -316,7 +325,7 @@ def classify_boundary_fragments(polygons, *, operation='intersection', epsilon=1
     for source in polygons:
         source_rings=[[(float(p[0]),float(p[1])) for p in ring] for ring in source]
         for rid,ring in enumerate(source_rings):
-            area=_signed_area(ring)
+            area=_signed_area_exact(ring)
             if (rid==0 and area<0) or (rid>0 and area>0): ring.reverse()
         rings.append(source_rings)
     selected=[]
@@ -371,7 +380,7 @@ def stitch_boundary_fragments(fragments, *, epsilon=1e-10):
                 return ((reverse_angle-angle)%(2*pi),i)
             current=min(candidates,key=turn)
         else: raise ValueError('boundary traversal exceeded fragment count')
-        if len(ring)<3 or abs(_signed_area(ring))<=epsilon: raise ValueError('stitched boundary is degenerate')
+        if len(ring)<3 or _signed_area_exact(ring)==0: raise ValueError('stitched boundary is degenerate')
         rings.append(tuple(ring))
     if len(used)!=len(edges): raise ValueError('not all selected fragments were stitched')
     return tuple(rings)
@@ -383,12 +392,12 @@ def assemble_polygon_components(rings):
     the smallest-area shell that strictly contains one of its vertices.
     Islands inside holes remain independent polygon components.
     """
-    shells=[ring for ring in rings if _signed_area(ring)>0]
-    holes=[ring for ring in rings if _signed_area(ring)<0]
+    shells=[ring for ring in rings if _signed_area_exact(ring)>0]
+    holes=[ring for ring in rings if _signed_area_exact(ring)<0]
     components=[{'shell':shell,'holes':[]} for shell in shells]
     for hole in holes:
         probe=hole[0]
-        parents=[(abs(_signed_area(item['shell'])),item)
+        parents=[(abs(_signed_area_exact(item['shell'])),item)
                  for item in components if _inside(probe,item['shell'])]
         if not parents:
             raise ValueError('clockwise ring has no containing shell')
