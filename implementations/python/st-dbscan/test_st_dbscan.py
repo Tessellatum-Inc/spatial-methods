@@ -29,6 +29,7 @@ def test_ambiguous_border_is_assigned_to_first_reached_cluster():
     result = st_dbscan(points, times, eps_spatial=0.95, eps_temporal=0, min_samples=4)
     assert result["labels"][3] == 0
     assert not result["core_points"][3]
+    assert not result["core_points"][3]
     assert result["labels"][:3] == (0,0,0)
     assert result["labels"][4:] == (1,1,1)
 
