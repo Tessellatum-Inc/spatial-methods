@@ -94,6 +94,10 @@ Each implementation should state:
 
 - [EKF, scaled UKF, bootstrap particle filter and FFBSi smoother](python/state-estimation/README.md): additive-noise Gaussian filter baselines plus a particle filter with ESS-triggered systematic resampling and an offline backward-simulation smoother driven by a supplied transition log density.
 
+### Point-pattern and spatial epidemiology
+
+- [Point-pattern summaries and circular Poisson scan](python/point-process/README.md): nearest-neighbour summaries, homogeneous and supplied-intensity inhomogeneous K, numerical pair correlation, and a centroid-based population-offset Poisson scan with conditional multinomial Monte Carlo calibration.
+
 ### Spatial smoothing
 
 - [Full-knot thin-plate smoothing spline and low-rank TPRS](python/spatial-smoothing/README.md): a NumPy full-knot solver plus a Wood-style rank-truncated 2-D basis, with affine null-space preservation and full-rank equivalence tests. The dense basis constructor is for teaching-scale examples, not a large-data GAM engine.

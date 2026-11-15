@@ -106,3 +106,15 @@ These notes record bounded checks against publisher or institutional bibliograph
 - **Rights:** link to the JMLR paper only; no article text or figure is reproduced.
 - **Review date:** 14 November 2026.
 - **Remaining work:** separately verify energy-distance references, block/cluster randomisation designs, domain classifiers, kernel mean matching and the applicability-area method. This note does not verify every method in the grouped source entry.
+
+
+## Section 14 — Circular Poisson spatial scan statistic
+
+**Source entry:** “Cluster tests for case data: Cuzick-Edwards, Whittemore, spatial scan with covariates” (spatial epidemiology).
+
+- **Identity and bibliography:** confirmed: Kulldorff, M. (1997), “A spatial scan statistic,” *Communications in Statistics—Theory and Methods*, 26(6), 1481–1496, DOI [10.1080/03610929708831995](https://doi.org/10.1080/03610929708831995).
+- **Technical claims:** the implemented baseline searches centroid-centred circular zones under a Poisson model with population offset. The expected count in a zone is the total cases multiplied by its population share; the high-rate log-likelihood ratio is maximised over candidate circles.
+- **Monte Carlo calibration:** conditional on total cases, simulated area counts follow a multinomial distribution with probabilities proportional to population. The plus-one p-value is used.
+- **Limitations:** no covariate adjustment, Bernoulli model, time scan, elliptical/arbitrary zones or secondary cluster extraction. This is not a full SaTScan reproduction.
+- **Implementation status:** implementation, tests and lab are prepared; repository CI pending.
+- **Rights:** citation and DOI link only.

@@ -55,6 +55,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 - [Connected-component labeling](raster/connected-components.md) — identify connected foreground regions under 4/8-neighbour rules.
 - [Raster cost distance](raster/cost-distance.md) — calculate multi-source least accumulated cost through a weighted raster graph.
 
+## Spatial statistics
+
+- [Circular Poisson spatial scan statistic](spatial-scan-statistic.md) — search centroid-centred circles for elevated areal case rates with a population offset and conditional multinomial Monte Carlo calibration.
+
 ## Geostatistics
 
 - [Spatial interpolation](geostatistics/interpolation.md) — compare inverse-distance weighting with ordinary kriging, a variogram model and conditional prediction variance.

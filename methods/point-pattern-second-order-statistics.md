@@ -36,7 +36,31 @@ when the displacement is within both window dimensions; otherwise the pair contr
 
 The inhomogeneous target is \(K_{\mathrm{inhom}}(r)=\pi r^2\) for an inhomogeneous Poisson process when the intensity reweighting assumptions hold. This is not a guarantee that a finite-sample curve will follow that reference. The estimator assumes second-order intensity-reweighted stationarity and uses a rectangular translation correction only. It does not offer border/isotropic corrections, renormalisation options, intensity fitting, irregular windows or simulation envelopes. The existing finite-difference pair-correlation function can be applied to the resulting K curve, but numerical differentiation amplifies noise.
 
-The [Python package](../implementations/python/point-process/README.md) provides both homogeneous and inhomogeneous K estimators, nearest-neighbor distances and their empirical CDF.
+The [Python package](../implementations/python/point-process/README.md) provides homogeneous and inhomogeneous K estimators, nearest-neighbor distances, pair correlation and a circular Poisson scan baseline.
+
+## Circular Poisson spatial scan statistic
+
+For areal case counts, a circular scan searches for a region with a higher case rate than the remainder of the study area while adjusting for population at risk. Let C be the total cases, P the total population, and for a candidate zone Z let c_Z and P_Z be the observed cases and population inside. Under the constant-risk null, the expected cases inside are
+
+\[
+E_Z=C\frac{P_Z}{P}.
+\]
+
+The high-rate log-likelihood ratio is
+
+\[
+LLR(Z)=
+\begin{cases}
+c_Z\log(c_Z/E_Z)+(C-c_Z)\log((C-c_Z)/(C-E_Z)), & c_Z>E_Z,\\
+0, & c_Z\le E_Z.
+\end{cases}
+\]
+
+The implementation centres circles on each supplied region centroid, expands each radius through the sorted centroid distances, and includes all equal-distance ties. Candidate zones are restricted by a maximum population fraction (0.5 by default). The reported zone maximises the LLR. A relative risk is also reported for the selected zone.
+
+The Monte Carlo test conditions on the observed total case count and draws simulated areal counts from a multinomial distribution with probabilities proportional to population. It compares the observed maximum LLR with the simulated maxima and uses the plus-one p-value \((1+b)/(1+B)\), where b is the number of simulated maxima at least as large as observed and B is the number of simulations. Use enough simulations for the resolution required by the analysis; 99 simulations are only a notebook demonstration.
+
+This is a bounded centroid-based circular Poisson scan, not a full SaTScan reproduction. It assumes planar projected coordinates, a population offset and a constant-risk null. It does not adjust for covariates, use Bernoulli case-control data, search elliptical or arbitrary zones, model time, extract secondary clusters or account for uncertain areal boundaries. The scan statistic's maximum already accounts for the candidate-window search in the Monte Carlo calibration, but it does not remove the need to justify the study design and candidate-zone family.
 
 ## Interpretation cautions
 
@@ -47,6 +71,8 @@ Use projected coordinates with meaningful distance units. K and pair correlation
 - Ripley, B. D. (1976). “The Second-Order Analysis of Stationary Point Processes.” *Journal of Applied Probability*, 13(2), 255–266. [DOI](https://doi.org/10.2307/3212829).
 - Ripley, B. D. (1977). “Modelling Spatial Patterns.” *Journal of the Royal Statistical Society: Series B*, 39(2), 172–212. [DOI](https://doi.org/10.1111/j.2517-6161.1977.tb01615.x).
 - Baddeley, A., Møller, J., & Waagepetersen, R. (2000). “Non- and semi-parametric estimation of interaction in inhomogeneous point patterns.” *Statistica Neerlandica*, 54, 329–350. [DOI](https://doi.org/10.1111/1467-9574.00144).
+- Kulldorff, M. (1997). “A spatial scan statistic.” *Communications in Statistics—Theory and Methods*, 26(6), 1481–1496. [DOI](https://doi.org/10.1080/03610929708831995).
+- [smerc scan.test documentation](https://cran.r-project.org/web/packages/smerc/refman/smerc.html) — circular centroid-based candidate zones and conditional multinomial Monte Carlo testing.
 - Baddeley, A., Rubak, E., & Turner, R. (2015). *Spatial Point Patterns: Methodology and Applications with R*. CRC Press. Edge correction and practical inference.
 
 No source text or figures are reproduced.
