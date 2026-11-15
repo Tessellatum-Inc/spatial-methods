@@ -6,6 +6,7 @@ Dependency-free teaching implementations for planar point sets and ordered polyl
 - Discrete Fréchet distance for ordered vertex sequences, using an O(mn)-time, O(n)-space dynamic program.
 - Smallest enclosing circle using randomized Welzl recursion with a reproducible local seed.
 - Convex-hull diameter using a rotating-calipers antipodal-pair sweep.
+- Approximate polygon pole of inaccessibility (Polylabel-style best-first subdivision), supporting holes and an explicit distance precision.
 
 ## Run
 
