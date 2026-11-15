@@ -154,7 +154,7 @@ class STRPackedRTree:
         if k == 0 or self._root is None:
             return []
 
-        def distance_squared(bounds: Bounds) -> float:
+        def distance_to_bounds(bounds: Bounds) -> float:
             x, y = coordinates
             dx = max(bounds[0] - x, 0.0, x - bounds[2])
             dy = max(bounds[1] - y, 0.0, y - bounds[3])
@@ -162,7 +162,7 @@ class STRPackedRTree:
 
         queue = []
         sequence = 0
-        heappush(queue, (distance_squared(self._root.bounds), sequence, self._root))
+        heappush(queue, (distance_to_bounds(self._root.bounds), sequence, self._root))
         # Negated keys make the root the worst retained (distance, index).
         best: list[tuple[float, int, int]] = []
         while queue:
@@ -178,8 +178,8 @@ class STRPackedRTree:
                 continue
             for child in item.children:
                 sequence += 1
-                heappush(queue, (distance_squared(child.bounds), sequence, child))
+                heappush(queue, (distance_to_bounds(child.bounds), sequence, child))
 
-        ordered = sorted(((-d2, index) for d2, _neg_index, index in best),
+        ordered = sorted(((-distance, index) for distance, _neg_index, index in best),
                          key=lambda pair: (pair[0], pair[1]))
         return [(index, distance) for distance, index in ordered]
