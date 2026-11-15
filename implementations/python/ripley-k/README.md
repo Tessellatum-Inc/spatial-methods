@@ -85,3 +85,8 @@ with the final upper edge included. This is a binned direct estimator and is
 distinct from the finite-difference K-derivative helper in the point-process
 package. It is not an isotropic correction or a specialist kernel-smoothed
 pair-correlation estimator.
+
+
+## G, F and J nearest-neighbour functions
+
+The companion module `point_pattern_functions.py` calculates empirical G from event-to-nearest-other-event distances, F from supplied empty-space test locations to their nearest event, and J=(1-G)/(1-F). Supply independent uniform test locations within the observation window for an interpretable F estimate. This implementation uses uncorrected planar Euclidean distances; it does not perform edge correction, intensity estimation or CSR inference. See the [G/F/J lesson](../../../algorithms/statistics/nearest-neighbour-functions.md) and [verification record](../../../catalog/verification/nearest-neighbour-functions.md).
