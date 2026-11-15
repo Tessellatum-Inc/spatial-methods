@@ -51,7 +51,9 @@ def _assert_tree_invariants(tree):
         if not is_root:
             assert tree.min_entries <= len(node.children) <= tree.max_entries
         elif is_root:
-            assert 2 <= len(node.children) <= tree.max_entries
+            assert len(node.children) <= tree.max_entries
+            if not node.leaf:
+                assert 2 <= len(node.children)
         else:
             assert tree.min_entries <= len(node.children) <= tree.max_entries
         if node.leaf:
