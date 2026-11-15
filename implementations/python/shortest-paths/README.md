@@ -1,6 +1,21 @@
 # Shortest-path teaching implementation
 
-Implements seven shortest-path methods for explicit weighted graphs: Dijkstra, A*, bidirectional Dijkstra and directed ALT landmark heuristics and Yen's k-shortest loopless paths for non-negative edge weights, Bellman–Ford for negative edges, and Floyd–Warshall for all-pairs shortest distances.
+Implements seven single-criterion shortest-path methods for explicit weighted graphs: Dijkstra, A*, bidirectional Dijkstra, directed ALT landmark heuristics, Yen's k-shortest loopless paths, Bellman–Ford and Floyd–Warshall. The companion Pareto module returns all nondominated paths for nonnegative additive vector costs.
+
+## Pareto multi-criteria paths
+
+The companion pareto_paths.py module stores multiple labels per node. Each label contains an accumulated cost vector and a node path. Componentwise dominance removes labels that cannot be Pareto-optimal; equal cost vectors retain the first discovered path.
+
+~~~python
+from pareto_paths import pareto_shortest_paths
+
+frontier = pareto_shortest_paths(
+    graph, source, target, n_objectives=2,
+    max_labels_per_node=10_000,
+)
+~~~
+
+The optional per-node label cap raises an error instead of silently truncating the frontier. The number of nondominated labels can grow exponentially, so this exact output-sensitive method is intended for small and medium teaching graphs. Edge costs must be finite and nonnegative. It does not automatically model turn restrictions, time-dependent costs, multimodal transfers or stochastic route choice.
 
 ## Run
 

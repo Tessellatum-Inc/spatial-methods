@@ -36,7 +36,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 15 — Vision, registration and vector extraction | 33 | 0 | 33 |
 | 16 — Flows, regions, deformation and marine | 25 | 0 | 25 |
 | 17 — Geometry, scalability, design and siting | 27 | 0 | 27 |
-| 18 — Moving objects, routing, transit and water | 32 | 0 | 32 |
+| 18 — Moving objects, routing, transit and water | 32 | 1 | 31 |
 | 19 — African applications, addressing and finance | 32 | 0 | 32 |
 | 20 — Indices, microwave, events and information | 25 | 2 | 23 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 2 | 24 |
