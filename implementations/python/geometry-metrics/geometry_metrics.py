@@ -580,8 +580,8 @@ def minimum_area_bounding_rectangle_calipers(points):
             current_value = dot(hull[index], direction)
             following_value = dot(hull[following], direction)
             improves = (
-                following_value > current_value + 1e-12
-                if maximize else following_value < current_value - 1e-12
+                following_value > current_value
+                if maximize else following_value < current_value
             )
             if not improves:
                 break
