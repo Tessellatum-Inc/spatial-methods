@@ -269,7 +269,6 @@ class RStarTree:
         if index < 0 or index >= len(self._records) or not self._active[index]:
             return False
 
-        target = _Entry(index, self._records[index])
         leaf = None
         stack = [self.root]
         while stack and leaf is None:
@@ -317,6 +316,7 @@ class RStarTree:
                 old_root = self.root
                 self.root = _Node(False, [old_root])
                 self._refresh(self.root)
+            no_forced_reinsert.update(range(self._node_level(self.root) + 1))
             target_node = self._choose_node(item.bounds, target_level)
             target_node.children.append(item)
             if isinstance(item, _Node):
