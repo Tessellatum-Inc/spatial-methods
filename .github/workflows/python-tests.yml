@@ -151,6 +151,9 @@ jobs:
           - example: louvain
             directory: implementations/python/louvain
             pythonpath: ""
+          - example: spectral-partitioning
+            directory: implementations/python/spectral-partitioning
+            pythonpath: ""
           - example: point-location
             directory: implementations/python/point-location
             pythonpath: ""
