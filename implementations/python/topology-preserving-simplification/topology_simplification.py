@@ -21,7 +21,8 @@ def _hit(a,b,c,d):
     return o1*o2<0 and o3*o4<0
 
 def _area2(p):
-    return sum(p[i][0]*p[(i+1)%len(p)][1]-p[(i+1)%len(p)][0]*p[i][1] for i in range(len(p)))
+    q=[(Fraction(str(x)),Fraction(str(y))) for x,y in p]
+    return sum(q[i][0]*q[(i+1)%len(q)][1]-q[(i+1)%len(q)][0]*q[i][1] for i in range(len(q)))
 
 def _simple(p):
     n=len(p)
@@ -69,7 +70,7 @@ def simplify_ring(points: Sequence[Sequence[float]], area_threshold: float) -> l
         for j in range(n):
             if not alive[j]: continue
             k=nxt[j]
-            if not alive[k] or j in (left,i) or k in (i,right): continue
+            if not alive[k] or j in (left,i,right) or k in (left,i,right): continue
             if _hit(p[left],p[right],p[j],p[k]): blocked=True; break
         if blocked: continue
         trial=[p[j] for j in range(n) if alive[j] and j!=i]
