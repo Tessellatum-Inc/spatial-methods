@@ -73,3 +73,31 @@ def test_rotating_calipers_matches_brute_force_on_seeded_clouds():
         pts = [(rng.uniform(-10,10), rng.uniform(-10,10)) for _ in range(20)]
         expected = max(math.dist(a,b) for i,a in enumerate(pts) for b in pts[i+1:])
         assert convex_polygon_diameter(pts)[2] == pytest.approx(expected)
+
+
+def test_polylabel_square_center_and_radius():
+    from geometry_metrics import polylabel
+    x,y,r,_=polylabel([(0,0),(10,0),(10,10),(0,10)],precision=0.01)
+    assert (x,y,r)==pytest.approx((5,5,5),abs=0.01)
+
+
+def test_polylabel_rectangle_center():
+    from geometry_metrics import polylabel
+    x,y,r,_=polylabel([(0,0),(12,0),(12,4),(0,4)],precision=0.01)
+    assert (x,y,r)==pytest.approx((6,2,2),abs=0.01)
+
+
+def test_polylabel_respects_hole():
+    from geometry_metrics import polylabel
+    outer=[(0,0),(10,0),(10,10),(0,10)]
+    hole=[(4,4),(6,4),(6,6),(4,6)]
+    x,y,r,_=polylabel(outer,holes=[hole],precision=0.02)
+    assert not (4<x<6 and 4<y<6)
+    assert r>2.0
+
+
+def test_polylabel_rejects_invalid_parameters_and_degenerate_polygon():
+    from geometry_metrics import polylabel
+    with pytest.raises(ValueError): polylabel([(0,0),(1,0),(2,0)],precision=0.1)
+    with pytest.raises(ValueError): polylabel([(0,0),(1,0),(1,1)],precision=0)
+    with pytest.raises(ValueError): polylabel([(0,0),(1,0),(1,1)],max_cells=0)
