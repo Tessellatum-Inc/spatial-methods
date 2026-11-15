@@ -26,6 +26,7 @@ class SpatialMLEFit:
     rho_bounds: tuple[float, float]
     evaluations: int
     spatial_covariate_coefficients: tuple[float, ...] = ()
+    error_parameter: float | None = None
 
 
 def _validate(y, x, weights):
@@ -267,4 +268,101 @@ def spatial_durbin_mle(y: Sequence[float], x: Sequence[Sequence[float]],
         rho_bounds=(float(lower), float(upper)),
         evaluations=int(evaluations + refine_evaluations),
         spatial_covariate_coefficients=tuple(float(v) for v in gamma),
+    )
+
+
+
+def spatial_sarar_mle(y: Sequence[float], x: Sequence[Sequence[float]],
+                      weights: Sequence[Sequence[float]], *,
+                      grid_size: int = 41, tolerance: float = 1e-6,
+                      coordinate_iterations: int = 8) -> SpatialMLEFit:
+    """Concentrated Gaussian ML for SARAR/SAC:
+    y = rho W y + X beta + u; u = lambda W u + epsilon.
+
+    A coarse two-dimensional grid locates a starting point, followed by
+    alternating one-dimensional golden-section refinements in rho and lambda.
+    Both parameters use the conservative norm-bounded interval.
+    """
+    response, design, w, bounds = _validate(y, x, weights)
+    n = response.size
+    if isinstance(grid_size, bool) or not isinstance(grid_size, int) or grid_size < 11:
+        raise ValueError("grid_size must be an integer of at least 11")
+    if not np.isfinite(tolerance) or tolerance <= 0:
+        raise ValueError("tolerance must be positive and finite")
+    if (isinstance(coordinate_iterations, bool)
+            or not isinstance(coordinate_iterations, int)
+            or coordinate_iterations < 1):
+        raise ValueError("coordinate_iterations must be a positive integer")
+
+    lower, upper = bounds
+    wy = w @ response
+    wx = w @ design
+    identity = np.eye(n)
+    evaluations = 0
+
+    def profile(rho, lam):
+        nonlocal evaluations
+        ar = identity - rho * w
+        al = identity - lam * w
+        sign_r, logdet_r = np.linalg.slogdet(ar)
+        sign_l, logdet_l = np.linalg.slogdet(al)
+        evaluations += 1
+        if sign_r <= 0 or sign_l <= 0:
+            return -np.inf
+        transformed_y = (response - rho * wy) - lam * (w @ (response - rho * wy))
+        transformed_x = design - lam * wx
+        coefficients, _, rank, _ = np.linalg.lstsq(transformed_x, transformed_y, rcond=None)
+        if rank < design.shape[1]:
+            return -np.inf
+        residual = transformed_y - transformed_x @ coefficients
+        sigma2 = float(residual @ residual / n)
+        if not np.isfinite(sigma2) or sigma2 <= np.finfo(float).tiny:
+            return -np.inf
+        return float(logdet_r + logdet_l -
+                     (n / 2.0) * (log(2.0 * pi) + 1.0 + log(sigma2)))
+
+    grid = np.linspace(lower, upper, grid_size)
+    best_score = -np.inf
+    best_rho = best_lam = 0.0
+    for rho in grid:
+        for lam in grid:
+            score = profile(float(rho), float(lam))
+            if score > best_score:
+                best_score, best_rho, best_lam = score, float(rho), float(lam)
+    if not np.isfinite(best_score):
+        raise ValueError("no finite likelihood found in the conservative parameter region")
+
+    rho, lam = best_rho, best_lam
+    for _ in range(coordinate_iterations):
+        old_rho, old_lam = rho, lam
+        rho, _ = _golden_max(lambda value: profile(value, lam),
+                             lower, upper, tolerance=tolerance)
+        lam, _ = _golden_max(lambda value: profile(rho, value),
+                             lower, upper, tolerance=tolerance)
+        if abs(rho - old_rho) + abs(lam - old_lam) <= tolerance * (
+                1.0 + abs(rho) + abs(lam)):
+            break
+
+    likelihood = profile(rho, lam)
+    if likelihood < best_score:
+        rho, lam, likelihood = best_rho, best_lam, best_score
+    ar_y = response - rho * wy
+    transformed_y = ar_y - lam * (w @ ar_y)
+    transformed_x = design - lam * wx
+    coefficients = np.linalg.lstsq(transformed_x, transformed_y, rcond=None)[0]
+    innovation = transformed_y - transformed_x @ coefficients
+    sigma2 = float(innovation @ innovation / n)
+    fitted = rho * wy + design @ coefficients
+    residuals = response - fitted
+    return SpatialMLEFit(
+        model="SARAR",
+        spatial_parameter=float(rho),
+        coefficients=tuple(float(v) for v in coefficients),
+        sigma2_mle=sigma2,
+        log_likelihood=float(likelihood),
+        fitted=tuple(float(v) for v in fitted),
+        residuals=tuple(float(v) for v in residuals),
+        rho_bounds=(float(lower), float(upper)),
+        evaluations=int(evaluations),
+        error_parameter=float(lam),
     )
