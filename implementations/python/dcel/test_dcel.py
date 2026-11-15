@@ -31,6 +31,10 @@ def test_rejects_bad_rings_and_duplicate_orientation():
     with pytest.raises(ValueError):
         DCEL.from_faces({"a":[rect(0,0,1,1)],"b":[rect(0,0,1,1)]})
 
+def test_rejects_repeated_ring_vertex():
+    with pytest.raises(ValueError):
+        DCEL.from_faces({"x":[[(0,0),(2,0),(2,2),(1,1),(0,2),(2,0),(0,0)]]})
+
 def test_rejects_nonfinite_coordinates():
     with pytest.raises(ValueError):
         DCEL.from_faces({"x":[[(0,0),(1,0),(1,float("inf")),(0,1),(0,0)]]})
