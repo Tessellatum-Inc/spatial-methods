@@ -14,7 +14,7 @@
 ## Implementation/reproduction
 Implemented: discrete additive-noise EKF with supplied analytic Jacobians and Joseph update; scaled UKF with 2n+1 state sigma points; single-step and sequence APIs; innovation diagnostics. Tests are authored for linear-model agreement, nonlinear observation behavior, sequence shapes and invalid inputs.
 
-Not implemented: ensemble square-root filters, particle filtering/smoothing, nonlinear RTS smoothing, non-additive/correlated noise, control inputs, angular residual handling, adaptive noise, gating, square-root UKF or constraints. Tests have not yet been reported as passing in repository CI.
+Implemented in companion modules: bootstrap/SIR particle filtering with weighted particle histories and FFBSi backward simulation using supplied transition log densities. Tests cover deterministic supported paths, filtering-weight contribution to backward probabilities, end-to-end use of bootstrap-filter history, trajectory/moment shapes and invalid transition/history inputs. Not implemented: FFBSm, particle Gibbs/MCMC, ancestor sampling, nonlinear RTS smoothing, non-additive/correlated noise, control inputs, angular residual handling, adaptive noise, gating, square-root UKF or constraints. Repository CI is still required to establish passing tests.
 
 ## Rights
 Original explanatory text and bibliographic metadata only; no source figures, code or datasets reproduced.

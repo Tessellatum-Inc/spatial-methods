@@ -12,12 +12,14 @@ This package contains small NumPy implementations of the extended Kalman filter 
 - Scaled UKF using 2n+1 state sigma points and additive Q/R.
 - Single-step functions expose innovation, innovation covariance, gain and predicted moments.
 - Sequence runners return filtered means, covariances and per-observation diagnostics.
+- Bootstrap particle filter with stable log-weight normalisation, ESS-triggered systematic resampling, and stored weighted particle histories.
+- Offline FFBSi particle smoother that samples complete trajectories backward using caller-supplied transition log densities; returns trajectories, particle indices and smoothed marginal moments.
 
 Run tests from this directory with `python -m pytest -q --import-mode=importlib`.
 
 ## Explicit limits
 
-These are teaching baselines, not a complete navigation filter. They omit control inputs, non-additive or correlated noise, angle-aware residuals/means, adaptive noise estimation, gating/outlier rejection, square-root UKF, augmented-noise UKF, smoothing, and manifold states. The EKF requires correct Jacobians. The UKF uses scaled unscented-transform parameters and can become numerically fragile for poor scaling or covariance choices. Neither filter is generally an exact Bayesian solution for nonlinear/non-Gaussian systems. Model and noise assumptions dominate results; covariance outputs are conditional on those assumptions.
+These are teaching baselines, not a complete navigation filter. They omit control inputs, non-additive or correlated noise, angle-aware residuals/means, adaptive noise estimation, gating/outlier rejection, square-root UKF, augmented-noise UKF, nonlinear RTS smoothing, and manifold states. The EKF requires correct Jacobians. The UKF uses scaled unscented-transform parameters and can become numerically fragile for poor scaling or covariance choices. Neither filter is generally an exact Bayesian solution for nonlinear/non-Gaussian systems. Model and noise assumptions dominate results; covariance outputs are conditional on those assumptions.
 
 
 ## Ensemble transform Kalman filter
