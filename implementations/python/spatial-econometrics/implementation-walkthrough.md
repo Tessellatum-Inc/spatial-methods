@@ -158,3 +158,16 @@ Open `spatial_lag_anderson_rubin.py`.
 6. Interpret the classical test only under its iid homoskedastic Gaussian assumptions; the HC1 version is asymptotic under independent-observation sampling and does not correct spatial residual dependence.
 
 The null-size argument does not require a strong first stage, but excluded instruments must still be valid. This routine tests one candidate coefficient. Confidence-set inversion is intentionally separate because valid Anderson–Rubin sets can be unbounded or disconnected.
+
+
+## 12. Heteroskedastic spatial-error generalized moments
+
+Open `heteroskedastic_spatial_error_gm.py`.
+
+1. Supply a consistent predictor of the regression disturbance. This matters: in a model with an endogenous spatial lag, ordinary OLS residuals are not automatically a valid predictor.
+2. Compute \(v=W\tilde u\), \(w=Wv\), and the row-wise squared norms of W.
+3. Build the two Kelejian–Prucha (2010) moment restrictions. Their zero-diagonal quadratic-form construction removes the unknown observation-specific innovation-variance contribution from the moment expectations.
+4. Expand the two sample moments into the coefficient vector \([\lambda,\lambda^2]\) and minimise their squared residual norm with identity weighting.
+5. Constrain the search to a conservative nonsingularity interval for \(I-\lambda W\), and reject a rank-deficient moment coefficient matrix.
+
+This is a disturbance-parameter point estimator only. It does not report the full joint asymptotic covariance, feasible generalized 2SLS or standard errors; those remain separate work rather than being approximated by the homoskedastic KP (1999) covariance.
