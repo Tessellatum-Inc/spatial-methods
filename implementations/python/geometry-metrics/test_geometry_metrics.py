@@ -473,3 +473,24 @@ def test_linear_rectangle_calipers_matches_quadratic_oracle_on_integer_clouds():
         actual = minimum_area_bounding_rectangle_calipers(points)
         assert actual["area"] == pytest.approx(expected["area"], rel=1e-10,
                                                 abs=1e-10)
+
+
+
+@pytest.mark.parametrize("origin,scale", [
+    ((1e9, -1e9), 1.0),
+    ((1e12, -1e12), 10.0),
+    ((-1e8, 2e8), 1e-2),
+])
+def test_linear_rectangle_calipers_is_stable_under_large_translation(origin, scale):
+    from geometry_metrics import minimum_area_bounding_rectangle_calipers
+
+    ox, oy = origin
+    points = [(ox, oy), (ox+4*scale, oy),
+              (ox+4*scale, oy+2*scale), (ox, oy+2*scale)]
+    result = minimum_area_bounding_rectangle_calipers(points)
+    assert result["area"] == pytest.approx(8*scale*scale, rel=1e-8,
+                                           abs=scale*scale*1e-8)
+    for px, py in points:
+        assert min(math.dist((px, py), corner) for corner in result["corners"]) <= (
+            math.hypot(4*scale, 2*scale) + 1e-5*max(scale, 1e-8)
+        )
