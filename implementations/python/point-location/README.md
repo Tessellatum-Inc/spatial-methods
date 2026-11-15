@@ -38,7 +38,7 @@ This is not Seidel's randomized trapezoidal map and does not implement its expec
 
 ## Randomized trapezoidal decomposition reference
 
-The adjacent `randomized_trapezoidal_map.py` module adds a second, deliberately narrower model: a set of pairwise disjoint, non-vertical segments in general position inside a bounding rectangle. It builds vertical trapezoids, a balanced x-decision tree and per-slab y-decision trees. Queries return the containing trapezoid, `BOUNDARY` on an original segment, or `None` outside the bounding box.
+The adjacent `randomized_trapezoidal_map.py` module adds a second, deliberately narrower model: a set of pairwise disjoint, non-vertical segments in general position inside a bounding rectangle. It merges consecutive slab intervals with identical bounding segments into trapezoids, then builds a balanced x-decision tree and per-slab y-decision trees with shared decision subtrees. Queries return the containing trapezoid, `BOUNDARY` on an original segment, or `None` outside the bounding box.
 
 Run the same package test command to exercise both locators.
 
