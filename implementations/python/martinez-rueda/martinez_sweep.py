@@ -249,9 +249,9 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
     """Return x-ordered endpoint events, proper crossings and split fragments.
 
     polygons is [source][ring][point]. An x-ordered sweep maintains a dynamic
-    y-interval status and tests only cross-source bounding-box overlaps. This
-    broad-phase status can still be quadratic in dense/overlapping data; it is
-    not the complete Martinez–Rueda neighbour-event sweep.
+    y-interval status and an expiry heap, testing cross-source bounding-box
+    overlaps. This broad-phase status can still be quadratic in dense/overlapping
+    data; it is not the complete Martinez–Rueda neighbour-event sweep.
     """
     if not isfinite(epsilon) or epsilon<=0: raise ValueError("epsilon must be finite and positive")
     segments=[]
@@ -285,12 +285,16 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
     bounds.sort(key=lambda x:(x[0],x[3][1],x[1],x[2]))
     # Dynamic y-interval treap prunes active segments whose vertical bounds
     # cannot overlap the entering segment. Exact predicates run on candidates.
-    active_status=_YIntervalStatus(); active_by_id={}
-    params=[[(0.,s.a),(1.,s.b)] for s in segments]; crossings=[]; candidate_pairs=0
+    active_status=_YIntervalStatus(); active_by_id={}; expiry=[]
+    params=[[(Fraction(0),s.a),(Fraction(1),s.b)] for s in segments]
+    crossings=[]; candidate_pairs=0
     for xmin,xmax,sid,left,right,ymin,ymax in bounds:
-        expired=[other for other,item in active_by_id.items() if item[0]<xmin-epsilon]
-        for other in expired:
-            active_status.remove(other); active_by_id.pop(other)
+        # Expire by a min-heap, not by scanning every active segment for every
+        # new left endpoint. This keeps x-window maintenance O(log n) per edge.
+        while expiry and expiry[0][0]<xmin-epsilon:
+            _,other=heapq.heappop(expiry)
+            if other in active_by_id:
+                active_status.remove(other); active_by_id.pop(other)
         for other in active_status.overlaps(ymin-epsilon,ymax+epsilon):
             s1,s2=segments[sid],segments[other]
             if s1.source==s2.source: continue
@@ -301,6 +305,7 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
             params[sid].append((t,p)); params[other].append((u,p))
             if proper: crossings.append(Event(p,"intersection",tuple(sorted((sid,other)))))
         active_status.insert(sid,ymin,ymax); active_by_id[sid]=(xmax,ymin,ymax)
+        heapq.heappush(expiry,(xmax,sid))
     fragments=[]
     for sid,s in enumerate(segments):
         ordered=sorted(params[sid],key=lambda z:z[0]); unique=[]
