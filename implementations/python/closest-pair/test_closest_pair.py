@@ -49,6 +49,8 @@ def test_seeded_random_clouds_match_independent_quadratic_oracle():
 def test_ties_are_deterministic_by_original_indices():
     points = [(0, 0), (1, 0), (0, 1), (1, 1)]
     assert closest_pair(points) == closest_pair(points)
+    first, second, distance = closest_pair(points)
+    assert (first, second, distance) == ((0.0, 0.0), (1.0, 0.0), 1.0)
 
 
 @pytest.mark.parametrize("points", [[], [(1, 2)], [(float("nan"), 0), (1, 1)],

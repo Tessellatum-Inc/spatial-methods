@@ -11,7 +11,7 @@ def closest_pair(points: Iterable[tuple[float, float]]) -> tuple[Point, Point, f
     """Return the closest distinct input occurrences and their Euclidean distance.
 
     Duplicate coordinates are valid and produce distance zero. Ties are resolved
-    deterministically by the original input indices. At least two points are
+    deterministically by the original input indices among inspected equal-distance candidates. At least two points are
     required. The implementation is planar and uses ordinary floating-point
     comparisons (not exact geometric predicates).
     """
@@ -61,12 +61,12 @@ def closest_pair(points: Iterable[tuple[float, float]]) -> tuple[Point, Point, f
         best = min((solve(left_x, left_y), solve(right_x, right_y)),
                    key=pair_key)
         strip = [item for item in y_sorted
-                 if (item[1] - split_x) ** 2 < best[0]]
+                 if (item[1] - split_x) ** 2 <= best[0]]
         for a, first in enumerate(strip):
             # In the planar packing argument, at most the next seven points
             # need inspection; retaining the y-distance guard is sufficient.
             for second in strip[a + 1:a + 8]:
-                if (second[0] - first[0]) ** 2 >= best[0]:
+                if (second[0] - first[0]) ** 2 > best[0]:
                     break
                 candidate = ((first[1] - second[1]) ** 2
                              + (first[0] - second[0]) ** 2,
