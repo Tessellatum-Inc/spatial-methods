@@ -1,0 +1,227 @@
+"""Randomized trapezoidal decomposition and point-location search DAG.
+
+This is a correctness-first reference implementation for bounded, non-crossing,
+non-vertical segments in general position. Segments are inserted in a seeded
+random permutation. After each insertion the vertical decomposition and search
+DAG are rebuilt from the current set. This deliberately simple update strategy
+makes the insertion order and map invariants inspectable, but is NOT the
+asymptotically efficient local-update Seidel algorithm.
+
+The final map supports point-to-trapezoid queries. Original segment boundaries
+return BOUNDARY; points outside the bounding box return None.
+"""
+from __future__ import annotations
+
+from bisect import bisect_right
+from dataclasses import dataclass
+from math import isfinite
+from random import Random
+from typing import Iterable, Sequence
+
+Point = tuple[float, float]
+Segment = tuple[Point, Point]
+BOUNDARY = "BOUNDARY"
+
+
+@dataclass(frozen=True)
+class Trapezoid:
+    id: tuple[int, int]
+    x_left: float
+    x_right: float
+    bottom_segment: int | None
+    top_segment: int | None
+
+
+@dataclass(frozen=True)
+class _YNode:
+    segment_id: int
+    left: "_YNode | Trapezoid"
+    right: "_YNode | Trapezoid"
+
+
+@dataclass(frozen=True)
+class _XNode:
+    split_x: float
+    left: "_XNode | tuple[_YNode | Trapezoid, tuple[float, ...]]"
+    right: "_XNode | tuple[_YNode | Trapezoid, tuple[float, ...]]"
+
+
+def _point(value: Sequence[float]) -> Point:
+    if len(value) != 2:
+        raise ValueError("points must contain exactly two coordinates")
+    x, y = float(value[0]), float(value[1])
+    if not (isfinite(x) and isfinite(y)):
+        raise ValueError("coordinates must be finite")
+    return x, y
+
+
+def _orient(a: Point, b: Point, c: Point) -> float:
+    return (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0])
+
+
+def _on_segment(p: Point, a: Point, b: Point, eps: float) -> bool:
+    cross = abs(_orient(a, b, p))
+    scale = max(1.0, abs(b[0]-a[0]), abs(b[1]-a[1]))
+    return (cross <= eps*scale and
+            min(a[0], b[0])-eps <= p[0] <= max(a[0], b[0])+eps and
+            min(a[1], b[1])-eps <= p[1] <= max(a[1], b[1])+eps)
+
+
+def _intersects(a: Segment, b: Segment) -> bool:
+    p, q = a
+    r, s = b
+    o1, o2 = _orient(p, q, r), _orient(p, q, s)
+    o3, o4 = _orient(r, s, p), _orient(r, s, q)
+    return ((o1 == 0 and _on_segment(r, p, q, 0.0)) or
+            (o2 == 0 and _on_segment(s, p, q, 0.0)) or
+            (o3 == 0 and _on_segment(p, r, s, 0.0)) or
+            (o4 == 0 and _on_segment(q, r, s, 0.0)) or
+            ((o1 > 0) != (o2 > 0) and (o3 > 0) != (o4 > 0)))
+
+
+def _y_at(segment: Segment, x: float) -> float:
+    (x1, y1), (x2, y2) = segment
+    return y1 + (x-x1)*(y2-y1)/(x2-x1)
+
+
+class RandomizedTrapezoidalMap:
+    """Build a trapezoidal map for a non-crossing segment set.
+
+    General-position contract:
+    * all input segments are non-vertical and have distinct endpoint x-values;
+    * no two segments intersect, touch, or overlap;
+    * all segments lie strictly inside the supplied bounding box.
+
+    The implementation uses a randomized insertion permutation but rebuilds
+    the vertical decomposition after each insertion. Search uses a balanced
+    x-decision tree followed by a balanced y-decision tree in the selected
+    slab. This is a reference search DAG, not the optimized history DAG.
+    """
+
+    def __init__(self, segments: Iterable[Sequence[Sequence[float]]],
+                 bounds: Sequence[float], *, seed: int = 0, epsilon: float = 1e-10):
+        if len(bounds) != 4:
+            raise ValueError("bounds must be (xmin, ymin, xmax, ymax)")
+        xmin, ymin, xmax, ymax = map(float, bounds)
+        if not all(map(isfinite, (xmin, ymin, xmax, ymax))) or not xmin < xmax or not ymin < ymax:
+            raise ValueError("bounds must be finite with positive width and height")
+        if not isfinite(epsilon) or epsilon < 0:
+            raise ValueError("epsilon must be finite and non-negative")
+        self.bounds = (xmin, ymin, xmax, ymax)
+        self.epsilon = epsilon
+        normalised: list[Segment] = []
+        endpoint_x: set[float] = set()
+        for raw in segments:
+            if len(raw) != 2:
+                raise ValueError("each segment must have two endpoints")
+            a, b = _point(raw[0]), _point(raw[1])
+            if a == b:
+                raise ValueError("zero-length segments are not supported")
+            if a[0] == b[0]:
+                raise ValueError("vertical input segments are not supported")
+            if a[0] > b[0]:
+                a, b = b, a
+            if not (xmin < a[0] < xmax and xmin < b[0] < xmax and
+                    ymin < a[1] < ymax and ymin < b[1] < ymax):
+                raise ValueError("segments must lie strictly inside the bounding box")
+            if a[0] in endpoint_x or b[0] in endpoint_x:
+                raise ValueError("all endpoint x-coordinates must be distinct")
+            endpoint_x.update((a[0], b[0]))
+            normalised.append((a, b))
+        for i, a in enumerate(normalised):
+            for b in normalised[i+1:]:
+                if _intersects(a, b):
+                    raise ValueError("segments must be pairwise disjoint and non-touching")
+        self.segments = tuple(normalised)
+        order = list(range(len(normalised)))
+        Random(seed).shuffle(order)
+        self.insertion_order = tuple(order)
+        # Rebuild after each random insertion. This is intentionally a
+        # transparent reference update, not the optimal local-update method.
+        inserted: list[int] = []
+        self.insertion_rebuild_sizes = []
+        for sid in order:
+            inserted.append(sid)
+            self._build(tuple(inserted))
+            self.insertion_rebuild_sizes.append(len(self.trapezoids))
+        self._build(tuple(order))
+
+    def _build(self, segment_ids: tuple[int, ...]) -> None:
+        xmin, ymin, xmax, ymax = self.bounds
+        self.x_events = tuple(sorted(
+            {xmin, xmax} |
+            {x for sid in segment_ids for x in
+             (self.segments[sid][0][0], self.segments[sid][1][0])}
+        ))
+        self.slabs: list[tuple[tuple[int, ...], tuple[Trapezoid, ...], _YNode | Trapezoid]] = []
+        self.trapezoids: list[Trapezoid] = []
+        for slab_index, (left, right) in enumerate(zip(self.x_events, self.x_events[1:])):
+            mid = (left+right)/2
+            active = [sid for sid in segment_ids
+                      if self.segments[sid][0][0] < mid < self.segments[sid][1][0]]
+            active.sort(key=lambda sid: _y_at(self.segments[sid], mid))
+            cells = []
+            for gap in range(len(active)+1):
+                cells.append(Trapezoid(
+                    (slab_index, gap), left, right,
+                    active[gap-1] if gap else None,
+                    active[gap] if gap < len(active) else None,
+                ))
+            root = self._build_y_tree(active, cells, mid)
+            self.slabs.append((tuple(active), tuple(cells), root))
+            self.trapezoids.extend(cells)
+        self._x_root = self._build_x_tree(0, len(self.slabs))
+
+    def _build_y_tree(self, active: list[int], cells: list[Trapezoid],
+                      mid: float):
+        def build(lo: int, hi: int):
+            if lo == hi:
+                return cells[lo]
+            split = (lo+hi)//2
+            sid = active[split]
+            return _YNode(sid, build(lo, split), build(split+1, hi))
+        return build(0, len(active))
+
+    def _build_x_tree(self, lo: int, hi: int):
+        if hi-lo == 1:
+            active, cells, root = self.slabs[lo]
+            return (root, active)
+        mid = (lo+hi)//2
+        return _XNode(self.x_events[mid],
+                      self._build_x_tree(lo, mid),
+                      self._build_x_tree(mid, hi))
+
+    def locate(self, x: float, y: float):
+        x, y = float(x), float(y)
+        if not (isfinite(x) and isfinite(y)):
+            raise ValueError("query coordinates must be finite")
+        xmin, ymin, xmax, ymax = self.bounds
+        if x < xmin or x > xmax or y < ymin or y > ymax:
+            return None
+        p = (x, y)
+        for a, b in self.segments:
+            if _on_segment(p, a, b, self.epsilon):
+                return BOUNDARY
+        # Deterministic right-side convention on artificial vertical walls.
+        slab_index = bisect_right(self.x_events, x)-1
+        slab_index = min(max(slab_index, 0), len(self.slabs)-1)
+        active, _cells, node = self.slabs[slab_index]
+        while isinstance(node, _YNode):
+            edge_y = _y_at(self.segments[node.segment_id], x)
+            node = node.left if y < edge_y else node.right
+        return node
+
+    @property
+    def search_node_count(self) -> int:
+        def count(node):
+            if isinstance(node, Trapezoid):
+                return 1
+            return 1 + count(node.left) + count(node.right)
+        total = 0
+        for _active, _cells, root in self.slabs:
+            total += count(root)
+        def count_x(node):
+            if not isinstance(node, _XNode):
+                return 0
+            return 1 + count_x(node.left) + count_x(node.right)
+        return total + count_x(self._x_root)
