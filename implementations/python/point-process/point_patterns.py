@@ -1,6 +1,6 @@
 """Planar point-pattern summaries for rectangular observation windows."""
 from __future__ import annotations
-from math import cos, hypot, isfinite, pi, sin
+from math import cos, exp, hypot, isfinite, pi, sin
 from numbers import Integral
 import random
 
@@ -483,7 +483,7 @@ def simulate_log_gaussian_cox_process(window, mean_intensity, variance, correlat
     width, height = (xmax-xmin)/nx, (ymax-ymin)/ny
     centres = [(xmin+(i+0.5)*width, ymin+(j+0.5)*height)
                for j in range(ny) for i in range(nx)]
-    covariance = [[var * __import__("math").exp(-hypot(x-a, y-b)/scale)
+    covariance = [[var * exp(-hypot(x-a, y-b)/scale)
                    for a, b in centres] for x, y in centres]
     lower = _cholesky_lower(covariance)
     rng = random.Random(int(seed))
