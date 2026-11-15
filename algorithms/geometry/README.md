@@ -45,3 +45,5 @@ These records are part of the broader [algorithm collection](../README.md). The 
 - [Isotropic-style remeshing](isotropic-remeshing.md) — split/collapse/flip edges with topology checks and tangential relaxation.
 - [Winged-edge topology](winged-edge.md) — static polygon-mesh edges with left/right faces and four wing references.
 - [Quad-edge topology](quad-edge.md) — Guibas–Stolfi four-dart representation and core topological operators.
+
+- [Weiler–Atherton polygon intersection](weiler-atherton.md) — linked-boundary traversal for simple concave rings and disconnected intersection components.
