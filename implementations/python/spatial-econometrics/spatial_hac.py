@@ -26,10 +26,10 @@ def spatial_hac_ols(
     bandwidth: float,
     small_sample_correction: bool = True,
 ) -> SpatialHACFit:
-    """Fit OLS and calculate a compact-support Bartlett spatial HAC covariance.
+    """Fit OLS and calculate a compact-support Wendland spatial HAC covariance.
 
     Coordinates must be projected planar coordinates in a common linear unit.
-    The kernel is max(0, 1 - distance / bandwidth), including unit diagonal.
+    The isotropic Wendland C2 kernel is (1-r)^4(4r+1) for r<1 and zero otherwise, including unit diagonal.
     The estimator allows heteroskedasticity and spatial correlation within the
     bandwidth; it does not correct for endogeneity or spatially lagged outcomes.
     """
@@ -59,7 +59,7 @@ def spatial_hac_ols(
 
     differences = points[:, None, :] - points[None, :, :]
     distances = np.sqrt(np.sum(differences * differences, axis=2))
-    kernel = np.maximum(0.0, 1.0 - distances / float(bandwidth))
+    scaled = distances / float(bandwidth)\n    kernel = np.where(scaled < 1.0, (1.0 - scaled) ** 4 * (4.0 * scaled + 1.0), 0.0)
     weighted_scores = design * residual[:, None]
     meat = weighted_scores.T @ kernel @ weighted_scores
     covariance = bread @ meat @ bread
