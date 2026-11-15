@@ -8,9 +8,9 @@ Are points distributed evenly across a chosen equal-area partition of the observ
 
 Partition a rectangular window into m = nx × ny equal-area quadrats. If n points are observed and N_j is the count in quadrat j, the expected count under homogeneous complete spatial randomness (CSR), conditional on n, is E_j = n/m. The Pearson statistic is
 
-\\[
+\[
 X^2=\\sum_{j=1}^{m}\\frac{(N_j-E_j)^2}{E_j}.
-\\]
+\]
 
 Conditional on n, homogeneous CSR implies multinomial cell counts with equal probabilities 1/m. This implementation simulates that conditional null and computes an upper-tail Monte Carlo p-value with the plus-one correction.
 

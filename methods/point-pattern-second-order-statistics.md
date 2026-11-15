@@ -66,10 +66,10 @@ This is a bounded centroid-based circular Poisson scan, not a full SaTScan repro
 
 A quadrat test partitions the rectangular observation window into equal-area cells and compares the observed cell counts with the equal-count expectation under homogeneous complete spatial randomness (CSR). For m quadrats and n observed points,
 
-\\[
+\[
 E_j=n/m,\\qquad
 X^2=\\sum_{j=1}^{m}\\frac{(N_j-E_j)^2}{E_j}.
-\\]
+\]
 
 Conditioning on n under homogeneous CSR gives a multinomial distribution with equal cell probabilities. This implementation simulates that conditional null directly and reports the upper-tail Monte Carlo p-value with the plus-one correction. It does not use the asymptotic chi-square p-value, which requires adequate expected counts. The grid dimensions, alignment and scale affect the result. A significant result can reflect clustering, regularity or unmodelled first-order intensity variation; it does not identify the cause.
 
