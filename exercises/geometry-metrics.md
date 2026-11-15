@@ -10,11 +10,12 @@ Use the geometry-metrics package to compare two digitised routes and compute a m
 4. Compute the smallest enclosing circle and verify that every input point lies inside it.
 5. Repeat with a different seed and discuss numerical reproducibility.
 6. For a concave polygon with a hole, compute its pole of inaccessibility at two precision settings and compare the returned boundary clearance and cell count.
+7. Compute the minimum-area oriented bounding rectangle for an oblique point cloud and compare its area with the axis-aligned bounding box.
 
 ## Deliverables
 
 - A short table of the three distance values.
-- A plot of both route samples, the enclosing circle and the polygon pole-of-inaccessibility point.
+- A plot of both route samples, the enclosing circle and the polygon pole-of-inaccessibility point and the oriented bounding rectangle.
 - A paragraph explaining why sampled-point Hausdorff, discrete Fréchet and continuous-curve distance are different objects.
 
 ## Constraints
