@@ -157,3 +157,52 @@ def hypsometric_curve(elevation, *, valid_mask=None):
         "minimum_elevation": low,
         "maximum_elevation": high,
     }
+
+
+
+def cut_fill_volume(existing_surface, design_surface, *, cell_size_x=1.0,
+                   cell_size_y=1.0, valid_mask=None):
+    """Calculate cellwise cut/fill depths and volumes between two surfaces.
+
+    Positive cut depth means the existing surface is above the design
+    surface; positive fill depth means it is below. Volumes use the
+    horizontal cell area cell_size_x * cell_size_y. Both surfaces must use
+    the same vertical unit, compatible with horizontal units for volume.
+    Non-finite cells and cells excluded by valid_mask are omitted.
+    """
+    existing = np.asarray(existing_surface, dtype=float)
+    design = np.asarray(design_surface, dtype=float)
+    if existing.ndim != 2 or existing.size == 0:
+        raise ValueError("existing_surface must be a non-empty 2D array")
+    if design.shape != existing.shape:
+        raise ValueError("design_surface must match existing_surface shape")
+    try:
+        dx, dy = float(cell_size_x), float(cell_size_y)
+    except (TypeError, ValueError):
+        raise ValueError("cell sizes must be finite and positive") from None
+    if not np.isfinite(dx) or not np.isfinite(dy) or dx <= 0 or dy <= 0:
+        raise ValueError("cell sizes must be finite and positive")
+    if valid_mask is None:
+        valid = np.isfinite(existing) & np.isfinite(design)
+    else:
+        mask = np.asarray(valid_mask, dtype=bool)
+        if mask.shape != existing.shape:
+            raise ValueError("valid_mask must match surface shape")
+        valid = np.isfinite(existing) & np.isfinite(design) & mask
+
+    cut = np.full(existing.shape, np.nan, dtype=float)
+    fill = np.full(existing.shape, np.nan, dtype=float)
+    cut[valid] = np.maximum(existing[valid] - design[valid], 0.0)
+    fill[valid] = np.maximum(design[valid] - existing[valid], 0.0)
+    area = dx * dy
+    cut_volume = float(np.sum(cut[valid]) * area)
+    fill_volume = float(np.sum(fill[valid]) * area)
+    return {
+        "cut_depth": cut,
+        "fill_depth": fill,
+        "cut_volume": cut_volume,
+        "fill_volume": fill_volume,
+        "net_cut_volume": cut_volume - fill_volume,
+        "valid_cell_count": int(valid.sum()),
+        "cell_area": area,
+    }
