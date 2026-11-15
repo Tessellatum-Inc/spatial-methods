@@ -15,7 +15,8 @@ def test_disjoint_rectangles_have_no_crossings():
 def test_concave_ring_multiple_crossings():
     a=[(0,0),(6,0),(6,6),(4,6),(4,2),(2,2),(2,6),(0,6)]
     b=[(-1,3),(7,3),(7,5),(-1,5)]
-    assert len(sweep_split_segments([[a],[b]])["intersection_events"])==4
+    # Both horizontal edges of b cross all four arms of the concave ring.
+    assert len(sweep_split_segments([[a],[b]])["intersection_events"])==8
 
 def test_shared_endpoint_is_not_proper_crossing():
     a=[(0,0),(2,0),(2,2),(0,2)]; b=[(2,2),(4,2),(4,4),(2,4)]
