@@ -824,3 +824,82 @@ def test_spatial_lag_instrument_diagnostics_rejects_invalid_or_unidentified_inpu
     bad[0, 0] = np.nan
     with pytest.raises(ValueError, match="finite"):
         spatial_lag_instrument_diagnostics(y, np.column_stack([np.ones(n), y]), bad)
+
+
+def test_spatial_lag_anderson_rubin_matches_classical_and_hc1_joint_tests():
+    from spatial_lag_anderson_rubin import spatial_lag_anderson_rubin
+    rng = np.random.default_rng(9182)
+    n = 100
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    rho = 0.28
+    y = np.linalg.solve(np.eye(n) - rho * w,
+                        x @ np.array([1.0, -0.6]) + rng.normal(scale=0.25, size=n))
+    result = spatial_lag_anderson_rubin(y, x, w, rho, instrument_orders=2)
+    assert result.rho_null == rho
+    assert result.classical_f >= 0
+    assert result.robust_wald_chi2 >= 0
+    assert result.excluded_instruments == result.instruments_used - x.shape[1]
+    assert result.classical_f_numerator_df == result.excluded_instruments
+    assert result.classical_f_denominator_df == n - result.instruments_used
+    assert result.robust_wald_degrees_of_freedom == result.excluded_instruments
+    assert len(result.transformed_coefficients) == result.instruments_used
+    assert result.transformed_residual_variance > 0
+
+    # Independently reconstruct the homoskedastic restricted/unrestricted F.
+    z_columns = [x]
+    lagged = x.copy()
+    for _ in range(2):
+        lagged = w @ lagged
+        z_columns.append(lagged)
+    z = np.column_stack(z_columns)
+    keep = []
+    current = np.empty((n, 0))
+    rank = 0
+    for j in range(z.shape[1]):
+        candidate = np.column_stack([current, z[:, j]])
+        next_rank = np.linalg.matrix_rank(candidate, tol=1e-10)
+        if next_rank > rank:
+            keep.append(j)
+            current, rank = candidate, next_rank
+    z = z[:, keep]
+    y0 = y - rho * (w @ y)
+    restricted = y0 - x @ np.linalg.lstsq(x, y0, rcond=None)[0]
+    unrestricted = y0 - z @ np.linalg.lstsq(z, y0, rcond=None)[0]
+    q = z.shape[1] - x.shape[1]
+    expected_f = ((restricted @ restricted - unrestricted @ unrestricted) / q) / (
+        unrestricted @ unrestricted / (n - z.shape[1])
+    )
+    assert result.classical_f == pytest.approx(expected_f)
+
+
+def test_spatial_lag_anderson_rubin_is_candidate_specific_and_handles_weak_relevance():
+    from spatial_lag_anderson_rubin import spatial_lag_anderson_rubin
+    rng = np.random.default_rng(9183)
+    n = 90
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    rho = 0.35
+    y = np.linalg.solve(np.eye(n) - rho * w,
+                        x @ np.array([0.7, 0.4]) + rng.normal(scale=0.2, size=n))
+    at_null = spatial_lag_anderson_rubin(y, x, w, rho, instrument_orders=2)
+    away = spatial_lag_anderson_rubin(y, x, w, -0.2, instrument_orders=2)
+    assert away.classical_f > at_null.classical_f
+
+
+def test_spatial_lag_anderson_rubin_rejects_invalid_or_unidentified_inputs():
+    from spatial_lag_anderson_rubin import spatial_lag_anderson_rubin
+    n = 40
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), np.arange(n, dtype=float)])
+    y = np.sin(np.arange(n, dtype=float))
+    with pytest.raises(ValueError, match="rho_null"):
+        spatial_lag_anderson_rubin(y, x, w, float("nan"))
+    with pytest.raises(ValueError, match="instrument_orders"):
+        spatial_lag_anderson_rubin(y, x, w, 0.2, instrument_orders=0)
+    with pytest.raises(ValueError, match="finite"):
+        bad = w.copy()
+        bad[0, 0] = np.nan
+        spatial_lag_anderson_rubin(y, x, bad, 0.2)
+    with pytest.raises(ValueError, match="no independent excluded"):
+        spatial_lag_anderson_rubin(y, np.ones((n, 1)), w, 0.2)
