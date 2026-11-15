@@ -30,6 +30,7 @@ python -m pytest -q
 18. **Global Moran's I permutation inference** with a seeded conditional randomization distribution, plus-one Monte Carlo p-values and explicit one-/two-sided alternatives.
 19. **Local Moran's I conditional permutation inference** with HH/LL/HL/LH classifications and Benjamini–Hochberg false-discovery-rate adjustment.
 20. **Koenker studentized Breusch–Pagan and White tests** for heteroskedasticity after OLS spatial-regression baselines.
+21. **Ramsey RESET** partial-F specification test using powers of fitted values to detect generic functional-form misspecification.
 
 ## Scope and limits
 

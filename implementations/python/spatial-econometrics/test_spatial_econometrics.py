@@ -1351,3 +1351,52 @@ def test_chi_square_survival_function_known_critical_values():
     assert _chi_square_sf(3.841458820694124, 1) == pytest.approx(0.05, abs=2e-8)
     assert _chi_square_sf(5.991464547107979, 2) == pytest.approx(0.05, abs=2e-8)
     assert _chi_square_sf(0.0, 3) == pytest.approx(1.0)
+
+
+def test_ramsey_reset_matches_independent_nested_ols_comparison():
+    from ramsey_reset import ramsey_reset_test
+    rng = np.random.default_rng(919)
+    n = 240
+    z = rng.normal(size=n)
+    x = np.column_stack((np.ones(n), z))
+    y = 1.0 + 1.4 * z + 0.9 * z ** 2 + rng.normal(scale=0.6, size=n)
+    result = ramsey_reset_test(y, x, power=3)
+    beta = np.linalg.lstsq(x, y, rcond=None)[0]
+    yhat = x @ beta
+    augmented = np.column_stack((x, yhat ** 2, yhat ** 3))
+    rss_r = np.sum((y - yhat) ** 2)
+    gamma = np.linalg.lstsq(augmented, y, rcond=None)[0]
+    rss_u = np.sum((y - augmented @ gamma) ** 2)
+    q = np.linalg.matrix_rank(augmented) - np.linalg.matrix_rank(x)
+    df = n - np.linalg.matrix_rank(augmented)
+    expected_f = ((rss_r - rss_u) / q) / (rss_u / df)
+    assert result.statistic == pytest.approx(expected_f, rel=1e-9)
+    assert result.restricted_rss == pytest.approx(rss_r)
+    assert result.unrestricted_rss == pytest.approx(rss_u)
+    assert result.numerator_degrees_of_freedom == q
+    assert result.denominator_degrees_of_freedom == df
+    assert result.p_value < 0.001
+
+
+def test_ramsey_reset_f_survival_known_critical_values():
+    from ramsey_reset import _f_survival
+    assert _f_survival(3.936142, 1, 100) == pytest.approx(0.05, abs=2e-5)
+    assert _f_survival(3.087296, 2, 100) == pytest.approx(0.05, abs=2e-5)
+    assert _f_survival(0.0, 3, 40) == pytest.approx(1.0)
+
+
+def test_ramsey_reset_rejects_invalid_and_unidentified_models():
+    from ramsey_reset import ramsey_reset_test
+    rng = np.random.default_rng(44)
+    x = np.column_stack((np.ones(30), np.arange(30, dtype=float)))
+    y = 1 + 0.5 * np.arange(30) + rng.normal(size=30)
+    with pytest.raises(ValueError, match="power"):
+        ramsey_reset_test(y, x, power=1)
+    with pytest.raises(ValueError, match="full column rank"):
+        ramsey_reset_test(y, np.column_stack((x, x[:, 1])), power=2)
+    with pytest.raises(ValueError, match="finite"):
+        bad = y.copy()
+        bad[0] = np.nan
+        ramsey_reset_test(bad, x)
+    with pytest.raises(ValueError, match="positive"):
+        ramsey_reset_test(1 + 2 * x[:, 1], x)
