@@ -530,6 +530,94 @@ jobs:
             directory: implementations/python/voronoi-lloyd
             pythonpath: ""
 
+          - example: ace-detection
+            directory: implementations/python/ace-detection
+            pythonpath: ""
+          - example: adaptive-thresholding
+            directory: implementations/python/adaptive-thresholding
+            pythonpath: ""
+          - example: atgp-endmembers
+            directory: implementations/python/atgp-endmembers
+            pythonpath: ""
+          - example: cem-detection
+            directory: implementations/python/cem-detection
+            pythonpath: ""
+          - example: edge-detection
+            directory: implementations/python/edge-detection
+            pythonpath: ""
+          - example: fcls-unmixing
+            directory: implementations/python/fcls-unmixing
+            pythonpath: ""
+          - example: fourier-filtering
+            directory: implementations/python/fourier-filtering
+            pythonpath: ""
+          - example: gabor-filters
+            directory: implementations/python/gabor-filters
+            pythonpath: ""
+          - example: glcm-texture
+            directory: implementations/python/glcm-texture
+            pythonpath: ""
+          - example: haar-wavelet
+            directory: implementations/python/haar-wavelet
+            pythonpath: ""
+          - example: half-edge-mesh
+            directory: implementations/python/half-edge-mesh
+            pythonpath: ""
+          - example: hough-lines
+            directory: implementations/python/hough-lines
+            pythonpath: ""
+          - example: isotropic-remeshing
+            directory: implementations/python/isotropic-remeshing
+            pythonpath: ""
+          - example: max-flow-min-cut
+            directory: implementations/python/max-flow-min-cut
+            pythonpath: ""
+          - example: mesh-repair
+            directory: implementations/python/mesh-repair
+            pythonpath: ""
+          - example: mesh-smoothing
+            directory: implementations/python/mesh-smoothing
+            pythonpath: ""
+          - example: mnf-transform
+            directory: implementations/python/mnf-transform
+            pythonpath: ""
+          - example: morphology
+            directory: implementations/python/morphology
+            pythonpath: ""
+          - example: nfindr-endmembers
+            directory: implementations/python/nfindr-endmembers
+            pythonpath: ""
+          - example: otsu-thresholding
+            directory: implementations/python/otsu-thresholding
+            pythonpath: ""
+          - example: pca-transform
+            directory: implementations/python/pca-transform
+            pythonpath: ""
+          - example: quad-edge
+            directory: implementations/python/quad-edge
+            pythonpath: ""
+          - example: radon-transform
+            directory: implementations/python/radon-transform
+            pythonpath: ""
+          - example: rx-anomaly
+            directory: implementations/python/rx-anomaly
+            pythonpath: ""
+          - example: spectral-matched-filter
+            directory: implementations/python/spectral-matched-filter
+            pythonpath: ""
+          - example: spectral-similarity
+            directory: implementations/python/spectral-similarity
+            pythonpath: ""
+          - example: vca-endmembers
+            directory: implementations/python/vca-endmembers
+            pythonpath: ""
+          - example: weiler-atherton
+            directory: implementations/python/weiler-atherton
+            pythonpath: ""
+          - example: winged-edge
+            directory: implementations/python/winged-edge
+            pythonpath: ""
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -543,7 +631,10 @@ jobs:
 
       - name: Install dependencies
         working-directory: ${{ matrix.directory }}
-        run: python -m pip install -r requirements.txt
+        run: |
+          if [ -f requirements.txt ]; then
+            python -m pip install -r requirements.txt
+          fi
 
       - name: Run tests
         working-directory: ${{ matrix.directory }}
