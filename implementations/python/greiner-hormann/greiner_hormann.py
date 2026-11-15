@@ -62,14 +62,7 @@ def _prepare(points: Sequence[Point], name: str, eps: float) -> list[Point]:
                 raise ValueError(f"{name} must be a simple ring")
     if abs(_area(ring)) <= eps:
         raise ValueError(f"{name} must have non-zero area")
-    if abs(_area(ring)) <= eps:
-        raise ValueError(f"{name} must have non-zero area")
     return ring if _area(ring) > 0 else list(reversed(ring))
-
-
-def _on_segment(a: Point, b: Point, p: Point, eps: float) -> bool:
-    return (min(a[0], b[0]) - eps <= p[0] <= max(a[0], b[0]) + eps
-            and min(a[1], b[1]) - eps <= p[1] <= max(a[1], b[1]) + eps)
 
 
 def _on_segment(a: Point, b: Point, p: Point, eps: float) -> bool:
@@ -85,10 +78,12 @@ def _segments_intersect(a: Point, b: Point, c: Point, d: Point,
         (o3 > eps and o4 < -eps) or (o3 < -eps and o4 > eps))
     if proper or not include_touch:
         return proper
-    return ((abs(o1) <= eps and _on_segment(a, b, c, eps))
-            or (abs(o2) <= eps and _on_segment(a, b, d, eps))
-            or (abs(o3) <= eps and _on_segment(c, d, a, eps))
-            or (abs(o4) <= eps and _on_segment(c, d, b, eps))
+    return (
+        (abs(o1) <= eps and _on_segment(a, b, c, eps))
+        or (abs(o2) <= eps and _on_segment(a, b, d, eps))
+        or (abs(o3) <= eps and _on_segment(c, d, a, eps))
+        or (abs(o4) <= eps and _on_segment(c, d, b, eps))
+    )
 
 
 def _inside(point: Point, ring: Sequence[Point]) -> bool:
