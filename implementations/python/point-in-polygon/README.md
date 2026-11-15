@@ -62,3 +62,8 @@ Read [how the implementation works](implementation-walkthrough.md) for ring norm
 - pytest 9.0.2
 
 The 12 tests passed in the recorded environment. Run them again in your own environment before using the code in a project.
+
+
+## Winding-number implementation
+
+The module also exposes `winding_number(point, ring)` and `locate_point_winding(point, ring)`. These implement the signed crossing-count method and the nonzero winding fill rule. The scalar winding function raises on boundary points because the winding number is undefined there; the three-way classifier reports boundary separately. For simple rings, seeded randomized tests compare the winding classifier against the independent even-odd ray-crossing implementation. Both are O(n) in the number of ring edges.

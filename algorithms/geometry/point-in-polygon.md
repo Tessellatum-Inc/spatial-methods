@@ -87,13 +87,13 @@ flowchart TD
 
 The separate boundary check is important: parity alone does not tell us whether the point lies exactly on an edge or vertex.
 
-## 6. Correctness and guarantees
+## 6. Winding-number alternative\n\nThe nonzero winding rule is implemented separately from ray-crossing parity. For each directed edge, compare its endpoints with the query point's horizontal scanline and use the signed orientation determinant to count upward and downward crossings. Upward crossings to the left of the point increment the winding number; downward crossings to the left decrement it. A nonzero total means inside, zero means outside. Reversing ring orientation reverses the sign but not the inside/outside classification.\n\nThe implementation exposes `winding_number` for the signed integer result and `locate_point_winding` for inside/outside/boundary. The scalar function raises when the query lies on the boundary, because boundary handling is a separate policy. The classifier checks boundary first. Seeded tests compare it with the ray-crossing implementation on 4,500 query points over generated simple radial polygons. This is independent cross-checking of two different crossing formulations, not a robust exact-predicate proof.\n\n## 7. Correctness and guarantees
 
 For a simple, non-self-intersecting closed ring, the parity of ray crossings gives the inside/outside classification when edge and vertex cases are handled consistently. The boundary is classified separately by the teaching implementation.
 
 For self-intersecting rings, “the interior” is not uniquely determined until a fill rule is chosen. Even–odd and nonzero winding rules can produce different classifications. A dossier or software API must state which rule it uses.
 
-## 7. Complexity
+## 8. Complexity
 
 The teaching implementation checks every edge once. For a ring with $n$ edges:
 
@@ -102,7 +102,7 @@ The teaching implementation checks every edge once. For a ring with $n$ edges:
 
 If many points are tested against the same polygon, preprocessing or spatial indexing can reduce the work per query. That is a different algorithmic setting and should be benchmarked separately.
 
-## 8. Numerical and geometric considerations
+## 9. Numerical and geometric considerations
 
 - **Boundary tolerance:** exact floating-point equality is not a general-purpose robust boundary policy. A tolerance must be tied to coordinate units, data accuracy and the intended application.
 - **Vertex crossings:** use a consistent half-open rule; naïvely counting every edge endpoint can double-count vertices.
@@ -112,7 +112,7 @@ If many points are tested against the same polygon, preprocessing or spatial ind
 - **CRS:** point-in-polygon is a planar topological test in this example. Transform geographic data into a suitable planar coordinate system when the surrounding workflow requires planar geometry operations; be explicit about the CRS.
 - **Invalid rings:** repeated, collapsed or self-crossing edges may violate the simple-ring assumptions.
 
-## 9. Edge cases and failure modes
+## 10. Edge cases and failure modes
 
 | Case | Expected behaviour | Test or evidence |
 |---|---|---|
@@ -127,13 +127,13 @@ If many points are tested against the same polygon, preprocessing or spatial ind
 | Self-intersecting ring | Depends on selected fill rule | Not supported by teaching implementation |
 | Polygon with holes | Depends on ring structure and fill rule | Not supported by teaching implementation |
 
-## 10. Try it
+## 11. Try it
 
 Use the square with corners `(0,0)`, `(4,0)`, `(4,4)` and `(0,4)`. Test points `(2,2)`, `(5,2)` and `(4,2)`. Before running the code, decide which should be inside, outside and boundary.
 
 Then try a concave polygon. A point can be inside its bounding box and still be outside the polygon.
 
-## 11. Implementations
+## 12. Implementations
 
 | Library / implementation | Relevant API / method | Notes |
 |---|---|---|

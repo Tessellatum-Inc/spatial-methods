@@ -66,3 +66,78 @@ if __name__ == "__main__":
     square = [(0, 0), (4, 0), (4, 4), (0, 4)]
     for candidate in [(2, 2), (5, 2), (4, 2)]:
         print(candidate, locate_point(candidate, square).value)
+
+
+def winding_number(point: Coordinate, ring: Sequence[Coordinate]) -> int:
+    """Return the signed winding number of a query point around one ring.
+
+    Boundary points are not assigned a winding number by this function;
+    callers should use :func:`locate_point_winding` for the three-way result.
+    Positive and negative values distinguish ring orientation. A non-zero
+    value denotes the interior under the nonzero winding fill rule.
+    """
+    vertices = list(ring)
+    if len(vertices) > 1 and vertices[0] == vertices[-1]:
+        vertices.pop()
+    if len(vertices) < 3 or len(set(vertices)) < 3:
+        raise ValueError("A ring must contain at least three distinct vertices.")
+    px, py = float(point[0]), float(point[1])
+    if not (isfinite(px) and isfinite(py)):
+        raise ValueError("point coordinates must be finite")
+    normalized = []
+    for vertex in vertices:
+        if len(vertex) != 2:
+            raise ValueError("each ring vertex must contain x and y")
+        x, y = float(vertex[0]), float(vertex[1])
+        if not (isfinite(x) and isfinite(y)):
+            raise ValueError("ring coordinates must be finite")
+        normalized.append((x, y))
+    p = (px, py)
+    count = 0
+    for a, b in zip(normalized, normalized[1:] + normalized[:1]):
+        if _on_segment(p, a, b):
+            raise ValueError("point lies on the ring boundary; use locate_point_winding")
+        side = (b[0] - a[0]) * (py - a[1]) - (px - a[0]) * (b[1] - a[1])
+        if a[1] <= py:
+            if b[1] > py and side > 0:
+                count += 1
+        elif b[1] <= py and side < 0:
+            count -= 1
+    return count
+
+
+def locate_point_winding(point: Coordinate, ring: Sequence[Coordinate]) -> PointLocation:
+    """Classify a point using the nonzero winding-number fill rule.
+
+    The boundary is returned separately. Unlike even-odd parity, the
+    nonzero rule is sensitive to the signed number of turns around a point;
+    this distinction matters for self-intersecting paths and compound rings.
+    """
+    vertices = list(ring)
+    if len(vertices) > 1 and vertices[0] == vertices[-1]:
+        vertices.pop()
+    if len(vertices) < 3 or len(set(vertices)) < 3:
+        raise ValueError("A ring must contain at least three distinct vertices.")
+    p = (float(point[0]), float(point[1]))
+    if not all(isfinite(v) for v in p):
+        raise ValueError("point coordinates must be finite")
+    normalized = []
+    for vertex in vertices:
+        if len(vertex) != 2:
+            raise ValueError("each ring vertex must contain x and y")
+        q = (float(vertex[0]), float(vertex[1]))
+        if not all(isfinite(v) for v in q):
+            raise ValueError("ring coordinates must be finite")
+        normalized.append(q)
+    for a, b in zip(normalized, normalized[1:] + normalized[:1]):
+        if _on_segment(p, a, b):
+            return PointLocation.BOUNDARY
+    count = 0
+    for a, b in zip(normalized, normalized[1:] + normalized[:1]):
+        side = (b[0] - a[0]) * (p[1] - a[1]) - (p[0] - a[0]) * (b[1] - a[1])
+        if a[1] <= p[1]:
+            if b[1] > p[1] and side > 0:
+                count += 1
+        elif b[1] <= p[1] and side < 0:
+            count -= 1
+    return PointLocation.INSIDE if count != 0 else PointLocation.OUTSIDE
