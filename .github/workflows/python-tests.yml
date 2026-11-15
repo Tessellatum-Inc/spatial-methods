@@ -400,9 +400,6 @@ jobs:
           - example: d8-flow-direction
             directory: implementations/python/d8-flow-direction
             pythonpath: ""
-          - example: d-infinity
-            directory: implementations/python/d-infinity
-            pythonpath: ""
           - example: dasymetric-allocation
             directory: implementations/python/dasymetric-allocation
             pythonpath: ""
