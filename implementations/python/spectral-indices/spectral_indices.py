@@ -119,6 +119,4 @@ def dnbr(pre_fire_nbr, post_fire_nbr):
     pre, post = np.asarray(pre_fire_nbr, dtype=float), np.asarray(post_fire_nbr, dtype=float)
     if pre.shape != post.shape:
         raise ValueError("NBR arrays must have the same shape")
-    out = pre - post
-    out[~(np.isfinite(pre) & np.isfinite(post))] = np.nan
-    return out
+    return np.where(np.isfinite(pre) & np.isfinite(post), pre - post, np.nan)
