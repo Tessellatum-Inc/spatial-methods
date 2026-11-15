@@ -50,3 +50,31 @@ def test_zero_area_input_is_rejected():
 def test_negative_epsilon_is_rejected():
     with pytest.raises(ValueError, match="non-negative"):
         clip_convex_polygon(SUBJECT, WINDOW, epsilon=-1)
+
+def test_seeded_rectangle_clips_against_independent_interval_oracle():
+    """Exercise all overlap patterns with a closed-form rectangle oracle."""
+    import random
+
+    rng = random.Random(20261116)
+    for _ in range(1000):
+        ax0, ax1 = sorted((rng.uniform(-50, 50), rng.uniform(-50, 50)))
+        ay0, ay1 = sorted((rng.uniform(-50, 50), rng.uniform(-50, 50)))
+        bx0, bx1 = sorted((rng.uniform(-50, 50), rng.uniform(-50, 50)))
+        by0, by1 = sorted((rng.uniform(-50, 50), rng.uniform(-50, 50)))
+        if min(ax1 - ax0, ay1 - ay0, bx1 - bx0, by1 - by0) < 1e-5:
+            continue
+
+        subject = [(ax0, ay0), (ax1, ay0), (ax1, ay1), (ax0, ay1)]
+        window = [(bx0, by0), (bx1, by0), (bx1, by1), (bx0, by1)]
+        expected_width = max(0.0, min(ax1, bx1) - max(ax0, bx0))
+        expected_height = max(0.0, min(ay1, by1) - max(ay0, by0))
+        expected_area = expected_width * expected_height
+
+        result = clip_convex_polygon(subject, window)
+        assert signed_area(result) == pytest.approx(expected_area, rel=1e-10, abs=1e-9)
+        if expected_area == 0:
+            assert result == []
+        else:
+            assert len(result) >= 3
+            assert signed_area(result) > 0
+
