@@ -123,7 +123,7 @@ def heteroskedasticity_diagnostics(
     residual = response - design @ beta
     sigma2 = float(residual @ residual / n)
     if not isfinite(sigma2) or sigma2 <= np.finfo(float).eps:
-        raise ValueError("OLS residual variance must be positive")
+        raise ValueError("OLS must have positive variance")
 
     constant = np.ptp(design, axis=0) <= np.finfo(float).eps * np.maximum(
         1.0, np.max(np.abs(design), axis=0)

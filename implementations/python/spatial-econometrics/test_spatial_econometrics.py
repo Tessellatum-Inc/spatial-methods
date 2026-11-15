@@ -95,7 +95,7 @@ def test_spatial_impacts_validate_shapes_and_singularity():
     with pytest.raises(ValueError, match="gamma"):
         spatial_impacts(CHAIN, 0.1, [1.0, 2.0], [0.5])
     with pytest.raises(ValueError, match="nonsingular"):
-        spatial_impacts(np.ones((2, 2)), 1.0, [1.0])
+        spatial_impacts([[0.0, 1.0], [1.0, 0.0]], 1.0, [1.0])
     with pytest.raises(ValueError, match="finite"):
         spatial_impacts([[0, float("nan")], [1, 0]], 0.1, [1.0])
 
@@ -400,10 +400,12 @@ def test_spatial_impact_uncertainty_uses_joint_parameter_covariance():
     from impacts import spatial_impact_uncertainty
     w = _row_standardised_chain(8)
     covariance = np.diag([0.0025, 0.01, 0.01, 0.01, 0.01])
-    result, = spatial_impact_uncertainty(
+    results = spatial_impact_uncertainty(
         w, 0.2, [1.0, 0.5], covariance, [0.0, 0.2],
         draws=1200, seed=77,
     )
+    assert len(results) == 2
+    result = results[0]
     assert result.accepted_draws + result.rejected_draws == 1200
     assert result.direct.standard_error > 0
     assert result.indirect.standard_error > 0
@@ -414,7 +416,7 @@ def test_spatial_impact_uncertainty_uses_joint_parameter_covariance():
 def test_spatial_impact_uncertainty_validates_covariance_and_draw_controls():
     from impacts import spatial_impact_uncertainty
     with pytest.raises(ValueError, match="covariance shape"):
-        spatial_impact_uncertainty(CHAIN, 0.1, [1.0], np.eye(2), draws=100)
+        spatial_impact_uncertainty(CHAIN, 0.1, [1.0], np.eye(3), draws=100)
     with pytest.raises(ValueError, match="positive semidefinite"):
         spatial_impact_uncertainty(CHAIN, 0.1, [1.0], [[1.0, 2.0], [2.0, 1.0]], draws=100)
     with pytest.raises(ValueError, match="draws"):
@@ -1327,7 +1329,7 @@ def test_white_test_handles_redundant_generated_terms():
     rng = np.random.default_rng(71)
     n = 120
     a = rng.normal(size=n)
-    x = np.column_stack((np.ones(n), a, 2 * a))
+    x = np.column_stack((np.ones(n), a, a ** 2))
     y = 1 + 0.4 * a + rng.normal(size=n) * (1 + 0.2 * np.abs(a))
     fit = heteroskedasticity_diagnostics(y, x)
     assert fit.white.degrees_of_freedom >= 1
