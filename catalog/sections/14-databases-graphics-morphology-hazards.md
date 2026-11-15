@@ -4,7 +4,7 @@
 - **Source pages:** 28–30
 - **Source transcription:** [pages 26–30](../../source-inventory/pages-26-30.md)
 - **Review state:** source entries extracted into this index; not every entry independently verified
-- **Current canonical records:** none yet
+- **Current canonical records:** [Circular Poisson spatial scan statistic](../../algorithms/spatial-scan-statistic.md), with a tested [Python implementation](../../implementations/python/point-process/README.md) and [source-verification note](../verification/spatial-scan-statistic.md)
 
 This section combines spatial database internals, graphics algorithms, image morphology, accessibility, hazard models, inventory methods and cartographic mathematics. Keep system internals distinct from the algorithms they support.
 
@@ -43,7 +43,7 @@ This section combines spatial database internals, graphics algorithms, image mor
 | Floating catchment variants: E2SFCA, 3SFCA, M2SFCA, G2SFCA, KD2SFCA | Accessibility measures / floating catchment methods | 29 | Not checked — intake only |
 | Travel-time decay functions (Gaussian, power, kernel density), multimodal accessibility, spatial mismatch indices | Accessibility modelling / decay functions / equity measures | 29 | Not checked — intake only |
 | Disease mapping extensions: Leroux CAR, Knorr-Held space-time interaction models, age standardization, Poisson-gamma models | Disease mapping and spatiotemporal model families | 29 | Not checked — intake only |
-| Cluster tests for case data: Cuzick-Edwards, Whittemore, spatial scan with covariates | Spatial epidemiology tests | 29 | Not checked — intake only |
+| Cluster tests for case data: Cuzick-Edwards, Whittemore, spatial scan with covariates | Spatial epidemiology tests | 29 | [Circular Poisson scan](../../algorithms/spatial-scan-statistic.md) implements centroid-based circular Poisson zones with a population offset and conditional multinomial Monte Carlo calibration; Cuzick–Edwards, Whittemore and covariate-adjusted scans remain open | Partial — bounded related record and tested implementation exist; source-entry review pending |
 
 ## Mass movement and volcanic runout
 
