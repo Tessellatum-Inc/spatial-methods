@@ -11,7 +11,7 @@ def hough_lines(edges, theta=None, rho_resolution=1.0):
     theta=np.linspace(-np.pi/2,np.pi/2,180,endpoint=False) if theta is None else np.asarray(theta,dtype=float)
     if theta.ndim!=1 or theta.size==0 or not np.all(np.isfinite(theta)): raise ValueError("theta must be a nonempty finite vector")
     diag=np.hypot(e.shape[0]-1,e.shape[1]-1)
-    rhos=np.arange(-diag,diag+rho_resolution,rho_resolution)
+    rho_limit=np.ceil(diag/rho_resolution)*rho_resolution\n    rhos=np.arange(-rho_limit,rho_limit+rho_resolution*0.5,rho_resolution)
     acc=np.zeros((rhos.size,theta.size),dtype=np.uint64)
     if xs.size:
         rho=xs[:,None]*np.cos(theta)[None,:]+ys[:,None]*np.sin(theta)[None,:]
