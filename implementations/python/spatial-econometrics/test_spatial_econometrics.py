@@ -199,3 +199,45 @@ def test_spatial_mle_rejects_invalid_inputs_and_grid_settings():
         spatial_lag_mle([1., 2., 3., 4., 5.], np.ones((5, 2)), w)
     with pytest.raises(ValueError, match="finite"):
         spatial_error_mle([1., 2., float("nan"), 4., 5.], x, w)
+
+
+def test_spatial_lm_robust_scores_match_bera_yoon_adjustments():
+    from diagnostics import spatial_lm_diagnostics
+    x = np.column_stack([np.ones(6), np.arange(6, dtype=float)])
+    y = np.array([1.0, 2.2, 2.8, 4.4, 4.7, 6.3])
+    w = np.zeros((6, 6))
+    for i in range(5):
+        w[i, i + 1] = w[i + 1, i] = 1.0
+    result = spatial_lm_diagnostics(y, x, w)
+    beta = np.linalg.lstsq(x, y, rcond=None)[0]
+    e = y - x @ beta
+    sigma2 = e @ e / len(y)
+    trace = np.trace(w.T @ w + w @ w)
+    wxb = w @ (x @ beta)
+    residualised = wxb - x @ np.linalg.lstsq(x, wxb, rcond=None)[0]
+    d = residualised @ residualised / sigma2 + trace
+    d_lag = e @ (w @ y) / sigma2
+    d_error = e @ (w @ e) / sigma2
+    expected_lag = (d_lag - d_error) ** 2 / (d - trace)
+    expected_error = (d_error - trace * d_lag / d) ** 2 / (trace * (1 - trace / d))
+    assert result.robust_lm_lag is not None
+    assert result.robust_lm_error is not None
+    assert result.robust_lm_lag.statistic == pytest.approx(expected_lag)
+    assert result.robust_lm_error.statistic == pytest.approx(expected_error)
+    assert 0 <= result.robust_lm_lag.p_value <= 1
+    assert 0 <= result.robust_lm_error.p_value <= 1
+
+
+def test_spatial_lm_robust_tests_are_unavailable_when_not_identified():
+    from diagnostics import spatial_lm_diagnostics
+    n = 6
+    w = np.zeros((n, n))
+    for i in range(n):
+        w[i, (i - 1) % n] = 0.5
+        w[i, (i + 1) % n] = 0.5
+    x = np.ones((n, 1))
+    y = np.array([1.0, 2.0, 1.5, 3.0, 2.5, 4.0])
+    result = spatial_lm_diagnostics(y, x, w)
+    assert result.lag_denominator == pytest.approx(result.trace_term)
+    assert result.robust_lm_lag is None
+    assert result.robust_lm_error is None
