@@ -29,3 +29,13 @@ Real DEM conditioning often needs explicit flat resolution, depression filling o
 ## 6. Check the units
 
 Horizontal cell spacing and elevation values must use compatible units for slope comparisons. If horizontal coordinates are metres and elevations are feet, convert before running the algorithm. Document the DEM CRS, vertical datum and NoData policy.
+
+## 7. Compare multiple-flow-direction routing
+
+D8 sends all contribution to one steepest neighbour. The companion MFD variant in mfd_flow.py computes a positive slope gradient to every strictly lower valid neighbour. It raises each slope to a positive convergence exponent and normalises the values to fractions that sum to one.
+
+The exponent controls concentration. A larger exponent places more of the cell's contribution on the steepest neighbour; a smaller exponent spreads it more evenly. The eight fraction channels follow E, SE, S, SW, W, NW, N, NE.
+
+Flow accumulation validates that each positive fraction points to a valid, strictly lower neighbour. This makes the routing graph acyclic. Kahn's topological traversal processes upstream cells before their receivers and conserves initial contributions at terminal sinks. By default each cell contributes one unit; pass cell-area values to accumulate area.
+
+This is a bounded power-law MFD variant. It does not implement D-infinity, adaptive MFD, contour-length correction, flat resolution or depression filling.
