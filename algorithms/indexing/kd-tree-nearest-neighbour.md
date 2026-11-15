@@ -50,8 +50,7 @@ A k-d tree can also report every point inside an axis-aligned rectangle
 \([x_{min},x_{max}]\times[y_{min},y_{max}]\). At each node, test the stored
 point, then recurse into a child only when the query interval on the split axis
 intersects that child's half-space. Inclusive comparisons are important when
-duplicate split coordinates can appear on both sides. The output contains every matching record, so its size depends on the data and window, not a fixed k; the actual work depends on how many cells the query intersects; unlike a
-nearest-neighbour query, this operation reports all matching records.
+duplicate split coordinates can appear on both sides. The output contains every matching record, so its size depends on the data and window, not a fixed k. The actual work depends on how many cells the query intersects; unlike a nearest-neighbour query, this operation reports all matching records.
 
 The repository implementation exposes `range_query(minimum, maximum)`, uses
 the same static tree, and returns original input indices in ascending order.

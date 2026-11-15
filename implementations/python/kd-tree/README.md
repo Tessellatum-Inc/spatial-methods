@@ -1,49 +1,39 @@
-# k-d tree: exact nearest-neighbour teaching implementation
+# k-d tree: exact 2D spatial queries
 
-This directory contains a static two-dimensional k-d tree that answers exact nearest-neighbour queries under planar Euclidean distance.
+This directory contains a static two-dimensional k-d tree for planar Euclidean nearest-neighbour, k-nearest-neighbour and orthogonal range queries.
 
 ## Run it
 
-Install the dependency and run the tests:
-
-~~~bash
+```bash
 python -m pip install -r requirements.txt
 python -m pytest -q
-~~~
+```
 
-Example:
+## Example
 
-~~~python
+```python
 from kd_tree import KDTree2D
 
-points = [(0, 0), (2, 0), (4, 0), (1, 3)]
-tree = KDTree2D(points)
+tree = KDTree2D([(0, 0), (2, 0), (4, 0), (1, 3)])
+print(tree.nearest((3.2, 0.5)))
+print(tree.k_nearest((3.2, 0.5), 3))
+print(tree.range_query((0, 0), (2, 2)))
+```
 
-print(tree.nearest((3.2, 0.5)))\nprint(tree.range_query((0, 0), (2, 2)))\nprint(tree.k_nearest((3.2, 0.5), 3))
-~~~
+## Query contracts
 
-`nearest(query)` returns the closest original input index and squared Euclidean distance, or `None` for an empty tree. `range_query(minimum, maximum)` returns all indices inside an inclusive rectangle. `k_nearest(query, k)` returns up to k `(index, squared_distance)` pairs, sorted by distance and then original index. All methods preserve deterministic tie handling.
+- `nearest(query)` returns `(original_index, squared_distance)`, or `None` for an empty tree.
+- `k_nearest(query, k)` returns up to k pairs `(original_index, squared_distance)`, ordered by distance and then original index. It returns an empty list for k=0 or an empty tree, and rejects negative or non-integer k.
+- `range_query(minimum, maximum)` returns all original indices inside the inclusive rectangle defined by its lower-left and upper-right corners. Results are sorted by original index.
 
-## What it does
+All inputs must contain finite 2D coordinates. The tree uses deterministic median partitioning, selects the axis with greatest spread at each node, and preserves original input indices.
 
-- validates finite 2D coordinates;
-- builds a static tree by selecting the axis with the greatest spread at each recursive level;
-- splits at the median, using original input index as a deterministic secondary sort key;
-- visits the query-side subtree first;
-- prunes the far subtree only when its split-plane lower bound is strictly worse than the current best distance;
-- preserves original input indices.
+## Complexity and limitations
 
-## Limits
+Construction is balanced by median selection, although this straightforward implementation repeatedly sorts recursive partitions and allocates slices. Nearest and k-nearest queries use split-plane branch-and-bound; range queries recurse only into half-spaces intersecting the query interval. Query work is data-dependent and can approach a full scan in unfavourable distributions. The implementation is static, 2D and Euclidean; it is not a dynamic index or a geodesic index.
 
-- Static after construction: no insert, delete or update operations.
-- Two dimensions only.
-- Planar Euclidean metric only; coordinates must already be in an appropriate Cartesian coordinate system.
-- Does not provide dynamic insertion/deletion, range aggregates or all-neighbours-within-radius queries.
-- The implementation favours clarity over low allocation overhead and production throughput.
-- Worst-case query work can approach a full scan.
+## Verification
 
-## Validation
+Tests compare nearest-neighbour results with a brute-force oracle, range queries with an independent rectangle filter, and k-nearest results with a full-sort oracle over seeded point clouds. Fixtures include empty input, duplicates, distance ties, split-plane cases, degenerate rectangle windows, k=0, k larger than the dataset, invalid coordinates and clustered/anisotropic data.
 
-Tests compare nearest-neighbour results with a brute-force oracle; range queries with an independent rectangle filter; and k-nearest results with a full-sort oracle over seeded clouds. Fixtures cover empty inputs, duplicates, equal-distance ties, split-plane queries, degenerate windows, k=0, k larger than the dataset, invalid coordinates and clustered/anisotropic data.
-
-Read the [step-by-step implementation walkthrough](implementation-walkthrough.md) and the [k-d tree lesson](../../../algorithms/indexing/kd-tree-nearest-neighbour.md).
+See the [step-by-step implementation walkthrough](implementation-walkthrough.md) and the [k-d tree lesson](../../../algorithms/indexing/kd-tree-nearest-neighbour.md).
