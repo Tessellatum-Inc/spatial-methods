@@ -288,3 +288,118 @@ def minimum_area_bounding_rectangle(points):
         if best is None or area < best["area"]:
             best = candidate
     return best
+
+
+def _free_space_interval(point, start, end, epsilon):
+    """Parameter interval on segment start-end within epsilon of point."""
+    from math import sqrt
+    dx, dy = end[0] - start[0], end[1] - start[1]
+    px, py = start[0] - point[0], start[1] - point[1]
+    aa = dx*dx + dy*dy
+    cc = px*px + py*py - epsilon*epsilon
+    if aa == 0.0:
+        return (0.0, 1.0) if cc <= 0.0 else None
+    bb = 2.0 * (px*dx + py*dy)
+    discriminant = bb*bb - 4.0*aa*cc
+    if discriminant < 0.0:
+        return None
+    root = sqrt(max(0.0, discriminant))
+    lo = max(0.0, (-bb-root)/(2.0*aa))
+    hi = min(1.0, (-bb+root)/(2.0*aa))
+    return (lo, hi) if lo <= hi else None
+
+
+def continuous_frechet_decision(curve_a, curve_b, epsilon):
+    """Decide whether two polygonal curves have continuous Frechet distance <= epsilon.
+
+    Uses Alt–Godau free-space reachability on the parameter-space cell grid.
+    Runtime and memory are O(m*n) for m and n curve segments.
+    """
+    a, b = _points(curve_a, minimum=1), _points(curve_b, minimum=1)
+    if not isfinite(epsilon) or epsilon < 0:
+        raise ValueError("epsilon must be finite and non-negative")
+    if len(a) == 1 or len(b) == 1:
+        if len(a) == len(b) == 1:
+            return _distance(a[0], b[0]) <= epsilon
+        fixed, moving = (a[0], b) if len(a) == 1 else (b[0], a)
+        return max(_distance(fixed, point) for point in moving) <= epsilon
+
+    n, m = len(a)-1, len(b)-1
+    # Reachable portions of the global bottom and left boundaries.
+    bottom_boundary = [None] * n
+    for i in range(n):
+        interval = _free_space_interval(b[0], a[i], a[i+1], epsilon)
+        if interval is not None and interval[0] <= 0.0:
+            if i == 0 or (bottom_boundary[i-1] is not None and bottom_boundary[i-1][1] >= 1.0):
+                bottom_boundary[i] = (0.0, interval[1])
+
+    left_boundary = [None] * m
+    for j in range(m):
+        interval = _free_space_interval(a[0], b[j], b[j+1], epsilon)
+        if interval is not None and interval[0] <= 0.0:
+            if j == 0 or (left_boundary[j-1] is not None and left_boundary[j-1][1] >= 1.0):
+                left_boundary[j] = (0.0, interval[1])
+
+    right = [[None] * m for _ in range(n)]
+    top = [[None] * m for _ in range(n)]
+    for i in range(n):
+        for j in range(m):
+            reachable_bottom = bottom_boundary[i] if j == 0 else top[i][j-1]
+            reachable_left = left_boundary[j] if i == 0 else right[i-1][j]
+            free_right = _free_space_interval(a[i+1], b[j], b[j+1], epsilon)
+            free_top = _free_space_interval(b[j+1], a[i], a[i+1], epsilon)
+
+            if free_right is not None:
+                if reachable_bottom is not None:
+                    right[i][j] = free_right
+                elif reachable_left is not None:
+                    lo = max(free_right[0], reachable_left[0])
+                    if lo <= free_right[1]:
+                        right[i][j] = (lo, free_right[1])
+
+            if free_top is not None:
+                if reachable_left is not None:
+                    top[i][j] = free_top
+                elif reachable_bottom is not None:
+                    lo = max(free_top[0], reachable_bottom[0])
+                    if lo <= free_top[1]:
+                        top[i][j] = (lo, free_top[1])
+
+    final_right = right[-1][-1]
+    final_top = top[-1][-1]
+    return (
+        (final_right is not None and final_right[0] <= 1.0 <= final_right[1])
+        or (final_top is not None and final_top[0] <= 1.0 <= final_top[1])
+    )
+
+
+def continuous_frechet_distance(
+    curve_a, curve_b, *, tolerance=1e-6, max_iterations=80
+):
+    """Approximate continuous Frechet distance by bisection over the decision test.
+
+    The returned value is an upper bound within the requested absolute
+    tolerance, subject to floating-point arithmetic. Curves are polygonal
+    chains in a common planar coordinate system.
+    """
+    a, b = _points(curve_a, minimum=1), _points(curve_b, minimum=1)
+    if not isfinite(tolerance) or tolerance <= 0:
+        raise ValueError("tolerance must be finite and positive")
+    if not isinstance(max_iterations, int) or isinstance(max_iterations, bool) or max_iterations < 1:
+        raise ValueError("max_iterations must be a positive integer")
+    if len(a) == 1 or len(b) == 1:
+        fixed, moving = (a[0], b) if len(a) == 1 else (b[0], a)
+        return max(_distance(fixed, point) for point in moving)
+    lower = max(_distance(a[0], b[0]), _distance(a[-1], b[-1]))
+    upper = max(_distance(p, q) for p in a for q in b)
+    if upper == lower:
+        return upper
+    iterations = 0
+    while upper - lower > tolerance and iterations < max_iterations:
+        middle = (lower + upper) / 2.0
+        if continuous_frechet_decision(a, b, middle):
+            upper = middle
+        else:
+            lower = middle
+        iterations += 1
+    return upper
