@@ -1,131 +1,62 @@
 # Convex hulls: find the outside boundary of a point set
 
-A convex hull answers a simple question: what is the smallest convex shape that contains every point in this collection?
+A convex hull is the smallest convex set containing a finite point set. Imagine stretching a tight rubber band around nails on a board: the contact points form the hull, while interior points do not affect its boundary.
 
-Imagine stretching a tight rubber band around a set of nails on a board. The band touches the outermost nails. Those contact points form the convex hull. Points inside the band do not affect its boundary.
+## Geometric definition
 
-## The geometric idea
-
-A set is convex when the straight line segment between any two points in the set stays entirely inside it.
-
-For a finite point set P, its convex hull is the smallest convex set containing P:
+A set is convex when the segment joining any two of its points lies entirely inside it. For a finite planar set P,
 
 $$
-\operatorname{CH}(P)=
-\bigcap\{C\mid P\subseteq C,\ C\text{ is convex}\}
+\operatorname{CH}(P)=\bigcap\{C\mid P\subseteq C,\ C\text{ is convex}\}.
 $$
 
-For a non-degenerate planar point set, the hull boundary is a convex polygon. Depending on the input, the result may instead be empty, one point or a line segment.
+For non-degenerate inputs, the boundary is a convex polygon. Empty, singleton, two-point and collinear inputs produce the corresponding lower-dimensional result.
 
-![A convex hull enclosing a set of planar points, with boundary vertices distinguished from interior points.](../../assets/graham-scan-convex-hull.svg)
+## Orientation predicate
 
-*The hull contains every input point; only extreme points define its boundary.*
-
-## Why it matters
-
-A convex hull is a useful geometric summary. It can support:
-
-- a coarse extent around a collection of facilities or observations;
-- collision and separation reasoning;
-- spatial clustering and shape descriptors;
-- preprocessing for other geometric algorithms;
-- approximate envelopes for visualisation and analysis.
-
-It is not a substitute for the original geometry. A hull fills concavities and can include large areas that contain no input points.
-
-## The orientation test
-
-For three points O, A and B, calculate the signed 2D cross product:
+For points O, A and B, the signed cross product is
 
 $$
-\operatorname{cross}(O,A,B)
-=(A_x-O_x)(B_y-O_y)-(A_y-O_y)(B_x-O_x)
+\operatorname{cross}(O,A,B)=(A_x-O_x)(B_y-O_y)-(A_y-O_y)(B_x-O_x).
 $$
 
-- Positive: A to B makes a counter-clockwise turn around O.
-- Negative: the turn is clockwise.
-- Zero: the three points are collinear.
+Positive means counter-clockwise, negative clockwise, and zero collinear. All implementations here use this predicate and ordinary floating-point arithmetic; they are not exact-predicate geometry kernels.
 
-This predicate is the central decision in Graham scan. As the algorithm walks around the sorted points, a clockwise turn means the previous candidate cannot remain on the convex boundary.
+## Three algorithms
 
-## Graham scan
+### Graham scan
 
-Graham scan builds the hull in two broad phases:
+Choose the lowest-then-leftmost point as pivot, sort the other points by polar angle, and scan them with a stack. Pop while the most recent turn is clockwise or collinear. Each point is pushed once and popped at most once after sorting, so the total time is O(n log n).
 
-1. Sort points by their polar angle around a pivot.
-2. Scan that order, maintaining a stack of the boundary vertices.
+### Jarvis march (gift wrapping)
 
-The pivot is commonly the point with the lowest y-coordinate, breaking ties by lowest x-coordinate. It is guaranteed to be a hull vertex.
+Start at the leftmost point and repeatedly select the point that makes the most counter-clockwise wrap, resolving collinear candidates by choosing the farthest. It visits only hull vertices but scans all input points at each step: O(nh), where h is the number of hull vertices. It can be attractive when h is small.
 
-~~~mermaid
-flowchart TD
-    A["Input points"] --> B["Remove duplicate coordinates"]
-    B --> C["Choose lowest-then-leftmost pivot"]
-    C --> D["Sort remaining points by polar angle"]
-    D --> E["Keep farthest point on each pivot ray"]
-    E --> F["Process points in sorted order"]
-    F --> G{"Does the last turn go left?"}
-    G -- "No: clockwise or collinear" --> H["Pop middle stack point"]
-    H --> G
-    G -- "Yes" --> I["Push new point"]
-    I --> J{"More points?"}
-    J -- Yes --> F
-    J -- No --> K["Return counter-clockwise hull"]
-~~~
+### Quickhull
 
-The stack is the key idea: every time a point is popped, it is no longer part of the current outer boundary. Each sorted point is pushed once and popped at most once.
+Start with the leftmost and rightmost points. Partition the remaining points on either side of their baseline. For each directed edge, choose the point with greatest signed distance (equivalently greatest cross-product magnitude on that side), then recurse on the two subproblems. Typical distributions often give O(n log n), but the worst case is O(n²).
 
-### Same-angle points
+## Output policy and edge cases
 
-Several points may lie on the same ray from the pivot. Only the farthest one can be an extreme hull vertex. A stable implementation must define how it orders and collapses these points.
+The implementations return a counter-clockwise, unclosed ring of extreme vertices. Duplicates are removed and intermediate collinear points on hull edges are omitted. Empty input returns an empty list; one point returns that point; two or more collinear points return the two extremes. Non-finite coordinates are rejected.
 
-### Collinear boundary points
+Some GIS tasks need every collinear boundary point retained. That is a different output policy and should be implemented explicitly rather than silently changing the hull definition.
 
-Some applications want every input point along the hull boundary. Others want only the extreme vertices. The teaching implementation in this repository uses the second policy: intermediate collinear boundary points are omitted. State this choice because it changes the output vertex sequence.
+## Verification
 
-## Complexity
+The test suite compares each algorithm against an independently implemented Andrew monotone-chain oracle on 120 seeded random integer point clouds, and checks degenerate inputs, duplicate points, collinear edges, orientation and invalid coordinates. The algorithms' agreement is useful but is not itself the oracle: the independent implementation provides a separate construction.
 
-The polar sort takes (O(n\log n)). The stack scan is (O(n)), because each point is pushed once and popped at most once. The total time is therefore:
+## GIS uses and limitations
 
-$$
-T(n)=O(n\log n)
-$$
+Convex hulls summarize extents and support collision reasoning, clustering descriptors and geometric preprocessing. They fill concavities, so they are not concave hulls or faithful boundaries of irregular study areas. Alpha shapes provide a parameterized family of more detailed envelopes, but require separate choices about scale and topology.
 
-The result stores at most n vertices, so auxiliary storage is (O(n)).
-
-## Numerical robustness
-
-The cross product is a floating-point predicate in the teaching implementation. When points are nearly collinear, rounding can change the sign and therefore change which point is popped.
-
-For high-assurance computational geometry, use exact or adaptive-precision orientation predicates. Do not assume that a small epsilon is a universal repair: the appropriate tolerance depends on coordinate scale and the intended geometry model.
-
-## Convex hull is not concave hull
-
-A convex hull always produces a convex envelope. It may cover large empty spaces between separated clusters. A concave hull attempts to follow the shape of the data more closely, but there is no single universal concave-hull definition; methods such as alpha shapes introduce additional parameters and modelling choices.
-
-Do not use the terms interchangeably.
-
-## Other convex-hull algorithms
-
-The source compendium also names Jarvis march (gift wrapping) and Quickhull. They solve the same broad problem using different strategies and trade-offs. This repository's runnable example is Graham scan; it does not claim to implement those alternatives.
-
-## Try it
-
-1. Add a point strictly inside the hull. Does the hull change?
-2. Add a point outside one edge. Which vertices are replaced?
-3. Add several points along one hull edge. Which ones remain under the stated collinearity policy?
-4. Make all points collinear. What should the hull contain?
-5. Scale the coordinates by a large factor. Does the mathematical hull change?
-6. Construct almost-collinear triples. Why might floating-point predicates become unreliable?
-
-## Reproduce the teaching example
-
-The [Graham scan implementation](../../implementations/python/convex-hull/README.md) is dependency-free and includes tests for duplicates, collinear points, degenerate inputs, orientation and non-finite coordinates. Follow the [step-by-step walkthrough](../../implementations/python/convex-hull/implementation-walkthrough.md) and explore the [visual convex hull lab](../../notebooks/convex-hull-lab.ipynb).
+Floating-point orientation can fail for nearly collinear coordinates. Use exact or adaptive-precision predicates for high-assurance overlays, topology or adversarial inputs. Coordinates must also be in an appropriate planar coordinate system if distances and areas are interpreted metrically.
 
 ## References
 
-- Graham, R. L. (1972). [An efficient algorithm for determining the convex hull of a finite planar set](https://doi.org/10.1016/0020-0190(72)90045-2). *Information Processing Letters*, 1(4), 132–133.
-- Preparata, F. P. and Shamos, M. I. (1985), *Computational Geometry: An Introduction*, Springer, for foundational geometric algorithms.
-- [CGAL 2D convex hull documentation](https://doc.cgal.org/latest/Convex_hull_2/index.html), for robust computational geometry implementations and traits.
+- Graham, R. L. (1972). [An efficient algorithm for determining the convex hull of a finite planar set](https://doi.org/10.1016/0020-0190(72)90045-2). Information Processing Letters, 1(4), 132–133.
+- Jarvis, R. A. (1973). [On the identification of the convex hull of a finite set of points in the plane](https://doi.org/10.1016/0020-0190(73)90020-3). Information Processing Letters, 2(1), 18–21.
+- Preparata, F. P. and Shamos, M. I. (1985). Computational Geometry: An Introduction. Springer.
+- [CGAL 2D convex hull documentation](https://doc.cgal.org/latest/Convex_hull_2/index.html).
 
-**Evidence state:** the Graham scan description and asymptotic bound are grounded in the original paper and standard computational geometry references. The repository implementation is a deliberately small floating-point teaching version, not an exact-predicate geometry kernel.
+**Evidence state:** Graham scan, Jarvis march and Quickhull are described as distinct algorithms with their standard complexity qualifications. The repository versions are transparent floating-point teaching implementations; the tests add an independent monotone-chain comparison but do not establish robust predicates.

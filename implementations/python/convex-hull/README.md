@@ -1,51 +1,44 @@
-# Graham scan: build the convex hull of a point set
+# Planar convex hulls: Graham scan, Jarvis march and Quickhull
 
-This is a small, dependency-free teaching implementation of the Graham scan for finite 2D points.
+Three dependency-free teaching implementations solve the same finite 2D convex-hull problem using different strategies.
 
 ## Run
 
 ~~~bash
 python -m pip install -r requirements.txt
 python -m pytest -q
-python graham_scan.py
 ~~~
 
-## What the algorithm returns
+## Algorithms
 
-The convex hull is the smallest convex set containing all input points. This implementation returns its extreme vertices in counter-clockwise order, without repeating the first point at the end.
+- **Graham scan** sorts points by polar angle around a guaranteed hull pivot, then maintains a stack of counter-clockwise turns. Time: O(n log n).
+- **Jarvis march (gift wrapping)** repeatedly selects the next extreme point around the boundary. Time: O(nh), where h is the number of hull vertices; useful when the hull is small relative to the input.
+- **Quickhull** partitions points by the line through the extreme x-coordinates, recursively selecting the farthest point from each current hull edge. Typical time is O(n log n), worst case O(n²).
 
-- Duplicate input coordinates are removed.
-- Interior points are excluded.
-- Collinear points along hull edges are omitted; only extreme endpoints remain.
-- Empty input returns an empty list.
-- One or two unique points are returned directly.
-- Non-finite coordinates are rejected.
+All return counter-clockwise extreme vertices without repeating the first point at the end. Duplicate coordinates are removed; intermediate collinear boundary points are omitted; empty, singleton, two-point and all-collinear inputs are supported. Non-finite coordinates raise ValueError.
 
 ## Example
 
 ~~~python
-from graham_scan import convex_hull
+from graham_scan import convex_hull, jarvis_march, quickhull
 
 points = [(0, 0), (2, 0), (2, 2), (0, 2), (1, 1)]
-print(convex_hull(points))
+assert convex_hull(points) == jarvis_march(points) == quickhull(points)
 ~~~
 
-Expected output:
+## Verification
 
-~~~text
-[(0.0, 0.0), (2.0, 0.0), (2.0, 2.0), (0.0, 2.0)]
-~~~
+The tests cover degeneracies, duplicate and collinear points, non-finite inputs, orientation and 120 seeded random point clouds per algorithm. Randomized outputs are compared against an independently written Andrew monotone-chain reference implementation, rather than comparing the algorithms only with one another.
 
-## Important numerical limit
+## Numerical limitations
 
-The implementation uses ordinary floating-point cross products for orientation and polar ordering. It is suitable for learning and ordinary well-scaled examples, not adversarial near-collinear data or high-assurance computational geometry. Robust production systems may use exact or adaptive-precision predicates.
+All three implementations use ordinary floating-point cross products. They are pedagogical and can misclassify near-collinear configurations at extreme coordinate scales. Production geometry should use exact or adaptive-precision orientation predicates.
 
-## Complexity
+## References
 
-The polar-ordering phase sorts the points in O(n log n). The scan processes each sorted point a constant number of times, so the overall expected algorithmic bound is O(n log n) for the comparison sort.
+- Graham, R. L. (1972). [An efficient algorithm for determining the convex hull of a finite planar set](https://doi.org/10.1016/0020-0190(72)90045-2). Information Processing Letters, 1(4), 132–133.
+- Jarvis, R. A. (1973). [On the identification of the convex hull of a finite set of points in the plane](https://doi.org/10.1016/0020-0190(73)90020-3). Information Processing Letters, 2(1), 18–21.
+- Preparata, F. P. and Shamos, M. I. (1985). Computational Geometry: An Introduction. Springer.
+- [CGAL 2D convex hull documentation](https://doc.cgal.org/latest/Convex_hull_2/index.html).
 
-## Read next
-
-- [Convex hull lesson](../../../algorithms/geometry/convex-hull.md)
-- [Implementation walkthrough](implementation-walkthrough.md)
-- [Visual convex hull lab](../../../notebooks/convex-hull-lab.ipynb)
+See the [algorithm lesson](../../../algorithms/geometry/convex-hull.md) and [visual lab](../../../notebooks/convex-hull-lab.ipynb).
