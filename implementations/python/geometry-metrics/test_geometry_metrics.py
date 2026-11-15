@@ -494,3 +494,26 @@ def test_linear_rectangle_calipers_is_stable_under_large_translation(origin, sca
         assert min(math.dist((px, py), corner) for corner in result["corners"]) <= (
             math.hypot(4*scale, 2*scale) + 1e-5*max(scale, 1e-8)
         )
+
+
+
+def test_translated_rectangle_corners_enclose_every_input_point():
+    from geometry_metrics import minimum_area_bounding_rectangle_calipers
+
+    ox, oy, scale = 1e12, -1e12, 10.0
+    points = [(ox, oy), (ox+4*scale, oy),
+              (ox+4*scale, oy+2*scale), (ox, oy+2*scale),
+              (ox+scale, oy+0.5*scale)]
+    result = minimum_area_bounding_rectangle_calipers(points)
+    c0, c1, _, c3 = result["corners"]
+    ux, uy = math.cos(result["angle_radians"]), math.sin(result["angle_radians"])
+    vx, vy = -uy, ux
+    width = (c1[0]-c0[0])*ux + (c1[1]-c0[1])*uy
+    height = (c3[0]-c0[0])*vx + (c3[1]-c0[1])*vy
+    tolerance = 1e-3
+    for px, py in points:
+        dx, dy = px-c0[0], py-c0[1]
+        along_u = dx*ux + dy*uy
+        along_v = dx*vx + dy*vy
+        assert -tolerance <= along_u <= width+tolerance
+        assert -tolerance <= along_v <= height+tolerance
