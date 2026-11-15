@@ -443,3 +443,33 @@ def test_rotating_calipers_diameter_is_translation_and_rotation_invariant():
     assert convex_polygon_diameter(transformed)[2] == pytest.approx(
         expected, rel=1e-9, abs=1e-8
     )
+
+
+
+def test_linear_rectangle_calipers_is_scale_invariant():
+    from geometry_metrics import minimum_area_bounding_rectangle_calipers
+
+    for scale in (1e-12, 1e-9, 1e-3, 1.0, 1e6):
+        points = [(0, 0), (4*scale, 0), (4*scale, 2*scale), (0, 2*scale)]
+        result = minimum_area_bounding_rectangle_calipers(points)
+        assert result["area"] == pytest.approx(8 * scale * scale, rel=1e-11,
+                                               abs=scale * scale * 1e-12)
+
+
+def test_linear_rectangle_calipers_matches_quadratic_oracle_on_integer_clouds():
+    import random
+    from geometry_metrics import (
+        minimum_area_bounding_rectangle,
+        minimum_area_bounding_rectangle_calipers,
+    )
+
+    rng = random.Random(20261123)
+    for _ in range(500):
+        points = list(dict.fromkeys(
+            (rng.randrange(-25, 26), rng.randrange(-25, 26))
+            for _ in range(rng.randrange(3, 50))
+        ))
+        expected = minimum_area_bounding_rectangle(points)
+        actual = minimum_area_bounding_rectangle_calipers(points)
+        assert actual["area"] == pytest.approx(expected["area"], rel=1e-10,
+                                                abs=1e-10)
