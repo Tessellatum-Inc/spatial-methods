@@ -1446,7 +1446,7 @@ def test_spatial_parameter_profile_interval_rejects_invalid_options():
     x = np.column_stack([np.ones(n), np.arange(n, dtype=float)])
     y = np.sin(np.arange(n, dtype=float))
     with pytest.raises(ValueError, match="model"):
-        spatial_parameter_profile_interval(y, x, w, model="SDM")
+        spatial_parameter_profile_interval(y, x, w, model="SAC")
     with pytest.raises(ValueError, match="cutoff"):
         spatial_parameter_profile_interval(y, x, w, likelihood_ratio_cutoff=0)
     with pytest.raises(ValueError, match="max_iterations"):

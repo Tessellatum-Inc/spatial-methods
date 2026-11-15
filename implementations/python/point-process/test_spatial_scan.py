@@ -143,7 +143,7 @@ def test_besag_newell_rejects_invalid_controls_and_population_smaller_than_cases
     with pytest.raises(ValueError):
         besag_newell_scan(coords, [1, 0], [10, 10], alpha=1)
     with pytest.raises(ValueError):
-        besag_newell_scan(coords, [2, 0], [1, 1], k=1)
+        besag_newell_scan(coords, [3, 0], [1, 1], k=1)
     with pytest.raises(ValueError):
         monte_carlo_besag_newell(coords, [1, 0], [10, 10], k=1,
                                  n_simulations=0)
