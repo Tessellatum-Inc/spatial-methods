@@ -359,7 +359,7 @@ def test_strauss_hard_core_sampler_never_returns_close_pairs():
             assert math.hypot(x-other_x, y-other_y) >= 0.5
 
 
-def test_strauss_gamma_one_has_seeded_poisson_limit():
+def test_strauss_gamma_one_chain_is_seeded_and_valid():
     from point_patterns import simulate_strauss_process
     a = simulate_strauss_process((0, 0, 2, 2), 0.7, 1, 0.4,
                                  burn_in=300, n_steps=500, seed=9)
@@ -367,6 +367,11 @@ def test_strauss_gamma_one_has_seeded_poisson_limit():
                                  burn_in=300, n_steps=500, seed=9)
     assert a == b
     assert all(0 <= x <= 2 and 0 <= y <= 2 for x, y in a)
+
+
+def test_strauss_zero_activity_returns_empty_pattern():
+    from point_patterns import simulate_strauss_process
+    assert simulate_strauss_process((0, 0, 1, 1), 0, 0.5, 0.2, seed=3) == []
 
 
 @pytest.mark.parametrize("params", [
