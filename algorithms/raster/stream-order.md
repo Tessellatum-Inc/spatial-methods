@@ -33,9 +33,9 @@ The magnitude counts the headwater contributions represented by a downstream lin
 
 ## Network representation and implementation
 
-The [teaching implementation](../../implementations/python/stream-order/README.md) takes an explicit stream mask and D8 direction grid. A stream cell must flow directly to another stream cell if its next cell is valid and inside the raster; otherwise the mask is rejected as disconnected. Non-stream cells are not counted as stream tributaries.
+The [teaching implementation](../../implementations/python/d8-flow/README.md) takes an explicit stream mask and D8 direction grid. A stream cell must flow directly to another stream cell if its next cell is valid and inside the raster; otherwise the mask is rejected as disconnected. Non-stream cells are not counted as stream tributaries.
 
-The stream graph is processed in topological order. Cycles are rejected. Non-stream cells receive zero and invalid cells receive -1 in the output arrays.
+The stream graph is processed in topological order. Cycles are rejected. Non-stream cells receive NaN in both output arrays; the stream mask is the explicit validity definition.
 
 ## Important modelling choices
 
