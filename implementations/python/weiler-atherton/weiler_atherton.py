@@ -177,7 +177,7 @@ def weiler_atherton_intersection(subject: Sequence[Point],
     for start in _walk(an[0]):
         if not start.crossing or not start.entry or start.visited:
             continue
-        ring=[]; current=start; on_subject=True
+        ring=[]; current=start; forward=True
         while True:
             if current.visited:
                 break
@@ -189,9 +189,10 @@ def weiler_atherton_intersection(subject: Sequence[Point],
                     break
                 paired.visited=True
                 current=paired
-                on_subject=not on_subject
-            current=current.next
-            # Stop on closure through the original paired event.
+                # The paired event's following arc determines whether the
+                # interior clip/subject boundary is traversed forward or back.
+                forward=current.entry
+            current=current.next if forward else current.prev
             if current is start:
                 break
         cleaned=_clean(ring,epsilon)
