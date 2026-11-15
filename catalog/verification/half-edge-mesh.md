@@ -15,7 +15,7 @@
 - Two-face shared-edge twin symmetry and adjacency.
 - Disconnected components and isolated vertices.
 - Closed tetrahedral surface.
-- Invalid face arity, repeated vertices, invalid indices, duplicate faces, repeated directed edges, inconsistent winding and non-manifold edge incidence.
+- Invalid face arity, repeated vertices, invalid indices, duplicate geometric faces, repeated directed edges, inconsistent winding and non-manifold edge incidence.
 - Invalid queries and empty mesh.
 
 ## Verification limitations
