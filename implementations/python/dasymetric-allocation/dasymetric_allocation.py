@@ -14,7 +14,7 @@ def dasymetric_allocate(source_totals, ancillary_weights, *, eligible_mask=None,
         raise ValueError("zero_weight must be 'error' or 'uniform'")
     eligible = weights > 0 if eligible_mask is None else np.asarray(eligible_mask, dtype=bool)
     if eligible.shape != weights.shape or np.any((weights > 0) & ~eligible):
-        raise ValueError("eligible_mask must match weights and include every positive weight")
+        raise ValueError("eligible_mask must match weights; positive-weight targets cannot be marked outside eligibility")
     allocations = np.zeros_like(weights, dtype=float)
     fallback = []
     for i, total in enumerate(totals):
