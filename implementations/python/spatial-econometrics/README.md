@@ -8,8 +8,8 @@ This package contains small, dense-matrix reference implementations:
 4. **Spatial Durbin 2SLS** with higher-order spatial lags as excluded instruments.
 5. **SLX OLS and SDEM concentrated Gaussian ML** for spatially lagged covariates, with and without spatially correlated errors.
 6. **Gaussian proper-CAR regression ML** with an eigenvalue-derived positive-definite parameter interval.
-8. **Constrained ICAR Gaussian field simulation** with one sum-to-zero constraint per connected graph component.
-7. **Concentrated Gaussian maximum likelihood** for SAR, SEM and SDM, plus joint two-parameter SARAR/SAC likelihood estimation.
+7. **Constrained ICAR Gaussian field simulation** with one sum-to-zero constraint per connected graph component.
+8. **Concentrated Gaussian maximum likelihood** for SAR, SEM and SDM, plus joint two-parameter SARAR/SAC likelihood estimation.
 
 ## Run
 
