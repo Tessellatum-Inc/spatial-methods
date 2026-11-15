@@ -335,3 +335,83 @@ def monte_carlo_besag_newell(coordinates, cases, population, *, k=10, alpha=0.05
         "n_simulations": int(n_simulations),
         "exceedances": exceedances,
     }
+
+
+
+def tango_statistic(coordinates, cases, population, *, phi):
+    """Compute Tango's global quadratic-form clustering statistic.
+
+    A_ij = exp(-d_ij / phi), r_i = cases_i / total_cases and
+    p_i = population_i / total_population. Larger values indicate stronger
+    spatial concentration of deviations from the constant-risk expectation.
+    """
+    coords = np.asarray(coordinates, dtype=float)
+    case_counts = np.asarray(cases, dtype=float)
+    pop = np.asarray(population, dtype=float)
+    if (coords.ndim != 2 or coords.shape[1] != 2 or coords.shape[0] < 2
+            or not np.all(np.isfinite(coords))):
+        raise ValueError("coordinates must be a finite N-by-2 array with N >= 2")
+    n = len(coords)
+    if (case_counts.shape != (n,) or not np.all(np.isfinite(case_counts))
+            or np.any(case_counts < 0) or np.any(case_counts != np.floor(case_counts))):
+        raise ValueError("cases must be a matching vector of nonnegative integer counts")
+    if (pop.shape != (n,) or not np.all(np.isfinite(pop))
+            or np.any(pop <= 0)):
+        raise ValueError("population must be a matching vector of positive finite values")
+    total_cases = float(case_counts.sum())
+    total_population = float(pop.sum())
+    if not isfinite(total_cases) or total_cases <= 0:
+        raise ValueError("total cases must be finite and positive")
+    if not isfinite(total_population) or total_population <= 0:
+        raise ValueError("total population must be finite and positive")
+    scale = float(phi)
+    if not isfinite(scale) or scale <= 0:
+        raise ValueError("phi must be finite and positive")
+    delta = coords[:, None, :] - coords[None, :, :]
+    distances = np.sqrt(np.sum(delta * delta, axis=2))
+    if not np.all(np.isfinite(distances)):
+        raise ValueError("coordinate range produces non-finite pair distances")
+    closeness = np.exp(-distances / scale)
+    observed = case_counts / total_cases
+    expected = pop / total_population
+    residual = observed - expected
+    statistic = float(residual @ closeness @ residual)
+    return {
+        "statistic": statistic,
+        "observed_proportions": observed,
+        "expected_proportions": expected,
+        "residuals": residual,
+        "closeness_matrix": closeness,
+        "phi": scale,
+    }
+
+
+def monte_carlo_tango_test(coordinates, cases, population, *, phi,
+                           n_simulations=999, rng=None):
+    """Conditional multinomial Monte Carlo test for Tango's global statistic."""
+    observed = tango_statistic(coordinates, cases, population, phi=phi)
+    case_counts = np.asarray(cases, dtype=int)
+    pop = np.asarray(population, dtype=float)
+    if (isinstance(n_simulations, (bool, np.bool_))
+            or not isinstance(n_simulations, (int, np.integer))
+            or n_simulations < 1):
+        raise ValueError("n_simulations must be a positive integer")
+    generator = np.random.default_rng(rng)
+    probabilities = pop / pop.sum()
+    total_cases = int(case_counts.sum())
+    maxima = np.empty(int(n_simulations), dtype=float)
+    for i in range(int(n_simulations)):
+        simulated = generator.multinomial(total_cases, probabilities)
+        maxima[i] = tango_statistic(
+            coordinates, simulated, pop, phi=phi
+        )["statistic"]
+    exceedances = int(np.count_nonzero(
+        maxima >= observed["statistic"] - 1e-14
+    ))
+    return {
+        "observed": observed,
+        "simulated_statistics": maxima,
+        "p_value": (1 + exceedances) / (int(n_simulations) + 1),
+        "n_simulations": int(n_simulations),
+        "exceedances": exceedances,
+    }
