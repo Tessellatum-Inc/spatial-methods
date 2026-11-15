@@ -415,3 +415,170 @@ def monte_carlo_tango_test(coordinates, cases, population, *, phi,
         "n_simulations": int(n_simulations),
         "exceedances": exceedances,
     }
+
+
+
+def _ellipse_controls(shape_ratios, angles_degrees):
+    try:
+        shapes = np.asarray(shape_ratios, dtype=float)
+        angles = np.asarray(angles_degrees, dtype=float)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("shape ratios and angles must be finite numeric sequences") from exc
+    if (shapes.ndim != 1 or shapes.size == 0 or not np.all(np.isfinite(shapes))
+            or np.any(shapes < 1)):
+        raise ValueError("shape_ratios must be a nonempty sequence of finite values >= 1")
+    if (angles.ndim != 1 or angles.size == 0 or not np.all(np.isfinite(angles))
+            or np.any(angles < 0) or np.any(angles >= 180)):
+        raise ValueError("angles_degrees must be a nonempty sequence in [0, 180)")
+    return np.unique(shapes), np.unique(angles)
+
+
+def elliptical_poisson_scan(
+    coordinates,
+    cases,
+    population,
+    *,
+    shape_ratios=(1.0, 2.0, 3.0),
+    angles_degrees=(0.0, 30.0, 60.0, 90.0, 120.0, 150.0),
+    max_population_fraction=0.5,
+    min_cases=2,
+):
+    """Scan a finite grid of centroid-centred elliptical Poisson windows.
+
+    For each centroid, shape ratio and orientation, areas are ordered by the
+    ellipse's normalized radial coordinate. Candidate zones are nested
+    prefixes, retaining all numerical ties. This is a finite-grid teaching
+    implementation, not a bit-for-bit reproduction of SaTScan's candidate
+    generation or eccentricity-penalty options.
+    """
+    coords, case_counts, pop, upper, min_cases = _scan_inputs(
+        coordinates, cases, population, max_population_fraction, min_cases
+    )
+    shapes, angles = _ellipse_controls(shape_ratios, angles_degrees)
+    total_cases = int(case_counts.sum())
+    total_pop = float(pop.sum())
+    best = {
+        "log_likelihood_ratio": 0.0,
+        "relative_risk": float("nan"),
+        "center_index": None,
+        "shape_ratio": None,
+        "angle_degrees": None,
+        "semi_major_axis": None,
+        "semi_minor_axis": None,
+        "member_indices": (),
+        "cases_inside": 0,
+        "population_inside": 0.0,
+        "expected_cases_inside": 0.0,
+        "total_cases": total_cases,
+        "total_population": total_pop,
+    }
+    for center in range(len(case_counts)):
+        delta = coords - coords[center]
+        for shape in shapes:
+            for angle in angles:
+                radians = np.deg2rad(angle)
+                cosine, sine = np.cos(radians), np.sin(radians)
+                along_major = delta[:, 0] * cosine + delta[:, 1] * sine
+                along_minor = -delta[:, 0] * sine + delta[:, 1] * cosine
+                radial = np.sqrt((along_major / shape) ** 2 + along_minor ** 2)
+                if not np.all(np.isfinite(radial)):
+                    raise ValueError("coordinate range produces non-finite ellipse distances")
+                order = np.argsort(radial, kind="stable")
+                sorted_radial = radial[order]
+                cumulative_cases = np.cumsum(case_counts[order])
+                cumulative_population = np.cumsum(pop[order])
+                start = 0
+                while start < len(order):
+                    threshold = float(sorted_radial[start])
+                    tolerance = 1e-12 * max(1.0, abs(threshold))
+                    end = start + 1
+                    while (end < len(order)
+                           and abs(float(sorted_radial[end]) - threshold) <= tolerance):
+                        end += 1
+                    cases_inside = int(cumulative_cases[end - 1])
+                    population_inside = float(cumulative_population[end - 1])
+                    fraction = population_inside / total_pop
+                    if (fraction <= upper + 1e-12
+                            and population_inside < total_pop - 1e-12
+                            and cases_inside >= min_cases):
+                        expected_inside = total_cases * fraction
+                        cases_outside = total_cases - cases_inside
+                        expected_outside = total_cases - expected_inside
+                        if cases_inside > expected_inside:
+                            llr = (
+                                _log_ratio_term(cases_inside, expected_inside)
+                                + _log_ratio_term(cases_outside, expected_outside)
+                            )
+                            llr = max(0.0, llr)
+                            if llr > best["log_likelihood_ratio"] + 1e-14:
+                                outside_population = total_pop - population_inside
+                                risk_inside = cases_inside / population_inside
+                                risk_outside = cases_outside / outside_population
+                                best = {
+                                    "log_likelihood_ratio": llr,
+                                    "relative_risk": (
+                                        risk_inside / risk_outside
+                                        if risk_outside > 0 else float("inf")
+                                    ),
+                                    "center_index": center,
+                                    "shape_ratio": float(shape),
+                                    "angle_degrees": float(angle),
+                                    "semi_major_axis": float(shape * threshold),
+                                    "semi_minor_axis": float(threshold),
+                                    "member_indices": tuple(sorted(int(i) for i in order[:end])),
+                                    "cases_inside": cases_inside,
+                                    "population_inside": population_inside,
+                                    "expected_cases_inside": expected_inside,
+                                    "total_cases": total_cases,
+                                    "total_population": total_pop,
+                                }
+                    start = end
+    return best
+
+
+def monte_carlo_elliptical_poisson_scan(
+    coordinates,
+    cases,
+    population,
+    *,
+    n_simulations=999,
+    shape_ratios=(1.0, 2.0, 3.0),
+    angles_degrees=(0.0, 30.0, 60.0, 90.0, 120.0, 150.0),
+    max_population_fraction=0.5,
+    min_cases=2,
+    rng=None,
+):
+    """Condition on total cases and calibrate the maximum over all ellipses."""
+    coords, case_counts, pop, upper, minimum = _scan_inputs(
+        coordinates, cases, population, max_population_fraction, min_cases
+    )
+    if (isinstance(n_simulations, (bool, np.bool_))
+            or not isinstance(n_simulations, (int, np.integer))
+            or n_simulations < 1):
+        raise ValueError("n_simulations must be a positive integer")
+    # Validate candidate controls once before spending time on simulations.
+    shapes, angles = _ellipse_controls(shape_ratios, angles_degrees)
+    observed = elliptical_poisson_scan(
+        coords, case_counts, pop,
+        shape_ratios=shapes, angles_degrees=angles,
+        max_population_fraction=upper, min_cases=minimum,
+    )
+    generator = np.random.default_rng(rng)
+    probabilities = pop / pop.sum()
+    maxima = np.empty(int(n_simulations), dtype=float)
+    for i in range(int(n_simulations)):
+        simulated = generator.multinomial(int(case_counts.sum()), probabilities)
+        maxima[i] = elliptical_poisson_scan(
+            coords, simulated, pop,
+            shape_ratios=shapes, angles_degrees=angles,
+            max_population_fraction=upper, min_cases=minimum,
+        )["log_likelihood_ratio"]
+    exceedances = int(np.count_nonzero(
+        maxima >= observed["log_likelihood_ratio"] - 1e-14
+    ))
+    return {
+        "observed": observed,
+        "p_value": (1 + exceedances) / (int(n_simulations) + 1),
+        "n_simulations": int(n_simulations),
+        "simulated_maxima": maxima,
+    }
