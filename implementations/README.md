@@ -15,6 +15,8 @@ Each implementation should state:
 
 ## Examples
 
+- [GNSS LAMBDA integer least squares](python/gnss-ambiguity/README.md): integer-unimodular ambiguity decorrelation and reduced-space conditional search, alongside the original low-dimensional exact sphere-enumeration baseline.
+
 ### Geometry and computational geometry
 
 - [Exact orientation predicate](python/exact-orientation/README.md): rational-arithmetic reference sign test for 2D orientation, including near-degenerate float regression tests and an [intern walkthrough](python/exact-orientation/implementation-walkthrough.md). This is an exact reference implementation, not adaptive expansion arithmetic; the [visual lab](../notebooks/exact-orientation-lab.ipynb) compares it with a naive determinant.
