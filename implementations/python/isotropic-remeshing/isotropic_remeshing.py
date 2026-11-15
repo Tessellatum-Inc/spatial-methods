@@ -100,6 +100,10 @@ def collapse_edge(vertices, faces, edge, *, boundary_edges=None):
     boundary_vertices = {x for e in boundary_edges for x in e}
     if (u in boundary_vertices) != (v in boundary_vertices):
         return vertices, faces, False
+    # Collapsing an interior chord between boundary vertices can erase or
+    # pinch the boundary even though both endpoints are boundary vertices.
+    if u in boundary_vertices and edge not in boundary_edges:
+        return vertices, faces, False
     replacement = _mid(vertices[u], vertices[v])
     out, seen = [], set()
     for tri in faces:
@@ -241,7 +245,9 @@ def isotropic_remesh(vertices, faces, target_length, *, iterations=3,
         boundary = {e for e, fs in incidence.items() if len(fs) == 1}
         for edge in list(incidence):
             if _dist(vertices[edge[0]], vertices[edge[1]]) < collapse_ratio*target_length:
-                if preserve_boundary and edge in boundary:
+                if preserve_boundary and (edge in boundary or
+                                          edge[0] in {v for e in boundary for v in e} or
+                                          edge[1] in {v for e in boundary for v in e}):
                     continue
                 vertices, faces, changed = collapse_edge(
                     vertices, faces, edge, boundary_edges=boundary)
