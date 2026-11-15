@@ -181,3 +181,13 @@ These notes record bounded checks against publisher or institutional bibliograph
 - **Technical claims:** the package implements population-weighted Gini and Theil T/L for area values, Shannon entropy of population shares, two-group dissimilarity, and group-A isolation/interaction exposure.
 - **Scope:** the Gini and entropy functions are area-level summaries and do not incorporate distances or adjacency. Dissimilarity measures evenness; isolation/interaction measure exposure. Distance-weighted spatial Gini, multi-group decomposition, clustering, concentration and centralization remain open.
 - **Rights:** formulas are independently typeset and paraphrased; no source code or figures are reproduced.
+
+
+## Section 2 — Multiple-testing corrections
+
+**Source entry:** “Inference: permutation and Monte Carlo tests, Bonferroni, FDR and Šidák correction, Dutilleul's modified t-test, spatial and block bootstrap” (source page 3).
+
+- **Identity and bibliography:** Holm (1979), Hochberg (1988), Benjamini and Hochberg (1995), Benjamini and Yekutieli (2001), and Šidák (1967) are confirmed by original article metadata and maintained R p.adjust documentation.
+- **Technical claims:** Bonferroni and Holm control FWER under arbitrary dependence; Šidák is exact under independence; Hochberg requires independence or suitable positive dependence; BH controls FDR under independence and common positive-dependence conditions; BY uses the harmonic factor for arbitrary dependence.
+- **Implementation:** six procedures return adjusted p-values in original input order and alpha-based decisions. Dutilleul's modified t-test and spatial/block bootstrap remain open.
+- **Rights:** independently implemented from published definitions; no source code is copied.

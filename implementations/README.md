@@ -127,6 +127,7 @@ Each implementation should state:
 
 ### Spatial statistics
 
+- [Multiple-testing corrections](python/multiple-testing/README.md): Bonferroni, Šidák, Holm, Hochberg, BH and BY adjusted p-values with 22 test cases covering order, ties, assumptions and invalid input.
 - [Spatial inequality and segregation](python/spatial-inequality/README.md): weighted Gini, Theil T/L, Shannon area entropy, two-group dissimilarity and isolation/interaction indices, with 22 test cases and explicit spatial-scope boundaries.
 - [Geographic distribution summaries](python/spatial-distribution-summaries/README.md): weighted mean and geometric median centers, standard distance and covariance-based standard deviational ellipse, with 18 tests and explicit orientation/coverage conventions.
 - [Empirical Bayes area-rate smoothing](python/empirical-bayes-rates/README.md): Marshall's global and caller-neighbourhood local moment shrinkage for Poisson rates, with 16 tests and explicit exposure and adjacency assumptions.
@@ -155,7 +156,7 @@ Each implementation should state:
 
 ## Automated checks
 
-The [Python examples workflow](../.github/workflows/python-tests.yml) is configured to run the test suites for all 107 Python example packages and the Clipper2 C# smoke test, and execute all 114 learning notebooks on relevant pushes and pull requests, using Python 3.13. The Local Moran notebook uses PySAL's maintained implementation rather than presenting a new from-scratch implementation. The Bentley–Ottmann job also adds the sibling segment-intersection package to `PYTHONPATH`.
+The [Python examples workflow](../.github/workflows/python-tests.yml) is configured to run the test suites for all 108 Python example packages and the Clipper2 C# smoke test, and execute all 115 learning notebooks on relevant pushes and pull requests, using Python 3.13. The Local Moran notebook uses PySAL's maintained implementation rather than presenting a new from-scratch implementation. The Bentley–Ottmann job also adds the sibling segment-intersection package to `PYTHONPATH`.
 
 A successful automated run means the tests in the repository passed in that environment. It does not prove correctness for every possible geometry or make a restricted teaching implementation production-ready. Always read the input contract and limitations before adapting an example.
 
