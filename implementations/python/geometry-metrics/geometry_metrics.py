@@ -403,3 +403,68 @@ def continuous_frechet_distance(
             lower = middle
         iterations += 1
     return upper
+
+
+def largest_empty_circle(points, *, precision=1.0, max_cells=1_000_000):
+    """Approximate the largest empty circle with centre inside the sites' convex hull.
+
+    Returns (center_x, center_y, radius, cells_examined). The radius is the
+    distance to the nearest site. A Lipschitz branch-and-bound search gives an
+    additive upper-bound gap no greater than precision, subject to floating
+    point arithmetic. At least three non-collinear sites are required.
+    """
+    from heapq import heappop, heappush
+    from math import sqrt
+
+    sites = _points(points, minimum=3)
+    hull = convex_hull(sites)
+    if len(hull) < 3:
+        raise ValueError("sites must have a two-dimensional convex hull")
+    if not isfinite(precision) or precision <= 0:
+        raise ValueError("precision must be finite and positive")
+    if not isinstance(max_cells, int) or isinstance(max_cells, bool) or max_cells < 1:
+        raise ValueError("max_cells must be a positive integer")
+
+    ring = hull + [hull[0]]
+    min_x = min(p[0] for p in hull)
+    min_y = min(p[1] for p in hull)
+    max_x = max(p[0] for p in hull)
+    max_y = max(p[1] for p in hull)
+
+    def clearance(x, y):
+        return min(_distance((x, y), site) for site in sites)
+
+    def cell(x, y, half):
+        radius = clearance(x, y)
+        upper = radius + half * sqrt(2.0)
+        return (-upper, x, y, half, radius)
+
+    # The arithmetic mean of hull vertices is inside their convex hull.
+    best_x = sum(p[0] for p in hull) / len(hull)
+    best_y = sum(p[1] for p in hull) / len(hull)
+    best_radius = clearance(best_x, best_y)
+    half = max(max_x - min_x, max_y - min_y) / 2.0
+    heap = [cell((min_x + max_x) / 2.0, (min_y + max_y) / 2.0, half)]
+    examined = 0
+
+    while heap:
+        neg_upper, x, y, half, radius = heappop(heap)
+        upper = -neg_upper
+        examined += 1
+        if examined > max_cells:
+            raise RuntimeError("largest-empty-circle search exceeded max_cells")
+        if upper <= best_radius + precision:
+            continue
+        if _point_in_ring((x, y), ring) and radius > best_radius:
+            best_x, best_y, best_radius = x, y, radius
+
+        child_half = half / 2.0
+        if child_half == 0.0:
+            continue
+        for dx in (-child_half, child_half):
+            for dy in (-child_half, child_half):
+                child = cell(x + dx, y + dy, child_half)
+                if -child[0] > best_radius + precision:
+                    heappush(heap, child)
+
+    return (best_x, best_y, best_radius, examined)
