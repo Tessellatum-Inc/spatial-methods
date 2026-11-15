@@ -18,6 +18,10 @@ python -m pip install -r requirements.txt
 python -m pytest -q
 ~~~
 
+## Point-process model simulators
+
+The model simulators are intentionally separate from fitting and inference: [Poisson and Thomas process lesson](../../../algorithms/statistics/poisson-and-thomas-processes.md), [Matérn cluster process lesson](../../../algorithms/statistics/matern-cluster-process.md) and [log-Gaussian Cox process lesson](../../../algorithms/statistics/log-gaussian-cox-process.md). Thomas uses a finite Gaussian-tail buffer; Matérn uses an exact radius-sized buffer for its compact-support disc kernel; the LGCP is a small-grid piecewise-constant approximation with dense Cholesky.
+
 ## Circular Poisson scan
 
 The `spatial_scan.py` module implements a centroid-centred circular Poisson scan for areal case counts with population offsets. It enumerates candidate circles through tied centroid distances, applies a maximum population fraction and minimum case count, and reports the highest elevated-cluster log-likelihood ratio and relative risk. `monte_carlo_poisson_scan` conditions on the observed total cases and uses multinomial simulation with the plus-one p-value correction.
