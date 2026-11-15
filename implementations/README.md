@@ -90,6 +90,10 @@ Each implementation should state:
 
 - [IDW and ordinary kriging](python/geostatistics/README.md): transparent IDW and a dense ordinary-kriging solver using a specified exponential variogram, with tests and an [intern walkthrough](python/geostatistics/implementation-walkthrough.md).
 
+### State estimation and filtering
+
+- [EKF, scaled UKF, bootstrap particle filter and FFBSi smoother](python/state-estimation/README.md): additive-noise Gaussian filter baselines plus a particle filter with ESS-triggered systematic resampling and an offline backward-simulation smoother driven by a supplied transition log density.
+
 ### Spatial smoothing
 
 - [Full-knot thin-plate smoothing spline and low-rank TPRS](python/spatial-smoothing/README.md): a NumPy full-knot solver plus a Wood-style rank-truncated 2-D basis, with affine null-space preservation and full-rank equivalence tests. The dense basis constructor is for teaching-scale examples, not a large-data GAM engine.

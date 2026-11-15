@@ -5,6 +5,9 @@
 - Julier & Uhlmann (2004), “Unscented Filtering and Nonlinear Estimation,” Proceedings of the IEEE 92(3), 401–422, DOI 10.1109/JPROC.2003.823141.
 - Wan & van der Merwe (2000), “The Unscented Kalman Filter for Nonlinear Estimation,” IEEE Adaptive Systems for Signal Processing, Communications, and Control Symposium, pp. 153–158, DOI 10.1109/ASSPCC.2000.882463.
 
+## Identity and bibliography
+- Godsill, S. J., Doucet, A., & West, M. (2004), “Monte Carlo smoothing for nonlinear time series,” *Journal of the American Statistical Association*, 99(465), 156–168, DOI 10.1198/016214504000000151. The forward-filtering backward-simulation construction and its transition-density weighting were cross-checked against the article and standard particle-smoothing derivations.
+
 ## Technical claims
 - EKF applies local first-order linearization to nonlinear process and observation models.
 - UKF propagates deterministic sigma points through nonlinear transformations to approximate transformed moments, rather than requiring model Jacobians.

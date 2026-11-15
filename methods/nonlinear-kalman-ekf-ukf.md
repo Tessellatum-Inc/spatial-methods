@@ -53,5 +53,6 @@ This is not an ensemble square-root filter or an RTS nonlinear smoother. The com
 - Julier, S. J., & Uhlmann, J. K. (1997). “A New Extension of the Kalman Filter to Nonlinear Systems.” *Proceedings of SPIE*, 3068. [Paper](https://www.robots.ox.ac.uk/~cvrg/hilary2003/Julier1997_SPIE_KF.pdf).
 - Julier, S. J., & Uhlmann, J. K. (2004). “Unscented Filtering and Nonlinear Estimation.” *Proceedings of the IEEE*, 92(3), 401–422. DOI: 10.1109/JPROC.2003.823141.
 - Wan, E. A., & van der Merwe, R. (2000). “The Unscented Kalman Filter for Nonlinear Estimation.” *Proceedings of the IEEE 2000 Adaptive Systems for Signal Processing, Communications, and Control Symposium*, 153–158. DOI: 10.1109/ASSPCC.2000.882463.
+- Godsill, S. J., Doucet, A., & West, M. (2004). “Monte Carlo smoothing for nonlinear time series.” *Journal of the American Statistical Association*, 99(465), 156–168. DOI: 10.1198/016214504000000151.
 
 No source figures, code or datasets are reproduced.
