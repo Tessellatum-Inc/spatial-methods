@@ -193,7 +193,7 @@ def _segments_intersect_exact(a,b,c,d):
     if o2==0 and _on_segment_exact(a,b,d): return True
     if o3==0 and _on_segment_exact(c,d,a): return True
     if o4==0 and _on_segment_exact(c,d,b): return True
-    return o1!=o2 and o3!=o4
+    return o1*o2<0 and o3*o4<0
 
 def _ring_is_simple(ring,eps):
     """Reject non-adjacent edge intersections using exact decimal predicates.
