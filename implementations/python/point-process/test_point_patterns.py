@@ -331,3 +331,10 @@ def test_log_gaussian_cox_rejects_oversized_or_invalid_grid():
         simulate_log_gaussian_cox_process((0, 0, 1, 1), 1, 0.2, 1, nx=16, ny=16)
     with pytest.raises(ValueError, match="positive integers"):
         simulate_log_gaussian_cox_process((0, 0, 1, 1), 1, 0.2, 1, nx=0, ny=2)
+
+
+def test_small_cholesky_factor_reconstructs_covariance():
+    from point_patterns import _cholesky_lower
+    lower = _cholesky_lower([[4.0, 2.0], [2.0, 3.0]])
+    assert lower[0] == pytest.approx([2.0, 0.0])
+    assert lower[1] == pytest.approx([1.0, 2 ** 0.5])
