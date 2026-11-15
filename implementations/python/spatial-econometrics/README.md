@@ -27,9 +27,9 @@ python -m pip install numpy pytest
 python -m pytest -q
 ~~~
 
-## Scope and limits
+18. **Global Moran's I permutation inference** with a seeded conditional randomization distribution, plus-one Monte Carlo p-values and explicit one-/two-sided alternatives.\n\n## Scope and limits
 
-- The LM diagnostics calculate classic and Bera–Yoon robust score statistics from an OLS baseline. They do not implement finite-sample corrections, joint tests or model selection. Robust scores are unavailable when their adjustment denominator is not identified.
+- Global Moran's I permutation inference treats values as exchangeable over fixed locations under its randomization null. The two-sided test measures absolute deviation from -1/(n-1); it is global, not a local cluster detector. Weights are used as supplied and are not automatically symmetrised or row-standardised.\n- The LM diagnostics calculate classic and Bera–Yoon robust score statistics from an OLS baseline. They do not implement finite-sample corrections, joint tests or model selection. Robust scores are unavailable when their adjustment denominator is not identified.
 - All routines use the supplied weights exactly as given. Neighbour construction, row standardisation, islands, alignment and substantive interpretation are modelling decisions for the analyst.
 - SLX fits OLS to [X, WX]. SDEM applies the concentrated SEM likelihood to the independent columns of [X, WX]. Neither includes Wy. Redundant WX columns (notably a row-standardised intercept) are dropped and reported with zero spatial-covariate coefficients.
 - The spatial lag 2SLS and SDM 2SLS estimators use spatial lags as excluded instruments for Wy; exogeneity and relevance are assumptions, not automatically tested. They do not report second-stage standard errors; the companion first-stage diagnostics report instrument relevance summaries.
