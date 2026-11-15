@@ -220,3 +220,8 @@ The tree is built at initialization and cannot be updated. Queries are two-dimen
 The immutable tree also supports best-first k-nearest search from a point to stored rectangles. The distance from a point to a closed axis-aligned box is zero when the point lies inside, otherwise it is the Euclidean distance to the closest point on the box. Each internal node envelope gives a lower bound on the distance to every descendant rectangle. A min-heap expands the smallest lower bound first; once the next lower bound is strictly greater than the current kth result, the remaining tree cannot improve the answer. Equal distances are retained and sorted by original input index.
 
 The API returns (input_index, distance) pairs, with k=0 returning an empty list. This is nearest-envelope search: for non-rectangular source geometries it does not replace exact geometry-distance refinement. Seeded differential tests compare the result with a brute-force full sort.
+
+
+## Verification status
+
+The executable package tests closed-box intersection semantics against brute force over 300 random rectangles and 60 query windows at five node capacities. Its k-nearest method is checked on 100 seeded point queries against a full-sort point-to-box distance oracle, including k=0, ties, and invalid input. The nearest query uses a bounded max-heap so candidate maintenance is O(log k) per visited entry; branch-and-bound can still visit the entire tree in the worst case. See the [verification record](../../catalog/verification/str-packed-rtree.md).

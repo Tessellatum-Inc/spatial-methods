@@ -57,7 +57,7 @@ The tests compare range queries against a brute-force scan across 300 generated 
 - It indexes 2D axis-aligned bounding boxes, not full geometry topology.
 - A query returns envelope candidates. For a polygon or line, a candidate may not satisfy the exact geometry predicate.
 - Boundary touching counts as bounding-box intersection in this example.
-- The implementation uses Python objects and is designed for learning, not high-throughput production workloads.
+- The implementation uses Python objects and is designed for learning, not high-throughput production workloads. Range queries are output-sensitive in the visited tree nodes plus matching entries. A k-nearest query uses a priority queue and a bounded result heap; its worst case visits the whole tree, with O(n log k) candidate maintenance and O(k) retained results.
 
 For a production-ready interface, see [Shapely's STRtree documentation](https://shapely.readthedocs.io/en/stable/strtree.html). Shapely's STRtree is query-only, returns indices in input order, supports vectorised queries and can apply exact predicates during the query.
 
