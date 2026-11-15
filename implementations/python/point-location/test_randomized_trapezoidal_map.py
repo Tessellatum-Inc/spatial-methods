@@ -112,3 +112,51 @@ def test_adjacent_slab_intervals_are_merged_into_shared_trapezoids():
     assert left.x_left == 1.0
     assert left.x_right == 8.0
     assert len(locator.trapezoids) < sum(len(slab[1]) for slab in locator.slabs)
+
+
+
+def test_randomized_insertions_trace_corridors_and_form_local_split_pieces():
+    source = segments()
+    locator = RandomizedTrapezoidalMap(source, (0, 0, 10, 10), seed=19)
+    assert len(locator.insertion_corridors) == len(source)
+    assert len(locator.insertion_splits) == len(source)
+    for sid, (corridor, splits) in enumerate(zip(
+        locator.insertion_corridors, locator.insertion_splits
+    )):
+        assert corridor
+        assert len(corridor) == len(splits)
+        for cell, split in zip(corridor, splits):
+            assert split.source_trapezoid is cell
+            assert split.lower.bottom_segment == cell.bottom_segment
+            assert split.lower.top_segment == sid
+            assert split.upper.bottom_segment == sid
+            assert split.upper.top_segment == cell.top_segment
+            assert split.lower.x_left == split.upper.x_left
+            assert split.lower.x_right == split.upper.x_right
+            probe = (split.lower.x_left + split.lower.x_right) / 2
+            line_y = (
+                source[sid][0][1]
+                + (probe-source[sid][0][0])
+                * (source[sid][1][1]-source[sid][0][1])
+                / (source[sid][1][0]-source[sid][0][0])
+            )
+            if cell.bottom_segment is not None:
+                bottom = (
+                    locator.segments[cell.bottom_segment][0][1]
+                    + (probe-locator.segments[cell.bottom_segment][0][0])
+                    * (locator.segments[cell.bottom_segment][1][1]
+                       - locator.segments[cell.bottom_segment][0][1])
+                    / (locator.segments[cell.bottom_segment][1][0]
+                       - locator.segments[cell.bottom_segment][0][0])
+                )
+                assert line_y > bottom
+            if cell.top_segment is not None:
+                top = (
+                    locator.segments[cell.top_segment][0][1]
+                    + (probe-locator.segments[cell.top_segment][0][0])
+                    * (locator.segments[cell.top_segment][1][1]
+                       - locator.segments[cell.top_segment][0][1])
+                    / (locator.segments[cell.top_segment][1][0]
+                       - locator.segments[cell.top_segment][0][0])
+                )
+                assert line_y < top
