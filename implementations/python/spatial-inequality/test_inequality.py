@@ -83,3 +83,10 @@ def test_dissimilarity_rejects_zero_group_total_and_length_mismatch():
 def test_exposure_rejects_zero_group_a_and_length_mismatch():
     with pytest.raises(ValueError): exposure_indices([0,0],[1,2])
     with pytest.raises(ValueError): exposure_indices([1,2],[1])
+
+
+def test_weighted_theil_indices_are_scale_invariant():
+    values = [1, 3]
+    weights = [1, 3]
+    assert theil_t(values, weights) == pytest.approx(theil_t([10, 30], weights))
+    assert theil_l(values, weights) == pytest.approx(theil_l([10, 30], weights))
