@@ -1,4 +1,4 @@
-"""Dense concentrated maximum-likelihood estimators for SAR and SEM models.
+"""Dense concentrated maximum-likelihood estimators for SAR, SEM, SDM and SARAR models.
 
 These implementations are intended for small teaching problems. They use a
 conservative, automatically derived rho interval that guarantees nonsingularity
