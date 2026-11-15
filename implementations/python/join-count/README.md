@@ -25,4 +25,5 @@ python -m pytest -q
 - This is a small dense-matrix teaching implementation, not a sparse
   production spatial-weights engine.
 
-See the [canonical algorithm note](../../../algorithms/statistics/join-count.md).
+See the [canonical algorithm note](../../../algorithms/statistics/join-count.md)
+and [source verification record](../../../catalog/verification/join-count.md).

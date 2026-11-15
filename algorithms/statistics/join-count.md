@@ -1,6 +1,6 @@
 # Binary join-count statistics
 
-Stable ID: `SA-STAT-BINARY-JOIN-COUNT` · Draft 0.1 · Source compendium section 2
+Stable ID: \`SA-STAT-BINARY-JOIN-COUNT\` · Draft 0.1 · Source compendium section 2
 
 ## Question
 
@@ -16,32 +16,32 @@ The classic join-count family separates three undirected edge types:
 
 ## Counting joins
 
-Let (w_{ij}) be a symmetric binary adjacency matrix with a zero diagonal.
+Let \(w_{ij}\) be a symmetric binary adjacency matrix with a zero diagonal.
 Count each undirected edge once:
 
-[
-BB = sum_{i<j} w_{ij} x_i x_j,
-qquad
-WW = sum_{i<j} w_{ij}(1-x_i)(1-x_j),
-]
+\[
+BB = \sum_{i<j} w_{ij} x_i x_j,
+\qquad
+WW = \sum_{i<j} w_{ij}(1-x_i)(1-x_j),
+\]
 
-[
-BW = sum_{i<j} w_{ij}[x_i(1-x_j)+(1-x_i)x_j].
-]
+\[
+BW = \sum_{i<j} w_{ij}[x_i(1-x_j)+(1-x_i)x_j].
+\]
 
-Here (x_iin{0,1}). If the graph has (m) edges, (B) black units and
-(W=n-B) white units, the fixed-composition randomisation expectations are:
+Here \(x_i\in\{0,1\}\). If the graph has \(m\) edges, \(B\) black units and
+\(W=n-B\) white units, the fixed-composition randomisation expectations are:
 
-[
-E[BB]=mrac{B(B-1)}{n(n-1)},quad
-E[WW]=mrac{W(W-1)}{n(n-1)},
-]
+\[
+E[BB]=m\frac{B(B-1)}{n(n-1)},\quad
+E[WW]=m\frac{W(W-1)}{n(n-1)},
+\]
 
-[
-E[BW]=mrac{2BW}{n(n-1)}.
-]
+\[
+E[BW]=m\frac{2BW}{n(n-1)}.
+\]
 
-The expected counts sum to (m), as do the observed counts.
+The expected counts sum to \(m\), as do the observed counts.
 
 ## Conditional randomisation
 
@@ -72,6 +72,8 @@ tests, and a small p-value does not establish a causal mechanism.
 
 The tested Python baseline is in
 [implementations/python/join-count](../../implementations/python/join-count/README.md).
+See the [source verification note](../../catalog/verification/join-count.md)
+for the technical scope, tests and outstanding review dimensions.
 
 ## Reference
 

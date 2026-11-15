@@ -76,6 +76,9 @@ jobs:
           - example: join-count
             directory: implementations/python/join-count
             pythonpath: ""
+          - example: st-dbscan
+            directory: implementations/python/st-dbscan
+            pythonpath: ""
           - example: str-packed-rtree
             directory: implementations/python/str-packed-rtree
             pythonpath: ""
