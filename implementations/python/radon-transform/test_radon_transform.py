@@ -3,7 +3,7 @@ import pytest
 from radon_transform import radon_transform
 
 def test_constant_square_centre_line_integral():
-    x=np.ones(( nine:=9, nine))
+    x=np.ones((9,9))
     s,r,t=radon_transform(x,theta=[0,90])
     i=np.argmin(abs(r))
     assert s[i,0]>0 and s[i,1]>0
