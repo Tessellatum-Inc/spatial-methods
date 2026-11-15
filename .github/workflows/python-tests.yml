@@ -130,6 +130,9 @@ jobs:
           - example: network-centrality
             directory: implementations/python/network-centrality
             pythonpath: ""
+          - example: network-communities
+            directory: implementations/python/network-communities
+            pythonpath: ""
           - example: point-location
             directory: implementations/python/point-location
             pythonpath: ""
