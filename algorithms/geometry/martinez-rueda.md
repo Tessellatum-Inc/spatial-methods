@@ -11,6 +11,6 @@ Implemented stages:
 - Simple-ring and ring-collection validation.
 - Polygon-like output assembly: CCW shells are grouped with directly contained CW holes; islands inside holes remain separate components.
 
-This is not yet the full Martinez–Rueda sweep: the status is an interval broad phase rather than the neighbour-ordered structure with dynamically scheduled intersection events, so dense/overlapping inputs can still be quadratic. Multiple independent shells per input, full touching/coincident handling and adaptive exact predicates remain outstanding. Shell/hole grouping is limited to the supported non-touching ring configurations and is not a general validity/repair operation.
+This is not yet the full Martinez–Rueda sweep: the status is an interval broad phase rather than the neighbour-ordered structure with dynamically scheduled intersection events, so dense/overlapping inputs can still be quadratic. Multiple independent shells per input, full touching/coincident handling, exact signed-area/orientation handling and exact fragment stitching remain outstanding. Ring simplicity uses exact decimal-coordinate orientation/intersection predicates; point-in-ring uses exact even-odd ray crossing with boundary points treated as outside. Shell/hole grouping is limited to the supported non-touching ring configurations and is not a general validity/repair operation.
 
 See [implementation and tests](../../implementations/python/martinez-rueda/README.md).
