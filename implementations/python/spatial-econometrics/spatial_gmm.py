@@ -86,8 +86,8 @@ def spatial_lag_gmm(
         columns.append(lagged)
     instruments = _independent_columns(np.column_stack(columns))
     z_count = instruments.shape[1]
-    if z_count <= design.shape[1] + 1:
-        raise ValueError("instruments do not overidentify the spatial lag model")
+    if z_count < design.shape[1] + 1:
+        raise ValueError("instruments do not identify the spatial lag model")
     if z_count >= n:
         raise ValueError("sample size must exceed the number of independent instruments")
 
