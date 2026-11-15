@@ -20,7 +20,7 @@ def test_reversing_variable_order_preserves_global_lee_l():
 
 
 def test_positive_association_for_identical_spatial_patterns():
-    w = [[0, 1, 0, 1], [1, 0, 1, 0], [0, 1, 0, 1], [1, 0, 1, 0]]
+    w = [[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 1], [0, 0, 1, 0]]
     result = lees_l([1, 2, 4, 3], [1, 2, 4, 3], w)
     assert result["L"] > 0
     assert result["spatial_smoothing_scalar_x"] >= 0
@@ -28,7 +28,7 @@ def test_positive_association_for_identical_spatial_patterns():
 
 
 def test_negative_association_when_smoothed_patterns_reverse():
-    w = [[0, 1, 0, 1], [1, 0, 1, 0], [0, 1, 0, 1], [1, 0, 1, 0]]
+    w = [[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 1], [0, 0, 1, 0]]
     result = lees_l([1, 2, 4, 3], [4, 3, 1, 2], w)
     assert result["L"] < 0
 
