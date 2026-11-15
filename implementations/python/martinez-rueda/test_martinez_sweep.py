@@ -264,3 +264,34 @@ def test_seeded_exact_segment_predicates_against_independent_integer_oracle():
             )
         checked+=1
     assert checked>=1000
+
+
+def test_exact_ring_predicates_detect_tiny_self_crossing_below_area_epsilon():
+    from martinez_sweep import _ring_is_simple
+    scale=1e-12
+    ring=[(0.0,0.0),(2*scale,2*scale),(0.0,2*scale),(2*scale,0.0)]
+    assert not _ring_is_simple(ring,1e-10)
+
+
+def test_exact_point_in_ring_handles_small_scale_and_boundary():
+    from martinez_sweep import _inside
+    scale=1e-12
+    ring=[(0.0,0.0),(4*scale,0.0),(4*scale,4*scale),(0.0,4*scale)]
+    assert _inside((2*scale,2*scale),ring)
+    assert not _inside((0.0,2*scale),ring)
+    assert not _inside((5*scale,2*scale),ring)
+
+
+def test_exact_point_in_ring_handles_large_coordinates_and_horizontal_edges():
+    from martinez_sweep import _inside
+    base=1e15
+    ring=[(base,base),(base+8,base),(base+8,base+8),(base,base+8)]
+    assert _inside((base+4,base+4),ring)
+    assert not _inside((base+4,base),ring)
+    assert not _inside((base+9,base+4),ring)
+
+
+def test_exact_segment_intersection_does_not_report_disjoint_collinear_edges():
+    from martinez_sweep import _segments_intersect_exact
+    assert not _segments_intersect_exact((0,0),(1,0),(2,0),(3,0))
+    assert _segments_intersect_exact((0,0),(2,0),(1,0),(3,0))
