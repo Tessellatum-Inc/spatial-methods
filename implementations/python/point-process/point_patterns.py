@@ -1,6 +1,8 @@
 """Planar point-pattern summaries for rectangular observation windows."""
 from __future__ import annotations
 from math import hypot, isfinite, pi
+from numbers import Integral
+import random
 
 def _validate(points, window):
     pts=[(float(p[0]),float(p[1])) for p in points]
@@ -116,3 +118,72 @@ def ripley_k_inhomogeneous_translation(points, window, radii, intensities):
             pairs.append((distance, weight))
     return [sum(weight for distance, weight in pairs if distance <= radius)
             for radius in rs]
+
+
+def quadrat_count_test(points, window, nx=4, ny=4, *, n_simulations=999, seed=None):
+    """Conditional Monte Carlo Pearson quadrat test for homogeneous CSR.
+
+    The rectangular window is split into nx columns and ny rows of equal area.
+    Conditional on the observed number of points, CSR implies multinomial
+    quadrat counts with equal cell probabilities. The upper-tail Monte Carlo
+    p-value uses the plus-one correction.
+    """
+    if isinstance(nx, bool) or not isinstance(nx, Integral) or nx < 1:
+        raise ValueError("nx must be a positive integer")
+    if isinstance(ny, bool) or not isinstance(ny, Integral) or ny < 1:
+        raise ValueError("ny must be a positive integer")
+    nx, ny = int(nx), int(ny)
+    k = nx * ny
+    if k < 2:
+        raise ValueError("at least two quadrats are required")
+    if isinstance(n_simulations, bool) or not isinstance(n_simulations, Integral) or n_simulations < 1:
+        raise ValueError("n_simulations must be a positive integer")
+    if seed is not None and (isinstance(seed, bool) or not isinstance(seed, Integral)):
+        raise ValueError("seed must be an integer or None")
+    if len(window) != 4:
+        raise ValueError("window must be (xmin, ymin, xmax, ymax)")
+    xmin, ymin, xmax, ymax = map(float, window)
+    if not all(map(isfinite, (xmin, ymin, xmax, ymax))) or xmax <= xmin or ymax <= ymin:
+        raise ValueError("window bounds must be finite and have positive width and height")
+    pts = []
+    for point in points:
+        if len(point) != 2:
+            raise ValueError("each point must have two coordinates")
+        x, y = map(float, point)
+        if not isfinite(x) or not isfinite(y):
+            raise ValueError("point coordinates must be finite")
+        if x < xmin or x > xmax or y < ymin or y > ymax:
+            raise ValueError("all points must lie within the observation window")
+        pts.append((x, y))
+    if not pts:
+        raise ValueError("at least one point is required")
+    if len(set(pts)) != len(pts):
+        raise ValueError("duplicate point coordinates are not supported")
+
+    observed = [0] * k
+    width, height = xmax - xmin, ymax - ymin
+    for x, y in pts:
+        col = min(int((x - xmin) / width * nx), nx - 1)
+        row = min(int((y - ymin) / height * ny), ny - 1)
+        observed[row * nx + col] += 1
+
+    n = len(pts)
+    expected = n / k
+    statistic = sum((count - expected) ** 2 / expected for count in observed)
+    rng = random.Random(int(seed) if seed is not None else None)
+    exceedances = 0
+    for _ in range(int(n_simulations)):
+        simulated = [0] * k
+        for _ in range(n):
+            simulated[rng.randrange(k)] += 1
+        simulated_stat = sum((count - expected) ** 2 / expected for count in simulated)
+        if simulated_stat >= statistic - 1e-12:
+            exceedances += 1
+    pvalue = (exceedances + 1) / (int(n_simulations) + 1)
+    counts_grid = [observed[r * nx:(r + 1) * nx] for r in range(ny)]
+    return {
+        "counts": counts_grid, "expected_per_quadrat": expected,
+        "pearson_statistic": statistic, "degrees_of_freedom": k - 1,
+        "pvalue": pvalue, "simulations": int(n_simulations),
+        "exceedances": exceedances, "n_points": n, "nx": nx, "ny": ny,
+    }

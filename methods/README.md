@@ -37,7 +37,7 @@ This directory holds those foundational methods separately from individual algor
 - [Residual-based GNSS RAIM/FDE](gnss-residual-raim-fde.md) — test a linearised measurement snapshot for global residual inconsistency and inspect single-measurement exclusion candidates, without claiming protection levels.
 
 - [GNSS LAMBDA integer ambiguity resolution](gnss-lambda-integer-ambiguity-resolution.md) — decorrelate the float ambiguity lattice with an integer-unimodular transform and search for the best integer least-squares candidates.
-- [Point-pattern second-order statistics](point-pattern-second-order-statistics.md) — compare homogeneous and inhomogeneous K summaries, nearest-neighbor distances and pair-correlation functions while making window and intensity assumptions explicit.
+- [Point-pattern second-order statistics](point-pattern-second-order-statistics.md) — compare homogeneous and supplied-intensity inhomogeneous K, nearest-neighbor distances, pair correlation and a conditional Monte Carlo quadrat test.
 - [Nonlinear and particle state estimation](nonlinear-kalman-ekf-ukf.md) — distinguish Gaussian EKF/UKF approximations from bootstrap particle filtering and offline FFBSi trajectory smoothing.
 - [Spatial thin-plate smoothing spline](spatial-thin-plate-smoothing-spline.md) — fit full-knot and optimally truncated low-rank thin-plate smooths with an unpenalized affine null space.
 

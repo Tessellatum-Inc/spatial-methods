@@ -150,3 +150,13 @@ These notes record bounded checks against publisher or institutional bibliograph
 - **Technical claims:** the article derives a global moment shrinkage estimator and a local neighbourhood variant. Global shrinkage is invariant to spatial arrangement; local shrinkage uses an explicitly defined neighbourhood and a local homogeneity assumption.
 - **Implementation:** global and local moment estimators, tests and executable lab are added. The implementation does not cover head-banging, median polish, Clayton–Kaldor iterative maximum likelihood or hierarchical CAR/BYM disease mapping.
 - **Rights:** mathematical equations are independently typeset and paraphrased; no article text or figures are reproduced.
+
+
+## Section 2 — Quadrat count test for complete spatial randomness
+
+**Source entry:** “Quadrat analysis, Clark-Evans, nearest neighbor index” (source page 3).
+
+- **Identity and bibliography:** quadrat counting is a classical CSR diagnostic. The equal-area partition and Pearson statistic are documented in spatial point-process teaching references and maintained spatstat documentation.
+- **Technical claims:** conditional on the observed total number of points, homogeneous CSR implies multinomial cell counts with equal probabilities. The implementation simulates this conditional multinomial null rather than relying on the asymptotic chi-square approximation; specialist spatstat documentation notes the expected-count condition for that approximation and also describes conditional Monte Carlo testing.
+- **Implementation:** rectangular equal-area grid, explicit boundary assignment, Pearson statistic and plus-one Monte Carlo p-value. The grid scale/alignment is analyst-chosen; the method cannot distinguish interaction from first-order inhomogeneity.
+- **Rights:** equations are paraphrased; no source text or figures are reproduced.

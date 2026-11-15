@@ -7,8 +7,13 @@ Dependency-free functions for a small subset of spatial point-process analysis:
 - Inhomogeneous K with externally supplied pointwise intensities and rectangular translation correction.
 - Circular Poisson spatial scan statistic for areal case counts with a population offset and conditional multinomial Monte Carlo p-value.
 - A finite-difference pair-correlation estimate from K(r).
+- A conditional multinomial Monte Carlo quadrat-count test for homogeneous complete spatial randomness (CSR).
 
 Run with `python -m pytest -q` from this directory.
+
+## Quadrat test interpretation
+
+The quadrat test conditions on the observed point count and compares equal-area cell counts with a uniform multinomial null. It uses a one-sided upper-tail Pearson statistic with a plus-one Monte Carlo p-value, so it avoids relying on a large-expected-count chi-square approximation. Grid dimensions and origin are analyst choices; the test is scale-dependent and cannot distinguish interaction from first-order intensity variation. It is not a multi-scale replacement for K or an inhomogeneous point-process model.
 
 ## Assumptions and limitations
 

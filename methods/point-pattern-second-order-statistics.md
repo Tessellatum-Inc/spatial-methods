@@ -62,6 +62,19 @@ The Monte Carlo test conditions on the observed total case count and draws simul
 
 This is a bounded centroid-based circular Poisson scan, not a full SaTScan reproduction. It assumes planar projected coordinates, a population offset and a constant-risk null. It does not adjust for covariates, use Bernoulli case-control data, search elliptical or arbitrary zones, model time, extract secondary clusters or account for uncertain areal boundaries. The scan statistic's maximum already accounts for the candidate-window search in the Monte Carlo calibration, but it does not remove the need to justify the study design and candidate-zone family.
 
+## Quadrat counts for complete spatial randomness
+
+A quadrat test partitions the rectangular observation window into equal-area cells and compares the observed cell counts with the equal-count expectation under homogeneous complete spatial randomness (CSR). For m quadrats and n observed points,
+
+\\[
+E_j=n/m,\\qquad
+X^2=\\sum_{j=1}^{m}\\frac{(N_j-E_j)^2}{E_j}.
+\\]
+
+Conditioning on n under homogeneous CSR gives a multinomial distribution with equal cell probabilities. This implementation simulates that conditional null directly and reports the upper-tail Monte Carlo p-value with the plus-one correction. It does not use the asymptotic chi-square p-value, which requires adequate expected counts. The grid dimensions, alignment and scale affect the result. A significant result can reflect clustering, regularity or unmodelled first-order intensity variation; it does not identify the cause.
+
+The quadrat test is a coarse, grid-dependent diagnostic. It discards within-cell positions and should be paired with visual inspection and distance-based summaries. It does not replace K, inhomogeneous K or a fitted point-process model.
+
 ## Interpretation cautions
 
 Use projected coordinates with meaningful distance units. K and pair correlation are not self-interpreting significance tests: compare against a suitable null model and account for the observation window, intensity variation, covariates and parameter selection. Inhomogeneous patterns can appear clustered under a homogeneous analysis simply because intensity varies across the region.

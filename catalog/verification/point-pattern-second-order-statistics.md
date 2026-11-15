@@ -7,7 +7,11 @@ Ripley's 1976 paper introduces second-order analysis of stationary point process
 The K estimator uses ordered point pairs and rectangular translation edge correction. It assumes stationarity/homogeneity and isotropy. The Poisson reference is K(r)=pi*r^2. The pair-correlation estimate differentiates the estimated K curve numerically, so it is bandwidth/radius-grid sensitive.
 
 ## Implementation and reproduction
-Tests cover square nearest-neighbor distances, empirical CDF, homogeneous K, a hand-calculated homogeneous translation correction, the Poisson reference curve, direct inhomogeneous pair-weight calculations, ordered-pair counting, intensity validation and invalid inputs. The package now implements inhomogeneous K for a rectangular window using externally supplied positive intensity values and translation edge correction. It does not fit the intensity model, offer border/isotropic corrections or renormalisation, or implement Palm distributions, polygonal windows or simulation envelopes. Run repository tests/CI independently.
+Tests cover square nearest-neighbor distances, empirical CDF, homogeneous K, a hand-calculated homogeneous translation correction, the Poisson reference curve, direct inhomogeneous pair-weight calculations, ordered-pair counting, intensity validation, quadrat cell assignment, Monte Carlo reproducibility, plus-one p-values and invalid inputs. The package now implements inhomogeneous K for a rectangular window using externally supplied positive intensity values and translation edge correction. It does not fit the intensity model, offer border/isotropic corrections or renormalisation, or implement Palm distributions, polygonal windows or simulation envelopes. Run repository tests/CI independently.
+
+## Quadrat count test
+
+The implementation partitions a rectangular window into equal-area quadrats, counts points with explicit upper/right boundary assignment, computes the Pearson statistic and obtains a conditional multinomial Monte Carlo p-value. The null conditioning on the observed point count follows the standard CSR formulation. The implementation does not use the asymptotic chi-square reference, does not estimate a trend or fitted inhomogeneous null, and is grid-configuration dependent.
 
 ## Rights
 Only metadata and paraphrased mathematical definitions are used; no source text or figures are copied.

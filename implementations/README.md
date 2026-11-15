@@ -100,7 +100,7 @@ Each implementation should state:
 
 ### Point-pattern and spatial epidemiology
 
-- [Point-pattern summaries and circular Poisson scan](python/point-process/README.md): nearest-neighbour summaries, homogeneous and supplied-intensity inhomogeneous K, numerical pair correlation, and a centroid-based population-offset Poisson scan with conditional multinomial Monte Carlo calibration.
+- [Point-pattern summaries and circular Poisson scan](python/point-process/README.md): nearest-neighbour summaries, homogeneous and supplied-intensity inhomogeneous K, numerical pair correlation, conditional multinomial quadrat CSR testing and a centroid-based population-offset Poisson scan.
 
 ### Spatial smoothing
 

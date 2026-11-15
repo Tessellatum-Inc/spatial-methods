@@ -83,6 +83,7 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 ## Spatial statistics
 
 - [Ripley's K and L](statistics/ripley-k.md) — compare uncorrected pair-count summaries with the homogeneous Poisson reference across distance scales.
+- [Quadrat count test for CSR](statistics/quadrat-count-test.md) — compare equal-area cell counts with a conditional multinomial homogeneous-CSR null using a Monte Carlo Pearson statistic.
 - [Clark–Evans nearest-neighbour index](statistics/clark-evans.md) — compare observed mean nearest-neighbour spacing with a homogeneous Poisson reference.
 - [Kernel density estimation for point patterns](statistics/point-pattern-kde.md) — estimate a fixed-bandwidth planar Gaussian intensity surface and understand bandwidth and edge effects.
 - [Compositional data analysis](statistics/compositional-data-analysis.md) — apply closure, CLR, ALR and ILR transforms and compare compositions with Aitchison distance.

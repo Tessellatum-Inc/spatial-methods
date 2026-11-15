@@ -70,3 +70,56 @@ def test_inhomogeneous_k_rejects_invalid_intensity_and_count():
         ripley_k_inhomogeneous_translation(points, (0, 0, 5, 5), [1], [0.1, 0.0])
     with pytest.raises(ValueError):
         ripley_k_inhomogeneous_translation(points, (0, 0, 5, 5), [1], [float("nan"), 0.1])
+
+
+def test_quadrat_counts_assign_upper_and_right_boundaries_to_last_cell():
+    from point_patterns import quadrat_count_test
+    result = quadrat_count_test(
+        [(0, 0), (0.5, 0.5), (1, 1), (1, 0)],
+        (0, 0, 1, 1), nx=2, ny=2, n_simulations=99, seed=4,
+    )
+    assert result["counts"] == [[1, 1], [0, 2]]
+    assert result["expected_per_quadrat"] == pytest.approx(1.0)
+    assert result["pearson_statistic"] == pytest.approx(2.0)
+    assert result["degrees_of_freedom"] == 3
+
+
+def test_quadrat_test_is_reproducible_and_uses_plus_one_pvalue():
+    from point_patterns import quadrat_count_test
+    points = [(0.1, 0.1), (0.2, 0.2), (0.3, 0.3), (0.8, 0.8)]
+    a = quadrat_count_test(points, (0, 0, 1, 1), 2, 2, n_simulations=199, seed=42)
+    b = quadrat_count_test(points, (0, 0, 1, 1), 2, 2, n_simulations=199, seed=42)
+    assert a == b
+    assert 1 / 200 <= a["pvalue"] <= 1
+    assert sum(map(sum, a["counts"])) == len(points)
+
+
+def test_quadrat_test_supports_one_point_and_multiple_grid_shapes():
+    from point_patterns import quadrat_count_test
+    result = quadrat_count_test([(0.5, 0.5)], (0, 0, 1, 1), 3, 2, n_simulations=19, seed=1)
+    assert result["n_points"] == 1
+    assert len(result["counts"]) == 2
+    assert all(len(row) == 3 for row in result["counts"])
+
+
+@pytest.mark.parametrize("kwargs", [
+    {"nx": 0}, {"ny": 0}, {"nx": 1, "ny": 1},
+    {"nx": 2.5}, {"n_simulations": 0}, {"n_simulations": 1.5},
+    {"seed": True},
+])
+def test_quadrat_test_rejects_invalid_controls(kwargs):
+    from point_patterns import quadrat_count_test
+    with pytest.raises(ValueError):
+        quadrat_count_test([(0.2, 0.2)], (0, 0, 1, 1), **kwargs)
+
+
+def test_quadrat_test_rejects_invalid_window_points_and_duplicates():
+    from point_patterns import quadrat_count_test
+    with pytest.raises(ValueError):
+        quadrat_count_test([(0.2, 0.2)], (0, 0, 0, 1))
+    with pytest.raises(ValueError):
+        quadrat_count_test([(1.2, 0.2)], (0, 0, 1, 1))
+    with pytest.raises(ValueError):
+        quadrat_count_test([(0.2, 0.2), (0.2, 0.2)], (0, 0, 1, 1))
+    with pytest.raises(ValueError):
+        quadrat_count_test([], (0, 0, 1, 1))
