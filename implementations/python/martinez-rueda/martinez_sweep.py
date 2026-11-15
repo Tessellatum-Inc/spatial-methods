@@ -172,35 +172,61 @@ def _inside_polygon(point,rings):
 def _signed_area(ring):
     return 0.5*sum(ring[i][0]*ring[(i+1)%len(ring)][1] - ring[(i+1)%len(ring)][0]*ring[i][1] for i in range(len(ring)))
 
-def _cross(a,b,c):
-    return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])
+def _fraction_point(point):
+    return (Fraction(str(point[0])), Fraction(str(point[1])))
 
-def _on_segment(a,b,p,eps):
-    return (min(a[0],b[0])-eps<=p[0]<=max(a[0],b[0])+eps and min(a[1],b[1])-eps<=p[1]<=max(a[1],b[1])+eps)
+def _orientation(a,b,c):
+    """Exact orientation sign over shortest round-trip decimal coordinates."""
+    ax,ay=_fraction_point(a); bx,by=_fraction_point(b); cx,cy=_fraction_point(c)
+    value=(bx-ax)*(cy-ay)-(by-ay)*(cx-ax)
+    return (value>0)-(value<0)
+
+def _on_segment_exact(a,b,p):
+    if _orientation(a,b,p)!=0: return False
+    ax,ay=_fraction_point(a); bx,by=_fraction_point(b); px,py=_fraction_point(p)
+    return min(ax,bx)<=px<=max(ax,bx) and min(ay,by)<=py<=max(ay,by)
+
+def _segments_intersect_exact(a,b,c,d):
+    o1,o2=_orientation(a,b,c),_orientation(a,b,d)
+    o3,o4=_orientation(c,d,a),_orientation(c,d,b)
+    if o1==0 and _on_segment_exact(a,b,c): return True
+    if o2==0 and _on_segment_exact(a,b,d): return True
+    if o3==0 and _on_segment_exact(c,d,a): return True
+    if o4==0 and _on_segment_exact(c,d,b): return True
+    return o1!=o2 and o3!=o4
 
 def _ring_is_simple(ring,eps):
+    """Reject non-adjacent edge intersections using exact decimal predicates.
+
+    eps remains in the signature for API compatibility; exact orientation
+    signs are not compared to a dimensionally incompatible area tolerance.
+    """
     n=len(ring)
     for i in range(n):
         a,b=ring[i],ring[(i+1)%n]
         for j in range(i+1,n):
-            if j==i or j==(i+1)%n or (j+1)%n==i: continue
-            d,e=ring[j],ring[(j+1)%n]
-            o1,o2=_cross(a,b,d),_cross(a,b,e)
-            o3,o4=_cross(d,e,a),_cross(d,e,b)
-            proper=((o1>eps and o2< -eps) or (o1< -eps and o2>eps)) and ((o3>eps and o4< -eps) or (o3< -eps and o4>eps))
-            touch=((abs(o1)<=eps and _on_segment(a,b,d,eps)) or (abs(o2)<=eps and _on_segment(a,b,e,eps)) or (abs(o3)<=eps and _on_segment(d,e,a,eps)) or (abs(o4)<=eps and _on_segment(d,e,b,eps)))
-            if proper or touch: return False
+            if j==(i+1)%n or (j+1)%n==i: continue
+            c,d=ring[j],ring[(j+1)%n]
+            if _segments_intersect_exact(a,b,c,d): return False
     return True
 
 def _inside(point, ring):
-    x,y=point; inside=False
+    """Exact even-odd point-in-ring test; boundary points are outside.
+
+    Coordinates are interpreted as their shortest round-trip decimal strings.
+    This strict-boundary convention is used for shell/hole containment.
+    """
+    px,py=_fraction_point(point); inside=False
     for i,a in enumerate(ring):
         b=ring[(i+1)%len(ring)]
-        if (a[1]>y)!=(b[1]>y):
-            xcross=a[0]+(y-a[1])*(b[0]-a[0])/(b[1]-a[1])
-            if x<xcross: inside=not inside
+        ax,ay=_fraction_point(a); bx,by=_fraction_point(b)
+        if _on_segment_exact(a,b,point): return False
+        if (ay>py)!=(by>py):
+            lhs=(px-ax)*(by-ay)
+            rhs=(py-ay)*(bx-ax)
+            crosses_right = lhs<rhs if by>ay else lhs>rhs
+            if crosses_right: inside=not inside
     return inside
-
 def sweep_split_segments(polygons, *, epsilon=1e-10):
     """Return x-ordered endpoint events, proper crossings and split fragments.
 
