@@ -218,10 +218,14 @@ def polylabel(outer_ring, holes=(), *, precision=1.0, max_cells=1_000_000):
     cell_size = min(width, height)
     half = cell_size / 2.0
     heap = []
+    initial_cells = 0
     x = min_x
     while x < max_x:
         y = min_y
         while y < max_y:
+            initial_cells += 1
+            if initial_cells > max_cells:
+                raise RuntimeError("polylabel initial grid exceeded max_cells; raise the limit")
             cell = make_cell(x+half, y+half, half)
             heappush(heap, (-cell[0], cell[1], cell[2], cell[3], cell[4]))
             y += cell_size
