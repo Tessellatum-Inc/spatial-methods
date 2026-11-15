@@ -53,3 +53,8 @@ The riley_terrain_ruggedness_index function implements the eight-neighbour Riley
 ## Hypsometric curve and integral
 
 The hypsometric_curve function summarizes the elevation distribution of a basin or other raster region. It returns unique normalized elevation thresholds in descending order, the fraction of valid cells at or above each threshold, and the hypsometric integral (mean normalized elevation). A Boolean valid_mask can select the basin cells; non-finite elevations are always excluded. It assumes equal-area raster cells, so it is appropriate for a regular projected grid, not an unprojected geographic raster with varying cell area. A zero-relief region has no defined normalized curve and is rejected. The integral is a descriptive elevation-distribution summary, not a direct measure of basin age or geomorphic stage.
+
+
+## Cut-and-fill volume
+
+The cut_fill_volume function compares aligned existing and design elevation surfaces. Existing terrain above design is cut; existing terrain below design is fill. It returns cellwise depth rasters and total volumes using the supplied rectangular cell dimensions. Both surfaces must share a vertical unit compatible with horizontal cell units for the resulting volume to be meaningful. Non-finite cells and an optional Boolean valid_mask are excluded. This is a direct raster difference calculation: it does not align grids, transform coordinate systems, account for compaction/bulking, or model construction tolerances.
