@@ -4,7 +4,7 @@
 - **Source pages:** 45–47
 - **Source transcription:** [pages 41–47](../../source-inventory/pages-41-47.md)
 - **Review state:** intake extracted; covariance foundation researched and scoped; remaining entries require item-level verification
-- **Current canonical records:** [Stationary covariance functions](../../methods/stationary-covariance-functions.md); [nonseparable space-time covariance](../../methods/nonseparable-space-time-covariance.md); [tested Euclidean covariance baseline](../../implementations/python/covariance-functions/README.md); [interactive lab](../../notebooks/covariance-functions-lab.ipynb)
+- **Current canonical records:** [Stationary covariance functions](../../methods/stationary-covariance-functions.md); [nonseparable space-time covariance](../../methods/nonseparable-space-time-covariance.md); [tested Euclidean covariance baseline](../../implementations/python/covariance-functions/README.md); [interactive lab](../../notebooks/covariance-functions-lab.ipynb); [compositional data analysis](../../algorithms/statistics/compositional-data-analysis.md) and its [tested NumPy implementation](../../implementations/python/compositional-data/README.md) (additional canonical record; exact source-entry mapping remains to be confirmed)
 
 **Source caution:** the compendium says these are memory-based and mostly narrower variants or supporting machinery. Verify exact names, software versions and mathematical conditions before creating canonical records.
 
