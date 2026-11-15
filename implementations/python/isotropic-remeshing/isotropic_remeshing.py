@@ -5,7 +5,6 @@ baseline is intentionally slower than production remeshers.
 """
 from collections import defaultdict
 from math import acos, sqrt, isfinite
-from half_edge_mesh import HalfEdgeMesh
 
 
 def _edge_faces(faces):
@@ -26,11 +25,42 @@ def _mid(a, b):
 
 
 def _valid(vertices, faces):
-    try:
-        HalfEdgeMesh.from_triangles(len(vertices), faces)
-        return True
-    except ValueError:
+    """Dependency-free combinatorial manifold/orientation check."""
+    incidence = defaultdict(list)
+    for fi, tri in enumerate(faces):
+        if len(tri) != 3 or len(set(tri)) != 3:
+            return False
+        if any(not isinstance(v, int) or v < 0 or v >= len(vertices) for v in tri):
+            return False
+        for k, u in enumerate(tri):
+            v = tri[(k + 1) % 3]
+            incidence[tuple(sorted((u, v)))].append((fi, u, v))
+    if any(len(uses) > 2 for uses in incidence.values()):
         return False
+    for uses in incidence.values():
+        if len(uses) == 2 and uses[0][1:] != uses[1][1:][::-1]:
+            return False
+    links = [defaultdict(set) for _ in vertices]
+    for tri in faces:
+        for i, v in enumerate(tri):
+            a, b = tri[(i + 1) % 3], tri[(i + 2) % 3]
+            links[v][a].add(b)
+            links[v][b].add(a)
+    for link in links:
+        if not link:
+            continue
+        degrees = [len(x) for x in link.values()]
+        if any(d not in (1, 2) for d in degrees) or sum(d == 1 for d in degrees) not in (0, 2):
+            return False
+        seen, stack = set(), [next(iter(link))]
+        while stack:
+            v = stack.pop()
+            if v not in seen:
+                seen.add(v)
+                stack.extend(link[v] - seen)
+        if len(seen) != len(link):
+            return False
+    return True
 
 
 def split_edge(vertices, faces, edge):
@@ -227,5 +257,6 @@ def isotropic_remesh(vertices, faces, target_length, *, iterations=3,
     remap = {old: new for new, old in enumerate(used)}
     vertices = tuple(vertices[i] for i in used)
     faces = tuple(tuple(remap[v] for v in tri) for tri in faces)
-    HalfEdgeMesh.from_triangles(len(vertices), faces)
+    if not _valid(vertices, faces):
+        raise RuntimeError("remesher produced invalid topology")
     return vertices, faces, counts
