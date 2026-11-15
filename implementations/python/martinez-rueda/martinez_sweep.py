@@ -1,6 +1,7 @@
 """Sweep-line event and segment-splitting core for polygon overlay."""
 from dataclasses import dataclass
 from math import isfinite, atan2, pi
+from bisect import bisect_left, bisect_right
 
 @dataclass(frozen=True)
 class Segment:
@@ -110,9 +111,10 @@ def _inside(point, ring):
 def sweep_split_segments(polygons, *, epsilon=1e-10):
     """Return x-ordered endpoint events, proper crossings and split fragments.
 
-    polygons is [source][ring][point]. Active x-overlap pairs are tested on
-    insertion. This transparent front end is quadratic in the worst case;
-    it is not the complete Martinez–Rueda neighbour-updating algorithm.
+    polygons is [source][ring][point]. An x-ordered sweep maintains a dynamic
+    y-interval status and tests only cross-source bounding-box overlaps. This
+    broad-phase status can still be quadratic in dense/overlapping data; it is
+    not the complete Martinez–Rueda neighbour-event sweep.
     """
     if not isfinite(epsilon) or epsilon<=0: raise ValueError("epsilon must be finite and positive")
     segments=[]
@@ -140,21 +142,34 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
     bounds=[]; events=[]; by_id={}
     for sid,s in enumerate(segments):
         left,right=_left_right(s.a,s.b)
-        item=(left[0],right[0],sid,left,right); bounds.append(item); by_id[sid]=item
+        ymin,ymax=sorted((s.a[1],s.b[1]))
+        item=(left[0],right[0],sid,left,right,ymin,ymax); bounds.append(item); by_id[sid]=item
         events.extend((Event(left,"left",(sid,)),Event(right,"right",(sid,))))
     bounds.sort(key=lambda x:(x[0],x[3][1],x[1],x[2]))
-    active=set(); params=[[(0.,s.a),(1.,s.b)] for s in segments]; crossings=[]
-    for xmin,xmax,sid,left,right in bounds:
-        active={other for other in active if by_id[other][1]>=xmin-epsilon}
-        for other in sorted(active):
+    # Dynamic sweep status ordered by lower y bound. Query only y-interval
+    # overlaps, then apply the exact segment predicate. This is a bounding-
+    # box interval status (not the full Martinez-Rueda neighbour status).
+    active_status=[]; active_by_id={}
+    params=[[(0.,s.a),(1.,s.b)] for s in segments]; crossings=[]; candidate_pairs=0
+    for xmin,xmax,sid,left,right,ymin,ymax in bounds:
+        expired=[other for other,item in active_by_id.items() if item[0]<xmin-epsilon]
+        for other in expired:
+            item=active_by_id.pop(other); pos=bisect_left(active_status,(item[1],other));
+            if pos<len(active_status) and active_status[pos]==(item[1],other): active_status.pop(pos)
+        stop=bisect_right(active_status,(ymax,float('inf')))
+        for active_y,other in active_status[:stop]:
+            old_item=active_by_id[other]
+            if old_item[2]<ymin-epsilon: continue
             s1,s2=segments[sid],segments[other]
             if s1.source==s2.source: continue
+            candidate_pairs+=1
             hit=_intersection(s1,s2,epsilon)
             if hit is None: continue
             t,u,p,proper=hit
             params[sid].append((t,p)); params[other].append((u,p))
             if proper: crossings.append(Event(p,"intersection",tuple(sorted((sid,other)))))
-        active.add(sid)
+        entry=(ymin,sid); pos=bisect_left(active_status,entry); active_status.insert(pos,entry)
+        active_by_id[sid]=(xmax,ymin,ymax)
     fragments=[]
     for sid,s in enumerate(segments):
         ordered=sorted(params[sid],key=lambda z:z[0]); unique=[]
@@ -166,7 +181,7 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
     crossings.sort(key=lambda e:(e.point[0],e.point[1],e.segment_ids))
     events.sort(key=lambda e:(e.point[0],e.point[1],0 if e.kind=="left" else 1))
     return {"segments":tuple(segments),"events":tuple(events),
-            "intersection_events":tuple(crossings),"split_segments":tuple(fragments)}
+            "intersection_events":tuple(crossings),"split_segments":tuple(fragments),\n            "candidate_pairs_tested":candidate_pairs}
 
 def classify_boundary_fragments(polygons, *, operation='intersection', epsilon=1e-10):
     """Select directed fragments for two polygons, each with one shell and optional holes.
