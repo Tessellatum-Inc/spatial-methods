@@ -1633,3 +1633,62 @@ def test_spatial_parameter_profile_interval_sdm_rejects_unknown_model():
     y = np.sin(np.arange(n, dtype=float))
     with pytest.raises(ValueError, match="SAR.*SEM.*SDM"):
         spatial_parameter_profile_interval(y, x, w, model="SAC")
+
+
+def test_icar_log_density_matches_closed_form_on_three_node_chain():
+    from icar import icar_log_density
+    adjacency = np.array([[0., 1., 0.], [1., 0., 1.], [0., 1., 0.]])
+    field = np.array([1., 0., -1.])
+    result = icar_log_density(adjacency, field, precision=2.0)
+    # The two positive Laplacian eigenvalues are 1 and 3.
+    expected = np.log(4.0) - 0.5 * 2 * np.log(2.0 * np.pi) - 0.5 * 2.0 * 2.0
+    assert result.log_density == pytest.approx(expected, abs=1e-12)
+    assert result.quadratic_energy == pytest.approx(2.0)
+    assert result.constrained_dimension == 2
+    assert result.n_components == 1
+    assert result.log_pseudodeterminant_precision == pytest.approx(np.log(16.0))
+
+
+def test_icar_log_density_handles_disconnected_component_constraints():
+    from icar import icar_log_density
+    adjacency = np.zeros((6, 6))
+    adjacency[0, 1] = adjacency[1, 0] = 1.0
+    adjacency[1, 2] = adjacency[2, 1] = 1.0
+    adjacency[3, 4] = adjacency[4, 3] = 1.0
+    adjacency[4, 5] = adjacency[5, 4] = 1.0
+    field = np.array([1., 0., -1., 2., 0., -2.])
+    result = icar_log_density(adjacency, field, precision=0.5)
+    assert result.n_components == 2
+    assert result.constrained_dimension == 4
+    assert result.component_sums == pytest.approx((0.0, 0.0))
+    with pytest.raises(ValueError, match="component 0"):
+        icar_log_density(adjacency, [1., 0., 0., 2., 0., -2.])
+
+
+def test_icar_simulation_respects_each_component_constraint_and_seed():
+    from icar import icar_sample
+    adjacency = np.zeros((6, 6))
+    adjacency[0, 1] = adjacency[1, 0] = 1.0
+    adjacency[1, 2] = adjacency[2, 1] = 1.0
+    adjacency[3, 4] = adjacency[4, 3] = 1.0
+    adjacency[4, 5] = adjacency[5, 4] = 1.0
+    first = icar_sample(adjacency, precision=1.7, rng=991)
+    second = icar_sample(adjacency, precision=1.7, rng=991)
+    assert first.field == second.field
+    values = np.asarray(first.field)
+    assert values[:3].sum() == pytest.approx(0.0, abs=1e-12)
+    assert values[3:].sum() == pytest.approx(0.0, abs=1e-12)
+    assert first.n_components == 2
+
+
+def test_icar_log_density_rejects_invalid_inputs():
+    from icar import icar_log_density
+    adjacency = np.array([[0., 1., 0.], [1., 0., 1.], [0., 1., 0.]])
+    with pytest.raises(ValueError, match="one value per"):
+        icar_log_density(adjacency, [1., -1.])
+    with pytest.raises(ValueError, match="finite"):
+        icar_log_density(adjacency, [1., np.nan, -1.])
+    with pytest.raises(ValueError, match="precision"):
+        icar_log_density(adjacency, [1., 0., -1.], precision=0.0)
+    with pytest.raises(ValueError, match="sum-to-zero"):
+        icar_log_density(adjacency, [1., 0., 0.])

@@ -57,7 +57,7 @@ u_k=V_{k,+}\Lambda_{k,+}^{-1/2}z/\sqrt{\tau},
 \qquad z\sim N(0,I).
 \]
 
-This gives a Gaussian draw on the component-wise sum-to-zero subspace. The implementation reports the graph component labels and the log pseudo-determinant (the sum of logarithms of positive Laplacian eigenvalues).
+This gives a Gaussian draw on the component-wise sum-to-zero subspace. The simulator reports graph component labels and the log pseudo-determinant. The companion `icar_log_density` evaluates the normalized density with respect to Euclidean measure on the constrained subspace, using the precision pseudo-determinant and Laplacian quadratic energy. It rejects fields that violate any component's constraint; the density is not defined with respect to ordinary N-dimensional Lebesgue measure.
 
 ## Implemented teaching baseline
 
