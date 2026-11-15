@@ -36,6 +36,8 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Remote sensing
 
+- [Spectral Angle Mapper and Spectral Information Divergence](remote-sensing/spectral-similarity.md) — compare pixel spectra with reference signatures using angular and information-theoretic distances.
+- [Reed–Xiaoli anomaly detection](remote-sensing/rx-anomaly.md) — score spectrally unusual pixels using global background Mahalanobis distance.
 - [Minimum Noise Fraction (MNF)](remote-sensing/mnf-transform.md) — whiten estimated noise covariance before ordering spectral components by signal-to-noise.
 - [2-D Haar wavelet transform](remote-sensing/haar-wavelet.md) — decompose imagery into multiscale approximation and directional detail subbands with inverse reconstruction.
 - [Radon transform](remote-sensing/radon-transform.md) — calculate approximate line integrals over angle and offset to form a sinogram.
