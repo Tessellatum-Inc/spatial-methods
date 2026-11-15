@@ -299,3 +299,35 @@ def test_matern_cluster_rejects_non_integer_seed():
     from point_patterns import simulate_matern_cluster_process
     with pytest.raises(ValueError, match="seed"):
         simulate_matern_cluster_process((0, 0, 1, 1), 1, 2, 0.2, seed=True)
+
+
+def test_log_gaussian_cox_simulator_is_seeded_and_inside_window():
+    from point_patterns import simulate_log_gaussian_cox_process
+    a = simulate_log_gaussian_cox_process((0, 0, 10, 10), 0.5, 0.7, 2.0,
+                                          nx=4, ny=3, seed=29)
+    b = simulate_log_gaussian_cox_process((0, 0, 10, 10), 0.5, 0.7, 2.0,
+                                          nx=4, ny=3, seed=29)
+    assert a == b
+    assert all(0 <= x <= 10 and 0 <= y <= 10 for x, y in a)
+
+
+def test_log_gaussian_cox_zero_intensity_returns_empty_pattern():
+    from point_patterns import simulate_log_gaussian_cox_process
+    assert simulate_log_gaussian_cox_process((0, 0, 1, 1), 0, 1, 1) == []
+
+
+@pytest.mark.parametrize("params", [
+    (-1, 1, 1), (1, -1, 1), (1, 1, 0), (float("nan"), 1, 1),
+])
+def test_log_gaussian_cox_rejects_invalid_model_parameters(params):
+    from point_patterns import simulate_log_gaussian_cox_process
+    with pytest.raises(ValueError):
+        simulate_log_gaussian_cox_process((0, 0, 1, 1), *params, nx=2, ny=2)
+
+
+def test_log_gaussian_cox_rejects_oversized_or_invalid_grid():
+    from point_patterns import simulate_log_gaussian_cox_process
+    with pytest.raises(ValueError, match="225"):
+        simulate_log_gaussian_cox_process((0, 0, 1, 1), 1, 0.2, 1, nx=16, ny=16)
+    with pytest.raises(ValueError, match="positive integers"):
+        simulate_log_gaussian_cox_process((0, 0, 1, 1), 1, 0.2, 1, nx=0, ny=2)
