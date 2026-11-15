@@ -49,8 +49,8 @@ The canonical records now cover the spectral-index family, global Otsu threshold
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Endmember extraction (N-FINDR, PPI, VCA), unmixing (FCLS, sparse, nonlinear, deep) | Endmember extraction / spectral unmixing methods | 8 | Not checked — intake only |
-| Anomaly and target detection: [global RX](../../algorithms/remote-sensing/rx-anomaly.md), Kernel RX, [global spectral matched filter](../../algorithms/remote-sensing/spectral-matched-filter.md), CEM, ACE, subspace methods | Detection algorithms / statistical methods | 8 | Partial — global RX and global spectral matched filter implemented; Kernel RX, CEM, ACE and subspace methods remain open |
+| Endmember extraction: [N-FINDR](../../algorithms/remote-sensing/nfindr-endmembers.md), [ATGP](../../algorithms/remote-sensing/atgp-endmembers.md), PPI, [VCA](../../algorithms/remote-sensing/vca-endmembers.md); unmixing: [FCLS](../../algorithms/remote-sensing/fcls-unmixing.md), sparse, nonlinear, deep | Endmember extraction / spectral unmixing methods | 8 | Partial — N-FINDR, ATGP, VCA and FCLS have scoped reference implementations; PPI and other unmixing families remain open |
+| Anomaly and target detection: [global RX](../../algorithms/remote-sensing/rx-anomaly.md), Kernel RX, [global spectral matched filter](../../algorithms/remote-sensing/spectral-matched-filter.md), [CEM](../../algorithms/remote-sensing/cem-detection.md), [ACE](../../algorithms/remote-sensing/ace-detection.md), subspace methods | Detection algorithms / statistical methods | 8 | Partial — global RX, matched filter, CEM and ACE implemented; Kernel RX and subspace methods remain open |
 | [Spectral angle mapper and spectral information divergence](../../algorithms/remote-sensing/spectral-similarity.md), band selection, continuum removal, absorption feature analysis, red-edge position | Spectral similarity measures / feature selection / spectral analysis | 8 | Partial — SAM and SID implemented; band selection, continuum removal and absorption-feature analysis remain open |
 
 ## SAR and InSAR
