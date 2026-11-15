@@ -44,7 +44,7 @@ Let \(R(\alpha)=(y-X\hat\beta)^TQ_0(y-X\hat\beta)\). The maximum-likelihood prec
 -\tfrac n2\left[\log(2\pi)+1+\log\{R(\alpha)/n\}\right].
 \]
 
-The implementation scans a bounded grid, then refines around the best grid cell with golden-section search. It reports \(\hat\alpha\), \(\hat\tau\), GLS coefficients, conditional variance \(1/\hat\tau\), fitted mean, residuals, admissible interval and evaluation count.
+The implementation scans a bounded grid, then refines around the best grid cell with golden-section search. It reports \(\hat\alpha\), \(\hat\tau\), GLS coefficients, variance scale (1/tau) and node-specific conditional variances (1/(tau * degree)) \(1/\hat\tau\), fitted mean, residuals, admissible interval and evaluation count.
 
 ## Implementation and tests
 
