@@ -64,5 +64,5 @@ def test_empty_mesh_is_valid():
 
 
 def test_bow_tie_vertex_with_disconnected_triangle_fans_is_rejected():
-    with pytest.raises(ValueError, match="disconnected.*link"):
+    with pytest.raises(ValueError, match="non-manifold link"):
         HalfEdgeMesh.from_triangles(5, [(0, 1, 2), (0, 3, 4)])
