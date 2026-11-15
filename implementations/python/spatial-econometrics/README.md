@@ -2,7 +2,7 @@
 
 This package contains two small dense-matrix building blocks:
 
-1. **Classic OLS-based spatial LM diagnostics** for spatial lag and spatial error dependence.
+1. **Classic and Bera-Yoon robust OLS-based spatial LM diagnostics** for spatial lag and spatial error dependence.
 2. **Average impact decomposition** for spatial lag (SAR/SLM) and spatial Durbin (SDM) specifications.
 3. **Spatial lag 2SLS** using exogenous covariates and their spatial lags as instruments for the endogenous spatially lagged response.
 4. **Concentrated Gaussian maximum likelihood** for SAR and SEM, with a bounded one-dimensional profile search.
@@ -16,7 +16,7 @@ python -m pytest -q
 
 ## Scope and limits
 
-- The LM diagnostics calculate classic LM-lag and LM-error score statistics from an OLS baseline. They do not implement robust LM variants, finite-sample corrections, model selection, or SAR/SEM estimation.
+- The LM diagnostics calculate classic and Bera-Yoon robust LM-lag/LM-error score statistics from an OLS baseline. They do not implement finite-sample corrections, model selection, or SAR/SEM estimation. Robust scores are reported as unavailable when their adjustment denominator is not identified.
 - The LM reference uses the supplied weights exactly as given. Neighbour construction, row standardisation, islands and alignment are modelling decisions that must be resolved before calling it.
 - The impact function calculates exact dense-matrix derivatives for a fitted SAR/SDM coefficient set. It does not estimate model coefficients or their covariance.
 - The SAR/SEM ML estimators use a conservative norm-bounded parameter interval and dense log-determinants. They do not calculate standard errors or cover the full admissible parameter space.
