@@ -69,31 +69,40 @@ def _circle_three(a: Point, b: Point, c: Point):
     return (ux, uy, hypot(ux - ax, uy - ay))
 
 def smallest_enclosing_circle(points, *, seed: int = 0):
-    """Return (center_x, center_y, radius) using randomized Welzl recursion."""
+    """Return (center_x, center_y, radius) using randomized incremental construction.
+
+    The shuffled incremental algorithm maintains the minimum circle for the
+    prefix already processed. When a point falls outside, it is promoted to
+    the boundary; nested passes then constrain one and two earlier points.
+    Expected running time is linear for a random permutation in fixed
+    dimension. The iterative form avoids Python recursion-depth failures.
+    """
     pts = _points(points)
     if not pts:
         return None
     Random(seed).shuffle(pts)
-    def contains(circle, p):
+
+    def contains(circle, point):
         if circle is None:
             return False
-        x, y, r = circle
-        return _distance((x, y), p) <= r + 1e-10 * max(1.0, r)
-    def welzl(n, boundary):
-        if n == 0 or len(boundary) == 3:
-            if not boundary:
-                return None
-            if len(boundary) == 1:
-                return (boundary[0][0], boundary[0][1], 0.0)
-            if len(boundary) == 2:
-                return _circle_two(*boundary)
-            return _circle_three(*boundary)
-        p = pts[n - 1]
-        circle = welzl(n - 1, boundary)
-        if contains(circle, p):
-            return circle
-        return welzl(n - 1, boundary + [p])
-    return welzl(len(pts), [])
+        x, y, radius = circle
+        return _distance((x, y), point) <= radius + 1e-10 * max(1.0, radius)
+
+    circle = None
+    for i, point_i in enumerate(pts):
+        if contains(circle, point_i):
+            continue
+        circle = (point_i[0], point_i[1], 0.0)
+        for j in range(i):
+            point_j = pts[j]
+            if contains(circle, point_j):
+                continue
+            circle = _circle_two(point_i, point_j)
+            for k in range(j):
+                point_k = pts[k]
+                if not contains(circle, point_k):
+                    circle = _circle_three(point_i, point_j, point_k)
+    return circle
 
 
 def convex_hull(points):

@@ -230,3 +230,58 @@ def test_linear_calipers_rectangle_degenerate_and_rotated_cases():
     points=[(x*math.cos(angle)-y*math.sin(angle),x*math.sin(angle)+y*math.cos(angle))
             for x,y in [(0,0),(8,0),(8,2),(0,2)]]
     assert minimum_area_bounding_rectangle_calipers(points)["area"]==pytest.approx(16.0)
+
+
+
+def _brute_minimum_circle(points):
+    """Independent O(n^4) candidate-enumeration oracle for small fixtures."""
+    candidates = []
+    for point in points:
+        candidates.append((point[0], point[1], 0.0))
+    for i, a in enumerate(points):
+        for b in points[i + 1:]:
+            candidates.append(((a[0] + b[0]) / 2, (a[1] + b[1]) / 2,
+                               math.dist(a, b) / 2))
+    for i, a in enumerate(points):
+        for j in range(i + 1, len(points)):
+            b = points[j]
+            for c in points[j + 1:]:
+                ax, ay = a
+                bx, by = b
+                cx, cy = c
+                determinant = 2 * (ax * (by-cy) + bx * (cy-ay) + cx * (ay-by))
+                if abs(determinant) < 1e-12:
+                    continue
+                aa, bb, cc = ax*ax+ay*ay, bx*bx+by*by, cx*cx+cy*cy
+                ux = (aa*(by-cy) + bb*(cy-ay) + cc*(ay-by)) / determinant
+                uy = (aa*(cx-bx) + bb*(ax-cx) + cc*(bx-ax)) / determinant
+                candidates.append((ux, uy, math.dist((ux, uy), a)))
+    feasible = [
+        circle for circle in candidates
+        if all(math.dist((circle[0], circle[1]), point) <= circle[2] + 1e-8
+               for point in points)
+    ]
+    return min(feasible, key=lambda circle: circle[2])
+
+
+def test_smallest_circle_matches_independent_candidate_oracle_on_seeded_clouds():
+    import random
+    rng = random.Random(20261115)
+    for _ in range(250):
+        points = list(dict.fromkeys(
+            (rng.uniform(-20, 20), rng.uniform(-20, 20))
+            for _ in range(rng.randint(1, 10))
+        ))
+        expected = _brute_minimum_circle(points)
+        actual = smallest_enclosing_circle(points, seed=rng.randrange(1_000_000))
+        assert actual == pytest.approx(expected, rel=1e-9, abs=1e-8)
+
+
+def test_smallest_circle_iterative_construction_handles_large_point_sets():
+    import random
+    rng = random.Random(90210)
+    points = [(rng.uniform(-1, 1), rng.uniform(-1, 1)) for _ in range(5000)]
+    circle = smallest_enclosing_circle(points, seed=77)
+    assert circle is not None
+    x, y, radius = circle
+    assert all(math.dist((x, y), point) <= radius + 1e-8 for point in points)
