@@ -51,6 +51,10 @@ All edges are strictly downhill, so the flow graph is a directed acyclic graph. 
 - Holmgren, P. (1994). “Multiple flow direction algorithms for runoff modelling in grid based elevation models: an empirical evaluation.” *Hydrological Processes*, 8(4), 327–334. https://doi.org/10.1002/hyp.3360080405.
 - SAGA GIS documentation describes the Freeman MFD convergence factor and distinguishes it from D8 and D-infinity: https://saga-gis.sourceforge.io/saga_tool_doc/9.11.2/ta_hydrology_1.html.
 
+## Interactive lab
+
+Work through the [MFD flow-routing notebook](../../notebooks/mfd-flow-routing-lab.ipynb) to inspect flow fractions, compare convergence exponents, and verify sink-level conservation.
+
 ## Exercises
 
 1. On a two-neighbour slope, calculate the fractions for p=1 and p=2.
