@@ -83,3 +83,67 @@ def test_scan_rejects_invalid_scan_controls():
         poisson_spatial_scan(coords, [1, 0], [1, 1], min_cases=0)
     with pytest.raises(ValueError):
         monte_carlo_poisson_scan(coords, [1, 0], [1, 1], n_simulations=0)
+
+
+
+def test_besag_newell_identifies_compact_cluster_and_includes_distance_ties():
+    from spatial_scan import besag_newell_scan
+    coords = np.array([[0., 0.], [1., 0.], [-1., 0.], [10., 0.]])
+    cases = np.array([8, 5, 5, 0])
+    population = np.full(4, 100)
+    result = besag_newell_scan(coords, cases, population, k=10, alpha=0.05)
+    centre = result["local_results"][0]
+    assert set(centre["member_indices"]) == {0, 1, 2}
+    assert centre["cases_inside"] == 18
+    assert centre["population_inside"] == 300
+    assert centre["expected_cases_inside"] == pytest.approx(13.5)
+    assert centre["p_value"] < 0.05
+    assert centre["is_cluster"]
+
+
+def test_besag_newell_uses_exact_hypergeometric_tail():
+    from spatial_scan import _hypergeometric_upper_tail
+    # Drawing 5 people from 20, of whom 10 are cases: P(X >= 5) = 1/252.
+    assert _hypergeometric_upper_tail(20, 5, 10, 5) == pytest.approx(1 / 252)
+
+
+def test_besag_newell_global_monte_carlo_is_reproducible():
+    from spatial_scan import monte_carlo_besag_newell
+    coords = np.array([[0., 0.], [1., 0.], [10., 0.], [11., 0.], [20., 0.]])
+    cases = np.array([9, 8, 1, 1, 1])
+    population = np.full(5, 100)
+    a = monte_carlo_besag_newell(coords, cases, population, k=10,
+                                 n_simulations=39, rng=123)
+    b = monte_carlo_besag_newell(coords, cases, population, k=10,
+                                 n_simulations=39, rng=123)
+    assert a["p_value"] == b["p_value"]
+    np.testing.assert_array_equal(a["simulated_significant_counts"],
+                                  b["simulated_significant_counts"])
+    assert 1 / 40 <= a["p_value"] <= 1
+    assert a["n_simulations"] == 39
+
+
+@pytest.mark.parametrize("bad", [
+    (np.array([[0., 0.]]), np.array([1]), np.array([10])),
+    (np.array([[0., 0.], [1., 1.]]), np.array([1.5, 0]), np.array([10, 10])),
+    (np.array([[0., 0.], [1., 1.]]), np.array([1, 0]), np.array([10, 0])),
+    (np.array([[0., 0.], [1., 1.]]), np.array([1, 0]), np.array([10.5, 10])),
+])
+def test_besag_newell_rejects_invalid_inputs(bad):
+    from spatial_scan import besag_newell_scan
+    with pytest.raises(ValueError):
+        besag_newell_scan(*bad, k=1)
+
+
+def test_besag_newell_rejects_invalid_controls_and_population_smaller_than_cases():
+    from spatial_scan import besag_newell_scan, monte_carlo_besag_newell
+    coords = np.array([[0., 0.], [1., 1.]])
+    with pytest.raises(ValueError):
+        besag_newell_scan(coords, [1, 0], [10, 10], k=0)
+    with pytest.raises(ValueError):
+        besag_newell_scan(coords, [1, 0], [10, 10], alpha=1)
+    with pytest.raises(ValueError):
+        besag_newell_scan(coords, [2, 0], [1, 1], k=1)
+    with pytest.raises(ValueError):
+        monte_carlo_besag_newell(coords, [1, 0], [10, 10], k=1,
+                                 n_simulations=0)
