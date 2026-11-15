@@ -133,6 +133,9 @@ jobs:
           - example: network-communities
             directory: implementations/python/network-communities
             pythonpath: ""
+          - example: network-flow
+            directory: implementations/python/network-flow
+            pythonpath: ""
           - example: point-location
             directory: implementations/python/point-location
             pythonpath: ""
