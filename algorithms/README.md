@@ -85,7 +85,9 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 
 - [Ripley's K and L](statistics/ripley-k.md) — compare uncorrected pair-count summaries with the homogeneous Poisson reference across distance scales.
 - [Cross-type point-pattern summaries](statistics/cross-type-point-pattern-summaries.md) — compare nearest-neighbour, K, pair-correlation and J functions between two marked event types.
-- [Homogeneous Poisson and Thomas processes](statistics/poisson-and-thomas-processes.md) — simulate a complete-spatial-randomness baseline and a Gaussian Neyman–Scott cluster process.\n- [Matérn cluster process](statistics/matern-cluster-process.md) — simulate a Neyman–Scott process with Poisson parents and compact-support uniform-disc offspring.\n- [Log-Gaussian Cox process](statistics/log-gaussian-cox-process.md) — simulate a Cox process driven by a discretised correlated Gaussian log-intensity field.
+- [Homogeneous Poisson and Thomas processes](statistics/poisson-and-thomas-processes.md) — simulate a complete-spatial-randomness baseline and a Gaussian Neyman–Scott cluster process.
+- [Matérn cluster process](statistics/matern-cluster-process.md) — simulate a Neyman–Scott process with Poisson parents and compact-support uniform-disc offspring.
+- [Log-Gaussian Cox process](statistics/log-gaussian-cox-process.md) — simulate a Cox process driven by a discretised correlated Gaussian log-intensity field.
 - [Flexible spatial scan statistic](statistics/flexible-spatial-scan.md) — exhaustively score connected irregular zones inside a bounded nearest-neighbour candidate universe, with global Monte Carlo inference.
 - [Elliptical spatial scan statistic](statistics/elliptical-spatial-scan.md) — scan a finite grid of centroid-centred ellipse shapes and orientations with a Poisson likelihood ratio and global Monte Carlo inference.
 - [Tango's general spatial clustering test](statistics/tango-clustering-test.md) — measure global spatial concentration in population-adjusted case-proportion deviations with a distance-decay quadratic form.
@@ -99,7 +101,9 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 
 
 - [Global Moran's I](statistics/global-morans-i.md) — measure global spatial autocorrelation by comparing deviations from the mean across neighbouring units.
-- [Geary's C](statistics/gearys-c.md) — measure global spatial autocorrelation through squared differences between neighbouring values.\n- [Spatial LM diagnostics](statistics/spatial-lm-diagnostics.md) — test classic spatial lag and spatial error alternatives after an OLS null model.\n- [Spatial impacts](statistics/spatial-impacts.md) — decompose SAR/SDM marginal effects into average direct, indirect and total impacts.
+- [Geary's C](statistics/gearys-c.md) — measure global spatial autocorrelation through squared differences between neighbouring values.
+- [Spatial LM diagnostics](statistics/spatial-lm-diagnostics.md) — test classic spatial lag and spatial error alternatives after an OLS null model.
+- [Spatial impacts](statistics/spatial-impacts.md) — decompose SAR/SDM marginal effects into average direct, indirect and total impacts.
 - [Local Moran's I](statistics/local-morans-i.md) — locate local clusters of similar values and spatial outliers, with conditional permutation inference.
 - [Local Geary](statistics/local-geary.md) *(supplementary)* — measure local similarity and dissimilarity directly between a unit and its neighbours.
 - [Getis-Ord Gi*](statistics/getis-ord-gi-star.md) — identify local concentrations of high values (hotspots) and low values (coldspots).
