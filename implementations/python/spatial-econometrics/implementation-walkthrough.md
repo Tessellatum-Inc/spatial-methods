@@ -171,3 +171,17 @@ Open `heteroskedastic_spatial_error_gm.py`.
 5. Constrain the search to a conservative nonsingularity interval for \(I-\lambda W\), and reject a rank-deficient moment coefficient matrix.
 
 This is a disturbance-parameter point estimator only. It does not report the full joint asymptotic covariance, feasible generalized 2SLS or standard errors; those remain separate work rather than being approximated by the homoskedastic KP (1999) covariance.
+
+
+## 13. Three-step heteroskedastic SARAR GTSLS
+
+Open `spatial_sarar_gtsls.py`.
+
+1. Build the endogenous regression matrix \(Z=[X,Wy]\) and instrument matrix \(H=[X,WX,\ldots,W^qX]\), dropping dependent columns.
+2. Estimate the initial SAR regression by 2SLS and retain its residual predictor for the disturbance process.
+3. Estimate the spatial-error coefficient with the heteroskedastic two-moment KP routine. The zero-diagonal quadratic restrictions allow unknown diagonal innovation variances.
+4. Apply \(I-\hat\lambda W\) to both the response and the full endogenous regressor matrix.
+5. Re-estimate the transformed equation by 2SLS using the original H matrix.
+6. The returned HC1 sandwich is conditional on \(\hat\lambda\). It does not reproduce the paper's full joint covariance for the regression coefficients and disturbance parameter.
+
+The implementation is restricted to the common-weights case \(M=W\). It is a three-step point estimator, not a complete inference implementation of every result in Kelejian and Prucha (2010).
