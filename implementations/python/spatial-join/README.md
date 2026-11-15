@@ -68,3 +68,22 @@ For points on polygons:
 - For large datasets, benchmark the actual workload and compare the index selectivity with a brute-force baseline.
 
 Continue with the [filter-and-refine spatial join lesson](../../../algorithms/query-processing/filter-refine-spatial-join.md), the [step-by-step implementation walkthrough](implementation-walkthrough.md), the [STR-packed R-tree lesson](../../../algorithms/indexing/str-packed-rtree.md) and the [interactive notebook](../../../notebooks/filter-refine-spatial-join-lab.ipynb).
+
+
+## Point k-nearest-neighbour join
+
+The package also includes `knn_join.py`, which builds the repository's static
+2D k-d tree over the right-hand point relation and queries it once per left
+point. It returns `(left_id, right_id, squared_distance)` triples, grouped by
+left input order and sorted by distance then right-side input ID. Duplicate
+right-side coordinates remain separate records; if `k` exceeds the right
+relation size, all right records are returned.
+
+Run this module with the sibling k-d tree package on the import path:
+
+```bash
+PYTHONPATH=../kd-tree python -m pytest -q
+```
+
+See the [point kNN join algorithm lesson](../../../algorithms/query-processing/knn-join.md)
+for the indexed query plan and its scope limitations.
