@@ -11,7 +11,7 @@ Dependency-free reference implementations for three spatial key encodings named 
 ## Run
 
 ```bash
-python -m pip install pytest
+python -m pip install -r requirements.txt
 python -m pytest -q
 ```
 

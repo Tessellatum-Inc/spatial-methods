@@ -124,6 +124,9 @@ jobs:
           - example: shortest-paths
             directory: implementations/python/shortest-paths
             pythonpath: ""
+          - example: spatial-encodings
+            directory: implementations/python/spatial-encodings
+            pythonpath: ""
           - example: point-location
             directory: implementations/python/point-location
             pythonpath: ""
