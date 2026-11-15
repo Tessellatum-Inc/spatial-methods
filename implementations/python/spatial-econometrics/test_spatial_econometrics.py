@@ -1157,3 +1157,71 @@ def test_spatial_sarar_joint_covariance_rejects_incompatible_inputs():
     with pytest.raises(ValueError, match="dimensions"):
         spatial_sarar_joint_covariance(y, x, w, h, 0.2,
                                        np.zeros(n - 1), [0.0, 0.0, 0.0])
+
+
+def test_global_morans_i_permutation_matches_independent_manual_simulation():
+    from morans_i_permutation import morans_i_permutation
+    rng = np.random.default_rng(901)
+    n = 24
+    w = _row_standardised_chain(n)
+    values = rng.normal(size=n)
+    result = morans_i_permutation(values, w, permutations=199,
+                                  alternative="two-sided", seed=77)
+    centred = values - values.mean()
+    scale = n / w.sum() / (centred @ centred)
+    observed = scale * (centred @ w @ centred)
+    manual_rng = np.random.default_rng(77)
+    manual = []
+    for _ in range(199):
+        permuted = manual_rng.permutation(centred)
+        manual.append(scale * (permuted @ w @ permuted))
+    manual = np.asarray(manual)
+    extreme = np.count_nonzero(
+        np.abs(manual + 1.0 / (n - 1))
+        >= abs(observed + 1.0 / (n - 1)) - np.finfo(float).eps * 32
+    )
+    assert result.statistic == pytest.approx(observed)
+    assert result.expected_value == pytest.approx(-1.0 / (n - 1))
+    np.testing.assert_allclose(result.simulations, manual)
+    assert result.permutation_mean == pytest.approx(manual.mean())
+    assert result.permutation_standard_deviation == pytest.approx(manual.std(ddof=1))
+    assert result.p_value == pytest.approx((extreme + 1) / 200)
+
+
+def test_global_morans_i_permutation_supports_one_sided_and_asymmetric_weights():
+    from morans_i_permutation import morans_i_permutation
+    n = 18
+    w = _row_standardised_chain(n)
+    assert not np.allclose(w, w.T)
+    values = np.arange(n, dtype=float) ** 2
+    greater = morans_i_permutation(values, w, permutations=299,
+                                    alternative="greater", seed=11)
+    less = morans_i_permutation(values, w, permutations=299,
+                                alternative="less", seed=11)
+    assert 0 < greater.p_value <= 1
+    assert 0 < less.p_value <= 1
+    assert greater.simulations == less.simulations
+    assert greater.p_value != less.p_value
+
+
+def test_global_morans_i_permutation_rejects_invalid_inputs():
+    from morans_i_permutation import morans_i_permutation
+    n = 12
+    w = _row_standardised_chain(n)
+    values = np.arange(n, dtype=float)
+    with pytest.raises(ValueError, match="at least three"):
+        morans_i_permutation([1.0, 2.0], np.zeros((2, 2)))
+    with pytest.raises(ValueError, match="N-by-N"):
+        morans_i_permutation(values, np.zeros((n - 1, n - 1)))
+    with pytest.raises(ValueError, match="positive variance"):
+        morans_i_permutation(np.ones(n), w)
+    with pytest.raises(ValueError, match="positive finite sum"):
+        morans_i_permutation(values, np.zeros((n, n)))
+    with pytest.raises(ValueError, match="zero"):
+        bad = w.copy()
+        bad[0, 0] = 0.1
+        morans_i_permutation(values, bad)
+    with pytest.raises(ValueError, match="permutations"):
+        morans_i_permutation(values, w, permutations=10)
+    with pytest.raises(ValueError, match="alternative"):
+        morans_i_permutation(values, w, alternative="upper")
