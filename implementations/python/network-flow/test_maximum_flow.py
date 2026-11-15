@@ -131,3 +131,14 @@ def test_dinic_matches_independent_augmenting_path_oracle_on_seeded_graphs():
         actual = maximum_flow_min_cut(graph, 0, count - 1)
         assert actual["value"] == pytest.approx(expected)
         assert actual["cut_capacity"] == pytest.approx(expected)
+
+
+def test_flow_total_overflow_is_reported_instead_of_returning_infinity():
+    graph = {
+        "s": [("a", 1e308), ("b", 1e308)],
+        "a": [("t", 1e308)],
+        "b": [("t", 1e308)],
+        "t": [],
+    }
+    with pytest.raises(OverflowError, match="exceeds finite"):
+        maximum_flow_min_cut(graph, "s", "t")
