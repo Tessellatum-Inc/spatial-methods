@@ -27,7 +27,10 @@ python -m pip install numpy pytest
 python -m pytest -q
 ~~~
 
-18. **Global Moran's I permutation inference** with a seeded conditional randomization distribution, plus-one Monte Carlo p-values and explicit one-/two-sided alternatives.\n\n## Scope and limits
+18. **Global Moran's I permutation inference** with a seeded conditional randomization distribution, plus-one Monte Carlo p-values and explicit one-/two-sided alternatives.
+19. **Local Moran's I conditional permutation inference** with HH/LL/HL/LH classifications and Benjamini–Hochberg false-discovery-rate adjustment.
+
+## Scope and limits
 
 - Global Moran's I permutation inference treats values as exchangeable over fixed locations under its randomization null. The two-sided test measures absolute deviation from -1/(n-1); it is global, not a local cluster detector. Weights are used as supplied and are not automatically symmetrised or row-standardised.
 - Local Moran inference conditions on each focal value and permutes the remaining observations over the other locations. By default, Benjamini–Hochberg adjustment is applied across non-islands; arbitrary spatial dependence can affect its guarantees. Islands receive NaN p-values and no cluster classification.\n- The LM diagnostics calculate classic and Bera–Yoon robust score statistics from an OLS baseline. They do not implement finite-sample corrections, joint tests or model selection. Robust scores are unavailable when their adjustment denominator is not identified.
