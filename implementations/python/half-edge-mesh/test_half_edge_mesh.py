@@ -61,3 +61,8 @@ def test_empty_mesh_is_valid():
     mesh = HalfEdgeMesh.from_triangles(0, [])
     assert mesh.halfedges == ()
     assert mesh.vertex_edge == ()
+
+
+def test_bow_tie_vertex_with_disconnected_triangle_fans_is_rejected():
+    with pytest.raises(ValueError, match="disconnected.*link"):
+        HalfEdgeMesh.from_triangles(5, [(0, 1, 2), (0, 3, 4)])
