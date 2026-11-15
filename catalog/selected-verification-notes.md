@@ -201,3 +201,13 @@ These notes record bounded checks against publisher or institutional bibliograph
 - **Technical claims:** k-nearest neighbours form nearly-collinear triples; weighted medians of lower/higher endpoints define screens; a weighted median of low screen, target and high screen updates the target. The implementation fixes geometry and triple membership, then updates synchronously.
 - **Implementation:** weighted head-banging, tests and lab added. Locations with no qualifying triples are unchanged; full software corner-point rules and automatic parameter selection remain unimplemented. Median polish remains open.
 - **Rights:** independent implementation from published descriptions and public government documentation; no software code or figures copied.
+
+
+## Section 2 — Tukey median polish
+
+**Source entry:** “Empirical Bayes rate smoothing, head-banging, median polish” (source page 4).
+
+- **Identity and bibliography:** Tukey (1977), *Exploratory Data Analysis*, is the foundational reference. The maintained R stats::medpolish documentation confirms the overall + row + column additive model, alternating row/column median removal, proportional reduction in absolute residual sum as the convergence rule, and optional missing-value removal.
+- **Implementation:** two-way median polish with overall/row/column effects, residuals, optional missing-value handling and convergence history. The classic parachuting-deaths example is included in tests and lab.
+- **Limitations:** no weights, interactions, multiway arrays or spatial neighbourhood structure. The grouped source entry remains partial because other disease-mapping variants such as Clayton–Kaldor and CAR/BYM are not implemented.
+- **Rights:** independent implementation; no R source code or figures copied.

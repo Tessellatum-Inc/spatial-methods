@@ -282,6 +282,9 @@ jobs:
           - example: spatial-distribution-summaries
             directory: implementations/python/spatial-distribution-summaries
             pythonpath: ""
+          - example: median-polish
+            directory: implementations/python/median-polish
+            pythonpath: ""
           - example: head-banging
             directory: implementations/python/head-banging
             pythonpath: ""
@@ -524,6 +527,7 @@ jobs:
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/point-pattern-second-order-statistics-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/empirical-bayes-rate-smoothing-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/weighted-head-banging-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/median-polish-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/spatial-distribution-summaries-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/spatial-inequality-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/multiple-testing-corrections-lab.ipynb
