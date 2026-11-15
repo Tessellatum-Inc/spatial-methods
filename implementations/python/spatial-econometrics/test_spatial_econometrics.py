@@ -1225,3 +1225,72 @@ def test_global_morans_i_permutation_rejects_invalid_inputs():
         morans_i_permutation(values, w, permutations=10)
     with pytest.raises(ValueError, match="alternative"):
         morans_i_permutation(values, w, alternative="upper")
+
+
+
+def test_local_morans_i_matches_manual_conditional_permutations_and_bh():
+    from local_morans_i_permutation import local_morans_i_permutation, _benjamini_hochberg
+    rng = np.random.default_rng(221)
+    n = 16
+    w = _row_standardised_chain(n)
+    values = rng.normal(size=n)
+    result = local_morans_i_permutation(values, w, permutations=199,
+                                        adjustment="bh", seed=19)
+    z = values - values.mean()
+    m2 = z @ z / n
+    expected_i = -(z ** 2) * w.sum(axis=1) / ((n - 1) * m2)
+    np.testing.assert_allclose(result.local_i, z * (w @ z) / m2)
+    np.testing.assert_allclose(result.expected_value, expected_i)
+    manual_rng = np.random.default_rng(19)
+    raw = []
+    for i in range(n):
+        idx = np.arange(n) != i
+        draws = []
+        for _ in range(199):
+            permuted = manual_rng.permutation(z[idx])
+            draws.append(z[i] * (w[i, idx] @ permuted) / m2)
+        draws = np.asarray(draws)
+        extreme = np.count_nonzero(
+            np.abs(draws - expected_i[i])
+            >= abs(result.local_i[i] - expected_i[i]) - np.finfo(float).eps * 32
+        )
+        raw.append((extreme + 1) / 200)
+    np.testing.assert_allclose(result.p_values, raw)
+    np.testing.assert_allclose(result.adjusted_p_values, _benjamini_hochberg(np.asarray(raw)))
+
+
+def test_local_morans_i_handles_islands_and_cluster_labels():
+    from local_morans_i_permutation import local_morans_i_permutation
+    n = 20
+    w = _row_standardised_chain(n)
+    w[0, :] = 0.0
+    values = np.r_[np.ones(10) * 2.0, np.ones(10) * -2.0]
+    result = local_morans_i_permutation(values, w, permutations=199,
+                                        adjustment="none", seed=3)
+    assert result.cluster_labels[0] == "island"
+    assert np.isnan(result.p_values[0])
+    assert np.all(np.isfinite(result.p_values[1:]))
+    assert set(result.cluster_labels[1:]).issubset(
+        {"HH", "LL", "HL", "LH", "not-significant"}
+    )
+
+
+def test_local_morans_i_supports_asymmetric_weights_and_rejects_invalid_inputs():
+    from local_morans_i_permutation import local_morans_i_permutation
+    n = 14
+    w = _row_standardised_chain(n)
+    assert not np.allclose(w, w.T)
+    values = np.arange(n, dtype=float) ** 2
+    fit = local_morans_i_permutation(values, w, permutations=99,
+                                     alternative="greater", seed=4)
+    assert fit.alternative == "greater"
+    with pytest.raises(ValueError, match="N-by-N"):
+        local_morans_i_permutation(values, np.zeros((n - 1, n - 1)))
+    with pytest.raises(ValueError, match="positive variance"):
+        local_morans_i_permutation(np.ones(n), w)
+    with pytest.raises(ValueError, match="permutations"):
+        local_morans_i_permutation(values, w, permutations=10)
+    with pytest.raises(ValueError, match="alpha"):
+        local_morans_i_permutation(values, w, alpha=1.0)
+    with pytest.raises(ValueError, match="adjustment"):
+        local_morans_i_permutation(values, w, adjustment="bonferroni")
