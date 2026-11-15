@@ -167,7 +167,14 @@ def test_k_nearest_matches_brute_force_on_seeded_clouds():
                  for i, (x, y) in enumerate(points))
             )[:k]
             actual = tree.k_nearest(query, k)
-            assert actual == [(i, d2) for d2, i in expected]
+            # The query and oracle evaluate equivalent squared-distance
+            # expressions with different floating-point operation order.
+            # Compare selected indices exactly and distances with a tight
+            # tolerance rather than requiring bit-identical round-off.
+            assert [index for index, _ in actual] == [i for _d2, i in expected]
+            assert [distance for _index, distance in actual] == pytest.approx(
+                [d2 for d2, _i in expected], rel=1e-14, abs=1e-14
+            )
 
 
 @pytest.mark.parametrize("k", [-1, 1.5, True, "2"])
