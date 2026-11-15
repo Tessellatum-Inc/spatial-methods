@@ -1,37 +1,41 @@
-# Normalised Difference Vegetation Index (NDVI)
+# Spectral indices
 
-This package calculates NDVI from near-infrared (NIR) and red reflectance arrays:
+NumPy implementations of common optical remote-sensing indices with explicit
+validity handling. Functions return NaN for non-finite, masked, NoData or
+undefined (zero-denominator) pixels where applicable.
 
-$$
-NDVI=\frac{NIR-Red}{NIR+Red}.
-$$
+## Implemented indices
 
-The function preserves undefined pixels as NaN, supports an explicit NoData value and validity mask, and does not clip outputs to a presumed physical range.
+- NDVI: vegetation contrast, NIR and red.
+- EVI: enhanced vegetation index, NIR/red/blue, standard coefficients.
+- SAVI: soil-adjusted vegetation index, caller-selectable soil factor L (default 0.5).
+- NDRE: red-edge vegetation contrast.
+- NDMI and LSWI: common NIR/SWIR1 moisture formulations.
+- NDWI (McFeeters): green/NIR open-water contrast.
+- MNDWI: green/SWIR1 modified water index.
+- NDBI: SWIR1/NIR built-up contrast.
+- NBR and dNBR: NIR/SWIR2 burn ratio and pre-minus-post differenced NBR.
+- NDSI: common green/SWIR1 snow index.
 
 ## Run
 
-~~~bash
-python -m pip install -r requirements.txt
-python -m pytest -q
-~~~
+    python -m pip install -r requirements.txt
+    python -m pytest -q
 
-## Example
+Supply same-shaped, comparable reflectance arrays after sensor/product
+calibration and quality masking. Select bands by spectral response, not by
+assuming identical band numbers across sensors. Indices are proxies, not
+universal class labels. Soil, atmosphere, canopy, water, illumination,
+phenology and sensor response influence values.
 
-~~~python
-import numpy as np
-from spectral_indices import ndvi
+The dNBR convention here is pre-fire minus post-fire; document alternatives.
+NDMI and LSWI overlap in common formulations. Common MNDWI and NDSI formulas
+also use the same bands but serve different interpretation goals. Do not treat
+different names as independent measurements without checking definitions.
 
-nir = np.array([[0.62, 0.48], [0.20, 0.15]])
-red = np.array([[0.12, 0.16], [0.18, 0.15]])
-index = ndvi(nir, red)
-~~~
+EVI's additive denominator constant assumes reflectance-scale inputs
+consistent with its conventional formulation; do not apply it blindly to
+unscaled digital numbers.
 
-## Important input contract
-
-- Inputs are same-shaped arrays of comparable reflectance values, not raw digital numbers from unrelated bands.
-- Apply the sensor-specific calibration and atmospheric correction appropriate to the product before interpreting the index.
-- Pixels with non-finite inputs, an explicit NoData value, a false validity mask or a zero denominator become NaN.
-- Negative reflectance values are not silently clipped; inspect upstream processing and interpret the result carefully.
-- NDVI is a spectral index, not a direct measurement of biomass, species, health or productivity.
-
-Read the [canonical lesson](../../../algorithms/remote-sensing/ndvi.md) and [intern walkthrough](implementation-walkthrough.md).
+Read the [NDVI lesson](../../../algorithms/remote-sensing/ndvi.md) and
+[extended index family lesson](../../../algorithms/remote-sensing/spectral-index-family.md).
