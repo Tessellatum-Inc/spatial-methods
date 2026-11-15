@@ -4,6 +4,7 @@ from proximity_graphs import (
     beta_skeleton,
     delaunay_filtered_gabriel_graph,
     delaunay_filtered_rng,
+    delaunay_euclidean_mst,
     euclidean_mst,
     gabriel_graph,
     relative_neighborhood_graph,
@@ -106,3 +107,42 @@ def test_delaunay_filtered_variants_reject_collinear_sites(function):
 def test_delaunay_filtered_variants_require_three_sites(function):
     with pytest.raises(ValueError, match="three points"):
         function([(0, 0), (1, 0)])
+
+
+
+def test_delaunay_euclidean_mst_matches_complete_graph_reference_on_seeded_clouds():
+    import random
+
+    rng = random.Random(20261117)
+    for size in (2, 3, 4, 8, 15, 40, 100):
+        for _ in range(8):
+            points = []
+            while len(points) < size:
+                candidate = (rng.uniform(-100, 100), rng.uniform(-100, 100))
+                if candidate not in points:
+                    points.append(candidate)
+            expected = euclidean_mst(points)
+            actual = delaunay_euclidean_mst(points)
+            assert len(actual) == size - 1
+            assert sum(edge[2] for edge in actual) == pytest.approx(
+                sum(edge[2] for edge in expected), rel=1e-11, abs=1e-11
+            )
+            assert all(i != j and 0 <= i < size and 0 <= j < size
+                       for i, j, _weight in actual)
+
+
+def test_delaunay_euclidean_mst_handles_collinear_and_small_inputs():
+    assert delaunay_euclidean_mst([]) == []
+    assert delaunay_euclidean_mst([(0, 0)]) == []
+    assert delaunay_euclidean_mst([(0, 0), (3, 4)]) == [(0, 1, 5.0)]
+    points = [(3, 6), (-2, -4), (0, 0), (1, 2), (-1, -2)]
+    result = delaunay_euclidean_mst(points)
+    assert len(result) == len(points) - 1
+    assert sum(edge[2] for edge in result) == pytest.approx(4 * (5 ** 0.5))
+
+
+def test_delaunay_euclidean_mst_rejects_duplicate_and_non_finite_sites():
+    with pytest.raises(ValueError):
+        delaunay_euclidean_mst([(0, 0), (0, 0)])
+    with pytest.raises(ValueError):
+        delaunay_euclidean_mst([(0, 0), (1, float("nan"))])

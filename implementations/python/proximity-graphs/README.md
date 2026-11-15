@@ -21,6 +21,10 @@ The strict interior tests implement open-region conventions. Points exactly on a
 The implementations are O(n³) for Gabriel/RNG/beta-skeleton and O(n²) for Yao/MST candidate generation. They are transparent small-data baselines, not the efficient Delaunay-based constructions from the literature.
 
 
+## Sparse Delaunay Euclidean MST
+
+The sparse MST function constructs a Delaunay triangulation, extracts its linear-size edge set and runs Kruskal only on those candidates. The Euclidean MST is contained in the Delaunay graph. Collinear sites bypass Qhull and are connected in lexicographic order. Seeded tests compare total tree length with the complete-graph Kruskal oracle. For non-collinear sites this is an O(n log n) teaching implementation, subject to SciPy/Qhull numerical predicates.
+
 ## Delaunay-filtered variants
 
 The package also exposes `delaunay_filtered_gabriel_graph` and `delaunay_filtered_rng`. They construct a SciPy/Qhull Delaunay triangulation, then apply the corresponding open-region blocker test only to triangulation edges. This reduces the candidate set from all O(n²) pairs to O(n) planar edges, and the straightforward blocker scan gives an O(n²) total baseline.

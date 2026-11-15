@@ -140,3 +140,11 @@ Then construct a nearly cocircular point set and document how your boundary conv
 - [Computational Geometry: An Introduction](https://www.cs.rpi.edu/~cutler/classes/computationalgeometry/F23/references/Computational_Geometry_An_Introduction.pdf).
 
 **Scope:** small-input implementations cover Gabriel, RNG, one lune-based beta-skeleton variant, one explicitly specified Yao graph variant and Euclidean MST. Efficient Delaunay-based construction and proven large-scale bounds are not implemented.
+
+
+
+### Delaunay-candidate Euclidean minimum spanning tree
+
+The new sparse MST implementation extracts the edges of a planar Delaunay triangulation and runs Kruskal on that candidate graph. The Euclidean MST is a subgraph of the Delaunay triangulation, so complete-graph O(n²) edge enumeration is avoided. For non-collinear sites, triangulation and sorting the O(n) candidate edges give O(n log n) time and O(n) candidate storage. Collinear sites are handled by sorting along their common line and connecting adjacent sites. Zero- and one-point inputs return an empty tree.
+
+The implementation is checked against the complete-graph Kruskal baseline on seeded general-position clouds. This is a sparse-candidate construction using SciPy/Qhull, not a from-scratch Delaunay implementation. Qhull's floating-point predicates and coordinate scale remain relevant.

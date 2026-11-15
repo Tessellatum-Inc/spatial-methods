@@ -233,3 +233,61 @@ def yao_graph(points: Sequence[Sequence[float]], cones: int = 8,
         for _distance2, j in best.values():
             selected.add((min(i, j), max(i, j)))
     return sorted(selected)
+
+
+
+def delaunay_euclidean_mst(
+    points: Sequence[Sequence[float]],
+) -> list[tuple[int, int, float]]:
+    """Build an exact Euclidean MST from a sparse Delaunay candidate graph.
+
+    For non-collinear sites, the Euclidean MST is contained in every
+    Delaunay triangulation, so Kruskal only needs the O(n) triangulation
+    edges. Collinear sites are handled by connecting adjacent points in
+    lexicographic order. Complexity is O(n log n) for non-collinear sites.
+    """
+    pts = _normalise(points)
+    n = len(pts)
+    if n <= 1:
+        return []
+    if n == 2:
+        return [(0, 1, _distance(pts[0], pts[1]))]
+
+    import numpy as np
+    coordinates = np.asarray(pts, dtype=float)
+    if np.linalg.matrix_rank(coordinates - coordinates[0]) < 2:
+        ordered = sorted(range(n), key=lambda i: (pts[i][0], pts[i][1], i))
+        return [
+            (min(a, b), max(a, b), _distance(pts[a], pts[b]))
+            for a, b in zip(ordered, ordered[1:])
+        ]
+
+    _normalised_points, candidate_pairs = _delaunay_candidate_edges(pts)
+    candidates = sorted(
+        (_distance(pts[i], pts[j]), i, j) for i, j in candidate_pairs
+    )
+    parent = list(range(n))
+    rank = [0] * n
+
+    def find(x: int) -> int:
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    result = []
+    for weight, i, j in candidates:
+        ri, rj = find(i), find(j)
+        if ri == rj:
+            continue
+        if rank[ri] < rank[rj]:
+            ri, rj = rj, ri
+        parent[rj] = ri
+        if rank[ri] == rank[rj]:
+            rank[ri] += 1
+        result.append((i, j, weight))
+        if len(result) == n - 1:
+            break
+    if len(result) != n - 1:
+        raise RuntimeError("Delaunay candidate graph did not connect all sites")
+    return result
