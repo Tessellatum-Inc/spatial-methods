@@ -903,3 +903,37 @@ def test_spatial_lag_anderson_rubin_rejects_invalid_or_unidentified_inputs():
         spatial_lag_anderson_rubin(y, x, bad, 0.2)
     with pytest.raises(ValueError, match="no independent excluded"):
         spatial_lag_anderson_rubin(y, np.ones((n, 1)), w, 0.2)
+
+
+def test_heteroskedastic_spatial_error_gm_recovers_dependence_with_varying_innovation_variance():
+    from heteroskedastic_spatial_error_gm import heteroskedastic_spatial_error_gm
+    rng = np.random.default_rng(2718)
+    n = 120
+    w = _row_standardised_chain(n)
+    rho = 0.38
+    innovation_scale = 0.15 + 0.2 * np.abs(rng.normal(size=n))
+    innovation = rng.normal(size=n) * innovation_scale
+    disturbance = np.linalg.solve(np.eye(n) - rho * w, innovation)
+    fit = heteroskedastic_spatial_error_gm(disturbance, w, grid_size=501)
+    assert fit.lambda_ == pytest.approx(rho, abs=0.16)
+    assert fit.moment_objective >= 0
+    assert len(fit.moment_residuals) == 2
+    assert len(fit.gamma_matrix) == 2
+    assert np.all(np.isfinite(np.asarray(fit.gamma_matrix)))
+    assert fit.evaluations > 501
+
+
+def test_heteroskedastic_spatial_error_gm_rejects_invalid_inputs_and_bounds():
+    from heteroskedastic_spatial_error_gm import heteroskedastic_spatial_error_gm
+    n = 40
+    w = _row_standardised_chain(n)
+    residuals = np.sin(np.arange(n, dtype=float))
+    with pytest.raises(ValueError, match="grid_size"):
+        heteroskedastic_spatial_error_gm(residuals, w, grid_size=10)
+    with pytest.raises(ValueError, match="nonsingularity"):
+        heteroskedastic_spatial_error_gm(residuals, w, rho_bounds=(-1.0, 0.9))
+    with pytest.raises(ValueError, match="finite"):
+        heteroskedastic_spatial_error_gm([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+                                          13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
+                                          23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
+                                          33, 34, 35, 36, 37, 38, 39, float("nan")], w)
