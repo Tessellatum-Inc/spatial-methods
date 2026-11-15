@@ -55,7 +55,7 @@ The simple strict-descent rule does not resolve flats or fill depressions. A pit
 
 ## Teaching implementation
 
-The [Python implementation](../../implementations/python/d8-flow/README.md) calculates D8 direction on a small 2D grid, accepts non-square cell spacing and supports an explicit validity mask or NoData sentinel. It does not calculate flow accumulation, stream networks, watershed boundaries, or D-infinity and multiple-flow-direction outputs.
+The [Python package](../../implementations/python/d8-flow/README.md) contains both the D8 single-direction method and a companion power-law MFD variant. D8 chooses one steepest neighbour; MFD distributes flow over all strictly lower neighbours. The MFD implementation and its limits are described in the [MFD routing lesson](mfd-flow-routing.md).
 
 ## Exercises
 
