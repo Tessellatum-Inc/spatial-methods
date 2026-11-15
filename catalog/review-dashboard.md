@@ -70,12 +70,17 @@ The `compendium/section-01-geometry-continuation` branch head (`97d508fb767b9e39
 A subsequent Section 1 implementation batch adds tested reference encoders/decoders for Morton (Z-order), Hilbert distance and Geohash, with a source-linked algorithm guide, implementation walkthrough and verification record. H3, S2, quadkeys and HEALPix remain distinct open systems; the grouped source row is therefore partial, not complete. The batch is committed directly to `main` as `848807b391f7edee78db02867882650ed328c889`; its full Python/notebook workflow is pending.
 
 
-The Section 1 source reconciliation has also added repeated-Dijkstra many-to-many shortest paths and cutoff-Dijkstra network isochrones (including directed frontier arcs) to the existing shortest-path package, with tests, a walkthrough and a source-linked method/verification record. This is a bounded static-graph baseline, not a shared-preprocessing production routing engine. The 22-section source-entry label totals remain 85 partial, 609 intake-only and zero fully verified; the Section 1 count remains 18 partial and 15 intake-only.
+The Section 1 source reconciliation has also added repeated-Dijkstra many-to-many shortest paths and cutoff-Dijkstra network isochrones (including directed frontier arcs) to the existing shortest-path package, with tests, a walkthrough and a source-linked method/verification record. This is a bounded static-graph baseline, not a shared-preprocessing production routing engine. At the time of that routing update, source-entry label totals were 85 partial and 609 intake-only; subsequent reconciliations are recorded below.
 
 
-The new `spatial-encodings` package has been added to the Python CI matrix and has its own `requirements.txt`; it is now included in the 132 package test jobs. It adds no separate notebook, so the explicit notebook execution list remains 126.
+The new `spatial-encodings` package has been added to the Python CI matrix and has its own `requirements.txt`; it is now included in the 133 package test jobs. It adds no separate notebook, so the explicit notebook execution list remains 126.
 
 
 ## Implementation reconciliation — network centrality batch
 
 Section 1's directed centrality entry now links to a dependency-free implementation of Brandes node betweenness (BFS and strictly-positive weighted Dijkstra variants), inward directed closeness with the Wasserman–Faust reachability correction, and weighted PageRank with dangling-node redistribution and personalization. Analytical graph fixtures, disconnected cases, weighted paths, convergence and input-validation tests are included. The row remains partial because space-syntax integration and street-network metrics are separate methods in the grouped source entry. The new package is included in the Python CI matrix; package count is now 133 and notebook execution count remains 126. The source-entry dashboard is 86 partial, 608 intake-only, zero fully verified.
+
+
+## Implementation reconciliation — point-pattern G, F and J
+
+The Section 2 point-process package now implements the empirical nearest-neighbour G function, a reproducible Monte Carlo empty-space F function based on uniform locations in a rectangular window, and J=(1-G)/(1-F), with undefined tail values represented as NaN. Tests cover monotonicity, seeded reproducibility, the G/F/J relationship and invalid controls. The source row remains partial because these are uncorrected rectangular-window teaching estimators; advanced edge correction, simulation envelopes, and broader point-process models remain open. The package already participates in the Python CI matrix. No source-entry count changes were made by this additive implementation because the grouped G/F/J source row was already partial.
