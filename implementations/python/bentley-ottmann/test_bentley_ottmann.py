@@ -72,3 +72,36 @@ def test_seeded_random_cases_against_oracle():
         assert pairs(bentley_ottmann(ss)) == oracle(ss)
         checked += 1
     assert checked >= 10
+
+
+def test_exact_affine_shear_supports_vertical_segment_crossing():
+    from bentley_ottmann import bentley_ottmann_with_verticals
+    raw=[(1,(2,0),(2,5)),(2,(0,2),(5,2))]
+    result=bentley_ottmann_with_verticals(raw)
+    assert result==[(1,2,(Fraction(2),Fraction(2)))]
+
+
+def test_affine_shear_restores_multiple_vertical_intersections():
+    from bentley_ottmann import bentley_ottmann_with_verticals
+    raw=[
+        (1,(2,-2),(2,8)),
+        (2,(-1,1),(5,1)),
+        (3,(-2,4),(6,4)),
+        (4,(0,7),(4,-1)),
+    ]
+    result=bentley_ottmann_with_verticals(raw)
+    expected=set()
+    for i,(sid,a,b) in enumerate(raw):
+        for tid,c,d in raw[i+1:]:
+            hit=segment_intersection(a,b,c,d)
+            if hit.kind=="point":
+                expected.add((min(sid,tid),max(sid,tid),hit.geometry))
+    assert set(result)==expected
+
+
+def test_affine_shear_rejects_duplicate_ids_and_zero_length_segments():
+    from bentley_ottmann import bentley_ottmann_with_verticals
+    with pytest.raises(ValueError,match="unique"):
+        bentley_ottmann_with_verticals([(1,(0,0),(1,1)),(1,(0,2),(2,0))])
+    with pytest.raises(ValueError,match="distinct"):
+        bentley_ottmann_with_verticals([(1,(2,2),(2,2))])
