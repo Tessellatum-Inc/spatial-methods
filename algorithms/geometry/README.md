@@ -38,4 +38,10 @@ These records are part of the broader [algorithm collection](../README.md). The 
 
 - [Alpha shapes](alpha-shapes.md) — parameterise a non-convex envelope by filtering Delaunay triangles using circumradius.
 - [Alpha-shape implementation](../../implementations/python/alpha-shapes/README.md) — Delaunay triangle filtering, boundary-ring extraction and numerical tests.
-- [Visibility polygons](visibility-polygons.md) — compute the region visible from an interior viewpoint in a polygonal environment.\n- [Laplacian and Taubin mesh smoothing](mesh-smoothing.md) — smooth triangular meshes while documenting shrinkage and feature-preservation limits.\n- [Half-edge mesh topology](half-edge-mesh.md) — indexed face cycles, symmetric twins, boundary edges and adjacency for oriented triangle meshes.\n- [Conservative mesh repair](mesh-repair.md) — weld near-duplicate vertices, remove collapsed/duplicate faces and consistently orient components.\n- [Isotropic-style remeshing](isotropic-remeshing.md) — split/collapse/flip edges with topology checks and tangential relaxation.
+- [Visibility polygons](visibility-polygons.md) — compute the region visible from an interior viewpoint in a polygonal environment.
+- [Laplacian and Taubin mesh smoothing](mesh-smoothing.md) — smooth triangular meshes while documenting shrinkage and feature-preservation limits.
+- [Half-edge mesh topology](half-edge-mesh.md) — indexed face cycles, symmetric twins, boundary edges and adjacency for oriented triangle meshes.
+- [Conservative mesh repair](mesh-repair.md) — weld near-duplicate vertices, remove collapsed/duplicate faces and consistently orient components.
+- [Isotropic-style remeshing](isotropic-remeshing.md) — split/collapse/flip edges with topology checks and tangential relaxation.
+- [Winged-edge topology](winged-edge.md) — static polygon-mesh edges with left/right faces and four wing references.
+- [Quad-edge topology](quad-edge.md) — Guibas–Stolfi four-dart representation and core topological operators.
