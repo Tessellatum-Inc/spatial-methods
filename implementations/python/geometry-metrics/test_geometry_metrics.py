@@ -559,4 +559,4 @@ def test_minimum_width_matches_brute_force_edge_orientation_oracle():
             nx,ny=-dy/length,dx/length
             projections=[x*nx+y*ny for x,y in hull]
             expected=min(expected,max(projections)-min(projections))
-        assert convex_polygon_minimum_width(points)["width"] == pytest.approx(expected, rel=1e-10, abs=1e-9)
+        assert convex_polygon_minimum_width(points) == pytest.approx(expected, rel=1e-10, abs=1e-9)
