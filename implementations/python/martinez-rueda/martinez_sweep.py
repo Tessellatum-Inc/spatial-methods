@@ -324,10 +324,32 @@ def stitch_boundary_fragments(fragments, *, epsilon=1e-10):
     if len(used)!=len(edges): raise ValueError('not all selected fragments were stitched')
     return tuple(rings)
 
+def assemble_polygon_components(rings):
+    """Group CCW shell rings with their directly contained CW hole rings.
+
+    Positive rings become polygon shells. Each negative ring is assigned to
+    the smallest-area shell that strictly contains one of its vertices.
+    Islands inside holes remain independent polygon components.
+    """
+    shells=[ring for ring in rings if _signed_area(ring)>0]
+    holes=[ring for ring in rings if _signed_area(ring)<0]
+    components=[{'shell':shell,'holes':[]} for shell in shells]
+    for hole in holes:
+        probe=hole[0]
+        parents=[(abs(_signed_area(item['shell'])),item)
+                 for item in components if _inside(probe,item['shell'])]
+        if not parents:
+            raise ValueError('clockwise ring has no containing shell')
+        min(parents,key=lambda item:item[0])[1]['holes'].append(hole)
+    return tuple({'shell':item['shell'],'holes':tuple(item['holes'])}
+                 for item in components)
+
+
 def boolean_overlay_rings(polygons, *, operation='intersection', epsilon=1e-10):
-    """Return closed rings for two polygon inputs (one shell plus optional holes)."""
+    """Return oriented rings and explicit polygon components for two inputs."""
     classified=classify_boundary_fragments(polygons,operation=operation,epsilon=epsilon)
     rings=stitch_boundary_fragments(classified['selected_fragments'],epsilon=epsilon)
-    return {'operation':operation,'rings':rings,
+    components=assemble_polygon_components(rings)
+    return {'operation':operation,'rings':rings,'polygons':components,
             'area':sum(_signed_area(ring) for ring in rings),
             'intersection_events':classified['intersection_events']}
