@@ -104,3 +104,81 @@ def test_result_description_reports_actual_dimension():
     report = describe_result(line)
     assert report["geometry_type"] == "LineString"
     assert report["area"] == 0.0 and report["is_valid"] is True
+
+def test_seeded_axis_aligned_rectangle_overlay_against_independent_oracle():
+    """Check 500 rectangle pairs against interval-arithmetic area formulas."""
+    import random
+
+    rng = random.Random(20261115)
+    for _ in range(500):
+        ax0, ax1 = sorted((rng.uniform(-100, 100), rng.uniform(-100, 100)))
+        ay0, ay1 = sorted((rng.uniform(-100, 100), rng.uniform(-100, 100)))
+        bx0, bx1 = sorted((rng.uniform(-100, 100), rng.uniform(-100, 100)))
+        by0, by1 = sorted((rng.uniform(-100, 100), rng.uniform(-100, 100)))
+        # Avoid degenerate rectangles without conditioning the overlap pattern.
+        if ax1 - ax0 < 1e-6 or ay1 - ay0 < 1e-6:
+            continue
+        if bx1 - bx0 < 1e-6 or by1 - by0 < 1e-6:
+            continue
+
+        left = Polygon([(ax0, ay0), (ax1, ay0), (ax1, ay1), (ax0, ay1)])
+        right = Polygon([(bx0, by0), (bx1, by0), (bx1, by1), (bx0, by1)])
+        iw = max(0.0, min(ax1, bx1) - max(ax0, bx0))
+        ih = max(0.0, min(ay1, by1) - max(ay0, by0))
+        intersection_area = iw * ih
+        area_a = (ax1 - ax0) * (ay1 - ay0)
+        area_b = (bx1 - bx0) * (by1 - by0)
+        union_area = area_a + area_b - intersection_area
+
+        inter = overlay(left, right, "intersection")
+        union = overlay(left, right, "union")
+        difference = overlay(left, right, "difference")
+        symmetric = overlay(left, right, "symmetric_difference")
+
+        assert inter.area == pytest.approx(intersection_area, rel=1e-10, abs=1e-9)
+        assert union.area == pytest.approx(union_area, rel=1e-10, abs=1e-9)
+        assert difference.area == pytest.approx(area_a - intersection_area, rel=1e-10, abs=1e-9)
+        assert symmetric.area == pytest.approx(area_a + area_b - 2 * intersection_area,
+                                               rel=1e-10, abs=1e-9)
+        assert all(g.is_valid for g in (inter, union, difference, symmetric))
+
+
+def test_seeded_overlay_metamorphic_symmetry_and_area_conservation():
+    """Operation identities should hold across varied rotated rectangles."""
+    import random
+    from math import cos, sin
+
+    rng = random.Random(81723)
+
+    def rotated_rectangle(cx, cy, width, height, angle):
+        c, s = cos(angle), sin(angle)
+        return Polygon([
+            (cx + x * c - y * s, cy + x * s + y * c)
+            for x, y in [(-width / 2, -height / 2),
+                         (width / 2, -height / 2),
+                         (width / 2, height / 2),
+                         (-width / 2, height / 2)]
+        ])
+
+    for _ in range(250):
+        a = rotated_rectangle(rng.uniform(-5, 5), rng.uniform(-5, 5),
+                              rng.uniform(0.2, 8), rng.uniform(0.2, 8),
+                              rng.uniform(-3.14, 3.14))
+        b = rotated_rectangle(rng.uniform(-5, 5), rng.uniform(-5, 5),
+                              rng.uniform(0.2, 8), rng.uniform(0.2, 8),
+                              rng.uniform(-3.14, 3.14))
+        ab_intersection = overlay(a, b, "intersection")
+        ba_intersection = overlay(b, a, "intersection")
+        ab_union = overlay(a, b, "union")
+        ba_union = overlay(b, a, "union")
+        a_minus_b = overlay(a, b, "difference")
+        b_minus_a = overlay(b, a, "difference")
+        xor = overlay(a, b, "symmetric_difference")
+
+        assert ab_intersection.symmetric_difference(ba_intersection).area == pytest.approx(0.0, abs=1e-8)
+        assert ab_union.symmetric_difference(ba_union).area == pytest.approx(0.0, abs=1e-8)
+        assert ab_union.area + ab_intersection.area == pytest.approx(a.area + b.area, rel=1e-9, abs=1e-8)
+        assert a_minus_b.area + ab_intersection.area == pytest.approx(a.area, rel=1e-9, abs=1e-8)
+        assert b_minus_a.area + ab_intersection.area == pytest.approx(b.area, rel=1e-9, abs=1e-8)
+        assert xor.area == pytest.approx(a_minus_b.area + b_minus_a.area, rel=1e-9, abs=1e-8)
+
