@@ -341,3 +341,24 @@ def test_exact_point_in_ring_accepts_fraction_coordinates():
     ring=[(0,0),(2,0),(2,2),(0,2)]
     assert _inside((Fraction(1,2),Fraction(3,2)),ring)
     assert not _inside((Fraction(2),Fraction(1)),ring)
+
+
+def test_x_window_expiry_heap_preserves_disjoint_sweep_results():
+    # Both polygons are valid, but their x-ranges are separated by a wide gap.
+    a=[(0,0),(10,0),(10,10),(0,10)]
+    b=[(100,0),(110,0),(110,10),(100,10)]
+    result=sweep_split_segments([[a],[b]])
+    assert result["candidate_pairs_tested"]==0
+    assert len(result["split_segments"])==8
+    assert result["intersection_events"]==()
+
+
+def test_split_parameters_are_exact_fractions():
+    from fractions import Fraction
+    a=[(0,0),(4,0),(4,4),(0,4)]
+    b=[(1,-1),(3,-1),(3,5),(1,5)]
+    result=sweep_split_segments([[a],[b]])
+    fragments=[f for f in result["split_segments"] if f.source==0 and f.index==0]
+    assert len(fragments)==3
+    assert all(isinstance(f.t0,Fraction) and isinstance(f.t1,Fraction)
+               for f in fragments)
