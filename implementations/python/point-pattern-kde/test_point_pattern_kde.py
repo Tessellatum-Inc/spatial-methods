@@ -138,3 +138,34 @@ def test_loo_weighted_selection_and_invalid_inputs():
         select_bandwidth_loo([(0, 0), (1, 1)], [0])
     with pytest.raises(ValueError):
         adaptive_gaussian_kde([(0.5, 0.5)], bounds=(0, 1, 0, 1), bandwidth=1, alpha=2)
+
+
+def test_adaptive_pilot_bandwidths_match_independent_abramsom_rule():
+    from point_pattern_kde import adaptive_gaussian_kde
+    points = np.array([(0, 0), (0.1, 0), (0.2, 0), (3, 0), (3.2, 0)], dtype=float)
+    h, alpha = 0.7, 0.5
+    _, _, _, actual = adaptive_gaussian_kde(
+        points, bounds=(-1, 4, -1, 1), grid_shape=(2, 5), bandwidth=h,
+        alpha=alpha, bandwidth_factor_bounds=(0.1, 10.0)
+    )
+    delta = points[:, None, :] - points[None, :, :]
+    squared = np.sum(delta * delta, axis=2)
+    np.fill_diagonal(squared, np.inf)
+    pilot = np.exp(-squared / (2*h*h)).sum(axis=1) / (2*np.pi*h*h*(len(points)-1))
+    geometric = np.exp(np.mean(np.log(pilot)))
+    expected = h * (geometric / pilot) ** alpha
+    np.testing.assert_allclose(actual, expected)
+
+
+def test_zero_weight_events_do_not_change_adaptive_pilot_for_active_events():
+    from point_pattern_kde import adaptive_gaussian_kde
+    base_points = [(0, 0), (0.2, 0), (2, 0)]
+    base = adaptive_gaussian_kde(
+        base_points, bounds=(-1, 3, -1, 1), grid_shape=(3, 5), bandwidth=0.6
+    )
+    extended = adaptive_gaussian_kde(
+        base_points + [(2.8, 0)], bounds=(-1, 3, -1, 1), grid_shape=(3, 5),
+        bandwidth=0.6, weights=[1, 1, 1, 0]
+    )
+    np.testing.assert_allclose(base[0], extended[0])
+    np.testing.assert_allclose(base[3], extended[3][:3])
