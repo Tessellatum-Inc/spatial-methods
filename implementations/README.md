@@ -162,3 +162,7 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Multi-criteria routing
 
 - [Pareto shortest paths](python/shortest-paths/README.md): nondominated source-to-target paths for finite graphs with nonnegative additive cost vectors, alongside the single-criterion shortest-path baselines.
+
+### Computational geometry metrics
+
+- [Hausdorff, discrete Fréchet and smallest enclosing circle](python/geometry-metrics/README.md): directed/symmetric sampled-point Hausdorff, order-sensitive discrete Fréchet and randomized Welzl minimum enclosing circle, with tests and walkthrough.
