@@ -395,3 +395,51 @@ def test_discrete_frechet_is_symmetric_with_unequal_sequence_lengths():
         assert discrete_frechet_distance(a, b) == pytest.approx(
             discrete_frechet_distance(b, a), abs=1e-12
         )
+
+
+
+def test_rotating_calipers_diameter_is_scale_invariant_for_tiny_and_large_shapes():
+    from geometry_metrics import convex_polygon_diameter
+
+    for scale in (1e-12, 1e-9, 1e-3, 1.0, 1e6):
+        points = [(0, 0), (2*scale, 0), (2*scale, scale), (0, scale)]
+        assert convex_polygon_diameter(points)[2] == pytest.approx(
+            math.sqrt(5) * scale, rel=1e-12, abs=scale * 1e-12
+        )
+
+
+def test_rotating_calipers_diameter_matches_pairwise_oracle_on_integer_degeneracies():
+    import random
+    from geometry_metrics import convex_polygon_diameter
+
+    rng = random.Random(20261122)
+    for _ in range(600):
+        points = list(dict.fromkeys(
+            (rng.randrange(-30, 31), rng.randrange(-30, 31))
+            for _ in range(rng.randrange(0, 55))
+        ))
+        actual = convex_polygon_diameter(points)
+        if not points:
+            assert actual is None
+            continue
+        expected = max(
+            (math.dist(a, b) for a in points for b in points),
+            default=0.0,
+        )
+        assert actual[2] == pytest.approx(expected, rel=1e-12, abs=1e-12)
+
+
+def test_rotating_calipers_diameter_is_translation_and_rotation_invariant():
+    from geometry_metrics import convex_polygon_diameter
+
+    points = [(-3, 0), (-1, -2), (2, -1), (4, 2), (0, 5), (-2, 3)]
+    expected = convex_polygon_diameter(points)[2]
+    angle = 0.817
+    transformed = [
+        (1e6 + x*math.cos(angle) - y*math.sin(angle),
+         -2e6 + x*math.sin(angle) + y*math.cos(angle))
+        for x, y in points
+    ]
+    assert convex_polygon_diameter(transformed)[2] == pytest.approx(
+        expected, rel=1e-9, abs=1e-8
+    )
