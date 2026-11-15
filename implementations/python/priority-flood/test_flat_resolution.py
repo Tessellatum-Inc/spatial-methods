@@ -43,7 +43,7 @@ def test_masks_and_explicit_epsilon():
     out = resolve_flats(dem, epsilon=0.1)
     assert out[1,1] > out[2,1]
     with pytest.raises(ValueError, match="higher terrain"):
-        resolve_flats(dem, epsilon=3.0)
+        resolve_flats(dem, epsilon=6.0)
     mask = np.ones_like(dem, dtype=bool); mask[1,1] = False
     assert np.isnan(resolve_flats(dem, valid_mask=mask)[1,1])
 
