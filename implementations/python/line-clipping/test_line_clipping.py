@@ -88,3 +88,46 @@ def test_nicholl_lee_nicholl_boundary_start_outward_is_single_point():
 def test_nicholl_lee_nicholl_rejects_degenerate_window():
     with pytest.raises(ValueError):
         nicholl_lee_nicholl((0,0),(1,1),(0,0,0,1))
+
+
+def test_cohen_sutherland_matches_liang_barsky_on_seeded_random_segments():
+    import random
+    rng = random.Random(20261115)
+    rect = (-3.0, -2.0, 7.0, 5.0)
+    for _ in range(5000):
+        a = (rng.uniform(-15, 15), rng.uniform(-12, 12))
+        b = (rng.uniform(-15, 15), rng.uniform(-12, 12))
+        expected = liang_barsky(a, b, rect)
+        actual = cohen_sutherland(a, b, rect)
+        if expected is None:
+            assert actual is None, (a, b, actual)
+        else:
+            assert actual is not None, (a, b, expected)
+            assert actual[0] == pytest.approx(expected[0], abs=1e-9)
+            assert actual[1] == pytest.approx(expected[1], abs=1e-9)
+
+
+def test_cyrus_beck_matches_liang_barsky_on_seeded_rectangle_segments():
+    import random
+    rng = random.Random(20261116)
+    ccw = [(-3, -2), (7, -2), (7, 5), (-3, 5)]
+    for ring in (ccw, list(reversed(ccw))):
+        for _ in range(2500):
+            a = (rng.uniform(-15, 15), rng.uniform(-12, 12))
+            b = (rng.uniform(-15, 15), rng.uniform(-12, 12))
+            expected = liang_barsky(a, b, (-3, -2, 7, 5))
+            actual = cyrus_beck(a, b, ring)
+            if expected is None:
+                assert actual is None, (a, b, actual)
+            else:
+                assert actual is not None, (a, b, expected)
+                assert actual[0] == pytest.approx(expected[0], abs=1e-9)
+                assert actual[1] == pytest.approx(expected[1], abs=1e-9)
+
+
+def test_line_clippers_handle_zero_length_segments():
+    inside = (2.0, 3.0)
+    outside = (-2.0, 3.0)
+    for clipper in (cohen_sutherland, liang_barsky, cyrus_beck, nicholl_lee_nicholl):
+        assert clipper(inside, inside, R) == (inside, inside)
+        assert clipper(outside, outside, R) is None
