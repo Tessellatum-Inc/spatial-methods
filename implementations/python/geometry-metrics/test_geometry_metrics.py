@@ -208,3 +208,25 @@ def test_largest_empty_circle_respects_cell_budget():
     sites=[(0,0),(12,0),(10,8),(2,10),(5,4)]
     with pytest.raises(RuntimeError,match="max_cells"):
         largest_empty_circle(sites,precision=0.001,max_cells=1)
+
+
+def test_linear_calipers_rectangle_matches_quadratic_baseline_on_seeded_clouds():
+    import random
+    from geometry_metrics import minimum_area_bounding_rectangle_calipers
+    rng=random.Random(2026)
+    for _ in range(100):
+        points=[(rng.uniform(-20,20),rng.uniform(-20,20)) for _ in range(rng.randint(3,35))]
+        expected=minimum_area_bounding_rectangle(points)["area"]
+        actual=minimum_area_bounding_rectangle_calipers(points)["area"]
+        assert actual==pytest.approx(expected,rel=1e-10,abs=1e-9)
+
+
+def test_linear_calipers_rectangle_degenerate_and_rotated_cases():
+    from geometry_metrics import minimum_area_bounding_rectangle_calipers
+    assert minimum_area_bounding_rectangle_calipers([]) is None
+    assert minimum_area_bounding_rectangle_calipers([(2,3)])["area"]==0
+    assert minimum_area_bounding_rectangle_calipers([(0,0),(3,0),(1,0)])["area"]==0
+    angle=math.pi/5
+    points=[(x*math.cos(angle)-y*math.sin(angle),x*math.sin(angle)+y*math.cos(angle))
+            for x,y in [(0,0),(8,0),(8,2),(0,2)]]
+    assert minimum_area_bounding_rectangle_calipers(points)["area"]==pytest.approx(16.0)
