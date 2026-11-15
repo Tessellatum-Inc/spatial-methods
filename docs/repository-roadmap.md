@@ -42,6 +42,7 @@ The goal is not to fill folders or publish pages quickly. The goal is a collecti
 - [x] Add four source-derived spatial-statistics lessons and two supplementary companions, with PySAL-based runnable notebooks, conditional permutation explanations and FDR treatment.
 - [x] Add a bivariate Moran's I lesson, dependency-free implementation, conditional permutation baseline, edge-case tests, implementation walkthrough and executable notebook; keep the directional statistic and pseudo-p-value convention explicit.
 - [x] Add a source-grounded Lee's L lesson, row-standardized global statistic implementation, smoothing-scalar diagnostics, edge-case tests, walkthrough and executable notebook; distinguish it from bivariate Moran's I and defer local/inferential extensions.
+- [x] Add source-grounded simple and partial Mantel test records, distance-matrix validation, label-preserving permutations, seeded Monte Carlo p-values, tests, implementation walkthrough and executable notebook; explicitly document spatial-autocorrelation failure modes and alternatives.
 - [x] Add live ipywidgets controls to compare Moran's I and Geary's C while changing values and weight style.
 - [x] Add an interactive geometry lab for point-in-polygon, segment intersection and polygon overlay.
 - [x] Add a learning path connecting global and local autocorrelation methods, including Getis-Ord hotspot analysis.
