@@ -53,13 +53,14 @@ def _validate_noded_segments(segments):
             if not _segments_intersect(a, b, c, d):
                 continue
             shared = set((a, b)) & set((c, d))
-            if not shared:
-                raise ValueError("Input boundaries must be noded: segments cross or form a T-junction")
             if _orient(a, b, c) == 0 and _orient(a, b, d) == 0:
                 non_shared = (set((a, b)) | set((c, d))) - shared
-                if any(_on_segment(a, b, p) or _on_segment(c, d, p)
-                       for p in non_shared):
+                if not shared or any(_on_segment(a, b, p) or _on_segment(c, d, p)
+                                     for p in non_shared):
                     raise ValueError("Input boundaries must not contain partial collinear overlaps")
+                continue
+            if not shared:
+                raise ValueError("Input boundaries must be noded: segments cross or form a T-junction")
 
 
 def _validate_simple_ring(points):
