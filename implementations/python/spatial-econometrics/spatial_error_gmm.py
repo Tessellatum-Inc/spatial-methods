@@ -130,6 +130,8 @@ def spatial_error_gmm(
         raise ValueError("spatial-error moments did not identify a positive innovation variance")
 
     transform = np.eye(n) - lam * w
+    if np.linalg.matrix_rank(transform) < n or np.linalg.cond(transform) > 1e12:
+        raise ValueError("I - lambda W is singular or numerically ill-conditioned at the estimate")
     filtered_y = transform @ response
     filtered_x = transform @ design
     normal = filtered_x.T @ filtered_x
