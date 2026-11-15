@@ -27,3 +27,7 @@ A* with a zero heuristic must return the same result as Dijkstra. Add fixtures f
 ## Step 6 — Do not overgeneralise
 
 Real routing may require edge-based state for turn restrictions, time-dependent costs, vehicle profiles and network snapping. These concerns belong in the graph model and search state, not in a map drawing layer.
+
+## Pareto label-setting extension
+
+The companion `pareto_paths.py` routine changes the single best-known label into a nondominated set of cost-vector labels at each node. It uses componentwise dominance to discard labels that cannot lead to a Pareto-optimal route. Nonnegative additive edge costs allow cycles to be removed without improving any objective, so the implementation avoids revisiting nodes already on a path. The frontier may grow exponentially; the optional label cap therefore raises instead of truncating.
