@@ -2,7 +2,7 @@
 
 ## Identity and bibliography
 - Wood, S. N. (2003), “Thin plate regression splines,” *Journal of the Royal Statistical Society: Series B*, 65(1), 95–114, DOI 10.1111/1467-9868.00374.
-- R mgcv documentation distinguishes thin-plate regression splines as low-rank isotropic smoothers and Duchon splines as a broader family.
+- R mgcv documentation distinguishes thin-plate regression splines as low-rank isotropic smoothers and Duchon splines as a broader family. The constructor notes describe optimal truncation of the full thin-plate basis: https://stat.ethz.ch/R-manual/R-devel/library/mgcv/help/tprs.html.
 
 ## Technical claims
 - The two-dimensional thin-plate radial kernel is proportional to r² log(r).
