@@ -31,3 +31,43 @@ def hillshade_from_slope_aspect(slope_degrees, aspect_degrees, *, sun_azimuth_de
     result[angled]=np.clip(illumination,0.0,1.0)
     result[flat]=np.sin(altitude)
     return result
+
+
+
+def multidirectional_hillshade(
+    slope_degrees,
+    aspect_degrees,
+    *,
+    sun_azimuths=(225.0, 270.0, 315.0, 360.0),
+    sun_altitude_degrees: float = 45.0,
+) -> np.ndarray:
+    """Average local hillshade from several azimuths at one altitude.
+
+    The default four-azimuth composite reduces the directional bias of a
+    single light source. It averages equally weighted normalized local
+    illumination; it does not model cast shadows or diffuse radiance.
+    """
+    try:
+        azimuths = np.asarray(tuple(sun_azimuths), dtype=float)
+    except (TypeError, ValueError):
+        raise ValueError("sun_azimuths must be a non-empty sequence of finite angles") from None
+    if azimuths.ndim != 1 or azimuths.size == 0 or not np.isfinite(azimuths).all():
+        raise ValueError("sun_azimuths must be a non-empty sequence of finite angles")
+    slope = np.asarray(slope_degrees, dtype=float)
+    aspect = np.asarray(aspect_degrees, dtype=float)
+    if slope.shape != aspect.shape:
+        raise ValueError("slope and aspect arrays must have the same shape")
+    shades = [
+        hillshade_from_slope_aspect(
+            slope, aspect,
+            sun_azimuth_degrees=float(azimuth),
+            sun_altitude_degrees=sun_altitude_degrees,
+        )
+        for azimuth in azimuths
+    ]
+    stack = np.stack(shades, axis=0)
+    valid_count = np.isfinite(stack).sum(axis=0)
+    total = np.nansum(stack, axis=0)
+    result = np.full(slope.shape, np.nan, dtype=float)
+    np.divide(total, valid_count, out=result, where=valid_count > 0)
+    return result
