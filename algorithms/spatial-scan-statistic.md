@@ -52,7 +52,7 @@ The notebook uses 99 replications only as a demonstration. More simulations are 
 
 ## Implementation and source verification
 
-The [point-process package](../implementations/python/point-process/README.md) contains the centroid-based scan and conditional multinomial Monte Carlo calibration in `spatial_scan.py`, with regression cases in `test_spatial_scan.py`. See the [source-verification note](../catalog/verification/spatial-scan-statistic.md) for bibliographic identity and limits.
+The [point-process package](../implementations/python/point-process/README.md) contains the centroid-based scan and conditional multinomial Monte Carlo calibration in `spatial_scan.py`, with regression cases in `test_spatial_scan.py`. See the [source-verification note](../catalog/verification/spatial-scan-statistic.md) for bibliographic identity and limits. Explore the [interactive scan lab](../notebooks/spatial-scan-statistic-lab.ipynb) to vary the candidate-zone population cap and Monte Carlo replication count.
 
 ## References
 
