@@ -63,6 +63,8 @@ jobs:
             pythonpath: ""
           - example: bivariate-morans-i
             directory: implementations/python/bivariate-morans-i
+          - example: lees-l
+            directory: implementations/python/lees-l
             pythonpath: ""
           - example: local-morans-i
             directory: implementations/python/local-morans-i
@@ -547,6 +549,7 @@ jobs:
           mkdir -p /tmp/notebook-output
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=120 notebooks/global-morans-i-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/bivariate-morans-i-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/lees-l-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=120 notebooks/gearys-c-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/local-morans-i-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.timeout=180 notebooks/local-geary-lab.ipynb
