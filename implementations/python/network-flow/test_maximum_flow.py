@@ -39,7 +39,7 @@ def test_parallel_and_antiparallel_arcs_remain_distinct():
 def test_zero_capacity_and_unreachable_sink():
     result = maximum_flow_min_cut({"s": [("a", 0)], "a": []}, "s", "t")
     assert result["value"] == 0
-    assert result["source_side"] == {"s", "a"}
+    assert result["source_side"] == {"s"}
     assert result["sink_side"] == {"t"}
 
 

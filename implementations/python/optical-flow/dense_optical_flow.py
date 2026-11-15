@@ -45,7 +45,7 @@ def dis(first, second, *, preset="medium", finest_scale=0, patch_size=8,
     if not isinstance(finest_scale,int) or finest_scale < 0: raise ValueError("finest_scale must be non-negative")
     if not isinstance(patch_size,int) or patch_size < 2: raise ValueError("patch_size must be >=2")
     if not isinstance(patch_stride,int) or patch_stride < 1: raise ValueError("patch_stride must be positive")
-    if not isinstance(grad_descent_iterations,int) or grad_descent_iterations < 1:
+    if not isinstance(gradient_descent_iterations,int) or grad_descent_iterations < 1:
         raise ValueError("grad_descent_iterations must be positive")
     algorithm=cv2.DISOpticalFlow_create(presets[preset])
     algorithm.setFinestScale(finest_scale)

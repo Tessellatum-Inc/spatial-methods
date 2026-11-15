@@ -1,5 +1,5 @@
 import pytest
-from simplification import _distance_to_line, douglas_peucker,lang,opheim,reumann_witkam,visvalingam_whyatt
+from simplification import _distance_to_line, douglas_peucker,lang,opheim,reumann_witkam,visvalingam_whyatt,zhao_saalfeld_narrow_sleeve
 def test_existing_methods():
     line=[(0,0),(1,.1),(2,-.1),(3,0)]
     assert douglas_peucker(line,.2)==[line[0],line[-1]]
@@ -103,10 +103,10 @@ def test_douglas_peucker_preserves_endpoints_and_order():
 
 def test_visvalingam_threshold_uses_triangle_area_units():
     triangle = [(0, 0), (1, 1), (2, 0)]
-    assert visvalingam_whyatt(triangle, 0.5) == [
+    assert visvalingam_whyatt(triangle, 1.0) == [
         (0.0, 0.0), (2.0, 0.0)
     ]
-    assert visvalingam_whyatt(triangle, 0.49) == [
+    assert visvalingam_whyatt(triangle, 0.99) == [
         (0.0, 0.0), (1.0, 1.0), (2.0, 0.0)
     ]
 

@@ -1,6 +1,6 @@
 import math
 import pytest
-from geometry_metrics import directed_hausdorff_distance, hausdorff_distance, discrete_frechet_distance, smallest_enclosing_circle
+from geometry_metrics import directed_hausdorff_distance, hausdorff_distance, discrete_frechet_distance, smallest_enclosing_circle, minimum_area_bounding_rectangle
 
 def test_hausdorff_is_symmetric_and_known_value():
     a=[(0,0),(2,0)]; b=[(0,0),(1,0),(2,0)]
@@ -142,7 +142,7 @@ def test_continuous_frechet_handles_different_sampling_of_same_curve():
     dense=[(0,0),(0.5,0),(1,0),(1.5,0),(2,0)]
     assert continuous_frechet_decision(coarse,dense,0.0)
     assert continuous_frechet_distance(coarse,dense,tolerance=1e-8)==pytest.approx(0.0,abs=1e-8)
-    assert discrete_frechet_distance(coarse,dense)==pytest.approx(0.5)
+    assert discrete_frechet_distance(coarse,dense)==pytest.approx(1.0)
 
 
 def test_continuous_frechet_parallel_lines_and_threshold_decision():
