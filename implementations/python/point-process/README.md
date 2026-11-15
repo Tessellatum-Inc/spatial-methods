@@ -3,6 +3,7 @@
 Dependency-free functions for a bounded subset of spatial point-process analysis:
 
 - Nearest-neighbour distances and empirical G function; Monte Carlo empty-space F function and combined J-function estimate.
+- Cross-type G, rectangular translation-corrected cross-K, finite-difference cross pair correlation and Monte Carlo cross-J for two distinct marks.
 - Homogeneous Ripley's K with rectangular translation edge correction.
 - Inhomogeneous K with externally supplied pointwise intensities and rectangular translation correction.
 - Finite-difference pair-correlation estimates from K(r).
