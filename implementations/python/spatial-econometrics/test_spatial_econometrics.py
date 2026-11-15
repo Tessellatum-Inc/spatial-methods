@@ -746,7 +746,7 @@ def test_spatial_error_gmm_handles_zero_spatial_error_and_custom_bounds():
     assert fit.rho_bounds == (-0.8, 0.8)
 
 
-def test_spatial_error_gmm_rejects_invalid_inputs_and_boundary_solution():
+def test_spatial_error_gmm_rejects_invalid_inputs():
     from spatial_error_gmm import spatial_error_gmm
     n = 12
     w = _row_standardised_chain(n)
