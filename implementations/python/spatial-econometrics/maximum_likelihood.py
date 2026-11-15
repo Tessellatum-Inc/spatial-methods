@@ -335,10 +335,11 @@ def spatial_sarar_mle(y: Sequence[float], x: Sequence[Sequence[float]],
     rho, lam = best_rho, best_lam
     for _ in range(coordinate_iterations):
         old_rho, old_lam = rho, lam
-        rho, _ = _golden_max(lambda value: profile(value, lam),
-                             lower, upper, tolerance=tolerance)
-        lam, _ = _golden_max(lambda value: profile(rho, value),
-                             lower, upper, tolerance=tolerance)
+        rho, _, rho_evaluations = _golden_max(lambda value: profile(value, lam),
+                                               lower, upper, tolerance=tolerance)
+        lam, _, lam_evaluations = _golden_max(lambda value: profile(rho, value),
+                                               lower, upper, tolerance=tolerance)
+        evaluations += rho_evaluations + lam_evaluations
         if abs(rho - old_rho) + abs(lam - old_lam) <= tolerance * (
                 1.0 + abs(rho) + abs(lam)):
             break
