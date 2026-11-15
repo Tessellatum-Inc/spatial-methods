@@ -99,6 +99,15 @@ jobs:
           - example: quadtree
             directory: implementations/python/quadtree
             pythonpath: ""
+          - example: octree
+            directory: implementations/python/octree
+            pythonpath: ""
+          - example: visibility-polygon
+            directory: implementations/python/visibility-polygon
+            pythonpath: ""
+          - example: vp-tree
+            directory: implementations/python/vp-tree
+            pythonpath: ""
           - example: polygon-validity
             directory: implementations/python/polygon-validity
             pythonpath: ""
