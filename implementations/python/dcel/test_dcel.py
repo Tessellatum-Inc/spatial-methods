@@ -11,6 +11,8 @@ def test_single_face_has_twin_exterior_cycle():
     assert len(d.vertices)==4 and len(d.halfedges)==8
     assert len(d.faces["a"].boundary_cycles)==1
     assert len(d.unbounded_cycles)==1
+    assert d.unbounded_face.id is None
+    assert d.unbounded_face.boundary_cycles is d.unbounded_cycles
 
 def test_adjacent_faces_share_twins_and_have_consistent_cycles():
     d=DCEL.from_faces({"west":[rect(0,0,1,1)],"east":[rect(1,0,2,1,True)]})
@@ -26,6 +28,7 @@ def test_multiple_disconnected_faces_have_separate_exterior_components():
     d=DCEL.from_faces({"a":[rect(0,0,1,1)],"b":[rect(3,0,4,1)]})
     assert d.validate()
     assert len(d.unbounded_cycles)==2
+    assert len(d.unbounded_face.boundary_cycles)==2
 
 def test_rejects_bad_rings_and_duplicate_orientation():
     with pytest.raises(ValueError): DCEL.from_faces({"x":[[(0,0),(1,0),(1,1),(0,1)]]})
