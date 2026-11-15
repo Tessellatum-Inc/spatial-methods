@@ -33,11 +33,11 @@ def test_query_returns_a_trapezoid_with_correct_vertical_interval():
             if cell.bottom_segment is None:
                 bottom = 0.0
             else:
-                bottom = locator._y_at(locator.segments[cell.bottom_segment], x)
+                bottom = (lambda s: s[0][1] + (x-s[0][0])*(s[1][1]-s[0][1])/(s[1][0]-s[0][0]))(locator.segments[cell.bottom_segment])
             if cell.top_segment is None:
                 top = 10.0
             else:
-                top = locator._y_at(locator.segments[cell.top_segment], x)
+                top = (lambda s: s[0][1] + (x-s[0][0])*(s[1][1]-s[0][1])/(s[1][0]-s[0][0]))(locator.segments[cell.top_segment])
             assert bottom - 1e-10 <= y <= top + 1e-10
 
 
