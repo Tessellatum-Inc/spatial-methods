@@ -69,3 +69,6 @@ Do not make an exercise depend on an unavailable dataset, paid software or unexp
 
 - [M/M/c queueing](mmc-queue.md) — calculate waiting under a stable multi-server queue and challenge the Poisson and exponential assumptions.
 - [MEXCLP expected coverage](mexclp.md) — compare deterministic coverage with availability-adjusted expected demand.
+
+- [Continuous Fréchet distance](continuous-frechet-distance.md) — distinguish the continuous free-space method from discrete vertex matching.
+- [Largest empty circle](largest-empty-circle.md) — search for a high-clearance centre within a point set's convex hull.
