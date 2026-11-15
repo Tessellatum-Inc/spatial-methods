@@ -57,7 +57,9 @@ def test_cycle_is_rejected():
     elevation = [[4, 3]]
     directions = [[1, 16]]
     streams = [[False, False]]
-    with pytest.raises(ValueError, match="cycle"):
+    # Strict downhill validation rejects this cyclic receiver pair before
+    # traversal; any valid strictly descending D8 graph is necessarily acyclic.
+    with pytest.raises(ValueError):
         height_above_nearest_drainage(elevation, directions, streams)
 
 
