@@ -101,3 +101,30 @@ def test_polylabel_rejects_invalid_parameters_and_degenerate_polygon():
     with pytest.raises(ValueError): polylabel([(0,0),(1,0),(2,0)],precision=0.1)
     with pytest.raises(ValueError): polylabel([(0,0),(1,0),(1,1)],precision=0)
     with pytest.raises(ValueError): polylabel([(0,0),(1,0),(1,1)],max_cells=0)
+
+
+def test_minimum_area_rectangle_axis_aligned_and_rotated():
+    from geometry_metrics import minimum_area_bounding_rectangle
+    result = minimum_area_bounding_rectangle([(0,0),(4,0),(4,2),(0,2),(2,1)])
+    assert result["area"] == pytest.approx(8.0)
+    theta = math.pi/4
+    points = [(x*math.cos(theta)-y*math.sin(theta), x*math.sin(theta)+y*math.cos(theta))
+              for x,y in [(0,0),(4,0),(4,2),(0,2)]]
+    assert minimum_area_bounding_rectangle(points)["area"] == pytest.approx(8.0)
+
+
+def test_minimum_area_rectangle_degenerate_and_empty():
+    from geometry_metrics import minimum_area_bounding_rectangle
+    assert minimum_area_bounding_rectangle([]) is None
+    assert minimum_area_bounding_rectangle([(2,3)])["area"] == 0.0
+    assert minimum_area_bounding_rectangle([(0,0),(3,0),(1,0)])["area"] == 0.0
+
+
+def test_minimum_area_rectangle_contains_all_points():
+    from geometry_metrics import minimum_area_bounding_rectangle
+    pts=[(0,0),(5,1),(4,4),(1,3),(2,2)]
+    c=minimum_area_bounding_rectangle(pts)["corners"]
+    for point in pts:
+        crosses=[(b[0]-a[0])*(point[1]-a[1])-(b[1]-a[1])*(point[0]-a[0])
+                 for a,b in zip(c,c[1:]+c[:1])]
+        assert all(v>=-1e-8 for v in crosses) or all(v<=1e-8 for v in crosses)
