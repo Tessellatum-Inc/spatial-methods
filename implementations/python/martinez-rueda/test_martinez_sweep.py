@@ -295,3 +295,9 @@ def test_exact_segment_intersection_does_not_report_disjoint_collinear_edges():
     from martinez_sweep import _segments_intersect_exact
     assert not _segments_intersect_exact((0,0),(1,0),(2,0),(3,0))
     assert _segments_intersect_exact((0,0),(2,0),(1,0),(3,0))
+
+
+def test_exact_ring_validation_rejects_adjacent_collinear_backtracking():
+    from martinez_sweep import _ring_is_simple
+    ring=[(0,0),(3,0),(1,0),(1,2),(0,2)]
+    assert not _ring_is_simple(ring,1e-10)
