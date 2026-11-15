@@ -127,6 +127,9 @@ jobs:
           - example: spatial-encodings
             directory: implementations/python/spatial-encodings
             pythonpath: ""
+          - example: network-centrality
+            directory: implementations/python/network-centrality
+            pythonpath: ""
           - example: point-location
             directory: implementations/python/point-location
             pythonpath: ""
