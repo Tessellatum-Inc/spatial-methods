@@ -167,3 +167,12 @@ Compare the predictions with a library overlay result. Explain why the second ca
 The repository includes a deliberately scoped, dependency-free [Sutherland–Hodgman implementation for convex polygons](../../implementations/python/polygon-clipping/README.md), with [regression tests](../../implementations/python/polygon-clipping/test_polygon_clipping.py) and a [step-by-step intern walkthrough](../../implementations/python/polygon-clipping/implementation-walkthrough.md). Both subject and clip window must be convex; the API returns one area ring and rejects unsupported concave inputs. It is a learning implementation, not a general GIS overlay engine.
 
 **Evidence state:** the convex-window scope of Sutherland–Hodgman and the arbitrary-polygon scope of Greiner–Hormann are supported by the cited primary literature. Vatti's exact guarantees and degenerate-case behaviour require a dedicated review of the original paper and the chosen implementation before a comparative claim is published.
+
+
+## From-scratch general-concavity example: Greiner–Hormann
+
+The repository now includes a separate [Greiner–Hormann intersection implementation](../../implementations/python/greiner-hormann/README.md). Unlike Sutherland–Hodgman, its input rings may be concave, and its output can contain multiple disconnected area components. The implementation uses paired intersection nodes in circular doubly linked lists, orders crossings along each edge, classifies entry/exit events, and switches boundary traversal between the two polygons.
+
+Its scope is intentionally narrower than the phrase “arbitrary polygon clipping” can imply: each input is one simple hole-free ring; only proper transverse crossings are accepted; vertex touches and collinear/coincident boundary events are explicitly rejected; and the result represents area components only. The implementation does not claim production-grade robustness.
+
+The test suite includes deterministic overlap, containment, disjoint and disconnected-output cases, 1,000 seeded rectangle cases checked against interval arithmetic, and 250 seeded rotated-rectangle cases checked against an independent Shapely/GEOS area oracle. See the package README for the exact contract and run instructions.
