@@ -650,3 +650,61 @@ def test_spatial_hac_ols_rejects_invalid_inputs():
         spatial_hac_ols(y, x, np.arange(8, dtype=float), bandwidth=2.0)
     with pytest.raises(ValueError, match="full column rank"):
         spatial_hac_ols(y, np.ones((8, 2)), coordinates, bandwidth=2.0)
+
+
+def test_spatial_lag_gmm_recovers_synthetic_heteroskedastic_sar_parameters():
+    from spatial_gmm import spatial_lag_gmm
+    rng = np.random.default_rng(12)
+    n = 100
+    w = _row_standardised_chain(n)
+    x_value = rng.normal(size=n)
+    x = np.column_stack([np.ones(n), x_value])
+    beta = np.array([1.1, 0.7])
+    rho = 0.25
+    error = rng.normal(size=n) * (0.12 + 0.12 * np.abs(x_value))
+    y = np.linalg.solve(np.eye(n) - rho * w, x @ beta + error)
+    fit = spatial_lag_gmm(y, x, w, instrument_orders=2)
+    assert fit.rho == pytest.approx(rho, abs=0.10)
+    assert fit.beta == pytest.approx(beta, abs=0.10)
+    assert len(fit.standard_errors) == 3
+    assert np.all(np.asarray(fit.standard_errors) > 0)
+    covariance = np.asarray(fit.covariance)
+    np.testing.assert_allclose(covariance, covariance.T, atol=1e-12)
+    assert np.linalg.eigvalsh(covariance).min() >= -1e-10
+    assert fit.instruments_used == 4
+    assert fit.j_degrees_of_freedom == 1
+    assert fit.j_statistic >= 0
+    assert fit.second_step_objective >= 0
+    assert fit.first_step_objective >= 0
+
+
+def test_spatial_lag_gmm_returns_zero_j_for_exactly_identified_model():
+    from spatial_gmm import spatial_lag_gmm
+    rng = np.random.default_rng(91)
+    n = 60
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    y = np.linalg.solve(np.eye(n) - 0.2 * w,
+                        x @ np.array([0.8, -0.3]) + rng.normal(scale=0.2, size=n))
+    # A two-column X with one independent WX column gives three instruments
+    # for the three structural regressors: the model is exactly identified.
+    fit = spatial_lag_gmm(y, x, w, instrument_orders=1)
+    assert fit.instruments_used == fit.regressors
+    assert fit.j_degrees_of_freedom == 0
+    assert fit.j_statistic == pytest.approx(0.0, abs=1e-12)
+
+
+def test_spatial_lag_gmm_rejects_invalid_or_underidentified_inputs():
+    from spatial_gmm import spatial_lag_gmm
+    x = np.column_stack([np.ones(8), np.arange(8, dtype=float)])
+    y = np.sin(np.arange(8, dtype=float))
+    w = np.zeros((8, 8))
+    for i in range(7):
+        w[i, i + 1] = w[i + 1, i] = 1.0
+    w = w / w.sum(axis=1, keepdims=True)
+    with pytest.raises(ValueError, match="instrument_orders"):
+        spatial_lag_gmm(y, x, w, instrument_orders=0)
+    with pytest.raises(ValueError, match="finite"):
+        spatial_lag_gmm([1, 2, 3, 4, 5, 6, float("nan"), 8], x, w)
+    with pytest.raises(ValueError, match="overidentify"):
+        spatial_lag_gmm(y, x, w, instrument_orders=1)
