@@ -365,6 +365,66 @@ jobs:
           - example: theil-sen
             directory: implementations/python/theil-sen
             pythonpath: ""
+          - example: empirical-bayes-rates
+            directory: implementations/python/empirical-bayes-rates
+            pythonpath: ""
+          - example: gnss-ambiguity
+            directory: implementations/python/gnss-ambiguity
+            pythonpath: ""
+          - example: gnss-raim
+            directory: implementations/python/gnss-raim
+            pythonpath: ""
+          - example: head-banging
+            directory: implementations/python/head-banging
+            pythonpath: ""
+          - example: matrix-factorization
+            directory: implementations/python/matrix-factorization
+            pythonpath: ""
+          - example: median-polish
+            directory: implementations/python/median-polish
+            pythonpath: ""
+          - example: mesh-geodesics
+            directory: implementations/python/mesh-geodesics
+            pythonpath: ""
+          - example: moran-eigenvector-filtering
+            directory: implementations/python/moran-eigenvector-filtering
+            pythonpath: ""
+          - example: multiple-testing
+            directory: implementations/python/multiple-testing
+            pythonpath: ""
+          - example: network-resilience
+            directory: implementations/python/network-resilience
+            pythonpath: ""
+          - example: regional-dynamics
+            directory: implementations/python/regional-dynamics
+            pythonpath: ""
+          - example: spatial-distribution-summaries
+            directory: implementations/python/spatial-distribution-summaries
+            pythonpath: ""
+          - example: spatial-inequality
+            directory: implementations/python/spatial-inequality
+            pythonpath: ""
+          - example: spatial-intensity
+            directory: implementations/python/spatial-intensity
+            pythonpath: ""
+          - example: spatial-regression
+            directory: implementations/python/spatial-regression
+            pythonpath: ""
+          - example: spatial-smoothing
+            directory: implementations/python/spatial-smoothing
+            pythonpath: ""
+          - example: state-estimation
+            directory: implementations/python/state-estimation
+            pythonpath: ""
+          - example: temporal-models
+            directory: implementations/python/temporal-models
+            pythonpath: ""
+          - example: tensor-decomposition
+            directory: implementations/python/tensor-decomposition
+            pythonpath: ""
+          - example: voronoi-lloyd
+            directory: implementations/python/voronoi-lloyd
+            pythonpath: ""
 
     steps:
       - name: Check out repository
