@@ -34,10 +34,13 @@ def test_viewpoint_inside_rectangle_sees_entire_convex_polygon():
 
 def test_concave_notch_occludes_region_behind_reflex_corner():
     polygon = [(0, 0), (4, 0), (4, 1), (2, 1), (2, 4), (0, 4)]
-    visible = visibility_polygon((1, 1), polygon)
-    assert _contains((1, 3), visible)
-    assert not _contains((3, 3), visible)
-    assert _area(visible) < 8.0
+    # From the right-hand arm, the reflex corner at (2, 1) occludes
+    # much of the upper-left arm. The former viewpoint (1, 1) lies in
+    # the shared corner of both arms, from which the entire polygon is visible.
+    visible = visibility_polygon((3, 0.5), polygon)
+    assert _contains((3, 0.8), visible)
+    assert not _contains((1, 3), visible)
+    assert _area(visible) < 10.0
 
 
 def test_polygon_closure_and_vertex_order_do_not_change_visibility_area():
