@@ -115,9 +115,13 @@ def terrain_curvature(elevation: Sequence[Sequence[float]] | np.ndarray, *, cell
     nonflat = valid & (p2 > np.finfo(float).eps)
     numerator_profile = zxx*zx*zx + 2.0*zxy*zx*zy + zyy*zy*zy
     numerator_plan = zxx*zy*zy - 2.0*zxy*zx*zy + zyy*zx*zx
-    profile_inner = -numerator_profile / (p2 * np.power(1.0+p2, 1.5))
-    plan_inner = -numerator_plan / (p2 * np.sqrt(1.0+p2))
+    profile_inner = np.full(p2.shape, np.nan)
+    plan_inner = np.full(p2.shape, np.nan)
+    profile_denominator = p2 * np.power(1.0+p2, 1.5)
+    plan_denominator = p2 * np.sqrt(1.0+p2)
+    np.divide(-numerator_profile, profile_denominator, out=profile_inner, where=nonflat)
+    np.divide(-numerator_plan, plan_denominator, out=plan_inner, where=nonflat)
     target = (slice(1,-1),slice(1,-1))
-    profile[target] = np.where(nonflat, profile_inner, np.nan)
-    plan[target] = np.where(nonflat, plan_inner, np.nan)
+    profile[target] = profile_inner
+    plan[target] = plan_inner
     return {"profile_curvature": profile, "plan_curvature": plan}
