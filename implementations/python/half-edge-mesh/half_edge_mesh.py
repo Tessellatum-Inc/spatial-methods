@@ -36,6 +36,7 @@ class HalfEdgeMesh:
         if not isinstance(vertex_count, int) or vertex_count < 0:
             raise ValueError("vertex_count must be a non-negative integer")
         normalized = []
+        seen_faces = set()
         for fi, face in enumerate(faces):
             if len(face) != 3:
                 raise ValueError(f"face {fi} is not triangular")
@@ -44,9 +45,11 @@ class HalfEdgeMesh:
                 raise ValueError(f"face {fi} has an out-of-range vertex")
             if len(set(tri)) != 3:
                 raise ValueError(f"face {fi} repeats a vertex")
+            canonical = tuple(sorted(tri))
+            if canonical in seen_faces:
+                raise ValueError("duplicate geometric faces are not allowed")
+            seen_faces.add(canonical)
             normalized.append(tri)
-        if len(set(normalized)) != len(normalized):
-            raise ValueError("duplicate oriented faces are not allowed")
 
         # First create each face's directed cycle.
         origins, face_ids, nxt, prv = [], [], [], []
