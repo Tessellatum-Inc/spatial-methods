@@ -1,7 +1,6 @@
 """Sweep-line event and segment-splitting core for polygon overlay."""
 from dataclasses import dataclass
 from math import isfinite, atan2, pi
-from bisect import bisect_left, bisect_right
 
 @dataclass(frozen=True)
 class Segment:
@@ -26,6 +25,81 @@ class SplitSegment:
     b: tuple
     t0: float
     t1: float
+
+@dataclass
+class _IntervalNode:
+    low: float
+    high: float
+    sid: int
+    priority: int
+    left: object = None
+    right: object = None
+    max_high: float = 0.0
+
+def _refresh(node):
+    if node is not None:
+        node.max_high=max(node.high,
+            node.left.max_high if node.left is not None else float('-inf'),
+            node.right.max_high if node.right is not None else float('-inf'))
+    return node
+
+def _priority(sid):
+    # SplitMix64 finalizer gives reproducible, well-dispersed treap priorities.
+    x=(sid+0x9E3779B97F4A7C15)&0xFFFFFFFFFFFFFFFF
+    x=((x^(x>>30))*0xBF58476D1CE4E5B9)&0xFFFFFFFFFFFFFFFF
+    x=((x^(x>>27))*0x94D049BB133111EB)&0xFFFFFFFFFFFFFFFF
+    return x^(x>>31)
+
+def _rotate_right(root):
+    child=root.left; root.left=child.right; child.right=_refresh(root)
+    return _refresh(child)
+
+def _rotate_left(root):
+    child=root.right; root.right=child.left; child.left=_refresh(root)
+    return _refresh(child)
+
+def _interval_insert(root,node):
+    if root is None: return node
+    if (node.low,node.sid)<(root.low,root.sid):
+        root.left=_interval_insert(root.left,node)
+        if root.left.priority<root.priority: root=_rotate_right(root)
+    else:
+        root.right=_interval_insert(root.right,node)
+        if root.right.priority<root.priority: root=_rotate_left(root)
+    return _refresh(root)
+
+def _interval_merge(left,right):
+    if left is None: return right
+    if right is None: return left
+    if left.priority<right.priority:
+        left.right=_interval_merge(left.right,right); return _refresh(left)
+    right.left=_interval_merge(left,right.left); return _refresh(right)
+
+def _interval_delete(root,key):
+    if root is None: return None
+    here=(root.low,root.sid)
+    if key<here: root.left=_interval_delete(root.left,key)
+    elif key>here: root.right=_interval_delete(root.right,key)
+    else: return _interval_merge(root.left,root.right)
+    return _refresh(root)
+
+class _YIntervalStatus:
+    """Dynamic interval treap; overlap reporting is expected O(log n + k)."""
+    def __init__(self): self.root=None; self.keys={}
+    def insert(self,sid,low,high):
+        node=_IntervalNode(low,high,sid,_priority(sid),max_high=high)
+        self.root=_interval_insert(self.root,node); self.keys[sid]=(low,sid)
+    def remove(self,sid):
+        key=self.keys.pop(sid); self.root=_interval_delete(self.root,key)
+    def overlaps(self,low,high):
+        found=[]
+        def visit(node):
+            if node is None or node.max_high<low: return
+            if node.left is not None and node.left.max_high>=low: visit(node.left)
+            if node.low<=high and node.high>=low: found.append(node.sid)
+            if node.low<=high: visit(node.right)
+        visit(self.root)
+        return found
 
 def _left_right(a,b):
     return (a,b) if a<=b else (b,a)
@@ -146,20 +220,15 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
         item=(left[0],right[0],sid,left,right,ymin,ymax); bounds.append(item); by_id[sid]=item
         events.extend((Event(left,"left",(sid,)),Event(right,"right",(sid,))))
     bounds.sort(key=lambda x:(x[0],x[3][1],x[1],x[2]))
-    # Dynamic sweep status ordered by lower y bound. Query only y-interval
-    # overlaps, then apply the exact segment predicate. This is a bounding-
-    # box interval status (not the full Martinez-Rueda neighbour status).
-    active_status=[]; active_by_id={}
+    # Dynamic y-interval treap prunes active segments whose vertical bounds
+    # cannot overlap the entering segment. Exact predicates run on candidates.
+    active_status=_YIntervalStatus(); active_by_id={}
     params=[[(0.,s.a),(1.,s.b)] for s in segments]; crossings=[]; candidate_pairs=0
     for xmin,xmax,sid,left,right,ymin,ymax in bounds:
         expired=[other for other,item in active_by_id.items() if item[0]<xmin-epsilon]
         for other in expired:
-            item=active_by_id.pop(other); pos=bisect_left(active_status,(item[1],other));
-            if pos<len(active_status) and active_status[pos]==(item[1],other): active_status.pop(pos)
-        stop=bisect_right(active_status,(ymax,float('inf')))
-        for active_y,other in active_status[:stop]:
-            old_item=active_by_id[other]
-            if old_item[2]<ymin-epsilon: continue
+            active_status.remove(other); active_by_id.pop(other)
+        for other in active_status.overlaps(ymin-epsilon,ymax+epsilon):
             s1,s2=segments[sid],segments[other]
             if s1.source==s2.source: continue
             candidate_pairs+=1
@@ -168,8 +237,7 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
             t,u,p,proper=hit
             params[sid].append((t,p)); params[other].append((u,p))
             if proper: crossings.append(Event(p,"intersection",tuple(sorted((sid,other)))))
-        entry=(ymin,sid); pos=bisect_left(active_status,entry); active_status.insert(pos,entry)
-        active_by_id[sid]=(xmax,ymin,ymax)
+        active_status.insert(sid,ymin,ymax); active_by_id[sid]=(xmax,ymin,ymax)
     fragments=[]
     for sid,s in enumerate(segments):
         ordered=sorted(params[sid],key=lambda z:z[0]); unique=[]
