@@ -432,3 +432,70 @@ def simulate_matern_cluster_process(window, parent_intensity, mean_offspring, ra
             if xmin <= x <= xmax and ymin <= y <= ymax:
                 offspring.append((x, y))
     return offspring
+
+
+def _cholesky_lower(matrix):
+    """Small dense Cholesky factorisation for a symmetric positive matrix."""
+    n = len(matrix)
+    lower = [[0.0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(i + 1):
+            value = matrix[i][j] - sum(lower[i][k] * lower[j][k] for k in range(j))
+            if i == j:
+                if value < -1e-10:
+                    raise ValueError("covariance matrix is not positive semidefinite")
+                lower[i][j] = value ** 0.5 if value > 0 else 0.0
+            elif lower[j][j] > 0:
+                lower[i][j] = value / lower[j][j]
+    return lower
+
+
+def simulate_log_gaussian_cox_process(window, mean_intensity, variance, correlation_range,
+                                      *, nx=8, ny=8, seed=0):
+    """Simulate a grid-discretised stationary log-Gaussian Cox process.
+
+    A Gaussian field with exponential covariance C(h)=variance*exp(-|h|/a)
+    is sampled at regular cell centres. Each cell then receives a conditionally
+    Poisson count with intensity mean_intensity*exp(Z-variance/2), and points
+    are uniform within that cell. The finite grid is an explicit piecewise-
+    constant approximation to a continuous LGCP, not an exact continuous-
+    field simulator. Dense Cholesky limits this teaching implementation to
+    at most 225 cells.
+    """
+    if len(window) != 4:
+        raise ValueError("window must be (xmin, ymin, xmax, ymax)")
+    xmin, ymin, xmax, ymax = map(float, window)
+    if not all(isfinite(v) for v in (xmin, ymin, xmax, ymax)) or xmax <= xmin or ymax <= ymin:
+        raise ValueError("window bounds must be finite and have positive width and height")
+    intensity, var, scale = map(float, (mean_intensity, variance, correlation_range))
+    if not all(isfinite(v) for v in (intensity, var, scale)) or intensity < 0 or var < 0 or scale <= 0:
+        raise ValueError("mean_intensity and variance must be non-negative; correlation_range must be positive")
+    if any(isinstance(v, bool) or not isinstance(v, Integral) or v <= 0 for v in (nx, ny)):
+        raise ValueError("nx and ny must be positive integers")
+    nx, ny = int(nx), int(ny)
+    n = nx * ny
+    if n > 225:
+        raise ValueError("nx * ny must not exceed 225 for the dense covariance solver")
+    if isinstance(seed, bool) or not isinstance(seed, Integral):
+        raise ValueError("seed must be an integer")
+    if intensity == 0:
+        return []
+    width, height = (xmax-xmin)/nx, (ymax-ymin)/ny
+    centres = [(xmin+(i+0.5)*width, ymin+(j+0.5)*height)
+               for j in range(ny) for i in range(nx)]
+    covariance = [[var * __import__("math").exp(-hypot(x-a, y-b)/scale)
+                   for a, b in centres] for x, y in centres]
+    lower = _cholesky_lower(covariance)
+    rng = random.Random(int(seed))
+    normal = [rng.gauss(0.0, 1.0) for _ in range(n)]
+    field = [sum(lower[i][j] * normal[j] for j in range(i+1)) for i in range(n)]
+    points = []
+    cell_area = width * height
+    for index, z in enumerate(field):
+        cell_intensity = intensity * __import__("math").exp(z - var/2)
+        count = _poisson_count(cell_intensity * cell_area, rng)
+        row, col = divmod(index, nx)
+        x0, y0 = xmin + col*width, ymin + row*height
+        points.extend((rng.uniform(x0, x0+width), rng.uniform(y0, y0+height))
+                      for _ in range(count))
+    return points
