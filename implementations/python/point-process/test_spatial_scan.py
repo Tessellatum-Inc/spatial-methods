@@ -271,3 +271,23 @@ def test_elliptical_scan_rejects_invalid_simulation_count():
         monte_carlo_elliptical_poisson_scan(
             coords, [1, 0], [10, 10], n_simulations=0
         )
+
+
+
+def test_ellipse_ratio_one_matches_circular_scan_candidate_family():
+    from spatial_scan import elliptical_poisson_scan
+    coords = np.array([[0., 0.], [1., 0.], [10., 0.], [11., 0.], [20., 0.]])
+    cases = np.array([9, 8, 1, 1, 1])
+    population = np.full(5, 100.)
+    circular = poisson_spatial_scan(
+        coords, cases, population, max_population_fraction=0.75, min_cases=2
+    )
+    elliptical = elliptical_poisson_scan(
+        coords, cases, population, shape_ratios=(1.,),
+        angles_degrees=(0., 45., 90.), max_population_fraction=0.75,
+        min_cases=2,
+    )
+    assert elliptical["log_likelihood_ratio"] == pytest.approx(
+        circular["log_likelihood_ratio"]
+    )
+    assert set(elliptical["member_indices"]) == set(circular["member_indices"])
