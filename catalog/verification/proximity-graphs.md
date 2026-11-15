@@ -53,3 +53,14 @@ n−1 valid edges, acyclicity and connectivity. Separate symmetric and
 cocircular fixtures exercise Qhull tie cases. The indexed Yao implementation
 is additionally compared edge-for-edge with its quadratic reference on 100
 seeded integer-lattice clouds across four cone counts and two orientations.
+
+
+## Indexed Delaunay beta-skeleton differential verification
+
+The indexed variant is compared edge-for-edge with the all-pairs lune-based
+reference for beta = 1, 1.25, 1.5, 1.75 and 2 on seeded general-position
+clouds of 5, 12, 30 and 75 sites. The cKDTree query is only a candidate
+blocker filter: both defining disks are checked with the strict-interior
+predicate. Collinear inputs and invalid beta values are rejected. This
+remains a practical indexed baseline, not an optimal asymptotic construction;
+Qhull cocircular tie behaviour is an explicit limitation.
