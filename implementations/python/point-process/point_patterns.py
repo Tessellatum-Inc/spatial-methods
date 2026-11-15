@@ -394,3 +394,41 @@ def simulate_thomas_process(window, parent_intensity, mean_offspring, sigma, *,
             if xmin <= x <= xmax and ymin <= y <= ymax:
                 offspring.append((x, y))
     return offspring
+
+
+def simulate_matern_cluster_process(window, parent_intensity, mean_offspring, radius, *, seed=0):
+    """Simulate a stationary Matérn disc cluster (Neyman–Scott) process.
+
+    Parents form a homogeneous Poisson process with intensity kappa. Each
+    parent produces Poisson(mu) offspring, independently uniform in a disc
+    of the given radius. Parents are simulated in the target rectangle
+    expanded by radius, which is sufficient because the offspring kernel has
+    compact support. Only offspring inside the target window are returned.
+    The stationary intensity is kappa * mu.
+    """
+    if len(window) != 4:
+        raise ValueError("window must be (xmin, ymin, xmax, ymax)")
+    xmin, ymin, xmax, ymax = map(float, window)
+    if not all(isfinite(v) for v in (xmin, ymin, xmax, ymax)) or xmax <= xmin or ymax <= ymin:
+        raise ValueError("window bounds must be finite and have positive width and height")
+    kappa, mu, scale = map(float, (parent_intensity, mean_offspring, radius))
+    if not all(isfinite(v) for v in (kappa, mu, scale)) or kappa < 0 or mu < 0 or scale <= 0:
+        raise ValueError("parent intensity and mean offspring must be non-negative; radius must be positive")
+    if isinstance(seed, bool) or not isinstance(seed, Integral):
+        raise ValueError("seed must be an integer")
+    if kappa == 0 or mu == 0:
+        return []
+    rng = random.Random(int(seed))
+    expanded = (xmin-scale, ymin-scale, xmax+scale, ymax+scale)
+    parents = simulate_homogeneous_poisson(expanded, kappa, seed=rng.randrange(0, 2**63))
+    offspring = []
+    for px, py in parents:
+        count = _poisson_count(mu, rng)
+        for _ in range(count):
+            distance = scale * (rng.random() ** 0.5)
+            angle = rng.random() * 2 * pi
+            x = px + distance * __import__("math").cos(angle)
+            y = py + distance * __import__("math").sin(angle)
+            if xmin <= x <= xmax and ymin <= y <= ymax:
+                offspring.append((x, y))
+    return offspring
