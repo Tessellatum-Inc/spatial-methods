@@ -347,3 +347,24 @@ def test_rotating_calipers_minimum_width_is_translation_and_rotation_invariant()
     rotated = [(x*math.cos(angle)-y*math.sin(angle)+17,
                 x*math.sin(angle)+y*math.cos(angle)-9) for x,y in points]
     assert convex_polygon_minimum_width(rotated) == pytest.approx(base, rel=1e-10, abs=1e-9)
+
+
+def test_rotating_calipers_minimum_width_handles_integer_ties_and_duplicates():
+    import random
+    from geometry_metrics import convex_polygon_minimum_width
+    rng = random.Random(20261120)
+    for _ in range(500):
+        points = list(dict.fromkeys(
+            (rng.randrange(-12, 13), rng.randrange(-12, 13))
+            for _ in range(rng.randrange(3, 45))
+        ))
+        assert convex_polygon_minimum_width(points) == pytest.approx(
+            _brute_minimum_width(points), rel=1e-11, abs=1e-10
+        )
+
+
+def test_rotating_calipers_minimum_width_thin_and_axis_aligned_shapes():
+    from geometry_metrics import convex_polygon_minimum_width
+    assert convex_polygon_minimum_width([(0,0),(1000,0),(1000,1e-5),(0,1e-5)]) == pytest.approx(1e-5)
+    assert convex_polygon_minimum_width([(0,0),(8,0),(8,3),(0,3)]) == pytest.approx(3.0)
+    assert convex_polygon_minimum_width([(0,0),(4,0),(2,0),(3,0)]) == 0.0
