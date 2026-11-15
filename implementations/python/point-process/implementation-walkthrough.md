@@ -1,4 +1,4 @@
-# Point-pattern summaries and circular Poisson scan — implementation walkthrough
+# Point-pattern summaries and areal cluster-detection — implementation walkthrough
 
 ## 1. Establish the observation window
 
