@@ -43,7 +43,13 @@ def mean_center(points, weights=None):
 def median_center(points, weights=None, *, tolerance=1e-10, max_iterations=10000):
     """Return the weighted geometric median using modified Weiszfeld iteration."""
     pts, w = _validate(points, weights)
-    if isinstance(tolerance, bool) or not isfinite(float(tolerance)) or tolerance <= 0:
+    if isinstance(tolerance, bool):
+        raise ValueError("tolerance must be finite and positive")
+    try:
+        tolerance = float(tolerance)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("tolerance must be finite and positive") from exc
+    if not isfinite(tolerance) or tolerance <= 0:
         raise ValueError("tolerance must be finite and positive")
     if isinstance(max_iterations, bool) or not isinstance(max_iterations, Integral) or max_iterations < 1:
         raise ValueError("max_iterations must be a positive integer")
@@ -114,7 +120,13 @@ def standard_deviational_ellipse(points, weights=None, *, scale=1.0):
     Use scale=1.515 for an approximately 68.3-percent bivariate-normal ellipse.
     """
     pts, w = _validate(points, weights)
-    if isinstance(scale, bool) or not isfinite(float(scale)) or scale <= 0:
+    if isinstance(scale, bool):
+        raise ValueError("scale must be finite and positive")
+    try:
+        scale = float(scale)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("scale must be finite and positive") from exc
+    if not isfinite(scale) or scale <= 0:
         raise ValueError("scale must be finite and positive")
     cx, cy = mean_center(pts, w)
     total = fsum(w)
