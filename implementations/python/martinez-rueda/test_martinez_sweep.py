@@ -301,3 +301,21 @@ def test_exact_ring_validation_rejects_adjacent_collinear_backtracking():
     from martinez_sweep import _ring_is_simple
     ring=[(0,0),(3,0),(1,0),(1,2),(0,2)]
     assert not _ring_is_simple(ring,1e-10)
+
+
+def test_exact_signed_area_accepts_valid_ring_below_area_epsilon():
+    from martinez_sweep import _signed_area_exact, sweep_split_segments
+    scale=1e-12
+    ring=[(0.0,0.0),(scale,0.0),(scale,scale),(0.0,scale)]
+    assert _signed_area_exact(ring)>0
+    result=sweep_split_segments([[ring]],epsilon=1e-10)
+    assert len(result["segments"])==4
+    assert len(result["split_segments"])==4
+
+
+def test_exact_signed_area_preserves_orientation_at_large_coordinate_offset():
+    from martinez_sweep import _signed_area_exact
+    base=1e15
+    ccw=[(base,base),(base+4,base),(base+4,base+4),(base,base+4)]
+    assert _signed_area_exact(ccw)==16
+    assert _signed_area_exact(list(reversed(ccw)))==-16
