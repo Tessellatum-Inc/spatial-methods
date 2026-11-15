@@ -20,4 +20,4 @@
 
 ## Verification limitations
 
-Tests are authored but have not been executed in this environment. No CI result is implied. The implementation checks edge-manifold incidence but does not yet check vertex-link connectivity, geometric self-intersection, or mesh-edit invariants. Winged-edge and quad-edge are not implemented by this module.
+Tests are authored but have not been executed in this environment. No CI result is implied. The implementation checks edge incidence and connected path/cycle vertex links, but does not detect geometric self-intersections or enforce mesh-edit invariants. Winged-edge and quad-edge are not implemented by this module.
