@@ -128,3 +128,9 @@ def test_minimum_area_rectangle_contains_all_points():
         crosses=[(b[0]-a[0])*(point[1]-a[1])-(b[1]-a[1])*(point[0]-a[0])
                  for a,b in zip(c,c[1:]+c[:1])]
         assert all(v>=-1e-8 for v in crosses) or all(v<=1e-8 for v in crosses)
+
+
+def test_polylabel_guards_initial_grid_size():
+    from geometry_metrics import polylabel
+    with pytest.raises(RuntimeError):
+        polylabel([(0,0),(100,0),(100,1),(0,1)], precision=0.1, max_cells=10)
