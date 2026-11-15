@@ -120,9 +120,10 @@ def test_randomized_insertions_trace_corridors_and_form_local_split_pieces():
     locator = RandomizedTrapezoidalMap(source, (0, 0, 10, 10), seed=19)
     assert len(locator.insertion_corridors) == len(source)
     assert len(locator.insertion_splits) == len(source)
-    for sid, (corridor, splits) in enumerate(zip(
+    for insertion_index, (corridor, splits) in enumerate(zip(
         locator.insertion_corridors, locator.insertion_splits
     )):
+        sid = locator.insertion_order[insertion_index]
         assert corridor
         assert len(corridor) == len(splits)
         for cell, split in zip(corridor, splits):
@@ -160,3 +161,16 @@ def test_randomized_insertions_trace_corridors_and_form_local_split_pieces():
                        - locator.segments[cell.top_segment][0][0])
                 )
                 assert line_y < top
+
+
+def test_corridor_cells_have_reciprocal_neighbor_links():
+    locator = RandomizedTrapezoidalMap(segments(), (0, 0, 10, 10), seed=19)
+    by_id = {cell.id: cell for cell in locator.trapezoids}
+    for cell in locator.trapezoids:
+        for neighbor_id in cell.right_neighbors:
+            assert cell.id in by_id[neighbor_id].left_neighbors
+        for neighbor_id in cell.left_neighbors:
+            assert cell.id in by_id[neighbor_id].right_neighbors
+    for corridor in locator.insertion_corridors:
+        for left, right in zip(corridor, corridor[1:]):
+            assert right.id in left.right_neighbors
