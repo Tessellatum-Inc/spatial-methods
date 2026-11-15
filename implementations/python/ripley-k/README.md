@@ -59,3 +59,29 @@ print(result.pointwise_lower_l, result.pointwise_upper_l)
 The returned bands are pointwise quantiles, not a simultaneous global envelope. The p-value is calculated separately from a studentised maximum absolute deviation over the selected radii. The null is homogeneous CSR conditional on the observed number of events. The simulation count controls Monte Carlo resolution; the smallest possible p-value is 1/(B+1).
 
 This is a transparent teaching test, not a specialist rank-envelope implementation. It does not adjust for parameter estimation, inhomogeneous intensity, network constraints or other departures from the stated null. See the [canonical lesson](../../../algorithms/statistics/ripley-k.md).
+
+## Direct binned pair-correlation estimator
+
+The companion module `pair_correlation.py` estimates g(r) directly from
+annular pair counts, rather than differentiating a sampled K curve. It
+supports uncorrected and rectangular translation-corrected estimators:
+
+```python
+from pair_correlation import pair_correlation
+
+result = pair_correlation(
+    points,
+    bounds=(0, 10, 0, 10),
+    bin_edges=[0, 0.5, 1, 1.5, 2],
+    edge_correction="translation",
+)
+print(result.radii, result.g_values, result.pair_counts)
+```
+
+The estimate divides the annular increment of K by the annulus area
+`pi * (r_outer**2 - r_inner**2)`. Pair counts are unordered; translation
+weights are applied to pair contributions. Bins are left-closed/right-open,
+with the final upper edge included. This is a binned direct estimator and is
+distinct from the finite-difference K-derivative helper in the point-process
+package. It is not an isotropic correction or a specialist kernel-smoothed
+pair-correlation estimator.
