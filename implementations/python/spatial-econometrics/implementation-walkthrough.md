@@ -185,3 +185,17 @@ Open `spatial_sarar_gtsls.py`.
 6. The returned HC1 sandwich is conditional on \(\hat\lambda\). It does not reproduce the paper's full joint covariance for the regression coefficients and disturbance parameter.
 
 The implementation is restricted to the common-weights case \(M=W\). It is a three-step point estimator, not a complete inference implementation of every result in Kelejian and Prucha (2010).
+
+
+## 14. Spatial HAC covariance for spatial-lag 2SLS
+
+Open `spatial_2sls_hac.py`.
+
+1. Build \(H=[X,WX,\ldots,W^qX]\) and the endogenous regression matrix \(Z=[Wy,X]\).
+2. Project Z onto H to obtain \(\hat Z=P_HZ\), then estimate the SAR coefficients by 2SLS.
+3. Supply projected planar coordinates and a bandwidth in the same linear unit.
+4. Calculate pairwise distances and the compact-support Wendland C2 kernel.
+5. Form score vectors \(g_i=\hat z_i\hat u_i\), combine their cross-products using the kernel, and sandwich with \((\hat Z'Z)^{-1}\).
+6. Report standard errors alongside the bandwidth and number of nonzero off-diagonal kernel pairs.
+
+The covariance permits heteroskedasticity and residual cross-correlation within the declared support. It does not make weak or invalid spatial instruments reliable. Repeat the analysis across defensible bandwidths and ensure coordinates are projected rather than longitude/latitude degrees.
