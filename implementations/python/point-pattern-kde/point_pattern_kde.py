@@ -165,10 +165,15 @@ def adaptive_gaussian_kde(
         if positive.size == 0:
             local_bandwidths = np.full(n, bandwidth, dtype=float)
         else:
+            active = event_weights > 0
+            active_pilot = pilot[active]
             floor = max(float(positive.min()) * 1e-12, np.finfo(float).tiny)
-            safe_pilot = np.maximum(pilot, floor)
+            safe_pilot = np.maximum(active_pilot, floor)
             geometric_mean = float(np.exp(np.mean(np.log(safe_pilot))))
-            factors = np.clip(np.power(geometric_mean / safe_pilot, alpha), factor_min, factor_max)
+            factors = np.ones(n, dtype=float)
+            factors[active] = np.clip(
+                np.power(geometric_mean / safe_pilot, alpha), factor_min, factor_max
+            )
             local_bandwidths = bandwidth * factors
 
     xs = xmin + (np.arange(cols) + 0.5) * ((xmax - xmin) / cols)
