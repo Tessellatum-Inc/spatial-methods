@@ -7,6 +7,7 @@ from typing import Sequence
 import numpy as np
 
 from heteroskedastic_spatial_error_gm import heteroskedastic_spatial_error_gm
+from spatial_sarar_joint_covariance import spatial_sarar_joint_covariance
 
 
 @dataclass(frozen=True)
@@ -22,6 +23,8 @@ class SpatialSARARGTSLSResult:
     filtered_residuals: tuple[float, ...]
     covariance_hc1_conditional: tuple[tuple[float, ...], ...]
     standard_errors_hc1_conditional: tuple[float, ...]
+    covariance_joint_kp: tuple[tuple[float, ...], ...]
+    standard_errors_joint_kp: tuple[float, ...]
     instruments_used: int
     first_stage_rank: int
     transformed_stage_rank: int
@@ -131,6 +134,9 @@ def spatial_sarar_gtsls(
     if not np.all(np.isfinite(covariance)):
         raise ValueError("conditional HC1 covariance is not finite")
     standard_errors = np.sqrt(np.maximum(np.diag(covariance), 0.0))
+    joint = spatial_sarar_joint_covariance(
+        response, design, w, h, lam, first_residuals, estimate
+    )
 
     return SpatialSARARGTSLSResult(
         rho=float(estimate[-1]),
@@ -142,6 +148,8 @@ def spatial_sarar_gtsls(
         filtered_residuals=tuple(float(value) for value in filtered_residuals),
         covariance_hc1_conditional=tuple(tuple(float(value) for value in row) for row in covariance),
         standard_errors_hc1_conditional=tuple(float(value) for value in standard_errors),
+        covariance_joint_kp=joint.covariance,
+        standard_errors_joint_kp=joint.standard_errors,
         instruments_used=int(h.shape[1]),
         first_stage_rank=int(np.linalg.matrix_rank(h)),
         transformed_stage_rank=int(np.linalg.matrix_rank(projected_filtered_z)),
