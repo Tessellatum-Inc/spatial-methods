@@ -39,3 +39,15 @@ def test_rejects_repeated_ring_vertex():
 def test_rejects_nonfinite_coordinates():
     with pytest.raises(ValueError):
         DCEL.from_faces({"x":[[(0,0),(1,0),(1,float("inf")),(0,1),(0,0)]]})
+
+
+def test_rejects_zero_area_ring():
+    with pytest.raises(ValueError, match="non-zero signed area"):
+        DCEL.from_faces({"flat": [[(0, 0), (1, 0), (2, 0), (0, 0)]]})
+
+
+def test_rejects_self_intersecting_ring_with_nonzero_signed_area():
+    # The non-adjacent first and third edges cross; signed area is non-zero.
+    ring = [(0, 0), (4, 4), (0, 3), (3, 0), (0, 0)]
+    with pytest.raises(ValueError, match="non-adjacent edges intersect"):
+        DCEL.from_faces({"crossed": [ring]})
