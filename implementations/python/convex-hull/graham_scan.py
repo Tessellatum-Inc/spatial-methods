@@ -125,4 +125,7 @@ def quickhull(points: Sequence[Point]) -> list[Point]:
 
     upper = [p for p in unique if _cross(left, right, p) > 0]
     lower = [p for p in unique if _cross(right, left, p) > 0]
-    # Each recursive chain follows its directed baseline. Reverse the lower\n    # right-to-left chain and upper left-to-right chain to form a CCW ring.\n    return ([left] + list(reversed(chain(right, left, lower))) + [right]\n            + list(reversed(chain(left, right, upper))))
+    # Each recursive chain follows its directed baseline. Reverse the lower
+    # right-to-left chain and upper left-to-right chain to form a CCW ring.
+    return ([left] + list(reversed(chain(right, left, lower))) + [right]
+            + list(reversed(chain(left, right, upper))))

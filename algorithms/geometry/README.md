@@ -35,4 +35,5 @@ These records are part of the broader [algorithm collection](../README.md). The 
 - [Convex-polygon diameter](convex-polygon-diameter.md) — find a farthest pair with a rotating-calipers antipodal sweep.
 - [Pole of inaccessibility / Polylabel](pole-of-inaccessibility-polylabel.md) — approximate the maximum-clearance interior point of a polygon, including holes.
 - [Minimum-area oriented bounding rectangle](minimum-area-bounding-rectangle.md) — find a minimum-area enclosing rectangle by testing convex-hull edge orientations.
-\n- [Alpha shapes](alpha-shapes.md) — parameterise a non-convex envelope by filtering Delaunay triangles using circumradius.\n
+
+- [Alpha shapes](alpha-shapes.md) — parameterise a non-convex envelope by filtering Delaunay triangles using circumradius.

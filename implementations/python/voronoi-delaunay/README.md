@@ -51,3 +51,5 @@ print(result.voronoi.vertices)
 - [Implementation walkthrough](implementation-walkthrough.md)
 - [Visual lab](../../../notebooks/voronoi-delaunay-lab.ipynb)
 \n\nThe alpha-shape routine uses `max_circumradius` as a length (not the reciprocal alpha convention used by some libraries). It filters Delaunay triangles by circumradius and extracts edges incident to exactly one retained triangle. It intentionally returns the boundary of the retained 2D triangle union, not isolated 1D/0D simplices of the full alpha complex.\n
+
+The package also includes `build_alpha_shape(points, max_circumradius=...)`. The parameter is a length, not the reciprocal alpha convention used by some libraries. It filters Delaunay triangles by circumradius and extracts edges incident to exactly one retained triangle. It returns the boundary of the retained 2D triangle union, not isolated 1D/0D simplices of the full alpha complex.

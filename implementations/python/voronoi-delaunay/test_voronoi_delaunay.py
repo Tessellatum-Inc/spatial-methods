@@ -134,7 +134,7 @@ def test_alpha_shape_matches_independent_circumradius_filter():
         side_a = np.linalg.norm(b-c)
         side_b = np.linalg.norm(a-c)
         side_c = np.linalg.norm(a-b)
-        twice_area = abs(np.cross(b-a, c-a))
+        twice_area = abs((b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0]))
         independent_radius = side_a*side_b*side_c/(2*twice_area)
         assert independent_radius <= threshold + 1e-12
         expected.add(tuple(sorted(simplex)))
