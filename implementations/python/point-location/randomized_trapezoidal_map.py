@@ -203,9 +203,10 @@ class RandomizedTrapezoidalMap:
             if _on_segment(p, a, b, self.epsilon):
                 return BOUNDARY
         # Deterministic right-side convention on artificial vertical walls.
-        slab_index = bisect_right(self.x_events, x)-1
-        slab_index = min(max(slab_index, 0), len(self.slabs)-1)
-        active, _cells, node = self.slabs[slab_index]
+        node = self._x_root
+        while isinstance(node, _XNode):
+            node = node.left if x < node.split_x else node.right
+        node, _active = node
         while isinstance(node, _YNode):
             edge_y = _y_at(self.segments[node.segment_id], x)
             node = node.left if y < edge_y else node.right
