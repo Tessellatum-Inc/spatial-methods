@@ -16,6 +16,7 @@ This package contains small, dense-matrix reference implementations:
 12. **Spatial-lag first-stage instrument diagnostics** with partial R-squared, classical partial F and an HC1 robust Wald F.
 13. **Anderson–Rubin inference** for a caller-supplied candidate spatial-lag coefficient, with classical F and HC1 robust Wald chi-square tests.
 14. **Heteroskedastic spatial-error GM moments** for a supplied consistent disturbance predictor, using the two zero-diagonal quadratic restrictions of Kelejian–Prucha (2010).
+15. **Three-step heteroskedastic SARAR generalized spatial 2SLS**: initial spatial 2SLS, KP disturbance GM, and Cochrane–Orcutt transformed 2SLS.
 
 ## Run
 
@@ -33,7 +34,8 @@ python -m pytest -q
 - Spatial-lag GMM uses [X, WX, ..., W^qX] as instruments, starts with the 2SLS weighting matrix, then updates it using a heteroskedasticity-robust estimate of the instrument-moment covariance. It reports a robust sandwich covariance and J statistic, but no J-test p-value. It does not accommodate spatially autocorrelated structural errors.
 - Anderson–Rubin inference tests a supplied candidate rho by regressing y - rho0 Wy on [X, WX, ..., W^qX] and testing joint exclusion of the added instruments. The classical F relies on iid homoskedastic Gaussian errors; HC1 Wald chi-square is asymptotic under independent observations and is not spatial-HAC robust. Instrument validity remains essential. Confidence-set inversion, which can yield unbounded or disjoint sets, is not implemented.
 - Spatial-error GMM implements the homoskedastic-innovation Kelejian–Prucha (1999) three-moment estimator for lambda, followed by feasible GLS. Its reported GLS covariance relies on the iid innovation variance model.
-- The separate heteroskedastic spatial-error GM routine implements the two zero-diagonal quadratic moment restrictions of Kelejian and Prucha (2010), taking a consistent disturbance predictor as input. It estimates the disturbance coefficient only; the full joint asymptotic covariance, heteroskedastic feasible GLS/GTSLS and standard errors are not implemented.
+- The heteroskedastic spatial-error GM routine implements the two zero-diagonal quadratic moment restrictions of Kelejian and Prucha (2010), taking a consistent disturbance predictor as input.
+- The three-step SARAR GTSLS routine uses first-stage spatial 2SLS residuals for the heteroskedastic KP GM estimate, then applies the Cochrane–Orcutt transformation and a second 2SLS fit. Its reported HC1 covariance is conditional on the estimated disturbance parameter; it is not the paper's full joint covariance for regression and spatial parameters. The standalone GM routine remains available for other consistent residual predictors.
 - The SAR/SEM/SDM ML estimators use conservative norm-bounded parameter intervals and dense log-determinants. SDM drops spatially lagged covariate columns linearly dependent on the included design. SARAR/SAC profiles both spatial parameters over a conservative rectangle using a coarse grid and alternating one-dimensional refinements.
 - The impact matrix is \(S_r=(I-\rho W)^{-1}(\beta_r I+\gamma_r W)\). Direct impact is the mean diagonal, total impact is the mean row sum, and indirect impact is total minus direct. Impact uncertainty propagates a supplied joint covariance for [rho, beta..., gamma...] through Monte Carlo; it does not estimate that covariance.
 - Proper CAR uses a symmetric non-negative adjacency matrix, no isolated nodes, and the precision τ(D - αA). It is a proper Gaussian CAR regression, not ICAR, BYM/BYM2 or Leroux CAR.
