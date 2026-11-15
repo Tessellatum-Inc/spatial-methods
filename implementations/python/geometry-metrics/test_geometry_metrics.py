@@ -368,3 +368,19 @@ def test_rotating_calipers_minimum_width_thin_and_axis_aligned_shapes():
     assert convex_polygon_minimum_width([(0,0),(1000,0),(1000,1e-5),(0,1e-5)]) == pytest.approx(1e-5)
     assert convex_polygon_minimum_width([(0,0),(8,0),(8,3),(0,3)]) == pytest.approx(3.0)
     assert convex_polygon_minimum_width([(0,0),(4,0),(2,0),(3,0)]) == 0.0
+
+
+def test_continuous_frechet_rolling_rows_are_symmetric_for_unequal_curve_sizes():
+    import random
+    from geometry_metrics import continuous_frechet_decision, continuous_frechet_distance
+
+    rng = random.Random(20261120)
+    for size_a, size_b in ((2, 17), (4, 23), (19, 3), (31, 7)):
+        a = [(rng.uniform(-5, 5), rng.uniform(-5, 5)) for _ in range(size_a)]
+        b = [(rng.uniform(-5, 5), rng.uniform(-5, 5)) for _ in range(size_b)]
+        distance = continuous_frechet_distance(a, b, tolerance=1e-7)
+        assert continuous_frechet_decision(a, b, distance + 1e-6)
+        assert continuous_frechet_decision(b, a, distance + 1e-6)
+        if distance > 2e-6:
+            assert not continuous_frechet_decision(a, b, distance - 2e-6)
+            assert not continuous_frechet_decision(b, a, distance - 2e-6)
