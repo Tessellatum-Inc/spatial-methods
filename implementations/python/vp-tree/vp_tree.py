@@ -54,12 +54,14 @@ class VantagePointTree:
              for i, p in remaining),
             key=lambda item: (item[0], item[1]),
         )
-        split = len(ranked) // 2
+        split = (len(ranked) + 1) // 2
         inner_records = [(i, p) for _, i, p in ranked[:split]]
         outer_records = [(i, p) for _, i, p in ranked[split:]]
         # The midpoint keeps every inner distance <= radius and every outer
-        # distance >= radius. Equality is explored on both sides at query time.
-        radius = (ranked[split - 1][0] + ranked[split][0]) / 2.0
+        # distance >= radius. When the outer side is empty, use the largest
+        # inner distance as the radius. Equality is explored on both sides.
+        radius = (ranked[split - 1][0] if split == len(ranked) else
+                  (ranked[split - 1][0] + ranked[split][0]) / 2.0)
         return _Node(
             vantage, index, radius,
             VantagePointTree._build(inner_records),
