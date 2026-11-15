@@ -38,4 +38,4 @@ These records are part of the broader [algorithm collection](../README.md). The 
 
 - [Alpha shapes](alpha-shapes.md) — parameterise a non-convex envelope by filtering Delaunay triangles using circumradius.
 - [Alpha-shape implementation](../../implementations/python/alpha-shapes/README.md) — Delaunay triangle filtering, boundary-ring extraction and numerical tests.
-- [Visibility polygons](visibility-polygons.md) — compute the region visible from an interior viewpoint in a polygonal environment.\n- [Laplacian and Taubin mesh smoothing](mesh-smoothing.md) — smooth triangular meshes while documenting shrinkage and feature-preservation limits.
+- [Visibility polygons](visibility-polygons.md) — compute the region visible from an interior viewpoint in a polygonal environment.\n- [Laplacian and Taubin mesh smoothing](mesh-smoothing.md) — smooth triangular meshes while documenting shrinkage and feature-preservation limits.\n- [Half-edge mesh topology](half-edge-mesh.md) — indexed face cycles, symmetric twins, boundary edges and adjacency for oriented triangle meshes.
