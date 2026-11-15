@@ -1,67 +1,37 @@
-# Kernel density estimation for planar point patterns
+# Fixed and adaptive kernel density estimation for point patterns
 
-Stable ID: `SA-STAT-POINT-KDE` · Draft 0.1 · Source compendium section 2, page 3
+A planar Gaussian KDE estimates intensity at location x as
 
-## From event locations to an intensity surface
+\[
+\hat\lambda_h(x)=\sum_i w_i\frac{1}{2\pi h^2}
+\exp\left(-\frac{\|x-x_i\|^2}{2h^2}\right).
+\]
 
-A point pattern records the locations of events inside a study window: service requests, observed incidents, tree locations or another point-referenced phenomenon.
+A global bandwidth h controls the bias-variance trade-off. Small h preserves
+local structure but can create noisy peaks; large h smooths local variation.
+Leave-one-out (LOO) likelihood predicts each event from all other events and
+selects the candidate bandwidth with the largest mean log predictive density.
 
-Kernel density estimation (KDE) replaces the discrete events with a smooth surface. It is useful for visualising where events are concentrated, but a high estimated intensity does not explain the process that generated the pattern.
+Abramson-style adaptive KDE uses a pilot density f_i at each event and sets
 
-## The Gaussian kernel
+\[
+h_i=h\left(\frac{g}{f_i}\right)^\alpha,
+\]
 
-For an event at location $x_i$, a two-dimensional isotropic Gaussian kernel with bandwidth $h$ is:
+where g is the geometric mean of pilot densities and alpha is commonly 1/2.
+Dense pilot regions receive smaller kernels; sparse regions receive larger
+kernels. The sample-point estimator sums kernels using their event-specific
+bandwidths. The implementation excludes each event from its own pilot estimate
+and clips local bandwidth factors to a configurable positive interval.
 
-$$
-K_h(x-x_i)=\frac{1}{2\pi h^2}
-\exp\left(-\frac{\lVert x-x_i\rVert^2}{2h^2}\right)
-$$
+The companion [implementation](../../implementations/python/point-pattern-kde/README.md)
+provides fixed KDE, adaptive sample-point KDE and weighted LOO candidate
+selection. It uses direct planar evaluation and applies no edge correction,
+so kernels extending beyond the observation window can bias estimates down.
+Adaptive evaluation costs O(n^2 + nm), and LOO selection O(n^2 c) for c
+candidate bandwidths. These are transparent reference methods, not indexed
+large-data estimators.
 
-The estimated intensity is the sum of the event kernels:
-
-$$
-\hat{\lambda}_h(x)=\sum_{i=1}^{n}w_iK_h(x-x_i)
-$$
-
-Here $w_i$ is an optional event weight. With unit weights, the intensity is measured in events per square map unit. If weights represent another quantity, the output units change accordingly.
-
-## Bandwidth controls the scale
-
-- A small bandwidth preserves local peaks and can make random variation look like structure.
-- A large bandwidth smooths local variation and can merge nearby concentrations.
-- Bandwidth should be selected and tested in relation to the spatial scale of the question, not chosen only because the resulting map looks attractive.
-
-This lesson uses one fixed bandwidth. Adaptive bandwidths and cross-validated selection are separate methods.
-
-## Grid evaluation and edge effects
-
-The [teaching implementation](../../implementations/python/point-pattern-kde/README.md) evaluates the kernel sum at regular grid-cell centres. It uses a chunked direct calculation to limit memory use, but its computational cost is O(nm) for n events and m grid cells.
-
-No edge correction is applied. Kernels near the study-window boundary extend outside the observed window, which can bias estimates downward near the edge. The output is intensity per unit area, not a count per raster cell.
-
-## Coordinate system
-
-The method uses Euclidean distances. Coordinates should therefore be in a suitable projected CRS with consistent linear units. A bandwidth of 500 is 500 coordinate units, not automatically 500 metres.
-
-## Limitations
-
-- The example uses an isotropic Gaussian kernel and one fixed bandwidth.
-- No edge correction is applied.
-- It does not account for barriers, road networks or anisotropic movement.
-- It is a descriptive intensity estimator, not a test of clustering or a point-process model.
-- It does not implement Ripley's K/L, nearest-neighbour tests, adaptive bandwidths or bandwidth cross-validation.
-
-## Exercises
-
-1. Plot the same point pattern with three bandwidths. Which spatial scales remain visible?
-2. Add weights to selected events. How does the intensity surface change?
-3. Move a cluster towards the study-window edge. Why can its estimated intensity appear lower?
-4. Change the grid resolution while keeping the bandwidth fixed. Does the underlying estimate change, or only the sampling of the surface?
-5. Explain why a KDE hotspot is not, by itself, evidence of statistically significant clustering.
-
-## References
-
-- Silverman, B. W. (1986), *Density Estimation for Statistics and Data Analysis*, Chapman & Hall.
-- Diggle, P. J. (1985), *A kernel method for smoothing point process data*, Journal of the Royal Statistical Society: Series C (Applied Statistics), 34(2), 138–147.
-
-**Scope:** fixed-bandwidth isotropic Gaussian KDE on a planar observation window, without edge correction or inferential point-process testing.
+Tests compare adaptive surfaces and LOO scores with independent direct
+calculations, including alpha=0 equivalence, event weights, one-event input,
+chunking and invalid parameters.
