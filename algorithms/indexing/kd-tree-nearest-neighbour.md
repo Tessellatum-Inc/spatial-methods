@@ -59,6 +59,21 @@ the same static tree, and returns original input indices in ascending order.
 Seeded differential tests compare it with an independent brute-force rectangle
 filter, including zero-width and zero-height windows.
 
+## k-nearest-neighbour queries
+
+For k-nearest neighbours, maintain a bounded max-heap of the best k candidates
+seen so far. The heap root is the current worst retained candidate. Visit the
+query-side subtree first; visit the far subtree whenever fewer than k points
+have been found or the squared distance to the split plane is no greater than
+the current kth-best squared distance. Equality must be visited to preserve
+the deterministic tie rule. The final results are sorted by squared distance
+and original input index.
+
+The package exposes `k_nearest(query, k)`. It returns fewer than k results
+when the tree contains fewer than k points, returns an empty list for k=0 or
+an empty tree, and rejects negative or non-integer k. Differential tests
+compare it with a full-sort brute-force oracle.
+
 ## Why the search can be fast—and when it is not
 
 A well-shaped tree over low-dimensional, suitably distributed data can prune many branches. But the nearest-neighbour query is not guaranteed to take logarithmic time for arbitrary data.

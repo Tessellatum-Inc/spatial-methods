@@ -135,3 +135,42 @@ def test_range_query_matches_independent_brute_force_on_seeded_clouds():
 def test_range_query_rejects_invalid_bounds(minimum, maximum):
     with pytest.raises(ValueError):
         KDTree2D([(0, 0)]).range_query(minimum, maximum)
+
+
+def test_k_nearest_orders_by_distance_then_original_index():
+    points = [(-1, 0), (1, 0), (0, 2), (0, 0), (0, 0)]
+    tree = KDTree2D(points)
+    assert tree.k_nearest((0, 0), 4) == [
+        (3, 0.0), (4, 0.0), (0, 1.0), (1, 1.0)
+    ]
+
+
+def test_k_nearest_handles_zero_empty_and_k_larger_than_tree():
+    assert KDTree2D([(0, 0)]).k_nearest((0, 0), 0) == []
+    assert KDTree2D([]).k_nearest((0, 0), 3) == []
+    assert KDTree2D([(0, 0), (2, 0)]).k_nearest((0, 0), 9) == [
+        (0, 0.0), (1, 4.0)
+    ]
+
+
+def test_k_nearest_matches_brute_force_on_seeded_clouds():
+    rng = random.Random(20261116)
+    for size in (1, 2, 3, 10, 50, 150):
+        points = [(rng.randint(-30, 30), rng.randint(-30, 30))
+                  for _ in range(size)]
+        tree = KDTree2D(points)
+        for _ in range(35):
+            query = (rng.uniform(-35, 35), rng.uniform(-35, 35))
+            k = rng.randint(0, size + 4)
+            expected = sorted(
+                (((x - query[0]) ** 2 + (y - query[1]) ** 2, i)
+                 for i, (x, y) in enumerate(points))
+            )[:k]
+            actual = tree.k_nearest(query, k)
+            assert actual == [(i, d2) for d2, i in expected]
+
+
+@pytest.mark.parametrize("k", [-1, 1.5, True, "2"])
+def test_k_nearest_rejects_invalid_k(k):
+    with pytest.raises(ValueError):
+        KDTree2D([(0, 0)]).k_nearest((0, 0), k)

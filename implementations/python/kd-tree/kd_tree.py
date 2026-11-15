@@ -140,3 +140,52 @@ class KDTree2D:
 
         visit(self._root)
         return sorted(found)
+
+    def k_nearest(
+        self, query: Iterable[float], k: int
+    ) -> list[tuple[int, float]]:
+        """Return up to k nearest (original_index, squared_distance) pairs.
+
+        Results are sorted by (squared distance, original index). A bounded
+        max-heap stores the current k best candidates; split-plane pruning is
+        performed against the current kth-best squared distance.
+        """
+        import heapq
+
+        qx, qy = _point(query)
+        if isinstance(k, bool) or not isinstance(k, int) or k < 0:
+            raise ValueError("k must be a non-negative integer")
+        if k == 0 or self._root is None:
+            return []
+        limit = min(k, len(self._points))
+        # Negated keys make heap[0] the worst retained (largest distance,
+        # then largest input index) candidate.
+        heap: list[tuple[float, int, int]] = []
+
+        def visit(node: _Node | None) -> None:
+            if node is None:
+                return
+            dx = qx - node.point[0]
+            dy = qy - node.point[1]
+            distance_sq = dx * dx + dy * dy
+            candidate = (-distance_sq, -node.index, node.index)
+            if len(heap) < limit:
+                heapq.heappush(heap, candidate)
+            else:
+                worst_distance = -heap[0][0]
+                worst_index = -heap[0][1]
+                if (distance_sq, node.index) < (worst_distance, worst_index):
+                    heapq.heapreplace(heap, candidate)
+
+            delta = (qx, qy)[node.axis] - node.point[node.axis]
+            near, far = ((node.left, node.right) if delta <= 0
+                         else (node.right, node.left))
+            visit(near)
+            if len(heap) < limit or delta * delta <= -heap[0][0]:
+                visit(far)
+
+        visit(self._root)
+        return sorted(
+            ((index, -neg_distance) for neg_distance, _neg_index, index in heap),
+            key=lambda item: (item[1], item[0]),
+        )

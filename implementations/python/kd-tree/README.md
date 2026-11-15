@@ -19,7 +19,7 @@ from kd_tree import KDTree2D
 points = [(0, 0), (2, 0), (4, 0), (1, 3)]
 tree = KDTree2D(points)
 
-print(tree.nearest((3.2, 0.5)))\nprint(tree.range_query((0, 0), (2, 2)))
+print(tree.nearest((3.2, 0.5)))\nprint(tree.range_query((0, 0), (2, 2)))\nprint(tree.k_nearest((3.2, 0.5), 3))
 ~~~
 
 The result is a pair containing the original input index and squared Euclidean distance. The implementation resolves equal-distance ties using the smallest original input index. An empty tree returns None.
