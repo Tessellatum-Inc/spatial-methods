@@ -142,6 +142,9 @@ jobs:
           - example: steiner-tree
             directory: implementations/python/steiner-tree
             pythonpath: ""
+          - example: k-core
+            directory: implementations/python/k-core
+            pythonpath: ""
           - example: point-location
             directory: implementations/python/point-location
             pythonpath: ""
