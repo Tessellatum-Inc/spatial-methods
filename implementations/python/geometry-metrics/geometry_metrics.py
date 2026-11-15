@@ -767,13 +767,3 @@ def minimum_area_bounding_rectangle_calipers(points):
     best["minimum_width_edge"] = min_width_edge[0]
     best["minimum_width_normal"] = min_width_edge[1]
     return best
-
-
-def convex_polygon_minimum_width(points):
-    """Return minimum strip width enclosing the convex hull in O(n log n)."""
-    result = minimum_area_bounding_rectangle_calipers(points)
-    if result is None:
-        return None
-    return {"width": result["minimum_width"],
-            "support_edge": result["minimum_width_edge"],
-            "normal": result["minimum_width_normal"]}
