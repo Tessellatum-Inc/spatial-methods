@@ -955,3 +955,55 @@ def test_heteroskedastic_spatial_error_gm_expansion_matches_original_zero_diagon
         (spatial_innovation @ innovation) / n,
     ])
     np.testing.assert_allclose(fit.moment_residuals, direct, atol=1e-12)
+
+
+def test_heteroskedastic_spatial_error_gm_uses_oriented_moment_for_asymmetric_weights():
+    from heteroskedastic_spatial_error_gm import heteroskedastic_spatial_error_gm
+    rng = np.random.default_rng(4412)
+    n = 60
+    w = _row_standardised_chain(n)
+    assert not np.allclose(w, w.T)
+    u = rng.normal(size=n) * (0.5 + np.linspace(0.0, 1.0, n))
+    fit = heteroskedastic_spatial_error_gm(u, w)
+    expected_gamma_2 = float(u @ (w @ u) / n)
+    transposed_gamma_2 = float((w @ u) @ u / n)
+    assert fit.gamma[1] == pytest.approx(expected_gamma_2)
+    assert abs(expected_gamma_2 - transposed_gamma_2) > 1e-5
+
+
+def test_spatial_sarar_gtsls_three_step_recovers_synthetic_heteroskedastic_model():
+    from spatial_sarar_gtsls import spatial_sarar_gtsls
+    rng = np.random.default_rng(4413)
+    n = 180
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    beta = np.array([1.1, -0.7])
+    rho, lam = 0.22, 0.28
+    innovation_scale = 0.12 + 0.10 * np.abs(x[:, 1])
+    innovation = rng.normal(size=n) * innovation_scale
+    error = np.linalg.solve(np.eye(n) - lam * w, innovation)
+    y = np.linalg.solve(np.eye(n) - rho * w, x @ beta + error)
+    fit = spatial_sarar_gtsls(y, x, w, instrument_orders=3, grid_size=501)
+    assert fit.rho == pytest.approx(rho, abs=0.18)
+    assert fit.lambda_ == pytest.approx(lam, abs=0.22)
+    assert fit.beta == pytest.approx(beta, abs=0.2)
+    assert len(fit.standard_errors_hc1_conditional) == x.shape[1] + 1
+    assert np.all(np.asarray(fit.standard_errors_hc1_conditional) >= 0)
+    assert fit.instruments_used >= x.shape[1] + 1
+    assert fit.first_stage_rank == fit.instruments_used
+    assert fit.transformed_stage_rank == x.shape[1] + 1
+    assert np.all(np.isfinite(fit.filtered_residuals))
+
+
+def test_spatial_sarar_gtsls_rejects_invalid_or_underidentified_inputs():
+    from spatial_sarar_gtsls import spatial_sarar_gtsls
+    n = 20
+    w = _row_standardised_chain(n)
+    x = np.ones((n, 1))
+    y = np.sin(np.arange(n, dtype=float))
+    with pytest.raises(ValueError, match="instrument_orders"):
+        spatial_sarar_gtsls(y, x, w, instrument_orders=0)
+    with pytest.raises(ValueError, match="finite"):
+        bad = y.copy()
+        bad[0] = np.nan
+        spatial_sarar_gtsls(bad, x, w)
