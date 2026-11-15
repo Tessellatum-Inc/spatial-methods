@@ -45,6 +45,7 @@ def d8_stream_orders(flow_direction, stream_mask, *, nodata: int = -1):
     downstream = {}
     indegree = np.zeros(directions.shape, dtype=np.int32)
     upstream_orders = {cell: [] for cell in cells}
+    upstream_magnitudes = {cell: [] for cell in cells}
     for r, c in cells:
         code = int(directions[r, c])
         if code == nodata:
@@ -76,11 +77,11 @@ def d8_stream_orders(flow_direction, stream_mask, *, nodata: int = -1):
         else:
             highest = max(orders)
             strahler[cell] = highest + (1 if orders.count(highest) >= 2 else 0)
-            shreve[cell] = sum(orders)
+            shreve[cell] = sum(upstream_magnitudes[cell])
         receiver = downstream[cell]
         if receiver is not None:
             upstream_orders[receiver].append(strahler[cell])
-            shreve[receiver] = (0 if np.isnan(shreve[receiver]) else shreve[receiver]) + shreve[cell]
+            upstream_magnitudes[receiver].append(shreve[cell])
             indegree[receiver] -= 1
             if indegree[receiver] == 0:
                 queue.append(receiver)
