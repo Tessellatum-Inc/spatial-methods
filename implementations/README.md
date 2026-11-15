@@ -154,3 +154,11 @@ A successful automated run means the tests in the repository passed in that envi
 The canonical lesson explains the problem and method. The implementation shows one concrete way to put it into practice. Tests make expected behaviour explicit. The walkthrough explains how the code is built and why. A notebook is added when changing values or inspecting intermediate results makes the idea easier to learn.
 
 These are connected teaching materials, not interchangeable copies of the same explanation.
+
+### Point patterns and disease mapping
+
+- [Planar point-pattern summaries and circular Poisson scan](python/point-process/README.md): nearest-neighbour distances, homogeneous and inhomogeneous Ripley's K, finite-difference pair correlation, conditional-CSR quadrat testing and a centroid-based population-offset Poisson scan with conditional multinomial calibration.
+
+### Multi-criteria routing
+
+- [Pareto shortest paths](python/shortest-paths/README.md): nondominated source-to-target paths for finite graphs with nonnegative additive cost vectors, alongside the single-criterion shortest-path baselines.
