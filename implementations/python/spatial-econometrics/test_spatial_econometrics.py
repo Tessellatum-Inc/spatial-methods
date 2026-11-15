@@ -1641,12 +1641,12 @@ def test_icar_log_density_matches_closed_form_on_three_node_chain():
     field = np.array([1., 0., -1.])
     result = icar_log_density(adjacency, field, precision=2.0)
     # The two positive Laplacian eigenvalues are 1 and 3.
-    expected = np.log(4.0) - 0.5 * 2 * np.log(2.0 * np.pi) - 0.5 * 2.0 * 2.0
+    expected = 0.5 * np.log(12.0) - np.log(2.0 * np.pi) - 2.0
     assert result.log_density == pytest.approx(expected, abs=1e-12)
     assert result.quadratic_energy == pytest.approx(2.0)
     assert result.constrained_dimension == 2
     assert result.n_components == 1
-    assert result.log_pseudodeterminant_precision == pytest.approx(np.log(16.0))
+    assert result.log_pseudodeterminant_precision == pytest.approx(np.log(12.0))
 
 
 def test_icar_log_density_handles_disconnected_component_constraints():
