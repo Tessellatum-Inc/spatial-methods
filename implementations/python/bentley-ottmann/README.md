@@ -26,7 +26,7 @@ Read [how the treap status works](status-structure.md) before modifying its spli
 
 ## Input contract
 
-Both versions are deliberately restricted to non-vertical segments with distinct integer endpoints, unique IDs, no shared endpoints, no endpoint-on-segment contacts, no collinear overlaps, no multiway intersections and no two distinct event points sharing an x-coordinate.
+Both core versions are deliberately restricted to non-vertical segments with distinct integer endpoints, unique IDs, no shared endpoints, no endpoint-on-segment contacts, no collinear overlaps, no multiway intersections and no two distinct event points sharing an x-coordinate. The list module additionally exposes `bentley_ottmann_with_verticals`, which accepts `(id, a, b)` integer-segment tuples and applies an exact integer affine shear `(x', y') = (x + k*y, y)` to remove vertical segments before running the same sweep, then maps rational intersection coordinates back exactly. The shear removes the vertical-segment restriction, but it does not remove the other general-position preconditions.
 
 Some restrictions are checked directly (vertical segments, duplicate IDs, shared endpoints and overlaps encountered during neighbour checks). The remaining general-position conditions are preconditions, not exhaustively validated. Do not pass arbitrary GIS linework and assume unsupported degeneracies will be detected.
 
