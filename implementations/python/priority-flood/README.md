@@ -28,7 +28,7 @@ filled, depth = priority_flood(dem)
 - Valid outer-edge cells and valid cells adjacent to NoData are treated as outlets/seeds.
 - Each depression is raised to the minimum spill elevation reachable from those seeds.
 - Invalid cells remain NaN; a valid mask or NoData sentinel may be supplied.
-- The algorithm fills depressions; it does not breach them, preserve every real closed basin, or resolve flats for subsequent flow direction.
+- Priority-Flood fills depressions; it does not breach them or preserve every real closed basin. Flat resolution is a separate companion operation in `flat_resolution.py` and should be applied only after the depression-conditioning policy is chosen.
 - The boundary/NoData policy is a modelling decision. A clipped DEM boundary is not automatically a natural watershed outlet.
 - This is a heap-based teaching implementation with O(n log n) time and O(n) memory for n valid cells.
 
