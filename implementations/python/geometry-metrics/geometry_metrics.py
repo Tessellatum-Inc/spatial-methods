@@ -1,6 +1,6 @@
 """Teaching implementations of point-set and polyline geometric metrics."""
 from __future__ import annotations
-from math import hypot, isfinite
+from math import atan2, hypot, isfinite
 from random import Random
 from typing import Iterable, Sequence
 
@@ -245,3 +245,42 @@ def polylabel(outer_ring, holes=(), *, precision=1.0, max_cells=1_000_000):
                 child = make_cell(cx+dx, cy+dy, quarter)
                 heappush(heap, (-child[0], child[1], child[2], child[3], child[4]))
     return (best[1], best[2], max(0.0, best[4]), cells_examined)
+
+
+def minimum_area_bounding_rectangle(points):
+    """Return the minimum-area rectangle aligned to a convex-hull edge.
+
+    Result keys are corners (counter-clockwise), area, and edge angle in
+    radians. This transparent baseline tests every hull-edge orientation and
+    scans all hull vertices for each, so it is O(h^2), not linear-time calipers.
+    """
+    hull = convex_hull(points)
+    if not hull:
+        return None
+    if len(hull) == 1:
+        p = hull[0]
+        return {"corners": (p, p, p, p), "area": 0.0, "angle_radians": 0.0}
+    best = None
+    edges = list(zip(hull, hull[1:] + hull[:1]))
+    for a, b in edges:
+        dx, dy = b[0]-a[0], b[1]-a[1]
+        length = hypot(dx, dy)
+        if length == 0:
+            continue
+        ux, uy = dx/length, dy/length
+        vx, vy = -uy, ux
+        along = [x*ux + y*uy for x,y in hull]
+        across = [x*vx + y*vy for x,y in hull]
+        s0, s1 = min(along), max(along)
+        t0, t1 = min(across), max(across)
+        area = (s1-s0)*(t1-t0)
+        corners = (
+            (s0*ux+t0*vx, s0*uy+t0*vy),
+            (s1*ux+t0*vx, s1*uy+t0*vy),
+            (s1*ux+t1*vx, s1*uy+t1*vy),
+            (s0*ux+t1*vx, s0*uy+t1*vy),
+        )
+        candidate = {"corners": corners, "area": area, "angle_radians": atan2(uy,ux)}
+        if best is None or area < best["area"]:
+            best = candidate
+    return best
