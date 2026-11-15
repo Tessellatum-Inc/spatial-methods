@@ -107,11 +107,13 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 - [Spatial impact uncertainty](statistics/spatial-impact-uncertainty.md) — propagate a supplied joint parameter covariance into Monte Carlo intervals for direct, indirect and total impacts.
 - [Spatial lag 2SLS](statistics/spatial-lag-2sls.md) — instrument the endogenous spatially lagged response with exogenous covariates and their spatial lags.
 - [Two-step spatial-lag GMM](statistics/spatial-lag-gmm.md) — update the 2SLS weighting matrix with a heteroskedasticity-robust instrument-moment covariance and report robust standard errors and an overidentification statistic.
+- [Kelejian–Prucha spatial-error GMM](statistics/kelejian-prucha-spatial-error-gmm.md) — estimate spatial error dependence from three innovation moments, then apply feasible GLS under homoskedastic innovations.
 - [Spatial Durbin 2SLS](statistics/spatial-durbin-2sls.md) — estimate the endogenous spatial lag alongside spatially lagged covariates using higher-order spatial instruments.
 - [Concentrated SAR/SEM maximum likelihood](statistics/spatial-maximum-likelihood.md) — estimate spatial lag and spatial error parameters by profiling the Gaussian likelihood over a conservative interval.
 - [Spatial Durbin maximum likelihood](statistics/spatial-durbin-mle.md) — estimate response feedback and lagged-covariate effects by concentrated Gaussian maximum likelihood.
 - [SARAR/SAC maximum likelihood](statistics/spatial-sarar-mle.md) — jointly estimate spatial response feedback and spatially correlated disturbances by concentrated Gaussian maximum likelihood.
-- [SLX and SDEM](statistics/slx-and-sdem.md) — estimate spatially lagged covariate effects by OLS or with a spatial-error process by concentrated ML.\n- [Gaussian proper-CAR regression](statistics/proper-car-gaussian-regression.md) — fit a Gaussian conditional autoregressive covariance model using an eigenvalue-constrained precision matrix.
+- [SLX and SDEM](statistics/slx-and-sdem.md) — estimate spatially lagged covariate effects by OLS or with a spatial-error process by concentrated ML.
+- [Gaussian proper-CAR regression](statistics/proper-car-gaussian-regression.md) — fit a Gaussian conditional autoregressive covariance model using an eigenvalue-constrained precision matrix.
 - [Intrinsic CAR Gaussian fields](statistics/icar-gaussian-fields.md) — simulate a constrained intrinsic Gaussian field with one sum-to-zero condition per connected graph component.
 - [Spatial HAC covariance for OLS](statistics/spatial-hac-covariance.md) — estimate a distance-weighted sandwich covariance for OLS under local heteroskedasticity and spatial residual dependence.
 - [Local Moran's I](statistics/local-morans-i.md) — locate local clusters of similar values and spatial outliers, with conditional permutation inference.
