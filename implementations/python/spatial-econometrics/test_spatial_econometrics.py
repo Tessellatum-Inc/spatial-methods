@@ -419,3 +419,62 @@ def test_spatial_impact_uncertainty_validates_covariance_and_draw_controls():
         spatial_impact_uncertainty(CHAIN, 0.1, [1.0], [[1.0, 2.0], [2.0, 1.0]], draws=100)
     with pytest.raises(ValueError, match="draws"):
         spatial_impact_uncertainty(CHAIN, 0.1, [1.0], np.eye(2), draws=10)
+
+
+def _row_standardised_line(n):
+    matrix = np.zeros((n, n))
+    for i in range(n - 1):
+        matrix[i, i + 1] = matrix[i + 1, i] = 1.0
+    return matrix / matrix.sum(axis=1, keepdims=True)
+
+
+def test_slx_ols_recovers_spatial_covariate_effects():
+    from slx_sdem import spatial_lx_ols
+    rng = np.random.default_rng(4421)
+    n = 120
+    w = _row_standardised_line(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    beta = np.array([1.1, 0.7])
+    gamma = np.array([0.0, -0.45])
+    y = x @ beta + (w @ x) @ gamma + rng.normal(scale=0.08, size=n)
+    fit = spatial_lx_ols(y, x, w)
+    assert fit.coefficients == pytest.approx(beta, abs=0.06)
+    assert fit.spatial_covariate_coefficients == pytest.approx(gamma, abs=0.08)
+    assert fit.spatial_covariate_coefficients[0] == 0.0
+    assert len(fit.residuals) == n
+    assert fit.sigma2_ols > 0
+
+
+def test_sdem_mle_recovers_spatial_error_and_lagged_covariate_effects():
+    from slx_sdem import spatial_dem_mle
+    rng = np.random.default_rng(77219)
+    n = 100
+    w = _row_standardised_line(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    beta = np.array([0.8, 0.55])
+    gamma = np.array([0.0, -0.35])
+    lam = 0.28
+    innovation = rng.normal(scale=0.1, size=n)
+    error = np.linalg.solve(np.eye(n) - lam * w, innovation)
+    y = x @ beta + (w @ x) @ gamma + error
+    fit = spatial_dem_mle(y, x, w, grid_size=61)
+    assert fit.error_parameter == pytest.approx(lam, abs=0.2)
+    assert fit.coefficients == pytest.approx(beta, abs=0.15)
+    assert fit.spatial_covariate_coefficients == pytest.approx(gamma, abs=0.2)
+    assert fit.spatial_covariate_coefficients[0] == 0.0
+    assert np.isfinite(fit.log_likelihood)
+    assert len(fit.fitted) == n
+
+
+def test_slx_sdem_reject_invalid_inputs_and_search_controls():
+    from slx_sdem import spatial_lx_ols, spatial_dem_mle
+    n = 10
+    w = _row_standardised_line(n)
+    x = np.column_stack([np.ones(n), np.arange(n, dtype=float)])
+    y = np.array([1.0, 2.2, 2.8, 4.4, 4.7, 6.3, 7.1, 8.2, 8.8, 10.1])
+    with pytest.raises(ValueError, match="finite"):
+        spatial_lx_ols([1, 2, 3, 4, 5, 6, 7, 8, float("nan"), 10], x, w)
+    with pytest.raises(ValueError, match="full column rank"):
+        spatial_lx_ols(y, np.ones((n, 2)), w)
+    with pytest.raises(ValueError, match="grid_size"):
+        spatial_dem_mle(y, x, w, grid_size=5)
