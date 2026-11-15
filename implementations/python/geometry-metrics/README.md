@@ -16,6 +16,6 @@ python -m pytest -q
 
 Coordinates must use one planar Cartesian CRS and consistent linear units. Hausdorff treats inputs as sets of sampled vertices; it does not measure distance to continuous line segments. Discrete Fréchet respects vertex order and is not the continuous Fréchet distance. The smallest-circle routine uses floating-point predicates and recursive Welzl construction; it is intended for modest point sets, not adversarially large input or certified exact geometry.
 
-The diameter routine builds a monotone-chain hull in O(n log n) and sweeps antipodal pairs in O(h). It returns a farthest pair, not a minimum-area oriented bounding rectangle.
+The diameter routine builds a monotone-chain hull in O(n log n) and sweeps antipodal pairs in O(h). It returns a farthest pair, not a minimum-area oriented bounding rectangle. Polylabel maximises signed boundary clearance with a best-first square-cell search and returns an approximate point and radius; polygon rings must be valid.
 
 See the [intern walkthrough](implementation-walkthrough.md), [Hausdorff/Fréchet lesson](../../../algorithms/geometry/hausdorff-frechet.md), [smallest-circle lesson](../../../algorithms/geometry/smallest-enclosing-circle.md), [test suite](test_geometry_metrics.py) and [interactive lab](../../../notebooks/geometry-metrics-lab.ipynb).
