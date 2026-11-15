@@ -9,7 +9,7 @@ def test_basic_connection_chain():
 
 def test_transfer_and_minimum_change_time():
     cs = [Connection("T1", "A", "B", 5, 10),
-          Connection("T2", "B", "C", 12, 20)]
+          Connection("T2", "B", "C", 13, 20)]
     result = earliest_arrival(cs, {"A": 0}, minimum_transfer={"B": 3})
     assert result["arrival_times"]["C"] == 20
 
