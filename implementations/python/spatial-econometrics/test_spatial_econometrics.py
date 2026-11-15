@@ -968,7 +968,8 @@ def test_heteroskedastic_spatial_error_gm_uses_oriented_moment_for_asymmetric_we
     expected_gamma_2 = float(u @ (w @ u) / n)
     transposed_gamma_2 = float((w @ u) @ u / n)
     assert fit.gamma[1] == pytest.approx(expected_gamma_2)
-    assert abs(expected_gamma_2 - transposed_gamma_2) > 1e-5
+    # A scalar quadratic form is invariant to transposition, even when W is not symmetric.
+    assert expected_gamma_2 == pytest.approx(transposed_gamma_2)
 
 
 def test_spatial_sarar_gtsls_three_step_recovers_synthetic_heteroskedastic_model():
