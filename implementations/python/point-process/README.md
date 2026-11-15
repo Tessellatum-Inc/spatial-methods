@@ -10,6 +10,7 @@ Dependency-free functions for a bounded subset of spatial point-process analysis
 - Finite-difference pair-correlation estimates from K(r).
 - Conditional multinomial Monte Carlo quadrat-count test for homogeneous complete spatial randomness (CSR).
 - Circular Poisson spatial scan statistic for areal case counts with a population offset and conditional multinomial Monte Carlo p-value.
+- Tango's global distance-decay quadratic-form test with conditional multinomial Monte Carlo inference.
 - Area-centred Besag–Newell cluster detection with exact conditional hypergeometric local tails and global Monte Carlo calibration.
 
 ## Run
