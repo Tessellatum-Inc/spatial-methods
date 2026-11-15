@@ -142,9 +142,10 @@ class STRPackedRTree:
         """Return k nearest boxes as (input_index, Euclidean_distance) pairs.
 
         Best-first branch-and-bound uses node-envelope distance as a lower
-        bound. Results are ordered by distance and then original input index.
+        bound. A bounded max-heap retains only the best k entries; equal
+        distances are ordered by original input index.
         """
-        from heapq import heappop, heappush
+        from heapq import heappop, heappush, heapreplace
         coordinates = tuple(float(value) for value in point)
         if len(coordinates) != 2 or not all(isfinite(value) for value in coordinates):
             raise ValueError("point must contain two finite coordinates")
@@ -162,19 +163,23 @@ class STRPackedRTree:
         queue = []
         sequence = 0
         heappush(queue, (distance_squared(self._root.bounds), sequence, self._root))
-        found: list[tuple[float, int]] = []
+        # Negated keys make the root the worst retained (distance, index).
+        best: list[tuple[float, int, int]] = []
         while queue:
             lower_bound, _order, item = heappop(queue)
-            if len(found) >= k:
-                kth = sorted(found, key=lambda pair: (pair[0], pair[1]))[k - 1][0]
-                if lower_bound > kth:
-                    break
+            if len(best) == k and lower_bound > -best[0][0]:
+                break
             if isinstance(item, _Entry):
-                found.append((lower_bound, item.index))
+                candidate = (-lower_bound, -item.index, item.index)
+                if len(best) < k:
+                    heappush(best, candidate)
+                elif (lower_bound, item.index) < (-best[0][0], -best[0][1]):
+                    heapreplace(best, candidate)
                 continue
             for child in item.children:
                 sequence += 1
                 heappush(queue, (distance_squared(child.bounds), sequence, child))
 
-        found.sort(key=lambda pair: (pair[0], pair[1]))
-        return [(index, sqrt(distance_sq)) for distance_sq, index in found[:k]]
+        ordered = sorted(((-d2, index) for d2, _neg_index, index in best),
+                         key=lambda pair: (pair[0], pair[1]))
+        return [(index, sqrt(distance_sq)) for distance_sq, index in ordered]
