@@ -13,6 +13,8 @@ The [CSA package](../../implementations/python/csa/README.md) implements a
 single-pass, departure-sorted connection scan with stop-specific minimum
 transfer times and same-trip continuation.
 
+A runnable [RAPTOR and Connection Scan lab](../../notebooks/transit-routing-lab.ipynb) compares departure scans, same-trip continuation and minimum transfer constraints.
+
 ## Assumptions and limitations
 
 - All times share one service-day clock and connections are sorted by departure.

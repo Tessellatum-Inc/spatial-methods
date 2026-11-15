@@ -22,6 +22,8 @@ and chained directed footpaths. Its reference scan examines trips explicitly
 at each reachable boarding position; it is not the optimized RAPTOR route
 scan used for large production feeds.
 
+A runnable [RAPTOR and Connection Scan lab](../../notebooks/transit-routing-lab.ipynb) compares direct journeys, transfers and walking links.
+
 ## Assumptions and limitations
 
 - Times are finite minutes on one common service-day clock.
