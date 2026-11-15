@@ -60,3 +60,61 @@ def test_invalid_endpoints_weights_and_nodes_are_rejected():
         minimum_spanning_tree(["A", "B"], [("A", "B", math.inf)])
     with pytest.raises(ValueError, match="three"):
         minimum_spanning_tree(["A", "B"], [("A", "B")])
+
+
+def test_total_weight_uses_accurate_summation_for_mixed_magnitudes():
+    result = minimum_spanning_tree(
+        [0, 1, 2, 3],
+        [(0, 1, -1e16), (1, 2, 1.0), (2, 3, 1e16)],
+    )
+    assert result["total_weight"] == 1.0
+
+
+def test_total_weight_overflow_is_reported_explicitly():
+    with pytest.raises(OverflowError, match="exceeds finite"):
+        minimum_spanning_tree(
+            [0, 1, 2],
+            [(0, 1, 1e308), (1, 2, 1e308)],
+        )
+
+
+def _brute_force_mst_weight(nodes, edges):
+    from itertools import combinations
+
+    best = math.inf
+    for subset in combinations(edges, len(nodes) - 1):
+        parent = {node: node for node in nodes}
+
+        def find(node):
+            while parent[node] != node:
+                node = parent[node]
+            return node
+
+        valid = True
+        for u, v, _weight in subset:
+            ru, rv = find(u), find(v)
+            if ru == rv:
+                valid = False
+                break
+            parent[ru] = rv
+        if valid and len({find(node) for node in nodes}) == 1:
+            best = min(best, math.fsum(edge[2] for edge in subset))
+    return best
+
+
+def test_kruskal_matches_exhaustive_spanning_tree_oracle_on_seeded_graphs():
+    import random
+
+    rng = random.Random(8675309)
+    for _ in range(100):
+        count = rng.randint(2, 6)
+        edges = [(node, node + 1, rng.randint(-20, 30))
+                 for node in range(count - 1)]
+        for u in range(count):
+            for v in range(u + 2, count):
+                if rng.random() < 0.45:
+                    edges.append((u, v, rng.randint(-20, 30)))
+        expected = _brute_force_mst_weight(list(range(count)), edges)
+        actual = minimum_spanning_tree(list(range(count)), edges)
+        assert actual["total_weight"] == pytest.approx(expected)
+        assert len(actual["edges"]) == count - 1
