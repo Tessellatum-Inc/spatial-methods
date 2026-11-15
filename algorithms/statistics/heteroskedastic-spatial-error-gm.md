@@ -40,7 +40,7 @@ Both matrices have zero diagonal. The two moments can be written as
 \end{bmatrix}=0.
 \]
 
-For a residual predictor \(\tilde u\), set \(v=W\tilde u\), \(w=Wv\), and \(d_i=\sum_j w_{ij}^2\). Expanding the sample moments in \(\lambda\) gives
+For a residual predictor \(\tilde u\), set \(v=W\tilde u\), \(w=Wv\), and \(d_i=\sum_j w_{ji}^2\). Expanding the sample moments in \(\lambda\) gives
 
 \[
 \tilde\gamma-\tilde\Gamma
