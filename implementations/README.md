@@ -124,7 +124,8 @@ Each implementation should state:
 ### Spatial statistics
 
 - [Global Moran's I in Python](python/global-morans-i/README.md): a dependency-free dense-matrix calculation, row-standardisation helper and 13 tests. It computes the statistic only; use a spatial statistics library for inference. Follow the [Global Moran's I walkthrough](python/global-morans-i/implementation-walkthrough.md).
-- [Global Geary's C in Python](python/geary-c/README.md): a dependency-free dense-matrix calculation and 16 tests. It computes the statistic only; use a spatial statistics library for inference. Follow the [Geary's C walkthrough](python/geary-c/implementation-walkthrough.md).\n- [Spatial econometrics](python/spatial-econometrics/README.md): classic OLS-based LM-lag/LM-error diagnostics and exact dense-matrix SAR/SDM direct, indirect and total impact decomposition, with tests. These are scoped teaching calculations, not spatial model estimators.
+- [Global Geary's C in Python](python/geary-c/README.md): a dependency-free dense-matrix calculation and 16 tests. It computes the statistic only; use a spatial statistics library for inference. Follow the [Geary's C walkthrough](python/geary-c/implementation-walkthrough.md).
+- [Spatial econometrics](python/spatial-econometrics/README.md): classic OLS-based LM-lag/LM-error diagnostics and exact dense-matrix SAR/SDM direct, indirect and total impact decomposition, with tests. These are scoped teaching calculations, not spatial model estimators.
 
 ### Indexing and query processing
 
