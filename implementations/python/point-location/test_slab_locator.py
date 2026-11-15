@@ -62,3 +62,55 @@ def test_overlapping_polygons_rejected():
             "a": [rect(0, 0, 3, 3)],
             "b": [rect(2, 2, 4, 4)],
         })
+
+
+
+def test_seeded_random_disjoint_faces_against_rectangle_oracle():
+    """Exercise slab ordering and queries across many x-event intervals."""
+    import random
+
+    rng = random.Random(20261115)
+    faces = {}
+    bounds = {}
+    # Place each rectangle in its own 10-by-10 cell, so interiors cannot
+    # overlap while widths, heights and offsets vary independently.
+    for row in range(6):
+        for column in range(6):
+            face_id = f"f-{row}-{column}"
+            x0 = column * 10 + rng.uniform(0.1, 2.0)
+            y0 = row * 10 + rng.uniform(0.1, 2.0)
+            x1 = column * 10 + rng.uniform(6.0, 9.8)
+            y1 = row * 10 + rng.uniform(6.0, 9.8)
+            faces[face_id] = [rect(x0, y0, x1, y1)]
+            bounds[face_id] = (x0, y0, x1, y1)
+
+    locator = SlabPointLocator(faces)
+    for _ in range(2000):
+        x = rng.uniform(-5, 65)
+        y = rng.uniform(-5, 65)
+        expected = None
+        for face_id, (x0, y0, x1, y1) in bounds.items():
+            if x0 < x < x1 and y0 < y < y1:
+                expected = face_id
+                break
+            if (x0 <= x <= x1 and y0 <= y <= y1
+                    and (x == x0 or x == x1 or y == y0 or y == y1)):
+                expected = BOUNDARY
+                break
+        assert locator.locate(x, y) == expected
+
+
+def test_seeded_adjacent_rectangle_grid_preserves_shared_boundaries():
+    """Every shared vertical seam is boundary, not assigned to either face."""
+    faces = {}
+    for row in range(5):
+        for column in range(5):
+            faces[f"{row}-{column}"] = [
+                rect(column * 2, row * 2, (column + 1) * 2, (row + 1) * 2)
+            ]
+    locator = SlabPointLocator(faces)
+    for row in range(5):
+        for column in range(5):
+            assert locator.locate(column * 2 + 1, row * 2 + 1) == f"{row}-{column}"
+            assert locator.locate(column * 2 + 2, row * 2 + 1) == BOUNDARY
+            assert locator.locate(column * 2 + 1, row * 2 + 2) == BOUNDARY
