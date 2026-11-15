@@ -2,6 +2,12 @@
 
 Implements seven shortest-path methods for explicit weighted graphs: Dijkstra, A*, bidirectional Dijkstra and directed ALT landmark heuristics and Yen's k-shortest loopless paths for non-negative edge weights, Bellman–Ford for negative edges, and Floyd–Warshall for all-pairs shortest distances.
 
+The companion `network_queries.py` adds:
+- repeated-Dijkstra many-to-many shortest paths for selected source and target sets;
+- cutoff-Dijkstra network isochrones with directed frontier arcs.
+
+These are reference baselines. The many-to-many method repeats a single-source search for each source; it is not a shared-preprocessing production engine. The isochrone is a set of reachable graph nodes and frontier arcs, not a polygon.
+
 ## Run
 
 ~~~bash

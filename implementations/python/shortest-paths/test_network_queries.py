@@ -43,6 +43,13 @@ def test_isochrone_includes_nodes_at_exact_budget_and_frontier_arcs():
     assert all(distance <= 3.5 for distance in result["distances"].values())
 
 
+def test_frontier_excludes_edges_to_nodes_already_inside_isochrone():
+    graph = {"A": [("B", 3), ("C", 1)], "C": [("B", 0.5)], "B": []}
+    result = network_isochrone(graph, "A", 2)
+    assert result["distances"]["B"] == 1.5
+    assert ("A", "B", 3.0) not in result["frontier_edges"]
+
+
 def test_isochrone_budget_zero_returns_only_source():
     result = network_isochrone(graph_fixture(), "A", 0)
     assert result["distances"] == {"A": 0.0}

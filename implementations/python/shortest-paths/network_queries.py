@@ -97,7 +97,7 @@ def network_isochrone(
     for node, distance in distances.items():
         for neighbor, weight in graph.get(node, ()):
             candidate = distance + weight
-            if candidate > budget:
+            if neighbor not in distances and candidate > budget:
                 frontier.append((node, neighbor, candidate))
     return {
         "distances": distances,
