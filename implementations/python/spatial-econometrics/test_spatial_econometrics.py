@@ -1501,3 +1501,47 @@ def test_spatial_lag_ar_confidence_set_validates_grid_and_test():
         spatial_lag_ar_confidence_set(y, x, w, [-0.2, 0.0, 0.2], critical_value=3.0, test="unknown")
     with pytest.raises(ValueError, match="critical_value"):
         spatial_lag_ar_confidence_set(y, x, w, [-0.2, 0.0, 0.2], critical_value=0.0)
+
+
+
+def test_spatial_impact_delta_jacobian_matches_central_finite_differences():
+    from impacts import spatial_impact_delta_uncertainty
+    rho, beta, gamma = 0.17, np.array([1.4]), np.array([0.6])
+    covariance = np.diag([0.0025, 0.01, 0.0064])
+    result, = spatial_impact_delta_uncertainty(CHAIN, rho, beta, covariance, gamma)
+    theta = np.array([rho, beta[0], gamma[0]])
+    def impacts_at(values):
+        item, = spatial_impacts(CHAIN, values[0], [values[1]], [values[2]])
+        return np.array([item.direct, item.indirect, item.total])
+    numerical = np.column_stack([
+        (impacts_at(theta + np.eye(3)[j] * 1e-6)
+         - impacts_at(theta - np.eye(3)[j] * 1e-6)) / 2e-6
+        for j in range(3)
+    ])
+    expected_se = np.sqrt(np.diag(numerical @ covariance @ numerical.T))
+    assert [result.direct.estimate, result.indirect.estimate, result.total.estimate] == pytest.approx(
+        impacts_at(theta)
+    )
+    assert [result.direct.standard_error, result.indirect.standard_error,
+            result.total.standard_error] == pytest.approx(expected_se, rel=2e-6)
+
+
+def test_spatial_impact_delta_sar_zero_rho_has_zero_spillover_uncertainty():
+    from impacts import spatial_impact_delta_uncertainty
+    covariance = np.diag([0.0, 0.04])
+    result, = spatial_impact_delta_uncertainty(CHAIN, 0.0, [2.0], covariance)
+    assert result.direct.estimate == pytest.approx(2.0)
+    assert result.direct.standard_error == pytest.approx(0.2)
+    assert result.indirect.estimate == pytest.approx(0.0)
+    assert result.indirect.standard_error == pytest.approx(0.0)
+    assert result.total.standard_error == pytest.approx(0.2)
+
+
+def test_spatial_impact_delta_rejects_bad_covariance_and_confidence():
+    from impacts import spatial_impact_delta_uncertainty
+    with pytest.raises(ValueError, match="shape"):
+        spatial_impact_delta_uncertainty(CHAIN, 0.1, [1.0], np.eye(3))
+    with pytest.raises(ValueError, match="positive semidefinite"):
+        spatial_impact_delta_uncertainty(CHAIN, 0.1, [1.0], [[1.0, 2.0], [2.0, 1.0]])
+    with pytest.raises(ValueError, match="confidence"):
+        spatial_impact_delta_uncertainty(CHAIN, 0.1, [1.0], np.eye(2), confidence=1.0)

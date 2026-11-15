@@ -189,3 +189,109 @@ def spatial_impact_uncertainty(
             rejected_draws=rejected,
         ))
     return tuple(results)
+
+
+@dataclass(frozen=True)
+class DeltaImpactUncertainty:
+    """First-order delta-method uncertainty for one covariate's impacts."""
+    direct: ImpactInterval
+    indirect: ImpactInterval
+    total: ImpactInterval
+
+
+def spatial_impact_delta_uncertainty(
+    weights: Sequence[Sequence[float]],
+    rho: float,
+    beta: Sequence[float],
+    covariance: Sequence[Sequence[float]],
+    gamma: Sequence[float] | None = None,
+    *,
+    confidence: float = 0.95,
+) -> tuple[DeltaImpactUncertainty, ...]:
+    """Propagate joint parameter covariance through SAR/SDM impact functions.
+
+    Covariance ordering is [rho, beta...] for SAR or [rho, beta..., gamma...]
+    for SDM. Uses the analytic Jacobian and a two-sided normal (Wald) interval.
+    This is a local first-order approximation, unlike the parametric Monte
+    Carlo method; it can be poor near singular spatial multipliers or with
+    highly nonlinear/strongly skewed impact distributions.
+    """
+    from statistics import NormalDist
+
+    w = np.asarray(weights, dtype=float)
+    b = np.asarray(beta, dtype=float)
+    if w.ndim != 2 or w.shape[0] != w.shape[1] or w.shape[0] < 2:
+        raise ValueError("weights must be a square matrix with at least two units")
+    if b.ndim != 1 or b.size == 0:
+        raise ValueError("beta must be a nonempty one-dimensional vector")
+    if gamma is None:
+        g = np.zeros_like(b)
+        mean_size = 1 + b.size
+    else:
+        g = np.asarray(gamma, dtype=float)
+        if g.shape != b.shape:
+            raise ValueError("gamma must have one value per beta coefficient")
+        mean_size = 1 + 2 * b.size
+    mean = np.concatenate([[float(rho)], b] if gamma is None else [[float(rho)], b, g])
+    cov = np.asarray(covariance, dtype=float)
+    if cov.shape != (mean_size, mean_size):
+        raise ValueError("covariance shape must match [rho, beta..., gamma...]")
+    if not (np.all(np.isfinite(w)) and np.all(np.isfinite(mean))
+            and np.all(np.isfinite(cov))):
+        raise ValueError("weights, parameters and covariance must be finite")
+    if not np.allclose(cov, cov.T, atol=1e-10, rtol=1e-10):
+        raise ValueError("covariance must be symmetric")
+    eigenvalues = np.linalg.eigvalsh((cov + cov.T) / 2.0)
+    if eigenvalues.min() < -1e-10 * max(1.0, float(np.max(np.abs(eigenvalues)))):
+        raise ValueError("covariance must be positive semidefinite")
+    if not np.isfinite(confidence) or not 0 < confidence < 1:
+        raise ValueError("confidence must be strictly between zero and one")
+
+    n = w.shape[0]
+    identity = np.eye(n)
+    system = identity - float(rho) * w
+    try:
+        multiplier = np.linalg.solve(system, identity)
+        normal_critical = NormalDist().inv_cdf((1.0 + confidence) / 2.0)
+        results = []
+        for index, (coefficient, spatial_coefficient) in enumerate(zip(b, g)):
+            right = coefficient * identity + spatial_coefficient * w
+            impact_matrix = multiplier @ right
+            derivative_rho = multiplier @ w @ impact_matrix
+            derivative_beta = multiplier
+            derivative_gamma = multiplier @ w
+            jac_direct = np.zeros(mean_size)
+            jac_total = np.zeros(mean_size)
+            jac_direct[0] = np.trace(derivative_rho) / n
+            jac_total[0] = np.sum(derivative_rho) / n
+            jac_direct[1 + index] = np.trace(derivative_beta) / n
+            jac_total[1 + index] = np.sum(derivative_beta) / n
+            if gamma is not None:
+                gamma_index = 1 + b.size + index
+                jac_direct[gamma_index] = np.trace(derivative_gamma) / n
+                jac_total[gamma_index] = np.sum(derivative_gamma) / n
+            direct = float(np.trace(impact_matrix) / n)
+            total = float(np.sum(impact_matrix) / n)
+            indirect = total - direct
+            jac_indirect = jac_total - jac_direct
+            intervals = []
+            for estimate, gradient in (
+                (direct, jac_direct), (indirect, jac_indirect), (total, jac_total)
+            ):
+                variance = float(gradient @ cov @ gradient)
+                tolerance = 1e-10 * max(1.0, float(np.max(np.abs(cov))))
+                if variance < -tolerance:
+                    raise ValueError("delta-method variance is negative; inspect covariance")
+                standard_error = float(np.sqrt(max(0.0, variance)))
+                intervals.append(ImpactInterval(
+                    estimate=estimate,
+                    standard_error=standard_error,
+                    lower=estimate - normal_critical * standard_error,
+                    upper=estimate + normal_critical * standard_error,
+                ))
+            results.append(DeltaImpactUncertainty(
+                direct=intervals[0], indirect=intervals[1], total=intervals[2]
+            ))
+    except np.linalg.LinAlgError as exc:
+        raise ValueError("I - rho W must be nonsingular") from exc
+    return tuple(results)
