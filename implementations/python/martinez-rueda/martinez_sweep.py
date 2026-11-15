@@ -1,5 +1,6 @@
 """Sweep-line event and segment-splitting core for polygon overlay."""
 from dataclasses import dataclass
+import heapq
 from fractions import Fraction
 from math import isfinite, atan2, pi
 
