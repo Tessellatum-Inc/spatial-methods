@@ -37,6 +37,7 @@ This directory holds those foundational methods separately from individual algor
 - [Residual-based GNSS RAIM/FDE](gnss-residual-raim-fde.md) — test a linearised measurement snapshot for global residual inconsistency and inspect single-measurement exclusion candidates, without claiming protection levels.
 
 - [GNSS LAMBDA integer ambiguity resolution](gnss-lambda-integer-ambiguity-resolution.md) — decorrelate the float ambiguity lattice with an integer-unimodular transform and search for the best integer least-squares candidates.
+- [Point-pattern second-order statistics](point-pattern-second-order-statistics.md) — compare homogeneous and inhomogeneous K summaries, nearest-neighbor distances and pair-correlation functions while making window and intensity assumptions explicit.
 
 ## How to use these records
 

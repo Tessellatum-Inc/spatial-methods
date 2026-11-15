@@ -79,3 +79,40 @@ def pair_correlation_from_k(radii, k_values):
         derivative=(ks[hi]-ks[lo])/(rs[hi]-rs[lo])
         out.append(derivative/(2*pi*r))
     return out
+
+
+def ripley_k_inhomogeneous_translation(points, window, radii, intensities):
+    """Inhomogeneous K with supplied pointwise intensities and translation correction.
+
+    Estimates K_inhom(r) = sum_{i != j, d_ij <= r}
+        1 / (lambda_i * lambda_j * |W intersect (W + x_j - x_i)|).
+
+    Intensities are assumed known or externally estimated at each observed
+    point, in events per squared coordinate unit. No intensity model is fitted.
+    The estimator assumes the inhomogeneous K target is translation invariant
+    (second-order intensity-reweighted stationarity). Window must be a rectangle.
+    """
+    pts, (xmin, ymin, xmax, ymax) = _validate(points, window)
+    lam = [float(v) for v in intensities]
+    if len(lam) != len(pts):
+        raise ValueError("one intensity value is required for each point")
+    if any(not isfinite(v) or v <= 0 for v in lam):
+        raise ValueError("intensities must be finite and strictly positive")
+    rs = [float(r) for r in radii]
+    if not rs or any(not isfinite(r) or r < 0 for r in rs):
+        raise ValueError("radii must be a non-empty sequence of finite non-negative values")
+    width, height = xmax - xmin, ymax - ymin
+    pairs = []
+    for i, (x, y) in enumerate(pts):
+        for j, (a, b) in enumerate(pts):
+            if i == j:
+                continue
+            dx, dy = abs(x - a), abs(y - b)
+            overlap_area = (width - dx) * (height - dy)
+            if overlap_area <= 0:
+                continue
+            distance = hypot(dx, dy)
+            weight = 1.0 / (lam[i] * lam[j] * overlap_area)
+            pairs.append((distance, weight))
+    return [sum(weight for distance, weight in pairs if distance <= radius)
+            for radius in rs]
