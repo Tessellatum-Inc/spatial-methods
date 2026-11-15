@@ -50,6 +50,10 @@ The notebook uses 99 replications only as a demonstration. More simulations are 
 - It detects elevated-rate clusters only; low-rate cluster scans are not implemented.
 - The scan statistic's Monte Carlo calibration accounts for maximising over the implemented candidate circles, but does not justify the study design or chosen candidate-zone family.
 
+## Implementation and source verification
+
+The [point-process package](../implementations/python/point-process/README.md) contains the centroid-based scan and conditional multinomial Monte Carlo calibration in `spatial_scan.py`, with regression cases in `test_spatial_scan.py`. See the [source-verification note](../catalog/verification/spatial-scan-statistic.md) for bibliographic identity and limits.
+
 ## References
 
 - Kulldorff, M. (1997). “A spatial scan statistic.” *Communications in Statistics—Theory and Methods*, 26(6), 1481–1496. https://doi.org/10.1080/03610929708831995.
