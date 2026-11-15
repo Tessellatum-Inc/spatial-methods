@@ -193,6 +193,8 @@ def test_spatial_mle_rejects_invalid_inputs_and_grid_settings():
         spatial_lag_mle([1., 2., 3., 4.], np.ones((4, 1)), CHAIN)
     with pytest.raises(ValueError, match="grid_size"):
         spatial_error_mle([1., 2., 3., 4., 5.], x, w, grid_size=5)
+    with pytest.raises(ValueError, match="tolerance"):
+        spatial_error_mle([1., 2., 3., 4., 5.], x, w, tolerance=0.0)
     with pytest.raises(ValueError, match="full column rank"):
         spatial_lag_mle([1., 2., 3., 4., 5.], np.ones((5, 2)), w)
     with pytest.raises(ValueError, match="finite"):
