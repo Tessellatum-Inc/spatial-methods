@@ -165,4 +165,4 @@ These are connected teaching materials, not interchangeable copies of the same e
 
 ### Computational geometry metrics
 
-- [Hausdorff, discrete Fréchet and smallest enclosing circle](python/geometry-metrics/README.md): directed/symmetric sampled-point Hausdorff, order-sensitive discrete Fréchet and randomized Welzl minimum enclosing circle, with tests and walkthrough.
+- [Hausdorff, discrete Fréchet and smallest enclosing circle](python/geometry-metrics/README.md): directed/symmetric sampled-point Hausdorff, order-sensitive discrete Fréchet and randomized Welzl minimum enclosing circle, and rotating-calipers convex diameter, with tests and walkthrough.
