@@ -31,3 +31,10 @@ boundary-aware event-line fallback, so points within epsilon of vertical
 edges are not incorrectly assigned to a face by the open-slab search. Tests
 cover both sides of a vertical edge and ensure nearby points outside the
 polygon remain outside.
+
+
+## Randomized trapezoidal decomposition reference (partial)
+
+A separate `randomized_trapezoidal_map.py` module constructs a vertical trapezoidal decomposition for bounded, pairwise-disjoint, non-vertical segments with distinct endpoint x-coordinates. It builds a balanced x-decision tree and per-slab y-decision trees; query results are trapezoid records, with explicit original-segment boundary and outside-box results. Tests cover deterministic seeded permutations, cell interval invariants, boundary queries, invalid/crossing inputs and seeded query samples.
+
+**Not complete:** the insertion permutation is randomized, but the current correctness-first reference rebuilds the entire decomposition after each insertion. It is not Seidel's local-update history DAG and does not claim expected (O(n\log n)) construction. Vertical segments, shared endpoints, intersections, unbounded subdivisions and face-label propagation are not supported. The optimized randomized incremental trapezoidal map remains an open compendium item. Test execution must be confirmed by CI before treating these authored tests as passing.
