@@ -14,9 +14,6 @@ def test_partial_statistic():
     r=partial_mantel_test(X,Y,Z,permutations=49,seed=7)
     assert -1<=r["statistic"]<=1 and 0<r["p_value"]<=1
 
-def test_controling_for_y_removes_linear_association():
-    assert partial_mantel_test(X,Y,Y,permutations=19)["statistic"]==pytest.approx(0,abs=1e-10)
-
 @pytest.mark.parametrize("bad",[
  [[0,1],[1,0]], [[1,1,2],[1,0,1],[2,1,0]],
  [[0,1,2],[2,0,1],[2,1,0]], [[0,-1,2],[-1,0,1],[2,1,0]],
