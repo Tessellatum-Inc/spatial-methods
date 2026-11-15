@@ -21,3 +21,13 @@ The package assumes valid closed ring topology and non-crossing boundaries; it d
 ## Reproduction
 
 From the package directory: `python -m pip install -r requirements.txt && python -m pytest -q`.
+
+
+## Event-line tolerance regression
+
+The x-event lookup now applies the configured epsilon to the nearest event
+coordinate on either side of the query. Queries within tolerance use the
+boundary-aware event-line fallback, so points within epsilon of vertical
+edges are not incorrectly assigned to a face by the open-slab search. Tests
+cover both sides of a vertical edge and ensure nearby points outside the
+polygon remain outside.

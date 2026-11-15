@@ -139,7 +139,13 @@ class SlabPointLocator:
         if not self.x_events or x < self.x_events[0] or x > self.x_events[-1]:
             return None
         event_index = bisect_left(self.x_events, x)
-        if event_index < len(self.x_events) and self.x_events[event_index] == x:
+        near_event = (
+            (event_index < len(self.x_events)
+             and abs(self.x_events[event_index] - x) <= self.epsilon)
+            or (event_index > 0
+                and abs(self.x_events[event_index - 1] - x) <= self.epsilon)
+        )
+        if near_event:
             return self._locate_on_event_line(point)
 
         slab_index = bisect_left(self.x_events, x) - 1

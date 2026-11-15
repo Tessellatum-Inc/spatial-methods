@@ -114,3 +114,20 @@ def test_seeded_adjacent_rectangle_grid_preserves_shared_boundaries():
             assert locator.locate(column * 2 + 1, row * 2 + 1) == f"{row}-{column}"
             assert locator.locate(column * 2 + 2, row * 2 + 1) == BOUNDARY
             assert locator.locate(column * 2 + 1, row * 2 + 2) == BOUNDARY
+
+
+def test_event_line_epsilon_classifies_near_vertical_boundary_consistently():
+    locator = SlabPointLocator({"face": [rect(0, 0, 3, 3)]}, epsilon=1e-8)
+    assert locator.locate(1e-9, 1.5) == BOUNDARY
+    assert locator.locate(-1e-9, 1.5) == BOUNDARY
+    assert locator.locate(1e-9, 4.0) is None
+
+
+def test_event_line_epsilon_handles_both_neighbouring_event_coordinates():
+    locator = SlabPointLocator({
+        "west": [rect(0, 0, 2, 2)],
+        "east": [rect(2, 0, 4, 2)],
+    }, epsilon=1e-6)
+    assert locator.locate(2 - 5e-7, 1) == BOUNDARY
+    assert locator.locate(2 + 5e-7, 1) == BOUNDARY
+    assert locator.locate(2 + 5e-7, 3) == "east"
