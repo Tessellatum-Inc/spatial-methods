@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from collections import deque
-from math import isfinite
+from math import fsum, isfinite
 from typing import Hashable, Mapping, Sequence
 
 Node = Hashable
@@ -39,7 +39,7 @@ def maximum_flow_min_cut(
             adjacency[v].append(reverse)
             original_edges.append((u, v, forward))
 
-    total_flow = 0.0
+    augmentations = []
     while True:
         level = {node: -1 for node in nodes}
         level[source] = 0
@@ -98,9 +98,7 @@ def maximum_flow_min_cut(
 
             if pushed <= 0:
                 break
-            total_flow += pushed
-            if not isfinite(total_flow):
-                raise OverflowError("maximum flow value exceeds finite float range")
+            augmentations.append(pushed)
 
     source_side = set()
     queue = deque([source])
@@ -114,7 +112,7 @@ def maximum_flow_min_cut(
 
     edge_flows = []
     cut_edges = []
-    cut_capacity = 0.0
+    cut_capacities = []
     for index, (u, v, forward) in enumerate(original_edges):
         flow = forward[3] - forward[2]
         edge_flows.append({"edge_index": index, "from": u, "to": v,
@@ -122,7 +120,13 @@ def maximum_flow_min_cut(
         if u in source_side and v not in source_side:
             cut_edges.append({"edge_index": index, "from": u, "to": v,
                               "capacity": forward[3]})
-            cut_capacity += forward[3]
+            cut_capacities.append(forward[3])
+
+    try:
+        total_flow = fsum(augmentations)
+        cut_capacity = fsum(cut_capacities)
+    except OverflowError as exc:
+        raise OverflowError("maximum flow or minimum cut capacity exceeds finite float range") from exc
 
     return {
         "value": total_flow,
