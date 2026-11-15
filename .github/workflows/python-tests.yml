@@ -132,6 +132,9 @@ jobs:
           - example: convex-hull
             directory: implementations/python/convex-hull
             pythonpath: ""
+          - example: alpha-shapes
+            directory: implementations/python/alpha-shapes
+            pythonpath: ""
           - example: voronoi-delaunay
             directory: implementations/python/voronoi-delaunay
             pythonpath: ""
