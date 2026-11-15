@@ -338,3 +338,40 @@ def test_spatial_durbin_mle_rejects_rank_deficient_augmented_design():
     assert fit.spatial_covariate_coefficients == pytest.approx((0.0, 0.0))
     with pytest.raises(ValueError, match="grid_size"):
         spatial_durbin_mle(y, x, w, grid_size=10)
+
+
+def test_spatial_sarar_mle_recovers_synthetic_sarar_parameters():
+    from maximum_likelihood import spatial_sarar_mle
+    rng = np.random.default_rng(20261116)
+    n = 75
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    beta = np.array([1.2, -0.55])
+    rho, lam = 0.22, 0.38
+    innovation = rng.normal(scale=0.12, size=n)
+    spatial_error = np.linalg.solve(np.eye(n) - lam * w, innovation)
+    y = np.linalg.solve(np.eye(n) - rho * w, x @ beta + spatial_error)
+    fit = spatial_sarar_mle(y, x, w, grid_size=31, tolerance=1e-6)
+    assert fit.model == "SARAR"
+    assert fit.spatial_parameter == pytest.approx(rho, abs=0.12)
+    assert fit.error_parameter == pytest.approx(lam, abs=0.20)
+    assert fit.coefficients == pytest.approx(beta, abs=0.18)
+    assert fit.sigma2_mle > 0
+    assert np.isfinite(fit.log_likelihood)
+    assert len(fit.fitted) == n
+    assert len(fit.residuals) == n
+    assert fit.evaluations > 31 ** 2
+
+
+def test_spatial_sarar_mle_validates_search_controls():
+    from maximum_likelihood import spatial_sarar_mle
+    n = 10
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), np.arange(n, dtype=float)])
+    y = np.array([1.0, 1.7, 1.2, 2.4, 1.9, 3.1, 2.7, 3.6, 3.0, 4.1])
+    with pytest.raises(ValueError, match="grid_size"):
+        spatial_sarar_mle(y, x, w, grid_size=5)
+    with pytest.raises(ValueError, match="coordinate_iterations"):
+        spatial_sarar_mle(y, x, w, coordinate_iterations=0)
+    with pytest.raises(ValueError, match="tolerance"):
+        spatial_sarar_mle(y, x, w, tolerance=0.0)
