@@ -37,4 +37,5 @@ These records are part of the broader [algorithm collection](../README.md). The 
 - [Minimum-area oriented bounding rectangle](minimum-area-bounding-rectangle.md) — find a minimum-area enclosing rectangle by testing convex-hull edge orientations.
 
 - [Alpha shapes](alpha-shapes.md) — parameterise a non-convex envelope by filtering Delaunay triangles using circumradius.
+- [Alpha-shape implementation](../../implementations/python/alpha-shapes/README.md) — Delaunay triangle filtering, boundary-ring extraction and numerical tests.
 - [Visibility polygons](visibility-polygons.md) — compute the region visible from an interior viewpoint in a polygonal environment.
