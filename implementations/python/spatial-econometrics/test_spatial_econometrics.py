@@ -1451,3 +1451,53 @@ def test_spatial_parameter_profile_interval_rejects_invalid_options():
         spatial_parameter_profile_interval(y, x, w, likelihood_ratio_cutoff=0)
     with pytest.raises(ValueError, match="max_iterations"):
         spatial_parameter_profile_interval(y, x, w, max_iterations=0)
+
+
+def test_spatial_lag_ar_confidence_set_matches_candidate_tests():
+    from spatial_lag_anderson_rubin import spatial_lag_anderson_rubin
+    from spatial_lag_ar_confidence import spatial_lag_ar_confidence_set
+    n = 30
+    w = _row_standardised_path(n)
+    rng = np.random.default_rng(81)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    y = np.linalg.solve(np.eye(n) - 0.2 * w, x @ [1.0, 0.7] + rng.normal(scale=0.3, size=n))
+    grid = np.linspace(-0.4, 0.6, 11)
+    candidate = spatial_lag_anderson_rubin(y, x, w, float(grid[5]), instrument_orders=2)
+    result = spatial_lag_ar_confidence_set(y, x, w, grid, critical_value=candidate.classical_f,
+                                           test="classical", instrument_orders=2)
+    assert result.test == "classical"
+    assert result.statistics[5] == pytest.approx(candidate.classical_f)
+    assert result.accepted[5]
+    assert result.grid == pytest.approx(tuple(grid))
+
+
+def test_spatial_lag_ar_confidence_set_reports_grid_truncation_and_empty_sets():
+    from spatial_lag_ar_confidence import spatial_lag_ar_confidence_set
+    n = 30
+    w = _row_standardised_path(n)
+    rng = np.random.default_rng(82)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    y = np.linalg.solve(np.eye(n) - 0.2 * w, x @ [1.0, 0.7] + rng.normal(scale=0.3, size=n))
+    broad = spatial_lag_ar_confidence_set(y, x, w, np.linspace(-0.5, 0.5, 9),
+                                          critical_value=1e9, test="robust", instrument_orders=2)
+    assert len(broad.segments) == 1
+    assert broad.segments[0].lower_grid_limited and broad.segments[0].upper_grid_limited
+    empty = spatial_lag_ar_confidence_set(y, x, w, np.linspace(-0.5, 0.5, 9),
+                                          critical_value=1e-12, test="robust", instrument_orders=2)
+    assert not any(empty.accepted)
+    assert empty.segments == ()
+
+
+def test_spatial_lag_ar_confidence_set_validates_grid_and_test():
+    from spatial_lag_ar_confidence import spatial_lag_ar_confidence_set
+    n = 30
+    w = _row_standardised_path(n)
+    rng = np.random.default_rng(83)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    y = rng.normal(size=n)
+    with pytest.raises(ValueError, match="strictly increasing"):
+        spatial_lag_ar_confidence_set(y, x, w, [0.0, 0.0, 1.0], critical_value=3.0)
+    with pytest.raises(ValueError, match="test"):
+        spatial_lag_ar_confidence_set(y, x, w, [-0.2, 0.0, 0.2], critical_value=3.0, test="unknown")
+    with pytest.raises(ValueError, match="critical_value"):
+        spatial_lag_ar_confidence_set(y, x, w, [-0.2, 0.0, 0.2], critical_value=0.0)

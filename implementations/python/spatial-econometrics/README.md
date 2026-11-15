@@ -31,11 +31,11 @@ python -m pytest -q
 19. **Local Moran's I conditional permutation inference** with HH/LL/HL/LH classifications and Benjamini–Hochberg false-discovery-rate adjustment.
 20. **Koenker studentized Breusch–Pagan and White tests** for heteroskedasticity after OLS spatial-regression baselines.
 21. **Ramsey RESET** partial-F specification test using powers of fitted values to detect generic functional-form misspecification.
-22. **SAR/SEM profile-likelihood intervals** for the spatial lag or error parameter by inversion of the one-degree-of-freedom likelihood-ratio test.
+22. **SAR/SEM profile-likelihood intervals** for the spatial lag or error parameter by inversion of the one-degree-of-freedom likelihood-ratio test.\n23. **Spatial-lag Anderson–Rubin confidence-set inversion** over a declared rho grid, retaining empty, disconnected and grid-limited sets.
 
 ## Scope and limits
 
-- Profile-likelihood intervals are conditional on the supplied weights and the conservative nonsingularity interval; an endpoint can be truncated at that interval's boundary. The default LR cutoff is 3.84146 (95% under chi-square(1)).
+- Anderson–Rubin confidence sets are finite-grid approximations: segment endpoints are grid values, edge-touching segments may continue beyond the search range, and disconnected components are retained. The caller supplies the critical value for the chosen classical F or robust Wald chi-square statistic.\n- Profile-likelihood intervals are conditional on the supplied weights and the conservative nonsingularity interval; an endpoint can be truncated at that interval's boundary. The default LR cutoff is 3.84146 (95% under chi-square(1)).
 
 - Global Moran's I permutation inference treats values as exchangeable over fixed locations under its randomization null. The two-sided test measures absolute deviation from -1/(n-1); it is global, not a local cluster detector. Weights are used as supplied and are not automatically symmetrised or row-standardised.
 - Local Moran inference conditions on each focal value and permutes the remaining observations over the other locations. By default, Benjamini–Hochberg adjustment is applied across non-islands; arbitrary spatial dependence can affect its guarantees.
