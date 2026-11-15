@@ -325,3 +325,72 @@ def cross_j_function(points, marks, window, from_mark, to_mark, radii, *,
     j_values = [(1-g)/(1-f) if f < 1 else float("nan")
                 for g, f in zip(g_values, f_values)]
     return g_values, f_values, j_values
+
+
+def _poisson_count(mean, rng):
+    """Exact Poisson draw by exponential inter-arrival times."""
+    if mean <= 0:
+        return 0
+    total = 0.0
+    count = 0
+    while True:
+        total += rng.expovariate(1.0)
+        if total > mean:
+            return count
+        count += 1
+
+
+def simulate_homogeneous_poisson(window, intensity, *, seed=0):
+    """Simulate a homogeneous planar Poisson process in a rectangle.
+
+    intensity is expected events per squared coordinate unit. Conditional on
+    N, event locations are independent uniform draws in the window.
+    """
+    if len(window) != 4:
+        raise ValueError("window must be (xmin, ymin, xmax, ymax)")
+    xmin, ymin, xmax, ymax = map(float, window)
+    if not all(isfinite(v) for v in (xmin, ymin, xmax, ymax)) or xmax <= xmin or ymax <= ymin:
+        raise ValueError("window bounds must be finite and have positive width and height")
+    lam = float(intensity)
+    if not isfinite(lam) or lam < 0:
+        raise ValueError("intensity must be finite and non-negative")
+    if isinstance(seed, bool) or not isinstance(seed, Integral):
+        raise ValueError("seed must be an integer")
+    rng = random.Random(int(seed))
+    count = _poisson_count(lam * (xmax-xmin) * (ymax-ymin), rng)
+    return [(rng.uniform(xmin, xmax), rng.uniform(ymin, ymax)) for _ in range(count)]
+
+
+def simulate_thomas_process(window, parent_intensity, mean_offspring, sigma, *,
+                            seed=0, buffer_sigma=4.0):
+    """Simulate a stationary Thomas (Gaussian Neyman-Scott) cluster process.
+
+    Parents form a homogeneous Poisson process. Each parent generates a
+    Poisson(mean_offspring) number of offspring with independent isotropic
+    Gaussian coordinate offsets of standard deviation sigma. Parents are
+    simulated in a buffer-expanded rectangle and only offspring inside the
+    target window are retained. The finite buffer truncates Gaussian tails.
+    """
+    if len(window) != 4:
+        raise ValueError("window must be (xmin, ymin, xmax, ymax)")
+    xmin, ymin, xmax, ymax = map(float, window)
+    if not all(isfinite(v) for v in (xmin, ymin, xmax, ymax)) or xmax <= xmin or ymax <= ymin:
+        raise ValueError("window bounds must be finite and have positive width and height")
+    kappa, mu, spread, buffer = map(float, (parent_intensity, mean_offspring, sigma, buffer_sigma))
+    if not all(isfinite(v) for v in (kappa, mu, spread, buffer)) or kappa < 0 or mu < 0 or spread <= 0 or buffer <= 0:
+        raise ValueError("parent intensity and mean offspring must be non-negative; sigma and buffer_sigma must be positive")
+    if isinstance(seed, bool) or not isinstance(seed, Integral):
+        raise ValueError("seed must be an integer")
+    rng = random.Random(int(seed))
+    margin = buffer * spread
+    expanded = (xmin-margin, ymin-margin, xmax+margin, ymax+margin)
+    parents = simulate_homogeneous_poisson(expanded, kappa, seed=rng.randrange(0, 2**63))
+    offspring = []
+    for px, py in parents:
+        count = _poisson_count(mu, rng)
+        for _ in range(count):
+            x = rng.gauss(px, spread)
+            y = rng.gauss(py, spread)
+            if xmin <= x <= xmax and ymin <= y <= ymax:
+                offspring.append((x, y))
+    return offspring
