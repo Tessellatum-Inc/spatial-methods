@@ -27,3 +27,7 @@ Each Monte Carlo replication preserves the total number of cases and draws areal
 ## 7. Validation and scope
 
 Tests cover nearest-neighbour summaries, translation correction, supplied-intensity K, pair-correlation calculation, quadrat boundaries and reproducibility, elevated clusters, population offsets, tied radii and invalid inputs. The scan is not a full SaTScan implementation: covariates, temporal scans, elliptical zones, secondary clusters and polygon-boundary geometry remain outside scope.
+
+## Cross-type marked summaries
+
+The marked-pattern extension partitions events by two distinct labels. Cross-G measures nearest target-type distances from source-type events. Cross-K loops over source-target pairs and applies the rectangular translation overlap weight before scaling by window area and both sample counts. Cross pair correlation differentiates cross-K numerically. Cross-J combines cross-G with Monte Carlo empty-space distances to the target type. These are exploratory estimators; G and J do not use advanced edge correction, and the cross-K stationarity assumptions remain essential.
