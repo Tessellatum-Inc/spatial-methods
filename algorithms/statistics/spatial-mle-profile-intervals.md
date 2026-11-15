@@ -1,4 +1,4 @@
-# SAR/SEM profile-likelihood intervals
+# SAR/SEM/SDM profile-likelihood intervals
 
 Stable ID: SA-STAT-SPATIAL-MLE-PROFILE-INTERVALS · Teaching implementation
 
@@ -6,7 +6,7 @@ Stable ID: SA-STAT-SPATIAL-MLE-PROFILE-INTERVALS · Teaching implementation
 
 A point estimate of the spatial autoregressive coefficient does not describe its uncertainty. A Wald interval can be misleading when the likelihood is asymmetric or the estimate lies near an admissible-parameter boundary. Profile likelihood gives an interval by retaining every parameter value whose likelihood-ratio statistic does not exceed a chi-square reference cutoff.
 
-This implementation covers the scalar spatial parameter in SAR and SEM models. It does not provide intervals for regression coefficients, SDM covariate-lag coefficients, or the joint SARAR parameter pair.
+This implementation covers the scalar spatial parameter in SAR, SEM and SDM models. It does not provide intervals for regression coefficients, SDM covariate-lag coefficients, or the joint SARAR parameter pair.
 
 ## Likelihood-ratio set
 
@@ -21,6 +21,7 @@ The default cutoff 3.8414588 gives the conventional 95% likelihood-ratio interva
 
 - SAR: transform y by I-rho W, while retaining X.
 - SEM: transform both y and X by I-lambda W.
+- SDM: transform y by I-rho W and re-estimate coefficients on the independent columns of [X, WX].
 - Find each endpoint by bisection on the likelihood-ratio boundary.
 - If the LR set reaches the estimator's conservative nonsingularity interval, return that boundary and set the corresponding truncation flag.
 
@@ -35,7 +36,7 @@ The profile optimum is found by the existing grid-plus-golden-section estimator.
 ~~~python
 from spatial_mle_inference import spatial_parameter_profile_interval
 
-interval = spatial_parameter_profile_interval(y, X, W, model="SAR")
+interval = spatial_parameter_profile_interval(y, X, W, model="SDM")
 print(interval.estimate, interval.lower, interval.upper)
 print(interval.lower_truncated, interval.upper_truncated)
 ~~~

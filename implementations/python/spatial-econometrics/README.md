@@ -31,7 +31,7 @@ python -m pytest -q
 19. **Local Moran's I conditional permutation inference** with HH/LL/HL/LH classifications and Benjamini–Hochberg false-discovery-rate adjustment.
 20. **Koenker studentized Breusch–Pagan and White tests** for heteroskedasticity after OLS spatial-regression baselines.
 21. **Ramsey RESET** partial-F specification test using powers of fitted values to detect generic functional-form misspecification.
-22. **SAR/SEM profile-likelihood intervals** for the spatial lag or error parameter by inversion of the one-degree-of-freedom likelihood-ratio test.\n23. **Spatial-lag Anderson–Rubin confidence-set inversion** over a declared rho grid, retaining empty, disconnected and grid-limited sets.
+22. **SAR/SEM/SDM profile-likelihood intervals** for the spatial lag or error parameter by inversion of the one-degree-of-freedom likelihood-ratio test.\n23. **Spatial-lag Anderson–Rubin confidence-set inversion** over a declared rho grid, retaining empty, disconnected and grid-limited sets.
 
 ## Scope and limits
 

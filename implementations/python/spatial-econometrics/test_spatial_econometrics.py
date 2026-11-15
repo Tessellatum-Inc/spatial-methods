@@ -1600,3 +1600,36 @@ def test_spatial_durbin_common_factor_rejects_unidentified_and_bad_options():
     x = np.column_stack([np.ones(n), np.arange(n, dtype=float)])
     with pytest.raises(ValueError, match="grid_size"):
         spatial_durbin_common_factor_test(y, x, w, grid_size=5)
+
+
+
+def test_spatial_parameter_profile_interval_inverts_sdm_likelihood_ratio():
+    from spatial_mle_inference import spatial_parameter_profile_interval, _profile_log_likelihood
+    rng = np.random.default_rng(55103)
+    n = 75
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    y = np.linalg.solve(
+        np.eye(n) - 0.24 * w,
+        x @ [0.9, 0.55] + (w @ x) @ [0.0, -0.35]
+        + rng.normal(scale=0.18, size=n),
+    )
+    result = spatial_parameter_profile_interval(y, x, w, model="SDM", grid_size=121)
+    assert result.model == "SDM"
+    assert result.lower < result.estimate < result.upper
+    assert not result.lower_truncated and not result.upper_truncated
+    for endpoint in (result.lower, result.upper):
+        ll = _profile_log_likelihood(y, x, w, endpoint, "SDM")
+        assert 2.0 * (result.log_likelihood_maximum - ll) == pytest.approx(
+            result.likelihood_ratio_cutoff, abs=3e-5
+        )
+
+
+def test_spatial_parameter_profile_interval_sdm_rejects_unknown_model():
+    from spatial_mle_inference import spatial_parameter_profile_interval
+    n = 12
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), np.arange(n, dtype=float)])
+    y = np.sin(np.arange(n, dtype=float))
+    with pytest.raises(ValueError, match="SAR.*SEM.*SDM"):
+        spatial_parameter_profile_interval(y, x, w, model="SAC")

@@ -12,7 +12,7 @@ from typing import Sequence
 
 import numpy as np
 
-from maximum_likelihood import spatial_error_mle, spatial_lag_mle, _validate
+from maximum_likelihood import (spatial_error_mle, spatial_lag_mle, spatial_durbin_mle, _validate)
 
 
 @dataclass(frozen=True)
@@ -25,6 +25,19 @@ class SpatialParameterInterval:
     lower_truncated: bool
     upper_truncated: bool
     log_likelihood_maximum: float
+
+
+def _sdm_augmented_design(x: np.ndarray, w: np.ndarray) -> np.ndarray:
+    """Build [X, WX] after dropping WX columns already spanned by X."""
+    current = x.copy()
+    rank = np.linalg.matrix_rank(current)
+    for column in (w @ x).T:
+        candidate = np.column_stack((current, column))
+        next_rank = np.linalg.matrix_rank(candidate)
+        if next_rank > rank:
+            current = candidate
+            rank = next_rank
+    return current
 
 
 def _profile_log_likelihood(y: np.ndarray, x: np.ndarray, w: np.ndarray,
@@ -78,15 +91,15 @@ def spatial_parameter_profile_interval(
     tolerance: float = 1e-7,
     max_iterations: int = 100,
 ) -> SpatialParameterInterval:
-    """Invert the LR test for SAR rho or SEM lambda (default 95% cutoff).
+    """Invert the LR test for SAR rho, SEM lambda or SDM rho (default 95% cutoff).
 
     likelihood_ratio_cutoff is the chi-square(1) quantile, 3.8414588 for
     a conventional 95% interval. Endpoints are clipped to the estimator's
     conservative nonsingularity interval when the LR set reaches its edge;
     the corresponding truncation flag is then true.
     """
-    if model not in ("SAR", "SEM"):
-        raise ValueError("model must be 'SAR' or 'SEM'")
+    if model not in ("SAR", "SEM", "SDM"):
+        raise ValueError("model must be 'SAR', 'SEM' or 'SDM'")
     if not np.isfinite(likelihood_ratio_cutoff) or likelihood_ratio_cutoff <= 0:
         raise ValueError("likelihood_ratio_cutoff must be positive and finite")
     if isinstance(max_iterations, bool) or not isinstance(max_iterations, int) or max_iterations < 1:
@@ -95,9 +108,12 @@ def spatial_parameter_profile_interval(
         raise ValueError("tolerance must be positive and finite")
 
     response, design, w, bounds = _validate(y, x, weights)
-    fit = (spatial_lag_mle(response, design, w, grid_size=grid_size, tolerance=tolerance)
-           if model == "SAR" else
-           spatial_error_mle(response, design, w, grid_size=grid_size, tolerance=tolerance))
+    if model == "SAR":
+        fit = spatial_lag_mle(response, design, w, grid_size=grid_size, tolerance=tolerance)
+    elif model == "SEM":
+        fit = spatial_error_mle(response, design, w, grid_size=grid_size, tolerance=tolerance)
+    else:
+        fit = spatial_durbin_mle(response, design, w, grid_size=grid_size, tolerance=tolerance)
     estimate = fit.spatial_parameter
     maximum = fit.log_likelihood
     lower_bound, upper_bound = bounds
