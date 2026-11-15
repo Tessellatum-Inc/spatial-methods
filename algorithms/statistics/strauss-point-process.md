@@ -54,6 +54,6 @@ For \(\gamma=0\), the sampler enforces the hard-core constraint through zero-pro
 
 ## References
 
-- Geyer, C. J. and Møller, J. (1994). “Simulation procedures and likelihood inference for spatial point processes.” *Scandinavian Journal of Statistics*, 21, 359–373.
+- Geyer, C. J. and Møller, J. (1994). “Simulation procedures and likelihood inference for spatial point processes.” *Scandinavian Journal of Statistics*, 21(4), 359–373. [JSTOR stable record](https://www.jstor.org/stable/4616323).
 - Baddeley, A., Rubak, E. and Turner, R. *Spatial Point Patterns: Methodology and Applications with R*. See the Gibbs/ Strauss process and Metropolis–Hastings simulation material in the spatstat documentation.
 - [Handbook of Spatial Statistics](https://bpb-us-w2.wpmucdn.com/sites.umassd.edu/dist/8/406/files/2024/03/Handbook-of-Spatial-Statistics-fc3c1b00119b3c0a.pdf), discussion of Strauss and Gibbs point processes.
