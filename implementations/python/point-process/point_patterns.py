@@ -1,6 +1,6 @@
 """Planar point-pattern summaries for rectangular observation windows."""
 from __future__ import annotations
-from math import hypot, isfinite, pi
+from math import cos, hypot, isfinite, pi, sin
 from numbers import Integral
 import random
 
@@ -427,8 +427,8 @@ def simulate_matern_cluster_process(window, parent_intensity, mean_offspring, ra
         for _ in range(count):
             distance = scale * (rng.random() ** 0.5)
             angle = rng.random() * 2 * pi
-            x = px + distance * __import__("math").cos(angle)
-            y = py + distance * __import__("math").sin(angle)
+            x = px + distance * cos(angle)
+            y = py + distance * sin(angle)
             if xmin <= x <= xmax and ymin <= y <= ymax:
                 offspring.append((x, y))
     return offspring
