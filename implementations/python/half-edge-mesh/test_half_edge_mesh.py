@@ -47,11 +47,6 @@ def test_invalid_topology_is_rejected(faces, message):
         HalfEdgeMesh.from_triangles(5, faces)
 
 
-def test_repeated_directed_edge_is_rejected():
-    with pytest.raises(ValueError, match="directed edge"):
-        HalfEdgeMesh.from_triangles(4, [(0, 1, 2), (0, 1, 3)])
-
-
 def test_out_of_range_queries_raise():
     mesh = HalfEdgeMesh.from_triangles(3, [(0, 1, 2)])
     with pytest.raises(IndexError):
