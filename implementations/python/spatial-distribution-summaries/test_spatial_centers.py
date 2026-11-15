@@ -38,7 +38,7 @@ def test_ellipse_isotropic_case_has_zero_orientation():
     assert r["minor_axis_sd"] == pytest.approx(1/math.sqrt(2))
     assert r["orientation_degrees_ccw_from_x"] == 0
 
-def test_ellipse_scale_can_create_68_percent_bivariate_normal_region():
+def test_ellipse_scale_multiplies_principal_axes():
     pts=[(-1,0),(1,0),(0,-1),(0,1)]
     a=standard_deviational_ellipse(pts)
     b=standard_deviational_ellipse(pts,scale=math.sqrt(2))
