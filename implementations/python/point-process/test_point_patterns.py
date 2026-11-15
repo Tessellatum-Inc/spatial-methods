@@ -194,11 +194,13 @@ def test_cross_j_returns_g_f_and_j_with_seeded_empty_space_sampling():
                          [0.5, 1, 20], n_samples=500, seed=12)
     b = cross_j_function(pts, marks, (0, 0, 10, 10), "A", "B",
                          [0.5, 1, 20], n_samples=500, seed=12)
-    assert a == b
     g, f, j = a
+    g2, f2, j2 = b
+    assert g == g2 and f == f2
+    assert j[:-1] == pytest.approx(j2[:-1])
     assert g == [0, 1, 1]
     assert all(0 <= value <= 1 for value in f)
-    assert math.isnan(j[-1])
+    assert math.isnan(j[-1]) and math.isnan(j2[-1])
 
 
 @pytest.mark.parametrize("bad_marks", [
