@@ -1,4 +1,4 @@
-"""Profile-likelihood intervals for the SAR lag or SEM error parameter.
+"""Profile-likelihood intervals for the SAR, SEM or SDM spatial parameter.
 
 The interval inverts the one-parameter likelihood-ratio test using the
 concentrated Gaussian likelihood and chi-square(1) cutoff. It is conditional
@@ -48,9 +48,14 @@ def _profile_log_likelihood(y: np.ndarray, x: np.ndarray, w: np.ndarray,
     if sign <= 0 or not np.isfinite(logdet):
         return -np.inf
     ay = y - parameter * (w @ y)
-    transformed_x = x if model == "SAR" else x - parameter * (w @ x)
+    if model == "SAR":
+        transformed_x = x
+    elif model == "SEM":
+        transformed_x = x - parameter * (w @ x)
+    else:
+        transformed_x = _sdm_augmented_design(x, w)
     beta, _, rank, _ = np.linalg.lstsq(transformed_x, ay, rcond=None)
-    if rank < x.shape[1]:
+    if rank < transformed_x.shape[1]:
         return -np.inf
     residual = ay - transformed_x @ beta
     sigma2 = float(residual @ residual / n)
