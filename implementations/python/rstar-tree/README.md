@@ -12,8 +12,11 @@ Duplicate and zero-area boxes are retained. Use suitable planar coordinate
 units and refine envelope candidates with exact geometry predicates when
 indexing non-rectangular objects.
 
-This is still not a full production R*-tree: deletion/condensation, bulk
-loading, kNN, disk pages, persistence, concurrency and robust exact arithmetic
-are not implemented. Split and query operations use floating-point bounds.
+Deletion is supported by condense-tree processing: underfilled nodes are
+removed, their remaining entries/subtrees are reinserted at their original
+levels, and a one-child root is collapsed. Record IDs are stable; deleting an
+unknown or already deleted ID returns False. This is still not a full
+production R*-tree: bulk loading, kNN, disk pages, persistence, concurrency
+and robust exact arithmetic are not implemented. Split and query operations use floating-point bounds.
 
 Run `pytest -q` from this directory.
