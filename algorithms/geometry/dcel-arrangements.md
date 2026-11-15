@@ -29,7 +29,9 @@ a robust noder and explicit arrangement face classification.
 ## Complexity
 
 For V vertices and E undirected edges, vertex creation and edge pairing use
-hash maps in expected O(V+E). Sorting outgoing edges costs
+hash maps in expected O(V+E). The correctness-first check for un-noded
+crossings, T-junctions and partial collinear overlaps currently costs O(E²).
+Sorting outgoing edges costs
 O(sum(deg(v) log deg(v))). Cycle construction and invariant validation are
 O(E). The representation uses O(V+E) storage.
 
