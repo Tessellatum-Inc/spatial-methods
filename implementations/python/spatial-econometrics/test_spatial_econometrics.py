@@ -77,7 +77,7 @@ def test_sar_impacts_reduce_to_beta_when_rho_and_gamma_are_zero():
 def test_spatial_lag_impacts_include_feedback_spillovers():
     impact, = spatial_impacts(CHAIN, 0.2, [2.0])
     matrix = np.linalg.inv(np.eye(4) - 0.2 * CHAIN) * 2.0
-    assert impact.impact_matrix == pytest.approx(matrix)
+    np.testing.assert_allclose(np.asarray(impact.impact_matrix), matrix)
     assert impact.direct == pytest.approx(np.trace(matrix) / 4)
     assert impact.total == pytest.approx(np.sum(matrix) / 4)
     assert impact.indirect == pytest.approx(impact.total - impact.direct)
