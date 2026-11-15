@@ -156,3 +156,40 @@ def test_yens_k_shortest_paths_unreachable_and_same_node():
 def test_yens_k_shortest_paths_rejects_invalid_k(k):
     with pytest.raises(ValueError, match="k must"):
         k_shortest_paths({"A": []}, "A", "A", k)
+
+
+def test_bidirectional_dijkstra_matches_dijkstra_on_seeded_random_digraphs():
+    import random
+
+    rng = random.Random(314159)
+    for _ in range(300):
+        count = rng.randint(2, 14)
+        graph = {node: [] for node in range(count)}
+        for u in range(count):
+            for v in range(count):
+                if u != v and rng.random() < 0.18:
+                    graph[u].append((v, rng.choice([0.0, 0.25, 1.0, 3.0, 11.0])))
+        start, goal = rng.sample(range(count), 2)
+        expected_path, expected_cost = dijkstra(graph, start, goal)
+        actual_path, actual_cost = bidirectional_dijkstra(graph, start, goal)
+        assert actual_cost == pytest.approx(expected_cost)
+        if expected_path is None:
+            assert actual_path is None
+        else:
+            assert actual_path[0] == start and actual_path[-1] == goal
+            assert len(actual_path) == len(set(actual_path))
+            edge_costs = {
+                (u, v): min(weight for neighbour, weight in outgoing if neighbour == v)
+                for u, outgoing in graph.items()
+                for v, _weight in outgoing
+            }
+            assert sum(edge_costs[(u, v)] for u, v in zip(actual_path, actual_path[1:])) == pytest.approx(expected_cost)
+
+
+def test_bidirectional_dijkstra_handles_long_directed_chain():
+    count = 2500
+    graph = {node: [(node + 1, 0.5)] for node in range(count - 1)}
+    graph[count - 1] = []
+    path, cost = bidirectional_dijkstra(graph, 0, count - 1)
+    assert path == list(range(count))
+    assert cost == pytest.approx((count - 1) * 0.5)
