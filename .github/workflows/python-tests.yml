@@ -148,6 +148,9 @@ jobs:
           - example: kernighan-lin
             directory: implementations/python/kernighan-lin
             pythonpath: ""
+          - example: louvain
+            directory: implementations/python/louvain
+            pythonpath: ""
           - example: point-location
             directory: implementations/python/point-location
             pythonpath: ""
