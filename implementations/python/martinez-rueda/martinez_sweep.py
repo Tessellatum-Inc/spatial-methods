@@ -203,6 +203,12 @@ def _ring_is_simple(ring,eps):
     """
     n=len(ring)
     for i in range(n):
+        previous,current,following=ring[i-1],ring[i],ring[(i+1)%n]
+        if (_orientation(previous,current,following)==0 and
+                (_on_segment_exact(previous,current,following) or
+                 _on_segment_exact(current,following,previous))):
+            return False
+    for i in range(n):
         a,b=ring[i],ring[(i+1)%n]
         for j in range(i+1,n):
             if j==(i+1)%n or (j+1)%n==i: continue
