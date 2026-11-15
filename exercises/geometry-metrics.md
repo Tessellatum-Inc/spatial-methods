@@ -14,7 +14,7 @@ Use the geometry-metrics package to compare two digitised routes and compute a m
 ## Deliverables
 
 - A short table of the three distance values.
-- A plot of both route samples and the enclosing circle.
+- A plot of both route samples, the enclosing circle and the polygon pole-of-inaccessibility point.
 - A paragraph explaining why sampled-point Hausdorff, discrete Fréchet and continuous-curve distance are different objects.
 
 ## Constraints
