@@ -50,8 +50,10 @@ def _assert_tree_invariants(tree):
         assert node.bounds is None if not node.children else node.bounds is not None
         if not is_root:
             assert tree.min_entries <= len(node.children) <= tree.max_entries
+        elif is_root:
+            assert 2 <= len(node.children) <= tree.max_entries
         else:
-            assert len(node.children) <= tree.max_entries or not node.leaf
+            assert tree.min_entries <= len(node.children) <= tree.max_entries
         if node.leaf:
             leaf_depths.add(depth)
             seen.extend(item.index for item in node.children)
@@ -101,4 +103,5 @@ def test_forced_reinsertion_handles_duplicate_and_degenerate_boxes():
     for i in range(80):
         tree.insert((0, 0, 0, 0) if i % 3 else (i, i, i, i))
     _assert_tree_invariants(tree)
-    expected = [i for i in range(80) if i % 3 != 0 or i == 0]\n    assert tree.query((0, 0, 0, 0)) == expected
+    expected = [i for i in range(80) if i % 3 != 0 or i == 0]
+    assert tree.query((0, 0, 0, 0)) == expected
