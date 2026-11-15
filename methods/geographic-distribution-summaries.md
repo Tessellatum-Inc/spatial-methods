@@ -46,7 +46,7 @@ C=\frac{1}{\sum_i w_i}
 \end{pmatrix}.
 \]
 
-The eigenvectors give the principal directions and square roots of the eigenvalues give the principal-axis standard deviations. The implementation reports orientation counterclockwise from +x. Its default semiaxis scale is 1; a scale of sqrt(2) gives the joint 68-percent ellipse for a bivariate normal distribution. Do not assume that an unadjusted one-standard-deviation ellipse contains 68 percent of a two-dimensional normal distribution.
+The eigenvectors give the principal directions and square roots of the eigenvalues give the principal-axis standard deviations. The implementation reports orientation counterclockwise from +x. Its default semiaxis scale is 1; a scale of approximately 1.515 gives the joint 68.3-percent ellipse for a bivariate normal distribution (the square root of the 68.3rd percentile of chi-square with two degrees of freedom). Do not assume that an unadjusted one-standard-deviation ellipse contains 68 percent of a two-dimensional normal distribution.
 
 ## Scope and cautions
 
