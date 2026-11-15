@@ -12,7 +12,7 @@ from spatial_sarar_joint_covariance import spatial_sarar_joint_covariance
 
 @dataclass(frozen=True)
 class SpatialSARARGTSLSResult:
-    """Three-step SARAR point estimates and conditional HC1 covariance."""
+    """Three-step SARAR point estimates with conditional and joint KP covariance."""
 
     rho: float
     lambda_: float
@@ -61,10 +61,12 @@ def spatial_sarar_gtsls(
     (3) Cochrane–Orcutt transform y and [X, Wy] by I-lambda W and re-run
         2SLS using the original H instruments.
 
-    The returned HC1 sandwich is conditional on the estimated lambda and
-    treats the transformed regressors/instruments as fixed. It is not the
-    paper's full joint covariance for (beta, rho, lambda), which requires
-    accounting for first-stage and GM parameter estimation jointly.
+    The result includes both a conditional HC1 sandwich and the KP (2010)
+    plug-in joint asymptotic covariance for [beta..., rho, lambda]. The joint
+    covariance accounts for generated first-stage residuals and cross-
+    covariance between the final transformed IV score and the GM moments.
+    It uses identity weighting for the GM moments and the common-weights case
+    M=W; it is not a finite-sample exact or spatial-HAC covariance.
     """
     response = np.asarray(y, dtype=float)
     design = np.asarray(x, dtype=float)
