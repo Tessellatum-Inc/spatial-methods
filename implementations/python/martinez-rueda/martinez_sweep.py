@@ -181,8 +181,11 @@ def _signed_area_exact(ring):
 def _signed_area(ring):
     return float(_signed_area_exact(ring))
 
+def _fraction_value(value):
+    return value if isinstance(value,Fraction) else Fraction(str(value))
+
 def _fraction_point(point):
-    return (Fraction(str(point[0])), Fraction(str(point[1])))
+    return (_fraction_value(point[0]),_fraction_value(point[1]))
 
 def _orientation(a,b,c):
     """Exact orientation sign over shortest round-trip decimal coordinates."""
@@ -302,9 +305,11 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
     for sid,s in enumerate(segments):
         ordered=sorted(params[sid],key=lambda z:z[0]); unique=[]
         for t,p in ordered:
-            if not unique or abs(t-unique[-1][0])>epsilon: unique.append((t,p))
+            # Parameters are exact Fractions: distinct intersections must not
+            # be merged merely because their separation is smaller than epsilon.
+            if not unique or t!=unique[-1][0]: unique.append((t,p))
         for (t0,a),(t1,b) in zip(unique,unique[1:]):
-            if t1-t0>epsilon and a!=b:
+            if t1>t0 and a!=b:
                 fragments.append(SplitSegment(s.source,s.ring,s.index,a,b,t0,t1))
     crossings.sort(key=lambda e:(e.point[0],e.point[1],e.segment_ids))
     events.sort(key=lambda e:(e.point[0],e.point[1],0 if e.kind=="left" else 1))
@@ -330,7 +335,10 @@ def classify_boundary_fragments(polygons, *, operation='intersection', epsilon=1
         rings.append(source_rings)
     selected=[]
     for f in result['split_segments']:
-        midpoint=((f.a[0]+f.b[0])/2,(f.a[1]+f.b[1])/2)
+        midpoint=(
+            (_fraction_value(f.a[0])+_fraction_value(f.b[0]))/2,
+            (_fraction_value(f.a[1])+_fraction_value(f.b[1]))/2
+        )
         inside=_inside_polygon(midpoint,rings[1-f.source])
         if operation=='intersection':
             keep=inside
