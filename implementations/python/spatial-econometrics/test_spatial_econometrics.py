@@ -35,7 +35,7 @@ def test_spatial_lm_diagnostics_match_hand_computed_components():
     assert 0 <= result.lm_lag.p_value <= 1
 
 
-def test_spatial_lm_diagnostics_reproducible_and_uses_supplied_design():
+def test_spatial_lm_diagnostics_uses_supplied_design():
     x = np.column_stack([np.ones(4), [0., 1., 2., 3.]])
     y = [1., 2.1, 2.9, 4.2]
     result = spatial_lm_diagnostics(y, x, CHAIN)
