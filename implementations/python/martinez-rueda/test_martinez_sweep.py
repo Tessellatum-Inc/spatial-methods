@@ -164,3 +164,38 @@ def test_y_interval_treap_matches_brute_force_after_insertions_and_removals():
         high=low+rng.uniform(0.01,20)
         expected={sid for sid,(a,b) in intervals.items() if a<=high and b>=low}
         assert set(status.overlaps(low,high))==expected
+
+
+def test_boolean_overlay_exposes_polygon_shell_hole_grouping():
+    outer=[(0,0),(6,0),(6,6),(0,6)]
+    inner=[(2,2),(4,2),(4,4),(2,4)]
+    result=boolean_overlay_rings([[outer],[inner]],operation="difference")
+    assert len(result["rings"])==2
+    assert len(result["polygons"])==1
+    assert result["polygons"][0]["shell"] in result["rings"]
+    assert result["polygons"][0]["holes"] == tuple(
+        ring for ring in result["rings"] if ring is not result["polygons"][0]["shell"]
+    )
+    assert len(result["polygons"][0]["holes"])==1
+
+
+def test_island_inside_hole_is_a_separate_polygon_component():
+    shell=[(0,0),(10,0),(10,10),(0,10)]
+    hole=[(3,3),(3,7),(7,7),(7,3)]
+    island=[(4,4),(6,4),(6,6),(4,6)]
+    result=boolean_overlay_rings([[shell,hole],[island]],operation="union")
+    assert result["area"]==pytest.approx(88.0)
+    assert len(result["polygons"])==2
+    assert sorted(len(poly["holes"]) for poly in result["polygons"])==[0,1]
+    assert sum(abs(sum(
+        poly["shell"][i][0]*poly["shell"][(i+1)%len(poly["shell"])][1]
+        -poly["shell"][(i+1)%len(poly["shell"])][0]*poly["shell"][i][1]
+        for i in range(len(poly["shell"]))
+    ))/2 for poly in result["polygons"])==pytest.approx(104.0)
+
+
+def test_polygon_component_assembly_rejects_orphan_hole():
+    from martinez_sweep import assemble_polygon_components
+    orphan=[(2,2),(2,4),(4,4),(4,2)]
+    with pytest.raises(ValueError,match="no containing shell"):
+        assemble_polygon_components((orphan,))
