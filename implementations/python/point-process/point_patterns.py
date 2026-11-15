@@ -226,3 +226,94 @@ def j_function(points, window, radii, *, n_samples=10000, seed=0):
     j_values = [((1.0 - g) / (1.0 - f)) if f < 1.0 else float("nan")
                 for g, f in zip(g_values, f_values)]
     return g_values, f_values, j_values
+
+
+def _validate_marked(points, marks, window):
+    pts, bounds = _validate(points, window)
+    if len(marks) != len(pts):
+        raise ValueError("one mark is required for each point")
+    labels = list(marks)
+    if any(label is None for label in labels):
+        raise ValueError("marks must not contain None")
+    return pts, labels, bounds
+
+
+def cross_nearest_neighbor_cdf(points, marks, from_mark, to_mark, radii):
+    """Empirical G_ij: nearest type-j distance from each type-i event."""
+    pts, labels, _ = _validate_marked(points, marks, (0, 0, 1, 1))
+    if from_mark == to_mark:
+        raise ValueError("cross-type summaries require two distinct mark values")
+    source = [p for p, m in zip(pts, labels) if m == from_mark]
+    target = [p for p, m in zip(pts, labels) if m == to_mark]
+    if not source or not target:
+        raise ValueError("both requested mark types must be present")
+    rs = [float(r) for r in radii]
+    if not rs or any(not isfinite(r) or r < 0 for r in rs):
+        raise ValueError("radii must be a non-empty sequence of finite non-negative values")
+    distances = [min(hypot(x-a, y-b) for a, b in target) for x, y in source]
+    return [sum(d <= r for d in distances) / len(distances) for r in rs]
+
+
+def cross_ripley_k_translation(points, marks, window, from_mark, to_mark, radii):
+    """Cross-type K_ij with rectangular translation edge correction.
+
+    K_ij(r) estimates the expected number of type-j events within r of a
+    typical type-i event, divided by the type-j intensity. Under independence
+    of the two stationary component processes, K_ij(r)=pi*r**2.
+    """
+    pts, labels, (xmin, ymin, xmax, ymax) = _validate_marked(points, marks, window)
+    if from_mark == to_mark:
+        raise ValueError("cross-type summaries require two distinct mark values")
+    source = [p for p, m in zip(pts, labels) if m == from_mark]
+    target = [p for p, m in zip(pts, labels) if m == to_mark]
+    if not source or not target:
+        raise ValueError("both requested mark types must be present")
+    rs = [float(r) for r in radii]
+    if not rs or any(not isfinite(r) or r < 0 for r in rs):
+        raise ValueError("radii must be a non-empty sequence of finite non-negative values")
+    width, height = xmax - xmin, ymax - ymin
+    area = width * height
+    pairs = []
+    for x, y in source:
+        for a, b in target:
+            dx, dy = abs(x-a), abs(y-b)
+            overlap = (width-dx) * (height-dy)
+            if overlap <= 0:
+                continue
+            pairs.append((hypot(dx, dy), area / overlap))
+    scale = area / (len(source) * len(target))
+    return [scale * sum(weight for distance, weight in pairs if distance <= r)
+            for r in rs]
+
+
+def cross_pair_correlation_from_k(radii, k_values):
+    """Finite-difference cross pair correlation g_ij=K'_ij(r)/(2*pi*r)."""
+    return pair_correlation_from_k(radii, k_values)
+
+
+def cross_j_function(points, marks, window, from_mark, to_mark, radii, *,
+                     n_samples=10000, seed=0):
+    """Estimate cross-type J_ij=(1-G_ij)/(1-F_j) using uniform window probes."""
+    pts, labels, (xmin, ymin, xmax, ymax) = _validate_marked(points, marks, window)
+    if from_mark == to_mark:
+        raise ValueError("cross-type summaries require two distinct mark values")
+    target = [p for p, m in zip(pts, labels) if m == to_mark]
+    if not target or not any(m == from_mark for m in labels):
+        raise ValueError("both requested mark types must be present")
+    rs = [float(r) for r in radii]
+    if not rs or any(not isfinite(r) or r < 0 for r in rs):
+        raise ValueError("radii must be a non-empty sequence of finite non-negative values")
+    if isinstance(n_samples, bool) or not isinstance(n_samples, Integral) or n_samples <= 0:
+        raise ValueError("n_samples must be a positive integer")
+    if isinstance(seed, bool) or not isinstance(seed, Integral):
+        raise ValueError("seed must be an integer")
+    rng = random.Random(int(seed))
+    empty_distances = []
+    for _ in range(int(n_samples)):
+        x, y = rng.uniform(xmin, xmax), rng.uniform(ymin, ymax)
+        empty_distances.append(min(hypot(x-a, y-b) for a, b in target))
+    f_values = [sum(d <= r for d in empty_distances) / len(empty_distances) for r in rs]
+    g_values = cross_nearest_neighbor_cdf(points, labels, from_mark, to_mark, rs)
+    j_values = [(1-g)/(1-f) if f < 1 else float("nan")
+                for g, f in zip(g_values, f_values)]
+    return g_values, f_values, j_values
