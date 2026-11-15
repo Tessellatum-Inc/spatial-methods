@@ -1,5 +1,6 @@
 """Sweep-line event and segment-splitting core for polygon overlay."""
 from dataclasses import dataclass
+from fractions import Fraction
 from math import isfinite, atan2, pi
 
 @dataclass(frozen=True)
@@ -105,26 +106,44 @@ def _left_right(a,b):
     return (a,b) if a<=b else (b,a)
 
 def _intersection(s1,s2,eps):
+    """Exact-rational segment predicate for decimal-coordinate input.
+
+    Coordinates are interpreted as their shortest round-trip decimal strings.
+    Determinants and intersection parameters are exact; epsilon is used only
+    for endpoint/overlap tolerance and proper-crossing classification.
+    """
     a,b,c,d=s1.a,s1.b,s2.a,s2.b
-    r=(b[0]-a[0],b[1]-a[1]); q=(d[0]-c[0],d[1]-c[1])
-    den=r[0]*q[1]-r[1]*q[0]; ca=(c[0]-a[0],c[1]-a[1])
-    if abs(den)<=eps:
-        if abs(ca[0]*r[1]-ca[1]*r[0])<=eps:
-            # A single shared endpoint is supported; reject only positive-length overlap.
-            if abs(r[0]) >= abs(r[1]):
-                overlap_length=min(max(a[0],b[0]),max(c[0],d[0]))-max(min(a[0],b[0]),min(c[0],d[0]))
-            else:
-                overlap_length=min(max(a[1],b[1]),max(c[1],d[1]))-max(min(a[1],b[1]),min(c[1],d[1]))
-            if overlap_length > eps:
+    aa=tuple(Fraction(str(v)) for v in a)
+    bb=tuple(Fraction(str(v)) for v in b)
+    cc=tuple(Fraction(str(v)) for v in c)
+    dd=tuple(Fraction(str(v)) for v in d)
+    r=(bb[0]-aa[0],bb[1]-aa[1])
+    q=(dd[0]-cc[0],dd[1]-cc[1])
+    den=r[0]*q[1]-r[1]*q[0]
+    ca=(cc[0]-aa[0],cc[1]-aa[1])
+    tolerance=Fraction(str(eps))
+    if den==0:
+        if ca[0]*r[1]-ca[1]*r[0]==0:
+            axis=0 if abs(r[0])>=abs(r[1]) else 1
+            overlap_length=min(max(aa[axis],bb[axis]),max(cc[axis],dd[axis]))-max(min(aa[axis],bb[axis]),min(cc[axis],dd[axis]))
+            if overlap_length>tolerance:
                 raise NotImplementedError("collinear segment overlap is unsupported")
+            if overlap_length>=-tolerance:
+                candidates=set((aa,bb)) & set((cc,dd))
+                if candidates:
+                    p=next(iter(candidates))
+                    return (Fraction(0) if p==aa else Fraction(1),
+                            Fraction(0) if p==cc else Fraction(1),
+                            (float(p[0]),float(p[1])),False)
         return None
     t=(ca[0]*q[1]-ca[1]*q[0])/den
     u=(ca[0]*r[1]-ca[1]*r[0])/den
-    if -eps<=t<=1+eps and -eps<=u<=1+eps:
-        t=max(0.,min(1.,t)); u=max(0.,min(1.,u))
-        p=(a[0]+t*r[0],a[1]+t*r[1])
-        proper=eps<t<1-eps and eps<u<1-eps
-        return t,u,p,proper
+    if -tolerance<=t<=1+tolerance and -tolerance<=u<=1+tolerance:
+        t=max(Fraction(0),min(Fraction(1),t))
+        u=max(Fraction(0),min(Fraction(1),u))
+        p=(aa[0]+t*r[0],aa[1]+t*r[1])
+        proper=tolerance<t<1-tolerance and tolerance<u<1-tolerance
+        return t,u,(float(p[0]),float(p[1])),proper
     return None
 
 def _validate_polygon_rings(rings,eps):
