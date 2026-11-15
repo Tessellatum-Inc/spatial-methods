@@ -145,6 +145,9 @@ jobs:
           - example: k-core
             directory: implementations/python/k-core
             pythonpath: ""
+          - example: kernighan-lin
+            directory: implementations/python/kernighan-lin
+            pythonpath: ""
           - example: point-location
             directory: implementations/python/point-location
             pythonpath: ""
