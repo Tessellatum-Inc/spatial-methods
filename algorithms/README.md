@@ -103,7 +103,7 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 - [Global Moran's I](statistics/global-morans-i.md) — measure global spatial autocorrelation by comparing deviations from the mean across neighbouring units.
 - [Geary's C](statistics/gearys-c.md) — measure global spatial autocorrelation through squared differences between neighbouring values.
 - [Spatial LM diagnostics](statistics/spatial-lm-diagnostics.md) — test classic spatial lag and spatial error alternatives after an OLS null model.
-- [Spatial impacts](statistics/spatial-impacts.md) — decompose SAR/SDM marginal effects into average direct, indirect and total impacts.
+- [Spatial impacts](statistics/spatial-impacts.md) — decompose SAR/SDM marginal effects into average direct, indirect and total impacts.\n- [Spatial lag 2SLS](statistics/spatial-lag-2sls.md) — instrument the endogenous spatially lagged response with exogenous covariates and their spatial lags.
 - [Local Moran's I](statistics/local-morans-i.md) — locate local clusters of similar values and spatial outliers, with conditional permutation inference.
 - [Local Geary](statistics/local-geary.md) *(supplementary)* — measure local similarity and dissimilarity directly between a unit and its neighbours.
 - [Getis-Ord Gi*](statistics/getis-ord-gi-star.md) — identify local concentrations of high values (hotspots) and low values (coldspots).
