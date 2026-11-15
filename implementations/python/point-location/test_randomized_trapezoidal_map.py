@@ -21,7 +21,7 @@ def test_randomized_build_is_reproducible_for_seed_and_covers_every_slab():
     assert a.insertion_rebuild_sizes == b.insertion_rebuild_sizes
     assert len(a.slabs) == len(a.x_events) - 1
     assert a.search_node_count > 0
-    assert len(a.trapezoids) == sum(len(slab[1]) for slab in a.slabs)
+    assert len({id(cell) for slab in a.slabs for cell in slab[1]}) == len(a.trapezoids)
 
 
 def test_query_returns_a_trapezoid_with_correct_vertical_interval():
@@ -97,3 +97,18 @@ def test_seeded_random_disjoint_segments_against_independent_cell_scan():
         else:
             assert isinstance(result, Trapezoid)
             assert result.x_left <= x <= result.x_right
+
+
+
+def test_adjacent_slab_intervals_are_merged_into_shared_trapezoids():
+    locator = RandomizedTrapezoidalMap(
+        [((1, 2), (8, 2.5)), ((2, 6), (9, 6.5))],
+        (0, 0, 10, 10), seed=7,
+    )
+    left = locator.locate(1.5, 1.0)
+    right = locator.locate(2.5, 1.0)
+    assert isinstance(left, Trapezoid)
+    assert left is right
+    assert left.x_left == 1.0
+    assert left.x_right == 8.0
+    assert len(locator.trapezoids) < sum(len(slab[1]) for slab in locator.slabs)
