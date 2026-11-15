@@ -23,7 +23,7 @@ def _validate(routes):
         if len(set(route.stops)) != len(route.stops):
             raise ValueError("a route stop sequence must not repeat stops")
         previous_first = float("-inf")
-        for trip in route.trips:
+        for trip_index, trip in enumerate(route.trips):
             if len(trip.arrivals) != len(route.stops) or len(trip.departures) != len(route.stops):
                 raise ValueError("trip time arrays must match route stop count")
             for a, d in zip(trip.arrivals, trip.departures):
@@ -33,8 +33,8 @@ def _validate(routes):
                 raise ValueError("trip times must be nondecreasing along the route")
             if trip.departures[0] < previous_first:
                 raise ValueError("trips must be sorted by first-stop departure")
-            if route.trips.index(trip) > 0:
-                prior = route.trips[route.trips.index(trip) - 1]
+            if trip_index > 0:
+                prior = route.trips[trip_index - 1]
                 if any(trip.arrivals[i] < prior.arrivals[i] or
                        trip.departures[i] < prior.departures[i]
                        for i in range(len(route.stops))):

@@ -30,7 +30,7 @@ def test_footpath_transfer_and_chain():
     assert result["rounds"][1]["E"] == 25
 
 def test_route_choice_uses_earliest_arrival():
-    r = route(("A", "B"), [((0, 20), (0, 20)), ((5, 12), (5, 12))])
+    r = route(("A", "B"), [((0, 12), (0, 12)), ((5, 17), (5, 17))])
     result = raptor([r], {"A": 0}, max_transfers=0)
     assert result["rounds"][1]["B"] == 12
 
