@@ -22,7 +22,7 @@ tree = KDTree2D(points)
 print(tree.nearest((3.2, 0.5)))\nprint(tree.range_query((0, 0), (2, 2)))\nprint(tree.k_nearest((3.2, 0.5), 3))
 ~~~
 
-The result is a pair containing the original input index and squared Euclidean distance. The implementation resolves equal-distance ties using the smallest original input index. An empty tree returns None.
+`nearest(query)` returns the closest original input index and squared Euclidean distance, or `None` for an empty tree. `range_query(minimum, maximum)` returns all indices inside an inclusive rectangle. `k_nearest(query, k)` returns up to k `(index, squared_distance)` pairs, sorted by distance and then original index. All methods preserve deterministic tie handling.
 
 ## What it does
 
@@ -38,12 +38,12 @@ The result is a pair containing the original input index and squared Euclidean d
 - Static after construction: no insert, delete or update operations.
 - Two dimensions only.
 - Planar Euclidean metric only; coordinates must already be in an appropriate Cartesian coordinate system.
-- Returns one nearest neighbour, not k-nearest neighbours or all tied neighbours.
+- Does not provide dynamic insertion/deletion, range aggregates or all-neighbours-within-radius queries.
 - The implementation favours clarity over low allocation overhead and production throughput.
 - Worst-case query work can approach a full scan.
 
 ## Validation
 
-Tests compare nearest-neighbour results with a brute-force oracle over deterministic random point sets and queries. Range-query results are differentially checked against an independent point-by-point rectangle filter over seeded clouds. They also cover empty input, duplicate points, equal-distance ties, split-plane queries, points outside the data extent, invalid coordinates and clustered/anisotropic data.
+Tests compare nearest-neighbour results with a brute-force oracle; range queries with an independent rectangle filter; and k-nearest results with a full-sort oracle over seeded clouds. Fixtures cover empty inputs, duplicates, equal-distance ties, split-plane queries, degenerate windows, k=0, k larger than the dataset, invalid coordinates and clustered/anisotropic data.
 
 Read the [step-by-step implementation walkthrough](implementation-walkthrough.md) and the [k-d tree lesson](../../../algorithms/indexing/kd-tree-nearest-neighbour.md).
