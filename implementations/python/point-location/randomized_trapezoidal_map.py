@@ -26,7 +26,7 @@ BOUNDARY = "BOUNDARY"
 
 @dataclass
 class Trapezoid:
-    id: tuple[int, int]
+    id: tuple[int, ...]
     x_left: float
     x_right: float
     bottom_segment: int | None
@@ -180,9 +180,8 @@ class RandomizedTrapezoidalMap:
         segment = self.segments[segment_id]
         x0, x1 = segment[0][0], segment[1][0]
         corridor: list[Trapezoid] = []
-        for active, cells, _root in self.slabs:
-            # Slab bounds are taken from its cells; every slab has >= 1 cell.
-            left, right = cells[0].x_left, cells[0].x_right
+        for slab_index, (active, cells, _root) in enumerate(self.slabs):
+            left, right = self.x_events[slab_index:slab_index+2]
             lo, hi = max(left, x0), min(right, x1)
             if lo >= hi:
                 continue
