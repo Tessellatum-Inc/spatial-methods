@@ -696,7 +696,7 @@ def test_spatial_lag_gmm_returns_zero_j_for_exactly_identified_model():
 
 def test_spatial_lag_gmm_rejects_invalid_or_underidentified_inputs():
     from spatial_gmm import spatial_lag_gmm
-    x = np.column_stack([np.ones(8), np.arange(8, dtype=float)])
+    x = np.ones((8, 1))
     y = np.sin(np.arange(8, dtype=float))
     w = np.zeros((8, 8))
     for i in range(7):
