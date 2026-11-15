@@ -43,6 +43,7 @@ Each record explains one method or operation, its assumptions, where it is usefu
 - [Focal raster statistics](raster/focal-statistics.md) — calculate NoData-aware square-window means efficiently using integral images.
 - [Priority-Flood](raster/priority-flood.md) — fill DEM depressions to their lowest spill elevation and inspect the fill-depth surface.
 - [D8 flow direction](raster/d8-flow-direction.md) — assign each DEM cell to its steepest downslope neighbour.
+- [Multiple-flow-direction routing](raster/mfd-flow-routing.md) — distribute raster flow across all strictly lower neighbours with power-law slope weights and accumulate contributions topologically.
 - [D8 flow accumulation](raster/d8-flow-accumulation.md) — propagate upstream cell counts or weighted contributions through an existing D8 direction grid.
 - [Watershed delineation](raster/watershed-delineation.md) — trace the contributing area of a selected outlet through a D8 flow network.
 - [Stream ordering](raster/stream-order.md) — compare Strahler order and Shreve magnitude on a connected D8 channel network.

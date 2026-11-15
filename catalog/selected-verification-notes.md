@@ -106,3 +106,51 @@ These notes record bounded checks against publisher or institutional bibliograph
 - **Rights:** link to the JMLR paper only; no article text or figure is reproduced.
 - **Review date:** 14 November 2026.
 - **Remaining work:** separately verify energy-distance references, block/cluster randomisation designs, domain classifiers, kernel mean matching and the applicability-area method. This note does not verify every method in the grouped source entry.
+
+
+## Section 4 — Exact Euclidean distance transform
+
+**Source entry:** “Euclidean distance transform (Felzenszwalb)” (raster distance methods).
+
+- **Identity and bibliography:** confirmed: Felzenszwalb, P. F. and Huttenlocher, D. P. (2012), “Distance Transforms of Sampled Functions,” *Theory of Computing*, 8, 415–428, DOI [10.4086/toc.2012.v008a019](https://doi.org/10.4086/toc.2012.v008a019).
+- **Technical claims:** the implementation uses the one-dimensional lower envelope of parabolas and separability across raster dimensions. Its one-dimensional result is tested against brute-force minimisation and the two-dimensional result against direct nearest-target distances.
+- **Implementation status:** first-principles NumPy/Python implementation with anisotropic row/column spacing; not a SciPy wrapper. Repository CI remains pending.
+- **Rights:** citation and DOI link only.
+
+## Section 4 — Multiple-flow-direction routing
+
+**Source entry:** “Flow routing: D8, D-infinity, MFD, priority-flood depression filling and sink breaching” (raster hydrology).
+
+- **Identity and bibliography:** confirmed for Freeman, T. G. (1991), “Calculating catchment area with divergent flow based on a regular grid,” *Computers & Geosciences*, 17(3), 413–422, DOI [10.1016/0098-3004(91)90048-I](https://doi.org/10.1016/0098-3004(91)90048-I), and Holmgren, P. (1994), “Multiple flow direction algorithms for runoff modelling in grid based elevation models: an empirical evaluation,” *Hydrological Processes*, 8(4), 327–334, DOI [10.1002/hyp.3360080405](https://doi.org/10.1002/hyp.3360080405).
+- **Technical claims:** this repository implements a bounded power-law MFD variant: all strictly lower neighbours receive fractions proportional to slope raised to a convergence exponent. Flow accumulation validates a downhill DAG and uses topological processing. This is not D-infinity, Qin adaptive MFD, contour-length-corrected MFD or depression conditioning.
+- **Implementation status:** implementation and tests prepared; repository CI has not yet completed.
+- **Rights:** citation and DOI links only.
+
+## Section 12 — Inhomogeneous point-pattern K
+
+**Source entry:** “Palm distributions, nearest neighbor distance distributions, inhomogeneous K and pair correlation functions” (point-process summaries).
+
+- **Identity and bibliography:** confirmed: Baddeley, A., Møller, J. and Waagepetersen, R. (2000), “Non- and semi-parametric estimation of interaction in inhomogeneous point patterns,” *Statistica Neerlandica*, 54, 329–350, DOI [10.1111/1467-9574.00144](https://doi.org/10.1111/1467-9574.00144).
+- **Technical claims:** inverse pointwise-intensity weighting with rectangular translation correction is implemented for supplied positive intensity values. The implementation does not estimate the intensity surface; second-order intensity-reweighted stationarity remains an assumption.
+- **Implementation status:** code, tests, method and lab are committed; repository CI pending.
+- **Rights:** citation and DOI link only.
+
+## Section 12 — Low-rank thin-plate regression splines
+
+**Source entry:** “GAM and GAMM with spatial smooths (thin plate, Duchon splines, soap film smoothers), Bayesian P-splines” (spatial smoothing).
+
+- **Identity and bibliography:** confirmed: Wood, S. N. (2003), “Thin plate regression splines,” *Journal of the Royal Statistical Society: Series B*, 65(1), 95–114, DOI [10.1111/1467-9868.00374](https://doi.org/10.1111/1467-9868.00374).
+- **Technical claims:** the reduced basis is derived from the full thin-plate kernel by removing the affine null space, retaining leading eigendirections and normalising the penalty. The dense implementation matches the full-knot solver when all n−3 penalised directions are retained.
+- **Limitations:** the repository implementation does not reproduce mgcv's Lanczos/subsampled large-data basis construction or automatic smoothing selection.
+- **Implementation status:** code, tests and lab are committed; repository CI pending.
+- **Rights:** citation and DOI link only.
+
+## Section 12 — Forward-filtering backward-simulation particle smoothing
+
+**Source entry:** “Kalman variants: EKF, UKF, ensemble square-root filters, RTS smoothing, particle smoothing” (state estimation).
+
+- **Identity and bibliography:** confirmed: Godsill, S. J., Doucet, A. and West, M. (2004), “Monte Carlo smoothing for nonlinear time series,” *Journal of the American Statistical Association*, 99(465), 156–168, DOI [10.1198/016214504000000151](https://doi.org/10.1198/016214504000000151).
+- **Technical claims:** FFBSi samples a terminal filtering particle, then samples earlier particles proportionally to their filtering weight times the transition density to the selected next state.
+- **Limitations:** the implementation is offline and requires a transition log density consistent with the forward transition sampler. It is not FFBSm, particle Gibbs, ancestor sampling or a nonlinear RTS smoother.
+- **Implementation status:** code, tests and lab are committed; local tests pass, repository CI pending.
+- **Rights:** citation and DOI link only.
