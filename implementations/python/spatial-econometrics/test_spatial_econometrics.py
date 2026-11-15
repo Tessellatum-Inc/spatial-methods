@@ -762,3 +762,65 @@ def test_spatial_error_gmm_rejects_invalid_inputs():
         bad = w.copy()
         bad[0, 0] = 0.1
         spatial_error_gmm(y, x, bad)
+
+
+def test_spatial_lag_instrument_diagnostics_reports_classical_and_hc1_strength():
+    from instrument_diagnostics import spatial_lag_instrument_diagnostics
+    rng = np.random.default_rng(7021)
+    n = 180
+    w = _row_standardised_chain(n)
+    x_value = rng.normal(size=n)
+    x = np.column_stack([np.ones(n), x_value])
+    innovation = rng.normal(scale=0.35, size=n)
+    y = np.linalg.solve(np.eye(n) - 0.55 * w, x @ np.array([0.8, 1.2]) + innovation)
+    result = spatial_lag_instrument_diagnostics(y, x, w, instrument_orders=2)
+    assert result.partial_r_squared > 0.1
+    assert result.classical_partial_f > 10
+    assert result.robust_wald_f > 0
+    assert result.excluded_instruments == 2
+    assert result.instruments_used == 4
+    assert result.classical_f_numerator_df == 2
+    assert result.classical_f_denominator_df == n - 4
+    assert len(result.first_stage_standard_errors_hc1) == 4
+    assert 0 <= result.partial_r_squared <= 1
+
+
+def test_spatial_lag_instrument_diagnostics_flags_weak_relevance_without_rule_of_thumb():
+    from instrument_diagnostics import spatial_lag_instrument_diagnostics
+    rng = np.random.default_rng(7022)
+    n = 160
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    y = rng.normal(size=n)
+    result = spatial_lag_instrument_diagnostics(y, x, w, instrument_orders=2)
+    assert result.partial_r_squared < 0.12
+    assert result.classical_partial_f < 10
+    assert result.robust_wald_f >= 0
+
+
+def test_spatial_lag_instrument_diagnostics_drops_redundant_lagged_intercept():
+    from instrument_diagnostics import spatial_lag_instrument_diagnostics
+    rng = np.random.default_rng(7023)
+    n = 80
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    y = rng.normal(size=n)
+    result = spatial_lag_instrument_diagnostics(y, x, w, instrument_orders=3)
+    assert result.instruments_used < x.shape[1] * 4
+    assert result.excluded_instruments == result.instruments_used - x.shape[1]
+
+
+def test_spatial_lag_instrument_diagnostics_rejects_invalid_or_unidentified_inputs():
+    from instrument_diagnostics import spatial_lag_instrument_diagnostics
+    n = 40
+    w = _row_standardised_chain(n)
+    y = np.arange(n, dtype=float)
+    with pytest.raises(ValueError, match="no independent excluded"):
+        spatial_lag_instrument_diagnostics(y, np.ones((n, 1)), w)
+    with pytest.raises(ValueError, match="instrument_orders"):
+        spatial_lag_instrument_diagnostics(y, np.column_stack([np.ones(n), y]), w,
+                                           instrument_orders=0)
+    bad = w.copy()
+    bad[0, 0] = np.nan
+    with pytest.raises(ValueError, match="finite"):
+        spatial_lag_instrument_diagnostics(y, np.column_stack([np.ones(n), y]), bad)
