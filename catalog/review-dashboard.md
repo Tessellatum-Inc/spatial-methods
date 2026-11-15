@@ -41,7 +41,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 20 — Indices, microwave, events and information | 25 | 2 | 23 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 2 | 24 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 2 | 26 |
-| **Total** | **694** | **84** | **610** |
+| **Total** | **694** | **91** | **603** |
 
 The latest recount on 15 November 2026 finds **91 partial**, **603 intake-only** and **zero fully verified** source-entry rows. Section 1 now has 23 partial / 10 intake-only rows; Section 18 has two partial / 30 intake-only. The total remains 694 rows. This recount was calculated directly from the status labels in all 22 section indexes; older reconciliation notes below preserve historical snapshots and should not be read as the current totals.
 

@@ -73,6 +73,9 @@ jobs:
           - example: getis-ord
             directory: implementations/python/getis-ord
             pythonpath: ""
+          - example: join-count
+            directory: implementations/python/join-count
+            pythonpath: ""
           - example: str-packed-rtree
             directory: implementations/python/str-packed-rtree
             pythonpath: ""

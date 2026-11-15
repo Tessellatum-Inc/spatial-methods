@@ -31,3 +31,7 @@ The implementation supports a rectangular window, equal-area grid, conditional m
 ## Repository implementation
 
 A dependency-light implementation is available in [`implementations/python/point-process`](../../implementations/python/point-process/README.md), in `point_patterns.py` as `quadrat_count_test`. It uses conditional multinomial Monte Carlo calibration with a plus-one upper-tail p-value and a reproducible seed. The package test suite includes quadrat-count fixtures in [`test_point_patterns.py`](../../implementations/python/point-process/test_point_patterns.py). The method is limited to a rectangular window partitioned into equal-area quadrats; it does not provide irregular-window or adaptive-grid inference.
+
+## Repository implementation
+
+A dependency-light implementation is available in [`implementations/python/point-process`](../../implementations/python/point-process/README.md), in `point_patterns.py` as `quadrat_count_test`. It uses conditional multinomial Monte Carlo calibration with a plus-one upper-tail p-value and a reproducible seed. The package test suite includes quadrat-count fixtures in [`test_point_patterns.py`](../../implementations/python/point-process/test_point_patterns.py). The method is limited to a rectangular window partitioned into equal-area quadrats; it does not provide irregular-window or adaptive-grid inference.
