@@ -31,3 +31,12 @@ for 3, 4, 8 and 16 cones and two cone orientations. Empty/singleton inputs,
 symmetric directional ties and invalid boolean cone counts are also covered.
 The indexed method is exact under the same floating-point angle and
 input-index tie conventions; worst-case complexity remains quadratic.
+
+
+## Memory-bounded Prim differential verification
+
+Dense Prim is checked against complete-graph Kruskal and the Delaunay-candidate
+MST over 54 seeded point clouds with sizes 0, 1, 2, 3, 5, 12, 35, 100 and 250.
+Tests include collinear points, equal-distance square edges, duplicate sites,
+and non-finite coordinates. The algorithm uses O(n) auxiliary storage and
+O(n²) distance evaluations; it is not an asymptotically faster construction.

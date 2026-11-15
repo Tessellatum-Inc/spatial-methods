@@ -45,3 +45,13 @@ Seeded tests compare the indexed output exactly with the quadratic reference
 across several cone counts and orientations. This is an exact adaptive
 nearest-neighbour strategy, but its worst case remains O(n²); it is not the
 optimal O(n log n) algorithm from the literature.
+
+
+## Memory-bounded dense Prim MST
+
+`euclidean_mst_prim` constructs the Euclidean MST with dense Prim's algorithm.
+It evaluates pairwise distances as vertices enter the tree, retaining only
+one best connection and parent per outside vertex. This takes O(n²) time but
+O(n) auxiliary space; it does not allocate or sort the complete O(n²)-edge
+graph as Kruskal does. Seeded tests compare its total length with both the
+complete-graph Kruskal oracle and the sparse Delaunay-candidate MST.

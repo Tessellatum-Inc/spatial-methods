@@ -6,9 +6,11 @@ from proximity_graphs import (
     delaunay_filtered_rng,
     delaunay_euclidean_mst,
     euclidean_mst,
+    euclidean_mst_prim,
     gabriel_graph,
     relative_neighborhood_graph,
     yao_graph,
+    yao_graph_kdtree,
 )
 
 
@@ -176,3 +178,47 @@ def test_kdtree_yao_rejects_invalid_cones_and_coordinates():
         yao_graph_kdtree(SQUARE, cones=True)
     with pytest.raises(ValueError):
         yao_graph_kdtree([(0, 0), (float("nan"), 1)])
+
+
+def test_prim_mst_matches_kruskal_and_delaunay_on_seeded_clouds():
+    import random
+
+    rng = random.Random(20261118)
+    for size in (0, 1, 2, 3, 5, 12, 35, 100, 250):
+        for _ in range(6):
+            points = []
+            while len(points) < size:
+                candidate = (rng.uniform(-1000, 1000), rng.uniform(-1000, 1000))
+                if candidate not in points:
+                    points.append(candidate)
+            prim = euclidean_mst_prim(points)
+            kruskal = euclidean_mst(points)
+            assert len(prim) == max(0, size - 1)
+            assert sum(edge[2] for edge in prim) == pytest.approx(
+                sum(edge[2] for edge in kruskal), rel=1e-11, abs=1e-11
+            )
+            if size >= 2:
+                sparse = delaunay_euclidean_mst(points)
+                assert sum(edge[2] for edge in prim) == pytest.approx(
+                    sum(edge[2] for edge in sparse), rel=1e-11, abs=1e-11
+                )
+
+
+def test_prim_mst_handles_collinear_and_equal_distance_sites():
+    collinear = [(4, 8), (0, 0), (3, 6), (1, 2), (2, 4)]
+    result = euclidean_mst_prim(collinear)
+    assert len(result) == len(collinear) - 1
+    assert sum(edge[2] for edge in result) == pytest.approx(4 * (5 ** 0.5))
+    square = euclidean_mst_prim(SQUARE)
+    assert len(square) == 3
+    assert sum(edge[2] for edge in square) == pytest.approx(3.0)
+
+
+@pytest.mark.parametrize("points", [
+    [(0, 0), (0, 0)],
+    [(0, 0), (float("nan"), 1)],
+    [(0, 0), (1, float("inf"))],
+])
+def test_prim_mst_rejects_duplicate_and_non_finite_sites(points):
+    with pytest.raises(ValueError):
+        euclidean_mst_prim(points)

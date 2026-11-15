@@ -368,3 +368,49 @@ def yao_graph_kdtree(
             if best_index is not None:
                 selected.add((min(i, best_index), max(i, best_index)))
     return sorted(selected)
+
+
+def euclidean_mst_prim(
+    points: Sequence[Sequence[float]],
+) -> list[tuple[int, int, float]]:
+    """Build an exact Euclidean MST with dense Prim in O(n²) time, O(n) space.
+
+    Unlike complete-graph Kruskal, this never materialises or sorts all
+    O(n²) edges. It is a useful memory-bounded baseline for moderate point
+    sets and an independent cross-check for the Delaunay-candidate MST.
+    Equal candidate weights are resolved by vertex index, then parent index.
+    """
+    pts = _normalise(points)
+    n = len(pts)
+    if n <= 1:
+        return []
+
+    in_tree = [False] * n
+    best = [float("inf")] * n
+    parent = [-1] * n
+    best[0] = 0.0
+    result: list[tuple[int, int, float]] = []
+
+    for _ in range(n):
+        vertex = min(
+            (i for i in range(n) if not in_tree[i]),
+            key=lambda i: (best[i], i),
+        )
+        if best[vertex] == float("inf"):
+            raise RuntimeError("complete Euclidean graph unexpectedly disconnected")
+        in_tree[vertex] = True
+        if parent[vertex] != -1:
+            a, b = parent[vertex], vertex
+            result.append((min(a, b), max(a, b), best[vertex]))
+
+        for other in range(n):
+            if in_tree[other] or other == vertex:
+                continue
+            weight = _distance(pts[vertex], pts[other])
+            if (weight < best[other]
+                    or (weight == best[other]
+                        and (parent[other] == -1 or vertex < parent[other]))):
+                best[other] = weight
+                parent[other] = vertex
+
+    return result

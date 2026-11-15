@@ -167,3 +167,20 @@ the source, but in adversarial layouts the query size can grow to n and total
 work remains quadratic. The differential tests compare complete edge sets,
 not merely edge counts, over seeded clouds, multiple cone counts and rotated
 cone systems.
+
+
+### Memory-bounded Euclidean MST with dense Prim
+
+A second exact MST construction is now included as a practical complement to
+Kruskal and Delaunay filtering. Dense Prim stores, for every vertex outside
+the current tree, only its best known connection weight and parent. At each
+iteration it adds the cheapest outside vertex, then relaxes its distances to
+the remaining vertices. The complete graph is implicit: no O(n²) edge list
+is created or sorted.
+
+The result is O(n²) time and O(n) auxiliary space. This is not the fastest
+planar algorithm, but it is useful when memory is more constrained than CPU,
+and it provides an algorithmically independent differential oracle for the
+Delaunay-candidate MST. Deterministic equal-weight handling uses vertex index
+and parent index. Seeded tests compare total tree length against both
+complete-graph Kruskal and sparse Delaunay Kruskal.
