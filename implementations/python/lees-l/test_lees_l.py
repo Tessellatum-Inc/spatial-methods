@@ -9,7 +9,7 @@ def test_two_variable_lags_and_statistic_hand_calculation():
     result = lees_l([1, 2, 3, 4], [2, 4, 6, 8], w)
     assert result["spatial_lag_x"] == pytest.approx([3, 2, 3, 2])
     assert result["spatial_lag_y"] == pytest.approx([6, 4, 6, 4])
-    assert result["L"] == pytest.approx(0.0)
+    assert result["L"] == pytest.approx(0.2)
 
 
 def test_reversing_variable_order_preserves_global_lee_l():
