@@ -68,3 +68,6 @@ The `compendium/section-01-geometry-continuation` branch head (`97d508fb767b9e39
 
 
 A subsequent Section 1 implementation batch adds tested reference encoders/decoders for Morton (Z-order), Hilbert distance and Geohash, with a source-linked algorithm guide, implementation walkthrough and verification record. H3, S2, quadkeys and HEALPix remain distinct open systems; the grouped source row is therefore partial, not complete. The batch is committed directly to `main` as `848807b391f7edee78db02867882650ed328c889`; its full Python/notebook workflow is pending.
+
+
+The Section 1 source reconciliation has also added repeated-Dijkstra many-to-many shortest paths and cutoff-Dijkstra network isochrones (including directed frontier arcs) to the existing shortest-path package, with tests, a walkthrough and a source-linked method/verification record. This is a bounded static-graph baseline, not a shared-preprocessing production routing engine. The 22-section source-entry label totals remain 85 partial, 609 intake-only and zero fully verified; the Section 1 count remains 18 partial and 15 intake-only.
