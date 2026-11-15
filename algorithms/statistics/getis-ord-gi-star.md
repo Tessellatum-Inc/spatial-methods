@@ -80,6 +80,10 @@ For a responsible hotspot analysis:
 - distinguish raw significance from multiple-testing-adjusted significance;
 - compare the map with the underlying variable and the global spatial pattern.
 
+## Repository reference implementation
+
+The same package implements local Gi* using binary self-inclusive weights and the analytical randomisation z-score. It reports a two-sided normal-tail approximation separately from PySAL's conditional-permutation p-values; these are not interchangeable. The implementation rejects row-standardisation and non-binary weights to keep the stated contract narrow.
+
 ## PySAL example
 
 The official PySAL guide uses this pattern:

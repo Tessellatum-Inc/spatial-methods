@@ -70,6 +70,9 @@ jobs:
           - example: local-geary
             directory: implementations/python/local-geary
             pythonpath: ""
+          - example: getis-ord
+            directory: implementations/python/getis-ord
+            pythonpath: ""
           - example: str-packed-rtree
             directory: implementations/python/str-packed-rtree
             pythonpath: ""

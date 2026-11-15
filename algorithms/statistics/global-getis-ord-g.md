@@ -82,6 +82,10 @@ Record:
 
 Global G is the overview. Gi* locates local concentrations. They are related, but they are not interchangeable.
 
+## Repository reference implementation
+
+A dependency-light implementation is available at [implementations/python/getis-ord](../../implementations/python/getis-ord/README.md). It calculates the documented global statistic and a reproducible fixed-weights permutation reference distribution. Its two-sided, centred plus-one p-value convention is explicit and differs from PySAL's documented one-sided `p_sim` convention.
+
 ## PySAL example
 
 ```python
