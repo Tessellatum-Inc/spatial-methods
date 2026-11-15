@@ -6,7 +6,7 @@ Welzl, E. (1991). “Smallest enclosing disks (balls and ellipsoids).” In *New
 
 ## Implemented scope
 
-The teaching package implements randomized Welzl recursion for a finite planar point set. The boundary set contains at most three points; one and two point cases use a singleton and diameter circle, while three non-collinear points use a circumcircle. Collinear triples reduce to the farthest pair.
+The teaching package implements a randomized iterative incremental construction for a finite planar point set. When a point falls outside the current circle, nested passes promote it and one or two earlier points to boundary constraints. The defining circle is a singleton, a two-point diameter circle, or a three-point circumcircle; collinear triples reduce to the farthest pair. Collinear triples reduce to the farthest pair.
 
 ## Limitations
 

@@ -5,7 +5,7 @@ Dependency-free teaching implementations for planar point sets and ordered polyl
 - Directed and symmetric Hausdorff distance for finite point sets.
 - Discrete Fréchet distance for ordered vertex sequences, using an O(mn)-time, O(n)-space dynamic program.
 - Continuous Fréchet decision via Alt–Godau free-space reachability, with distance approximation by bisection to an absolute tolerance.
-- Smallest enclosing circle using randomized Welzl recursion with a reproducible local seed.
+- Smallest enclosing circle using randomized iterative incremental construction with a reproducible local seed.
 - Convex-hull diameter using a rotating-calipers antipodal-pair sweep.
 - Approximate polygon pole of inaccessibility (Polylabel-style best-first subdivision), supporting holes and an explicit distance precision.
 - Approximate largest empty circle for point sites, with its centre constrained to the sites' convex hull and a Lipschitz branch-and-bound error bound.
@@ -17,7 +17,7 @@ Dependency-free teaching implementations for planar point sets and ordered polyl
 python -m pytest -q
 ~~~
 
-Coordinates must use one planar Cartesian CRS and consistent linear units. Hausdorff treats inputs as sets of sampled vertices; it does not measure distance to continuous line segments. Discrete Fréchet respects vertex order and is not the continuous Fréchet distance. The smallest-circle routine uses floating-point predicates and recursive Welzl construction; it is intended for modest point sets, not adversarially large input or certified exact geometry.
+Coordinates must use one planar Cartesian CRS and consistent linear units. Hausdorff treats inputs as sets of sampled vertices; it does not measure distance to continuous line segments. Discrete Fréchet respects vertex order and is not the continuous Fréchet distance. The smallest-circle routine uses floating-point predicates and a randomized iterative incremental construction; it avoids recursion-depth limits but remains a teaching implementation, not certified exact geometry.
 
 The diameter routine builds a monotone-chain hull in O(n log n) and sweeps antipodal pairs in O(h). It returns a farthest pair, not a minimum-area oriented bounding rectangle. Polylabel maximises signed boundary clearance with a best-first square-cell search and returns an approximate point and radius; polygon rings must be valid.
 

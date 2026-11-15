@@ -14,9 +14,9 @@ For a two-point boundary, the centre is the midpoint and the radius is half thei
 
 ## Welzl's randomized algorithm
 
-Welzl's algorithm randomly orders the points and recursively maintains a boundary set of at most three points. If the next point is already enclosed, it does not change the solution. Otherwise it becomes a required boundary point and the subproblem is solved again. Randomization gives expected linear time under the standard model, although the recursive teaching implementation here is not designed for very large or adversarial inputs.
+Welzl's algorithm randomly orders the points and incrementally maintains the minimum circle for the processed prefix. When a point falls outside, nested passes constrain it and up to two earlier points on the boundary. If the next point is already enclosed, it does not change the solution. Otherwise it becomes a required boundary point and the subproblem is solved again. Randomization gives expected linear time under the standard model, although the recursive teaching implementation here is not designed for very large or adversarial inputs.
 
-The implementation uses a local seed for reproducibility and a scale-aware floating-point containment tolerance. This is a practical numerical baseline, not an exact-arithmetic certificate.
+The implementation uses a local seed for reproducibility, an iterative nested-loop construction and a scale-aware floating-point containment tolerance. The iterative form avoids Python recursion-depth failures. This is a practical numerical baseline, not an exact-arithmetic certificate.
 
 ## Applications and cautions
 
