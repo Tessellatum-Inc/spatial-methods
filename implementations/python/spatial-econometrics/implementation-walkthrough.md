@@ -38,11 +38,11 @@ Open \`impacts.py\`.
 4. Average all matrix elements (equivalently the mean row sum) for the total impact.
 5. Calculate the indirect impact as total minus direct.
 
-The coefficients are assumed to come from a separately fitted model. This package does not propagate estimation uncertainty.
+The coefficients are assumed to come from a separately fitted model. The `spatial_impact_uncertainty` companion accepts a joint covariance ordered as `[rho, beta..., gamma...]` and propagates it through parametric Monte Carlo draws. It reports rejected ill-conditioned draws; it does not estimate the covariance or validate its sampling assumptions.
 
-## 4. Tests and verification
+## 4. Concentrated maximum likelihood\n\nOpen `maximum_likelihood.py`.\n\n1. SAR profiles the Gaussian likelihood over the spatial-lag parameter, including the Jacobian term `log|I-rho W|`.\n2. SEM transforms both the response and design by `I-lambda W`.\n3. SDM transforms the response by `I-rho W` and regresses on the augmented `[X, WX]` design, dropping redundant spatial-lag columns in stable order.\n4. SARAR/SAC applies both filters, `A_lambda A_rho`, to the response and `A_lambda` to the design. Its likelihood includes both log-determinants. A two-dimensional coarse grid is refined by alternating local golden-section searches around the best grid cell.\n5. All estimators use a conservative norm-bounded interval and dense matrix operations. They are teaching baselines, not scalable production likelihoods; they do not provide coefficient covariance or robust inference.\n\n## 5. Tests and verification
 
-\`test_spatial_econometrics.py\` checks the LM formulas against independently assembled matrix expressions, rejects invalid inputs, checks SAR/SDM impact identities and generates a synthetic SAR process for a 2SLS recovery test.
+\`test_spatial_econometrics.py\` checks the LM formulas against independently assembled matrix expressions, rejects invalid inputs, checks SAR/SDM impact identities, tests parametric impact uncertainty, and generates synthetic SAR, SDM and SARAR processes for estimator recovery tests.
 
 Run:
 
