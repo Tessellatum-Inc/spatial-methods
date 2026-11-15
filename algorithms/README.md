@@ -108,6 +108,7 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 - [Spatial Durbin 2SLS](statistics/spatial-durbin-2sls.md) — estimate the endogenous spatial lag alongside spatially lagged covariates using higher-order spatial instruments.
 - [Concentrated SAR/SEM maximum likelihood](statistics/spatial-maximum-likelihood.md) — estimate spatial lag and spatial error parameters by profiling the Gaussian likelihood over a conservative interval.
 - [Spatial Durbin maximum likelihood](statistics/spatial-durbin-mle.md) — estimate response feedback and lagged-covariate effects by concentrated Gaussian maximum likelihood.
+- [SARAR/SAC maximum likelihood](statistics/spatial-sarar-mle.md) — jointly estimate spatial response feedback and spatially correlated disturbances by concentrated Gaussian maximum likelihood.
 - [Local Moran's I](statistics/local-morans-i.md) — locate local clusters of similar values and spatial outliers, with conditional permutation inference.
 - [Local Geary](statistics/local-geary.md) *(supplementary)* — measure local similarity and dissimilarity directly between a unit and its neighbours.
 - [Getis-Ord Gi*](statistics/getis-ord-gi-star.md) — identify local concentrations of high values (hotspots) and low values (coldspots).
