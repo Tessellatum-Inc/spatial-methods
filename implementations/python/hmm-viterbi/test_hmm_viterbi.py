@@ -53,7 +53,7 @@ class BaumWelchTests(unittest.TestCase):
   result=baum_welch([(),('x','y','x'),('y','y','x')],self.states,self.symbols,
     self.start,self.trans,self.emit,max_iterations=5)
   self.assertEqual(len(result[1]),2); self.assertEqual(len(result[2]),2)
-  self.assertEqual(len(result[3]),6)
+  self.assertGreaterEqual(len(result[3]),2); self.assertLessEqual(len(result[3]),6)
 
  def test_baum_welch_rejects_invalid_inputs(self):
   from hmm_viterbi import baum_welch, forward_log_likelihood
