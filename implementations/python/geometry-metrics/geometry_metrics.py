@@ -609,3 +609,47 @@ def minimum_area_bounding_rectangle_calipers(points):
         if best is None or area < best["area"]:
             best = candidate
     return best
+
+
+def convex_polygon_minimum_width(points):
+    """Return the minimum support-line width of a planar point set.
+
+    The strict convex hull is built internally. For each hull edge, the
+    maximum perpendicular distance to its parallel support line is found
+    with a monotone antipodal pointer. The total is O(n log n) for hull
+    construction plus O(h) for the rotating-calipers sweep, with O(h)
+    hull storage. Width is zero for fewer than three non-collinear hull
+    vertices (including empty, singleton and collinear inputs).
+    """
+    hull = convex_hull(points)
+    n = len(hull)
+    if n < 3:
+        return 0.0
+
+    def cross_edge(i, j):
+        a = hull[i]
+        b = hull[(i + 1) % n]
+        p = hull[j]
+        return ((b[0] - a[0]) * (p[1] - a[1])
+                - (b[1] - a[1]) * (p[0] - a[0]))
+
+    opposite = 1
+    best = float("inf")
+    for i in range(n):
+        next_i = (i + 1) % n
+        edge_length = _distance(hull[i], hull[next_i])
+        if edge_length == 0.0:
+            continue
+        current_area = cross_edge(i, opposite)
+        advances = 0
+        while advances < n:
+            next_opposite = (opposite + 1) % n
+            next_area = cross_edge(i, next_opposite)
+            if next_area > current_area:
+                opposite = next_opposite
+                current_area = next_area
+                advances += 1
+            else:
+                break
+        best = min(best, current_area / edge_length)
+    return 0.0 if best == float("inf") else best

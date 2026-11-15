@@ -302,3 +302,48 @@ def test_smallest_circle_is_translation_and_scale_stable(origin, scale):
     assert radius == pytest.approx(2.0 * scale / math.sqrt(3.0), rel=1e-6, abs=1e-15)
     assert all(math.dist((x, y), point) <= radius + 8 * math.ulp(max(abs(x), abs(y), 1.0))
                for point in points)
+
+
+def _brute_minimum_width(points):
+    from geometry_metrics import convex_hull
+    hull = convex_hull(points)
+    if len(hull) < 3:
+        return 0.0
+    widths = []
+    for a, b in zip(hull, hull[1:] + hull[:1]):
+        dx, dy = b[0]-a[0], b[1]-a[1]
+        length = math.hypot(dx, dy)
+        widths.append(max(abs(dx*(p[1]-a[1])-dy*(p[0]-a[0]))
+                          for p in hull) / length)
+    return min(widths)
+
+
+def test_rotating_calipers_minimum_width_known_shapes():
+    from geometry_metrics import convex_polygon_minimum_width
+    assert convex_polygon_minimum_width([(0,0),(4,0),(4,2),(0,2)]) == pytest.approx(2.0)
+    assert convex_polygon_minimum_width([(0,0),(2,0),(2,2),(0,2)]) == pytest.approx(2.0)
+    assert convex_polygon_minimum_width([(0,0),(3,0),(1,0)]) == 0.0
+    assert convex_polygon_minimum_width([]) == 0.0
+
+
+def test_rotating_calipers_minimum_width_matches_edge_scan_oracle():
+    import random
+    from geometry_metrics import convex_polygon_minimum_width
+    rng = random.Random(20261119)
+    for size in range(3, 151):
+        for _ in range(5):
+            points = [(rng.uniform(-100,100), rng.uniform(-100,100))
+                      for _ in range(size)]
+            actual = convex_polygon_minimum_width(points)
+            expected = _brute_minimum_width(points)
+            assert actual == pytest.approx(expected, rel=1e-10, abs=1e-9)
+
+
+def test_rotating_calipers_minimum_width_is_translation_and_rotation_invariant():
+    from geometry_metrics import convex_polygon_minimum_width
+    points = [(0,0),(5,0),(6,2),(3,5),(-1,3)]
+    base = convex_polygon_minimum_width(points)
+    angle = 0.731
+    rotated = [(x*math.cos(angle)-y*math.sin(angle)+17,
+                x*math.sin(angle)+y*math.cos(angle)-9) for x,y in points]
+    assert convex_polygon_minimum_width(rotated) == pytest.approx(base, rel=1e-10, abs=1e-9)

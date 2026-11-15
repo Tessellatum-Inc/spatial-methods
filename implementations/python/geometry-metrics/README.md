@@ -31,3 +31,9 @@ The largest-empty-circle routine searches the convex hull of a non-collinear sit
 
 
 The four-support rotating-calipers rectangle routine advances the extrema along the edge direction and its normal monotonically around the convex hull. Its sweep is O(h) after the O(n log n) hull construction; seeded tests compare its area against the transparent O(h²) orientation scan.
+
+
+- Minimum width of a point set using a rotating antipodal-support pointer,
+  O(n log n) including hull construction and O(h) for the caliper sweep.
+  This returns the minimum distance between parallel support lines; it is
+  distinct from minimum-area bounding rectangle and diameter.
