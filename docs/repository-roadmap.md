@@ -386,4 +386,5 @@ The package is a stationary M/M/c teaching model, not a time-varying simulation.
 - [x] Add Besag–Newell area-centred fixed-k cluster detection with exact hypergeometric local tails, global Monte Carlo calibration, tests and a lab.
 - [x] Implement and verify Tango's global distance-decay quadratic-form test with conditional Monte Carlo inference, tests and notebook example.
 - [x] Add a finite-grid elliptical Poisson scan with explicit shape/orientation candidate controls, tie handling, tests, lesson and conditional Monte Carlo calibration.
-- [ ] Compare circular and elliptical scan families against reference software and assess flexible scan methods.
+- [x] Add a bounded exhaustive FleXScan-style connected-zone scan with adjacency validation, K-neighbour restriction, tests, lesson and conditional Monte Carlo calibration.
+- [ ] Compare circular, elliptical and flexible scan families against reference software; assess optimized enumeration and secondary-cluster methods.
