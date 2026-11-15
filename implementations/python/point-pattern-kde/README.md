@@ -1,38 +1,46 @@
 # Planar Gaussian kernel density estimation for point patterns
 
-Kernel density estimation (KDE) turns a set of event locations into a continuous intensity surface. This package evaluates a fixed-bandwidth, isotropic Gaussian kernel on a regular grid.
+This package provides fixed-bandwidth and sample-point adaptive Gaussian KDE,
+plus leave-one-out likelihood bandwidth selection for modest planar samples.
 
 ## Run
-
 ~~~bash
 python -m pip install -r requirements.txt
 python -m pytest -q
 ~~~
 
-## Example
-
+## Fixed KDE
 ~~~python
 from point_pattern_kde import gaussian_kde
-
-points = [(2, 3), (2.2, 3.1), (7, 8)]
-density, x_centres, y_centres = gaussian_kde(
-    points,
-    bounds=(0, 10, 0, 10),
-    grid_shape=(100, 100),
-    bandwidth=0.8,
+density, xs, ys = gaussian_kde(
+    [(2, 3), (2.2, 3.1), (7, 8)], bounds=(0, 10, 0, 10),
+    grid_shape=(100, 100), bandwidth=0.8,
 )
 ~~~
 
-## Contract and limitations
+## Adaptive KDE and bandwidth selection
+~~~python
+from point_pattern_kde import adaptive_gaussian_kde, select_bandwidth_loo
+surface, xs, ys, local_h = adaptive_gaussian_kde(
+    points, bounds=(0, 10, 0, 10), bandwidth=0.8,
+)
+best_h, candidate_scores = select_bandwidth_loo(points, [0.3, 0.5, 0.8, 1.2])
+~~~
 
-- Coordinates are planar and must use a suitable projected coordinate system with consistent linear units.
-- Bounds are (xmin, xmax, ymin, ymax) and must contain all event locations.
-- Grid shape is (rows, columns); returned x and y arrays contain cell-centre coordinates.
-- The Gaussian kernel is isotropic with one fixed bandwidth.
-- Optional non-negative event weights change the estimated intensity units accordingly.
-- The output is intensity per square map unit, not a count per raster cell.
-- No edge correction is applied. Estimates near the study-window boundary can be biased downward because part of the kernel lies outside the observation window.
-- This is a direct O(nm) evaluation for n events and m grid cells; it is a transparent small/medium-data teaching baseline, not an indexed large-data KDE.
-- Adaptive bandwidths, cross-validation, network KDE and formal point-process inference are not included.
+Adaptive KDE estimates a leave-one-out pilot density at each event and applies
+Abramson's square-root rule h_i = h * (g / f_i)^alpha. Dense pilot regions
+receive smaller kernels; sparse regions receive larger kernels. Factors are
+clipped by default to [0.25, 4]. Returned local bandwidths follow input order.
+With one event, or alpha=0, every event uses the global bandwidth.
 
-Read the [canonical lesson](../../../algorithms/statistics/point-pattern-kde.md) and [intern walkthrough](implementation-walkthrough.md).
+LOO selection predicts each event from all other events and maximises weighted
+mean log predictive density over the supplied candidates. It evaluates the
+candidate grid as given; it does not run a continuous optimiser.
+
+Coordinates must be planar and use consistent linear units. Bounds are
+(xmin, xmax, ymin, ymax), grid shape is (rows, columns), and all events must
+lie inside the bounds. Optional weights are finite and non-negative. Output
+is intensity per square map unit, not counts per cell. No edge correction is
+applied. Fixed KDE costs O(nm), adaptive KDE O(n^2 + nm), and LOO selection
+O(n^2 c) for c candidates; these are transparent reference methods, not
+large-data indexed estimators.
