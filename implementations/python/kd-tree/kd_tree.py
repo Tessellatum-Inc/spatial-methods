@@ -141,6 +141,45 @@ class KDTree2D:
         visit(self._root)
         return sorted(found)
 
+    def radius_query(
+        self, query: Iterable[float], radius: float
+    ) -> list[int]:
+        """Return original indices at distance <= radius from query.
+
+        The radius boundary is inclusive. Split-plane pruning visits a far
+        subtree whenever its minimum possible squared distance is <= r².
+        Results are sorted by original input index.
+        """
+        qx, qy = _point(query)
+        if isinstance(radius, bool):
+            raise ValueError("radius must be finite and non-negative")
+        try:
+            limit = float(radius)
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError("radius must be finite and non-negative") from exc
+        if not isfinite(limit) or limit < 0.0:
+            raise ValueError("radius must be finite and non-negative")
+        radius_sq = limit * limit
+        found: list[int] = []
+
+        def visit(node: _Node | None) -> None:
+            if node is None:
+                return
+            dx = qx - node.point[0]
+            dy = qy - node.point[1]
+            if dx * dx + dy * dy <= radius_sq:
+                found.append(node.index)
+
+            delta = (qx, qy)[node.axis] - node.point[node.axis]
+            near, far = ((node.left, node.right) if delta <= 0
+                         else (node.right, node.left))
+            visit(near)
+            if delta * delta <= radius_sq:
+                visit(far)
+
+        visit(self._root)
+        return sorted(found)
+
     def k_nearest(
         self, query: Iterable[float], k: int
     ) -> list[tuple[int, float]]:

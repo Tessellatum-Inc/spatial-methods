@@ -181,3 +181,39 @@ def test_k_nearest_matches_brute_force_on_seeded_clouds():
 def test_k_nearest_rejects_invalid_k(k):
     with pytest.raises(ValueError):
         KDTree2D([(0, 0)]).k_nearest((0, 0), k)
+
+
+def test_radius_query_includes_boundary_and_sorts_original_indices():
+    points = [(3, 4), (0, 0), (1, 0), (-1, 0), (0, 2), (0, 0)]
+    tree = KDTree2D(points)
+    assert tree.radius_query((0, 0), 1.0) == [1, 2, 3, 5]
+    assert tree.radius_query((0, 0), 0.0) == [1, 5]
+    assert tree.radius_query((0, 0), 2.0) == [1, 2, 3, 4, 5]
+
+
+def test_radius_query_empty_tree_and_no_matches():
+    assert KDTree2D([]).radius_query((0, 0), 10) == []
+    assert KDTree2D([(5, 5)]).radius_query((0, 0), 1) == []
+
+
+def test_radius_query_matches_independent_brute_force_on_seeded_clouds():
+    rng = random.Random(20261118)
+    for size in (0, 1, 2, 10, 50, 200):
+        points = [(rng.randint(-30, 30), rng.randint(-30, 30))
+                  for _ in range(size)]
+        tree = KDTree2D(points)
+        for _ in range(80):
+            query = (rng.uniform(-35, 35), rng.uniform(-35, 35))
+            radius = rng.uniform(0, 25)
+            expected = [
+                i for i, point in enumerate(points)
+                if (point[0] - query[0]) ** 2 + (point[1] - query[1]) ** 2
+                <= radius ** 2
+            ]
+            assert tree.radius_query(query, radius) == expected
+
+
+@pytest.mark.parametrize("radius", [-1, float("nan"), float("inf"), True, "bad"])
+def test_radius_query_rejects_invalid_radius(radius):
+    with pytest.raises(ValueError):
+        KDTree2D([(0, 0)]).radius_query((0, 0), radius)

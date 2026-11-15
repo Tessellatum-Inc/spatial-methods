@@ -148,3 +148,8 @@ The [Python k-d tree implementation](../../implementations/python/kd-tree/README
 - [scikit-learn nearest-neighbours documentation](https://scikit-learn.org/stable/modules/neighbors.html), for implementation options and the limitations of KDTree in higher dimensions.
 
 **Evidence state:** the k-d tree's foundational role is grounded in Bentley's original paper. Search procedure and pruning are presented as a standard exact branch-and-bound pattern; complexity is intentionally workload-qualified rather than promised as a universal logarithmic bound.
+
+
+## Radius queries
+
+The 2D k-d tree also supports an inclusive Euclidean radius query. At each node it explores the near side first and visits the far side only when the squared split-plane distance is no greater than the squared radius. This is an exact branch-and-bound query; results are returned in original input order. It complements kNN: kNN fixes the result count, while radius search fixes the maximum distance and may return any number of points.
