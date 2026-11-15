@@ -160,6 +160,9 @@ jobs:
           - example: raptor
             directory: implementations/python/raptor
             pythonpath: ""
+          - example: csa
+            directory: implementations/python/csa
+            pythonpath: ""
           - example: point-location
             directory: implementations/python/point-location
             pythonpath: ""
