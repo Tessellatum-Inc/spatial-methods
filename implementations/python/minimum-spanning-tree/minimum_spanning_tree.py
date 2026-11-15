@@ -1,7 +1,7 @@
 """Kruskal minimum spanning tree and forest for weighted undirected graphs."""
 from __future__ import annotations
 
-from math import isfinite
+from math import fsum, isfinite
 from typing import Hashable, Iterable, Sequence
 
 Node = Hashable
@@ -54,15 +54,19 @@ def minimum_spanning_tree(
             candidates.append((weight, index, u, v))
 
     chosen = []
-    total = 0.0
+    chosen_weights = []
     for weight, index, u, v in sorted(candidates, key=lambda item: (item[0], item[1])):
         if union(u, v):
             chosen.append({"edge_index": index, "u": u, "v": v, "weight": weight})
-            total += weight
+            chosen_weights.append(weight)
             if len(chosen) == max(0, len(ordered_nodes) - 1):
                 break
 
     roots = {find(node) for node in ordered_nodes}
+    try:
+        total = fsum(chosen_weights)
+    except OverflowError as exc:
+        raise OverflowError("minimum spanning forest weight exceeds finite float range") from exc
     return {
         "edges": chosen,
         "total_weight": total,
