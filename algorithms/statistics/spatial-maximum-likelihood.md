@@ -26,7 +26,7 @@ The implementation scans a one-dimensional grid, then refines around the best gr
 
 The default interval is \((-0.98/\|W\|_\infty,\,0.98/\|W\|_\infty)\). The strict norm bound ensures \(|\theta|\|W\|_\infty<1\), so the Neumann-series argument guarantees \(I-\theta W\) is nonsingular throughout the interval. This is a deliberately conservative interval, not the full admissible parameter space. A true parameter outside it will not be recovered by this estimator.
 
-The code uses dense NumPy matrices and repeated log-determinants. It is intended for small teaching examples, not large sparse spatial systems. It assumes Gaussian iid innovations and a correctly specified weights matrix. It does not calculate standard errors, information-matrix covariance, likelihood-ratio tests, robust inference, impacts, or spatial Durbin/SAC/SARAR estimates.
+The code uses dense NumPy matrices and repeated log-determinants. It is intended for small teaching examples, not large sparse spatial systems. It assumes Gaussian iid innovations and a correctly specified weights matrix. It does not calculate standard errors, information-matrix covariance, likelihood-ratio tests, robust inference, or impacts. The separate [spatial Durbin ML estimator](spatial-durbin-mle.md) profiles the SDM likelihood; SAC/SARAR estimation remains open.
 
 ## Runnable implementation
 
