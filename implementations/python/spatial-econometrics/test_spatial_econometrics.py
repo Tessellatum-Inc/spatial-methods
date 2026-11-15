@@ -948,10 +948,10 @@ def test_heteroskedastic_spatial_error_gm_expansion_matches_original_zero_diagon
     fit = heteroskedastic_spatial_error_gm(residual_predictor, w)
     innovation = residual_predictor - fit.lambda_ * (w @ residual_predictor)
     spatial_innovation = w @ innovation
-    row_squared_norms = np.sum(w * w, axis=1)
+    column_squared_norms = np.sum(w * w, axis=0)
     direct = np.array([
         (spatial_innovation @ spatial_innovation
-         - np.dot(row_squared_norms, innovation * innovation)) / n,
+         - np.dot(column_squared_norms, innovation * innovation)) / n,
         (spatial_innovation @ innovation) / n,
     ])
     np.testing.assert_allclose(fit.moment_residuals, direct, atol=1e-12)
