@@ -145,3 +145,12 @@ This is the local direction step only. Depression filling, flat resolution, accu
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-13 | Initial D8 explanation, teaching implementation and interactive lab |
+
+
+## D-infinity implementation companion
+
+A separate [D-infinity facet-routing implementation](d-infinity-flow-routing.md)
+now accompanies D8 and power-law MFD. It computes a continuous downslope
+aspect over triangular facets and splits flow between adjacent directions.
+The implementation and tests are in the shared
+[ D8/MFD/D-infinity Python package ](../../implementations/python/d8-flow/README.md).

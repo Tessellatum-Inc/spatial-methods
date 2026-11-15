@@ -48,3 +48,16 @@ Read the [canonical lesson](../../../algorithms/raster/d8-flow-direction.md) and
 ## Multiple-flow-direction routing
 
 The companion `mfd_flow.py` module implements a power-law multiple-flow-direction (MFD) variant. `mfd_flow_weights` splits flow among strictly lower neighbours using slope-to-the-exponent weights; `mfd_flow_accumulation` routes contributions through the resulting acyclic graph with a topological traversal. It supports rectangular cell spacing, masks, NoData and raster-valued initial contributions. Run the same test command above to exercise both D8 and MFD. This is not D-infinity and does not resolve flats or fill depressions. See the [MFD lesson](../../../algorithms/raster/mfd-flow-routing.md) and [interactive lab](../../../notebooks/mfd-flow-routing-lab.ipynb).
+
+
+## D-infinity (D∞) routing
+
+The companion `dinf_flow.py` module fits a planar slope to each triangular
+facet in the 3×3 neighbourhood. It selects the steepest valid facet; when the
+downslope aspect falls inside a facet, flow is split between its two
+neighbouring cells according to angular position. Available edge slopes
+provide a fallback beside NoData and raster boundaries. The output uses the
+same E, SE, S, SW, W, NW, N, NE channel order and shape as the MFD weights,
+so it can be passed to the existing `mfd_flow_accumulation` routine for
+topological accumulation. This is a D-infinity facet method, not the
+power-law MFD rule. Flats and depressions are not conditioned.
