@@ -70,7 +70,7 @@ The [planar Gaussian KDE lesson](../../algorithms/statistics/point-pattern-kde.m
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Spatial Gini, Theil, spatial entropy, segregation indices (dissimilarity, isolation) | Inequality and segregation measures | 4 | Not checked — intake only |
+| Spatial Gini, Theil, spatial entropy, segregation indices (dissimilarity, isolation) | Inequality and segregation measures | 4 | Partial — weighted area-level Gini, Theil T/L, Shannon area entropy, two-group dissimilarity and isolation/interaction implemented; distance-weighted Gini and spatial clustering/concentration measures remain open |
 | Fractal dimension, lacunarity, Hurst exponent, multifractal analysis, scale-space theory, MAUP analysis | Scale measures / spatial analysis concepts | 4 | Not checked — intake only |
 | Spatial spectral analysis: 2D periodogram, EOF, SSA and MSSA, canonical correlation, maximum covariance analysis, cross-spectral coherence, wavelet coherence, Hilbert-Huang transform | Spectral and multivariate analysis methods | 4 | Not checked — intake only |
 
