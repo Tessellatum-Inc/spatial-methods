@@ -1,5 +1,5 @@
 import pytest
-from martinez_sweep import (sweep_split_segments, classify_boundary_fragments, fragment_area_contribution)
+from martinez_sweep import (sweep_split_segments, classify_boundary_fragments, fragment_area_contribution, boolean_overlay_rings)
 
 def test_overlapping_rectangles_split_crossed_edges():
     a=[(0,0),(4,0),(4,3),(0,3)]; b=[(2,-1),(5,-1),(5,2),(2,2)]
@@ -65,3 +65,38 @@ def test_classification_rejects_multiple_ring_inputs_until_hole_roles_exist():
     a=[(0,0),(4,0),(4,4),(0,4)]
     with pytest.raises(NotImplementedError):
         classify_boundary_fragments([[a,a],[a]])
+
+def test_stitched_boolean_results_match_rectangle_areas_and_components():
+    a=[(0,0),(4,0),(4,3),(0,3)]
+    b=[(2,-1),(5,-1),(5,2),(2,2)]
+    expected={'intersection':(4.0,1),'union':(17.0,1),'difference':(8.0,1),'symmetric_difference':(13.0,2)}
+    for op,(area,count) in expected.items():
+        result=boolean_overlay_rings([[a],[b]],operation=op)
+        assert result['area']==pytest.approx(area)
+        assert len(result['rings'])==count
+        assert all(len(ring)>=3 for ring in result['rings'])
+
+def test_containment_stitches_hole_with_opposite_orientation():
+    outer=[(0,0),(6,0),(6,6),(0,6)]
+    inner=[(2,2),(4,2),(4,4),(2,4)]
+    diff=boolean_overlay_rings([[outer],[inner]],operation='difference')
+    assert diff['area']==pytest.approx(32.0)
+    assert len(diff['rings'])==2
+    assert sorted((1 if sum(diff['rings'][i][j][0]*diff['rings'][i][(j+1)%len(diff['rings'][i])][1]-diff['rings'][i][(j+1)%len(diff['rings'][i])][0]*diff['rings'][i][j][1] for j in range(len(diff['rings'][i])))>0 else -1) for i in range(2))==[-1,1]
+    union=boolean_overlay_rings([[outer],[inner]],operation='union')
+    assert union['area']==pytest.approx(36.0) and len(union['rings'])==1
+    inter=boolean_overlay_rings([[outer],[inner]],operation='intersection')
+    assert inter['area']==pytest.approx(4.0) and len(inter['rings'])==1
+    xor=boolean_overlay_rings([[outer],[inner]],operation='symmetric_difference')
+    assert xor['area']==pytest.approx(32.0) and len(xor['rings'])==2
+
+def test_disjoint_union_stitches_two_components_and_intersection_is_empty():
+    a=[(0,0),(1,0),(1,1),(0,1)]
+    b=[(3,0),(4,0),(4,1),(3,1)]
+    assert len(boolean_overlay_rings([[a],[b]],operation='union')['rings'])==2
+    assert boolean_overlay_rings([[a],[b]],operation='intersection')['rings']==()
+
+def test_stitching_accepts_clockwise_input_rings():
+    a=[(0,3),(4,3),(4,0),(0,0)]
+    b=[(2,2),(5,2),(5,-1),(2,-1)]
+    assert boolean_overlay_rings([[a],[b]],operation='intersection')['area']==pytest.approx(4.0)
