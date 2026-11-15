@@ -47,7 +47,7 @@ Under their respective null hypotheses and regularity conditions, each classic s
 
 ## Interpretation and limitations
 
-Each test asks whether the OLS null is locally inconsistent with one specified spatial alternative. The classic tests can both respond to the other form of dependence. If both are significant, do not mechanically select whichever statistic is larger. Robust LM tests were developed to account for local misspecification of the competing alternative; they are not implemented in this teaching package.
+Each classic test asks whether the OLS null is locally inconsistent with one specified spatial alternative. The classic tests can both respond to the other form of dependence. Robust Bera-Yoon score tests adjust for the competing alternative. Define the scores dρ=(e'Wy/σ²), dλ=(e'We/σ²), and retain D and T above. Then the robust lag test is\n\n\\[\nRLM_{lag}=\\frac{(d_\\rho-d_\\lambda)^2}{D-T}\n\\]\n\nwhile the robust error test is\n\n\\[\nRLM_{error}=\\frac{(d_\\lambda-(T/D)d_\\rho)^2}{T(1-T/D)}.\n\\]\n\nEach is asymptotically chi-square with one degree of freedom under its null. If D-T is numerically zero, the implementation returns both robust results as unavailable rather than dividing by a degenerate adjustment term. Do not mechanically select a model from the largest statistic.
 
 The tests do not estimate a spatial lag or error model. In particular, OLS is generally inconsistent for a model with a spatially lagged dependent variable because (Wy) is endogenous. Use a maintained spatial econometrics package for SAR/SEM estimation, robust diagnostics, uncertainty estimates and model comparison.
 
@@ -72,7 +72,7 @@ for i in range(4):
 
 result = spatial_lm_diagnostics(y, x, w)
 print("LM lag:", result.lm_lag)
-print("LM error:", result.lm_error)
+print("LM error:", result.lm_error)\nprint("Robust LM lag:", result.robust_lm_lag)\nprint("Robust LM error:", result.robust_lm_error)
 ~~~
 
 ## References
@@ -88,4 +88,4 @@ print("LM error:", result.lm_error)
 - [Diagnostic source](../../implementations/python/spatial-econometrics/diagnostics.py)
 - [Tests](../../implementations/python/spatial-econometrics/test_spatial_econometrics.py)
 
-This is a classic-test teaching implementation, not a production estimator or a complete specification-testing suite.
+This is a classic and robust LM teaching implementation, not a production estimator or a complete specification-testing suite.
