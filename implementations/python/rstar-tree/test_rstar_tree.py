@@ -151,3 +151,46 @@ def test_delete_rejects_non_integer_ids(index):
     tree.insert((0, 0, 1, 1))
     with pytest.raises(ValueError):
         tree.delete(index)
+
+
+def test_best_first_k_nearest_matches_rectangle_distance_oracle():
+    rng = random.Random(20261117)
+    tree = RStarTree(max_entries=4)
+    records = []
+    for _ in range(360):
+        x, y = rng.uniform(-40, 40), rng.uniform(-40, 40)
+        w, h = rng.uniform(0, 6), rng.uniform(0, 6)
+        box = (x, y, x + w, y + h)
+        tree.insert(box)
+        records.append(box)
+    for _ in range(100):
+        point = (rng.uniform(-45, 45), rng.uniform(-45, 45))
+        expected = []
+        for index, box in enumerate(records):
+            dx = max(box[0] - point[0], 0.0, point[0] - box[2])
+            dy = max(box[1] - point[1], 0.0, point[1] - box[3])
+            expected.append((index, dx * dx + dy * dy))
+        expected.sort(key=lambda item: (item[1], item[0]))
+        for k in (1, 3, 17, 500):
+            assert tree.k_nearest(point, k) == expected[:k]
+
+
+def test_k_nearest_closed_rectangles_ties_and_deleted_records():
+    tree = RStarTree(max_entries=4)
+    ids = [tree.insert(box) for box in [
+        (1, 0, 2, 1), (-2, 0, -1, 1), (0, 0, 0, 0), (5, 5, 6, 6)
+    ]]
+    assert tree.k_nearest((0, 0), 3) == [(2, 0.0), (0, 1.0), (1, 1.0)]
+    assert tree.delete(ids[0])
+    assert tree.k_nearest((0, 0), 3) == [(2, 0.0), (1, 1.0), (3, 50.0)]
+
+
+@pytest.mark.parametrize("k", [0, -1, True, 1.5])
+def test_k_nearest_rejects_invalid_k(k):
+    with pytest.raises(ValueError):
+        RStarTree().k_nearest((0, 0), k)
+
+
+def test_k_nearest_rejects_non_finite_point():
+    with pytest.raises(ValueError):
+        RStarTree().k_nearest((float("nan"), 0), 1)
