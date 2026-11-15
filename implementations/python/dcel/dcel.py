@@ -112,6 +112,7 @@ class DCEL:
         self.halfedges: list[HalfEdge] = []
         self.faces: dict[Hashable, Face] = {}
         self.unbounded_cycles: list[int] = []
+        self.unbounded_face = Face(None, self.unbounded_cycles)
         self._vertex_by_point = {}
 
     def _vertex(self, p):
