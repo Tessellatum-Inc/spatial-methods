@@ -131,3 +131,66 @@ def test_spatial_lag_2sls_rejects_underidentified_and_invalid_inputs():
         spatial_lag_2sls([1., 2., float("nan"), 4.], x, w)
     with pytest.raises(ValueError):
         spatial_lag_2sls([1., 2., 3., 4.], x, np.zeros((4, 4)))
+
+
+def _row_standardised_chain(n):
+    weights = np.zeros((n, n))
+    for i in range(n - 1):
+        weights[i, i + 1] = weights[i + 1, i] = 1.0
+    return weights / weights.sum(axis=1, keepdims=True)
+
+
+def test_spatial_lag_mle_recovers_synthetic_sar_parameters():
+    from maximum_likelihood import spatial_lag_mle
+    rng = np.random.default_rng(20261115)
+    n = 70
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    beta = np.array([1.3, -0.65])
+    rho = 0.28
+    epsilon = rng.normal(scale=0.12, size=n)
+    y = np.linalg.solve(np.eye(n) - rho * w, x @ beta + epsilon)
+    fit = spatial_lag_mle(y, x, w, grid_size=161)
+    assert fit.model == "SAR"
+    assert fit.spatial_parameter == pytest.approx(rho, abs=0.14)
+    assert fit.coefficients == pytest.approx(beta, abs=0.15)
+    assert fit.sigma2_mle > 0
+    assert np.isfinite(fit.log_likelihood)
+    assert len(fit.fitted) == n
+    assert len(fit.residuals) == n
+    assert fit.rho_bounds[0] < fit.spatial_parameter < fit.rho_bounds[1]
+    assert fit.evaluations > 161
+
+
+def test_spatial_error_mle_recovers_synthetic_sem_parameters():
+    from maximum_likelihood import spatial_error_mle
+    rng = np.random.default_rng(771)
+    n = 70
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    beta = np.array([0.9, 0.75])
+    lam = 0.36
+    innovation = rng.normal(scale=0.15, size=n)
+    error = np.linalg.solve(np.eye(n) - lam * w, innovation)
+    y = x @ beta + error
+    fit = spatial_error_mle(y, x, w, grid_size=161)
+    assert fit.model == "SEM"
+    assert fit.spatial_parameter == pytest.approx(lam, abs=0.18)
+    assert fit.coefficients == pytest.approx(beta, abs=0.16)
+    assert fit.sigma2_mle > 0
+    assert np.isfinite(fit.log_likelihood)
+    assert len(fit.fitted) == n
+    assert len(fit.residuals) == n
+
+
+def test_spatial_mle_rejects_invalid_inputs_and_grid_settings():
+    from maximum_likelihood import spatial_lag_mle, spatial_error_mle
+    x = np.column_stack([np.ones(4), np.arange(4, dtype=float)])
+    with pytest.raises(ValueError, match="at least five"):
+        spatial_lag_mle([1., 2., 3., 4.], x, CHAIN)
+    with pytest.raises(ValueError, match="grid_size"):
+        spatial_error_mle([1., 2., 3., 4.], x, CHAIN, grid_size=5)
+    with pytest.raises(ValueError, match="full column rank"):
+        spatial_lag_mle([1., 2., 3., 4.], np.ones((4, 2)), CHAIN)
+    with pytest.raises(ValueError, match="finite"):
+        spatial_error_mle([1., 2., float("nan"), 4.], x, CHAIN)
