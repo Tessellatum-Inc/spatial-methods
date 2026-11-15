@@ -125,8 +125,6 @@ def spatial_impact_uncertainty(
     if not (np.all(np.isfinite(w)) and np.all(np.isfinite(mean))
             and np.all(np.isfinite(cov))):
         raise ValueError("weights, parameters and covariance must be finite")
-    if not np.allclose(w, w.T, atol=1e-10, rtol=1e-10):
-        raise ValueError("weights must be symmetric for this uncertainty routine")
     if not np.allclose(cov, cov.T, atol=1e-10, rtol=1e-10):
         raise ValueError("covariance must be symmetric")
     eigenvalues = np.linalg.eigvalsh((cov + cov.T) / 2.0)
@@ -151,7 +149,8 @@ def spatial_impact_uncertainty(
         sampled_rho = float(sample[0])
         system = identity - sampled_rho * w
         try:
-            if not np.isfinite(np.linalg.cond(system)) or np.linalg.cond(system) > condition_limit:
+            condition_number = np.linalg.cond(system)
+            if not np.isfinite(condition_number) or condition_number > condition_limit:
                 rejected += 1
                 continue
             sampled_beta = sample[1:1 + b.size]
