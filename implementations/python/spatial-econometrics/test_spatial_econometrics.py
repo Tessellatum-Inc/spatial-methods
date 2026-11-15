@@ -375,3 +375,47 @@ def test_spatial_sarar_mle_validates_search_controls():
         spatial_sarar_mle(y, x, w, coordinate_iterations=0)
     with pytest.raises(ValueError, match="tolerance"):
         spatial_sarar_mle(y, x, w, tolerance=0.0)
+
+
+def test_spatial_impact_uncertainty_zero_covariance_collapses_to_point_impacts():
+    from impacts import spatial_impact_uncertainty
+    rho, beta, gamma = 0.15, [1.5], [0.4]
+    mean = np.array([rho, beta[0], gamma[0]])
+    result, = spatial_impact_uncertainty(
+        CHAIN, rho, beta, np.zeros((3, 3)), gamma,
+        draws=200, seed=123,
+    )
+    point, = spatial_impacts(CHAIN, rho, beta, gamma)
+    assert result.accepted_draws == 200
+    assert result.rejected_draws == 0
+    assert result.direct.estimate == pytest.approx(point.direct)
+    assert result.indirect.estimate == pytest.approx(point.indirect)
+    assert result.total.estimate == pytest.approx(point.total)
+    assert result.direct.standard_error == pytest.approx(0.0, abs=1e-12)
+    assert result.direct.lower == pytest.approx(point.direct)
+    assert result.direct.upper == pytest.approx(point.direct)
+
+
+def test_spatial_impact_uncertainty_uses_joint_parameter_covariance():
+    from impacts import spatial_impact_uncertainty
+    w = _row_standardised_chain(8)
+    covariance = np.diag([0.0025, 0.01, 0.01, 0.01, 0.01])
+    result, = spatial_impact_uncertainty(
+        w, 0.2, [1.0, 0.5], covariance, [0.0, 0.2],
+        draws=1200, seed=77,
+    )
+    assert result.accepted_draws + result.rejected_draws == 1200
+    assert result.direct.standard_error > 0
+    assert result.indirect.standard_error > 0
+    assert result.total.lower < result.total.upper
+    assert result.direct.lower < result.direct.estimate < result.direct.upper
+
+
+def test_spatial_impact_uncertainty_validates_covariance_and_draw_controls():
+    from impacts import spatial_impact_uncertainty
+    with pytest.raises(ValueError, match="covariance shape"):
+        spatial_impact_uncertainty(CHAIN, 0.1, [1.0], np.eye(2), draws=100)
+    with pytest.raises(ValueError, match="positive semidefinite"):
+        spatial_impact_uncertainty(CHAIN, 0.1, [1.0], [[1.0, 2.0], [2.0, 1.0]], draws=100)
+    with pytest.raises(ValueError, match="draws"):
+        spatial_impact_uncertainty(CHAIN, 0.1, [1.0], np.eye(2), draws=10)
