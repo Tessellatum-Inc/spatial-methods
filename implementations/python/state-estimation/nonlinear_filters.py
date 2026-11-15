@@ -138,13 +138,22 @@ def ukf_step(mean, covariance, observation, transition, observation_model,
     xp = wm @ propagated
     Pp = _weighted_covariance(propagated, xp, wc) + Q
     Pp = 0.5 * (Pp + Pp.T)
-    predicted_obs = np.asarray([_state(observation_model(p), "predicted observation") for p in propagated])
+
+    # Additive process noise is part of the predicted-state distribution.
+    # Re-centre sigma points on (xp, Pp) before applying the observation
+    # function; reusing transition-only points would omit Q from S and the
+    # state/observation cross-covariance, breaking the linear Kalman limit.
+    measurement_points, _, _ = _sigma_points(xp, Pp, alpha, beta, kappa)
+    predicted_obs = np.asarray([
+        _state(observation_model(p), "predicted observation")
+        for p in measurement_points
+    ])
     m = predicted_obs.shape[1]
     if R.shape != (m, m):
         raise ValueError("R dimension does not match observation model")
     zp = wm @ predicted_obs
     dz = predicted_obs - zp
-    dx = propagated - xp
+    dx = measurement_points - xp
     S = (dz.T * wc) @ dz + R
     cross = (dx.T * wc) @ dz
     z = _state(observation, "observation")
