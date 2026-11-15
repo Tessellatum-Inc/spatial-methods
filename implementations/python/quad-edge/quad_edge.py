@@ -80,6 +80,8 @@ class QuadEdgeSubdivision:
     def make_edge(self, origin=None, destination=None):
         e0, e1, e2, e3 = Dart(), Dart(), Dart(), Dart()
         e0.rot, e1.rot, e2.rot, e3.rot = e1, e2, e3, e0
+        e0.primal = e2.primal = True
+        e1.primal = e3.primal = False
         e0.onext, e1.onext, e2.onext, e3.onext = e0, e3, e2, e1
         e0.origin, e2.origin = origin, destination
         record = QuadEdge(self._next_id, e0, e1, e2, e3)
