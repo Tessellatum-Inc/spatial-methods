@@ -58,7 +58,7 @@ A first reproducible point-data baseline is now available: [spatial cross-valida
 
 | Source entry | Provisional kind | Source page | Canonical material / implementation | Review status |
 |---|---|---:|---|---|
-| Radiation and thermal comfort: SOLWEIG, UMEP, ENVI-met, mean radiant temperature, UTCI, PET | Microclimate software / thermal comfort measures | 22 | — | Not checked — intake only |
+| Radiation and thermal comfort: SOLWEIG, UMEP, ENVI-met, mean radiant temperature, UTCI, PET | Microclimate software / thermal comfort measures | 22 | [Globe-based MRT method](../../methods/mean-radiant-temperature.md), [implementation](../../implementations/python/mean-radiant-temperature/README.md), [tests](../../implementations/python/mean-radiant-temperature/test_mean_radiant_temperature.py) and [lab](../../notebooks/mean-radiant-temperature-lab.ipynb) implement the steady-state ISO 7726 globe correction with natural/forced convection selection | Partial — globe-based MRT estimate implemented; radiative-flux/view-factor MRT, UTCI, PET and software workflow verification remain open |
 | Urban wind and CFD: RANS, LES, lattice Boltzmann for street canyons, pedestrian wind comfort | Computational fluid dynamics methods / urban wind assessment | 22 | — | Not checked — intake only |
 | Stormwater and drainage: SWMM, 1D-2D coupled urban flood models, low-impact development siting | Drainage and flood models / site-selection methods | 22 | — | Not checked — intake only |
 | Urban building energy modeling: archetype-based simulation, CityBES, shading and view-factor computation | Building energy simulation / geometric calculations | 22 | — | Not checked — intake only |
