@@ -182,9 +182,10 @@ Open `spatial_sarar_gtsls.py`.
 3. Estimate the spatial-error coefficient with the heteroskedastic two-moment KP routine. The zero-diagonal quadratic restrictions allow unknown diagonal innovation variances.
 4. Apply \(I-\hat\lambda W\) to both the response and the full endogenous regressor matrix.
 5. Re-estimate the transformed equation by 2SLS using the original H matrix.
-6. The returned HC1 sandwich is conditional on \(\hat\lambda\). It does not reproduce the paper's full joint covariance for the regression coefficients and disturbance parameter.
+6. The result retains the conditional HC1 sandwich for comparison and also reports the Kelejian–Prucha joint covariance, ordered `[beta..., rho, lambda]`. The joint calculation includes generated-residual correction vectors, heteroskedastic quadratic-moment covariance and cross-covariance with the final transformed IV score.
+7. The joint covariance is an asymptotic plug-in result under the paper's assumptions; it is not finite-sample exact, not the optional efficient-GM weighting scheme, and not spatial HAC.
 
-The implementation is restricted to the common-weights case \(M=W\). It is a three-step point estimator, not a complete inference implementation of every result in Kelejian and Prucha (2010).
+The implementation is restricted to the common-weights case \(M=W\).
 
 
 ## 14. Spatial HAC covariance for spatial-lag 2SLS
