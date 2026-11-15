@@ -150,6 +150,9 @@ jobs:
           - example: topology-preserving-simplification
             directory: implementations/python/topology-preserving-simplification
             pythonpath: ""
+          - example: dcel
+            directory: implementations/python/dcel
+            pythonpath: ""
           - example: change-point-detection
             directory: implementations/python/change-point-detection
             pythonpath: ""
