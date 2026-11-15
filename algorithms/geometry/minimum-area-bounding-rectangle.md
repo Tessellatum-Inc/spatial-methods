@@ -16,7 +16,7 @@ s=pcdot u,qquad t=pcdot v.
 
 The rectangle extents are the minimum and maximum s and t values. Its area is the product of the two side lengths. Transform the four projection-space corners back into the original coordinate system and retain the smallest-area candidate.
 
-The current teaching baseline scans every hull vertex for every hull-edge orientation. It is O(h²) after hull construction, not the optimal linear-time rotating-calipers sweep. The separate convex-diameter routine does implement an antipodal rotating-calipers sweep.
+The package now exposes two methods. The transparent baseline scans every hull vertex for every hull-edge orientation and is O(h²) after hull construction. The four-support rotating-calipers implementation maintains extrema along the edge direction and its normal; each support index advances monotonically around the convex hull, giving an O(h) sweep after hull construction. Seeded tests compare its area with the O(h²) baseline across random point clouds. The separate convex-diameter routine uses a distinct antipodal-pair calipers sweep.
 
 ## Scope and cautions
 
