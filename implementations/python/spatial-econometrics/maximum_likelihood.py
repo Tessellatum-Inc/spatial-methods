@@ -195,7 +195,6 @@ def spatial_durbin_mle(y: Sequence[float], x: Sequence[Sequence[float]],
     wx = w @ design
     retained = []
     retained_indices = []
-    base_rank = np.linalg.matrix_rank(design)
     current = design.copy()
     for j in range(k):
         candidate = np.column_stack([current, wx[:, j]])
