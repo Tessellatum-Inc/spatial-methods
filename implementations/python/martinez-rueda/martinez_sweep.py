@@ -1,6 +1,6 @@
 """Sweep-line event and segment-splitting core for polygon overlay."""
 from dataclasses import dataclass
-from math import isfinite
+from math import isfinite, atan2, pi
 
 @dataclass(frozen=True)
 class Segment:
@@ -136,11 +136,16 @@ def classify_boundary_fragments(polygons, *, operation='intersection', epsilon=1
     for f in result['split_segments']:
         midpoint=((f.a[0]+f.b[0])/2,(f.a[1]+f.b[1])/2)
         inside=_inside(midpoint,rings[1-f.source])
-        keep=(inside if operation=='intersection' else
-              not inside if operation in {'union','symmetric_difference'} else
-              (not inside if f.source==0 else inside))
+        if operation=='intersection':
+            keep=inside
+        elif operation=='union':
+            keep=not inside
+        elif operation=='difference':
+            keep=(not inside if f.source==0 else inside)
+        else:
+            keep=True
         if keep:
-            reverse=(operation=='difference' and f.source==1)
+            reverse=(operation=='difference' and f.source==1) or (operation=='symmetric_difference' and inside)
             a,b=(f.b,f.a) if reverse else (f.a,f.b)
             t0,t1=(f.t1,f.t0) if reverse else (f.t0,f.t1)
             selected.append(SplitSegment(f.source,f.ring,f.index,a,b,t0,t1))
@@ -150,3 +155,44 @@ def classify_boundary_fragments(polygons, *, operation='intersection', epsilon=1
 def fragment_area_contribution(fragments):
     """Signed shoelace contribution; meaningful when selected fragments close."""
     return 0.5*sum(f.a[0]*f.b[1]-f.b[0]*f.a[1] for f in fragments)
+
+def stitch_boundary_fragments(fragments, *, epsilon=1e-10):
+    """Stitch directed fragments into closed rings using a planar face walk.
+    Raises rather than returning open or degenerate chains.
+    """
+    if not isfinite(epsilon) or epsilon<=0: raise ValueError('epsilon must be finite and positive')
+    edges=list(fragments)
+    if not edges: return tuple()
+    def key(p): return (round(p[0]/epsilon),round(p[1]/epsilon))
+    outgoing={}
+    for i,e in enumerate(edges): outgoing.setdefault(key(e.a),[]).append(i)
+    used=set(); rings=[]
+    for first in range(len(edges)):
+        if first in used: continue
+        ring=[edges[first].a]; current=first; start_key=key(edges[first].a)
+        for _ in range(len(edges)+1):
+            if current in used: raise ValueError('fragment graph enters an already-used edge')
+            used.add(current); edge=edges[current]; ring.append(edge.b)
+            end_key=key(edge.b)
+            if end_key==start_key:
+                ring.pop(); break
+            candidates=[i for i in outgoing.get(end_key,()) if i not in used]
+            if not candidates: raise ValueError('selected boundary fragments contain an open chain')
+            reverse_angle=atan2(edge.a[1]-edge.b[1],edge.a[0]-edge.b[0])
+            def turn(i):
+                nxt=edges[i]; angle=atan2(nxt.b[1]-nxt.a[1],nxt.b[0]-nxt.a[0])
+                return ((reverse_angle-angle)%(2*pi),i)
+            current=min(candidates,key=turn)
+        else: raise ValueError('boundary traversal exceeded fragment count')
+        if len(ring)<3 or abs(_signed_area(ring))<=epsilon: raise ValueError('stitched boundary is degenerate')
+        rings.append(tuple(ring))
+    if len(used)!=len(edges): raise ValueError('not all selected fragments were stitched')
+    return tuple(rings)
+
+def boolean_overlay_rings(polygons, *, operation='intersection', epsilon=1e-10):
+    """Return closed rings for a two-input, one-shell-per-input Boolean."""
+    classified=classify_boundary_fragments(polygons,operation=operation,epsilon=epsilon)
+    rings=stitch_boundary_fragments(classified['selected_fragments'],epsilon=epsilon)
+    return {'operation':operation,'rings':rings,
+            'area':sum(_signed_area(ring) for ring in rings),
+            'intersection_events':classified['intersection_events']}
