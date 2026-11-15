@@ -302,3 +302,8 @@ The potential-field package now includes a bounded 2D single-thin-dike Werner de
 
 
 14 November 2026 batch: added threshold-integrated CRPS reliability-resolution-uncertainty decomposition and classical hysteresis segmentation for methane enhancement fields. Both have tests and notebook material. CRPS uses finite trapezoidal quadrature rather than the exact Hersbach ensemble-bin-width estimator; methane hysteresis is a classical segmentation baseline, not a deep neural model.
+
+
+## 15 November 2026 — globe-based mean radiant temperature
+
+A bounded ISO 7726-style steady-state globe-thermometer estimator is now implemented with natural/forced convection selection, array broadcasting, tests, package contract, method derivation and an executable lab. This covers the globe-measurement correction only; directional radiative-flux/view-factor MRT, UTCI, PET, SOLWEIG/UMEP/ENVI-met workflows and urban-canyon radiation remain open.
