@@ -171,3 +171,13 @@ These notes record bounded checks against publisher or institutional bibliograph
 - **Implementation:** weighted planar point-coordinate methods and an executable lab are added. The ellipse orientation is explicitly counterclockwise from +x; the scale parameter makes the bivariate-normal coverage adjustment visible rather than implicit.
 - **Limitations:** no line/polygon centroid preprocessing, geographic distances, 3D ellipsoids, case grouping or inferential tests.
 - **Rights:** equations are independently typeset and paraphrased; no proprietary code or figures are reproduced.
+
+
+## Section 2 — Area-level inequality and two-group segregation measures
+
+**Source entry:** “Spatial Gini, Theil, spatial entropy, segregation indices (dissimilarity, isolation)” (source page 4).
+
+- **Identity and bibliography:** Duncan and Duncan (1955), “A Methodological Analysis of Segregation Indexes,” *American Sociological Review*, 20(2), 210–217, DOI 10.2307/2088328; Massey and Denton (1988), “The Dimensions of Residential Segregation,” *Social Forces*, 67(2), 281–315, DOI 10.1093/sf/67.2.281; Shannon (1948), “A Mathematical Theory of Communication,” *Bell System Technical Journal*, 27(3), 379–423, DOI 10.1002/j.1538-7305.1948.tb01338.x; Theil (1967), *Economics and Information Theory*.
+- **Technical claims:** the package implements population-weighted Gini and Theil T/L for area values, Shannon entropy of population shares, two-group dissimilarity, and group-A isolation/interaction exposure.
+- **Scope:** the Gini and entropy functions are area-level summaries and do not incorporate distances or adjacency. Dissimilarity measures evenness; isolation/interaction measure exposure. Distance-weighted spatial Gini, multi-group decomposition, clustering, concentration and centralization remain open.
+- **Rights:** formulas are independently typeset and paraphrased; no source code or figures are reproduced.
