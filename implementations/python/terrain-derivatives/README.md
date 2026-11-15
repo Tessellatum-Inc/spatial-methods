@@ -58,3 +58,8 @@ The hypsometric_curve function summarizes the elevation distribution of a basin 
 ## Cut-and-fill volume
 
 The cut_fill_volume function compares aligned existing and design elevation surfaces. Existing terrain above design is cut; existing terrain below design is fill. It returns cellwise depth rasters and total volumes using the supplied rectangular cell dimensions. Both surfaces must share a vertical unit compatible with horizontal cell units for the resulting volume to be meaningful. Non-finite cells and an optional Boolean valid_mask are excluded. This is a direct raster difference calculation: it does not align grids, transform coordinate systems, account for compaction/bulking, or model construction tolerances.
+
+
+## Multidirectional hillshade
+
+The multidirectional_hillshade function averages equally weighted local hillshade values from multiple sun azimuths at a shared altitude. Its default four azimuths are 225°, 270°, 315° and 360°. This reduces the directional bias of a single illumination direction but remains a local reflectance-style visualization: it does not calculate cast shadows, diffuse sky light, atmospheric effects or solar irradiance. Missing derivative cells remain NoData; flat cells use the single-direction flat-surface illumination in each component.
