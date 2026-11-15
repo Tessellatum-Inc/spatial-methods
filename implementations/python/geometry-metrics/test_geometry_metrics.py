@@ -172,3 +172,32 @@ def test_continuous_frechet_singleton_and_validation():
         continuous_frechet_decision([(0,0)],[(1,0)],-1)
     with pytest.raises(ValueError):
         continuous_frechet_distance([(0,0),(1,0)],[(0,0),(1,0)],tolerance=0)
+
+
+def test_largest_empty_circle_square_sites():
+    from geometry_metrics import largest_empty_circle
+    x,y,radius,_=largest_empty_circle(
+        [(0,0),(10,0),(10,10),(0,10)],precision=0.01
+    )
+    assert (x,y,radius)==pytest.approx((5,5,math.sqrt(50)),abs=0.02)
+
+
+def test_largest_empty_circle_is_inside_hull_and_clearance_is_nearest_site():
+    from geometry_metrics import largest_empty_circle, convex_hull
+    sites=[(0,0),(12,0),(10,8),(2,10),(5,4)]
+    x,y,radius,_=largest_empty_circle(sites,precision=0.02)
+    hull=convex_hull(sites)
+    crosses=[(b[0]-a[0])*(y-a[1])-(b[1]-a[1])*(x-a[0])
+             for a,b in zip(hull,hull[1:]+hull[:1])]
+    assert all(v>=-1e-8 for v in crosses) or all(v<=1e-8 for v in crosses)
+    assert radius==pytest.approx(min(math.dist((x,y),p) for p in sites))
+
+
+def test_largest_empty_circle_rejects_degenerate_sites_and_invalid_options():
+    from geometry_metrics import largest_empty_circle
+    with pytest.raises(ValueError):
+        largest_empty_circle([(0,0),(1,0),(2,0)],precision=0.1)
+    with pytest.raises(ValueError):
+        largest_empty_circle([(0,0),(1,0),(0,1)],precision=0)
+    with pytest.raises(ValueError):
+        largest_empty_circle([(0,0),(1,0),(0,1)],max_cells=0)
