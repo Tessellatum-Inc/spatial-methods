@@ -25,10 +25,10 @@ def test_splice_merges_origin_rings_and_is_involutive():
 def test_connect_builds_diagonal_between_face_boundaries():
     sub = QuadEdgeSubdivision()
     a = sub.make_edge("a", "b")
-    b = sub.make_edge("b", "c")
+    b = sub.make_edge("c", "d")
     diagonal = sub.connect(a, b)
     assert diagonal.origin == "b"
-    assert diagonal.destination == "b"
+    assert diagonal.destination == "c"
     assert len(sub.edges) == 3
     assert sub.validate()
 
