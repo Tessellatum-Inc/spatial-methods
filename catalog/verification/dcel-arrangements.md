@@ -6,6 +6,7 @@
 - Directed half-edge creation and reciprocal twin pairing.
 - Shared boundary pairing for adjacent faces represented with opposite edge direction.
 - Input face boundary cycles with next/previous links.\n- Exact-rational orientation and segment predicates for rejecting zero-area and self-intersecting input rings.
+- Pairwise input-edge validation rejects un-noded crossings, T-junctions and partial collinear overlaps.
 - Cross-ring noding guard rejects proper crossings, T-junctions and partial collinear overlaps; already-shared complete edges are deduplicated.
 - Angular outgoing-edge order and exterior twin-cycle linkage.
 - Explicit invariant checker for twin, next and previous reciprocity.
@@ -14,7 +15,7 @@
 
 Single polygon with exterior twin cycle; two adjacent faces sharing a boundary;
 two disconnected components; malformed/open rings; duplicate same-direction
-boundaries; and non-finite coordinates.
+boundaries; non-finite coordinates, un-noded crossings, T-junctions and partial collinear overlaps.
 
 ## Scope boundary
 
