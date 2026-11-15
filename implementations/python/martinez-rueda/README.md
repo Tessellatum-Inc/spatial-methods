@@ -7,3 +7,7 @@ Input supports one shell plus zero or more disjoint, non-nested holes per source
 **Important distinction:** this is an augmented interval broad phase, not the full Martinez–Rueda neighbour-ordered status with dynamically scheduled intersection events. Dense or heavily overlapping data can still require quadratic candidate checks. Inputs do not support multiple independent shells per source. Positive-length collinear overlaps and touching/near-coincident boundary configurations are not fully supported. Results are not grouped into explicit Polygon/MultiPolygon objects with shell-to-hole ownership. Numerical predicates use an absolute epsilon, not adaptive exact arithmetic.
 
 Run `python -m pytest -q` in this directory.
+
+## Polygon component assembly
+
+`boolean_overlay_rings` now returns both the flat oriented `rings` collection and a `polygons` collection. Each polygon entry contains one CCW `shell` and zero or more directly assigned CW `holes`. A positive-area island inside a hole is emitted as a separate polygon component. Hole ownership is assigned to the smallest-area shell that contains a hole vertex. This is an explicit shell/hole grouping layer, not a general-purpose geometry validity or repair engine.
