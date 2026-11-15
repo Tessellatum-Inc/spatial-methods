@@ -136,7 +136,9 @@ class SlabPointLocator:
         if not isfinite(x) or not isfinite(y):
             raise ValueError("Query coordinates must be finite")
         point = (float(x), float(y))
-        if not self.x_events or x < self.x_events[0] or x > self.x_events[-1]:
+        if (not self.x_events
+                or x < self.x_events[0] - self.epsilon
+                or x > self.x_events[-1] + self.epsilon):
             return None
         event_index = bisect_left(self.x_events, x)
         near_event = (
