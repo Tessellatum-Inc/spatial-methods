@@ -102,3 +102,56 @@ def test_rejects_invalid_controls_and_adjacency():
             {"s": [("t", (1, 2))]}, "s", "t",
             n_objectives=2, max_labels_per_node=0
         )
+
+
+def _enumerate_simple_path_costs(graph, source, target, dimensions):
+    found = []
+
+    def visit(node, path, costs):
+        if node == target:
+            found.append((tuple(costs), tuple(path)))
+            return
+        for neighbour, edge_costs in graph.get(node, []):
+            if neighbour not in path:
+                visit(neighbour, path + [neighbour],
+                      tuple(a + b for a, b in zip(costs, edge_costs)))
+
+    visit(source, [source], (0.0,) * dimensions)
+    frontier = []
+    for costs, path in found:
+        if any(all(a <= b for a, b in zip(other, costs))
+               for other, _ in found if other != costs):
+            continue
+        if any(other == costs for other, _ in frontier):
+            continue
+        frontier.append((costs, path))
+    return {costs for costs, _ in frontier}
+
+
+def test_pareto_frontier_matches_exhaustive_simple_path_oracle_on_seeded_graphs():
+    import random
+
+    rng = random.Random(271828)
+    for _ in range(120):
+        count = rng.randint(2, 7)
+        graph = {node: [] for node in range(count)}
+        for u in range(count):
+            for v in range(count):
+                if u != v and rng.random() < 0.24:
+                    graph[u].append((v, (rng.randint(0, 8), rng.randint(0, 8))))
+        expected = _enumerate_simple_path_costs(graph, 0, count - 1, 2)
+        actual = pareto_shortest_paths(graph, 0, count - 1, n_objectives=2)
+        assert {item["costs"] for item in actual} == expected
+        for item in actual:
+            assert item["path"][0] == 0 and item["path"][-1] == count - 1
+            assert len(item["path"]) == len(set(item["path"]))
+
+
+def test_pareto_paths_reject_nonfinite_accumulated_costs():
+    graph = {
+        "s": [("a", (1e308, 1e308))],
+        "a": [("t", (1e308, 1e308))],
+        "t": [],
+    }
+    with pytest.raises(ValueError, match="overflowed"):
+        pareto_shortest_paths(graph, "s", "t", n_objectives=2)
