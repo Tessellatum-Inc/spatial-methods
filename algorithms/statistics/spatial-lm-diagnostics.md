@@ -65,6 +65,7 @@ The tests do not estimate a spatial lag or error model. In particular, OLS is ge
 
 The implementation:
 - estimates the null OLS coefficients by least squares;
+- calculates both classic and robust Bera-Yoon LM-lag/LM-error statistics;
 - uses the maximum-likelihood residual variance (e'e/n) in the score formulas;
 - accepts finite non-negative weights as supplied and does not standardise them;
 - reports one-degree-of-freedom asymptotic chi-square upper-tail p-values;
