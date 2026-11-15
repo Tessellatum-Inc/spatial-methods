@@ -88,6 +88,33 @@ The observed curve and simulations are treated symmetrically in the centring and
 
 The smallest possible Monte Carlo p-value is 1/(B+1). Use enough simulations for the resolution required by the question. A small number of simulations is useful for learning, not for a high-resolution inferential result.
 
+
+
+## Direct binned pair-correlation estimate
+
+A direct annular estimator avoids differentiating a noisy, discretely sampled
+K curve. For annulus B_k=(r_k,r_{k+1}], estimate its K increment from the
+weighted ordered pairs in that distance band, then divide by the annulus area:
+
+[
+widehat g_k=
+rac{2A}{n(n-1),pi(r_{k+1}^2-r_k^2)}
+sum_{i<j}
+w_{ij},mathbf 1(d_{ij}in B_k).
+]
+
+The factor two converts unordered pairs to ordered pairs. With translation
+correction, w_ij is A divided by the overlap area of the rectangular window
+and its translate by the pair displacement; without correction, w_ij=1.
+The implementation returns bin midpoints, g estimates, unweighted unordered
+pair counts and the original bin edges.
+
+The direct binned estimator is now available alongside the finite-difference
+K-derivative helper in the point-process package. Bin width controls the
+bias-variance tradeoff: narrow bins retain local scale detail but can be
+unstable with few pairs. This is not a kernel-smoothed estimator and does not
+provide isotropic/border correction or simulation envelopes for g(r).
+
 ## Complexity and limits
 
 The pair-distance calculation stores O(n²) distances. The simulation extension repeats the calculation B times, so its work is approximately O(B n²) plus the cost of sorting and evaluating the requested radii. It is intended for small planar point patterns.
