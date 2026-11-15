@@ -34,6 +34,9 @@ def hausdorff_distance(a, b) -> float:
 def discrete_frechet_distance(curve_a, curve_b) -> float:
     """Discrete Fréchet distance between ordered vertex sequences."""
     a, b = _points(curve_a, minimum=1), _points(curve_b, minimum=1)
+    # The distance is symmetric; keep the shorter sequence in the DP columns.
+    if len(b) > len(a):
+        a, b = b, a
     previous = [float("inf")] * len(b)
     for i, pa in enumerate(a):
         current = [float("inf")] * len(b)

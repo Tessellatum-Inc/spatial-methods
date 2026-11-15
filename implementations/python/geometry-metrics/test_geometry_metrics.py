@@ -384,3 +384,14 @@ def test_continuous_frechet_rolling_rows_are_symmetric_for_unequal_curve_sizes()
         if distance > 2e-6:
             assert not continuous_frechet_decision(a, b, distance - 2e-6)
             assert not continuous_frechet_decision(b, a, distance - 2e-6)
+
+
+def test_discrete_frechet_is_symmetric_with_unequal_sequence_lengths():
+    import random
+    rng = random.Random(20261121)
+    for size_a, size_b in ((2, 40), (5, 31), (29, 3), (45, 8)):
+        a = [(rng.uniform(-5, 5), rng.uniform(-5, 5)) for _ in range(size_a)]
+        b = [(rng.uniform(-5, 5), rng.uniform(-5, 5)) for _ in range(size_b)]
+        assert discrete_frechet_distance(a, b) == pytest.approx(
+            discrete_frechet_distance(b, a), abs=1e-12
+        )
