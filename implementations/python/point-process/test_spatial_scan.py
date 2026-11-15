@@ -103,8 +103,8 @@ def test_besag_newell_identifies_compact_cluster_and_includes_distance_ties():
 
 def test_besag_newell_uses_exact_hypergeometric_tail():
     from spatial_scan import _hypergeometric_upper_tail
-    # Drawing 5 people from 20, of whom 10 are cases: P(X >= 5) = 1/252.
-    assert _hypergeometric_upper_tail(20, 5, 10, 5) == pytest.approx(1 / 252)
+    # Drawing 10 cases among 20 people, with 5 people in the zone: P(X >= 5) = C(15,5)/C(20,10).
+    assert _hypergeometric_upper_tail(20, 5, 10, 5) == pytest.approx(3003 / 184756)
 
 
 def test_besag_newell_global_monte_carlo_is_reproducible():
