@@ -142,7 +142,7 @@ def test_alpha_shape_matches_independent_circumradius_filter():
     reference = build_tessellations(points).delaunay
     for simplex in reference.simplices:
         a, b, c = points[simplex]
-        twice_area = abs(np.cross(b-a, c-a))
+        twice_area = abs((b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0]))
         radius = (np.linalg.norm(b-c)*np.linalg.norm(a-c)
                   * np.linalg.norm(a-b)/(2*twice_area))
         if radius <= threshold:
