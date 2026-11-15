@@ -1008,3 +1008,59 @@ def test_spatial_sarar_gtsls_rejects_invalid_or_underidentified_inputs():
         bad = y.copy()
         bad[0] = np.nan
         spatial_sarar_gtsls(bad, x, w)
+
+
+def test_spatial_lag_2sls_hac_matches_hand_computed_conley_sandwich():
+    from spatial_2sls_hac import spatial_lag_2sls_hac
+    rng = np.random.default_rng(6127)
+    n = 80
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    beta = np.array([0.8, -0.45])
+    rho = 0.24
+    innovation = rng.normal(size=n) * (0.12 + 0.08 * np.abs(x[:, 1]))
+    y = np.linalg.solve(np.eye(n) - rho * w, x @ beta + innovation)
+    coordinates = np.column_stack([np.arange(n, dtype=float) * 1000.0,
+                                   np.zeros(n)])
+    bandwidth = 2500.0
+    fit = spatial_lag_2sls_hac(y, x, w, coordinates, bandwidth=bandwidth,
+                               instrument_orders=2)
+    instruments = np.column_stack([x, w @ x, w @ (w @ x)])
+    # Reproduce stable independent-column selection used by the estimator.
+    from spatial_2sls_hac import _independent_columns
+    h = _independent_columns(instruments)
+    regressors = np.column_stack([w @ y, x])
+    projected = h @ np.linalg.solve(h.T @ h, h.T @ regressors)
+    cross = projected.T @ regressors
+    residuals = y - regressors @ np.asarray(fit.coefficients)
+    distances = np.abs(np.arange(n)[:, None] - np.arange(n)[None, :]) * 1000.0
+    scaled = distances / bandwidth
+    kernel = np.where(scaled < 1.0, (1.0 - scaled) ** 4 * (4.0 * scaled + 1.0), 0.0)
+    scores = projected * residuals[:, None]
+    bread = np.linalg.inv(cross)
+    expected = bread @ (scores.T @ kernel @ scores) @ bread.T
+    expected *= n / (n - regressors.shape[1])
+    np.testing.assert_allclose(fit.covariance, expected, rtol=1e-9, atol=1e-11)
+    assert fit.rho == pytest.approx(rho, abs=0.18)
+    assert len(fit.standard_errors) == x.shape[1] + 1
+    assert fit.nonzero_off_diagonal_pairs > 0
+    assert fit.instruments_used >= x.shape[1] + 1
+
+
+def test_spatial_lag_2sls_hac_rejects_invalid_geometry_and_identification():
+    from spatial_2sls_hac import spatial_lag_2sls_hac
+    n = 12
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), np.arange(n, dtype=float)])
+    y = np.sin(np.arange(n, dtype=float))
+    coords = np.column_stack([np.arange(n, dtype=float), np.zeros(n)])
+    with pytest.raises(ValueError, match="bandwidth"):
+        spatial_lag_2sls_hac(y, x, w, coords, bandwidth=0)
+    with pytest.raises(ValueError, match="coordinates"):
+        spatial_lag_2sls_hac(y, x, w, np.ones((n, 3)), bandwidth=2)
+    with pytest.raises(ValueError, match="instrument_orders"):
+        spatial_lag_2sls_hac(y, x, w, coords, bandwidth=2, instrument_orders=0)
+    with pytest.raises(ValueError, match="finite"):
+        bad = coords.copy()
+        bad[0, 0] = np.nan
+        spatial_lag_2sls_hac(y, x, w, bad, bandwidth=2)
