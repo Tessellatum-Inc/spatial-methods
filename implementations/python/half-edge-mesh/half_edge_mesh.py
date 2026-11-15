@@ -150,17 +150,15 @@ class HalfEdgeMesh:
             if h is not None and self.halfedges[h].origin != vi:
                 raise ValueError(f"vertex {vi} outgoing-edge reference is invalid")
 
-        # The link of a manifold vertex is one connected path (boundary) or
-        # one connected cycle (interior). Edge-incidence checks alone miss
-        # bow-tie vertices whose incident triangle fans only touch at a point.
-        for vi in range(self.vertex_count):
-            link = {}
-            for tri in self.faces:
-                if vi in tri:
-                    others = [v for v in tri if v != vi]
-                    a, b = others
-                    link.setdefault(a, set()).add(b)
-                    link.setdefault(b, set()).add(a)
+        # Build each vertex link in one pass over the faces. The link of a
+        # manifold vertex is one connected path (boundary) or cycle (interior).
+        links = [{} for _ in range(self.vertex_count)]
+        for tri in self.faces:
+            for i, vi in enumerate(tri):
+                a, b = tri[(i + 1) % 3], tri[(i + 2) % 3]
+                links[vi].setdefault(a, set()).add(b)
+                links[vi].setdefault(b, set()).add(a)
+        for vi, link in enumerate(links):
             if not link:  # isolated vertex
                 continue
             degrees = [len(neighbours) for neighbours in link.values()]
