@@ -36,6 +36,7 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Remote sensing
 
+- [Otsu thresholding](remote-sensing/otsu-thresholding.md) — select a global two-class intensity threshold by maximising between-class variance.
 - [Normalised Difference Vegetation Index (NDVI)](remote-sensing/ndvi.md) — calculate a red/NIR spectral contrast while preserving invalid pixels and preprocessing caveats.
 
 ## Raster operations
