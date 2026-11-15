@@ -26,7 +26,7 @@ For finite graphs with nonnegative additive edge costs, a Pareto-optimal route c
 
 ## Implementation and tests
 
-A tested Python baseline is available in the [shortest-path package](../../implementations/python/shortest-paths/README.md), with the [Pareto label-setting module](../../implementations/python/shortest-paths/pareto_paths.py) and `test_pareto_paths.py`. The [source-verification note](../../catalog/verification/multi-criteria-shortest-paths.md) records the identity, technical scope and limitations.
+A tested Python baseline is available in the [shortest-path package](../../implementations/python/shortest-paths/README.md), with the [Pareto label-setting module](../../implementations/python/shortest-paths/pareto_paths.py) and `test_pareto_paths.py`. The [source-verification note](../../catalog/verification/multi-criteria-shortest-paths.md) records the identity, technical scope and limitations. Explore the [interactive Pareto routing lab](../../notebooks/pareto-multi-criteria-routing-lab.ipynb) to inspect trade-offs and apply preferences only after the nondominated frontier has been computed.
 
 ## Reference
 
