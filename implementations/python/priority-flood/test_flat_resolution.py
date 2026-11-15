@@ -6,10 +6,12 @@ NEIGHBOURS = ((-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1))
 
 
 def test_flat_plateau_routes_to_lower_outlet():
-    dem = np.array([[9,9,9,9,9],[9,5,5,5,9],[9,5,5,5,9],
-                    [9,5,5,4,3],[9,9,9,3,2]], dtype=float)
+    dem = np.array([[9,9,9,9,9,9,9],[9,9,9,9,9,9,9],
+                    [9,5,5,5,5,5,3],[9,9,9,9,9,9,9],
+                    [9,9,9,9,9,9,9]], dtype=float)
     resolved = resolve_flats(dem)
-    for r,c in ((1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2)):
+    assert resolved[2,1] > resolved[2,2] > resolved[2,5]
+    for r,c in ((2,1),(2,2),(2,3),(2,4),(2,5)):
         assert any(0 <= r+dr < 5 and 0 <= c+dc < 5
                    and resolved[r+dr,c+dc] < resolved[r,c]
                    for dr,dc in NEIGHBOURS)
