@@ -62,7 +62,7 @@ The [planar Gaussian KDE lesson](../../algorithms/statistics/point-pattern-kde.m
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Empirical Bayes rate smoothing, head-banging, median polish | Smoothing / exploratory procedures | 4 | Partial — Marshall's global and local moment-based Poisson rate shrinkage implemented; head-banging and median polish remain intake only |
+| Empirical Bayes rate smoothing, head-banging, median polish | Smoothing / exploratory procedures | 4 | Partial — Marshall's global/local Poisson moment shrinkage and weighted head-banging are implemented; median polish remains intake only |
 | Gaussian, Laplacian, median, bilateral and non-local means filters, anisotropic diffusion, total-variation denoising, guided filters | Image and spatial filtering methods | 4 | Not checked — intake only |
 | Spatial outlier tests: Z-value, scatterplot approach, variogram cloud, isolation forest, spatial LOF, geographically weighted outliers | Outlier diagnostics / anomaly-detection methods | 4 | Not checked — intake only |
 
