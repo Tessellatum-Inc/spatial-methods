@@ -508,3 +508,89 @@ def largest_empty_circle(points, *, precision=1.0, max_cells=1_000_000):
                     heappush(heap, child)
 
     return (best_x, best_y, best_radius, examined)
+
+
+def minimum_area_bounding_rectangle_calipers(points):
+    """Return a minimum-area oriented rectangle using four rotating supports.
+
+    The convex hull costs O(n log n); after the hull is built, four support
+    indices advance monotonically around it, giving an O(h) sweep. The result
+    has the same keys as minimum_area_bounding_rectangle.
+    """
+    hull = convex_hull(points)
+    n = len(hull)
+    if n == 0:
+        return None
+    if n == 1:
+        point = hull[0]
+        return {"corners": (point, point, point, point),
+                "area": 0.0, "angle_radians": 0.0}
+    if n == 2:
+        a, b = hull
+        return {"corners": (a, b, b, a), "area": 0.0,
+                "angle_radians": atan2(b[1]-a[1], b[0]-a[0])}
+
+    def dot(point, direction):
+        return point[0]*direction[0] + point[1]*direction[1]
+
+    def initial_support(direction, maximize):
+        values = [dot(point, direction) for point in hull]
+        return (max if maximize else min)(range(n), key=values.__getitem__)
+
+    def advance(index, direction, maximize):
+        steps = 0
+        while steps < n:
+            following = (index + 1) % n
+            current_value = dot(hull[index], direction)
+            following_value = dot(hull[following], direction)
+            improves = (
+                following_value > current_value + 1e-12
+                if maximize else following_value < current_value - 1e-12
+            )
+            if not improves:
+                break
+            index = following
+            steps += 1
+        return index
+
+    first_dx = hull[1][0] - hull[0][0]
+    first_dy = hull[1][1] - hull[0][1]
+    first_length = hypot(first_dx, first_dy)
+    first_u = (first_dx/first_length, first_dy/first_length)
+    first_v = (-first_u[1], first_u[0])
+    max_u = initial_support(first_u, True)
+    min_u = initial_support(first_u, False)
+    max_v = initial_support(first_v, True)
+    min_v = initial_support(first_v, False)
+
+    best = None
+    for i in range(n):
+        a, b = hull[i], hull[(i+1) % n]
+        dx, dy = b[0]-a[0], b[1]-a[1]
+        length = hypot(dx, dy)
+        ux, uy = dx/length, dy/length
+        u = (ux, uy)
+        v = (-uy, ux)
+
+        max_u = advance(max_u, u, True)
+        min_u = advance(min_u, u, False)
+        max_v = advance(max_v, v, True)
+        min_v = advance(min_v, v, False)
+
+        s0, s1 = dot(hull[min_u], u), dot(hull[max_u], u)
+        t0, t1 = dot(hull[min_v], v), dot(hull[max_v], v)
+        area = max(0.0, (s1-s0)*(t1-t0))
+        corners = (
+            (s0*ux+t0*v[0], s0*uy+t0*v[1]),
+            (s1*ux+t0*v[0], s1*uy+t0*v[1]),
+            (s1*ux+t1*v[0], s1*uy+t1*v[1]),
+            (s0*ux+t1*v[0], s0*uy+t1*v[1]),
+        )
+        candidate = {
+            "corners": corners,
+            "area": area,
+            "angle_radians": atan2(uy, ux),
+        }
+        if best is None or area < best["area"]:
+            best = candidate
+    return best
