@@ -94,3 +94,59 @@ def smallest_enclosing_circle(points, *, seed: int = 0):
             return circle
         return welzl(n - 1, boundary + [p])
     return welzl(len(pts), [])
+
+
+def convex_hull(points):
+    """Return the strict counter-clockwise monotone-chain hull."""
+    pts = sorted(set(_points(points)))
+    if len(pts) <= 1:
+        return pts
+    def cross(o, a, b):
+        return (a[0]-o[0])*(b[1]-o[1]) - (a[1]-o[1])*(b[0]-o[0])
+    lower = []
+    for point in pts:
+        while len(lower) >= 2 and cross(lower[-2], lower[-1], point) <= 0:
+            lower.pop()
+        lower.append(point)
+    upper = []
+    for point in reversed(pts):
+        while len(upper) >= 2 and cross(upper[-2], upper[-1], point) <= 0:
+            upper.pop()
+        upper.append(point)
+    return lower[:-1] + upper[:-1]
+
+
+def convex_polygon_diameter(points):
+    """Return (endpoint_a, endpoint_b, distance) using rotating calipers.
+
+    The convex hull is built internally. Total time is O(n log n) for hull
+    construction plus O(h) for the antipodal-pair sweep.
+    """
+    hull = convex_hull(points)
+    n = len(hull)
+    if n == 0:
+        return None
+    if n == 1:
+        return (hull[0], hull[0], 0.0)
+    if n == 2:
+        return (hull[0], hull[1], _distance(hull[0], hull[1]))
+    def area(i, j):
+        a, b, c = hull[i], hull[(i+1) % n], hull[j]
+        return abs((b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0]))
+    best = (hull[0], hull[1], _distance(hull[0], hull[1]))
+    j = 1
+    for i in range(n):
+        ni = (i+1) % n
+        while area(i, (j+1) % n) > area(i, j) + 1e-14:
+            j = (j+1) % n
+        for a, b in ((hull[i], hull[j]), (hull[ni], hull[j])):
+            d = _distance(a, b)
+            if d > best[2]:
+                best = (a, b, d)
+        nj = (j+1) % n
+        if abs(area(i, nj)-area(i, j)) <= 1e-14:
+            for a, b in ((hull[i], hull[nj]), (hull[ni], hull[nj])):
+                d = _distance(a, b)
+                if d > best[2]:
+                    best = (a, b, d)
+    return best
