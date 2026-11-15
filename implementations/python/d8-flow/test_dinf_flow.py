@@ -62,7 +62,7 @@ def test_dinf_sinks_flats_and_invalid_cells_have_no_outflow():
     dem = np.array([[3.0, 3.0, 3.0], [3.0, 1.0, 3.0], [3.0, 3.0, 3.0]])
     weights = dinf_flow_weights(dem)
     assert np.all(weights[1, 1] == 0.0)
-    assert np.all(weights[0, 0] == 0.0)
+    assert weights[0, 0, 1] == pytest.approx(1.0)  # the corner drains southeast into the pit
     nodata = np.array([[5.0, -9999.0, 4.0]])
     masked = dinf_flow_weights(nodata, nodata=-9999)
     assert np.all(masked[0, 1] == 0.0)
@@ -72,7 +72,7 @@ def test_dinf_uses_available_downhill_edge_next_to_nodata():
     dem = np.array([[4.0, 3.0, np.nan], [5.0, 2.0, np.nan], [6.0, 1.0, np.nan]])
     weights = dinf_flow_weights(dem)
     assert weights[1, 1].sum() == pytest.approx(1.0)
-    assert weights[1, 1, 0] == pytest.approx(1.0)
+    assert weights[1, 1, 2] == pytest.approx(1.0)  # south is the only lower valid neighbour
 
 
 def test_dinf_rejects_invalid_cell_spacing_and_masks():
