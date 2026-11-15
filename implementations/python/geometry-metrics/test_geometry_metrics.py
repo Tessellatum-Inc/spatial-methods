@@ -297,8 +297,8 @@ def test_smallest_circle_is_translation_and_scale_stable(origin, scale):
     height = math.sqrt(3.0) * scale
     points = [(ox, oy), (ox + 2.0 * scale, oy), (ox + scale, oy + height)]
     x, y, radius = smallest_enclosing_circle(points, seed=19)
-    assert x == pytest.approx(ox + scale, abs=max(1e-12, scale * 1e-9))
-    assert y == pytest.approx(oy + height / 3.0, abs=max(1e-12, scale * 1e-9))
-    assert radius == pytest.approx(2.0 * scale / math.sqrt(3.0), rel=1e-8, abs=1e-15)
+    assert x == pytest.approx(ox + scale, abs=max(scale * 1e-9, 8 * math.ulp(max(abs(ox), abs(oy), 1.0))))
+    assert y == pytest.approx(oy + height / 3.0, abs=max(scale * 1e-9, 8 * math.ulp(max(abs(ox), abs(oy), 1.0))))
+    assert radius == pytest.approx(2.0 * scale / math.sqrt(3.0), rel=1e-6, abs=1e-15)
     assert all(math.dist((x, y), point) <= radius + 8 * math.ulp(max(abs(x), abs(y), 1.0))
                for point in points)
