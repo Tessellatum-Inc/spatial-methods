@@ -160,3 +160,14 @@ These notes record bounded checks against publisher or institutional bibliograph
 - **Technical claims:** conditional on the observed total number of points, homogeneous CSR implies multinomial cell counts with equal probabilities. The implementation simulates this conditional multinomial null rather than relying on the asymptotic chi-square approximation; specialist spatstat documentation notes the expected-count condition for that approximation and also describes conditional Monte Carlo testing.
 - **Implementation:** rectangular equal-area grid, explicit boundary assignment, Pearson statistic and plus-one Monte Carlo p-value. The grid scale/alignment is analyst-chosen; the method cannot distinguish interaction from first-order inhomogeneity.
 - **Rights:** equations are paraphrased; no source text or figures are reproduced.
+
+
+## Section 2 — Geographic distribution summaries
+
+**Source entry:** “Summary geometry: mean center, median center, standard distance, standard deviational ellipse” (source page 3).
+
+- **Identity and bibliography:** the four methods are identified in Esri's maintained ArcGIS Pro documentation for measuring geographic distributions. The median-center algorithm's classical reference is Kuhn and Kuenne (1962), “An Efficient Algorithm for the Numerical Solution of the Generalized Weber Problem in Spatial Economics,” *Journal of Regional Science*, 4(2), 21–33, DOI [10.1111/j.1467-9787.1962.tb00902.x](https://doi.org/10.1111/j.1467-9787.1962.tb00902.x).
+- **Technical claims:** mean center is a weighted coordinate average; median center minimizes weighted Euclidean distance; standard distance is a weighted RMS radial distance; the ellipse uses the weighted coordinate covariance eigensystem.
+- **Implementation:** weighted planar point-coordinate methods and an executable lab are added. The ellipse orientation is explicitly counterclockwise from +x; the scale parameter makes the bivariate-normal coverage adjustment visible rather than implicit.
+- **Limitations:** no line/polygon centroid preprocessing, geographic distances, 3D ellipsoids, case grouping or inferential tests.
+- **Rights:** equations are independently typeset and paraphrased; no proprietary code or figures are reproduced.

@@ -127,6 +127,7 @@ Each implementation should state:
 
 ### Spatial statistics
 
+- [Geographic distribution summaries](python/spatial-distribution-summaries/README.md): weighted mean and geometric median centers, standard distance and covariance-based standard deviational ellipse, with 18 tests and explicit orientation/coverage conventions.
 - [Empirical Bayes area-rate smoothing](python/empirical-bayes-rates/README.md): Marshall's global and caller-neighbourhood local moment shrinkage for Poisson rates, with 16 tests and explicit exposure and adjacency assumptions.
 - [Global Moran's I in Python](python/global-morans-i/README.md): a dependency-free dense-matrix calculation, row-standardisation helper and 13 tests. It computes the statistic only; use a spatial statistics library for inference. Follow the [Global Moran's I walkthrough](python/global-morans-i/implementation-walkthrough.md).
 - [Global Geary's C in Python](python/geary-c/README.md): a dependency-free dense-matrix calculation and 16 tests. It computes the statistic only; use a spatial statistics library for inference. Follow the [Geary's C walkthrough](python/geary-c/implementation-walkthrough.md).
@@ -153,7 +154,7 @@ Each implementation should state:
 
 ## Automated checks
 
-The [Python examples workflow](../.github/workflows/python-tests.yml) is configured to run the test suites for all 105 Python example packages and the Clipper2 C# smoke test, and execute all 112 learning notebooks on relevant pushes and pull requests, using Python 3.13. The Local Moran notebook uses PySAL's maintained implementation rather than presenting a new from-scratch implementation. The Bentley–Ottmann job also adds the sibling segment-intersection package to `PYTHONPATH`.
+The [Python examples workflow](../.github/workflows/python-tests.yml) is configured to run the test suites for all 106 Python example packages and the Clipper2 C# smoke test, and execute all 113 learning notebooks on relevant pushes and pull requests, using Python 3.13. The Local Moran notebook uses PySAL's maintained implementation rather than presenting a new from-scratch implementation. The Bentley–Ottmann job also adds the sibling segment-intersection package to `PYTHONPATH`.
 
 A successful automated run means the tests in the repository passed in that environment. It does not prove correctness for every possible geometry or make a restricted teaching implementation production-ready. Always read the input contract and limitations before adapting an example.
 
