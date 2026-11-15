@@ -61,6 +61,9 @@ jobs:
           - example: global-morans-i
             directory: implementations/python/global-morans-i
             pythonpath: ""
+          - example: local-morans-i
+            directory: implementations/python/local-morans-i
+            pythonpath: ""
           - example: geary-c
             directory: implementations/python/geary-c
             pythonpath: ""

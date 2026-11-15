@@ -122,6 +122,10 @@ Use the method that matches the question:
 
 These methods can complement one another, but their statistics and inference are not interchangeable.
 
+## Dependency-light reference implementation
+
+The repository also includes a small dense-matrix implementation at [implementations/python/local-morans-i](../../implementations/python/local-morans-i/README.md). It computes the documented statistic and a reproducible conditional-permutation reference distribution. Its two-sided, centred plus-one pseudo-p-value convention is stated explicitly and should not be assumed identical to every package's inference convention. The implementation is for small teaching examples; use sparse weights for large graphs.
+
 ## Work through it with PySAL
 
 The accompanying notebook uses a small synthetic ring graph. It is deliberately not a geographic map: the example isolates the statistical relationships before introducing polygon geometry and real data.
