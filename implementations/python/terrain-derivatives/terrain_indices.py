@@ -78,3 +78,40 @@ def topographic_position_index(elevation, *, window_size: int = 3,
     target = result[radius:-radius, radius:-radius]
     target[usable] = interior[usable] - means[usable]
     return result
+
+
+def riley_terrain_ruggedness_index(elevation, *, z_factor: float = 1.0) -> np.ndarray:
+    """Return Riley et al.'s 8-neighbour terrain ruggedness index.
+
+    TRI is the square root of the sum of squared elevation differences
+    between the centre cell and its eight immediate neighbours. It is
+    expressed in the elevation unit after applying z_factor. A complete
+    3x3 finite neighbourhood is required.
+    """
+    dem = np.asarray(elevation, dtype=float)
+    if dem.ndim != 2 or dem.size == 0:
+        raise ValueError("elevation must be a non-empty 2D array")
+    try:
+        scale = float(z_factor)
+    except (TypeError, ValueError):
+        raise ValueError("z_factor must be finite and positive") from None
+    if not np.isfinite(scale) or scale <= 0:
+        raise ValueError("z_factor must be finite and positive")
+    result = np.full(dem.shape, np.nan, dtype=float)
+    if dem.shape[0] < 3 or dem.shape[1] < 3:
+        return result
+    centre = dem[1:-1, 1:-1]
+    squared = np.zeros(centre.shape, dtype=float)
+    valid = np.isfinite(centre)
+    for dr in (-1, 0, 1):
+        for dc in (-1, 0, 1):
+            if dr == 0 and dc == 0:
+                continue
+            neighbour = dem[1 + dr:dem.shape[0] - 1 + dr,
+                            1 + dc:dem.shape[1] - 1 + dc]
+            valid &= np.isfinite(neighbour)
+            delta = (neighbour - centre) * scale
+            squared += np.where(np.isfinite(delta), delta * delta, 0.0)
+    target = result[1:-1, 1:-1]
+    target[valid] = np.sqrt(squared[valid])
+    return result
