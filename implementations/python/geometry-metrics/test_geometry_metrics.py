@@ -285,3 +285,20 @@ def test_smallest_circle_iterative_construction_handles_large_point_sets():
     assert circle is not None
     x, y, radius = circle
     assert all(math.dist((x, y), point) <= radius + 1e-8 for point in points)
+
+
+@pytest.mark.parametrize("origin,scale", [
+    ((1e9, -1e9), 1.0),
+    ((0.0, 0.0), 1e-9),
+    ((-3e6, 8e6), 1e-3),
+])
+def test_smallest_circle_is_translation_and_scale_stable(origin, scale):
+    ox, oy = origin
+    height = math.sqrt(3.0) * scale
+    points = [(ox, oy), (ox + 2.0 * scale, oy), (ox + scale, oy + height)]
+    x, y, radius = smallest_enclosing_circle(points, seed=19)
+    assert x == pytest.approx(ox + scale, abs=max(1e-12, scale * 1e-9))
+    assert y == pytest.approx(oy + height / 3.0, abs=max(1e-12, scale * 1e-9))
+    assert radius == pytest.approx(2.0 * scale / math.sqrt(3.0), rel=1e-8, abs=1e-15)
+    assert all(math.dist((x, y), point) <= radius + 8 * math.ulp(max(abs(x), abs(y), 1.0))
+               for point in points)

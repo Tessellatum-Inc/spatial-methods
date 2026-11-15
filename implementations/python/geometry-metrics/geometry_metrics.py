@@ -1,6 +1,6 @@
 """Teaching implementations of point-set and polyline geometric metrics."""
 from __future__ import annotations
-from math import atan2, hypot, isfinite
+from math import atan2, hypot, isfinite, ulp
 from random import Random
 from typing import Iterable, Sequence
 
@@ -51,22 +51,27 @@ def discrete_frechet_distance(curve_a, curve_b) -> float:
     return previous[-1]
 
 def _circle_two(a: Point, b: Point):
-    cx, cy = (a[0] + b[0]) / 2.0, (a[1] + b[1]) / 2.0
-    return (cx, cy, _distance(a, b) / 2.0)
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    cx, cy = a[0] + dx / 2.0, a[1] + dy / 2.0
+    return (cx, cy, hypot(dx, dy) / 2.0)
+
 
 def _circle_three(a: Point, b: Point, c: Point):
-    ax, ay = a
-    bx, by = b
-    cx, cy = c
-    d = 2.0 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by))
-    scale = max(1.0, abs(ax), abs(ay), abs(bx), abs(by), abs(cx), abs(cy))
-    if abs(d) <= 1e-14 * scale * scale:
+    """Circumcircle computed in a local frame to avoid translation scaling."""
+    ux, uy = b[0] - a[0], b[1] - a[1]
+    vx, vy = c[0] - a[0], c[1] - a[1]
+    determinant = 2.0 * (ux * vy - uy * vx)
+    edge_scale = max(hypot(ux, uy), hypot(vx, vy),
+                     hypot(c[0] - b[0], c[1] - b[1]))
+    if edge_scale == 0.0 or abs(determinant) <= 1e-14 * edge_scale * edge_scale:
         pairs = [(a, b), (a, c), (b, c)]
         return max((_circle_two(p, q) for p, q in pairs), key=lambda circle: circle[2])
-    aa, bb, cc = ax * ax + ay * ay, bx * bx + by * by, cx * cx + cy * cy
-    ux = (aa * (by - cy) + bb * (cy - ay) + cc * (ay - by)) / d
-    uy = (aa * (cx - bx) + bb * (ax - cx) + cc * (bx - ax)) / d
-    return (ux, uy, hypot(ux - ax, uy - ay))
+    u2, v2 = ux * ux + uy * uy, vx * vx + vy * vy
+    offset_x = (u2 * vy - v2 * uy) / determinant
+    offset_y = (ux * v2 - vx * u2) / determinant
+    center_x, center_y = a[0] + offset_x, a[1] + offset_y
+    return (center_x, center_y, hypot(offset_x, offset_y))
+
 
 def smallest_enclosing_circle(points, *, seed: int = 0):
     """Return (center_x, center_y, radius) using randomized incremental construction.
@@ -86,7 +91,8 @@ def smallest_enclosing_circle(points, *, seed: int = 0):
         if circle is None:
             return False
         x, y, radius = circle
-        return _distance((x, y), point) <= radius + 1e-10 * max(1.0, radius)
+        tolerance = 8.0 * max(ulp(x), ulp(y), ulp(point[0]), ulp(point[1]), ulp(radius))
+        return _distance((x, y), point) <= radius + tolerance
 
     circle = None
     for i, point_i in enumerate(pts):
