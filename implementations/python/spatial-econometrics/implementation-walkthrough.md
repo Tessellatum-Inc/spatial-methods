@@ -40,7 +40,17 @@ Open \`impacts.py\`.
 
 The coefficients are assumed to come from a separately fitted model. The `spatial_impact_uncertainty` companion accepts a joint covariance ordered as `[rho, beta..., gamma...]` and propagates it through parametric Monte Carlo draws. It reports rejected ill-conditioned draws; it does not estimate the covariance or validate its sampling assumptions.
 
-## 4. Concentrated maximum likelihood\n\nOpen `maximum_likelihood.py`.\n\n1. SAR profiles the Gaussian likelihood over the spatial-lag parameter, including the Jacobian term `log|I-rho W|`.\n2. SEM transforms both the response and design by `I-lambda W`.\n3. SDM transforms the response by `I-rho W` and regresses on the augmented `[X, WX]` design, dropping redundant spatial-lag columns in stable order.\n4. SARAR/SAC applies both filters, `A_lambda A_rho`, to the response and `A_lambda` to the design. Its likelihood includes both log-determinants. A two-dimensional coarse grid is refined by alternating local golden-section searches around the best grid cell.\n5. All estimators use a conservative norm-bounded interval and dense matrix operations. They are teaching baselines, not scalable production likelihoods; they do not provide coefficient covariance or robust inference.\n\n## 5. Gaussian proper-CAR regression
+## 4. Concentrated maximum likelihood
+
+Open `maximum_likelihood.py`.
+
+1. SAR profiles the Gaussian likelihood over the spatial-lag parameter, including the Jacobian term `log|I-rho W|`.
+2. SEM transforms both the response and design by `I-lambda W`.
+3. SDM transforms the response by `I-rho W` and regresses on the augmented `[X, WX]` design, dropping redundant spatial-lag columns in stable order.
+4. SARAR/SAC applies both filters, `A_lambda A_rho`, to the response and `A_lambda` to the design. Its likelihood includes both log-determinants. A two-dimensional coarse grid is refined by alternating local golden-section searches around the best grid cell.
+5. All estimators use a conservative norm-bounded interval and dense matrix operations. They are teaching baselines, not scalable production likelihoods; they do not provide coefficient covariance or robust inference.
+
+## 5. Gaussian proper-CAR regression
 
 Open `proper_car.py`.
 
