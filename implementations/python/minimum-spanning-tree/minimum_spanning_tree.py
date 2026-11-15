@@ -43,7 +43,7 @@ def minimum_spanning_tree(
     candidates = []
     for index, edge in enumerate(edges):
         if len(edge) != 3:
-            raise ValueError("each edge must be (u, v, weight)")
+            raise ValueError("each edge must contain three values: (u, v, weight)")
         u, v, weight = edge
         if u not in node_set or v not in node_set:
             raise ValueError("edge endpoint is not in nodes")
