@@ -80,3 +80,17 @@ Open icar.py.
 6. Report the component labels and log pseudo-determinant, not a fictitious ordinary determinant.
 
 The conditional variance 1/(tau * degree_i) is not the marginal variance. This routine simulates a constrained field; it does not fit a regression, estimate tau or perform posterior inference. Dense eigendecomposition limits it to small teaching graphs.
+
+
+## 9. Spatial HAC covariance for OLS
+
+Open spatial_hac.py.
+
+1. Fit OLS and retain residuals e.
+2. Calculate pairwise Euclidean distances from projected planar coordinates.
+3. Apply the compact-support Wendland C2 kernel at the caller's bandwidth.
+4. Form the meat matrix from all weighted score cross-products (x_i e_i)(x_j e_j)'.
+5. Sandwich the meat between (X'X)^(-1), symmetrise numerical round-off and extract standard errors.
+6. Apply n/(n-k) when the finite-sample correction is enabled.
+
+The bandwidth and coordinate units must agree. The kernel controls which spatial residual pairs contribute; this does not solve omitted-variable bias, spatial endogeneity or model misspecification.
