@@ -7,7 +7,7 @@ geometries, refine candidates with the exact geometric predicate.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from math import ceil, hypot, isfinite
+from math import ceil, hypot, isfinite, sqrt
 from typing import Iterable, TypeAlias
 
 Bounds: TypeAlias = tuple[float, float, float, float]
