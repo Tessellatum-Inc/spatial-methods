@@ -37,7 +37,7 @@ This illustration assumes square unit cells and shows the centre-to-centre dista
 
 The exact Euclidean distance transform can be computed efficiently using separability of the squared Euclidean distance and one-dimensional lower-envelope computations. Felzenszwalb and Huttenlocher describe a linear-time method for sampled functions and grids. This differs from a chamfer transform, which uses an approximate neighbourhood metric, and from cost-distance, which accumulates costs over a movement model.
 
-The [Python example](../../implementations/python/raster-distance/README.md) wraps SciPy's `distance_transform_edt`; it does not implement the lower-envelope algorithm itself.
+The [Python example](../../implementations/python/raster-distance/README.md) implements the lower-envelope algorithm directly. Its one-dimensional routine is independently testable and its two-dimensional transform applies separable row and column passes.
 
 ## Raster-specific decisions
 
@@ -50,7 +50,7 @@ The [Python example](../../implementations/python/raster-distance/README.md) wra
 
 ## Complexity and implementation
 
-The Felzenszwalb–Huttenlocher family computes the exact transform in time linear in the number of grid cells for a fixed-dimensional grid. The teaching package delegates to SciPy's compiled implementation and exposes only the grid-spacing contract.
+The Felzenszwalb–Huttenlocher family computes the exact transform in time linear in the number of grid cells for a fixed-dimensional grid. The teaching package implements the Felzenszwalb–Huttenlocher lower-envelope method directly in NumPy. The 1D envelope construction and evaluation are O(n); applying it once per row and once per column gives O(HW) time for an H-by-W grid.
 
 ## Exercises
 
@@ -63,6 +63,6 @@ The Felzenszwalb–Huttenlocher family computes the exact transform in time line
 ## References
 
 - Felzenszwalb, P. F. and Huttenlocher, D. P. (2012), [Distance Transforms of Sampled Functions](https://doi.org/10.4086/cgt.2012.004), Theory of Computing, 8, 415–428.
-- [SciPy `distance_transform_edt` documentation](https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.distance_transform_edt.html).
+- The implementation is checked against brute-force minimisation on seeded one- and two-dimensional cases; SciPy's `distance_transform_edt` can also serve as an independent external comparison.
 
 **Scope:** exact Euclidean distance on a regular 2D raster grid; no cost surface, obstacle-aware path or NoData policy is implemented.
