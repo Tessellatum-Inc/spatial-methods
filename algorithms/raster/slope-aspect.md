@@ -59,7 +59,7 @@ The implementation uses a strict 3×3 validity rule: borders and any window cont
 
 ## Interpretation cautions
 
-Slope is sensitive to DEM resolution and noise. Aspect becomes unstable on nearly flat terrain. Horizontal and vertical units must be compatible. Resampling changes the sampled surface and therefore its derivatives. Horn slope/aspect does not calculate curvature, visibility, solar radiation or flow direction.
+Slope and curvature are sensitive to DEM resolution and noise. Aspect and directional curvature become unstable on nearly flat terrain. Horizontal and vertical units must be compatible. Resampling changes the sampled surface and therefore its derivatives. These local derivatives do not calculate visibility, solar radiation or flow direction.
 
 ## Exercises
 
@@ -74,7 +74,7 @@ Slope is sensitive to DEM resolution and noise. Aspect becomes unstable on nearl
 - Horn, B. K. P. (1981), *Hill shading and the reflectance map*, Proceedings of the IEEE, 69(1), 14–47.
 - Burrough, P. A. and McDonnell, R. A. (1998), *Principles of Geographical Information Systems*, Oxford University Press.
 
-**Scope:** local Horn 3×3 slope and downslope aspect only; no curvature, multiscale derivatives, geographic-grid correction or DEM conditioning.
+**Scope:** local Horn and Zevenbergen–Thorne slope/aspect plus central-difference profile/plan curvature; no multiscale derivatives, geographic-grid correction or DEM conditioning.
 
 
 ## Profile and plan curvature
