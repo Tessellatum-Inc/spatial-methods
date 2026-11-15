@@ -1,5 +1,5 @@
 import pytest
-from martinez_sweep import sweep_split_segments
+from martinez_sweep import (sweep_split_segments, classify_boundary_fragments, fragment_area_contribution)
 
 def test_overlapping_rectangles_split_crossed_edges():
     a=[(0,0),(4,0),(4,3),(0,3)]; b=[(2,-1),(5,-1),(5,2),(2,2)]
@@ -42,3 +42,26 @@ def test_seeded_rectangle_crossing_counts():
         a=[(x0,y0),(x1,y0),(x1,y1),(x0,y1)]
         b=[(u0,v0),(u1,v0),(u1,v1),(u0,v1)]
         assert len(sweep_split_segments([[a],[b]])["intersection_events"]) in (0,2,4)
+
+def test_boolean_fragment_classification_matches_rectangle_areas():
+    a=[(0,0),(4,0),(4,3),(0,3)]
+    b=[(2,-1),(5,-1),(5,2),(2,2)]
+    expected={"intersection":4.0,"union":17.0,"difference":8.0,"symmetric_difference":13.0}
+    for operation,area in expected.items():
+        result=classify_boundary_fragments([[a],[b]],operation=operation)
+        assert fragment_area_contribution(result["selected_fragments"])==pytest.approx(area)
+
+
+def test_containment_classification_handles_hole_orientation_for_difference():
+    outer=[(0,0),(6,0),(6,6),(0,6)]
+    inner=[(2,2),(4,2),(4,4),(2,4)]
+    diff=classify_boundary_fragments([[outer],[inner]],operation="difference")
+    assert fragment_area_contribution(diff["selected_fragments"])==pytest.approx(32.0)
+    inter=classify_boundary_fragments([[outer],[inner]],operation="intersection")
+    assert fragment_area_contribution(inter["selected_fragments"])==pytest.approx(4.0)
+
+
+def test_classification_rejects_multiple_ring_inputs_until_hole_roles_exist():
+    a=[(0,0),(4,0),(4,4),(0,4)]
+    with pytest.raises(NotImplementedError):
+        classify_boundary_fragments([[a,a],[a]])
