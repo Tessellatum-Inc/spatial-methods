@@ -24,8 +24,8 @@ class SplitSegment:
     index: int
     a: tuple
     b: tuple
-    t0: float
-    t1: float
+    t0: Fraction
+    t1: Fraction
 
 @dataclass
 class _IntervalNode:
