@@ -206,17 +206,18 @@ class RandomizedTrapezoidalMap:
         node = self._x_root
         while isinstance(node, _XNode):
             node = node.left if x < node.split_x else node.right
-        node, active = node
-        candidates = set(active)
+        node, _active = node
         event_pos = bisect_left(self.x_events, x)
+        p = (x, y)
         for pos in (event_pos-1, event_pos):
             if 0 <= pos < len(self.x_events) and abs(self.x_events[pos]-x) <= self.epsilon:
-                candidates.update(self._endpoint_segments.get(self.x_events[pos], ()))
-        p = (x, y)
-        if any(_on_segment(p, *self.segments[sid], self.epsilon) for sid in candidates):
-            return BOUNDARY
+                if any(_on_segment(p, *self.segments[sid], self.epsilon)
+                       for sid in self._endpoint_segments.get(self.x_events[pos], ())):
+                    return BOUNDARY
         while isinstance(node, _YNode):
             edge_y = _y_at(self.segments[node.segment_id], x)
+            if abs(y-edge_y) <= self.epsilon:
+                return BOUNDARY
             node = node.left if y < edge_y else node.right
         return node
 
