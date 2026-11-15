@@ -136,6 +136,9 @@ jobs:
           - example: network-flow
             directory: implementations/python/network-flow
             pythonpath: ""
+          - example: minimum-spanning-tree
+            directory: implementations/python/minimum-spanning-tree
+            pythonpath: ""
           - example: point-location
             directory: implementations/python/point-location
             pythonpath: ""
