@@ -198,3 +198,76 @@ def test_tango_rejects_invalid_phi_and_simulation_count():
     with pytest.raises(ValueError):
         monte_carlo_tango_test(coords, [1, 0], [10, 10], phi=1,
                                n_simulations=0)
+
+
+
+def test_elliptical_scan_detects_elongated_cluster_and_reports_geometry():
+    from spatial_scan import elliptical_poisson_scan
+    coords = np.array([
+        [0., 0.], [2., 0.], [4., 0.], [6., 0.],
+        [0., 4.], [2., 4.], [4., 4.], [6., 4.],
+        [0., 10.], [2., 10.], [4., 10.], [6., 10.],
+    ])
+    cases = np.array([8, 8, 8, 8, 7, 7, 7, 7, 1, 1, 1, 1])
+    population = np.full(len(coords), 100.)
+    result = elliptical_poisson_scan(
+        coords, cases, population, shape_ratios=(1., 2., 4.),
+        angles_degrees=(0., 90.), max_population_fraction=0.75,
+        min_cases=2,
+    )
+    assert result["log_likelihood_ratio"] > 0
+    assert result["shape_ratio"] >= 1
+    assert result["semi_major_axis"] >= result["semi_minor_axis"]
+    assert result["angle_degrees"] in (0., 90.)
+    assert set(result["member_indices"]).issubset(set(range(len(coords))))
+
+
+def test_elliptical_scan_includes_equal_ellipse_radius_ties():
+    from spatial_scan import elliptical_poisson_scan
+    coords = np.array([[0., 0.], [1., 0.], [-1., 0.], [0., 5.]])
+    cases = np.array([0, 4, 4, 0])
+    population = np.full(4, 100.)
+    result = elliptical_poisson_scan(
+        coords, cases, population, shape_ratios=(1.,),
+        angles_degrees=(0.,), max_population_fraction=0.75,
+        min_cases=2,
+    )
+    assert set(result["member_indices"]) == {0, 1, 2}
+
+
+def test_elliptical_monte_carlo_is_reproducible_and_plus_one_corrected():
+    from spatial_scan import monte_carlo_elliptical_poisson_scan
+    coords = np.array([[0., 0.], [1., 0.], [10., 0.], [11., 0.], [20., 0.]])
+    cases = np.array([9, 8, 1, 1, 1])
+    population = np.full(5, 100.)
+    kwargs = dict(n_simulations=29, shape_ratios=(1., 2.),
+                  angles_degrees=(0., 90.), rng=91)
+    a = monte_carlo_elliptical_poisson_scan(coords, cases, population, **kwargs)
+    b = monte_carlo_elliptical_poisson_scan(coords, cases, population, **kwargs)
+    assert a["p_value"] == b["p_value"]
+    np.testing.assert_array_equal(a["simulated_maxima"], b["simulated_maxima"])
+    assert 1 / 30 <= a["p_value"] <= 1
+
+
+@pytest.mark.parametrize("shapes,angles", [
+    ((), (0.,)),
+    ((0.5,), (0.,)),
+    ((1., np.nan), (0.,)),
+    ((1.,), (180.,)),
+    ((1.,), ()),
+])
+def test_elliptical_scan_rejects_invalid_candidate_grids(shapes, angles):
+    from spatial_scan import elliptical_poisson_scan
+    coords = np.array([[0., 0.], [1., 1.]])
+    with pytest.raises(ValueError):
+        elliptical_poisson_scan(coords, [1, 0], [10, 10],
+                                shape_ratios=shapes, angles_degrees=angles)
+
+
+def test_elliptical_scan_rejects_invalid_simulation_count():
+    from spatial_scan import monte_carlo_elliptical_poisson_scan
+    coords = np.array([[0., 0.], [1., 1.]])
+    with pytest.raises(ValueError):
+        monte_carlo_elliptical_poisson_scan(
+            coords, [1, 0], [10, 10], n_simulations=0
+        )
