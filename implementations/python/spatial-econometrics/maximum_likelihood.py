@@ -122,9 +122,13 @@ def _fit(y, x, w, model, grid_size, tolerance):
         parameter, likelihood = float(grid[best]), float(scores[best])
         refine_evaluations = 0
     else:
-        parameter, likelihood, refine_evaluations = _golden_max(
+        refined_parameter, refined_likelihood, refine_evaluations = _golden_max(
             profile, left, right, tolerance=tolerance
         )
+        if refined_likelihood > scores[best]:
+            parameter, likelihood = refined_parameter, refined_likelihood
+        else:
+            parameter, likelihood = float(grid[best]), float(scores[best])
     a = np.eye(n) - parameter * w
     ay = y - parameter * wy
     transformed_x = x if model == "SAR" else x - parameter * wx
