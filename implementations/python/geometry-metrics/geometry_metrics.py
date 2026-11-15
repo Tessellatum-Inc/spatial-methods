@@ -1,6 +1,6 @@
 """Teaching implementations of point-set and polyline geometric metrics."""
 from __future__ import annotations
-from math import atan2, hypot, isfinite, ulp
+from math import atan2, hypot, isclose, isfinite, ulp
 from random import Random
 from typing import Iterable, Sequence
 
