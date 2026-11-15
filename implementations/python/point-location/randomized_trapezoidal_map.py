@@ -34,6 +34,14 @@ class Trapezoid:
 
 
 @dataclass(frozen=True)
+class CorridorSplit:
+    """Local replacement pieces created when one segment crosses a cell."""
+    source_trapezoid: Trapezoid
+    lower: Trapezoid
+    upper: Trapezoid
+
+
+@dataclass(frozen=True)
 class _YNode:
     segment_id: int
     left: "_YNode | Trapezoid"
@@ -148,11 +156,64 @@ class RandomizedTrapezoidalMap:
         # transparent reference update, not the optimal local-update method.
         inserted: list[int] = []
         self.insertion_rebuild_sizes = []
+        self.insertion_corridors: list[tuple[Trapezoid, ...]] = []
+        self.insertion_splits: list[tuple[CorridorSplit, ...]] = []
         for sid in order:
-            inserted.append(sid)
             self._build(tuple(inserted))
+            corridor = self._trace_segment_corridor(sid)
+            self.insertion_corridors.append(tuple(corridor))
+            self.insertion_splits.append(tuple(
+                self._split_corridor_cell(sid, cell) for cell in corridor
+            ))
+            inserted.append(sid)
             self.insertion_rebuild_sizes.append(len(self.trapezoids))
         self._build(tuple(order))
+
+    def _trace_segment_corridor(self, segment_id: int) -> list[Trapezoid]:
+        """Walk the existing vertical decomposition crossed by a new segment.
+
+        The segment is not yet part of the map. Its open x-interval is
+        intersected with each current slab; the segment's y-position selects
+        exactly one cell per intersected slab. Consecutive repeated cells are
+        collapsed because slab boundaries can be artificial.
+        """
+        segment = self.segments[segment_id]
+        x0, x1 = segment[0][0], segment[1][0]
+        corridor: list[Trapezoid] = []
+        for active, cells, _root in self.slabs:
+            # Slab bounds are taken from its cells; every slab has >= 1 cell.
+            left, right = cells[0].x_left, cells[0].x_right
+            lo, hi = max(left, x0), min(right, x1)
+            if lo >= hi:
+                continue
+            probe_x = (lo + hi) / 2
+            probe_y = _y_at(segment, probe_x)
+            gap = sum(
+                _y_at(self.segments[sid], probe_x) < probe_y
+                for sid in active
+            )
+            cell = cells[gap]
+            if not corridor or corridor[-1] is not cell:
+                corridor.append(cell)
+        return corridor
+
+    def _split_corridor_cell(self, segment_id: int,
+                             cell: Trapezoid) -> CorridorSplit:
+        """Describe the two local cells replacing one crossed trapezoid."""
+        segment = self.segments[segment_id]
+        left = max(cell.x_left, segment[0][0])
+        right = min(cell.x_right, segment[1][0])
+        if not left < right:
+            raise ValueError("segment does not cross the supplied trapezoid")
+        lower = Trapezoid(
+            (segment_id, cell.id[0], cell.id[1], 0), left, right,
+            cell.bottom_segment, segment_id,
+        )
+        upper = Trapezoid(
+            (segment_id, cell.id[0], cell.id[1], 1), left, right,
+            segment_id, cell.top_segment,
+        )
+        return CorridorSplit(cell, lower, upper)
 
     def _build(self, segment_ids: tuple[int, ...]) -> None:
         xmin, ymin, xmax, ymax = self.bounds
