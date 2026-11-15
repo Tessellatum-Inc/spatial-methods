@@ -34,6 +34,9 @@ emissivity 0.95 and diameter 0.15 m, representing a standard matte-black globe.
 - Python implementation: ../implementations/python/mean-radiant-temperature/mean_radiant_temperature.py
 - Tests: ../implementations/python/mean-radiant-temperature/test_mean_radiant_temperature.py
 - Package contract: ../implementations/python/mean-radiant-temperature/README.md
+- Implementation walkthrough: ../implementations/python/mean-radiant-temperature/implementation-walkthrough.md
+- Exercise: ../exercises/mean-radiant-temperature.md
+- Lab: ../notebooks/mean-radiant-temperature-lab.ipynb
 
 The implementation supports broadcast-compatible arrays and reports the
 controlling convection regime. It rejects invalid temperatures, negative
