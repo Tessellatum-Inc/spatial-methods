@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 694 | Rows with a source-entry review status in the section indexes |
-| Partial | 52 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 642 | The source wording is preserved, but no independent review is recorded |
+| Partial | 54 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 640 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -32,16 +32,16 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 11 — GeoAI and computer-vision additions | 26 | 0 | 26 |
 | 12 — Signal, GNSS and regional science | 28 | 0 | 28 |
 | 13 — GeoFM workflows, urban mobility and LLMs | 29 | 0 | 29 |
-| 14 — Databases, graphics, morphology and hazards | 33 | 0 | 33 |
+| 14 — Databases, graphics, morphology and hazards | 33 | 1 | 32 |
 | 15 — Vision, registration and vector extraction | 33 | 0 | 33 |
 | 16 — Flows, regions, deformation and marine | 25 | 0 | 25 |
 | 17 — Geometry, scalability, design and siting | 27 | 0 | 27 |
-| 18 — Moving objects, routing, transit and water | 32 | 0 | 32 |
+| 18 — Moving objects, routing, transit and water | 32 | 1 | 31 |
 | 19 — African applications, addressing and finance | 32 | 0 | 32 |
 | 20 — Indices, microwave, events and information | 25 | 2 | 23 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 2 | 24 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 2 | 26 |
-| **Total** | **694** | **52** | **642** |
+| **Total** | **694** | **54** | **640** |
 
 ## How to interpret this
 
@@ -64,4 +64,4 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 The counts were assembled from the row-level labels present in all 22 section indexes on 14 November 2026. They are a dated snapshot and must be recalculated when source-entry labels are revised. They do not count canonical lesson pages, implementation inventories, software lists or supplementary methods as additional source entries.
 ## Implementation reconciliation — 15 November 2026
 
-The `compendium/section-01-geometry-continuation` branch was audited against `main`. It is divergent (2,030 commits ahead and 594 behind), so it was not merged wholesale. Selected missing algorithm assets were reconciled directly onto `main`: power-law multiple-flow-direction routing and accumulation with tests and a notebook; compositional closure/CLR/ALR/ILR and Aitchison distance with tests and a source-verification note; CUSUM, binary segmentation and PELT detector code/tests; a known-variance Gaussian BOCPD variant; and spatially diverse batch selection, UCB1 and exact RBF-GP candidate selection with tests. The source-entry counts above are unchanged: implementation availability is not equivalent to source-entry verification, and the compositional record's exact original source-row mapping remains open.
+The `compendium/section-01-geometry-continuation` branch was audited against `main`. It is divergent (2,030 commits ahead and 594 behind), so it was not merged wholesale. Selected missing algorithm assets were reconciled directly onto `main`: power-law multiple-flow-direction routing and accumulation with tests and a notebook; compositional closure/CLR/ALR/ILR and Aitchison distance with tests and a source-verification note; CUSUM, binary segmentation and PELT detector code/tests; a known-variance Gaussian BOCPD variant; and spatially diverse batch selection, UCB1 and exact RBF-GP candidate selection with tests. Two source rows were upgraded from intake-only to partial after the Section 14 Poisson scan and Section 18 Pareto routing records gained tested implementations. Implementation availability is not equivalent to full source-entry verification, and the compositional record's exact original source-row mapping remains open.
