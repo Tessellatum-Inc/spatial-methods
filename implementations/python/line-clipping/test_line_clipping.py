@@ -128,6 +128,10 @@ def test_cyrus_beck_matches_liang_barsky_on_seeded_rectangle_segments():
 def test_line_clippers_handle_zero_length_segments():
     inside = (2.0, 3.0)
     outside = (-2.0, 3.0)
-    for clipper in (cohen_sutherland, liang_barsky, cyrus_beck, nicholl_lee_nicholl):
+    for clipper in (cohen_sutherland, liang_barsky, nicholl_lee_nicholl):
         assert clipper(inside, inside, R) == (inside, inside)
         assert clipper(outside, outside, R) is None
+
+    convex_window = [(0, 0), (10, 0), (10, 10), (0, 10)]
+    assert cyrus_beck(inside, inside, convex_window) == (inside, inside)
+    assert cyrus_beck(outside, outside, convex_window) is None
