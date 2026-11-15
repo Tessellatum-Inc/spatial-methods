@@ -147,6 +147,9 @@ jobs:
           - example: line-simplification
             directory: implementations/python/line-simplification
             pythonpath: ""
+          - example: topology-preserving-simplification
+            directory: implementations/python/topology-preserving-simplification
+            pythonpath: ""
           - example: change-point-detection
             directory: implementations/python/change-point-detection
             pythonpath: ""
