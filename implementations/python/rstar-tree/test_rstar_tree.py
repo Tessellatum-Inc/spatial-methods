@@ -77,7 +77,8 @@ def _assert_tree_invariants(tree):
 
     visit(tree.root, 0, True)
     assert len(leaf_depths) <= 1
-    assert sorted(seen) == list(range(len(tree._records)))
+    assert sorted(seen) == [i for i, active in enumerate(tree._active) if active]
+    assert len(tree) == sum(tree._active)
 
 
 def test_forced_reinsertion_preserves_all_entries_and_tree_invariants():
@@ -105,3 +106,46 @@ def test_forced_reinsertion_handles_duplicate_and_degenerate_boxes():
     _assert_tree_invariants(tree)
     expected = [i for i in range(80) if i % 3 != 0 or i == 0]
     assert tree.query((0, 0, 0, 0)) == expected
+
+
+def test_delete_condenses_tree_and_matches_brute_force():
+    rng = random.Random(20261116)
+    tree = RStarTree(max_entries=4)
+    records = []
+    for _ in range(420):
+        x, y = rng.uniform(-50, 50), rng.uniform(-50, 50)
+        w, h = rng.uniform(0.1, 5), rng.uniform(0.1, 5)
+        box = (x, y, x + w, y + h)
+        tree.insert(box)
+        records.append(box)
+    deleted = set(rng.sample(range(len(records)), 280))
+    for index in sorted(deleted):
+        assert tree.delete(index) is True
+        assert tree.delete(index) is False
+    assert len(tree) == len(records) - len(deleted)
+    _assert_tree_invariants(tree)
+    for _ in range(240):
+        x, y = rng.uniform(-55, 55), rng.uniform(-55, 55)
+        q = (x, y, x + rng.uniform(0, 8), y + rng.uniform(0, 8))
+        expected = [i for i, box in enumerate(records)
+                    if i not in deleted and intersects(box, q)]
+        assert tree.query(q) == expected
+
+
+def test_delete_all_records_collapses_to_empty_root():
+    tree = RStarTree(max_entries=4)
+    ids = [tree.insert((i, 0, i + 0.5, 1)) for i in range(60)]
+    for index in reversed(ids):
+        assert tree.delete(index)
+    assert len(tree) == 0
+    assert tree.query((-1, -1, 100, 2)) == []
+    assert tree.root.leaf
+    assert tree.root.children == []
+
+
+@pytest.mark.parametrize("index", [True, 1.5, "1"])
+def test_delete_rejects_non_integer_ids(index):
+    tree = RStarTree()
+    tree.insert((0, 0, 1, 1))
+    with pytest.raises(ValueError):
+        tree.delete(index)
