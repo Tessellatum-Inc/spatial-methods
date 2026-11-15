@@ -55,12 +55,6 @@ Each record explains one method or operation, its assumptions, where it is usefu
 - [Connected-component labeling](raster/connected-components.md) — identify connected foreground regions under 4/8-neighbour rules.
 - [Raster cost distance](raster/cost-distance.md) — calculate multi-source least accumulated cost through a weighted raster graph.
 
-## Spatial statistics
-
-- [Compositional data analysis](statistics/compositional-data-analysis.md) — apply closure, CLR, ALR and ILR transforms and compare compositions with Aitchison distance.
-
-- [Circular Poisson spatial scan statistic](spatial-scan-statistic.md) — search centroid-centred circles for elevated areal case rates with a population offset and conditional multinomial Monte Carlo calibration.
-
 ## Geostatistics
 
 - [Spatial interpolation](geostatistics/interpolation.md) — compare inverse-distance weighting with ordinary kriging, a variogram model and conditional prediction variance.
@@ -91,6 +85,8 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 - [Ripley's K and L](statistics/ripley-k.md) — compare uncorrected pair-count summaries with the homogeneous Poisson reference across distance scales.
 - [Clark–Evans nearest-neighbour index](statistics/clark-evans.md) — compare observed mean nearest-neighbour spacing with a homogeneous Poisson reference.
 - [Kernel density estimation for point patterns](statistics/point-pattern-kde.md) — estimate a fixed-bandwidth planar Gaussian intensity surface and understand bandwidth and edge effects.
+- [Compositional data analysis](statistics/compositional-data-analysis.md) — apply closure, CLR, ALR and ILR transforms and compare compositions with Aitchison distance.
+- [Circular Poisson spatial scan statistic](spatial-scan-statistic.md) — search centroid-centred circles for elevated areal case rates with a population offset and conditional multinomial Monte Carlo calibration.
 
 
 - [DBSCAN](statistics/dbscan.md) — identify density-connected clusters and noise in planar point data.
