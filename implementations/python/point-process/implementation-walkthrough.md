@@ -31,3 +31,7 @@ Tests cover nearest-neighbour summaries, translation correction, supplied-intens
 ## Cross-type marked summaries
 
 The marked-pattern extension partitions events by two distinct labels. Cross-G measures nearest target-type distances from source-type events. Cross-K loops over source-target pairs and applies the rectangular translation overlap weight before scaling by window area and both sample counts. Cross pair correlation differentiates cross-K numerically. Cross-J combines cross-G with Monte Carlo empty-space distances to the target type. These are exploratory estimators; G and J do not use advanced edge correction, and the cross-K stationarity assumptions remain essential.
+
+## Point-process model simulation
+
+The homogeneous Poisson simulator draws an exact Poisson event count with mean intensity times window area, then samples independent uniform locations. The Thomas simulator draws latent Poisson parents in a buffer-expanded rectangle, a Poisson offspring count per parent, and independent Gaussian x/y displacements. It retains only offspring inside the requested window; the finite buffer truncates Gaussian tails. The Thomas stationary intensity is parent intensity multiplied by mean offspring count. Neither simulator estimates parameters or performs a goodness-of-fit test.
