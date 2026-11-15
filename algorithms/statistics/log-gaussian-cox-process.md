@@ -45,5 +45,5 @@ This implementation is a small-grid simulator, not a fitted LGCP. It does not es
 
 ## References
 
-- Møller, J., Syversveen, A. R. and Waagepetersen, R. P. (1998). “Log Gaussian Cox processes.” *Scandinavian Journal of Statistics*, 25(3), 451–482.
+- Møller, J., Syversveen, A. R. and Waagepetersen, R. P. (1998). “Log Gaussian Cox processes.” *Scandinavian Journal of Statistics*, 25(3), 451–482. [DOI: 10.1111/1467-9469.00115](https://doi.org/10.1111/1467-9469.00115).
 - Baddeley, A., Rubak, E. and Turner, R. *Spatial Point Patterns: Methodology and Applications with R*. See the spatstat documentation for LGCP model fitting and simulation.
