@@ -97,7 +97,7 @@ def heteroskedastic_spatial_error_gm(
 
     gamma = np.array([
         (v @ v - np.dot(column_squared_norms, u * u)) / n,
-        (v @ u) / n,
+        (u @ v) / n,
     ], dtype=float)
     gamma_matrix = np.array([
         [
