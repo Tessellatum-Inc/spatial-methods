@@ -12,6 +12,10 @@ The dynamic program evaluates the leash distance at each pair of vertices. Each 
 
 Welzl's randomized algorithm maintains a boundary set of at most three points. If the next point lies inside the current circle, the circle remains valid. Otherwise the point joins the boundary and the recursive subproblem is solved with that constraint. One or two boundary points define a midpoint circle; three non-collinear points define a circumcircle. Collinear triples reduce to the farthest pair's diameter circle.
 
-## 4. Validation and limitations
+## 4. Polygon pole of inaccessibility
+
+The Polylabel routine evaluates signed distance to the exterior and hole boundaries. A square cell's centre distance plus its half-diagonal is an upper bound on the best distance anywhere inside the cell. A max-priority queue subdivides only cells whose upper bound can still improve the current best by more than the requested precision. The output is approximate and depends on the absolute coordinate-unit precision.
+
+## 5. Validation and limitations
 
 Tests cover known distances, symmetry, order sensitivity, singleton and empty cases, collinear triples, reproducibility and containment of all input points. Floating-point tolerances are explicit and are not a substitute for exact predicates. For large point sets use spatial indexes or established computational-geometry libraries; for continuous curve distances use a continuous Fréchet algorithm.
