@@ -16,6 +16,10 @@ Welzl's randomized algorithm maintains a boundary set of at most three points. I
 
 The Polylabel routine evaluates signed distance to the exterior and hole boundaries. A square cell's centre distance plus its half-diagonal is an upper bound on the best distance anywhere inside the cell. A max-priority queue subdivides only cells whose upper bound can still improve the current best by more than the requested precision. The output is approximate and depends on the absolute coordinate-unit precision.
 
-## 5. Validation and limitations
+## 5. Minimum-area oriented rectangle
+
+The rectangle baseline constructs the convex hull, then tests each hull-edge orientation. It projects hull vertices onto the edge direction and its perpendicular, computes the enclosing extents and transforms the four corners back. This transparent method is O(h²) after hull construction; it is not the optimal linear-time rotating-calipers rectangle algorithm.
+
+## 6. Validation and limitations
 
 Tests cover known distances, symmetry, order sensitivity, singleton and empty cases, collinear triples, reproducibility and containment of all input points. Floating-point tolerances are explicit and are not a substitute for exact predicates. For large point sets use spatial indexes or established computational-geometry libraries; for continuous curve distances use a continuous Fréchet algorithm.
