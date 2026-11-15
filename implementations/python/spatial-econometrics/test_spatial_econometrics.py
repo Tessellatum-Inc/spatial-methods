@@ -87,7 +87,7 @@ def test_sdm_impacts_include_lagged_covariate_effects():
     impact, = spatial_impacts(CHAIN, 0.15, [1.5], [0.75])
     matrix = np.linalg.solve(np.eye(4) - 0.15 * CHAIN,
                              1.5 * np.eye(4) + 0.75 * CHAIN)
-    assert impact.impact_matrix == pytest.approx(matrix)
+    np.testing.assert_allclose(np.asarray(impact.impact_matrix), matrix)
     assert impact.total == pytest.approx(np.sum(matrix) / 4)
 
 
