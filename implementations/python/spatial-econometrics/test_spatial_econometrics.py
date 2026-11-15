@@ -601,3 +601,52 @@ def test_icar_sample_rejects_invalid_graphs_and_precision():
         icar_sample(isolated)
     with pytest.raises(ValueError, match="precision"):
         icar_sample(adjacency, precision=0.0)
+
+
+def test_spatial_hac_ols_reduces_to_hc0_when_no_distinct_pairs_overlap():
+    from spatial_hac import spatial_hac_ols
+    rng = np.random.default_rng(128)
+    n = 30
+    coordinates = np.column_stack([np.arange(n, dtype=float) * 10.0, np.zeros(n)])
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    y = x @ np.array([1.2, -0.4]) + rng.normal(size=n)
+    fit = spatial_hac_ols(y, x, coordinates, bandwidth=1.0,
+                          small_sample_correction=False)
+    beta = np.linalg.lstsq(x, y, rcond=None)[0]
+    residual = y - x @ beta
+    bread = np.linalg.inv(x.T @ x)
+    expected = bread @ ((x * residual[:, None]).T @ (x * residual[:, None])) @ bread
+    np.testing.assert_allclose(fit.covariance, expected, atol=1e-12)
+    assert fit.nonzero_off_diagonal_pairs == 0
+    assert fit.coefficients == pytest.approx(beta)
+
+
+def test_spatial_hac_ols_includes_nearby_cross_products_and_is_symmetric():
+    from spatial_hac import spatial_hac_ols
+    rng = np.random.default_rng(882)
+    n = 40
+    coordinates = np.column_stack([np.arange(n, dtype=float), np.zeros(n)])
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    common = rng.normal(size=n)
+    error = common * 0.35 + rng.normal(scale=0.5, size=n)
+    y = x @ np.array([0.7, 0.9]) + error
+    fit = spatial_hac_ols(y, x, coordinates, bandwidth=3.5)
+    covariance = np.asarray(fit.covariance)
+    np.testing.assert_allclose(covariance, covariance.T, atol=1e-12)
+    assert fit.nonzero_off_diagonal_pairs > 0
+    assert np.all(np.asarray(fit.standard_errors) >= 0)
+    assert np.linalg.eigvalsh(covariance).min() > -1e-10
+    assert fit.small_sample_correction is True
+
+
+def test_spatial_hac_ols_rejects_invalid_inputs():
+    from spatial_hac import spatial_hac_ols
+    x = np.column_stack([np.ones(8), np.arange(8, dtype=float)])
+    y = np.linspace(1.0, 3.0, 8) + np.sin(np.arange(8))
+    coordinates = np.column_stack([np.arange(8, dtype=float), np.zeros(8)])
+    with pytest.raises(ValueError, match="bandwidth"):
+        spatial_hac_ols(y, x, coordinates, bandwidth=0.0)
+    with pytest.raises(ValueError, match="planar"):
+        spatial_hac_ols(y, x, np.arange(8, dtype=float), bandwidth=2.0)
+    with pytest.raises(ValueError, match="full column rank"):
+        spatial_hac_ols(y, np.ones((8, 2)), coordinates, bandwidth=2.0)
