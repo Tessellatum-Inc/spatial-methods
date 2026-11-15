@@ -253,23 +253,23 @@ def _row_standardised_path(n):
 def test_spatial_durbin_2sls_recovers_synthetic_sdm_parameters():
     from spatial_durbin_2sls import spatial_durbin_2sls
     rng = np.random.default_rng(91827)
-    n = 100
+    n = 250
     w = _row_standardised_path(n)
     x = np.column_stack([np.ones(n), rng.normal(size=n)])
     beta = np.array([1.1, 0.85])
     gamma = np.array([0.0, -0.3])
     rho = 0.24
-    innovation = rng.normal(scale=0.1, size=n)
+    innovation = rng.normal(scale=0.03, size=n)
     wx = w @ x
     y = np.linalg.solve(
         np.eye(n) - rho * w,
         x @ beta + wx @ gamma + innovation,
     )
-    fit = spatial_durbin_2sls(y, x, w, instrument_orders=3)
-    assert fit.rho == pytest.approx(rho, abs=0.18)
-    assert fit.beta == pytest.approx(beta, abs=0.2)
+    fit = spatial_durbin_2sls(y, x, w, instrument_orders=5)
+    assert fit.rho == pytest.approx(rho, abs=0.12)
+    assert fit.beta == pytest.approx(beta, abs=0.12)
     assert fit.gamma[0] == pytest.approx(0.0, abs=1e-10)
-    assert fit.gamma[1] == pytest.approx(gamma[1], abs=0.2)
+    assert fit.gamma[1] == pytest.approx(gamma[1], abs=0.08)
     assert fit.instruments_used >= fit.regressors
     assert len(fit.fitted) == n
     assert len(fit.residuals) == n
