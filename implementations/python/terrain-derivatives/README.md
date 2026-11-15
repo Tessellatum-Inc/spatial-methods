@@ -48,3 +48,8 @@ The topographic_position_index function calculates focal TPI as the centre eleva
 ## Riley terrain ruggedness index (TRI)
 
 The riley_terrain_ruggedness_index function implements the eight-neighbour Riley form: the square root of the sum of squared elevation differences from the centre cell to its eight immediate neighbours. It requires a complete finite 3×3 neighbourhood and returns NaN at borders or around NoData. z_factor converts vertical values before differencing. This is not the alternative mean absolute-difference TRI variant; the formula must be stated when comparing products.
+
+
+## Hypsometric curve and integral
+
+The hypsometric_curve function summarizes the elevation distribution of a basin or other raster region. It returns unique normalized elevation thresholds in descending order, the fraction of valid cells at or above each threshold, and the hypsometric integral (mean normalized elevation). A Boolean valid_mask can select the basin cells; non-finite elevations are always excluded. It assumes equal-area raster cells, so it is appropriate for a regular projected grid, not an unprojected geographic raster with varying cell area. A zero-relief region has no defined normalized curve and is rejected. The integral is a descriptive elevation-distribution summary, not a direct measure of basin age or geomorphic stage.
