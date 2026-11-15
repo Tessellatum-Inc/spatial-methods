@@ -28,3 +28,8 @@ The package also includes [hillshade_from_slope_aspect](hillshade.py), which con
 ## Topographic wetness index
 
 The companion terrain_indices module calculates the conventional logarithmic TWI from supplied specific catchment area (metres) and slope (degrees). It requires an explicit positive slope floor for flats and masks invalid/non-positive areas. This is a terrain index, not a soil-moisture model. See [the canonical lesson](../../../algorithms/raster/topographic-wetness-index.md).
+
+
+## Zevenbergen–Thorne slope and aspect
+
+The companion `zevenbergen_thorne_slope_aspect` function uses central differences from the four cardinal neighbours rather than Horn's weighted 3×3 directional sums. It returns the same three arrays and follows the same units, border and strict NoData contract. The two estimators agree on planar surfaces but can differ on curved or noisy terrain because their neighbourhood weights differ. This is a first-derivative implementation only; it does not yet calculate profile or plan curvature.
