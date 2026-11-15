@@ -44,6 +44,21 @@ A branch-and-bound search works as follows:
 
 For a split at x=s, if the query is on one side, the distance to the split plane is |q_x-s|. If its square is already greater than the best squared distance, the opposite side cannot contain a closer point. In a full implementation, use the distance to the node's entire bounding region, not just one split plane, for tighter pruning.
 
+## Orthogonal range queries
+
+A k-d tree can also report every point inside an axis-aligned rectangle
+\([x_{min},x_{max}]\times[y_{min},y_{max}]\). At each node, test the stored
+point, then recurse into a child only when the query interval on the split axis
+intersects that child's half-space. Inclusive comparisons are important when
+duplicate split coordinates can appear on both sides. The result size is k and
+the actual work depends on how many cells the query intersects; unlike a
+nearest-neighbour query, this operation reports all matching records.
+
+The repository implementation exposes `range_query(minimum, maximum)`, uses
+the same static tree, and returns original input indices in ascending order.
+Seeded differential tests compare it with an independent brute-force rectangle
+filter, including zero-width and zero-height windows.
+
 ## Why the search can be fast—and when it is not
 
 A well-shaped tree over low-dimensional, suitably distributed data can prune many branches. But the nearest-neighbour query is not guaranteed to take logarithmic time for arbitrary data.

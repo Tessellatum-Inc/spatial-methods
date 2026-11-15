@@ -105,3 +105,38 @@ class KDTree2D:
         visit(self._root)
         assert best is not None
         return best[1], best[0]
+
+    def range_query(
+        self, minimum: Iterable[float], maximum: Iterable[float]
+    ) -> list[int]:
+        """Return original indices inside an inclusive axis-aligned rectangle.
+
+        The rectangle is defined by its lower-left and upper-right corners.
+        Results are sorted by original input index, independent of tree shape.
+        Split-plane tests are inclusive because equal split coordinates may
+        occur in either subtree under the deterministic median partition.
+        """
+        low_x, low_y = _point(minimum)
+        high_x, high_y = _point(maximum)
+        if low_x > high_x or low_y > high_y:
+            raise ValueError("minimum corner must not exceed maximum corner")
+
+        found: list[int] = []
+
+        def visit(node: _Node | None) -> None:
+            if node is None:
+                return
+            x, y = node.point
+            if low_x <= x <= high_x and low_y <= y <= high_y:
+                found.append(node.index)
+
+            split = node.point[node.axis]
+            lower = (low_x, low_y)[node.axis]
+            upper = (high_x, high_y)[node.axis]
+            if lower <= split:
+                visit(node.left)
+            if upper >= split:
+                visit(node.right)
+
+        visit(self._root)
+        return sorted(found)

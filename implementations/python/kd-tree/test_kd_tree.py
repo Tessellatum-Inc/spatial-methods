@@ -93,3 +93,45 @@ def test_clustered_and_anisotropic_data_match_brute_force():
     tree = KDTree2D(points)
     for query in [(-2, 0), (0, 0), (0.2, 0.2), (5, 4)]:
         assert tree.nearest(query) == brute_force(points, query)
+
+
+def test_range_query_inclusive_bounds_and_original_indices():
+    points = [(0, 0), (1, 1), (2, 2), (1, 2), (1, 0), (1, 1)]
+    tree = KDTree2D(points)
+    assert tree.range_query((1, 1), (1, 2)) == [1, 3, 5]
+
+
+def test_range_query_empty_rectangle_and_empty_tree():
+    assert KDTree2D([]).range_query((0, 0), (1, 1)) == []
+    assert KDTree2D([(5, 5)]).range_query((0, 0), (1, 1)) == []
+
+
+def test_range_query_degenerate_point_and_line_windows():
+    points = [(-1, 0), (0, 0), (1, 0), (0, 1), (0, -1)]
+    tree = KDTree2D(points)
+    assert tree.range_query((0, 0), (0, 0)) == [1]
+    assert tree.range_query((-1, 0), (1, 0)) == [0, 1, 2]
+
+
+def test_range_query_matches_independent_brute_force_on_seeded_clouds():
+    rng = random.Random(20261115)
+    for size in (0, 1, 2, 10, 50, 200):
+        points = [(rng.randint(-20, 20), rng.randint(-20, 20))
+                  for _ in range(size)]
+        tree = KDTree2D(points)
+        for _ in range(80):
+            x1, x2 = sorted((rng.randint(-25, 25), rng.randint(-25, 25)))
+            y1, y2 = sorted((rng.randint(-25, 25), rng.randint(-25, 25)))
+            expected = [i for i, (x, y) in enumerate(points)
+                        if x1 <= x <= x2 and y1 <= y <= y2]
+            assert tree.range_query((x1, y1), (x2, y2)) == expected
+
+
+@pytest.mark.parametrize("minimum,maximum", [
+    ((2, 0), (1, 1)), ((0, 2), (1, 1)),
+    ((float("nan"), 0), (1, 1)), ((0, 0), (float("inf"), 1)),
+    ((0, 0, 0), (1, 1, 1)),
+])
+def test_range_query_rejects_invalid_bounds(minimum, maximum):
+    with pytest.raises(ValueError):
+        KDTree2D([(0, 0)]).range_query(minimum, maximum)
