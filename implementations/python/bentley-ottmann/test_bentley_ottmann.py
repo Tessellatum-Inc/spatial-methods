@@ -85,7 +85,7 @@ def test_affine_shear_restores_multiple_vertical_intersections():
     from bentley_ottmann import bentley_ottmann_with_verticals
     raw=[
         (1,(2,-2),(2,8)),
-        (2,(-1,1),(5,1)),
+        (2,(-1,1),(7,1)),
         (3,(-2,4),(6,4)),
         (4,(0,7),(4,-1)),
     ]
