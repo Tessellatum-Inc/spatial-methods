@@ -228,8 +228,16 @@ def j_function(points, window, radii, *, n_samples=10000, seed=0):
     return g_values, f_values, j_values
 
 
-def _validate_marked(points, marks, window):
-    pts, bounds = _validate(points, window)
+def _validate_marked(points, marks, window=None):
+    if window is None:
+        pts = [(float(p[0]), float(p[1])) for p in points]
+        if len(pts) < 2 or any(not isfinite(x) or not isfinite(y) for x, y in pts):
+            raise ValueError("at least two finite points are required")
+        if len(set(pts)) != len(pts):
+            raise ValueError("duplicate point coordinates are not supported")
+        bounds = None
+    else:
+        pts, bounds = _validate(points, window)
     if len(marks) != len(pts):
         raise ValueError("one mark is required for each point")
     labels = list(marks)
@@ -240,7 +248,7 @@ def _validate_marked(points, marks, window):
 
 def cross_nearest_neighbor_cdf(points, marks, from_mark, to_mark, radii):
     """Empirical G_ij: nearest type-j distance from each type-i event."""
-    pts, labels, _ = _validate_marked(points, marks, (0, 0, 1, 1))
+    pts, labels, _ = _validate_marked(points, marks)
     if from_mark == to_mark:
         raise ValueError("cross-type summaries require two distinct mark values")
     source = [p for p, m in zip(pts, labels) if m == from_mark]
