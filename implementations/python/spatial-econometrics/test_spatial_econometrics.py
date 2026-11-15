@@ -478,3 +478,75 @@ def test_slx_sdem_reject_invalid_inputs_and_search_controls():
         spatial_lx_ols(y, np.ones((n, 2)), w)
     with pytest.raises(ValueError, match="grid_size"):
         spatial_dem_mle(y, x, w, grid_size=5)
+
+
+def _symmetric_grid_adjacency(rows, cols):
+    n = rows * cols
+    a = np.zeros((n, n))
+    for row in range(rows):
+        for col in range(cols):
+            i = row * cols + col
+            if row + 1 < rows:
+                j = (row + 1) * cols + col
+                a[i, j] = a[j, i] = 1.0
+            if col + 1 < cols:
+                j = row * cols + col + 1
+                a[i, j] = a[j, i] = 1.0
+    return a
+
+
+def test_proper_car_mle_recovers_synthetic_dependence_and_regression():
+    from proper_car import proper_car_mle
+    rng = np.random.default_rng(18031)
+    adjacency = _symmetric_grid_adjacency(8, 8)
+    n = adjacency.shape[0]
+    degree = adjacency.sum(axis=1)
+    alpha = 0.32
+    tau = 3.5
+    precision_base = np.diag(degree) - alpha * adjacency
+    chol = np.linalg.cholesky(precision_base)
+    error = np.linalg.solve(chol.T, rng.normal(size=n)) / np.sqrt(tau)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    beta = np.array([1.4, -0.65])
+    y = x @ beta + error
+    fit = proper_car_mle(y, x, adjacency, grid_size=101)
+    assert fit.alpha == pytest.approx(alpha, abs=0.22)
+    assert fit.coefficients == pytest.approx(beta, abs=0.22)
+    assert fit.tau > 0
+    assert fit.sigma2_conditional == pytest.approx(1.0 / fit.tau)
+    assert fit.log_likelihood == pytest.approx(fit.log_likelihood)
+    assert len(fit.residuals) == n
+    assert fit.alpha_bounds[0] < fit.alpha < fit.alpha_bounds[1]
+
+
+def test_proper_car_mle_alpha_zero_and_precision_are_valid():
+    from proper_car import proper_car_mle
+    rng = np.random.default_rng(2801)
+    adjacency = _symmetric_grid_adjacency(5, 6)
+    n = adjacency.shape[0]
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    y = x @ np.array([0.5, 1.2]) + rng.normal(scale=0.25, size=n)
+    fit = proper_car_mle(y, x, adjacency)
+    assert np.isfinite(fit.alpha)
+    assert np.isfinite(fit.log_likelihood)
+    assert fit.tau > 0
+    assert fit.evaluations > 0
+
+
+def test_proper_car_mle_rejects_invalid_graphs_and_controls():
+    from proper_car import proper_car_mle
+    n = 12
+    x = np.column_stack([np.ones(n), np.arange(n, dtype=float)])
+    y = np.linspace(0.1, 2.0, n) + np.sin(np.arange(n))
+    adjacency = _symmetric_grid_adjacency(3, 4)
+    with pytest.raises(ValueError, match="symmetric"):
+        proper_car_mle(y, x, adjacency + np.triu(np.ones((n, n)), 1) * 0.1)
+    isolated = adjacency.copy()
+    isolated[0, :] = 0.0
+    isolated[:, 0] = 0.0
+    with pytest.raises(ValueError, match="positive degree"):
+        proper_car_mle(y, x, isolated)
+    with pytest.raises(ValueError, match="grid_size"):
+        proper_car_mle(y, x, adjacency, grid_size=10)
+    with pytest.raises(ValueError, match="full column rank"):
+        proper_car_mle(y, np.ones((n, 2)), adjacency)
