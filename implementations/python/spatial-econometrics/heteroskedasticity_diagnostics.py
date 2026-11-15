@@ -66,7 +66,7 @@ def _chi_square_sf(value: float, df: int) -> float:
         h *= delta
         if abs(delta - 1.0) <= 1e-14:
             break
-    upper = np.exp(-x + a * np.log(x) - np.math.lgamma(a)) * h
+    upper = np.exp(-x + a * np.log(x) - lgamma(a)) * h
     return float(np.clip(upper, 0.0, 1.0))
 
 
