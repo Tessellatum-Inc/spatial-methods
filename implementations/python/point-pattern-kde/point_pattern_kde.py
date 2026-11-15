@@ -161,7 +161,7 @@ def adaptive_gaussian_kde(
         np.fill_diagonal(kernel, 0.0)
         other_weight = event_weights.sum() - event_weights
         pilot = kernel.sum(axis=1) / (2 * pi * bandwidth * bandwidth * np.maximum(other_weight, 1e-300))
-        positive = pilot[pilot > 0]
+        positive = pilot[(pilot > 0) & (event_weights > 0)]
         if positive.size == 0:
             local_bandwidths = np.full(n, bandwidth, dtype=float)
         else:
