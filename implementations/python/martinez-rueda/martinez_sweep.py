@@ -325,7 +325,7 @@ def stitch_boundary_fragments(fragments, *, epsilon=1e-10):
     return tuple(rings)
 
 def boolean_overlay_rings(polygons, *, operation='intersection', epsilon=1e-10):
-    """Return closed rings for a two-input, one-shell-per-input Boolean."""
+    """Return closed rings for two polygon inputs (one shell plus optional holes)."""
     classified=classify_boundary_fragments(polygons,operation=operation,epsilon=epsilon)
     rings=stitch_boundary_fragments(classified['selected_fragments'],epsilon=epsilon)
     return {'operation':operation,'rings':rings,
