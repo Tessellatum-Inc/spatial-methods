@@ -80,6 +80,7 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 
 ## Spatial statistics
 - [Lee's L](statistics/lees-l.md) — integrate the spatial smoothing of two variables with their lagged correlation.
+- [Mantel and partial Mantel tests](statistics/mantel-tests.md) — test association between aligned distance matrices and examine the limits of the conventional permutation null.
 - [Bivariate Moran's I](statistics/bivariate-morans-i.md) — relate one variable at each location to the spatial lag of a second variable, with an explicitly scoped conditional permutation baseline.
 
 - [Ripley's K and L](statistics/ripley-k.md) — compare uncorrected pair-count summaries with the homogeneous Poisson reference across distance scales.
