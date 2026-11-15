@@ -75,3 +75,89 @@ def test_returned_site_array_is_read_only():
     result = build_tessellations([(0, 0), (1, 0), (0, 1)])
     with pytest.raises(ValueError):
         result.points[0, 0] = 99
+
+
+def test_alpha_shape_right_triangle_circumradius_threshold():
+    from voronoi_delaunay import build_alpha_shape
+    points = [(0, 0), (2, 0), (0, 2)]
+    excluded = build_alpha_shape(points, max_circumradius=1.0)
+    assert excluded.triangles == ()
+    assert excluded.boundary_edges == ()
+    included = build_alpha_shape(points, max_circumradius=np.sqrt(2))
+    assert len(included.triangles) == 1
+    assert len(included.boundary_edges) == 3
+
+
+def test_alpha_shape_square_removes_internal_delaunay_diagonal():
+    from voronoi_delaunay import build_alpha_shape
+    result = build_alpha_shape(
+        [(0, 0), (2, 0), (2, 2), (0, 2)], max_circumradius=np.sqrt(2)
+    )
+    assert len(result.triangles) == 2
+    assert len(result.boundary_edges) == 4
+    assert all(tuple(sorted(edge)) != tuple(sorted((0, 2)))
+               for edge in result.boundary_edges)
+
+
+def test_alpha_shape_boundary_edges_have_one_incident_retained_triangle():
+    from collections import Counter
+    from voronoi_delaunay import build_alpha_shape
+    result = build_alpha_shape(
+        [(0, 0), (4, 0), (4, 4), (0, 4), (2, 1), (1, 3)],
+        max_circumradius=3.0,
+    )
+    counts = Counter(
+        tuple(sorted(edge))
+        for triangle in result.triangles
+        for edge in ((triangle[0], triangle[1]),
+                     (triangle[1], triangle[2]),
+                     (triangle[2], triangle[0]))
+    )
+    assert {tuple(sorted(e)) for e in result.boundary_edges} == {
+        edge for edge, count in counts.items() if count == 1
+    }
+    assert all(count in (1, 2) for count in counts.values())
+
+
+def test_alpha_shape_matches_independent_circumradius_filter():
+    import random
+    from voronoi_delaunay import build_alpha_shape
+    rng = random.Random(20261115)
+    points = np.array(
+        [(rng.uniform(-5, 5), rng.uniform(-5, 5)) for _ in range(25)]
+    )
+    threshold = 2.25
+    result = build_alpha_shape(points, max_circumradius=threshold)
+    expected = set()
+    for simplex in result.triangles:
+        a, b, c = points[list(simplex)]
+        side_a = np.linalg.norm(b-c)
+        side_b = np.linalg.norm(a-c)
+        side_c = np.linalg.norm(a-b)
+        twice_area = abs(np.cross(b-a, c-a))
+        independent_radius = side_a*side_b*side_c/(2*twice_area)
+        assert independent_radius <= threshold + 1e-12
+        expected.add(tuple(sorted(simplex)))
+    all_expected = set()
+    reference = build_tessellations(points).delaunay
+    for simplex in reference.simplices:
+        a, b, c = points[simplex]
+        twice_area = abs(np.cross(b-a, c-a))
+        radius = (np.linalg.norm(b-c)*np.linalg.norm(a-c)
+                  * np.linalg.norm(a-b)/(2*twice_area))
+        if radius <= threshold:
+            all_expected.add(tuple(sorted(int(v) for v in simplex)))
+    assert expected == all_expected
+
+
+@pytest.mark.parametrize("bad", [0, -1, float("nan"), float("inf")])
+def test_alpha_shape_rejects_invalid_radius(bad):
+    from voronoi_delaunay import build_alpha_shape
+    with pytest.raises(ValueError, match="max_circumradius"):
+        build_alpha_shape([(0, 0), (1, 0), (0, 1)], max_circumradius=bad)
+
+
+def test_alpha_shape_rejects_invalid_sites():
+    from voronoi_delaunay import build_alpha_shape
+    with pytest.raises(ValueError, match="collinear"):
+        build_alpha_shape([(0, 0), (1, 1), (2, 2)], max_circumradius=2)
