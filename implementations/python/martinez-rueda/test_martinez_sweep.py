@@ -61,9 +61,9 @@ def test_containment_classification_handles_hole_orientation_for_difference():
     assert fragment_area_contribution(inter["selected_fragments"])==pytest.approx(4.0)
 
 
-def test_classification_rejects_multiple_ring_inputs_until_hole_roles_exist():
+def test_invalid_touching_shell_hole_ring_collection_is_rejected():
     a=[(0,0),(4,0),(4,4),(0,4)]
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(ValueError):
         classify_boundary_fragments([[a,a],[a]])
 
 def test_stitched_boolean_results_match_rectangle_areas_and_components():
