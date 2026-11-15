@@ -21,3 +21,13 @@ The all-pairs Gabriel/RNG/beta and Yao implementations are transparent small-dat
 ## Reproduction
 
 From the package directory: `python -m pip install -r requirements.txt && python -m pytest -q`.
+
+
+## Indexed Yao differential verification
+
+The cKDTree Yao variant is compared edge-for-edge with the independent
+quadratic implementation on seeded point clouds of 2, 3, 8, 25 and 80 sites,
+for 3, 4, 8 and 16 cones and two cone orientations. Empty/singleton inputs,
+symmetric directional ties and invalid boolean cone counts are also covered.
+The indexed method is exact under the same floating-point angle and
+input-index tie conventions; worst-case complexity remains quadratic.

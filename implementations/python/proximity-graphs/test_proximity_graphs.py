@@ -146,3 +146,33 @@ def test_delaunay_euclidean_mst_rejects_duplicate_and_non_finite_sites():
         delaunay_euclidean_mst([(0, 0), (0, 0)])
     with pytest.raises(ValueError):
         delaunay_euclidean_mst([(0, 0), (1, float("nan"))])
+
+
+def test_kdtree_yao_matches_quadratic_reference_on_seeded_clouds():
+    import random
+    rng = random.Random(20261115)
+    for size in (2, 3, 8, 25, 80):
+        for cones in (3, 4, 8, 16):
+            points = []
+            while len(points) < size:
+                candidate = (rng.uniform(-50, 50), rng.uniform(-50, 50))
+                if candidate not in points:
+                    points.append(candidate)
+            for orientation in (0.0, 0.137):
+                assert yao_graph_kdtree(points, cones, orientation) == yao_graph(
+                    points, cones, orientation
+                )
+
+
+def test_kdtree_yao_handles_empty_singleton_and_tied_directions():
+    assert yao_graph_kdtree([]) == []
+    assert yao_graph_kdtree([(1, 2)]) == []
+    points = [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]
+    assert yao_graph_kdtree(points, cones=4) == yao_graph(points, cones=4)
+
+
+def test_kdtree_yao_rejects_invalid_cones_and_coordinates():
+    with pytest.raises(ValueError):
+        yao_graph_kdtree(SQUARE, cones=True)
+    with pytest.raises(ValueError):
+        yao_graph_kdtree([(0, 0), (float("nan"), 1)])

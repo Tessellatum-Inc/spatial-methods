@@ -33,3 +33,15 @@ The sparse MST function constructs a Delaunay triangulation, extracts its linear
 The package also exposes `delaunay_filtered_gabriel_graph` and `delaunay_filtered_rng`. They construct a SciPy/Qhull Delaunay triangulation, then apply the corresponding open-region blocker test only to triangulation edges. This reduces the candidate set from all O(n²) pairs to O(n) planar edges, and the straightforward blocker scan gives an O(n²) total baseline.
 
 These functions are intended for non-degenerate, general-position Euclidean point sets. Qhull selects one triangulation in cocircular cases, so boundary-tie edges omitted by that triangulation may also be absent from the filtered graph. The implementation is not the specialised linear-time RNG post-processing algorithm in Lingas (1994). Compare the Delaunay-filtered results with the all-pairs reference functions on general-position fixtures.
+
+
+## Indexed exact Yao construction
+
+`yao_graph_kdtree` uses SciPy's cKDTree to search the globally nearest sites in
+progressively larger batches until each angular cone has a candidate. Once a
+candidate is found, no unqueried site can be closer; a radius query then
+collects distance ties so the existing input-index tie rule is preserved.
+Seeded tests compare the indexed output exactly with the quadratic reference
+across several cone counts and orientations. This is an exact adaptive
+nearest-neighbour strategy, but its worst case remains O(n²); it is not the
+optimal O(n log n) algorithm from the literature.

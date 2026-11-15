@@ -148,3 +148,22 @@ Then construct a nearly cocircular point set and document how your boundary conv
 The new sparse MST implementation extracts the edges of a planar Delaunay triangulation and runs Kruskal on that candidate graph. The Euclidean MST is a subgraph of the Delaunay triangulation, so complete-graph O(n²) edge enumeration is avoided. For non-collinear sites, triangulation and sorting the O(n) candidate edges give O(n log n) time and O(n) candidate storage. Collinear sites are handled by sorting along their common line and connecting adjacent sites. Zero- and one-point inputs return an empty tree.
 
 The implementation is checked against the complete-graph Kruskal baseline on seeded general-position clouds. This is a sparse-candidate construction using SciPy/Qhull, not a from-scratch Delaunay implementation. Qhull's floating-point predicates and coordinate scale remain relevant.
+
+
+### Exact adaptive cKDTree Yao variant
+
+The package now adds an indexed exact variant alongside the transparent
+quadratic implementation. For each source point and cone, it requests an
+increasing number of globally nearest sites from a cKDTree until one lies in
+the cone. The first qualifying site is the nearest qualifying site because
+all omitted sites are no closer than the returned global k-th neighbour.
+A radius query retrieves all sites tied at that distance, after which input
+index resolves ties exactly as in the baseline. The result is the same
+undirected union of directed cone selections.
+
+This is an adaptive indexed search rather than a new asymptotic-optimal
+construction. It is typically more selective when cones are populated near
+the source, but in adversarial layouts the query size can grow to n and total
+work remains quadratic. The differential tests compare complete edge sets,
+not merely edge counts, over seeded clouds, multiple cone counts and rotated
+cone systems.

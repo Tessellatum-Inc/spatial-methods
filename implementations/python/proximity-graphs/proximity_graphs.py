@@ -291,3 +291,80 @@ def delaunay_euclidean_mst(
     if len(result) != n - 1:
         raise RuntimeError("Delaunay candidate graph did not connect all sites")
     return result
+
+
+def yao_graph_kdtree(
+    points: Sequence[Sequence[float]], cones: int = 8,
+    orientation: float = 0.0,
+) -> list[tuple[int, int]]:
+    """Exact Yao graph using adaptive k-nearest queries in a cKDTree.
+
+    For each source and cone, increase the global-neighbour query size until
+    at least one returned point lies in that cone. The nearest such point is
+    then the nearest cone point: every unqueried site is at least as far as
+    the returned global k-th neighbour. A radius query collects all distance
+    ties before input-index tie-breaking. The undirected union is returned.
+
+    Typical sparse queries avoid scanning every site, but adversarial cone
+    occupancy can force quadratic work. This is an exact indexed search, not
+    the optimal O(n log n) Yao construction.
+    """
+    from math import atan2, pi
+    import numpy as np
+    from scipy.spatial import cKDTree
+
+    if not isinstance(cones, int) or isinstance(cones, bool) or cones < 3:
+        raise ValueError("cones must be an integer of at least 3")
+    if not isfinite(orientation):
+        raise ValueError("orientation must be finite")
+    pts = _normalise(points)
+    n = len(pts)
+    if n <= 1:
+        return []
+    coordinates = np.asarray(pts, dtype=float)
+    tree = cKDTree(coordinates)
+    width = 2.0 * pi / cones
+    selected: set[tuple[int, int]] = set()
+
+    for i, origin in enumerate(pts):
+        for cone in range(cones):
+            k = 1
+            best_index = None
+            best_distance = None
+            while k < n:
+                distances, indices = tree.query(coordinates[i], k=min(k + 1, n))
+                distances = np.atleast_1d(distances)
+                indices = np.atleast_1d(indices)
+                candidates = []
+                for distance, j_raw in zip(distances, indices):
+                    j = int(j_raw)
+                    if j == i or j >= n:
+                        continue
+                    dx, dy = pts[j][0] - origin[0], pts[j][1] - origin[1]
+                    angle = (atan2(dy, dx) - orientation) % (2.0 * pi)
+                    if min(cones - 1, int(angle / width)) == cone:
+                        candidates.append((float(distance), j))
+                if candidates:
+                    best_distance = min(item[0] for item in candidates)
+                    # Include every exact-distance tie, even if cKDTree's
+                    # k-neighbour result cut through a tied set.
+                    radius = np.nextafter(best_distance, np.inf)
+                    tied = tree.query_ball_point(coordinates[i], radius)
+                    eligible = []
+                    for j_raw in tied:
+                        j = int(j_raw)
+                        if j == i:
+                            continue
+                        dx, dy = pts[j][0] - origin[0], pts[j][1] - origin[1]
+                        angle = (atan2(dy, dx) - orientation) % (2.0 * pi)
+                        if min(cones - 1, int(angle / width)) == cone:
+                            eligible.append((dx * dx + dy * dy, j))
+                    if eligible:
+                        best_index = min(eligible)[1]
+                    break
+                if k + 1 >= n:
+                    break
+                k = min(n - 1, k * 2)
+            if best_index is not None:
+                selected.add((min(i, best_index), max(i, best_index)))
+    return sorted(selected)
