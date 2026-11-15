@@ -105,7 +105,7 @@ def bellman_ford(graph: Graph, start: Node, goal: Node) -> tuple[list[Node] | No
             break
 
     for u, v, weight in edges:
-        if distance[u] != float("inf") and distance[u] + weight < distance[v]:
+        if distance[u] != float("inf") and _checked_add(distance[u], weight) < distance[v]:
             raise ValueError("reachable negative-weight cycle")
 
     if distance.get(goal, float("inf")) == float("inf"):
@@ -193,7 +193,7 @@ def bidirectional_dijkstra(
         clean(backward_heap, backward_dist, backward_done)
         if not forward_heap or not backward_heap:
             break
-        if forward_heap[0][0] + backward_heap[0][0] >= best:
+        if _checked_add(forward_heap[0][0], backward_heap[0][0]) >= best:
             break
 
         if forward_heap[0][0] <= backward_heap[0][0]:
@@ -201,7 +201,7 @@ def bidirectional_dijkstra(
             if node in forward_done:
                 continue
             forward_done.add(node)
-            if node in backward_dist and distance + backward_dist[node] < best:
+            if node in backward_dist and _checked_add(distance, backward_dist[node]) < best:
                 best, meeting = distance + backward_dist[node], node
             for neighbor, weight in graph.get(node, ()):
                 candidate = _checked_add(distance, weight)
@@ -210,7 +210,7 @@ def bidirectional_dijkstra(
                     forward_prev[neighbor] = node
                     heappush(forward_heap, (candidate, next(serial), neighbor))
                 if neighbor in backward_dist:
-                    total = candidate + backward_dist[neighbor]
+                    total = _checked_add(candidate, backward_dist[neighbor])
                     if total < best:
                         best, meeting = total, neighbor
         else:
@@ -218,16 +218,16 @@ def bidirectional_dijkstra(
             if node in backward_done:
                 continue
             backward_done.add(node)
-            if node in forward_dist and distance + forward_dist[node] < best:
+            if node in forward_dist and _checked_add(distance, forward_dist[node]) < best:
                 best, meeting = distance + forward_dist[node], node
             for predecessor, weight in reverse.get(node, ()):
-                candidate = distance + weight
+                candidate = _checked_add(distance, weight)
                 if candidate < backward_dist.get(predecessor, float("inf")):
                     backward_dist[predecessor] = candidate
                     backward_next[predecessor] = node
                     heappush(backward_heap, (candidate, next(serial), predecessor))
                 if predecessor in forward_dist:
-                    total = candidate + forward_dist[predecessor]
+                    total = _checked_add(candidate, forward_dist[predecessor])
                     if total < best:
                         best, meeting = total, predecessor
 
