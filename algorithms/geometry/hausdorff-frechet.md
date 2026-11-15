@@ -34,7 +34,7 @@ The rolling-row implementation uses O(mn) time and O(n) memory. It is sensitive 
 
 - Use Hausdorff for unordered sampled point sets and worst-case spatial discrepancy.
 - Use discrete Fréchet when traversal order and progression along a line matter.
-- Use a continuous Fréchet method when the geometry between vertices matters.
+- Use continuous Fréchet when the geometry between vertices matters. The Alt–Godau free-space diagram decides whether a leash of length ε can connect the two curve endpoints through reachable free space; bisection over ε approximates the minimum leash length.
 - Confirm both inputs share a projected planar CRS and compatible units.
 
 ## References
@@ -43,3 +43,10 @@ The rolling-row implementation uses O(mn) time and O(n) memory. It is sensitive 
 - Eiter, T. and Mannila, H. (1994). *Computing Discrete Fréchet Distance*. Technical Report CD-TR 94/64, Vienna University of Technology.
 
 The [tested Python package](../../implementations/python/geometry-metrics/README.md) provides the sampled-set Hausdorff and discrete Fréchet baselines, tests and [interactive lab](../../notebooks/geometry-metrics-lab.ipynb).
+
+
+## Continuous Fréchet distance: free-space reachability
+
+For a threshold ε, the free-space diagram contains parameter pairs (s,t) for which the two curve positions are at most ε apart. Each cell corresponds to one segment from each curve. The free-space portion inside a cell is convex, so reachability can be propagated along its top and right boundaries from reachable bottom and left intervals. A path from the lower-left to upper-right parameter-space corners exists exactly when the continuous Fréchet distance is at most ε.
+
+The package implements this decision procedure in O(mn) time and memory for m and n segments. It approximates the distance by bisection on ε until an absolute tolerance is reached. The returned value is an upper bound within that tolerance, subject to floating-point arithmetic; it is not a symbolic exact value.
