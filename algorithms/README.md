@@ -36,6 +36,9 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Remote sensing
 
+- [2-D Fourier transforms and frequency filtering](remote-sensing/fourier-filtering.md) — transform imagery into spatial-frequency space and apply radial low-, high- or band-pass filters.
+- [Adaptive thresholding](remote-sensing/adaptive-thresholding.md) — derive local mean or Gaussian threshold surfaces for spatially varying backgrounds.
+- [Hough line transform](remote-sensing/hough-transform.md) — accumulate edge-pixel votes in rho-theta space and extract straight-line peaks.
 - [Sobel and Canny edge detection](remote-sensing/edge-detection.md) — gradient estimation, non-maximum suppression and hysteresis.
 - [Mathematical morphology](remote-sensing/mathematical-morphology.md) — binary dilation, erosion, opening, closing and boundary extraction.
 - [Gabor filters](remote-sensing/gabor-filters.md) — oriented, frequency-selective filter banks for texture analysis.
