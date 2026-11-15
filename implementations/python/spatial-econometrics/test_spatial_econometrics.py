@@ -513,7 +513,8 @@ def test_proper_car_mle_recovers_synthetic_dependence_and_regression():
     assert fit.alpha == pytest.approx(alpha, abs=0.22)
     assert fit.coefficients == pytest.approx(beta, abs=0.22)
     assert fit.tau > 0
-    assert fit.sigma2_conditional == pytest.approx(1.0 / fit.tau)
+    assert fit.variance_scale == pytest.approx(1.0 / fit.tau)
+    np.testing.assert_allclose(fit.conditional_variances, 1.0 / (fit.tau * adjacency.sum(axis=1)))
     assert np.isfinite(fit.log_likelihood)
     assert len(fit.residuals) == n
     assert fit.alpha_bounds[0] < fit.alpha < fit.alpha_bounds[1]
