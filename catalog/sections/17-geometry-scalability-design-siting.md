@@ -4,7 +4,7 @@
 - **Source pages:** 35–37
 - **Source transcription:** [pages 31–35](../../source-inventory/pages-31-35.md) and [pages 36–40](../../source-inventory/pages-36-40.md)
 - **Review state:** source entries extracted into this index; not every entry independently verified
-- **Current canonical records:** none yet
+- **Current canonical records:** mesh smoothing (partial coverage of the source mesh-processing family); several other Section 17 families remain intake-only
 
 This section extends computational geometry and adds scalable statistics, fast density methods, sampling design, 3D data formats, competitive location, charging infrastructure, surveillance and a representative implementation map.
 
@@ -17,7 +17,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 | Polygon decomposition: Seidel and Chazelle triangulation, monotone partition, Hertel-Mehlhorn, optimal convex partition | Polygon triangulation and decomposition algorithms | 35 | Not checked — intake only |
 | Boolean operations: Martinez-Rueda polygon clipping, 3D mesh Booleans; watchman route problem | Polygon and mesh Boolean operations / visibility path problem | 35 | Not checked — intake only |
 | Approximate geometry: geometric hashing, BBD-trees for approximate nearest neighbor, coresets for k-means | Geometric hashing / spatial index / approximation methods | 35 | Not checked — intake only |
-| Mesh processing: Laplacian and Taubin smoothing, remeshing, mesh repair, ball pivoting, half-edge, winged-edge and quad-edge data structures | Mesh-processing algorithms / mesh data structures | 35 | Not checked — intake only |
+| Mesh processing: Laplacian and Taubin smoothing, remeshing, mesh repair, ball pivoting, half-edge, winged-edge and quad-edge data structures | Mesh-processing algorithms / mesh data structures | 35 | Partially implemented: uniform Laplacian and Taubin smoothing have runnable code and authored tests; remeshing, repair, ball pivoting and half-edge/winged-edge/quad-edge structures remain outstanding |
 
 ## Scalable computation for spatial statistics
 
