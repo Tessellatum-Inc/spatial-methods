@@ -114,3 +114,8 @@ The Section 1 flows-and-trees entry now links to an undirected k-core degree-pee
 ## Louvain implementation reconciliation
 
 Added a seeded multilevel weighted Louvain reference implementation, modularity evaluator, unit tests, algorithm note, verification record and executable notebook. The implementation preserves contracted internal edge weight as self-loops between aggregation levels. The grouped Section 1 community-detection entry remains partial: Leiden, Infomap, spectral partitioning and METIS-style methods are not implemented, and independent source identity, bibliography, claims and rights review remains outstanding.
+
+
+## Implementation reconciliation — Louvain and spectral partitioning
+
+The community-detection source row now links to a seeded multilevel weighted Louvain implementation, a modularity evaluator, unit tests, a verification record and an executable notebook. Contracted internal edge weights are preserved as self-loops between levels. The same Section 1 family now links to normalized-Laplacian spectral bisection with a Fiedler-vector sweep over normalized cut; the dense eigensolver baseline covers weighted graphs, disconnected components and isolates. These additions bring the Python implementation matrix to 141 packages and the explicit notebook execution list to 127. Louvain remains heuristic; spectral bisection is a dense small/medium teaching baseline. Leiden, Infomap, sparse large-graph spectral solvers and METIS-style multilevel partitioning remain outstanding. The grouped source-entry review state remains partial.
