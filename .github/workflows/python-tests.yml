@@ -387,6 +387,9 @@ jobs:
           - example: ear-clipping
             directory: implementations/python/ear-clipping
             pythonpath: ""
+          - example: constrained-delaunay
+            directory: implementations/python/constrained-delaunay
+            pythonpath: "../ear-clipping"
           - example: minkowski-convex
             directory: implementations/python/minkowski-convex
             pythonpath: ""
