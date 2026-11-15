@@ -23,7 +23,7 @@ Segment = tuple[Point, Point]
 BOUNDARY = "BOUNDARY"
 
 
-@dataclass(frozen=True)
+@dataclass
 class Trapezoid:
     id: tuple[int, int]
     x_left: float
@@ -157,23 +157,39 @@ class RandomizedTrapezoidalMap:
             {x for sid in segment_ids for x in
              (self.segments[sid][0][0], self.segments[sid][1][0])}
         ))
-        self.slabs: list[tuple[tuple[int, ...], tuple[Trapezoid, ...], _YNode | Trapezoid]] = []
-        self.trapezoids: list[Trapezoid] = []
-        for slab_index, (left, right) in enumerate(zip(self.x_events, self.x_events[1:])):
+        slab_inputs = []
+        for left, right in zip(self.x_events, self.x_events[1:]):
             mid = (left+right)/2
             active = [sid for sid in segment_ids
                       if self.segments[sid][0][0] < mid < self.segments[sid][1][0]]
             active.sort(key=lambda sid: _y_at(self.segments[sid], mid))
+            slab_inputs.append((left, right, mid, active))
+
+        # Consecutive slab intervals with the same upper/lower segment pair
+        # are one trapezoid. This lets endpoint walls stop at the first
+        # segment they encounter instead of extending through the whole map.
+        self.slabs = []
+        self.trapezoids = []
+        previous: dict[tuple[int | None, int | None], Trapezoid] = {}
+        self._y_node_cache = {}
+        for slab_index, (left, right, mid, active) in enumerate(slab_inputs):
             cells = []
+            current = {}
             for gap in range(len(active)+1):
-                cells.append(Trapezoid(
-                    (slab_index, gap), left, right,
-                    active[gap-1] if gap else None,
-                    active[gap] if gap < len(active) else None,
-                ))
+                bottom = active[gap-1] if gap else None
+                top = active[gap] if gap < len(active) else None
+                pair = (bottom, top)
+                if pair in previous:
+                    cell = previous[pair]
+                    cell.x_right = right
+                else:
+                    cell = Trapezoid((slab_index, gap), left, right, bottom, top)
+                    self.trapezoids.append(cell)
+                cells.append(cell)
+                current[pair] = cell
             root = self._build_y_tree(active, cells, mid)
             self.slabs.append((tuple(active), tuple(cells), root))
-            self.trapezoids.extend(cells)
+            previous = current
         self._x_root = self._build_x_tree(0, len(self.slabs))
 
     def _build_y_tree(self, active: list[int], cells: list[Trapezoid],
@@ -183,7 +199,14 @@ class RandomizedTrapezoidalMap:
                 return cells[lo]
             split = (lo+hi)//2
             sid = active[split]
-            return _YNode(sid, build(lo, split), build(split+1, hi))
+            left = build(lo, split)
+            right = build(split+1, hi)
+            key = (sid, id(left), id(right))
+            node = self._y_node_cache.get(key)
+            if node is None:
+                node = _YNode(sid, left, right)
+                self._y_node_cache[key] = node
+            return node
         return build(0, len(active))
 
     def _build_x_tree(self, lo: int, hi: int):
@@ -223,13 +246,16 @@ class RandomizedTrapezoidalMap:
 
     @property
     def search_node_count(self) -> int:
-        def count(node):
+        seen = set()
+        def count_y(node):
+            key = id(node)
+            if key in seen:
+                return 0
+            seen.add(key)
             if isinstance(node, Trapezoid):
                 return 1
-            return 1 + count(node.left) + count(node.right)
-        total = 0
-        for _active, _cells, root in self.slabs:
-            total += count(root)
+            return 1 + count_y(node.left) + count_y(node.right)
+        total = sum(count_y(root) for _active, _cells, root in self.slabs)
         def count_x(node):
             if not isinstance(node, _XNode):
                 return 0
