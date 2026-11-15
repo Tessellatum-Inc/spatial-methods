@@ -517,3 +517,46 @@ def test_translated_rectangle_corners_enclose_every_input_point():
         along_v = dx*vx + dy*vy
         assert -tolerance <= along_u <= width+tolerance
         assert -tolerance <= along_v <= height+tolerance
+
+
+def test_caliper_rectangle_matches_orientation_scan_oracle_on_seeded_clouds():
+    import random
+    from geometry_metrics import minimum_area_bounding_rectangle, minimum_area_bounding_rectangle_calipers
+    rng = random.Random(20261116)
+    for _ in range(100):
+        points = [(rng.uniform(-100, 100), rng.uniform(-100, 100)) for _ in range(35)]
+        expected = minimum_area_bounding_rectangle(points)
+        actual = minimum_area_bounding_rectangle_calipers(points)
+        assert actual["area"] == pytest.approx(expected["area"], rel=1e-10, abs=1e-9)
+        assert actual["width"] >= 0 and actual["height"] >= 0
+
+
+def test_caliper_rectangle_rotated_rectangle_and_degenerate_inputs():
+    from geometry_metrics import minimum_area_bounding_rectangle_calipers
+    theta = 0.37
+    c, s = math.cos(theta), math.sin(theta)
+    points = [(x*c-y*s, x*s+y*c) for x,y in [(0,0),(8,0),(8,3),(0,3),(2,1)]]
+    result = minimum_area_bounding_rectangle_calipers(points)
+    assert result["area"] == pytest.approx(24.0, abs=1e-9)
+    assert sorted((result["width"], result["height"])) == pytest.approx([3.0, 8.0])
+    assert minimum_area_bounding_rectangle_calipers([]) is None
+    assert minimum_area_bounding_rectangle_calipers([(2,3)])["area"] == 0.0
+    assert minimum_area_bounding_rectangle_calipers([(0,0),(3,4)])["area"] == 0.0
+
+
+def test_minimum_width_matches_brute_force_edge_orientation_oracle():
+    import random
+    from geometry_metrics import convex_hull, convex_polygon_minimum_width
+    rng = random.Random(917)
+    for _ in range(60):
+        points = [(rng.uniform(-20,20), rng.uniform(-20,20)) for _ in range(25)]
+        hull = convex_hull(points)
+        expected = float("inf")
+        for a,b in zip(hull, hull[1:]+hull[:1]):
+            dx,dy=b[0]-a[0],b[1]-a[1]
+            length=math.hypot(dx,dy)
+            if length == 0: continue
+            nx,ny=-dy/length,dx/length
+            projections=[x*nx+y*ny for x,y in hull]
+            expected=min(expected,max(projections)-min(projections))
+        assert convex_polygon_minimum_width(points)["width"] == pytest.approx(expected, rel=1e-10, abs=1e-9)
