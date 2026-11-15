@@ -39,3 +39,8 @@ The homogeneous Poisson simulator draws an exact Poisson event count with mean i
 ## Strauss repulsive process
 
 The Strauss sampler targets a finite-window Gibbs density proportional to βⁿγˢ, where s counts close unordered pairs. At each iteration it proposes a uniform-location birth or a uniformly selected death with equal probability. The birth acceptance ratio is β|W|γᵏ/(n+1); the death ratio is n/(β|W|γᵏ), with k the number of neighbours within the interaction radius. The partition function cancels from these Metropolis–Hastings ratios. Burn-in and retained chain length are user-controlled. This is approximate MCMC: fixed-seed reproducibility and a hard-core constraint check do not establish convergence or effective sample size.
+
+
+## 8. Detect fixed-case-count neighbourhoods
+
+The Besag–Newell routine orders each centre's areas by centroid distance and accumulates complete distance-tie groups until at least k cases are reached. It evaluates the selected neighbourhood's upper-tail hypergeometric probability conditional on the total population and case count. The global routine simulates case allocations proportional to population, repeats all local tests and compares the number of significant centres with the observed count. This is explicitly area-centred; case-centred historical variants and adjustments for multiple choices of k are not silently conflated with it.
