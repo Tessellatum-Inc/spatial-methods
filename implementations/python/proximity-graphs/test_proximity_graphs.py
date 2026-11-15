@@ -300,3 +300,33 @@ def test_indexed_yao_matches_reference_on_integer_lattice_ties():
                     assert yao_graph_kdtree(points, cones, orientation) == yao_graph(
                         points, cones, orientation
                     )
+
+
+@pytest.mark.parametrize("beta", [1.0, 1.25, 1.5, 1.75, 2.0])
+def test_indexed_delaunay_beta_skeleton_matches_all_pairs_on_general_position(beta):
+    from proximity_graphs import delaunay_filtered_beta_skeleton
+    import random
+    rng = random.Random(20261121)
+    for size in (5, 12, 30, 75):
+        points = []
+        while len(points) < size:
+            candidate = (rng.uniform(-30, 30), rng.uniform(-30, 30))
+            if candidate not in points:
+                points.append(candidate)
+        assert delaunay_filtered_beta_skeleton(points, beta) == beta_skeleton(points, beta)
+
+
+def test_indexed_delaunay_beta_skeleton_rejects_collinear_and_invalid_beta():
+    from proximity_graphs import delaunay_filtered_beta_skeleton
+    with pytest.raises(ValueError, match="collinear"):
+        delaunay_filtered_beta_skeleton([(0, 0), (1, 1), (2, 2)])
+    with pytest.raises(ValueError):
+        delaunay_filtered_beta_skeleton(SQUARE, True)
+    with pytest.raises(ValueError):
+        delaunay_filtered_beta_skeleton(SQUARE, 2.1)
+
+
+def test_indexed_delaunay_beta_skeleton_empty_and_small_inputs_rejected():
+    from proximity_graphs import delaunay_filtered_beta_skeleton
+    with pytest.raises(ValueError, match="three points"):
+        delaunay_filtered_beta_skeleton([])
