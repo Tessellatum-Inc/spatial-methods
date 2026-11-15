@@ -16,7 +16,9 @@ Deletion is supported by condense-tree processing: underfilled nodes are
 removed, their remaining entries/subtrees are reinserted at their original
 levels, and a one-child root is collapsed. Record IDs are stable; deleting an
 unknown or already deleted ID returns False. This is still not a full
-production R*-tree: bulk loading, kNN, disk pages, persistence, concurrency
-and robust exact arithmetic are not implemented. Split and query operations use floating-point bounds.
+production R*-tree: bulk loading, disk pages, persistence, concurrency and robust exact arithmetic
+are not implemented. The k-nearest query ranks indexed rectangles by exact
+point-to-rectangle distance; it does not calculate distance to an underlying
+arbitrary geometry. Split and query operations use floating-point bounds.
 
 Run `pytest -q` from this directory.
