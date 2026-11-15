@@ -708,3 +708,57 @@ def test_spatial_lag_gmm_rejects_invalid_or_underidentified_inputs():
         spatial_lag_gmm([1, 2, 3, 4, 5, 6, float("nan"), 8], x, w)
     with pytest.raises(ValueError, match="identify"):
         spatial_lag_gmm(y, x, w, instrument_orders=1)
+
+
+def test_spatial_error_gmm_recovers_synthetic_kp_parameters():
+    from spatial_error_gmm import spatial_error_gmm
+    rng = np.random.default_rng(2718)
+    n = 120
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    beta = np.array([1.25, -0.55])
+    lam = 0.38
+    innovation = rng.normal(scale=0.35, size=n)
+    error = np.linalg.solve(np.eye(n) - lam * w, innovation)
+    y = x @ beta + error
+    fit = spatial_error_gmm(y, x, w, grid_size=501)
+    assert fit.lambda_ == pytest.approx(lam, abs=0.16)
+    assert fit.beta == pytest.approx(beta, abs=0.15)
+    assert fit.innovation_variance > 0
+    assert len(fit.filtered_innovations) == n
+    assert len(fit.standard_errors) == 2
+    covariance = np.asarray(fit.covariance)
+    np.testing.assert_allclose(covariance, covariance.T, atol=1e-12)
+    assert np.linalg.eigvalsh(covariance).min() > 0
+    assert fit.moment_objective >= 0
+    assert len(fit.moment_residuals) == 3
+
+
+def test_spatial_error_gmm_handles_zero_spatial_error_and_custom_bounds():
+    from spatial_error_gmm import spatial_error_gmm
+    rng = np.random.default_rng(44)
+    n = 100
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    y = x @ np.array([0.7, 1.1]) + rng.normal(scale=0.2, size=n)
+    fit = spatial_error_gmm(y, x, w, rho_bounds=(-0.8, 0.8), grid_size=301)
+    assert abs(fit.lambda_) < 0.35
+    assert fit.rho_bounds == (-0.8, 0.8)
+
+
+def test_spatial_error_gmm_rejects_invalid_inputs_and_boundary_solution():
+    from spatial_error_gmm import spatial_error_gmm
+    n = 12
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), np.arange(n, dtype=float)])
+    y = np.sin(np.arange(n, dtype=float))
+    with pytest.raises(ValueError, match="grid_size"):
+        spatial_error_gmm(y, x, w, grid_size=10)
+    with pytest.raises(ValueError, match="full column rank"):
+        spatial_error_gmm(y, np.ones((n, 2)), w)
+    with pytest.raises(ValueError, match="finite"):
+        spatial_error_gmm([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, float("nan")], x, w)
+    with pytest.raises(ValueError, match="zero diagonal"):
+        bad = w.copy()
+        bad[0, 0] = 0.1
+        spatial_error_gmm(y, x, bad)
