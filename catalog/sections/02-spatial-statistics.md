@@ -19,7 +19,15 @@ The source groups together descriptive statistics, inferential procedures, point
 | Inference: permutation and Monte Carlo tests, Bonferroni, FDR and Šidák correction, Dutilleul's modified t-test, spatial and block bootstrap | Inferential procedures / multiple-testing corrections / resampling | 3 | Partial — Bonferroni, Šidák, Holm, Hochberg, BH and BY adjustments implemented; permutation tests, Dutilleul's modified t-test and spatial/block bootstrap remain open |
 | Spatial eigenvector filtering (Moran eigenvectors), Spatial+, restricted spatial regression | Regression approaches / spatial dependence adjustments | 3 | Partial — symmetric HWH eigenvector basis and fixed-size OLS spatial filter implemented; automatic eigenvector selection, Spatial+ and restricted spatial regression remain open |
 
-## Spatial regression and econometrics\n\n| Topic | Coverage |\n|---|---|\n| Spatial lag (SAR/SLM), spatial error (SEM), Durbin (SDM/SLX), SAC/SARAR and general nested models | Model family and interpretation are documented; full estimation is not implemented in this repository. |\n| Classic LM-lag and LM-error specification diagnostics | Tested dense OLS-based reference implementation; robust LM variants and joint tests remain open. |\n| Direct, indirect and total impacts | Tested dense SAR/SDM impact-matrix decomposition; parameter estimation and uncertainty propagation remain open. |\n\n## First audited clustering lesson
+## Spatial regression and econometrics
+
+| Topic | Coverage |
+|---|---|
+| Spatial lag (SAR/SLM), spatial error (SEM), Durbin (SDM/SLX), SAC/SARAR and general nested models | Model family and interpretation are documented; full estimation is not implemented in this repository. |
+| Classic LM-lag and LM-error specification diagnostics | Tested dense OLS-based reference implementation; robust LM variants and joint tests remain open. |
+| Direct, indirect and total impacts | Tested dense SAR/SDM impact-matrix decomposition; parameter estimation and uncertainty propagation remain open. |
+
+## First audited clustering lesson
 
 The [DBSCAN lesson](../../algorithms/statistics/dbscan.md) introduces core, border and noise points, the eps/min_samples parameters and the input-order policy for ambiguous border points. A tested O(n²) planar implementation and interactive notebook provide a small-data baseline; HDBSCAN, OPTICS and indexed large-data search remain open. The separate [ST-DBSCAN lesson](../../algorithms/statistics/st-dbscan.md) adds a tested joint spatial-and-temporal neighbourhood baseline with deterministic border assignment; T-DBSCAN and indexed spatiotemporal search remain open.
 
