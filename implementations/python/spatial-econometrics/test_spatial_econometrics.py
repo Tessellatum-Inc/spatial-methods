@@ -994,6 +994,10 @@ def test_spatial_sarar_gtsls_three_step_recovers_synthetic_heteroskedastic_model
     assert fit.first_stage_rank == fit.instruments_used
     assert fit.transformed_stage_rank == x.shape[1] + 1
     assert np.all(np.isfinite(fit.filtered_residuals))
+    assert np.asarray(fit.covariance_joint_kp).shape == (x.shape[1] + 2, x.shape[1] + 2)
+    assert len(fit.standard_errors_joint_kp) == x.shape[1] + 2
+    assert np.all(np.asarray(fit.standard_errors_joint_kp) >= 0)
+    assert np.all(np.isfinite(fit.covariance_joint_kp))
 
 
 def test_spatial_sarar_gtsls_rejects_invalid_or_underidentified_inputs():
@@ -1064,3 +1068,92 @@ def test_spatial_lag_2sls_hac_rejects_invalid_geometry_and_identification():
         bad = coords.copy()
         bad[0, 0] = np.nan
         spatial_lag_2sls_hac(y, x, w, bad, bandwidth=2)
+
+
+
+def test_spatial_sarar_joint_covariance_matches_independent_kp_matrix_construction():
+    from spatial_sarar_gtsls import spatial_sarar_gtsls
+    rng = np.random.default_rng(77123)
+    n = 90
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    beta = np.array([0.9, -0.55])
+    rho, lam = 0.2, 0.25
+    innovation = rng.normal(size=n) * (0.1 + 0.07 * np.abs(x[:, 1]))
+    u = np.linalg.solve(np.eye(n) - lam * w, innovation)
+    y = np.linalg.solve(np.eye(n) - rho * w, x @ beta + u)
+    fit = spatial_sarar_gtsls(y, x, w, instrument_orders=2, grid_size=401)
+
+    # Independently reconstruct the KP (2010) plug-in covariance from
+    # equations (21), (25)-(29), using the fitted first-stage GM parameter.
+    h_blocks = [x]
+    lagged = x.copy()
+    for _ in range(2):
+        lagged = w @ lagged
+        h_blocks.append(lagged)
+    h = np.column_stack(h_blocks)
+    keep, current, rank = [], np.empty((n, 0)), 0
+    for j in range(h.shape[1]):
+        candidate = np.column_stack([current, h[:, j]])
+        next_rank = np.linalg.matrix_rank(candidate, tol=1e-10)
+        if next_rank > rank:
+            keep.append(j)
+            current, rank = candidate, next_rank
+    h = h[:, keep]
+    z = np.column_stack([x, w @ y])
+    p0 = np.linalg.solve(h.T @ h / n, h.T @ z / n)
+    p0 = p0 @ np.linalg.inv((h.T @ z / n).T @ np.linalg.solve(h.T @ h / n, h.T @ z / n))
+    first_delta = p0.T @ h.T @ y / n
+    u0 = y - z @ first_delta
+    transform = np.eye(n) - fit.lambda_ * w
+    f0 = np.linalg.solve(transform.T, h)
+    t0 = f0 @ p0
+    a1 = w.T @ w
+    a1 -= np.diag(np.diag(a1))
+    sym_a = [a1 + a1.T, w + w.T]
+    a_vectors = []
+    for a in sym_a:
+        alpha = (-z).T @ transform.T @ a @ transform @ u0 / n
+        a_vectors.append(t0 @ alpha)
+    a_stack = np.column_stack(a_vectors)
+    eps_hat = transform @ u0
+    sigma = eps_hat ** 2
+    sigma_matrix = np.diag(sigma)
+    psi_gm = np.empty((2, 2))
+    for r in range(2):
+        for q in range(2):
+            psi_gm[r, q] = (
+                np.trace(sym_a[r] @ sigma_matrix @ sym_a[q] @ sigma_matrix) / (2*n)
+                + a_vectors[r] @ (sigma * a_vectors[q]) / n
+            )
+    psi_dd = h.T @ (sigma[:, None] * h) / n
+    psi_dr = h.T @ (sigma[:, None] * a_stack) / n
+    psi = np.block([[psi_dd, psi_dr], [psi_dr.T, psi_gm]])
+    zstar = transform @ z
+    qhh = h.T @ h / n
+    qhz = h.T @ zstar / n
+    pstar = np.linalg.solve(qhh, qhz) @ np.linalg.inv(qhz.T @ np.linalg.solve(qhh, qhz))
+    j = np.array([1.0, 2.0 * fit.lambda_])
+    gm_map = j / (j @ j)
+    mapping = np.zeros((x.shape[1] + 2, h.shape[1] + 2))
+    mapping[:x.shape[1] + 1, :h.shape[1]] = pstar.T
+    mapping[-1, h.shape[1]:] = gm_map
+    expected = mapping @ psi @ mapping.T
+    np.testing.assert_allclose(fit.covariance_joint_kp, expected, rtol=1e-8, atol=1e-10)
+    np.testing.assert_allclose(fit.covariance_joint_kp,
+                               np.asarray(fit.covariance_joint_kp).T, atol=1e-12)
+
+
+def test_spatial_sarar_joint_covariance_rejects_incompatible_inputs():
+    from spatial_sarar_joint_covariance import spatial_sarar_joint_covariance
+    n = 20
+    w = _row_standardised_chain(n)
+    x = np.column_stack([np.ones(n), np.arange(n, dtype=float)])
+    y = np.sin(np.arange(n, dtype=float))
+    h = np.column_stack([x, w @ x])
+    with pytest.raises(ValueError, match="finite"):
+        spatial_sarar_joint_covariance(y, x, w, h, float("nan"),
+                                       np.zeros(n), [0.0, 0.0, 0.0])
+    with pytest.raises(ValueError, match="dimensions"):
+        spatial_sarar_joint_covariance(y, x, w, h, 0.2,
+                                       np.zeros(n - 1), [0.0, 0.0, 0.0])
