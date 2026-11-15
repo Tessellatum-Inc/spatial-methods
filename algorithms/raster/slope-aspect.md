@@ -6,7 +6,7 @@ Stable ID: SA-RASTER-HORN-SLOPE-ASPECT · Draft 0.1 · Source compendium section
 
 A DEM is a sampled elevation surface. Slope describes steepness; aspect describes the direction of steepest descent. Both are local derivatives, so estimates depend on neighbourhood, cell spacing, elevation units and missing-value policy.
 
-This lesson uses Horn's weighted 3×3 finite-difference operator. It is a transparent baseline, not a claim that every GIS package uses the same estimator.
+This lesson covers two local estimators: Horn's weighted 3×3 finite-difference operator and the Zevenbergen–Thorne central-difference stencil. They agree on planar surfaces but can differ on curved or noisy terrain.
 
 ## The 3×3 neighbourhood
 
@@ -31,6 +31,17 @@ $$p=\sqrt{z_x^2+z_y^2}$$
 $$\theta=\tan^{-1}(p)\frac{180}{\pi},\qquad S_{\%}=100p$$
 
 A 100% grade is a 45° slope. Degrees and percent rise are different units.
+
+
+## Zevenbergen–Thorne central differences
+
+The Zevenbergen–Thorne first-derivative stencil uses the west/east and north/south cardinal neighbours:
+
+$z_x=\frac{f-e}{2\Delta x},\qquad z_y=\frac{b-h}{2\Delta y}$
+
+Here (e) and (f) are the west and east neighbours in the centre row, while (b) and (h) are the north and south neighbours in the centre column. The same slope and downslope-aspect equations above then apply. The implementation is exposed as `zevenbergen_thorne_slope_aspect` beside `horn_slope_aspect`.
+
+Both use the same strict 3×3 validity and border policy. On a planar surface their first derivatives agree; on curved terrain the stencils have different smoothing and noise responses. This addition implements first derivatives only, not the full family of profile and plan curvature measures.
 
 ## Downslope aspect
 
