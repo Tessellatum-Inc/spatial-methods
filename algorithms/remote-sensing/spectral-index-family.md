@@ -5,7 +5,7 @@ Stable ID: `SA-RS-SPECTRAL-INDEX-FAMILY` · Draft 0.1 · Source compendium secti
 This family converts calibrated multispectral reflectance into band-ratio or
 band-combination indicators. The implementation package covers a useful
 subset of the source inventory: EVI, SAVI, NDRE, NDMI, LSWI, NDWI, MNDWI,
-NDBI, NBR, dNBR and NDSI, alongside NDVI.
+NDBI, NBR, dNBR and NDSI, alongside NDVI. AWEI_sh and AWEI_nsh are also included for shadow-aware water extraction.
 
 | Index | Formula | Typical use |
 |---|---|---|
