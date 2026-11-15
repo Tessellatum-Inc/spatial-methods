@@ -24,7 +24,7 @@ def test_viterbi_prefers_network_consistent_trace():
 def test_unreachable_transition_is_rejected():
     with pytest.raises(ValueError, match="connected candidate"):
         match_trace([(10, 0), (90, 0)], roads(),
-                    lambda a, b: math.inf if a.edge_id != b.edge_id else 80, search_radius=1)
+                    lambda a, b: math.inf, search_radius=1)
 
 def test_no_candidate_reports_observation_index():
     with pytest.raises(ValueError, match="observation 1"):
