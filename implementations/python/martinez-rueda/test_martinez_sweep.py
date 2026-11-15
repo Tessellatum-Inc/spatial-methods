@@ -112,3 +112,22 @@ def test_self_crossing_ring_is_rejected():
     bowtie=[(0,0),(2,2),(0,2),(2,0)]
     other=[(3,0),(4,0),(4,1),(3,1)]
     with pytest.raises(ValueError): boolean_overlay_rings([[bowtie],[other]])
+
+def test_polygon_input_hole_and_island_inside_hole():
+    shell=[(0,0),(10,0),(10,10),(0,10)]
+    hole=[(3,3),(3,7),(7,7),(7,3)]
+    island=[(4,4),(6,4),(6,6),(4,6)]
+    union=boolean_overlay_rings([[shell,hole],[island]],operation='union')
+    assert union['area']==pytest.approx(88.0)
+    assert len(union['rings'])==3
+    inter=boolean_overlay_rings([[shell,hole],[island]],operation='intersection')
+    assert inter['rings']==()
+    diff=boolean_overlay_rings([[shell,hole],[island]],operation='difference')
+    assert diff['area']==pytest.approx(84.0)
+    assert len(diff['rings'])==2
+
+def test_invalid_hole_outside_shell_is_rejected():
+    shell=[(0,0),(5,0),(5,5),(0,5)]
+    hole=[(6,6),(6,7),(7,7),(7,6)]
+    other=[(10,10),(11,10),(11,11),(10,11)]
+    with pytest.raises(ValueError): boolean_overlay_rings([[shell,hole],[other]])
