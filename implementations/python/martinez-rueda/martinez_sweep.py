@@ -48,6 +48,18 @@ def _intersection(s1,s2,eps):
         return t,u,p,proper
     return None
 
+def _signed_area(ring):
+    return 0.5*sum(ring[i][0]*ring[(i+1)%len(ring)][1] - ring[(i+1)%len(ring)][0]*ring[i][1] for i in range(len(ring)))
+
+def _inside(point, ring):
+    x,y=point; inside=False
+    for i,a in enumerate(ring):
+        b=ring[(i+1)%len(ring)]
+        if (a[1]>y)!=(b[1]>y):
+            xcross=a[0]+(y-a[1])*(b[0]-a[0])/(b[1]-a[1])
+            if x<xcross: inside=not inside
+    return inside
+
 def sweep_split_segments(polygons, *, epsilon=1e-10):
     """Return x-ordered endpoint events, proper crossings and split fragments.
 
@@ -65,6 +77,8 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
                     raise ValueError("rings require finite 2D coordinates")
                 pts.append((float(p[0]),float(p[1])))
             if len(pts)<3 or len(set(pts))<3: raise ValueError("rings need three distinct points")
+            if abs(_signed_area(pts))<=epsilon: raise ValueError("ring area must be non-zero")
+            if _signed_area(pts)<0: pts.reverse()
             for i,a in enumerate(pts):
                 b=pts[(i+1)%len(pts)]
                 if a==b: raise ValueError("zero-length edges are unsupported")
@@ -99,3 +113,36 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
     events.sort(key=lambda e:(e.point[0],e.point[1],0 if e.kind=="left" else 1))
     return {"segments":tuple(segments),"events":tuple(events),
             "intersection_events":tuple(crossings),"split_segments":tuple(fragments)}
+
+def classify_boundary_fragments(polygons, *, operation='intersection', epsilon=1e-10):
+    """Select directed boundary fragments for a two-simple-ring Boolean.
+    Supports one shell ring per source; stitching into output rings is not yet done.
+    """
+    if operation not in {'intersection','union','difference','symmetric_difference'}:
+        raise ValueError('unsupported Boolean operation')
+    if len(polygons)!=2 or any(len(source)!=1 for source in polygons):
+        raise NotImplementedError('classification requires one shell ring per source')
+    result=sweep_split_segments(polygons,epsilon=epsilon)
+    rings=[]
+    for source in polygons:
+        ring=[(float(p[0]),float(p[1])) for p in source[0]]
+        if _signed_area(ring)<0: ring.reverse()
+        rings.append(ring)
+    selected=[]
+    for f in result['split_segments']:
+        midpoint=((f.a[0]+f.b[0])/2,(f.a[1]+f.b[1])/2)
+        inside=_inside(midpoint,rings[1-f.source])
+        keep=(inside if operation=='intersection' else
+              not inside if operation in {'union','symmetric_difference'} else
+              (not inside if f.source==0 else inside))
+        if keep:
+            reverse=(operation=='difference' and f.source==1)
+            a,b=(f.b,f.a) if reverse else (f.a,f.b)
+            t0,t1=(f.t1,f.t0) if reverse else (f.t0,f.t1)
+            selected.append(SplitSegment(f.source,f.ring,f.index,a,b,t0,t1))
+    return {'operation':operation,'selected_fragments':tuple(selected),
+            'intersection_events':result['intersection_events']}
+
+def fragment_area_contribution(fragments):
+    """Signed shoelace contribution; meaningful when selected fragments close."""
+    return 0.5*sum(f.a[0]*f.b[1]-f.b[0]*f.a[1] for f in fragments)
