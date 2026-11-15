@@ -14,6 +14,7 @@ from __future__ import annotations
 
 from bisect import bisect_left
 from dataclasses import dataclass
+from fractions import Fraction
 from math import isfinite
 from random import Random
 from typing import Iterable, Sequence
@@ -55,8 +56,11 @@ def _point(value: Sequence[float]) -> Point:
     return x, y
 
 
-def _orient(a: Point, b: Point, c: Point) -> float:
-    return (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0])
+def _orient(a: Point, b: Point, c: Point) -> Fraction:
+    ax, ay = map(lambda v: Fraction(str(v)), a)
+    bx, by = map(lambda v: Fraction(str(v)), b)
+    cx, cy = map(lambda v: Fraction(str(v)), c)
+    return (bx-ax)*(cy-ay) - (by-ay)*(cx-ax)
 
 
 def _on_segment(p: Point, a: Point, b: Point, eps: float) -> bool:
