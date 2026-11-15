@@ -4,13 +4,13 @@
 - **Source pages:** 7–9
 - **Source transcription:** [pages 6–10](../../source-inventory/pages-06-10.md)
 - **Review state:** source entries extracted into this index; not every entry independently verified
-- **Current canonical records:** [NDVI](../../algorithms/remote-sensing/ndvi.md), [spectral-index family](../../algorithms/remote-sensing/spectral-index-family.md), [Otsu thresholding](../../algorithms/remote-sensing/otsu-thresholding.md), [PCA transform](../../algorithms/remote-sensing/pca-transform.md), [GLCM texture](../../algorithms/remote-sensing/glcm-texture.md), [Sobel/Canny](../../algorithms/remote-sensing/edge-detection.md), [binary morphology](../../algorithms/remote-sensing/mathematical-morphology.md), and [Gabor filters](../../algorithms/remote-sensing/gabor-filters.md). This is a partial audit; the section remains substantially incomplete.
+- **Current canonical records:** [NDVI](../../algorithms/remote-sensing/ndvi.md), [spectral-index family](../../algorithms/remote-sensing/spectral-index-family.md), [Otsu thresholding](../../algorithms/remote-sensing/otsu-thresholding.md), [PCA transform](../../algorithms/remote-sensing/pca-transform.md), [GLCM texture](../../algorithms/remote-sensing/glcm-texture.md), [Sobel/Canny](../../algorithms/remote-sensing/edge-detection.md), [binary morphology](../../algorithms/remote-sensing/mathematical-morphology.md), and [Gabor filters](../../algorithms/remote-sensing/gabor-filters.md), [Fourier filtering](../../algorithms/remote-sensing/fourier-filtering.md), [adaptive thresholding](../../algorithms/remote-sensing/adaptive-thresholding.md), and the [Hough line transform](../../algorithms/remote-sensing/hough-transform.md). This is a partial audit; the section remains substantially incomplete.
 
 The source spans raw imagery correction, spectral transforms, classification, hyperspectral analysis, radar, point clouds, photogrammetry and biophysical retrieval. These methods operate at different stages of a sensor-to-product workflow; do not collapse them into one generic “remote sensing algorithm” category.
 
 ## First audited index
 
-The canonical records now cover the spectral-index family, global Otsu thresholding, covariance/correlation PCA, offset-specific GLCM texture, Sobel/Canny edges, binary morphology and Gabor filters. PCA is deliberately distinguished from MNF; GLCM covers six common features rather than the full Haralick set. Atmospheric correction, MNF, Fourier/wavelet/Hough/Radon transforms, SIFT/SURF, classification, SAR, LiDAR, photogrammetry and retrieval remain open.
+The canonical records now cover the spectral-index family, global Otsu thresholding, covariance/correlation PCA, offset-specific GLCM texture, Sobel/Canny edges, binary morphology and Gabor filters. PCA is deliberately distinguished from MNF; GLCM covers six common features rather than the full Haralick set. Atmospheric correction, MNF, wavelet/Radon transforms, SIFT/SURF, classification, SAR, LiDAR, photogrammetry and retrieval remain open.
 
 ## Preprocessing and correction
 
@@ -29,9 +29,9 @@ The canonical records now cover the spectral-index family, global Otsu threshold
 |---|---|---:|--- |
 | Vegetation and soil: [NDVI](../../algorithms/remote-sensing/ndvi.md), EVI, SAVI, NDRE, NDMI, LSWI, tasseled cap (Kauth-Thomas) | Spectral indices / transforms | 8 | Partial — related record exists; source-entry review pending |
 | Water, burn, snow, urban: NDWI, MNDWI, AWEI, NBR, dNBR, NDSI, NDBI | Spectral indices | 8 | Partial — selected bibliography checked; canonical lesson pending |
-| Transforms: [PCA](../../algorithms/remote-sensing/pca-transform.md), minimum noise fraction (MNF), Fourier, wavelet, Hough, Radon | Statistical and signal transforms | 8 | Partial — covariance/correlation PCA implementation and tests authored; MNF and other transforms remain open |
+| Transforms: [PCA](../../algorithms/remote-sensing/pca-transform.md), minimum noise fraction (MNF), [Fourier](../../algorithms/remote-sensing/fourier-filtering.md), wavelet, [Hough](../../algorithms/remote-sensing/hough-transform.md), Radon | Statistical and signal transforms | 8 | Partial — covariance/correlation PCA implementation and tests authored; MNF and other transforms remain open |
 | Texture and edges: [GLCM](../../algorithms/remote-sensing/glcm-texture.md), Gabor, Sobel, Canny, mathematical morphology, SIFT, SURF | Texture measures / filters / feature detectors and descriptors | 8 | Partial — offset-specific GLCM and six common features implemented; SIFT and SURF remain open; Sobel/Canny, binary morphology and Gabor now have reference implementations |
-| Thresholding: Otsu, adaptive; Stumpf bathymetry; OC4 chlorophyll | Thresholding methods / retrieval algorithms | 8 | Not checked — intake only |
+| Thresholding: [Otsu](../../algorithms/remote-sensing/otsu-thresholding.md), [adaptive thresholding](../../algorithms/remote-sensing/adaptive-thresholding.md); Stumpf bathymetry; OC4 chlorophyll | Thresholding methods / retrieval algorithms | 8 | Not checked — intake only |
 | Compositing: best-pixel, medoid, maximum NDVI | Image compositing rules | 8 | Not checked — intake only |
 
 ## Classification and segmentation
