@@ -35,6 +35,33 @@ def _segments_intersect(a, b, c, d):
             (o4 == 0 and _on_segment(c,d,b)))
 
 
+def _validate_noded_segments(segments):
+    """Reject crossings, T-junctions and partial collinear overlaps.
+
+    A DCEL constructor may accept already-noded shared vertices and shared
+    edges, but it must not silently treat an un-noded segment arrangement as
+    a valid planar subdivision. This O(E^2) validation is a correctness-first
+    guard; large arrangements should be noded with a sweep-line algorithm.
+    """
+    unique = {}
+    for a, b in segments:
+        key = tuple(sorted((a, b)))
+        unique[key] = (a, b)
+    edges = list(unique.values())
+    for i, (a, b) in enumerate(edges):
+        for c, d in edges[i + 1:]:
+            if not _segments_intersect(a, b, c, d):
+                continue
+            shared = set((a, b)) & set((c, d))
+            if not shared:
+                raise ValueError("Input boundaries must be noded: segments cross or form a T-junction")
+            if _orient(a, b, c) == 0 and _orient(a, b, d) == 0:
+                non_shared = (set((a, b)) | set((c, d))) - shared
+                if any(_on_segment(a, b, p) or _on_segment(c, d, p)
+                       for p in non_shared):
+                    raise ValueError("Input boundaries must not contain partial collinear overlaps")
+
+
 def _validate_simple_ring(points):
     qpoints = [_q(p) for p in points[:-1]]
     area2 = sum(qpoints[i][0]*qpoints[(i+1)%len(qpoints)][1] -
@@ -97,6 +124,7 @@ class DCEL:
     def from_faces(cls, faces: Mapping[Hashable, Sequence[Sequence[Sequence[float]]]]):
         d = cls()
         directed = {}
+        input_segments = []
         for fid, rings in faces.items():
             if fid in d.faces:
                 raise ValueError("Face identifiers must be unique")
@@ -118,6 +146,7 @@ class DCEL:
                 if len(set(core)) != len(core):
                     raise ValueError("Rings must not repeat vertices")
                 _validate_simple_ring(pts)
+                input_segments.extend(zip(core, core[1:] + core[:1]))
                 ids = [d._vertex(p) for p in core]
                 cycle = []
                 for u, v in zip(ids, ids[1:] + ids[:1]):
@@ -133,6 +162,8 @@ class DCEL:
                     d.halfedges[eid].next = cycle[(j+1) % len(cycle)]
                     d.halfedges[eid].prev = cycle[j-1]
                 d.faces[fid].boundary_cycles.append(cycle[0])
+
+        _validate_noded_segments(input_segments)
 
         # Pair shared boundaries; unmatched edges receive exterior twins.
         for (u, v), eid in list(directed.items()):
