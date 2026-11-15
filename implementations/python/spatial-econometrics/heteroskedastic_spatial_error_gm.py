@@ -55,7 +55,7 @@ def heteroskedastic_spatial_error_gm(
     """Estimate lambda in u = lambda W u + epsilon with heteroskedastic epsilon.
 
     The caller supplies a consistent predictor u_tilde of the regression
-    disturbance. Let v=W u_tilde, w=W v, and d_i=sum_j W_ij^2. The two
+    disturbance. Let v=W u_tilde, w=W v, and d_i=sum_j W_ji^2 (the squared column norms). The two
     heteroskedasticity-robust KP moments are represented as
     gamma - Gamma [lambda, lambda^2]' = 0, where the zero-diagonal quadratic
     forms remove the unknown diagonal innovation-variance contribution.
