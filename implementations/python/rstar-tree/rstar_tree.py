@@ -5,6 +5,8 @@ This is an in-memory teaching implementation for finite axis-aligned boxes.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from heapq import heappop, heappush
+from itertools import count
 from math import ceil, isfinite
 from typing import Iterable
 
@@ -261,6 +263,46 @@ class RStarTree:
                 else:
                     stack.append(child)
         return sorted(found)
+
+    def k_nearest(self, point, k: int = 1) -> list[tuple[int, float]]:
+        """Return k nearest rectangles as (stable_id, squared_distance).
+
+        Distance is the exact Euclidean lower-bound distance from the query
+        point to each indexed axis-aligned rectangle, not to an underlying
+        non-rectangular geometry.
+        """
+        if len(point) != 2:
+            raise ValueError("point must contain x and y")
+        x, y = float(point[0]), float(point[1])
+        if not isfinite(x) or not isfinite(y):
+            raise ValueError("query coordinates must be finite")
+        if isinstance(k, bool) or not isinstance(k, int) or k < 1:
+            raise ValueError("k must be a positive integer")
+        if self.root.bounds is None:
+            return []
+
+        def distance_squared(box):
+            dx = max(box[0] - x, 0.0, x - box[2])
+            dy = max(box[1] - y, 0.0, y - box[3])
+            return dx * dx + dy * dy
+
+        serial = count()
+        queue = [(distance_squared(self.root.bounds), next(serial), self.root)]
+        best = []
+        while queue:
+            lower_bound, _, node = heappop(queue)
+            if len(best) == k and lower_bound > best[-1][1]:
+                break
+            for child in node.children:
+                d2 = distance_squared(child.bounds)
+                if isinstance(child, _Entry):
+                    best.append((child.index, d2))
+                    best.sort(key=lambda item: (item[1], item[0]))
+                    if len(best) > k:
+                        best.pop()
+                elif len(best) < k or d2 <= best[-1][1]:
+                    heappush(queue, (d2, next(serial), child))
+        return [(index, d2) for index, d2 in best]
 
     def delete(self, index: int) -> bool:
         """Delete a record by stable insertion ID; return False if already absent."""
