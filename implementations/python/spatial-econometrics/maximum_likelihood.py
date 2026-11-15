@@ -1,0 +1,167 @@
+"""Dense concentrated maximum-likelihood estimators for SAR and SEM models.
+
+These implementations are intended for small teaching problems. They use a
+conservative, automatically derived rho interval that guarantees nonsingularity
+for every candidate in the interval, rather than claiming the full admissible
+parameter space.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass
+from math import log, pi
+from typing import Sequence
+
+import numpy as np
+
+
+@dataclass(frozen=True)
+class SpatialMLEFit:
+    model: str
+    spatial_parameter: float
+    coefficients: tuple[float, ...]
+    sigma2_mle: float
+    log_likelihood: float
+    fitted: tuple[float, ...]
+    residuals: tuple[float, ...]
+    rho_bounds: tuple[float, float]
+    evaluations: int
+
+
+def _validate(y, x, weights):
+    response = np.asarray(y, dtype=float)
+    design = np.asarray(x, dtype=float)
+    w = np.asarray(weights, dtype=float)
+    if response.ndim != 1 or response.size < 5:
+        raise ValueError("y must be a vector with at least five observations")
+    n = response.size
+    if design.ndim != 2 or design.shape[0] != n or design.shape[1] < 1:
+        raise ValueError("X must have one row per observation and at least one column")
+    if design.shape[1] >= n - 1:
+        raise ValueError("X must leave residual degrees of freedom")
+    if w.shape != (n, n):
+        raise ValueError("weights must be an N-by-N matrix matching y")
+    if not (np.all(np.isfinite(response)) and np.all(np.isfinite(design))
+            and np.all(np.isfinite(w))):
+        raise ValueError("y, X and weights must contain only finite values")
+    if np.any(w < 0) or np.any(np.diag(w) != 0) or np.allclose(w, 0):
+        raise ValueError("weights must be non-negative, nonzero and have a zero diagonal")
+    if np.linalg.matrix_rank(design) < design.shape[1]:
+        raise ValueError("X must have full column rank")
+    norm = float(np.max(np.sum(np.abs(w), axis=1)))
+    if not np.isfinite(norm) or norm <= 0:
+        raise ValueError("weights must have a positive finite infinity norm")
+    # The Neumann-series condition |parameter| * ||W||_inf < 1 guarantees
+    # I - parameter*W is nonsingular; its determinant remains positive.
+    limit = 0.98 / norm
+    return response, design, w, (-limit, limit)
+
+
+def _golden_max(function, left, right, tolerance=1e-7, max_iter=160):
+    ratio = (np.sqrt(5.0) - 1.0) / 2.0
+    c = right - ratio * (right - left)
+    d = left + ratio * (right - left)
+    fc, fd = function(c), function(d)
+    evaluations = 2
+    for _ in range(max_iter):
+        if right - left <= tolerance * (1.0 + abs(left) + abs(right)):
+            break
+        if fc > fd:
+            right, d, fd = d, c, fc
+            c = right - ratio * (right - left)
+            fc = function(c)
+        else:
+            left, c, fc = c, d, fd
+            d = left + ratio * (right - left)
+            fd = function(d)
+        evaluations += 1
+    point = (left + right) / 2.0
+    return point, function(point), evaluations + 1
+
+
+def _fit(y, x, w, model, grid_size, tolerance):
+    n = y.size
+    wy = w @ y
+    wx = w @ x
+    bounds = _validate(y, x, w)[3]
+    lower, upper = bounds
+    evaluations = 0
+
+    def profile(parameter):
+        nonlocal evaluations
+        a = np.eye(n) - parameter * w
+        sign, logdet = np.linalg.slogdet(a)
+        evaluations += 1
+        if sign <= 0 or not np.isfinite(logdet):
+            return -np.inf
+        ay = y - parameter * wy
+        if model == "SAR":
+            transformed_x = x
+        else:  # SEM: transform both sides by I - lambda W.
+            transformed_x = x - parameter * wx
+        coefficients, _, rank, _ = np.linalg.lstsq(transformed_x, ay, rcond=None)
+        if rank < x.shape[1]:
+            return -np.inf
+        residual = ay - transformed_x @ coefficients
+        sigma2 = float(residual @ residual / n)
+        if not np.isfinite(sigma2) or sigma2 <= np.finfo(float).tiny:
+            return -np.inf
+        return float(logdet - (n / 2.0) * (log(2.0 * pi) + 1.0 + log(sigma2)))
+
+    if isinstance(grid_size, bool) or not isinstance(grid_size, int) or grid_size < 21:
+        raise ValueError("grid_size must be an integer of at least 21")
+    grid = np.linspace(lower, upper, grid_size)
+    scores = np.array([profile(float(value)) for value in grid])
+    best = int(np.argmax(scores))
+    if not np.isfinite(scores[best]):
+        raise ValueError("no finite likelihood found in the conservative parameter interval")
+    # Refine around the best grid cell. The grid scan reduces the risk of
+    # assuming the concentrated likelihood is globally unimodal.
+    left = float(grid[max(0, best - 1)])
+    right = float(grid[min(grid_size - 1, best + 1)])
+    if left == right:
+        parameter, likelihood = float(grid[best]), float(scores[best])
+        refine_evaluations = 0
+    else:
+        parameter, likelihood, refine_evaluations = _golden_max(
+            profile, left, right, tolerance=tolerance
+        )
+    a = np.eye(n) - parameter * w
+    ay = y - parameter * wy
+    transformed_x = x if model == "SAR" else x - parameter * wx
+    coefficients = np.linalg.lstsq(transformed_x, ay, rcond=None)[0]
+    residual = ay - transformed_x @ coefficients
+    sigma2 = float(residual @ residual / n)
+    if model == "SAR":
+        fitted = parameter * wy + x @ coefficients
+    else:
+        # E[y|X] under SEM is X beta; the transformed residual is the
+        # innovation, while the original-scale residual is y - X beta.
+        fitted = x @ coefficients
+        residual = y - fitted
+    return SpatialMLEFit(
+        model=model,
+        spatial_parameter=float(parameter),
+        coefficients=tuple(float(v) for v in coefficients),
+        sigma2_mle=sigma2,
+        log_likelihood=float(likelihood),
+        fitted=tuple(float(v) for v in fitted),
+        residuals=tuple(float(v) for v in residual),
+        rho_bounds=(float(lower), float(upper)),
+        evaluations=int(evaluations + refine_evaluations),
+    )
+
+
+def spatial_lag_mle(y: Sequence[float], x: Sequence[Sequence[float]],
+                    weights: Sequence[Sequence[float]], *,
+                    grid_size: int = 201, tolerance: float = 1e-7) -> SpatialMLEFit:
+    """Concentrated Gaussian ML for y = rho W y + X beta + epsilon."""
+    response, design, w, _ = _validate(y, x, weights)
+    return _fit(response, design, w, "SAR", grid_size, tolerance)
+
+
+def spatial_error_mle(y: Sequence[float], x: Sequence[Sequence[float]],
+                      weights: Sequence[Sequence[float]], *,
+                      grid_size: int = 201, tolerance: float = 1e-7) -> SpatialMLEFit:
+    """Concentrated Gaussian ML for y = X beta + u, u = lambda W u + epsilon."""
+    response, design, w, _ = _validate(y, x, weights)
+    return _fit(response, design, w, "SEM", grid_size, tolerance)
