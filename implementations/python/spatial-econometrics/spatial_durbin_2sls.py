@@ -74,7 +74,13 @@ def spatial_durbin_2sls(
         raise ValueError("instrument_orders must be an integer of at least 2")
 
     wx = w @ design
-    included_exogenous = _append_independent(design, wx)
+    included_exogenous = design.copy()
+    included_wx_indices = []
+    for j in range(wx.shape[1]):
+        expanded = np.column_stack([included_exogenous, wx[:, j]])
+        if np.linalg.matrix_rank(expanded, tol=1e-10) > np.linalg.matrix_rank(included_exogenous, tol=1e-10):
+            included_exogenous = expanded
+            included_wx_indices.append(j)
     wy = w @ response
     structural = np.column_stack([wy, included_exogenous])
 
@@ -100,17 +106,7 @@ def spatial_durbin_2sls(
     exogenous_coefficients = coefficients[1:]
     beta = exogenous_coefficients[:design.shape[1]]
     gamma = np.zeros(design.shape[1], dtype=float)
-    gamma_positions = []
-    for j in range(design.shape[1]):
-        # Map each WX column back to its original covariate. If it was
-        # dependent on X (typically the intercept), its gamma is fixed at 0.
-        trial = np.column_stack([design, wx[:, :j + 1]])
-        if np.linalg.matrix_rank(trial[:, :-1]) < np.linalg.matrix_rank(trial):
-            gamma_positions.append(j)
-    available = [j for j in range(design.shape[1])
-                 if np.linalg.matrix_rank(np.column_stack([design, wx[:, :j + 1]]))
-                 > np.linalg.matrix_rank(np.column_stack([design, wx[:, :j]]))]
-    for coefficient, j in zip(exogenous_coefficients[design.shape[1]:], available):
+    for coefficient, j in zip(exogenous_coefficients[design.shape[1]:], included_wx_indices):
         gamma[j] = coefficient
 
     fitted = rho * wy + design @ beta + wx @ gamma
