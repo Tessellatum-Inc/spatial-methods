@@ -414,3 +414,50 @@ def euclidean_mst_prim(
                 parent[other] = vertex
 
     return result
+
+
+def delaunay_filtered_beta_skeleton(
+    points: Sequence[Sequence[float]], beta: float = 2.0,
+) -> list[tuple[int, int]]:
+    """Build a lune-based beta-skeleton from Delaunay edges with indexed blockers.
+
+    For 1 <= beta <= 2, beta-skeleton edges are Delaunay candidates in
+    general position. A cKDTree radius query restricts blocker checks to the
+    first defining disk; every candidate is still tested against both disks.
+    Expected work is sparse on well-distributed inputs, but worst-case work
+    remains quadratic. Cocircular tie limitations follow Qhull's triangulation.
+    """
+    import numpy as np
+    from scipy.spatial import cKDTree
+
+    if isinstance(beta, bool) or not isfinite(beta) or not 1.0 <= beta <= 2.0:
+        raise ValueError("beta must be a finite number in [1, 2]")
+    pts, edges = _delaunay_candidate_edges(points)
+    coordinates = np.asarray(pts, dtype=float)
+    tree = cKDTree(coordinates)
+    result = []
+    for i, j in edges:
+        u, v = pts[i], pts[j]
+        dx, dy = v[0] - u[0], v[1] - u[1]
+        distance = hypot(dx, dy)
+        radius = beta * distance / 2.0
+        c1 = (u[0] + beta * dx / 2.0, u[1] + beta * dy / 2.0)
+        c2 = (v[0] - beta * dx / 2.0, v[1] - beta * dy / 2.0)
+        radius2 = radius * radius
+        epsilon = 1e-12 * max(1.0, radius2)
+        blocked = False
+        # The first disk is a necessary condition for a point to block the
+        # lune. query_ball_point is inclusive; the exact strict test follows.
+        for k_raw in tree.query_ball_point(c1, radius):
+            k = int(k_raw)
+            if k == i or k == j:
+                continue
+            w = pts[k]
+            d1 = (w[0] - c1[0]) ** 2 + (w[1] - c1[1]) ** 2
+            d2 = (w[0] - c2[0]) ** 2 + (w[1] - c2[1]) ** 2
+            if d1 < radius2 - epsilon and d2 < radius2 - epsilon:
+                blocked = True
+                break
+        if not blocked:
+            result.append((i, j))
+    return result
