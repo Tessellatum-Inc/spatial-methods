@@ -90,6 +90,9 @@ jobs:
           - example: str-packed-rtree
             directory: implementations/python/str-packed-rtree
             pythonpath: ""
+          - example: rstar-tree
+            directory: implementations/python/rstar-tree
+            pythonpath: ""
           - example: spatial-join
             directory: implementations/python/spatial-join
             pythonpath: "../kd-tree"
