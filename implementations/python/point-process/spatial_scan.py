@@ -582,3 +582,172 @@ def monte_carlo_elliptical_poisson_scan(
         "n_simulations": int(n_simulations),
         "simulated_maxima": maxima,
     }
+
+
+
+def _flexible_scan_inputs(coordinates, cases, population, adjacency,
+                          max_cluster_size, max_population_fraction, min_cases):
+    coords, case_counts, pop, upper, minimum = _scan_inputs(
+        coordinates, cases, population, max_population_fraction, min_cases
+    )
+    graph = np.asarray(adjacency)
+    n = len(coords)
+    if graph.shape != (n, n):
+        raise ValueError("adjacency must be an N-by-N matrix matching coordinates")
+    if not np.all(np.isfinite(graph)):
+        raise ValueError("adjacency must contain only finite values")
+    graph = graph.astype(bool)
+    if np.any(np.diag(graph)):
+        raise ValueError("adjacency diagonal must be false")
+    if not np.array_equal(graph, graph.T):
+        raise ValueError("adjacency must be symmetric and undirected")
+    if (isinstance(max_cluster_size, (bool, np.bool_))
+            or not isinstance(max_cluster_size, (int, np.integer))
+            or not 1 <= max_cluster_size <= min(n, 15)):
+        raise ValueError("max_cluster_size must be an integer in [1, min(N, 15)]")
+    return coords, case_counts, pop, graph, int(max_cluster_size), upper, minimum
+
+
+def flexible_poisson_scan(
+    coordinates,
+    cases,
+    population,
+    adjacency,
+    *,
+    max_cluster_size=8,
+    max_population_fraction=0.5,
+    min_cases=2,
+):
+    """Exhaustively scan connected irregular zones in a bounded local universe.
+
+    For each root area, the candidate universe is the root plus its
+    max_cluster_size-1 nearest centroid neighbours. Every connected subset
+    containing the root, up to max_cluster_size areas, is enumerated exactly
+    once. Connectivity is defined by the supplied symmetric adjacency graph.
+    The explicit size limit keeps this exponential teaching baseline bounded.
+    """
+    (coords, case_counts, pop, graph, maximum, upper,
+     minimum) = _flexible_scan_inputs(
+        coordinates, cases, population, adjacency, max_cluster_size,
+        max_population_fraction, min_cases
+    )
+    total_cases = int(case_counts.sum())
+    total_pop = float(pop.sum())
+    best = {
+        "log_likelihood_ratio": 0.0,
+        "relative_risk": float("nan"),
+        "root_index": None,
+        "member_indices": (),
+        "n_areas": 0,
+        "cases_inside": 0,
+        "population_inside": 0.0,
+        "expected_cases_inside": 0.0,
+        "total_cases": total_cases,
+        "total_population": total_pop,
+    }
+    for root in range(len(coords)):
+        distances = np.sqrt(np.sum((coords - coords[root]) ** 2, axis=1))
+        if not np.all(np.isfinite(distances)):
+            raise ValueError("coordinate range produces non-finite centroid distances")
+        order = np.argsort(distances, kind="stable")
+        universe = set(int(i) for i in order[:maximum])
+        universe.add(root)
+        seen = {frozenset((root,))}
+        stack = [frozenset((root,))]
+        while stack:
+            zone = stack.pop()
+            members = tuple(sorted(zone))
+            cases_inside = int(case_counts[list(members)].sum())
+            population_inside = float(pop[list(members)].sum())
+            fraction = population_inside / total_pop
+            if (len(zone) <= maximum and fraction <= upper + 1e-12
+                    and population_inside < total_pop - 1e-12
+                    and cases_inside >= minimum):
+                expected_inside = total_cases * fraction
+                cases_outside = total_cases - cases_inside
+                expected_outside = total_cases - expected_inside
+                if cases_inside > expected_inside:
+                    llr = (
+                        _log_ratio_term(cases_inside, expected_inside)
+                        + _log_ratio_term(cases_outside, expected_outside)
+                    )
+                    llr = max(0.0, llr)
+                    if llr > best["log_likelihood_ratio"] + 1e-14:
+                        risk_inside = cases_inside / population_inside
+                        risk_outside = cases_outside / (total_pop - population_inside)
+                        best = {
+                            "log_likelihood_ratio": llr,
+                            "relative_risk": (
+                                risk_inside / risk_outside
+                                if risk_outside > 0 else float("inf")
+                            ),
+                            "root_index": root,
+                            "member_indices": members,
+                            "n_areas": len(members),
+                            "cases_inside": cases_inside,
+                            "population_inside": population_inside,
+                            "expected_cases_inside": expected_inside,
+                            "total_cases": total_cases,
+                            "total_population": total_pop,
+                        }
+            if len(zone) >= maximum:
+                continue
+            frontier = set()
+            for member in zone:
+                frontier.update(int(j) for j in np.flatnonzero(graph[member]))
+            frontier.intersection_update(universe)
+            frontier.difference_update(zone)
+            for candidate in sorted(frontier, reverse=True):
+                expanded = frozenset((*zone, candidate))
+                if expanded not in seen:
+                    seen.add(expanded)
+                    stack.append(expanded)
+    best["max_cluster_size"] = maximum
+    best["max_population_fraction"] = upper
+    return best
+
+
+def monte_carlo_flexible_poisson_scan(
+    coordinates,
+    cases,
+    population,
+    adjacency,
+    *,
+    n_simulations=999,
+    max_cluster_size=8,
+    max_population_fraction=0.5,
+    min_cases=2,
+    rng=None,
+):
+    """Calibrate the maximum connected-zone LLR under fixed-total risk."""
+    (coords, case_counts, pop, graph, maximum, upper,
+     minimum) = _flexible_scan_inputs(
+        coordinates, cases, population, adjacency, max_cluster_size,
+        max_population_fraction, min_cases
+    )
+    if (isinstance(n_simulations, (bool, np.bool_))
+            or not isinstance(n_simulations, (int, np.integer))
+            or n_simulations < 1):
+        raise ValueError("n_simulations must be a positive integer")
+    observed = flexible_poisson_scan(
+        coords, case_counts, pop, graph, max_cluster_size=maximum,
+        max_population_fraction=upper, min_cases=minimum
+    )
+    generator = np.random.default_rng(rng)
+    probabilities = pop / pop.sum()
+    maxima = np.empty(int(n_simulations), dtype=float)
+    for i in range(int(n_simulations)):
+        simulated = generator.multinomial(int(case_counts.sum()), probabilities)
+        maxima[i] = flexible_poisson_scan(
+            coords, simulated, pop, graph, max_cluster_size=maximum,
+            max_population_fraction=upper, min_cases=minimum
+        )["log_likelihood_ratio"]
+    exceedances = int(np.count_nonzero(
+        maxima >= observed["log_likelihood_ratio"] - 1e-14
+    ))
+    return {
+        "observed": observed,
+        "p_value": (1 + exceedances) / (int(n_simulations) + 1),
+        "n_simulations": int(n_simulations),
+        "simulated_maxima": maxima,
+    }
