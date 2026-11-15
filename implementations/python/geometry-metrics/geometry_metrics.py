@@ -155,14 +155,14 @@ def convex_polygon_diameter(points):
     j = 1
     for i in range(n):
         ni = (i+1) % n
-        while area(i, (j+1) % n) > area(i, j) + 1e-14:
+        while area(i, (j+1) % n) > area(i, j):
             j = (j+1) % n
         for a, b in ((hull[i], hull[j]), (hull[ni], hull[j])):
             d = _distance(a, b)
             if d > best[2]:
                 best = (a, b, d)
         nj = (j+1) % n
-        if abs(area(i, nj)-area(i, j)) <= 1e-14:
+        if isclose(area(i, nj), area(i, j), rel_tol=1e-14, abs_tol=0.0):
             for a, b in ((hull[i], hull[nj]), (hull[ni], hull[nj])):
                 d = _distance(a, b)
                 if d > best[2]:
