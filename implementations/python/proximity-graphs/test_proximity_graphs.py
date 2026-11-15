@@ -222,3 +222,81 @@ def test_prim_mst_handles_collinear_and_equal_distance_sites():
 def test_prim_mst_rejects_duplicate_and_non_finite_sites(points):
     with pytest.raises(ValueError):
         euclidean_mst_prim(points)
+
+
+
+def _assert_spanning_tree_edges(points, edges):
+    """Check a returned edge list is a connected, acyclic spanning tree."""
+    n = len(points)
+    if n <= 1:
+        assert edges == []
+        return
+    assert len(edges) == n - 1
+    parent = list(range(n))
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for i, j, _weight in edges:
+        assert 0 <= i < n and 0 <= j < n and i != j
+        ri, rj = find(i), find(j)
+        assert ri != rj, "MST output contains a cycle"
+        parent[ri] = rj
+    assert len({find(i) for i in range(n)}) == 1
+
+
+def test_three_mst_constructions_match_on_integer_grid_tie_heavy_clouds():
+    """Differentially test degeneracies, cocircular ties and repeated distances."""
+    import random
+
+    rng = random.Random(20261119)
+    for size in range(2, 24):
+        for _ in range(8):
+            sites = set()
+            while len(sites) < size:
+                sites.add((rng.randint(-8, 8), rng.randint(-8, 8)))
+            points = list(sites)
+            reference = euclidean_mst(points)
+            prim = euclidean_mst_prim(points)
+            delaunay = delaunay_euclidean_mst(points)
+            reference_length = sum(edge[2] for edge in reference)
+            for result in (prim, delaunay):
+                _assert_spanning_tree_edges(points, result)
+                assert sum(edge[2] for edge in result) == pytest.approx(
+                    reference_length, rel=1e-11, abs=1e-11
+                )
+
+
+def test_delaunay_mst_cocircular_and_symmetric_fixtures():
+    fixtures = [
+        [(1, 0), (0, 1), (-1, 0), (0, -1)],
+        [(3, 4), (4, 3), (-3, 4), (-4, 3), (-3, -4), (-4, -3), (3, -4), (4, -3)],
+        [(0, 0), (2, 0), (2, 2), (0, 2), (1, 1), (1, 0), (2, 1), (1, 2), (0, 1)],
+    ]
+    for points in fixtures:
+        reference = euclidean_mst(points)
+        actual = delaunay_euclidean_mst(points)
+        _assert_spanning_tree_edges(points, actual)
+        assert sum(edge[2] for edge in actual) == pytest.approx(
+            sum(edge[2] for edge in reference), rel=1e-11, abs=1e-11
+        )
+
+
+def test_indexed_yao_matches_reference_on_integer_lattice_ties():
+    import random
+
+    rng = random.Random(20261120)
+    for size in (5, 10, 20, 35):
+        for _ in range(5):
+            sites = set()
+            while len(sites) < size:
+                sites.add((rng.randint(-5, 5), rng.randint(-5, 5)))
+            points = list(sites)
+            for cones in (3, 4, 6, 8):
+                for orientation in (0.0, 0.25):
+                    assert yao_graph_kdtree(points, cones, orientation) == yao_graph(
+                        points, cones, orientation
+                    )

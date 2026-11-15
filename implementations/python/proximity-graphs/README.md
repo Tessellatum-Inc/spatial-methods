@@ -55,3 +55,14 @@ one best connection and parent per outside vertex. This takes O(n²) time but
 O(n) auxiliary space; it does not allocate or sort the complete O(n²)-edge
 graph as Kruskal does. Seeded tests compare its total length with both the
 complete-graph Kruskal oracle and the sparse Delaunay-candidate MST.
+
+
+## Degeneracy-focused differential checks
+
+The test suite now adds integer-grid clouds, where equal edge lengths,
+symmetric configurations, collinear subsets and cocircular subsets occur
+frequently. Dense Prim and Delaunay-candidate Kruskal are compared with the
+complete-graph Kruskal reference; every result is checked for tree structure
+(connectivity, acyclicity and n−1 edges), not only total length. The indexed
+Yao implementation is also compared edge-for-edge with the quadratic
+reference on tie-heavy lattice inputs and multiple cone orientations.

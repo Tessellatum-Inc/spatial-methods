@@ -40,3 +40,16 @@ MST over 54 seeded point clouds with sizes 0, 1, 2, 3, 5, 12, 35, 100 and 250.
 Tests include collinear points, equal-distance square edges, duplicate sites,
 and non-finite coordinates. The algorithm uses O(n) auxiliary storage and
 O(n²) distance evaluations; it is not an asymptotically faster construction.
+
+
+## Expanded degeneracy and structural checks
+
+An additional 176 seeded integer-grid point clouds (sizes 2–23, eight clouds
+per size) compare dense Prim and Delaunay-candidate Kruskal against the
+complete-graph Kruskal reference. These clouds deliberately create repeated
+edge lengths, collinear subsets, symmetric layouts and cocircular subsets.
+Each returned sparse/Prim edge list is also checked structurally for exactly
+n−1 valid edges, acyclicity and connectivity. Separate symmetric and
+cocircular fixtures exercise Qhull tie cases. The indexed Yao implementation
+is additionally compared edge-for-edge with its quadratic reference on 100
+seeded integer-lattice clouds across four cone counts and two orientations.
