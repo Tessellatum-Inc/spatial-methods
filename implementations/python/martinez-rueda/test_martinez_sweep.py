@@ -131,3 +131,11 @@ def test_invalid_hole_outside_shell_is_rejected():
     hole=[(6,6),(6,7),(7,7),(7,6)]
     other=[(10,10),(11,10),(11,11),(10,11)]
     with pytest.raises(ValueError): boolean_overlay_rings([[shell,hole],[other]])
+
+def test_y_interval_sweep_status_prunes_x_overlapping_but_y_disjoint_segments():
+    a=[(0,0),(10,0),(10,1),(0,1)]
+    b=[(0,10),(10,10),(10,11),(0,11)]
+    result=sweep_split_segments([[a],[b]])
+    assert result["candidate_pairs_tested"]==0
+    assert result["intersection_events"]==()
+    assert len(result["split_segments"])==8
