@@ -19,3 +19,7 @@ The bayesian_online.py module implements the Adams–MacKay run-length recursion
 ## Bayesian online change-point detection with known variance
 
 The `online.py` module adds `bocpd_normal_mean`, a bounded Adams–MacKay run-length recursion for a Gaussian observation model with known observation variance, a Normal prior on each segment mean and constant hazard. It returns the per-observation change-point probability and MAP run length. This is a distinct, deliberately restricted model from the package's `bayesian_online.py` variant; do not treat either as a generic unknown-likelihood BOCPD engine. The companion `test_online.py` checks probability bounds, regime-change response, run-length truncation and invalid inputs.
+
+## Restored detector module
+
+The `detectors.py` module contains the dependency-free CUSUM, greedy binary-segmentation and penalised PELT implementations, with the corresponding `test_detectors.py` suite. PELT uses K=0 pruning for minimum segment length one and exact unpruned dynamic programming for larger minimum lengths, preserving the stated constraint. These methods target univariate piecewise-constant mean changes; they do not implement BEAST or automatically calibrate false-alarm rates.
