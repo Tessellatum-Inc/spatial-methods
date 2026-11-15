@@ -211,3 +211,14 @@ These notes record bounded checks against publisher or institutional bibliograph
 - **Implementation:** two-way median polish with overall/row/column effects, residuals, optional missing-value handling and convergence history. The classic parachuting-deaths example is included in tests and lab.
 - **Limitations:** no weights, interactions, multiway arrays or spatial neighbourhood structure. The grouped source entry remains partial because other disease-mapping variants such as Clayton–Kaldor and CAR/BYM are not implemented.
 - **Rights:** independent implementation; no R source code or figures copied.
+
+
+## Section 2 — Moran eigenvector spatial filtering
+
+**Source entry:** “Spatial eigenvector filtering (Moran eigenvectors), Spatial+, restricted spatial regression” (source page 2).
+
+- **Identity and bibliography:** Griffith (2003), *Spatial Autocorrelation and Spatial Filtering*; Griffith and Peres-Neto (2006), “Spatial modeling in ecology: the flexibility of eigenfunction spatial analyses,” *Ecology*, 87(11), 2603–2613; Tiefelsdorf and Griffith (2007), “Semiparametric Filtering of Spatial Autocorrelation: The Eigenvector Approach,” *Environment and Planning A*, 39(5), 1193–1221, DOI 10.1068/a37378.
+- **Technical claims:** the intercept-centered symmetric matrix HWH yields orthogonal eigenvectors describing spatial patterns. The subset selection is central to full ESF; literature uses fit, significance or residual-autocorrelation objectives.
+- **Implementation:** positive HWH eigenvectors and a fixed-size OLS filter are implemented. This baseline requires the analyst to specify the number of components and does not reproduce the semiparametric selection procedure.
+- **Limitations:** general covariate projection, Spatial+, restricted spatial regression, GLM filters and inferential corrections remain open.
+- **Rights:** independent implementation from published definitions; no package code or figures copied.

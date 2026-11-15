@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 694 | Rows with a source-entry review status in the section indexes |
-| Partial | 76 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 618 | The source wording is preserved, but no independent review is recorded |
+| Partial | 77 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 617 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -20,7 +20,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | Section | Source entries | Partial | Intake only |
 |---:|---:|---:|---:|
 | 1 — Core GIS | 33 | 16 | 17 |
-| 2 — Spatial statistics | 27 | 8 | 19 |
+| 2 — Spatial statistics | 27 | 9 | 18 |
 | 3 — Geostatistics | 26 | 3 | 23 |
 | 4 — Raster, terrain and hydrology | 27 | 2 | 25 |
 | 5 — Remote sensing | 36 | 2 | 34 |

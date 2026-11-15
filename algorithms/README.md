@@ -91,6 +91,7 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 - [Empirical Bayes rate smoothing](statistics/empirical-bayes-rate-smoothing.md) — shrink noisy Poisson area rates toward a global or analyst-defined local pooled mean using moment estimates.
 - [Weighted head-banging](statistics/weighted-head-banging.md) — smooth planar values with nearly-collinear triples and nested weighted medians.
 - [Tukey median polish](statistics/median-polish.md) — robustly decompose a two-way table into overall, row and column effects.
+- [Moran eigenvector spatial filtering](statistics/moran-eigenvector-spatial-filtering.md) — build orthogonal spatial basis vectors from HWH and add a caller-selected subset to OLS.
 - [Geographic distribution summaries](statistics/geographic-distribution-summaries.md) — calculate mean and geometric median centers, standard distance and a covariance-based standard deviational ellipse.
 - [Spatial inequality and segregation](statistics/spatial-inequality-and-segregation.md) — compare weighted area-level Gini and Theil indices, population entropy, dissimilarity and exposure indices.
 - [Multiple-testing corrections](statistics/multiple-testing-corrections.md) — adjust p-value families using FWER and FDR procedures with explicit dependence assumptions.

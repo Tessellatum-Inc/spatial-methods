@@ -127,6 +127,7 @@ Each implementation should state:
 
 ### Spatial statistics
 
+- [Moran eigenvector spatial filtering](python/moran-eigenvector-filtering/README.md): HWH eigenvectors and fixed-size OLS filtering with caller-selected spatial basis; 16 tests.
 - [Tukey median polish](python/median-polish/README.md): robust two-way additive decomposition with missing-value handling and 15 test cases.
 - [Weighted head-banging smoother](python/head-banging/README.md): nearly-collinear triple screens with weighted medians, k-nearest neighbours and iterative smoothing; 18 focused test cases.
 - [Multiple-testing corrections](python/multiple-testing/README.md): Bonferroni, Šidák, Holm, Hochberg, BH and BY adjusted p-values with 27 test cases covering order, ties, assumptions and invalid input.
@@ -158,7 +159,7 @@ Each implementation should state:
 
 ## Automated checks
 
-The [Python examples workflow](../.github/workflows/python-tests.yml) is configured to run the test suites for all 110 Python example packages and the Clipper2 C# smoke test, and execute all 117 learning notebooks on relevant pushes and pull requests, using Python 3.13. The Local Moran notebook uses PySAL's maintained implementation rather than presenting a new from-scratch implementation. The Bentley–Ottmann job also adds the sibling segment-intersection package to `PYTHONPATH`.
+The [Python examples workflow](../.github/workflows/python-tests.yml) is configured to run the test suites for all 111 Python example packages and the Clipper2 C# smoke test, and execute all 118 learning notebooks on relevant pushes and pull requests, using Python 3.13. The Local Moran notebook uses PySAL's maintained implementation rather than presenting a new from-scratch implementation. The Bentley–Ottmann job also adds the sibling segment-intersection package to `PYTHONPATH`.
 
 A successful automated run means the tests in the repository passed in that environment. It does not prove correctness for every possible geometry or make a restricted teaching implementation production-ready. Always read the input contract and limitations before adapting an example.
 
