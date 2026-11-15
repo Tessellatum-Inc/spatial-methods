@@ -169,8 +169,8 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
             "intersection_events":tuple(crossings),"split_segments":tuple(fragments)}
 
 def classify_boundary_fragments(polygons, *, operation='intersection', epsilon=1e-10):
-    """Select directed boundary fragments for a two-simple-ring Boolean.
-    Supports one shell ring per source; stitching into output rings is not yet done.
+    """Select directed fragments for two polygons, each with one shell and optional holes.
+    Fragment stitching is performed by boolean_overlay_rings.
     """
     if operation not in {'intersection','union','difference','symmetric_difference'}:
         raise ValueError('unsupported Boolean operation')
