@@ -8,6 +8,6 @@ The repository implementation builds a half-edge structure from consistently ori
 
 The constructor rejects repeated vertices in a face, invalid indices, duplicate faces, repeated directed edges, inconsistent winding across a shared edge, and edges incident to more than two faces. It exposes face cycles, boundary-edge enumeration, adjacent-face lookup and incident-face lookup.
 
-This is a practical manifold-edge baseline, not a full mesh-repair or topology kernel. In particular, it does not prove that each vertex link is a single connected fan, detect geometric self-intersections, support edits, or implement winged-edge / quad-edge representations. A bow-tie vertex fan can pass the edge-incidence checks and needs a separate vertex-link test.
+This is a practical manifold-edge baseline, not a full mesh-repair or topology kernel. In particular, it does not prove that each vertex link is a single connected fan, detect geometric self-intersections, support edits, or implement winged-edge / quad-edge representations. The implementation also checks each non-isolated vertex link is one connected path or cycle, rejecting disconnected bow-tie fans.
 
 See the [implementation and tests](../../implementations/python/half-edge-mesh/README.md). The source compendium also names winged-edge and quad-edge structures; those remain separate implementations.
