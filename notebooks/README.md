@@ -165,3 +165,9 @@ These notebooks are learning materials. For production analysis, check the input
 - [Curve construction lab](curves-smoothing-lab.ipynb) — compare Chaikin corner cutting, Catmull–Rom interpolation and Bezier evaluation, and distinguish geometric curve construction from trajectory filtering.
 
 - [Forecast verification lab](forecast-verification-lab.ipynb) — calculate categorical event scores, Brier score/skill, reliability-bin summaries and ROC AUC, and investigate their different interpretations.
+
+### Additional algorithm labs
+
+- [Power-law MFD flow routing](mfd-flow-routing-lab.ipynb): inspect divergent flow fractions, convergence-exponent sensitivity, rectangular cell spacing, NoData masks and sink-level accumulation conservation.
+- [Pareto multi-criteria routing](pareto-multi-criteria-routing-lab.ipynb): compute a nondominated route frontier, inspect dominated alternatives and apply preferences after the frontier is known.
+- [Circular Poisson spatial scan](spatial-scan-statistic-lab.ipynb): identify a population-adjusted elevated-rate cluster, run conditional multinomial calibration and vary the maximum population fraction.
