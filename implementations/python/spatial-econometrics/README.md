@@ -21,4 +21,4 @@ python -m pytest -q
 - The impact matrix is (S_r=(I-\rho W)^{-1}(\beta_r I+\gamma_r W)). Direct impact is the mean diagonal, total impact is the mean row sum, and indirect impact is total minus direct.
 - Dense matrices are for small teaching cases. Use sparse numerical methods and a maintained package for real-world estimation.
 
-Canonical explanations: [spatial LM diagnostics](../../../algorithms/statistics/spatial-lm-diagnostics.md), [spatial impacts](../../../algorithms/statistics/spatial-impacts.md) and [spatial lag 2SLS](../../../algorithms/statistics/spatial-lag-2sls.md).
+Follow the [implementation walkthrough](implementation-walkthrough.md) to trace the formulas, validation and tests.\n\nCanonical explanations: [spatial LM diagnostics](../../../algorithms/statistics/spatial-lm-diagnostics.md), [spatial impacts](../../../algorithms/statistics/spatial-impacts.md) and [spatial lag 2SLS](../../../algorithms/statistics/spatial-lag-2sls.md).
