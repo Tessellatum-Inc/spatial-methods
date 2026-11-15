@@ -241,3 +241,50 @@ def test_spatial_lm_robust_tests_are_unavailable_when_not_identified():
     assert result.lag_denominator == pytest.approx(result.trace_term)
     assert result.robust_lm_lag is None
     assert result.robust_lm_error is None
+
+
+def _row_standardised_path(n):
+    weights = np.zeros((n, n))
+    for i in range(n - 1):
+        weights[i, i + 1] = weights[i + 1, i] = 1.0
+    return weights / weights.sum(axis=1, keepdims=True)
+
+
+def test_spatial_durbin_2sls_recovers_synthetic_sdm_parameters():
+    from spatial_durbin_2sls import spatial_durbin_2sls
+    rng = np.random.default_rng(91827)
+    n = 100
+    w = _row_standardised_path(n)
+    x = np.column_stack([np.ones(n), rng.normal(size=n)])
+    beta = np.array([1.1, 0.85])
+    gamma = np.array([0.0, -0.3])
+    rho = 0.24
+    innovation = rng.normal(scale=0.1, size=n)
+    wx = w @ x
+    y = np.linalg.solve(
+        np.eye(n) - rho * w,
+        x @ beta + wx @ gamma + innovation,
+    )
+    fit = spatial_durbin_2sls(y, x, w, instrument_orders=3)
+    assert fit.rho == pytest.approx(rho, abs=0.18)
+    assert fit.beta == pytest.approx(beta, abs=0.2)
+    assert fit.gamma[0] == pytest.approx(0.0, abs=1e-10)
+    assert fit.gamma[1] == pytest.approx(gamma[1], abs=0.2)
+    assert fit.instruments_used >= fit.regressors
+    assert len(fit.fitted) == n
+    assert len(fit.residuals) == n
+    assert np.all(np.isfinite(fit.residuals))
+
+
+def test_spatial_durbin_2sls_validates_inputs_and_instrument_order():
+    from spatial_durbin_2sls import spatial_durbin_2sls
+    n = 8
+    w = _row_standardised_path(n)
+    x = np.column_stack([np.ones(n), np.arange(n, dtype=float)])
+    y = np.arange(n, dtype=float) + np.array([0.1, -0.2, 0.1, 0.2, -0.1, 0.1, -0.1, 0.0])
+    with pytest.raises(ValueError, match="instrument_orders"):
+        spatial_durbin_2sls(y, x, w, instrument_orders=1)
+    with pytest.raises(ValueError, match="finite"):
+        spatial_durbin_2sls([1., 2., 3., 4., 5., 6., 7., float("nan")], x, w)
+    with pytest.raises(ValueError, match="full column rank"):
+        spatial_durbin_2sls(y, np.ones((n, 2)), w)
