@@ -270,3 +270,32 @@ def test_thomas_rejects_invalid_parameters(params):
             simulate_thomas_process((0, 0, 1, 1), *params, seed=1)
         else:
             simulate_thomas_process((0, 0, 1, 1), *params[:3], seed=1, buffer_sigma=params[3])
+
+
+def test_matern_cluster_simulator_is_seeded_and_inside_window():
+    from point_patterns import simulate_matern_cluster_process
+    a = simulate_matern_cluster_process((0, 0, 10, 10), 0.08, 8, 0.7, seed=41)
+    b = simulate_matern_cluster_process((0, 0, 10, 10), 0.08, 8, 0.7, seed=41)
+    assert a == b
+    assert all(0 <= x <= 10 and 0 <= y <= 10 for x, y in a)
+
+
+def test_matern_cluster_zero_parameters_return_empty_pattern():
+    from point_patterns import simulate_matern_cluster_process
+    assert simulate_matern_cluster_process((0, 0, 1, 1), 0, 5, 0.2, seed=2) == []
+    assert simulate_matern_cluster_process((0, 0, 1, 1), 2, 0, 0.2, seed=2) == []
+
+
+@pytest.mark.parametrize("params", [
+    (-1, 2, 1), (1, -2, 1), (1, 2, 0), (float("nan"), 2, 1),
+])
+def test_matern_cluster_rejects_invalid_parameters(params):
+    from point_patterns import simulate_matern_cluster_process
+    with pytest.raises(ValueError):
+        simulate_matern_cluster_process((0, 0, 1, 1), *params, seed=1)
+
+
+def test_matern_cluster_rejects_non_integer_seed():
+    from point_patterns import simulate_matern_cluster_process
+    with pytest.raises(ValueError, match="seed"):
+        simulate_matern_cluster_process((0, 0, 1, 1), 1, 2, 0.2, seed=True)
