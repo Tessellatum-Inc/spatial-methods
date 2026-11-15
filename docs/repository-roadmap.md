@@ -40,7 +40,7 @@ The goal is not to fill folders or publish pages quickly. The goal is a collecti
 - [x] Complete the geometry foundations path as a coherent four-lesson sequence.
 - [x] Add worked examples, runnable examples and a final review exercise connecting the four topics.
 - [x] Add four source-derived spatial-statistics lessons and two supplementary companions, with PySAL-based runnable notebooks, conditional permutation explanations and FDR treatment.
-- [x] Add a bivariate Moran's I lesson, dependency-free implementation, conditional permutation baseline, edge-case tests and implementation walkthrough; keep the directional statistic and pseudo-p-value convention explicit.
+- [x] Add a bivariate Moran's I lesson, dependency-free implementation, conditional permutation baseline, edge-case tests, implementation walkthrough and executable notebook; keep the directional statistic and pseudo-p-value convention explicit.
 - [x] Add live ipywidgets controls to compare Moran's I and Geary's C while changing values and weight style.
 - [x] Add an interactive geometry lab for point-in-polygon, segment intersection and polygon overlay.
 - [x] Add a learning path connecting global and local autocorrelation methods, including Getis-Ord hotspot analysis.
@@ -100,7 +100,7 @@ The goal is not to fill folders or publish pages quickly. The goal is a collecti
 - [x] SVG for precise geometric illustrations.
 - [x] Source-figure attribution and licence policy.
 - [x] Reuse seven verified Wikimedia Commons figures across lessons: three CC BY-SA 4.0, two CC BY-SA 3.0, one CC0 1.0 and one public-domain figure.
-- [x] Add six spatial-statistics notebooks for Global Moran's I, Global Geary's C, Local Moran's I, Local Geary, Global Getis-Ord G and Getis-Ord Gi*; add DBSCAN as a separate density-clustering lab.
+- [x] Add seven spatial-statistics notebooks for Global Moran's I, bivariate Moran's I, Global Geary's C, Local Moran's I, Local Geary, Global Getis-Ord G and Getis-Ord Gi*; add DBSCAN as a separate density-clustering lab.
 - [x] Add three further notebooks for STR-packed R-tree, filter-and-refine spatial join and spatial weights.
 - [x] Add interactive notebooks for empirical geostatistical interpolation, raster distance transforms, focal raster statistics, Priority-Flood depression filling, D8 flow direction, D8 flow accumulation, single-outlet watershed delineation, Strahler/Shreve stream order, point-pattern KDE, Clark–Evans and Ripley's K/L, NDVI, p-median facility location and 2SFCA accessibility.
 - [x] Add stable cell IDs to all ten notebooks and repair missing required code-cell outputs.
@@ -118,8 +118,8 @@ The goal is not to fill folders or publish pages quickly. The goal is a collecti
 - [x] Tests and documented input contracts.
 - [x] Add a regression test for a ray passing through a concave vertex in point-in-polygon.
 - [x] A benchmark report with its workload and limitations stated.
-- [x] GitHub Actions workflow configured to test all 150 Python implementation packages and execute all 172 notebooks. The k-d tree, quadtree and polygon-validity suites are included in the matrix; the quadtree and point-location labs are included in notebook execution.
-- [x] Confirm successful full-head Actions run `43563534022` on commit `2a340035372f45eb43e16770e6f41f2d6b78f70d`: all 81 workflow jobs passed, including 149 Python package suites, 172 notebook executions, internal-link checks and Clipper2 checks.
+- [x] GitHub Actions workflow configured to test all 150 Python implementation packages and execute all 173 notebooks. The k-d tree, quadtree and polygon-validity suites are included in the matrix; the quadtree and point-location labs are included in notebook execution.
+- [x] Confirm successful full-head Actions run `43563534022` on commit `2a340035372f45eb43e16770e6f41f2d6b78f70d`: all 81 workflow jobs passed, including 150 Python package suites, 173 notebook executions, internal-link checks and Clipper2 checks.
 - [x] Add regression tests for polygon validity, clipping, overlay topology and precision-grid input contracts.
 - [ ] Add regression tests whenever a real edge case is discovered.
 - [ ] Add representative workloads before drawing broader performance conclusions.
