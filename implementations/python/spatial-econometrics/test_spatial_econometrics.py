@@ -1294,3 +1294,53 @@ def test_local_morans_i_supports_asymmetric_weights_and_rejects_invalid_inputs()
         local_morans_i_permutation(values, w, alpha=1.0)
     with pytest.raises(ValueError, match="adjustment"):
         local_morans_i_permutation(values, w, adjustment="bonferroni")
+
+
+def test_heteroskedasticity_diagnostics_match_independent_auxiliary_regressions():
+    from heteroskedasticity_diagnostics import heteroskedasticity_diagnostics
+    rng = np.random.default_rng(613)
+    n = 180
+    x = np.column_stack((np.ones(n), rng.normal(size=n), rng.normal(size=n)))
+    scale = np.exp(0.35 * x[:, 1])
+    y = 1.2 + 0.8 * x[:, 1] - 0.4 * x[:, 2] + rng.normal(size=n) * scale
+    result = heteroskedasticity_diagnostics(y, x)
+    beta = np.linalg.lstsq(x, y, rcond=None)[0]
+    residual = y - x @ beta
+    squared = residual ** 2
+    def lm(aux):
+        fitted = aux @ np.linalg.lstsq(aux, squared, rcond=None)[0]
+        centred = squared - squared.mean()
+        r2 = 1 - ((squared - fitted) @ (squared - fitted)) / (centred @ centred)
+        return n * r2
+    bp_x = x
+    white_x = np.column_stack((x, x[:, 1] ** 2, x[:, 1] * x[:, 2], x[:, 2] ** 2))
+    assert result.koenker_bp.statistic == pytest.approx(lm(bp_x))
+    assert result.white.statistic == pytest.approx(lm(white_x))
+    assert result.koenker_bp.degrees_of_freedom == 2
+    assert result.white.degrees_of_freedom == 5
+    assert 0 <= result.koenker_bp.p_value <= 1
+    assert 0 <= result.white.p_value <= 1
+
+
+def test_white_test_handles_redundant_generated_terms():
+    from heteroskedasticity_diagnostics import heteroskedasticity_diagnostics
+    rng = np.random.default_rng(71)
+    n = 120
+    a = rng.normal(size=n)
+    x = np.column_stack((np.ones(n), a, 2 * a))
+    y = 1 + 0.4 * a + rng.normal(size=n) * (1 + 0.2 * np.abs(a))
+    fit = heteroskedasticity_diagnostics(y, x)
+    assert fit.white.degrees_of_freedom >= 1
+    assert np.isfinite(fit.white.statistic)
+
+
+def test_heteroskedasticity_diagnostics_rejects_invalid_inputs():
+    from heteroskedasticity_diagnostics import heteroskedasticity_diagnostics
+    with pytest.raises(ValueError, match="at least five"):
+        heteroskedasticity_diagnostics([1, 2, 3, 4], np.ones((4, 1)))
+    with pytest.raises(ValueError, match="full column rank"):
+        x = np.column_stack((np.ones(20), np.arange(20), np.arange(20)))
+        heteroskedasticity_diagnostics(np.arange(20) + np.sin(np.arange(20)), x)
+    with pytest.raises(ValueError, match="positive variance"):
+        x = np.column_stack((np.ones(20), np.arange(20)))
+        heteroskedasticity_diagnostics(2 + 3 * np.arange(20), x)
