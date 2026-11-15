@@ -1,6 +1,6 @@
 # Source review dashboard
 
-Snapshot: 14 November 2026 (updated after Section 10 line-clipping, rasterization, curves/smoothing, mesh-geodesics, discrete-global-grid, change-point-detection, time-series, forecast-verification and optical-flow and curve-construction lessons)
+Snapshot: 15 November 2026 (source-entry labels retained; implementation reconciliation expanded MFD routing, compositional geometry, change-point detectors and spatial sampling)
 
 This dashboard counts the source-entry review labels in the 22 item-level section indexes. It is an inventory of review progress, not a claim that the entries have been technically verified.
 
@@ -62,3 +62,6 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 ## Scope of this snapshot
 
 The counts were assembled from the row-level labels present in all 22 section indexes on 14 November 2026. They are a dated snapshot and must be recalculated when source-entry labels are revised. They do not count canonical lesson pages, implementation inventories, software lists or supplementary methods as additional source entries.
+## Implementation reconciliation — 15 November 2026
+
+The `compendium/section-01-geometry-continuation` branch was audited against `main`. It is divergent (2,030 commits ahead and 594 behind), so it was not merged wholesale. Selected missing algorithm assets were reconciled directly onto `main`: power-law multiple-flow-direction routing and accumulation with tests and a notebook; compositional closure/CLR/ALR/ILR and Aitchison distance with tests and a source-verification note; CUSUM, binary segmentation and PELT detector code/tests; a known-variance Gaussian BOCPD variant; and spatially diverse batch selection, UCB1 and exact RBF-GP candidate selection with tests. The source-entry counts above are unchanged: implementation availability is not equivalent to source-entry verification, and the compositional record's exact original source-row mapping remains open.
