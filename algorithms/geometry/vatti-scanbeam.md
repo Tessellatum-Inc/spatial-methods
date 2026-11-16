@@ -20,7 +20,8 @@ provides:
 - horizontal/bound endpoint and interior intersection events;
 - horizontal/horizontal point contacts and positive-length overlaps, classified separately;
 - fill-rule predicates for even-odd, non-zero, positive and negative winding;
-- Boolean point-classification truth tables for intersection, union, difference and XOR.
+- Boolean point-classification truth tables for intersection, union, difference and XOR;
+- subject/clip winding propagation and Boolean fill-state transition records over an ordered active-edge list.
 
 The current crossing scheduler is an O(m²) reference calculation, not the
 optimized neighbour-event scheduler used by a full sweep-line clipper. This
