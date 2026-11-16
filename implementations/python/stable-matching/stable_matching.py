@@ -112,7 +112,7 @@ def blocking_pairs(resident_preferences, hospital_preferences, matching, capacit
     incumbents = {hospital: [] for hospital in hospitals}
     for resident, hospital in matching.items():
         if hospital is not None:
-            if hospital not in hospitals or resident not in hospital_rank[hospital]:
+            if hospital not in hospitals or hospital not in resident_rank[resident] or resident not in hospital_rank[hospital]:
                 raise ValueError("matching contains an unacceptable or unknown assignment")
             incumbents[hospital].append(resident)
     for hospital, members in incumbents.items():
