@@ -620,3 +620,12 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Add reference tests for hand-computed recursions, lagged baselines, rolling C3 aggregation, low-count variance handling and invalid input.
 - [x] Add method documentation and register the package in the Python CI matrix.
 - [ ] Run the package tests and verify the full repository workflow on the latest head. Farrington regression, seasonality adjustment, spatial/space-time scan and covariate/population-offset models remain distinct work.
+
+
+## Moving-object query continuation — 17 November 2026
+
+- [x] Add constant-velocity position extrapolation with finite-value and time-horizon validation.
+- [x] Add predictive axis-aligned rectangle queries using a deterministic uncertainty-disk intersection test.
+- [x] Add dead-reckoning update triggers based on observed-versus-predicted displacement error.
+- [x] Add tests, implementation and algorithm documentation, and Python CI registration.
+- [ ] Execute the package and full CI suite. TPR/HR/MV3R indexing, probabilistic covariance regions, acceleration models, continuous queries and network-constrained trajectories remain separate tasks.
