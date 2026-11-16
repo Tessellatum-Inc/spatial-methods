@@ -49,6 +49,9 @@ These records are part of the broader [algorithm collection](../README.md). The 
 
 - [Weiler–Atherton polygon intersection](weiler-atherton.md) — linked-boundary traversal for simple concave rings and disconnected intersection components.
 
+- [Vatti polygon clipping](vatti-clipping.md) — general Boolean clipping; current runnable package is a transparently classified Clipper/Pyclipper adapter, not a from-scratch scanbeam implementation.
+- [Vatti-family clipping adapter](../../implementations/python/vatti-clipping/README.md) — integer-grid Boolean operations, fill rules, disconnected components and shell/hole hierarchy.
+
 - [Martinez–Rueda sweep-line front end](martinez-rueda.md) — initial event-queue, segment-intersection and splitting stage; full Boolean classification and stitching remain outstanding.
 
 - [Martinez–Rueda polygon overlay](martinez-rueda.md) — staged Boolean overlay with oriented ring stitching and explicit shell/hole component assembly.
