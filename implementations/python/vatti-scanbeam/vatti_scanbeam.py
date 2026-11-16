@@ -253,3 +253,57 @@ def winding_states(edges: Sequence[BoundEdge]) -> tuple[int, ...]:
         total += edge.winding_delta
         states.append(total)
     return tuple(states)
+
+
+@dataclass(frozen=True)
+class HorizontalEvent:
+    y: Fraction
+    x_start: Fraction
+    x_end: Fraction
+    horizontal_edge_id: int
+    other_edge_id: int
+    kind: str  # "point" or "overlap"
+    other_kind: str  # "bound" or "horizontal"
+
+
+def horizontal_events_at(
+    decomposition: ScanbeamDecomposition, y_value: float
+) -> tuple[HorizontalEvent, ...]:
+    """Find intersections involving horizontal edges on one scanbeam.
+
+    Horizontal/bound intersections include bound endpoints and interior
+    crossings. Horizontal/horizontal contacts are classified as point contacts
+    or positive-length overlaps. All comparisons and returned coordinates use
+    exact rational representations of the input decimal coordinates.
+    """
+    y = _q(y_value)
+    events = []
+    horizontals = [edge for edge in decomposition.horizontals
+                   if _q(edge.a[1]) == y]
+    bounds = [edge for edge in decomposition.bounds
+              if _q(edge.lower[1]) <= y <= _q(edge.upper[1])]
+    for horizontal in horizontals:
+        hx0, hx1 = sorted((_q(horizontal.a[0]), _q(horizontal.b[0])))
+        for bound in bounds:
+            x = _x_at(bound, y)
+            if hx0 <= x <= hx1:
+                events.append(HorizontalEvent(
+                    y, x, x, horizontal.edge_id, bound.edge_id, "point", "bound"
+                ))
+    for i, first in enumerate(horizontals):
+        a0, a1 = sorted((_q(first.a[0]), _q(first.b[0])))
+        for second in horizontals[i + 1:]:
+            if first.ring_id == second.ring_id:
+                continue
+            b0, b1 = sorted((_q(second.a[0]), _q(second.b[0])))
+            lo, hi = max(a0, b0), min(a1, b1)
+            if lo <= hi:
+                events.append(HorizontalEvent(
+                    y, lo, hi, first.edge_id, second.edge_id,
+                    "point" if lo == hi else "overlap", "horizontal"
+                ))
+    events.sort(key=lambda event: (
+        event.x_start, event.x_end, event.horizontal_edge_id,
+        event.other_edge_id, event.other_kind
+    ))
+    return tuple(events)
