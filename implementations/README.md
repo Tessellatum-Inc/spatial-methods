@@ -172,3 +172,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 
 - [Hausdorff, discrete Fréchet and smallest enclosing circle](python/geometry-metrics/README.md): directed/symmetric sampled-point Hausdorff, order-sensitive discrete Fréchet and randomized Welzl minimum enclosing circle, rotating-calipers convex diameter, and polygon Polylabel pole-of-inaccessibility search, with tests and walkthrough.
 - [Hausdorff, discrete Fréchet, smallest enclosing circle, convex diameter and Polylabel](python/geometry-metrics/README.md): directed/symmetric sampled-point Hausdorff, order-sensitive discrete Fréchet, randomized Welzl minimum circle, rotating-calipers convex diameter, polygon pole of inaccessibility and minimum-area oriented rectangle, with tests and walkthrough.
+
+
+### Solar geometry
+
+- [Solar geometry](python/solar-geometry/README.md): UTC-normalized solar position and top-of-atmosphere irradiance, with timezone and coordinate validation.
