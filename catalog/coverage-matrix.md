@@ -178,3 +178,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 4 groundwater and susceptibility: added the seven-layer weighted DRASTIC index, categorical landslide frequency-ratio mapping and ridge-regularized binary logistic regression with probability prediction. MODFLOW/MODPATH/MT3D, recharge estimation, SHALSTAB, weights of evidence and spatially blocked validation remain open.
+
+
+- Section 5 image registration: added FFT phase correlation for global translation and RANSAC affine transform estimation from matched point pairs, with tests and limitations. Feature detection/matching, local deformation, orthorectification, mosaicking and seamline optimization remain open.
