@@ -106,8 +106,8 @@ def spherical_kmeans(
     centers = [x[int(rng.integers(n))]]
     while len(centers) < int(n_clusters):
         similarity = x @ np.asarray(centers).T
-        nearest_distance = np.maximum(0.0, 1.0 - np.max(similarity, axis=1))
-        probabilities = nearest_distance**2
+        nearest_angle = np.arccos(np.clip(np.max(similarity, axis=1), -1.0, 1.0))
+        probabilities = nearest_angle**2
         if probabilities.sum() <= 1e-15:
             remaining = [i for i in range(n) if not any(np.allclose(x[i], c) for c in centers)]
             centers.append(x[remaining[0] if remaining else len(centers) % n])
