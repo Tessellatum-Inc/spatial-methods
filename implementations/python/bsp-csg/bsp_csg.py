@@ -99,6 +99,15 @@ class Polygon:
         if any(not all(abs(c) < float("inf") for c in v.pos) for v in vertices):
             raise ValueError("Coordinates must be finite.")
         plane = Plane.from_vertices(vertices, tolerance)
+        turns = []
+        for i in range(len(vertices)):
+            a, b, c = (vertices[i - 1].pos, vertices[i].pos,
+                       vertices[(i + 1) % len(vertices)].pos)
+            turn = _dot(_cross(_sub(b, a), _sub(c, b)), plane.normal)
+            if abs(turn) > tolerance:
+                turns.append(turn)
+        if not turns or (min(turns) < -tolerance and max(turns) > tolerance):
+            raise ValueError("BSP input polygons must be convex and consistently wound.")
         return cls(vertices, plane)
 
 
