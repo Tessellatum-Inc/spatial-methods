@@ -16,3 +16,21 @@ python -m pytest -q
 - `validate_cvrp_routes(...)`: checks exact customer coverage and vehicle capacities.
 
 Coordinates are planar Cartesian coordinates in a consistent linear unit. Do not pass longitude/latitude directly for large regions; project appropriately or replace the distance model. These are teaching baselines, not dispatch-ready optimizers. They omit time windows, fleet limits, heterogeneous vehicles, road-network travel costs, split deliveries, stochastic demand and pickup/delivery precedence.
+
+## Worked example
+
+```python
+from routing_heuristics import two_opt, route_length, clarke_wright_cvrp
+
+points = [(0, 0), (2, 0), (2, 2), (0, 2), (1, 1)]
+tour = two_opt(points)
+print(tour, route_length(tour, points))
+
+demands = [0, 2, 2, 1, 1]
+routes = clarke_wright_cvrp(points, demands, capacity=3, depot=0)
+print(routes)
+```
+
+The first result is a locally improved closed TSP tour. The second is a
+capacity-feasible set of depot-closed delivery routes; neither is guaranteed
+to be globally optimal.
