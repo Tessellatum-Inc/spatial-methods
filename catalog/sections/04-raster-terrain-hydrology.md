@@ -40,7 +40,7 @@ The source groups raster operations, terrain analysis, hydrological modelling, g
 | Rainfall-runoff: SCS curve number, unit hydrograph, Green-Ampt, TOPMODEL, SWAT, HEC-HMS, LISFLOOD, VIC | Hydrological models / software systems | 7 | Partial — SCS event runoff and AMC conversions, Green-Ampt event infiltration steps, and discrete unit-hydrograph convolution implemented; TOPMODEL and full catchment-model systems remain open |
 | Routing and hydrodynamics: Muskingum, Manning, Saint-Venant, kinematic wave, 2D shallow water equations, SPH | Flow-routing methods / physical equations / numerical methods | 7 | Not checked — intake only |
 | Flood: frequency analysis (GEV, Gumbel, return periods), bathtub versus hydrodynamic inundation, SAR flood mapping | Statistical methods / inundation models / remote-sensing workflow | 7 | Partially implemented: Weibull annual-maximum plotting positions and Gumbel/GEV L-moment return-level estimators are tested; bathtub inundation, hydrodynamic flood models and SAR flood mapping remain open |
-| Groundwater: MODFLOW, MODPATH, MT3D, DRASTIC, recharge estimation (water table fluctuation, chloride mass balance) | Groundwater models / assessment index / estimation methods | 7 | Not checked — intake only |
+| Groundwater: MODFLOW, MODPATH, MT3D, DRASTIC, recharge estimation (water table fluctuation, chloride mass balance) | Groundwater models / assessment index / estimation methods | 7 | Partially implemented: the seven-layer weighted DRASTIC rating index is available; groundwater flow/transport solvers and recharge-estimation methods remain open |
 | Land surface models: Noah-MP, CLM, JULES; GRACE downscaling; snow and soil moisture assimilation | Land-surface models / downscaling / data assimilation | 7 | Not checked — intake only |
 
 ## Geomorphology and slope processes
@@ -48,7 +48,7 @@ The source groups raster operations, terrain analysis, hydrological modelling, g
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Chi analysis, slope-area analysis, knickpoint detection, drainage basin morphometry | Geomorphic analysis methods / morphometric measures | 7 | Partially implemented: channel chi integration, log slope-area OLS and moving-window chord-residual knickpoint screening have tested reference methods; drainage-basin morphometry and automated channel extraction/segmentation remain open |
-| Landslide susceptibility (frequency ratio, logistic regression), SHALSTAB, weights of evidence | Susceptibility models / statistical methods | 7 | Not checked — intake only |
+| Landslide susceptibility (frequency ratio, logistic regression), SHALSTAB, weights of evidence | Susceptibility models / statistical methods | 7 | Partially implemented: categorical frequency-ratio mapping and ridge-regularized binary logistic regression have tested baselines; SHALSTAB, weights of evidence and spatial validation workflows remain open |
 | Glacier mass balance, snow models, avalanche runout | Cryosphere models / hazard modelling | 7 | Not checked — intake only |
 | Erosion: USLE, RUSLE, hydraulic and thermal erosion simulation | Empirical models / physical simulation | 7 | Partially implemented: a tested R×K×LS×C×P factor product and conventional slope-length/steepness factor are available; regional factor derivation, flow-accumulation-aware LS, sediment delivery and hydraulic/thermal erosion simulation remain open |
 
@@ -99,3 +99,6 @@ The channel-morphometry source entry now includes a tested chi-coordinate integr
 
 
 The erosion source entry now includes a tested USLE/RUSLE factor-product implementation and a conventional slope-length/steepness calculation. The method remains an empirical sheet/rill erosion estimate; regional factor derivation, complex-terrain LS, sediment delivery and process-based hydraulic/thermal erosion are not implemented.
+
+
+The DRASTIC source entry now has a seven-layer weighted rating-index implementation. The landslide-susceptibility entry now has categorical frequency-ratio and ridge-regularized logistic-regression baselines. These consume preclassified inputs and do not provide MODFLOW/transport simulation, recharge estimation, SHALSTAB, weights of evidence, inventory validation or spatially blocked model assessment.
