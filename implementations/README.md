@@ -187,3 +187,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### DEM quality
 
 - [DEM void filling](python/dem-void-fill/README.md): iterative IDW gap filling with explicit masks, neighbourhood controls and map-unit pixel dimensions.
+
+
+### Image fusion
+
+- [Brovey pan-sharpening](python/brovey-pansharpening/README.md): pure-Python component substitution with spectral-ratio preservation and explicit masking.
