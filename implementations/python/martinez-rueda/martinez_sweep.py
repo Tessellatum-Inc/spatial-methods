@@ -338,7 +338,8 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
     for xmin,xmax,sid,left,right,ymin,ymax in bounds:
         # Expire by a min-heap, not by scanning every active segment for every
         # new left endpoint. This keeps x-window maintenance O(log n) per edge.
-        epsq=Fraction(str(epsilon))\n        while expiry and expiry[0][0]<xmin-epsq:
+        epsq=Fraction(str(epsilon))
+        while expiry and expiry[0][0]<xmin-epsq:
             _,other=heapq.heappop(expiry)
             if other in active_by_id:
                 active_status.remove(other); active_by_id.pop(other)
