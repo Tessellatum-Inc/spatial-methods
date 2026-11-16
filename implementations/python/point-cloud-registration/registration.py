@@ -310,3 +310,112 @@ def generalized_icp(source, target, *, neighbors=20, max_iterations=50,
             "mahalanobis_rmse": mahalanobis_rmse, "iterations": iteration,
             "converged": converged, "correspondence_count": used,
             "fitness": used / src.shape[0]}
+
+
+def normal_distributions_transform(source, target, *, voxel_size=1.0,
+                                    min_points_per_voxel=6,
+                                    max_iterations=40, tolerance=1e-6,
+                                    covariance_regularization=1e-3,
+                                    max_correspondence_distance=None):
+    """Register a source cloud to a voxelised Gaussian model of the target.
+
+    Target points are grouped by floor(x / voxel_size). Each sufficiently
+    populated voxel defines a Gaussian from its sample mean and covariance.
+    Transformed source points are associated with their containing target
+    voxel; a damped Gauss-Newton update minimises Mahalanobis residuals.
+    Coordinates are row vectors and the result obeys
+    aligned = source @ rotation + translation.
+
+    This is a local, hard-voxel-assignment NDT baseline. It is sensitive to
+    voxel size, sampling density, initial pose and voxel-boundary changes;
+    it is not a globally convergent registration method.
+    """
+    from scipy.spatial.transform import Rotation
+
+    src, dst = _points(source, "source"), _points(target, "target")
+    try:
+        size, tol, reg = float(voxel_size), float(tolerance), float(covariance_regularization)
+    except (TypeError, ValueError):
+        raise ValueError("voxel_size, tolerance and covariance_regularization must be numeric") from None
+    if not np.isfinite(size) or size <= 0:
+        raise ValueError("voxel_size must be finite and positive")
+    if not np.isfinite(tol) or tol < 0:
+        raise ValueError("tolerance must be finite and non-negative")
+    if not np.isfinite(reg) or not 0 < reg < 1:
+        raise ValueError("covariance_regularization must be in (0, 1)")
+    if isinstance(min_points_per_voxel, (bool, np.bool_)) or not isinstance(min_points_per_voxel, (int, np.integer)) or min_points_per_voxel < 4:
+        raise ValueError("min_points_per_voxel must be an integer >= 4")
+    if isinstance(max_iterations, (bool, np.bool_)) or not isinstance(max_iterations, (int, np.integer)) or max_iterations < 1:
+        raise ValueError("max_iterations must be a positive integer")
+    gate = None if max_correspondence_distance is None else float(max_correspondence_distance)
+    if gate is not None and (not np.isfinite(gate) or gate <= 0):
+        raise ValueError("max_correspondence_distance must be positive")
+
+    voxel_ids = np.floor(dst / size).astype(np.int64)
+    groups = {}
+    for point, key in zip(dst, map(tuple, voxel_ids)):
+        groups.setdefault(key, []).append(point)
+    model = {}
+    for key, values in groups.items():
+        if len(values) < min_points_per_voxel:
+            continue
+        cloud = np.asarray(values)
+        centre = cloud.mean(axis=0)
+        centred = cloud - centre
+        covariance = centred.T @ centred / max(len(cloud) - 1, 1)
+        eigenvalues, eigenvectors = np.linalg.eigh(covariance)
+        floor = max(float(eigenvalues[-1]) * reg, size * size * reg * 1e-3,
+                    np.finfo(float).eps)
+        covariance = (eigenvectors * np.maximum(eigenvalues, floor)) @ eigenvectors.T
+        model[key] = (centre, np.linalg.inv(covariance))
+    if len(model) < 2:
+        raise ValueError("target has fewer than two populated Gaussian voxels")
+
+    aligned = src.copy()
+    total_rotation = Rotation.identity()
+    total_translation = np.zeros(3)
+    previous_cost, converged = np.inf, False
+    used, rmse = 0, np.inf
+    for iteration in range(1, int(max_iterations) + 1):
+        keys = np.floor(aligned / size).astype(np.int64)
+        correspondences = [(i, model.get(tuple(key))) for i, key in enumerate(keys)]
+        correspondences = [(i, item) for i, item in correspondences if item is not None]
+        if gate is not None:
+            correspondences = [(i, item) for i, item in correspondences
+                               if np.linalg.norm(aligned[i] - item[0]) <= gate]
+        if len(correspondences) < 6:
+            raise ValueError("fewer than six source points fall in populated target voxels")
+        hessian, gradient, cost = np.zeros((6, 6)), np.zeros(6), 0.0
+        residual_sq = 0.0
+        for i, (centre, precision) in correspondences:
+            point = aligned[i]
+            residual = point - centre
+            x, y, z = point
+            skew = np.array([[0.0, -z, y], [z, 0.0, -x], [-y, x, 0.0]])
+            jacobian = np.column_stack((-skew, np.eye(3)))
+            hessian += jacobian.T @ precision @ jacobian
+            gradient += jacobian.T @ precision @ residual
+            cost += float(residual @ precision @ residual)
+            residual_sq += float(residual @ residual)
+        if np.linalg.matrix_rank(hessian) < 6:
+            raise ValueError("NDT voxel correspondences do not constrain all six rigid degrees of freedom")
+        update = np.linalg.solve(hessian, -gradient)
+        # A conservative fixed damping factor limits the linearised pose step.
+        update *= 0.5
+        delta_rotation = Rotation.from_rotvec(update[:3])
+        delta_translation = update[3:]
+        aligned = delta_rotation.apply(aligned) + delta_translation
+        total_translation = delta_rotation.apply(total_translation) + delta_translation
+        total_rotation = delta_rotation * total_rotation
+        used = len(correspondences)
+        rmse = float(np.sqrt(residual_sq / used))
+        if abs(previous_cost - cost / used) <= tol and np.linalg.norm(update) <= np.sqrt(tol + 1e-15):
+            converged = True
+            break
+        previous_cost = cost / used
+
+    return {"aligned": aligned, "rotation": total_rotation.as_matrix().T,
+            "translation": total_translation, "rmse": rmse,
+            "iterations": iteration, "converged": converged,
+            "correspondence_count": used, "fitness": used / src.shape[0],
+            "voxel_count": len(model)}

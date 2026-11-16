@@ -196,3 +196,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 5 BRDF: added RossThick volumetric and Li-Sparse-Reciprocal geometric kernels, per-band rank-checked least-squares fitting, reference-geometry normalization, fit diagnostics and synthetic coefficient-recovery tests. This is not the operational MODIS MCD43 workflow; angular sampling, atmospheric correction, quality flags and uncertainty products remain open.
+
+
+- Section 15 point-cloud registration: added a tested hard-voxel normal-distributions-transform (NDT) baseline with target Gaussian means/covariances, covariance regularisation, voxel occupancy controls and damped six-parameter Gauss–Newton pose updates. It is explicitly a local single-resolution teaching implementation; multi-resolution NDT, neighbouring-voxel likelihoods, line-search optimisation, colored ICP, FPFH/RANSAC, TEASER++ and learned registration remain open.

@@ -23,3 +23,10 @@ Generalized ICP extends the correspondence objective with local covariance model
 These are rigid local-registration baselines, not NDT, colored ICP, FPFH/RANSAC, TEASER++, or learned registration. Validate with independent checkpoints, spatially distributed residuals and task-specific geometric constraints; a low nearest-neighbour or point-to-plane RMSE alone does not prove correct registration.
 
 Run the independent synthetic and brute-force tests in the implementation package README.
+
+
+## Normal distributions transform
+
+Normal distributions transform (NDT) replaces explicit point-to-point matches with a piecewise Gaussian model of the target cloud. A voxel containing enough target samples is represented by its sample mean and covariance. A transformed source point contributes a Mahalanobis residual to the Gaussian of its containing voxel. The implementation builds regularised voxel covariances, associates points by hard voxel membership and solves a damped six-parameter Gauss–Newton update. Its transform follows the same row-vector convention as the ICP methods.
+
+Voxel size controls the spatial scale of the probability model; minimum occupancy controls which cells are trusted. Too-small voxels produce sparse or unstable models, while too-large voxels blur local geometry. Hard voxel assignment creates discontinuities at cell boundaries, so this implementation is a bounded teaching baseline rather than a full multi-resolution production NDT system. It requires a reasonable initial pose and overlapping clouds. The reported RMSE is Euclidean distance to voxel means, not point-to-point nearest-neighbour RMSE.

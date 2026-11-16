@@ -149,3 +149,36 @@ def test_gicp_rejects_invalid_controls_and_underdetermined_geometry():
         generalized_icp(cloud, cloud, covariance_regularization=0)
     with pytest.raises(ValueError, match="do not constrain"):
         generalized_icp(cloud, cloud, neighbors=3)
+
+
+
+def test_ndt_recovers_small_translation_from_voxel_gaussian_model():
+    rng = np.random.default_rng(314)
+    chunks = []
+    for x in range(4):
+        for y in range(4):
+            for z in range(4):
+                chunks.append(np.array([x, y, z]) + rng.uniform(0.08, 0.92, (70, 3)))
+    target = np.vstack(chunks)
+    shift = np.array([0.012, -0.009, 0.007])
+    source = target - shift
+    result = normal_distributions_transform(source, target, voxel_size=1.0,
+        min_points_per_voxel=20, max_iterations=50, tolerance=1e-10)
+    np.testing.assert_allclose(result["aligned"], target, atol=2e-3)
+    np.testing.assert_allclose(result["translation"], shift, atol=2e-3)
+    assert result["voxel_count"] == 64
+    assert result["fitness"] > 0.95
+
+
+def test_ndt_rejects_invalid_parameters_and_sparse_voxel_model():
+    cloud = np.random.default_rng(3).normal(size=(40, 3))
+    with pytest.raises(ValueError, match="voxel_size"):
+        normal_distributions_transform(cloud, cloud, voxel_size=0)
+    with pytest.raises(ValueError, match="min_points"):
+        normal_distributions_transform(cloud, cloud, min_points_per_voxel=2)
+    with pytest.raises(ValueError, match="two populated"):
+        normal_distributions_transform(cloud, cloud, voxel_size=100,
+                                       min_points_per_voxel=50)
+
+
+from registration import normal_distributions_transform
