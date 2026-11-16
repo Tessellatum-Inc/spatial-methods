@@ -4,7 +4,7 @@
 - **Source pages:** 37–39
 - **Source transcription:** [pages 36–40](../../source-inventory/pages-36-40.md)
 - **Review state:** intake extracted; names are explicitly described by the source as coming from memory and requiring verification
-- **Current canonical records:** [Path-size logit route choice](../../algorithms/networks/path-size-logit.md), a tested overlap-corrected route-choice probability kernel; [Pareto multi-criteria shortest paths](../../algorithms/networks/multi-criteria-shortest-paths.md), with a tested [Python implementation](../../implementations/python/shortest-paths/README.md) and [source-verification note](../verification/multi-criteria-shortest-paths.md)
+- **Current canonical records:** [Path-size logit route choice](../../algorithms/networks/path-size-logit.md), a tested overlap-corrected route-choice probability kernel; [Pareto multi-criteria shortest paths](../../algorithms/networks/multi-criteria-shortest-paths.md), with a tested [Python implementation](../../implementations/python/shortest-paths/README.md) and [source-verification note](../verification/multi-criteria-shortest-paths.md); [circular and directional statistics](../../algorithms/statistics/circular-directional-statistics.md), with tested circular summaries, Rayleigh and Kuiper uniformity tests, von Mises density and rose histograms
 
 **Source caution:** the source says many methods are from specialised subfields and names are from memory. Treat all named methods, systems and products as leads until checked.
 
@@ -74,7 +74,7 @@
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Circular statistics: Rayleigh test, von Mises distribution, Kuiper and Watson tests, rose diagram analysis | Directional and circular statistical methods | 38 | Not checked — intake only |
+| Circular statistics: Rayleigh test, von Mises distribution, Kuiper and Watson tests, rose diagram analysis | Directional and circular statistical methods | 38 | Partially implemented: circular mean/resultant length, Rayleigh and Kuiper tests, von Mises density and weighted rose histograms have tested baselines; Watson's U-squared test, directional sampling models and structural-geology stereonet workflows remain open |
 | Spherical statistics: Fisher and Kent distributions, Bingham distribution, stereonet analysis | Spherical distributions / structural geology analysis | 39 | Not checked — intake only |
 | Structural measurements from point clouds: plane fitting, discontinuity set extraction, fracture network analysis, DFN generation, kinematic slope stability | Point-cloud structural analysis / fracture-network and stability methods | 39 | Not checked — intake only |
 | Geological modeling: cross-section construction, fault network modeling, implicit modeling via RBF or potential fields | Geological modelling workflows | 39 | Not checked — intake only |
