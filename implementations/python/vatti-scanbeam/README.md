@@ -25,7 +25,10 @@ presented as a complete production Vatti engine.
    contacts plus horizontal/horizontal point and overlap events. Contact
    coordinates are inserted into cell-boundary noding before stitching.
    Horizontal edges define scanbeam-level boundaries; they do not contribute
-   to the open-band winding count.
+   to the open-band winding count. At each level, one-sided below/above
+   Boolean intervals are compared and explicit horizontal fill transitions
+   are recorded. Shared horizontal edges with filled regions on both sides
+   are correctly treated as internal seams.
 6. **Cell and contour output:** emits exact-rational trapezoid/triangle cells,
    nodes unequal shared-edge subdivisions, cancels internal seams and walks
    the remaining directed boundary into closed rings. Disconnected shells and
