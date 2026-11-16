@@ -4,6 +4,8 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Raster and terrain
 
+- [Local raster map algebra](raster/local-map-algebra.md) — aligned cellwise arithmetic, reducers, comparisons and categorical lookup with explicit NoData policies.
+
 - [Marching squares](raster/marching-squares.md) — extract line-segment isolines from a rectilinear scalar grid with explicit saddle and NoData handling.
 
 ## Interpolation and geostatistics
