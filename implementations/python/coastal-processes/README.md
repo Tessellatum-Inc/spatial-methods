@@ -10,7 +10,7 @@ All distances and heights must use a consistent linear unit (normally metres); s
 
 ## Scope and cautions
 
-Stockdon runup requires deep-water significant wave height, peak period and foreshore slope. The implementation reports the empirical R2 value; the R1/Rmean/Rlow outputs are simple scaled summaries, not independent fitted quantiles. Tide, surge and local morphology are not included.
+Stockdon runup requires deep-water significant wave height, peak period and foreshore slope. The implementation reports the empirical R2, R1 and Rmean scaled statistics and the Stockdon low-runup expression based on the difference between setup and swash. These are empirical summary levels, not independent fitted quantiles. Tide, surge and local morphology are not included.
 
 CERC transport is highly sensitive to the empirical coefficient, breaking conditions, sediment density and porosity. The chosen shallow-water group-speed approximation is explicit; alternative CERC/Kamphuis formulations can differ materially. Treat output as a screening estimate, not a design discharge.
 
