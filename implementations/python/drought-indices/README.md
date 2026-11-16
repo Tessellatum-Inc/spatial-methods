@@ -1,0 +1,3 @@
+# Drought condition indicators
+
+Implements NDVI vegetation condition index (VCI), land-surface-temperature condition index (TCI), vegetation health index (VHI), and gamma standardized precipitation index (SPI) with a mixed zero-rainfall probability. VCI/TCI are clipped to [0,100]; constant historical ranges return NaN. SPI fits independently along a caller-selected time axis and preserves missing values. This is a single-population calibration: for strongly seasonal rainfall, group equivalent calendar months/seasons before fitting. These are indicators, not forecasts or insurance triggers; calibration period, sensor consistency, phenology and local validation remain essential.

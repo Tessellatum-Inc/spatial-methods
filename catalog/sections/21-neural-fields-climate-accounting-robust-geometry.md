@@ -4,7 +4,7 @@
 - **Source pages:** 43–45
 - **Source transcription:** [pages 41–47](../../source-inventory/pages-41-47.md)
 - **Review state:** intake extracted; source says names are from memory and should be verified
-- **Current canonical records:** [Exact orientation predicate](../../methods/exact-orientation-predicate.md), with a rational-arithmetic reference implementation, near-degenerate regression test, intern walkthrough, exercise and visual notebook. This is not an implementation of Shewchuk's adaptive expansion predicates; exact/adaptive production kernels and robust constructions remain open.
+- **Current canonical records:** [Land-change accounting](../../algorithms/statistics/land-change-accounting.md), including tested two-date transition matrices, class gains/losses, quantity/allocation disagreement and annualized intensity summaries; [Exact orientation predicate](../../methods/exact-orientation-predicate.md), with a rational-arithmetic reference implementation, near-degenerate regression test, intern walkthrough, exercise and visual notebook. This is not an implementation of Shewchuk's adaptive expansion predicates; exact/adaptive production kernels and robust constructions remain open.
 
 **Source caution:** the source describes these as narrower variants and adjacent fields. Verify named models, standards and software before citation.
 

@@ -4,7 +4,7 @@
 - **Source pages:** 37–39
 - **Source transcription:** [pages 36–40](../../source-inventory/pages-36-40.md)
 - **Review state:** intake extracted; names are explicitly described by the source as coming from memory and requiring verification
-- **Current canonical records:** [Pareto multi-criteria shortest paths](../../algorithms/networks/multi-criteria-shortest-paths.md), with a tested [Python implementation](../../implementations/python/shortest-paths/README.md) and [source-verification note](../verification/multi-criteria-shortest-paths.md)
+- **Current canonical records:** [Path-size logit route choice](../../algorithms/networks/path-size-logit.md), a tested overlap-corrected route-choice probability kernel; [Pareto multi-criteria shortest paths](../../algorithms/networks/multi-criteria-shortest-paths.md), with a tested [Python implementation](../../implementations/python/shortest-paths/README.md) and [source-verification note](../verification/multi-criteria-shortest-paths.md)
 
 **Source caution:** the source says many methods are from specialised subfields and names are from memory. Treat all named methods, systems and products as leads until checked.
 

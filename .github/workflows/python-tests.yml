@@ -108,6 +108,15 @@ jobs:
           - example: classification-breaks
             directory: implementations/python/classification-breaks
             pythonpath: ""
+          - example: path-size-logit
+            directory: implementations/python/path-size-logit
+            pythonpath: ""
+          - example: drought-indices
+            directory: implementations/python/drought-indices
+            pythonpath: ""
+          - example: land-change-accounting
+            directory: implementations/python/land-change-accounting
+            pythonpath: ""
           - example: reverse-knn
             directory: implementations/python/reverse-knn
             pythonpath: "../kd-tree"

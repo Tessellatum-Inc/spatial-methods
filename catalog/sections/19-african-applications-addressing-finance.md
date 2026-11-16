@@ -87,3 +87,8 @@
 3. Verify the availability, licensing, date and coverage of regional datasets and products.
 4. Apply privacy and safety review to mobile-money, telecom, health, pastoral and mobility data.
 5. Treat the diagnostics checklist as a core quality standard across the whole collection.
+
+
+### Drought-index implementation update
+
+The drought-indices package adds tested VCI, TCI, VHI and gamma SPI with mixed zero-rainfall probability. SPI is calibrated as a single population along the selected time axis; month/season-specific fitting, sensor harmonization, impact modelling and parametric-insurance basis-risk analysis remain open.
