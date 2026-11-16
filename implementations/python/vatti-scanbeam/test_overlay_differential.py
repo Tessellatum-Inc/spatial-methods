@@ -122,3 +122,35 @@ def test_hole_aware_vatti_overlay_matches_shapely(operation):
     tolerance = 1e-9 * max(1.0, expected.area)
     assert actual.is_valid
     assert actual.symmetric_difference(expected).area <= tolerance
+
+
+@pytest.mark.parametrize(
+    "fill_rule,clockwise",
+    [
+        ("even_odd", False),
+        ("non_zero", False),
+        ("positive", False),
+        ("negative", True),
+    ],
+)
+@pytest.mark.parametrize("operation", ("intersection", "union", "difference", "xor"))
+def test_vatti_fill_rules_match_independent_polygon_oracle(
+    fill_rule, clockwise, operation
+):
+    subject = _rect(0, 0, 5, 4, ccw=not clockwise)
+    clip = _rect(3, -1, 7, 3, ccw=not clockwise)
+    decomposition = decompose_scanbeams([subject, clip])
+    actual_rings = clip_rings(
+        decomposition, {0}, {1}, operation, fill_rule=fill_rule
+    ).rings
+    actual = _native_geometry(actual_rings)
+    left, right = Polygon(subject), Polygon(clip)
+    expected = {
+        "intersection": left.intersection,
+        "union": left.union,
+        "difference": left.difference,
+        "xor": left.symmetric_difference,
+    }[operation](right)
+    tolerance = 1e-9 * max(1.0, expected.area)
+    assert actual.is_valid
+    assert actual.symmetric_difference(expected).area <= tolerance
