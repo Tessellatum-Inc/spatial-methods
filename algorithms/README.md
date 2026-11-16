@@ -8,6 +8,8 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Raster and terrain
 
+- [SLIC superpixels](remote-sensing/slic-superpixels.md) — compactness-controlled local clustering in joint feature and image-coordinate space.
+
 - [Manning open-channel flow](raster/manning-open-channel.md) — calculate uniform-flow discharge and invert for normal depth in rectangular/trapezoidal channels.
 
 - [Muskingum channel routing](raster/muskingum-routing.md) — linear reach routing with explicit coefficient stability conditions and storage diagnostics.

@@ -202,3 +202,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Open-channel hydraulics
 
 - [Manning open-channel flow](python/manning-open-channel/README.md): trapezoidal/rectangular discharge and bracketed normal-depth inversion.
+
+
+### Image segmentation
+
+- [SLIC superpixels](python/slic-superpixels/README.md): feature-space/spatial clustering with local assignment and explicit connectivity limitations.

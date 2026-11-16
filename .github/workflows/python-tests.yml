@@ -297,6 +297,9 @@ jobs:
           - example: syndromic-surveillance
             directory: implementations/python/syndromic-surveillance
             pythonpath: ""
+          - example: slic-superpixels
+            directory: implementations/python/slic-superpixels
+            pythonpath: ""
           - example: solar-geometry
             directory: implementations/python/solar-geometry
             pythonpath: ""

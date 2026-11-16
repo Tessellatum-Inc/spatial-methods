@@ -23,7 +23,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 2 — Spatial statistics | 28 | 14 | 14 |
 | 3 — Geostatistics | 26 | 3 | 23 |
 | 4 — Raster, terrain and hydrology | 26 | 24 | 2 |
-| 5 — Remote sensing | 36 | 17 | 19 |
+| 5 — Remote sensing | 36 | 18 | 18 |
 | 6 — Optimization, mobility and transport | 31 | 4 | 27 |
 | 7 — Domain modeling | 48 | 1 | 47 |
 | 8 — GeoAI | 54 | 2 | 52 |

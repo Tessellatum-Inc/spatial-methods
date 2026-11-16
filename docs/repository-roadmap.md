@@ -709,3 +709,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Add tests for grey/chromatic pixels, PAN intensity substitution, NoData propagation and invalid dimensions/values.
 - [x] Extend the Brovey fusion documentation and source-entry status; reuse the existing CI package registration.
 - [ ] Execute full CI and evaluate spectral distortion/quality against sensor-specific reference products. Gram-Schmidt, wavelet, Bayesian, spatiotemporal and learned fusion remain open.
+
+
+## SLIC superpixel continuation — 17 November 2026
+
+- [x] Implement regular-grid seed placement, local low-gradient seed adjustment, compactness-weighted feature/spatial assignment and iterative centre updates.
+- [x] Add deterministic, synthetic-region, output-shape, small-image and invalid-input tests.
+- [x] Document caller-supplied feature spaces and the missing connectivity-enforcement stage; register in Python CI.
+- [ ] Execute full CI and add connected-component enforcement/cleanup. Watershed, mean shift, region growing, graph cuts, MRF/CRF and active contours remain open.
