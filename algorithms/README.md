@@ -307,3 +307,8 @@ Records may have different evidence and implementation status. Check the status 
 ## Recurrence analysis
 
 - [Recurrence plots and quantification](statistics/recurrence-analysis.md) — calculate fixed-threshold recurrence matrices and RR, DET, line-length, entropy and laminarity measures.
+
+
+## Coastal processes
+
+- [Coastal empirical processes and shoreline change](coastal/coastal-processes.md) — Stockdon wave runup, a scoped CERC longshore-transport estimate, and EPR/OLS/WLR shoreline-rate statistics.
