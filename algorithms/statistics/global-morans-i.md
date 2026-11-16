@@ -251,3 +251,8 @@ The dense implementation is intended for learning and small examples. It is not 
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-13 | Initial reader-facing research draft and tested dense reference implementation |
+
+
+## Random-labelling permutation inference
+
+The companion Python implementation supports a Monte Carlo random-labelling test: observed values are shuffled among fixed locations while the spatial weights remain fixed. The pseudo-p-value uses the plus-one correction. The two-sided alternative measures extremeness around the randomisation expectation -1/(n-1), rather than around zero. This is an unconditional randomisation test; it does not implement restricted permutations, conditional inference, spatial/block bootstrap or analytical variance corrections. State the null hypothesis, permutation scheme, number of draws, random seed and tail definition when reporting results.
