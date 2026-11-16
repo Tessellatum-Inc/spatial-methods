@@ -4,7 +4,7 @@
 - **Source pages:** 45–47
 - **Source transcription:** [pages 41–47](../../source-inventory/pages-41-47.md)
 - **Review state:** intake extracted; covariance foundation researched and scoped; remaining entries require item-level verification
-- **Current canonical records:** [Proper Gaussian CAR Gibbs sampler](../../algorithms/statistics/proper-car-gibbs-sampling.md), a tested fixed-hyperparameter latent Gaussian posterior sampler; [Stationary covariance functions](../../methods/stationary-covariance-functions.md); [nonseparable space-time covariance](../../methods/nonseparable-space-time-covariance.md); [tested Euclidean covariance baseline](../../implementations/python/covariance-functions/README.md); [interactive lab](../../notebooks/covariance-functions-lab.ipynb); [compositional data analysis](../../algorithms/statistics/compositional-data-analysis.md) and its [tested NumPy implementation](../../implementations/python/compositional-data/README.md) (additional canonical record; exact source-entry mapping remains to be confirmed)
+- **Current canonical records:** [Laplace approximation and slice sampling](../../algorithms/statistics/laplace-and-slice-inference.md), now implemented with Gaussian reference tests; [Proper Gaussian CAR Gibbs sampler](../../algorithms/statistics/proper-car-gibbs-sampling.md), a tested fixed-hyperparameter latent Gaussian posterior sampler; [Stationary covariance functions](../../methods/stationary-covariance-functions.md); [nonseparable space-time covariance](../../methods/nonseparable-space-time-covariance.md); [tested Euclidean covariance baseline](../../implementations/python/covariance-functions/README.md); [interactive lab](../../notebooks/covariance-functions-lab.ipynb); [compositional data analysis](../../algorithms/statistics/compositional-data-analysis.md) and its [tested NumPy implementation](../../implementations/python/compositional-data/README.md) (additional canonical record; exact source-entry mapping remains to be confirmed)
 
 **Source caution:** the compendium says these are memory-based and mostly narrower variants or supporting machinery. Verify exact names, software versions and mathematical conditions before creating canonical records.
 
@@ -100,3 +100,8 @@ A fourth covariance record implements one Gneiting-class construction on Euclide
 ### Spatial inference implementation update
 
 A proper Gaussian CAR Gibbs sampler now covers systematic-scan conditional updates with independent Gaussian observations, missing-data handling and positive-definiteness checks. It fixes hyperparameters and does not estimate CAR/SAR parameters or support non-Gaussian likelihoods; MCMC diagnostics and other inference engines remain open.
+
+
+### Approximate-inference implementation update
+
+The approximate-inference package now includes numerical Laplace posterior approximation (mode, local covariance and log evidence) and componentwise stepping-out slice sampling. These are reusable inference kernels rather than fitted spatial models; posterior construction, hyperparameter calibration and convergence diagnostics remain model-specific and open.

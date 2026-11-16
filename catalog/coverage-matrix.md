@@ -139,3 +139,5 @@ Four source-listed streaming summaries now have tested reference implementations
 
 - Section 17: [Huff competitive location](../algorithms/spatial-interaction/huff-competitive-location.md) now estimates origin-to-facility choice probabilities and expected visits from attractiveness, generalized cost and demand. Strategic competition, capacity constraints and parameter calibration remain open.
 - Section 20: [Run-theory drought events](../algorithms/remote-sensing/run-theory-drought-events.md) now extracts threshold runs with optional gap bridging and duration/severity summaries. Spatial event tracking and return-period inference remain open.
+
+- Section 22: [Laplace approximation and slice sampling](../algorithms/statistics/laplace-and-slice-inference.md) now provides a numerical local-Gaussian posterior approximation and componentwise stepping-out slice sampler. Multimodal inference, model-specific hyperparameter learning and convergence diagnostics remain open.

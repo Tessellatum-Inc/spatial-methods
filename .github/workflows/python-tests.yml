@@ -108,6 +108,9 @@ jobs:
           - example: classification-breaks
             directory: implementations/python/classification-breaks
             pythonpath: ""
+          - example: approximate-inference
+            directory: implementations/python/approximate-inference
+            pythonpath: ""
           - example: huff-model
             directory: implementations/python/huff-model
             pythonpath: ""
