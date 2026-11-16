@@ -680,6 +680,9 @@ jobs:
           - example: winged-edge
             directory: implementations/python/winged-edge
             pythonpath: ""
+          - example: natural-neighbour
+            directory: implementations/python/natural-neighbour
+            pythonpath: ""
 
     steps:
       - name: Check out repository
