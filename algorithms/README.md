@@ -28,6 +28,8 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Sampling and experimental design\n\n- [Space-filling sampling designs](statistics/space-filling-sampling.md) — Latin hypercube, centered LHS, multi-start maximin selection and k-means coverage for bounded continuous domains.\n\n## Interpolation and geostatistics
 
+- [Inverse-distance weighting](interpolation/inverse-distance-weighting.md) — deterministic point interpolation with exact-sample, radius and nearest-neighbour policies.
+
 - [Sibson natural-neighbour interpolation](interpolation/natural-neighbour.md) — interpolate from Voronoi-cell areas stolen when a query is inserted; the reference implementation rejects extrapolation.
 - [Whittaker-Eilers smoothing](interpolation/whittaker-smoother.md) — smooth ordered sequences with a weighted finite-difference penalty and explicit missing-observation handling.
 

@@ -717,3 +717,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Add deterministic, synthetic-region, output-shape, small-image and invalid-input tests.
 - [x] Document caller-supplied feature spaces and the missing connectivity-enforcement stage; register in Python CI.
 - [ ] Execute full CI and add connected-component enforcement/cleanup. Watershed, mean shift, region growing, graph cuts, MRF/CRF and active contours remain open.
+
+
+## Inverse-distance weighting continuation — 17 November 2026
+
+- [x] Implement planar IDW with configurable power, radius and nearest-neighbour limits.
+- [x] Handle exact coordinate matches and duplicate observations deterministically; return None when a query has no supported neighbours.
+- [x] Add hand-calculated weighting, exact-point, radius, neighbour-selection and invalid-input tests; register in Python CI.
+- [ ] Execute full CI and evaluate anisotropy, barriers, network distances and uncertainty. Shepard/RBF, splines, trend surfaces and TIN interpolation remain distinct open methods.

@@ -1,29 +1,24 @@
-# Inverse distance weighting: Python example
+# Inverse-distance weighting (IDW)
 
-This dependency-free reference implementation estimates a value at a target coordinate using inverse-distance weights.
+Dependency-free planar interpolation from point samples. For query q, each
+sample i receives weight w_i = d(q,i)^(-p), normalized to sum to one. The
+default power is p=2. Optional maximum-neighbour and radius controls bound
+the contributing sample set.
 
-## Run it
+An exact query/sample coordinate match returns the mean of all observations
+at that coordinate, avoiding division by zero. If a radius is supplied and
+no sample falls within it, the prediction is None. Neighbour ties are stable
+by original sample order.
 
-```bash
-python -m pip install -r requirements.txt
-python -m pytest -q
-```
+## Limits
 
-## Use it
+IDW is deterministic but is not a geostatistical covariance model. It does
+not estimate a variogram, kriging weights, prediction variance, anisotropy,
+barriers, network distances, nonstationary trends or uncertainty intervals.
+Coordinate units and projection are the caller's responsibility; Euclidean
+distance in longitude/latitude degrees is generally inappropriate for
+regional work.
 
-```python
-from idw import predict
+## Tests
 
-stations = [(0, 0), (2, 0), (4, 0)]
-rainfall = [10, 20, 40]
-estimate = predict(stations, rainfall, (1, 0), power=2)
-print(round(estimate, 2))  # 16.32
-```
-
-Optional `max_neighbors` and `radius` parameters restrict contributing observations. Coincident observations are averaged. If no observation falls inside a requested radius, the function raises `ValueError`.
-
-## Scope and limits
-
-The function uses Euclidean distance in the coordinate units provided. It does not reproject coordinates, calculate geodesic distance, fit the power parameter, account for barriers or anisotropy, or estimate prediction uncertainty.
-
-See the [canonical lesson](../../../algorithms/interpolation/inverse-distance-weighting.md) and [step-by-step walkthrough](implementation-walkthrough.md).
+    python -m pytest -q
