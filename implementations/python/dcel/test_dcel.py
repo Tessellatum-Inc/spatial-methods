@@ -103,3 +103,12 @@ def test_rejects_partial_collinear_shared_edge_overlap():
     b = [(1, 0), (2, 0), (2, -1), (1, -1), (1, 0)]
     with pytest.raises(ValueError, match="partial collinear overlaps"):
         DCEL.from_faces({"a": [a], "b": [b]})
+
+
+def test_adjacent_collinear_boundary_edges_may_meet_at_one_noded_vertex():
+    # The horizontal bottom edges are collinear and share one endpoint, but
+    # have disjoint interiors. They are valid in a noded planar subdivision.
+    d = DCEL.from_faces({"west": [rect(0, 0, 1, 1)], "east": [rect(1, 0, 2, 1)]})
+    assert len(d.faces) == 2
+    shared = [edge for edge in d.halfedges if edge.twin >= 0 and d.halfedges[edge.twin].face is not None]
+    assert len(shared) == 2
