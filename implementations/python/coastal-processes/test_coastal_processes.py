@@ -112,3 +112,17 @@ def test_multibeam_grid_validation():
     with pytest.raises(ValueError): grid_multibeam_soundings([0], [0], [1], cell_size=0)
     with pytest.raises(ValueError): grid_multibeam_soundings([np.nan], [0], [1], cell_size=1)
     with pytest.raises(ValueError): grid_multibeam_soundings([0], [0], [1], cell_size=1, statistic='mode')
+
+def test_six_variable_coastal_vulnerability_index():
+    from coastal_processes import coastal_vulnerability_index
+    assert coastal_vulnerability_index([1, 1, 1, 1, 1, 1]) == pytest.approx(1)
+    assert coastal_vulnerability_index([5, 5, 5, 5, 5, 5]) == pytest.approx(25)
+    got = coastal_vulnerability_index([[1, 1, 1, 1, 1, 1], [2, 2, 2, 2, 2, 2]])
+    np.testing.assert_allclose(got, [1, 8])
+
+
+def test_coastal_vulnerability_index_validates_rank_scale_and_axis():
+    from coastal_processes import coastal_vulnerability_index
+    with pytest.raises(ValueError): coastal_vulnerability_index([1, 2, 3, 4, 5])
+    with pytest.raises(ValueError): coastal_vulnerability_index([1, 2, 3, 4, 5, 6])
+    with pytest.raises(ValueError): coastal_vulnerability_index([1, 2, 3, 4, 5, 1.5])
