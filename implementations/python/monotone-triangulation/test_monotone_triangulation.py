@@ -11,7 +11,7 @@ def _check(ring):
 
 
 def test_rectangle():
-    _check([(0, 0), (5, 0), (6, 4), (4, 7), (1, 6)])
+    _check([(0, 0), (5, 1), (6, 4), (4, 7), (1, 6)])
 
 
 def test_concave_monotone_polygon():

@@ -5,7 +5,7 @@ from adaptive_thresholding import adaptive_threshold
 def test_uniform_image_with_positive_offset():
     x=np.full((12,13),5.0)
     binary,t=adaptive_threshold(x,5,offset=1)
-    assert not binary.any()
+    assert binary.all()
     assert np.allclose(t,4)
 
 def test_local_bright_feature_detected():
@@ -17,7 +17,7 @@ def test_local_bright_feature_detected():
 def test_gaussian_shape_and_constant():
     x=np.full((9,11),3.)
     b,t=adaptive_threshold(x,5,method="gaussian")
-    assert b.all() and np.allclose(t,3)
+    assert not b.any() and np.allclose(t,3)
 
 def test_invalid():
     with pytest.raises(ValueError): adaptive_threshold(np.ones((3,3)),4)

@@ -37,7 +37,7 @@ def test_closed_tetrahedral_surface_has_no_boundary():
 @pytest.mark.parametrize("faces, message", [
     ([(0, 1)], "not triangular"),
     ([(0, 1, 1)], "repeats a vertex"),
-    ([(0, 1, 3)], "out-of-range"),
+    ([(0, 1, 5)], "out-of-range"),
     ([(0, 1, 2), (0, 1, 3)], "inconsistent winding"),
     ([(0, 1, 2), (1, 0, 3), (0, 1, 4)], "more than two"),
     ([(0, 1, 2), (0, 1, 2)], "duplicate geometric"),
