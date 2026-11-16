@@ -39,6 +39,7 @@ The [MEXCLP lesson](../../algorithms/optimization/mexclp.md) adds an availabilit
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
+| TSP and capacitated VRP: 2-opt local search and Clarke–Wright savings | Routing heuristics / combinatorial optimisation | 10 | [2-opt and Clarke–Wright](../../algorithms/optimization/tsp-two-opt-clarke-wright.md) now have dependency-free tested baselines with deterministic Euclidean costs, capacity validation and seeded differential checks. Lin–Kernighan, Christofides, VRPTW, multi-depot, pickup-and-delivery, periodic, inventory-routing and drone-truck variants remain outstanding | Partial — two heuristic baselines implemented; source-entry review pending |
 | Multi-depot VRP, periodic routing, inventory-routing, drone-truck routing, school bus routing | Vehicle-routing problem variants | 10 | Not checked — intake only |
 | Snow plow and waste collection arc routing, ride-hailing dispatch, bike rebalancing | Arc-routing and dispatch optimisation problems | 10 | Not checked — intake only |
 | ETA prediction (WDR, DeepTTE, graph neural networks), OR-Tools | Prediction models / software toolkit | 10 | Not checked — intake only |
