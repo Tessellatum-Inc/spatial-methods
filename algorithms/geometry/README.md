@@ -50,6 +50,7 @@ These records are part of the broader [algorithm collection](../README.md). The 
 - [Weiler–Atherton polygon intersection](weiler-atherton.md) — linked-boundary traversal for simple concave rings and disconnected intersection components.
 
 - [Vatti polygon clipping](vatti-clipping.md) — general Boolean clipping; current runnable package is a transparently classified Clipper/Pyclipper adapter, not a from-scratch scanbeam implementation.
+- [Native Vatti scanbeam foundation](vatti-scanbeam.md) — scanbeam levels, bound edges, horizontal edges and local minima; active-edge processing remains outstanding.
 - [Vatti-family clipping adapter](../../implementations/python/vatti-clipping/README.md) — integer-grid Boolean operations, fill rules, disconnected components and shell/hole hierarchy.
 
 - [Martinez–Rueda sweep-line front end](martinez-rueda.md) — initial event-queue, segment-intersection and splitting stage; full Boolean classification and stitching remain outstanding.
