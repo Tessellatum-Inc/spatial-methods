@@ -8,6 +8,8 @@
 - Exact rational dx/dy ordering of local-minimum bounds.
 - Active-edge ordering at a scanbeam-band midpoint.
 - Exact pairwise crossing events strictly within a band.
+- Crossing-level band subdivision and edge-order swaps on either side.
+- Cumulative signed winding transition helper.
 
 ## Tests authored
 - Rectangle scanbeam and minimum fixture.
@@ -18,7 +20,7 @@
 - Invalid band, non-finite and repeated-vertex inputs.
 
 ## Not implemented
-- Incremental active-edge insertion, removal and reordering at events.
+- Efficient neighbour-only intersection scheduling and in-place active-edge updates.
 - Efficient neighbour-only intersection scheduling.
 - Horizontal-edge clipping transitions.
 - Winding/fill-state propagation.
