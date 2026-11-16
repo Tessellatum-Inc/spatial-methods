@@ -264,6 +264,9 @@ jobs:
           - example: louvain
             directory: implementations/python/louvain
             pythonpath: ""
+          - example: stable-matching
+            directory: implementations/python/stable-matching
+            pythonpath: ""
           - example: spectral-partitioning
             directory: implementations/python/spectral-partitioning
             pythonpath: ""
