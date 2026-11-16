@@ -253,7 +253,7 @@ def von_mises_fisher_mixture(
                 means[j] = resultant / length
             kappas[j] = max(float(min_concentration),
                             _estimate_vmf_concentration(length/max(mass[j], 1e-15)))
-        if abs(log_likelihood-previous) <= tolerance*(1.0+abs(previous)):
+        if np.isfinite(previous) and abs(log_likelihood-previous) <= tolerance*(1.0+abs(previous)):
             converged = True
             break
         previous = log_likelihood
