@@ -132,14 +132,15 @@ def triangulate(vertices: Iterable[Sequence[float | int]]) -> list[Triangle]:
 
     stack = [order[0], order[1]]
     triangles: list[Triangle] = []
-    for current in order[2:-1]:
+    for position in range(2, len(order) - 1):
+        current = order[position]
         if chain[current] != chain[stack[-1]] and chain[current] != "both" and chain[stack[-1]] != "both":
             while len(stack) > 1:
                 a, b = stack.pop(), stack[-1]
                 tri = _ccw(ring[current], ring[a], ring[b])
                 if tri:
                     triangles.append(tri)
-            stack = [order[order.index(current) - 1], current]
+            stack = [order[position - 1], current]
         else:
             last = stack.pop()
             while stack:
