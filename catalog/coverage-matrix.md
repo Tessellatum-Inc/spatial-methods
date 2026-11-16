@@ -141,3 +141,6 @@ Four source-listed streaming summaries now have tested reference implementations
 - Section 20: [Run-theory drought events](../algorithms/remote-sensing/run-theory-drought-events.md) now extracts threshold runs with optional gap bridging and duration/severity summaries. Spatial event tracking and return-period inference remain open.
 
 - Section 22: [Laplace approximation and slice sampling](../algorithms/statistics/laplace-and-slice-inference.md) now provides a numerical local-Gaussian posterior approximation and componentwise stepping-out slice sampler. Multimodal inference, model-specific hyperparameter learning and convergence diagnostics remain open.
+
+
+- Section 4 (coastal subsection, source page 7): [Coastal empirical processes](../algorithms/coastal/coastal-processes.md) now has tested Stockdon runup, scoped CERC longshore transport, and EPR/OLS/WLR shoreline-rate estimators. Waterline extraction, tide coordination, full DSAS transect workflows, Kamphuis, Bruun, Dean profile, coastal vulnerability and bathymetry remain open.
