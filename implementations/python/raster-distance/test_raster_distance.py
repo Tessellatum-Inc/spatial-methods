@@ -103,3 +103,49 @@ def test_scalar_cell_size_is_reported_as_invalid():
     targets[0, 0] = True
     with pytest.raises(ValueError):
         distance_to_targets(targets, cell_size=5.0)
+
+
+def test_chamfer_distance_uses_eight_neighbour_graph_metric():
+    from raster_distance import chamfer_distance_to_targets
+    targets = np.zeros((5, 5), dtype=bool)
+    targets[0, 0] = True
+    result = chamfer_distance_to_targets(targets)
+    assert result[0, 1] == pytest.approx(1.0)
+    assert result[1, 0] == pytest.approx(1.0)
+    assert result[1, 1] == pytest.approx(np.sqrt(2.0))
+    assert result[2, 1] == pytest.approx(1.0 + np.sqrt(2.0))
+
+
+def test_chamfer_distance_matches_brute_force_octile_metric():
+    from raster_distance import chamfer_distance_to_targets
+    rng = np.random.default_rng(321)
+    for shape in ((1, 7), (6, 1), (5, 8), (9, 11)):
+        for spacing in ((1.0, 1.0), (2.0, 0.5)):
+            targets = rng.random(shape) < .2
+            if not targets.any():
+                targets[0, 0] = True
+            actual = chamfer_distance_to_targets(targets, cell_size=spacing)
+            locations = np.argwhere(targets)
+            expected = np.empty(shape)
+            diagonal = np.hypot(*spacing)
+            for row in range(shape[0]):
+                for col in range(shape[1]):
+                    costs = []
+                    for target_row, target_col in locations:
+                        dr, dc = abs(row-target_row), abs(col-target_col)
+                        diagonal_steps = min(dr, dc)
+                        costs.append(
+                            diagonal_steps * diagonal
+                            + (dr-diagonal_steps) * spacing[0]
+                            + (dc-diagonal_steps) * spacing[1]
+                        )
+                    expected[row, col] = min(costs)
+            np.testing.assert_allclose(actual, expected, rtol=1e-12, atol=1e-12)
+
+
+def test_chamfer_distance_rejects_empty_target_mask_and_invalid_spacing():
+    from raster_distance import chamfer_distance_to_targets
+    with pytest.raises(ValueError):
+        chamfer_distance_to_targets(np.zeros((3, 3), dtype=bool))
+    with pytest.raises(ValueError):
+        chamfer_distance_to_targets(np.eye(3, dtype=bool), cell_size=(1, 0))
