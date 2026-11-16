@@ -30,6 +30,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Laplace approximation and slice sampling](statistics/laplace-and-slice-inference.md) — posterior mode, local Gaussian approximation and componentwise slice sampling.
 
+## Network point-pattern analysis
+
+- [Network Ripley's K](statistics/network-ripley-k.md) — summarize event clustering by shortest-path distance on a finite linear network.
+
 ## Circular and directional statistics
 
 - [Circular and directional statistics](statistics/circular-directional-statistics.md) — summarize directions, test circular uniformity, evaluate the von Mises density and construct weighted rose histograms.
