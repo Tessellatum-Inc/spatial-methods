@@ -21,7 +21,7 @@ def test_observer_and_target_heights_change_visibility():
     dem = np.zeros((1, 5))
     dem[0, 2] = 2
     low = viewshed(dem, (0, 0), observer_height=0, target_height=0)
-    high = viewshed(dem, (0, 0), observer_height=3, target_height=0)
+    high = viewshed(dem, (0, 0), observer_height=5, target_height=0)
     assert not low[0, 4]
     assert high[0, 4]
 
