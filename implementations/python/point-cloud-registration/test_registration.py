@@ -3,6 +3,7 @@ import pytest
 from registration import iterative_closest_point, point_cloud_distances
 
 
+
 def test_icp_recovers_known_rigid_transform_on_asymmetric_cloud():
     x, y, z = np.meshgrid(np.arange(6.), np.arange(5.) * 1.3,
                           np.arange(6.) * 0.7, indexing="ij")
@@ -69,3 +70,38 @@ def test_icp_rejects_invalid_controls_and_degenerate_matches():
     with pytest.raises(ValueError):
         iterative_closest_point(np.ones((3, 3)), np.ones((3, 3)),
                                 max_correspondence_distance=0.0)
+
+
+from registration import point_to_plane_icp
+
+
+def test_point_to_plane_icp_recovers_small_rigid_pose_on_ellipsoid():
+    rng = np.random.default_rng(22)
+    directions = rng.normal(size=(2500, 3))
+    directions /= np.linalg.norm(directions, axis=1)[:, None]
+    target = directions * np.array([2.0, 1.4, 0.9])
+    normals = target / np.array([2.0, 1.4, 0.9]) ** 2
+    normals /= np.linalg.norm(normals, axis=1)[:, None]
+    from scipy.spatial.transform import Rotation
+    expected_rotation = Rotation.from_rotvec([0.004, -0.006, 0.005])
+    expected_translation = np.array([0.008, -0.006, 0.005])
+    source = expected_rotation.inv().apply(target - expected_translation)
+    result = point_to_plane_icp(source, target, normals,
+        max_iterations=20, tolerance=1e-12, max_correspondence_distance=0.1)
+    np.testing.assert_allclose(result["aligned"], target, atol=1e-7)
+    np.testing.assert_allclose(result["rotation"], expected_rotation.as_matrix().T,
+                               atol=1e-7)
+    np.testing.assert_allclose(result["translation"], expected_translation,
+                               atol=1e-7)
+    assert result["rmse"] < 1e-8
+    assert result["fitness"] == 1.0
+
+
+def test_point_to_plane_icp_rejects_degenerate_normal_geometry():
+    cloud = np.array([[x, y, 0.0] for x in range(4) for y in range(4)], dtype=float)
+    normals = np.tile([0.0, 0.0, 1.0], (len(cloud), 1))
+    with pytest.raises(ValueError, match="do not constrain"):
+        point_to_plane_icp(cloud + [0, 0, 0.01], cloud, normals)
+    normals[0] = 0
+    with pytest.raises(ValueError, match="non-zero"):
+        point_to_plane_icp(cloud, cloud, normals)

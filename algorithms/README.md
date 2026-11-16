@@ -351,4 +351,4 @@ Records may have different evidence and implementation status. Check the status 
 
 - [RossThick-LiSparseR BRDF normalization](remote-sensing/ross-li-brdf.md) — fit kernel-driven volumetric/geometric reflectance terms and normalize multi-angle observations to a declared reference geometry.
 
-- [Point-cloud registration and geometric comparison](geometry/point-cloud-registration.md) — point-to-point rigid ICP with trimmed/gated correspondences, plus symmetric Chamfer/Hausdorff and threshold F-score metrics.
+- [Point-cloud registration and geometric comparison](geometry/point-cloud-registration.md) — point-to-point and point-to-plane rigid ICP, plus symmetric Chamfer/Hausdorff and threshold F-score metrics.
