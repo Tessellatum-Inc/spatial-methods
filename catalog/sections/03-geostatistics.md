@@ -50,7 +50,7 @@ This section combines surface estimation, stochastic spatial models, simulation,
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Positional accuracy (RMSE), error propagation, Monte Carlo, Latin hypercube, Sobol sensitivity, polynomial chaos | Accuracy measures / uncertainty propagation / sensitivity methods | 5 | Not checked — intake only |
+| Positional accuracy (RMSE), error propagation, Monte Carlo, Latin hypercube, Sobol sensitivity, polynomial chaos | Accuracy measures / uncertainty propagation / sensitivity methods | 5 | Partial — tested Monte Carlo propagation for independent bounded inputs and Saltelli first-/total-order Sobol indices are implemented; correlated inputs, Latin hypercube, polynomial chaos and spatially structured error propagation remain open |
 | Classification accuracy: confusion matrix, kappa, area-adjusted accuracy (Olofsson), fuzzy kappa, Figure of Merit, quantity and allocation disagreement | Accuracy assessment measures and procedures | 5 | Not checked — intake only |
 | Bayesian: MCMC (Metropolis, HMC, NUTS), variational inference, approximate Bayesian computation, Bayesian model averaging | Bayesian inference algorithms / approximation methods | 5 | Not checked — intake only |
 | Probabilistic and fuzzy maps: ensemble spread, interval-valued, possibilistic, conformal prediction (including locally adaptive), quantile regression forests, area of applicability, dissimilarity index | Uncertainty representations / prediction methods / applicability diagnostics | 5 | Not checked — intake only |
@@ -85,3 +85,8 @@ Matheron (1963), “Principles of geostatistics,” *Economic Geology*, 58(8), 1
 ### Universal kriging implementation update
 
 A dense universal-kriging solver now supports constant, linear and quadratic polynomial drift with caller-specified spherical, exponential or Gaussian variogram parameters. It returns predictions and conditional kriging variance and rejects rank-deficient drift designs. The implementation is a small-data reference solver; it does not fit variograms, select neighbourhoods, or implement co-kriging, regression/external drift, indicator, disjunctive, block, area-to-point or spatiotemporal kriging.
+
+
+### Monte Carlo uncertainty propagation and Sobol sensitivity
+
+A tested reference package propagates independent bounded uniform input uncertainty through a user-supplied numerical model, reporting output moments and quantiles. It also estimates first-order and total-order Sobol sensitivity indices with the Saltelli pick-freeze design. Dependent input distributions, arbitrary probability transforms, correlated spatial errors, Latin-hypercube designs and polynomial-chaos surrogates remain open.

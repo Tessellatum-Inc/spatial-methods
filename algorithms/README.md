@@ -391,3 +391,5 @@ Records may have different evidence and implementation status. Check the status 
 - [SAR calibration and multilooking](remote-sensing/sar-calibration.md) — sigma0/beta0/gamma0 radiometric scaling and block multilooking with NoData policies.
 
 - [Universal kriging](geostatistics/universal-kriging.md) — dense covariance-system solver with constant, linear and quadratic drift and conditional prediction variance.
+
+- [Monte Carlo uncertainty propagation and Sobol sensitivity](geostatistics/uncertainty-propagation.md) — independent bounded-input propagation and Saltelli first-/total-order variance-based sensitivity indices.

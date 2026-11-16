@@ -435,6 +435,9 @@ jobs:
           - example: universal-kriging
             directory: implementations/python/universal-kriging
             pythonpath: "../variogram-models"
+          - example: uncertainty-propagation
+            directory: implementations/python/uncertainty-propagation
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""
