@@ -10,7 +10,7 @@ The source spans raw imagery correction, spectral transforms, classification, hy
 
 ## First audited index
 
-The canonical records now cover the spectral-index family, global Otsu thresholding, covariance/correlation PCA, offset-specific GLCM texture, Sobel/Canny edges, binary morphology and Gabor filters. PCA is deliberately distinguished from MNF; GLCM covers six common features rather than the full Haralick set. Atmospheric correction, MNF, wavelet/Radon transforms, SIFT/SURF, classification, SAR, LiDAR, photogrammetry and retrieval remain open.
+The canonical records now cover the spectral-index family, global Otsu thresholding, covariance/correlation PCA, offset-specific GLCM texture, Sobel/Canny edges, binary morphology and Gabor filters. PCA is deliberately distinguished from MNF; GLCM covers six common features rather than the full Haralick set. Full atmospheric correction workflows, broader wavelet families, SIFT/SURF, classification, SAR, LiDAR, photogrammetry and sensor-specific retrieval remain open; MNF, Haar, Radon and several related transforms have scoped implementations described below.
 
 ## Preprocessing and correction
 
