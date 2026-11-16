@@ -36,3 +36,12 @@ remain outstanding.
 - Vatti, B. R. (1992), "A generic solution to polygon clipping",
   *Communications of the ACM*, 35(7), 56–63.
 - Clipper2 overview: https://www.angusj.com/clipper2/Docs/Overview.htm
+
+## Boolean output contours
+
+The native reference implementation now exposes `clip_rings(...)`, which
+turns the Boolean sweep's exact-rational trapezoid/triangle cells into closed
+rings. It nodes cell boundaries at shared vertices, cancels internal seams,
+and stitches the remaining directed edges. Disconnected components and
+clockwise hole rings are preserved. See the implementation README and
+verification ledger for the current test matrix and limitations.
