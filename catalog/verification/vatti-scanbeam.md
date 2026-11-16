@@ -21,6 +21,8 @@
 - Coincident active-edge bundling with independent subject/clip winding aggregation.
 - Adjacent-bundle event-heap intersection scheduling and atomic multiway crossing reorder.
 - Horizontal contact points inserted into cell-boundary noding before contour stitching.
+- One-sided below/above fill-state comparison at every scanbeam level.
+- Explicit horizontal fill-transition intervals, including suppression of false transitions on shared internal horizontal edges.
 - Cancellation of internal cell seams and directed boundary face-walk.
 - Closed contour output with disconnected shells and clockwise holes.
 - Public reference API `clip_rings()` combining the sweep and contour assembly.
