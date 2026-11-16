@@ -80,7 +80,7 @@ from prediction import predictive_range_candidates
 
 def test_predictive_range_filter_returns_ellipse_candidates_and_boxes():
     states = np.array([[0., 0., 1., 0.], [100., 100., 0., 0.],
-                       [10., 0., 0., 0.]])
+                       [8., 0., 0., 0.]])
     covariances = np.repeat(np.eye(4)[None, :, :] * .01, 3, axis=0)
     covariances[2, :2, :2] = np.diag([9., .1])
     result = predictive_range_candidates(states, covariances,
