@@ -35,6 +35,8 @@ def universal_kriging(observation_coordinates, values, target_coordinates, *,
         raise ValueError("target_coordinates must be a finite (m, 2) array")
     if drift_order not in (0,1,2):
         raise ValueError("drift_order must be 0, 1 or 2")
+    if variogram not in {"spherical", "exponential", "gaussian"}:
+        raise ValueError("variogram must be spherical, exponential or gaussian")
     n_terms = {0:1,1:3,2:6}[drift_order]
     if len(obs) < n_terms:
         raise ValueError("not enough observations for the requested drift order")
