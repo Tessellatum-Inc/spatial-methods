@@ -202,3 +202,54 @@ def crossings_in_band(
     events.sort(key=lambda event: (event.y, event.x,
                                    event.first_edge_id, event.second_edge_id))
     return tuple(events)
+
+
+@dataclass(frozen=True)
+class ActiveEdgeSlice:
+    lower_y: Fraction
+    upper_y: Fraction
+    edges: tuple[BoundEdge, ...]
+
+
+def sweep_active_edge_slices(
+    active_edges: Sequence[BoundEdge], lower_y: float, upper_y: float
+) -> tuple[ActiveEdgeSlice, ...]:
+    """Split a scanbeam band at every pairwise crossing and order each slice.
+
+    At an isolated crossing the two edges exchange horizontal order in the
+    adjacent open slices. Coincident/overlapping edges are not resolved here;
+    equal-slope pairs are left in deterministic edge-id order. This O(m²)
+    routine is an explicit reference model for later neighbour-event logic.
+    """
+    lower, upper = _q(lower_y), _q(upper_y)
+    if not lower < upper:
+        raise ValueError("scanbeam band must have positive height")
+    events = crossings_in_band(active_edges, lower_y, upper_y)
+    levels = [lower]
+    for event in events:
+        if event.y != levels[-1]:
+            levels.append(event.y)
+    if levels[-1] != upper:
+        levels.append(upper)
+    slices = []
+    for lo, hi in zip(levels, levels[1:]):
+        mid = (lo + hi) / 2
+        ordered = tuple(sorted(active_edges,
+            key=lambda edge: (_x_at(edge, mid), edge.dx_dy, edge.edge_id)))
+        slices.append(ActiveEdgeSlice(lo, hi, ordered))
+    return tuple(slices)
+
+
+def winding_states(edges: Sequence[BoundEdge]) -> tuple[tuple[int, ...], ...]:
+    """Return cumulative signed winding after each edge in left-to-right order.
+
+    This exposes the raw winding transitions only. Subject/clip attribution,
+    fill-rule evaluation and horizontal-boundary semantics belong to the
+    Boolean clipping layer and are intentionally not inferred here.
+    """
+    total = 0
+    states = []
+    for edge in edges:
+        total += edge.winding_delta
+        states.append((total,))
+    return tuple(states)
