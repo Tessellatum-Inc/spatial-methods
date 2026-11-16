@@ -2,6 +2,10 @@
 
 Each record explains one method or operation, its assumptions, where it is useful, and what can go wrong. The collection is growing from the supplied [source inventory](../source-inventory/README.md); an entry is not treated as verified merely because it appears in that inventory.
 
+## Raster and terrain
+
+- [Marching squares](raster/marching-squares.md) — extract line-segment isolines from a rectilinear scalar grid with explicit saddle and NoData handling.
+
 ## Interpolation and geostatistics
 
 - [Sibson natural-neighbour interpolation](interpolation/natural-neighbour.md) — interpolate from Voronoi-cell areas stolen when a query is inserted; the reference implementation rejects extrapolation.
