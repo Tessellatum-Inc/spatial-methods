@@ -685,3 +685,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Preserve per-pixel band ratios, return an explicit validity mask and propagate NoData/non-finite input pixels.
 - [x] Add formula, ratio-preservation, shape, zero-sum and invalid-value tests; document alignment and spectral-distortion caveats; register in Python CI.
 - [ ] Execute full CI and evaluate against sensor-specific spatial/spectral quality metrics. IHS, Gram-Schmidt, wavelet, Bayesian, spatiotemporal and learned fusion remain open.
+
+
+## Muskingum hydrologic routing continuation — 17 November 2026
+
+- [x] Implement Muskingum coefficient calculation and linear inflow-to-outflow routing for equally spaced hydrographs.
+- [x] Enforce non-negative coefficient stability bounds and expose reach storage diagnostics.
+- [x] Add recurrence, steady-flow, storage, initial-condition and invalid-input tests; document assumptions and register in Python CI.
+- [ ] Execute full CI and validate calibration on observed reach hydrographs. Manning flow, kinematic wave, Saint-Venant, 2D shallow-water and SPH remain separate numerical models.

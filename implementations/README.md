@@ -192,3 +192,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Image fusion
 
 - [Brovey pan-sharpening](python/brovey-pansharpening/README.md): pure-Python component substitution with spectral-ratio preservation and explicit masking.
+
+
+### Hydrologic routing
+
+- [Muskingum channel routing](python/muskingum-routing/README.md): linear storage routing for equally spaced inflow hydrographs, with stability and storage tests.
