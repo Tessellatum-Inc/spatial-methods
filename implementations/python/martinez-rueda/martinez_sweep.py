@@ -333,7 +333,7 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
     # cannot overlap the entering segment. Exact predicates run on candidates.
     active_status=_YIntervalStatus(); active_by_id={}; expiry=[]
     params=[[(Fraction(0),s.a),(Fraction(1),s.b)] for s in segments]
-    crossings=[]; candidate_pairs=0
+    crossings=[]; contacts=[]; candidate_pairs=0
     for xmin,xmax,sid,left,right,ymin,ymax in bounds:
         # Expire by a min-heap, not by scanning every active segment for every
         # new left endpoint. This keeps x-window maintenance O(log n) per edge.
@@ -347,8 +347,11 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
             candidate_pairs+=1
             for t,u,p,proper in _intersection_all(s1,s2,epsilon):
                 params[sid].append((t,p)); params[other].append((u,p))
+                pair=tuple(sorted((sid,other)))
                 if proper:
-                    crossings.append(Event(p,"intersection",tuple(sorted((sid,other)))))
+                    crossings.append(Event(p,"intersection",pair))
+                else:
+                    contacts.append(Event(p,"contact",pair))
         active_status.insert(sid,ymin,ymax); active_by_id[sid]=(xmax,ymin,ymax)
         heapq.heappush(expiry,(xmax,sid))
     fragments=[]
@@ -362,9 +365,22 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
             if t1>t0 and a!=b:
                 fragments.append(SplitSegment(s.source,s.ring,s.index,a,b,t0,t1))
     crossings.sort(key=lambda e:(e.point[0],e.point[1],e.segment_ids))
+    # Coalesce pairwise reports at the same exact coordinate into one
+    # multiway node event. Keep the legacy proper-crossing list unchanged.
+    grouped={}
+    for event in crossings+contacts:
+        entry=grouped.setdefault(event.point,{"kinds":set(),"segments":set()})
+        entry["kinds"].add(event.kind)
+        entry["segments"].update(event.segment_ids)
+    node_events=tuple(
+        Event(point,"intersection" if "intersection" in data["kinds"] else "contact",
+              tuple(sorted(data["segments"])))
+        for point,data in sorted(grouped.items(),key=lambda item:(item[0][0],item[0][1]))
+    )
     events.sort(key=lambda e:(e.point[0],e.point[1],0 if e.kind=="left" else 1))
     return {"segments":tuple(segments),"events":tuple(events),
-            "intersection_events":tuple(crossings),"split_segments":tuple(fragments),
+            "intersection_events":tuple(crossings),"node_events":node_events,
+            "split_segments":tuple(fragments),
             "candidate_pairs_tested":candidate_pairs}
 
 def _point_segment_distance_squared(point, a, b):
