@@ -66,3 +66,20 @@ def test_non_finite_coordinates_are_rejected():
         constrained_delaunay_triangulate([(0,0),(1,0),(1,float("nan"))])
     with pytest.raises(ValueError, match="finite"):
         constrained_delaunay_triangulate([(0,0),(1,0),(1,float("inf"))])
+
+
+def test_collinear_normalization_preserves_each_normalized_boundary_edge():
+    ring = [(0,0),(2,0),(4,0),(4,4),(0,4),(0,0)]
+    tris = constrained_delaunay_triangulate(ring)
+    incidence = Counter(_edge(a,b) for tri in tris for a,b in zip(tri,tri[1:]+tri[:1]))
+    normalized = [(Fraction(0),Fraction(0)),(Fraction(4),Fraction(0)),
+                  (Fraction(4),Fraction(4)),(Fraction(0),Fraction(4))]
+    for a,b in zip(normalized,normalized[1:]+normalized[:1]):
+        assert incidence[_edge(a,b)] == 1
+
+
+def test_one_shot_iterable_and_self_intersection_validation():
+    ring = [(0,0),(5,0),(5,4),(3,2),(0,4)]
+    assert len(constrained_delaunay_triangulate(iter(ring))) == len(ring)-2
+    with pytest.raises(ValueError, match="simple polygon"):
+        constrained_delaunay_triangulate([(0,0),(4,4),(0,4),(4,0)])
