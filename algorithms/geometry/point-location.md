@@ -106,7 +106,7 @@ An R-tree can help find candidate polygons, but candidate filtering is not the s
 
 ## Implementation status
 
-A tested [static slab point locator](../../implementations/python/point-location/README.md) now covers a deliberately restricted model: valid, pairwise interior-disjoint polygon faces with linear rings. It stores edge crossing groups per x-slab and uses binary search for interior-slab queries. Event-line queries use an explicit boundary-aware fallback. This is not a randomized trapezoidal map and does not claim Seidel's expected bounds; the advanced structure remains a separate implementation target.
+A tested [static slab point locator](../../implementations/python/point-location/README.md) covers valid, pairwise interior-disjoint polygon faces with linear rings. The same package now contains a separate randomized trapezoidal-map implementation for pairwise disjoint, non-vertical segments in strict general position. It performs randomized insertion, corridor tracing and replacement, maintains a persistent trapezoid graph and history DAG, and public queries traverse that DAG. Seeded differential tests compare it with an independently rebuilt slab locator. The implementation still recomputes neighbor links globally, rebuilds static reference decompositions during insertion, and does not claim Seidel's expected construction bound.
 
 ## Try it
 
