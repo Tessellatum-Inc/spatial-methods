@@ -38,7 +38,7 @@ def _to_path(ring: Sequence[Point], scale: int, name: str):
             path.append((ix, iy))
     if len(path) > 1 and path[0] == path[-1]:
         path.pop()
-    if len(set(path)) < 3 or pyclipper.Area(path) == 0:
+    if len(set(path)) < 3:
         raise ValueError(f"{name} collapses on the selected precision grid")
     return path
 
