@@ -302,3 +302,25 @@ def test_history_dag_handles_empty_single_and_horizontal_inputs(source):
                 expected.x_left, expected.x_right,
                 expected.bottom_segment, expected.top_segment
             )
+
+
+@pytest.mark.parametrize("seed", range(16))
+def test_history_dag_differential_across_insertion_orders(seed):
+    rng = random.Random(7000 + seed)
+    locator = RandomizedTrapezoidalMap(segments(), (0, 0, 10, 10), seed=seed)
+    assert sorted(locator.insertion_order) == list(range(len(segments())))
+    for _ in range(250):
+        x, y = rng.uniform(-0.5, 10.5), rng.uniform(-0.5, 10.5)
+        expected = locator.locate(x, y)
+        actual = locator._locate_history(x, y)
+        if expected == BOUNDARY or expected is None:
+            assert actual == expected
+        else:
+            assert isinstance(actual, Trapezoid)
+            assert (
+                actual.x_left, actual.x_right,
+                actual.bottom_segment, actual.top_segment
+            ) == (
+                expected.x_left, expected.x_right,
+                expected.bottom_segment, expected.top_segment
+            )
