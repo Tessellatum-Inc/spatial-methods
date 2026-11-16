@@ -33,7 +33,7 @@ This section combines surface estimation, stochastic spatial models, simulation,
 |---|---|---:|--- |
 | STARMA, space-time ARIMA, GTWR, dynamic linear and state-space models | Spatiotemporal model families | 5 | Not checked — intake only |
 | Spatiotemporal GP (separable and non-separable kernels), spatiotemporal INLA, functional data analysis | Spatiotemporal Gaussian processes / inference framework / statistical methods | 5 | Not checked — intake only |
-| Space-time scan statistics, Knox test, space-time K function, space-time cube, emerging hot spot analysis | Spatiotemporal tests / summary methods / analysis workflow | 5 | Not checked — intake only |
+| Space-time scan statistics, Knox test, space-time K function, space-time cube, emerging hot spot analysis | Spatiotemporal tests / summary methods / analysis workflow | 5 | Partial — a permutation-based Knox test for excess space-time close pairs is implemented and tested; space-time scan statistics, space-time K, cube analytics and emerging-hotspot workflows remain open |
 | Spatial survival and frailty models | Survival model families | 5 | Not checked — intake only |
 | Spatiotemporal point processes: Hawkes, LGCP, ETAS | Point-process model families | 5 | Not checked — intake only |
 | Trend and change: Mann-Kendall, Sen's slope, harmonic regression, BFAST, LandTrendr, CCDC | Trend tests / regression / change-detection methods | 5 | Not checked — intake only |
@@ -90,3 +90,8 @@ A dense universal-kriging solver now supports constant, linear and quadratic pol
 ### Monte Carlo uncertainty propagation and Sobol sensitivity
 
 A tested reference package propagates independent bounded uniform input uncertainty through a user-supplied numerical model, reporting output moments and quantiles. It also estimates first-order and total-order Sobol sensitivity indices with the Saltelli pick-freeze design. Dependent input distributions, arbitrary probability transforms, correlated spatial errors, Latin-hypercube designs and polynomial-chaos surrogates remain open.
+
+
+### Knox space-time interaction test
+
+The Knox test counts event pairs that are simultaneously within a declared spatial distance and temporal interval. Its reference permutation test holds event locations fixed and randomly permutes event times, testing for excess close pairs under temporal-label exchangeability. It is a pairwise interaction test, not a space-time scan statistic or a full space-time point-process model.
