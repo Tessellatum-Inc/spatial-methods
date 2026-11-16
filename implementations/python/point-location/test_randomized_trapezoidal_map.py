@@ -273,3 +273,32 @@ def test_persistent_history_dag_matches_rebuilt_locator_on_seeded_queries():
                 expected.x_left, expected.x_right,
                 expected.bottom_segment, expected.top_segment
             )
+
+
+@pytest.mark.parametrize("source", [
+    [((2.0, 2.0), (8.0, 7.0))],
+    [],
+    [((1.0, 5.0), (9.0, 5.0))],
+])
+def test_history_dag_handles_empty_single_and_horizontal_inputs(source):
+    locator = RandomizedTrapezoidalMap(source, (0, 0, 10, 10), seed=23)
+    rng = random.Random(90210)
+    queries = [(rng.uniform(0, 10), rng.uniform(0, 10)) for _ in range(500)]
+    for segment in source:
+        queries.extend([segment[0], segment[1]])
+        x0, x1 = segment[0][0], segment[1][0]
+        queries.extend([(x0, 1.0), (x0, 9.0), (x1, 1.0), (x1, 9.0)])
+    for x, y in queries:
+        expected = locator.locate(x, y)
+        actual = locator._locate_history(x, y)
+        if expected == BOUNDARY or expected is None:
+            assert actual == expected
+        else:
+            assert isinstance(actual, Trapezoid)
+            assert (
+                actual.x_left, actual.x_right,
+                actual.bottom_segment, actual.top_segment
+            ) == (
+                expected.x_left, expected.x_right,
+                expected.bottom_segment, expected.top_segment
+            )
