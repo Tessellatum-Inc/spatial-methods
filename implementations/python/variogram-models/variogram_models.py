@@ -20,7 +20,8 @@ def variogram_model(lags,*,model="spherical",nugget=0.0,partial_sill=1.0,range_=
         shape=1-np.exp(-3*ratio)
     else:
         shape=1-np.exp(-3*ratio**2)
-    return n+s*shape
+    result=n+s*shape
+    return np.where(h==0.0,0.0,result)
 
 def directional_semivariogram(points,values,bin_edges,*,azimuth_deg=0.0,
                                tolerance_deg=22.5,bandwidth=None,estimator="matheron"):
@@ -48,7 +49,7 @@ def directional_semivariogram(points,values,bin_edges,*,azimuth_deg=0.0,
             if distance==0 or distance<edges[0] or distance>edges[-1]: continue
             bearing=degrees(atan2(dx,dy))%180
             difference=abs((bearing-az+90)%180-90)
-            cross_track=abs(-sin(theta)*dx+cos(theta)*dy)
+            cross_track=abs(-cos(theta)*dx+sin(theta)*dy)
             if difference>tol or (bandwidth is not None and cross_track>float(bandwidth)): continue
             k=len(edges)-2 if distance==edges[-1] else int(np.searchsorted(edges,distance,side="right")-1)
             if k<0: continue
