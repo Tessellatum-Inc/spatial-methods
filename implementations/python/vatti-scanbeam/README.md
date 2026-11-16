@@ -55,7 +55,7 @@ The test suite covers:
 - Three-way crossings and distinct crossing events at the same Y.
 - Holes, disconnected shells, empty results and unequal seam subdivisions.
 - Differential comparison with Shapely for area, symmetric-difference area and
-  polygon component counts across multiple degeneracy fixtures.
+  polygon component counts across 29 deterministic degeneracy and seeded rectangle fixtures.
 
 Shapely is a test oracle only; it is not used by the clipping implementation.
 The dependency is installed from this package's `requirements.txt`.
