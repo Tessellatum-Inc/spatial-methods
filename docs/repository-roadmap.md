@@ -547,6 +547,7 @@ The source-to-implementation ledger must track, per source entry and child metho
 - [x] Normalize input vertices and generated intersection nodes to exact `Fraction` coordinates; preserve large integers and rational crossing coordinates through noding and stitching.
 - [x] Replace epsilon-quantized stitch vertex keys with exact rational coordinate keys, avoiding accidental merging of distinct nearby vertices.
 - [x] Coalesce pairwise proper-crossing and endpoint/overlap contacts into exact-coordinate node events with all incident segment IDs.
+- [x] Replace floating-angle contour successor selection with exact rational polar ordering at high-degree vertices.
 - [x] Add regression coverage for partial collinear overlap, identical/reversed coincident polygons and all four Boolean operations on polygons sharing an edge.
 - [ ] Run the Martinez–Rueda package suite and full repository CI on the resulting head. The GitHub status endpoint currently returns no status contexts for the direct main-branch commits; this is not evidence of a passing run, so these changes are not marked CI-verified.
 - [x] Add independent Shapely differential suites for seeded rectangle overlays in Martinez–Rueda and Vatti, plus concave disconnected and hole-aware Vatti cases; compare symmetric-difference geometry, not area alone.
@@ -556,6 +557,6 @@ The source-to-implementation ledger must track, per source entry and child metho
 - [x] Implement Vatti coincident active-edge bundling and a neighbour-ordered rational event heap that reorders all bundles at a multiway crossing; horizontal fill transitions and contour noding are integrated, with tests for three-way crossings, shared horizontal boundaries and all four Boolean operations.
 - [ ] Expand Vatti differential coverage across the complete source-listed fill-rule and contour lifecycle, then execute the package suite.
 - [x] Add exact-coordinate multiway node-event grouping for pairwise reports, including endpoint and collinear-bundle contacts.
-- [ ] Validate the multiway node grouping against adversarial multi-segment vertices and complete face-walk topology before claiming a general-purpose overlay kernel.
+- [ ] Validate multiway node grouping and exact face walks against adversarial multi-segment vertices, overlapping bundles and independent topology oracles before claiming a general-purpose overlay kernel.
 
 The change is a meaningful extension, not completion of the polygon overlay work package. Exact source coordinates and intersection nodes are retained, and finite side probes are now clearance-bounded rather than epsilon-bounded. The remaining major algorithmic gap is the full Martinez neighbour-ordered event sweep; the y-interval treap is still a broad-phase candidate filter. The expanded regression and differential suites still require execution on the exact resulting head before any Verified status is assigned.
