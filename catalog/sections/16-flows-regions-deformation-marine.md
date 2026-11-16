@@ -67,7 +67,7 @@ This section groups applied methods across spatial interaction, functional regio
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Climate analogs and novel climates (Mahalanobis distance based), climate velocity, climate-change refugia, bioclimatic envelope shifts | Climate similarity and velocity metrics / ecological modelling | 34 | Not checked — intake only |
+| Climate analogs and novel climates (Mahalanobis distance based), climate velocity, climate-change refugia, bioclimatic envelope shifts | Climate similarity and velocity metrics / ecological modelling | 34 | Partial — global-covariance Mahalanobis analog ranking and gradient-based climate-velocity vectors are implemented and tested; climate refugia and bioclimatic envelope workflows remain open |
 | Land degradation analysis: RESTREND, NPP residual methods, desertification indicators, soil salinity mapping | Land degradation assessment / remote-sensing indicators | 34 | Not checked — intake only |
 
 ## Humanitarian, food security and conflict
@@ -100,3 +100,8 @@ The regional-dynamics package now distinguishes aggregate flow allocation from r
 ### Least-cost corridor implementation update
 
 A raster-graph corridor now combines source and destination Dijkstra surfaces and retains cells whose through-cost is within an additive tolerance of the optimum. Tests include an exhaustive simple-path oracle on a small grid. This is not a probabilistic corridor, a directional travel-time corridor or a continuous-surface solver.
+
+
+### Climate analogs and velocity implementation update
+
+The new `climate-velocity` package ranks historical samples as multivariate Mahalanobis analogs of future climate vectors and estimates local climate velocity from temporal change and spatial gradients. The analog metric uses a declared reference covariance with ridge regularisation; the velocity vector follows the isocline-displacement equation. These are numerical components, not a complete climate-refugia or species-range model.
