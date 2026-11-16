@@ -47,3 +47,30 @@ def test_invalid_points_bounds_radii_and_correction_are_rejected():
         ripley_k([(0,0),(1,1)],bounds=(0,2,0,2),radii=[-1])
     with pytest.raises(ValueError,match="edge_correction"):
         ripley_k([(0,0),(1,1)],bounds=(-1,2,-1,2),radii=[1],edge_correction="isotropic")
+
+
+def test_inhomogeneous_k_reduces_to_homogeneous_k_for_constant_intensity():
+    points=[(0.5,0.5),(1.5,0.5),(1.5,1.5)]
+    area=4.0
+    intensity=np.full(3,3/area)
+    ordinary=ripley_k(points,bounds=(0,2,0,2),radii=[0.5,1.0,2.0])
+    inhom=__import__("ripley_k").inhomogeneous_ripley_k(
+        points,intensity,bounds=(0,2,0,2),radii=[0.5,1.0,2.0],edge_correction="none"
+    )
+    np.testing.assert_allclose(inhom.k_values,ordinary.k_values)
+
+def test_inhomogeneous_k_uses_event_specific_intensities():
+    from ripley_k import inhomogeneous_ripley_k
+    points=[(0.5,0.5),(1.5,0.5),(1.5,1.5)]
+    result=inhomogeneous_ripley_k(points,[0.5,1.0,2.0],bounds=(0,2,0,2),radii=[2],edge_correction="none")
+    assert result.k_values[0] == pytest.approx(2/4*(1/(.5*1)+1/(.5*2)+1/(1*2)))
+
+def test_inhomogeneous_k_translation_correction_and_validation():
+    from ripley_k import inhomogeneous_ripley_k
+    points=[(0.5,0.5),(1.5,0.5)]
+    corrected=inhomogeneous_ripley_k(points,[.5,.5],bounds=(0,2,0,2),radii=[1],edge_correction="translation")
+    assert corrected.k_values[0] == pytest.approx(4.0)
+    with pytest.raises(ValueError,match="positive finite"):
+        inhomogeneous_ripley_k(points,[0,.5],bounds=(0,2,0,2),radii=[1])
+    with pytest.raises(ValueError,match="zero overlap"):
+        inhomogeneous_ripley_k([(0,1),(4,1)],[1,1],bounds=(0,4,0,4),radii=[4])
