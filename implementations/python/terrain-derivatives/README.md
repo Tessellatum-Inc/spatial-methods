@@ -101,3 +101,8 @@ It also includes discrete unit-hydrograph convolution. Rainfall-excess depths ar
 ## Raster viewshed and cumulative visibility
 
 The companion `viewshed` routine calculates observer-to-cell line of sight using discrete centre-to-centre Bresenham rays, optional observer/target heights and optional Earth-curvature/refraction correction. `cumulative_viewshed` sums visibility across supplied observer cells. NoData on a ray is conservatively treated as not visible. This is a transparent O(targets × ray length) baseline, not R3/R2/XDraw or an exact continuous-surface viewshed. See [the canonical lesson](../../../algorithms/raster/viewshed.md) and `test_viewshed.py`.
+
+
+## Flood-frequency analysis
+
+The companion `flood_frequency.py` module provides Weibull plotting positions for annual maxima, Gumbel and GEV L-moment fitting, return-level functions and a compact design-quantile table. Inputs are independent, stationary annual maxima in consistent units. The GEV shape estimate uses a polynomial L-skewness approximation; short records and extrapolated tails require diagnostics and uncertainty analysis. It is not a hydraulic design model. See [the canonical lesson](../../../algorithms/raster/flood-frequency-analysis.md) and `test_flood_frequency.py`.
