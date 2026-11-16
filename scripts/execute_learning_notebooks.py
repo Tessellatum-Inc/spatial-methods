@@ -17,7 +17,7 @@ def main():
         notebook = nbformat.read(source, as_version=4)
         executor = ExecutePreprocessor(timeout=timeout)
         try:
-            executor.preprocess(notebook, {"metadata": {"path": str(root)}})
+            executor.preprocess(notebook, {"metadata": {"path": str(root / "notebooks")}})
         finally:
             nbformat.write(notebook, output / filename)
 
