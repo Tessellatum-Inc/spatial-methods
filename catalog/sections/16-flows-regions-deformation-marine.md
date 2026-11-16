@@ -45,7 +45,7 @@ This section groups applied methods across spatial interaction, functional regio
 | SAR geometry: radiometric terrain correction (RTC), geocoding, multilooking, calibration, enhanced spectral diversity (ESD) coregistration | SAR geometry and preprocessing workflows | 34 | Not checked — intake only |
 | Phase corrections: atmospheric phase screen estimation, GACOS and ERA5-based tropospheric correction, orbital ramp removal, DEM error correction | Interferometric phase correction methods | 34 | Not checked — intake only |
 | Time-series InSAR workflows: SBAS variants, NSBAS, MintPy-style and LiCSBAS-style pipelines, GNSS-InSAR integration for 3D velocity decomposition | InSAR time-series processing / geodetic data integration | 34 | Not checked — intake only |
-| Source modeling: Okada dislocation, Mogi source, finite fault slip inversion, elastic and viscoelastic deformation models | Geophysical source and deformation models | 34 | Not checked — intake only |
+| Source modeling: Okada dislocation, Mogi source, finite fault slip inversion, elastic and viscoelastic deformation models | Geophysical source and deformation models | 34 | Partial — tested Mogi point-source elastic half-space displacement is implemented; Okada finite dislocations, finite-fault inversion and viscoelastic models remain open |
 
 ## Marine and fisheries spatial analysis
 
@@ -105,3 +105,8 @@ A raster-graph corridor now combines source and destination Dijkstra surfaces an
 ### Climate analogs and velocity implementation update
 
 The new `climate-velocity` package ranks historical samples as multivariate Mahalanobis analogs of future climate vectors and estimates local climate velocity from temporal change and spatial gradients. The analog metric uses a declared reference covariance with ridge regularisation; the velocity vector follows the isocline-displacement equation. These are numerical components, not a complete climate-refugia or species-range model.
+
+
+### Mogi point-source deformation implementation update
+
+A tested Mogi elastic half-space point-source model now returns east, north and vertical surface displacement from source depth, volume change and Poisson ratio. It is an analytical point-source baseline; finite rectangular dislocations, layered or topographic media, finite-fault inversion and viscoelastic time dependence remain open.

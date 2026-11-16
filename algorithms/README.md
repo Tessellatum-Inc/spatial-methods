@@ -355,3 +355,5 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [Climate analogs and velocity](remote-sensing/climate-analogs-velocity.md) — Mahalanobis climate analog ranking and gradient-derived climate velocity.
+
+- [Mogi point-source deformation](geodesy/mogi-point-source.md) — elastic half-space surface displacement from a point source.

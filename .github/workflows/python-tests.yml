@@ -393,6 +393,9 @@ jobs:
           - example: climate-velocity
             directory: implementations/python/climate-velocity
             pythonpath: ""
+          - example: mogi-source
+            directory: implementations/python/mogi-source
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""
