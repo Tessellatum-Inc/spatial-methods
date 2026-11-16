@@ -222,3 +222,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Statistical downscaling
 
 - [Quantile mapping and delta change](python/statistical-downscaling/README.md): empirical univariate quantile mapping and additive/multiplicative mean-change adjustment, with tests and an [implementation walkthrough](python/statistical-downscaling/implementation-walkthrough.md).
+
+
+### Spatial microsimulation
+
+- [Iterative proportional fitting](python/spatial-microsimulation/README.md): row/column raking with structural-zero preservation, convergence diagnostics, tests and an [implementation walkthrough](python/spatial-microsimulation/implementation-walkthrough.md).

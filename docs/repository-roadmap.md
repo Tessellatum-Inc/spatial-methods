@@ -774,3 +774,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Implement additive and multiplicative delta-change methods with shape-preserving outputs.
 - [x] Add known-mapping, tail, constant-calibration, shape and invalid-input tests; register in Python CI.
 - [ ] Add BCSD, analog methods and multivariate dependence correction as separate validated workflows.
+
+
+## Spatial microsimulation foundation — 17 November 2026
+
+- [x] Implement two-dimensional iterative proportional fitting with row/column margins.
+- [x] Preserve structural zeros, reject unsupported positive margins and report convergence diagnostics.
+- [x] Add known-margin, structural-zero, zero-margin, nonconvergence and invalid-input tests; register in Python CI.
+- [ ] Add integerisation/simulated annealing, areal interpolation and full synthetic-population validation as separate work packages.

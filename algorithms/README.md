@@ -392,3 +392,6 @@ Records may have different evidence and implementation status. Check the status 
 - [Fay-Herriot area-level model](statistics/fay-herriot.md) — REML small-area estimation with empirical BLUP prediction.
 - [Horvitz-Thompson estimator](statistics/horvitz-thompson.md) — design-based population total and mean with pairwise inclusion-probability variance.
 - [Statistical downscaling](statistics/statistical-downscaling.md) — empirical quantile mapping and additive/multiplicative delta-change baselines.
+
+
+- [Iterative proportional fitting](statistics/iterative-proportional-fitting.md) — raking of nonnegative tables to supplied row and column margins.

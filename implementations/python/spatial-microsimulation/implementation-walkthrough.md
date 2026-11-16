@@ -1,12 +1,16 @@
-# IPF / raking implementation walkthrough
+# Iterative proportional fitting walkthrough
 
-Given seed weights w and binary control-membership matrix A, fitted margins are Aᵀw. For control j with target tⱼ and current fitted margin mⱼ, update records belonging to that control: wᵢ ← wᵢ × tⱼ / mⱼ. Repeat over controls until the largest relative margin error is within tolerance, or report non-convergence at max_iter.
+1. Start with a nonnegative seed table whose cells encode initial joint
+   weights or counts.
+2. Scale each row to its target row total.
+3. Scale each column to its target column total.
+4. Repeat the two projections until the largest absolute marginal error
+   is below the tolerance times the grand total, or the iteration limit
+   is reached.
+5. Structural zeros remain zero because multiplicative scaling cannot
+   create support where the seed contains none.
 
-IPF adjusts weights on the support of the seed microdata. If a household type is absent, raking cannot create it. If targets conflict, successive margins can pull weights in incompatible directions. Structural zeros are preserved, and positive targets with no seed support are rejected. Convergence is not evidence that the seed sample is representative, controls are accurate, or data are private.
-
-Tests cover compatible two-way margins, structural-zero preservation, missing seed support, incompatible margins and invalid inputs. Execute pytest in the package directory before treating them as run evidence.
-
-
-## Donor-record resampling
-
-After calibration, systematic probability-proportional-to-size resampling selects a requested number of donor rows using one random offset and equally spaced points on the cumulative weight distribution. It creates a fixed-size pseudo-population by copying existing seed records. The method does not invent unseen attribute combinations and finite resampling means realised margins can differ from the calibrated weighted margins. It is not a disclosure-control mechanism.
+The algorithm cannot meet a positive target margin if its corresponding
+seed support is entirely zero. Even when every margin has support, the
+combination of structural zeros can make the full set of margins
+infeasible. Inspect the convergence flag and the resulting marginal error.
