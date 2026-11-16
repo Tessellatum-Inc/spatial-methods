@@ -38,11 +38,11 @@ def test_unfillable_cells_remain_none():
     assert result["elevation"][0][2] is None
 
 def test_pixel_sizes_change_distance_weights():
-    grid = [[0, None, 10], [0, None, 10], [0, None, 10]]
-    unit = inverse_distance_void_fill(grid, max_radius=2, min_neighbors=3)
-    stretched = inverse_distance_void_fill(grid, max_radius=2, min_neighbors=3, pixel_size_x=10, pixel_size_y=1)
+    grid = [[None, 10, None], [0, None, None], [None, None, None]]
+    unit = inverse_distance_void_fill(grid, max_radius=2, min_neighbors=2)
+    stretched = inverse_distance_void_fill(grid, max_radius=2, min_neighbors=2, pixel_size_x=10, pixel_size_y=1)
     assert unit["elevation"][1][1] == pytest.approx(5)
-    assert stretched["elevation"][1][1] == pytest.approx(5)
+    assert stretched["elevation"][1][1] > 9
 
 @pytest.mark.parametrize("kwargs", [
     {"max_radius": 0}, {"min_neighbors": 0}, {"max_iterations": 0},
