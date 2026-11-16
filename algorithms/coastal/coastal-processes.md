@@ -30,3 +30,12 @@ For transect positions (y_i) at survey years (t_i), EPR is ((y_n-y_1)/(t_n-t_1))
 ## Reference implementation
 
 See [coastal-processes](../../implementations/python/coastal-processes/README.md). All methods state their units, inputs and scope; tests use analytic sign, scaling and regression cases.
+
+
+## Bruun rule
+
+The idealized Bruun relation estimates cross-shore recession as R = S W / (B + h*), where S is sea-level rise, W is active-profile width, B is berm height and h* is closure depth. The implementation is a direct calculation with explicit input constraints. Its equilibrium, two-dimensional sediment-conservation assumptions are strong; it is not suitable as a stand-alone site forecast.
+
+## Dean equilibrium beach profile
+
+Dean's idealized profile is h(x)=A x^(2/3), with analytic integral from x0 to x1 equal to (3A/5)(x1^(5/3)-x0^(5/3)). The package evaluates both. A has units length to the one-third power when x and h use the same length unit.
