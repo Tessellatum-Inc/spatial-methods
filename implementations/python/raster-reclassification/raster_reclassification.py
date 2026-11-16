@@ -35,9 +35,11 @@ def reclassify_ranges(values, rules, *, default=np.nan, nodata=None):
     out=np.full(x.shape,float(default),dtype=float)
     for lo,hi,new in parsed:
         out[(x>=lo)&(x<hi)]=new
+    nan_mask = np.isnan(x)
     if nodata is not None:
-        mask=np.isnan(x) if isinstance(nodata,float) and math.isnan(nodata) else x==nodata
-        out[mask]=float(nodata)
-    else:
-        out[np.isnan(x)]=np.nan
+        nodata_mask = nan_mask if isinstance(nodata, (float, np.floating)) and math.isnan(float(nodata)) else x == nodata
+        out[nodata_mask] = float(nodata)
+    # NaN is missing data independently of a numeric NoData sentinel.
+    if not (nodata is not None and isinstance(nodata, (float, np.floating)) and math.isnan(float(nodata))):
+        out[nan_mask] = np.nan
     return out
