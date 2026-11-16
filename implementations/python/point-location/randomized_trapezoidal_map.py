@@ -44,6 +44,16 @@ class CorridorSplit:
 
 
 @dataclass(frozen=True)
+class CorridorReplacement:
+    """Persistent cell-graph replacement record for one segment insertion."""
+    segment_id: int
+    removed_cell_ids: tuple[tuple[int, ...], ...]
+    added_cells: tuple[Trapezoid, ...]
+    lower_chains: tuple[tuple[tuple[int, ...], ...], ...]
+    upper_chains: tuple[tuple[tuple[int, ...], ...], ...]
+
+
+@dataclass(frozen=True)
 class _YNode:
     segment_id: int
     left: "_YNode | Trapezoid"
@@ -160,13 +170,30 @@ class RandomizedTrapezoidalMap:
         self.insertion_rebuild_sizes = []
         self.insertion_corridors: list[tuple[Trapezoid, ...]] = []
         self.insertion_splits: list[tuple[CorridorSplit, ...]] = []
-        for sid in order:
+        self.insertion_replacements: list[CorridorReplacement] = []
+        self.replacement_graph_snapshots: list[tuple[Trapezoid, ...]] = []
+        self._persistent_cells: dict[tuple[int, ...], Trapezoid] = {}
+        for insertion_index, sid in enumerate(order):
             self._build(tuple(inserted))
+            if insertion_index == 0:
+                self._persistent_cells = {cell.id: cell for cell in self.trapezoids}
+            else:
+                self._persistent_cells = {
+                    cell.id: self._persistent_cells.get(cell.id, cell)
+                    for cell in self.trapezoids
+                }
             corridor = self._trace_segment_corridor(sid)
             self.insertion_corridors.append(tuple(corridor))
             self.insertion_splits.append(tuple(
                 self._split_corridor_cell(sid, cell) for cell in corridor
             ))
+            replacement = self._apply_corridor_replacement(
+                insertion_index, sid, corridor
+            )
+            self.insertion_replacements.append(replacement)
+            self.replacement_graph_snapshots.append(
+                tuple(self._persistent_cells[key] for key in sorted(self._persistent_cells))
+            )
             inserted.append(sid)
             self.insertion_rebuild_sizes.append(len(self.trapezoids))
         self._build(tuple(order))
@@ -215,6 +242,128 @@ class RandomizedTrapezoidalMap:
             visited.add(current.id)
             corridor.append(current)
         return corridor
+
+    def _apply_corridor_replacement(
+        self, insertion_index: int, segment_id: int,
+        corridor: list[Trapezoid],
+    ) -> CorridorReplacement:
+        """Replace crossed cells in a persistent decomposition snapshot.
+
+        Endpoint cells retain their uncrossed left/right caps. Lower pieces
+        with the same bottom boundary and upper pieces with the same top
+        boundary are coalesced across consecutive corridor cells. This
+        records a genuine local cell replacement; neighbor links are then
+        re-derived for the snapshot, so adjacency maintenance is not yet
+        asymptotically local and the point-location DAG is still rebuilt.
+        """
+        segment = self.segments[segment_id]
+        x0, x1 = segment[0][0], segment[1][0]
+        removed_ids = tuple(cell.id for cell in corridor)
+        for cell_id in removed_ids:
+            if cell_id not in self._persistent_cells:
+                raise ValueError("corridor cell is absent from persistent map")
+        added: list[Trapezoid] = []
+        lower_fragments: list[Trapezoid] = []
+        upper_fragments: list[Trapezoid] = []
+        serial = 0
+
+        def make(left, right, bottom, top):
+            nonlocal serial
+            cell = Trapezoid(
+                (-1, insertion_index, serial), left, right, bottom, top
+            )
+            serial += 1
+            added.append(cell)
+            return cell
+
+        for index, cell in enumerate(corridor):
+            if index == 0 and cell.x_left < x0:
+                make(cell.x_left, x0, cell.bottom_segment, cell.top_segment)
+            left = max(cell.x_left, x0)
+            right = min(cell.x_right, x1)
+            if left < right:
+                lower_fragments.append(make(
+                    left, right, cell.bottom_segment, segment_id
+                ))
+                upper_fragments.append(make(
+                    left, right, segment_id, cell.top_segment
+                ))
+            if index == len(corridor)-1 and x1 < cell.x_right:
+                make(x1, cell.x_right, cell.bottom_segment, cell.top_segment)
+
+        def coalesce(fragments, *, lower):
+            chains = []
+            current = []
+            for fragment in fragments:
+                boundary = fragment.bottom_segment if lower else fragment.top_segment
+                previous_boundary = (
+                    current[-1].bottom_segment if lower else current[-1].top_segment
+                ) if current else object()
+                if current and current[-1].x_right == fragment.x_left and boundary == previous_boundary:
+                    current.append(fragment)
+                else:
+                    if current:
+                        chains.append(current)
+                    current = [fragment]
+            if current:
+                chains.append(current)
+            merged_ids = []
+            for chain in chains:
+                if len(chain) == 1:
+                    merged_ids.append((chain[0].id,))
+                    continue
+                first, last = chain[0], chain[-1]
+                merged = make(
+                    first.x_left, last.x_right,
+                    first.bottom_segment, last.top_segment,
+                )
+                for fragment in chain:
+                    added.remove(fragment)
+                merged_ids.append((merged.id,))
+            return tuple(merged_ids)
+
+        lower_chains = coalesce(lower_fragments, lower=True)
+        upper_chains = coalesce(upper_fragments, lower=False)
+        for cell_id in removed_ids:
+            del self._persistent_cells[cell_id]
+        for cell in added:
+            self._persistent_cells[cell.id] = cell
+        self._assign_neighbor_links(list(self._persistent_cells.values()))
+        return CorridorReplacement(
+            segment_id, removed_ids, tuple(added), lower_chains, upper_chains
+        )
+
+    def _assign_neighbor_links(self, cells: list[Trapezoid]) -> None:
+        """Assign reciprocal links for a trapezoid graph snapshot."""
+        xmin, ymin, xmax, ymax = self.bounds
+        ending: dict[float, list[Trapezoid]] = {}
+        starting: dict[float, list[Trapezoid]] = {}
+        for cell in cells:
+            ending.setdefault(cell.x_right, []).append(cell)
+            starting.setdefault(cell.x_left, []).append(cell)
+        left_links = {cell.id: set() for cell in cells}
+        right_links = {cell.id: set() for cell in cells}
+
+        def interval(cell, x):
+            bottom = ymin if cell.bottom_segment is None else _y_at(
+                self.segments[cell.bottom_segment], x
+            )
+            top = ymax if cell.top_segment is None else _y_at(
+                self.segments[cell.top_segment], x
+            )
+            return bottom, top
+
+        for wall in ending.keys() & starting.keys():
+            for left in ending[wall]:
+                lb, lt = interval(left, wall)
+                for right in starting[wall]:
+                    rb, rt = interval(right, wall)
+                    if max(lb, rb) < min(lt, rt):
+                        right_links[left.id].add(right.id)
+                        left_links[right.id].add(left.id)
+        for cell in cells:
+            cell.left_neighbors = tuple(sorted(left_links[cell.id]))
+            cell.right_neighbors = tuple(sorted(right_links[cell.id]))
 
     def _split_corridor_cell(self, segment_id: int,
                              cell: Trapezoid) -> CorridorSplit:
@@ -279,33 +428,7 @@ class RandomizedTrapezoidalMap:
 
     def _link_trapezoid_neighbors(self) -> None:
         """Build reciprocal adjacency across shared vertical trapezoid sides."""
-        xmin, ymin, xmax, ymax = self.bounds
-        ending: dict[float, list[Trapezoid]] = {}
-        starting: dict[float, list[Trapezoid]] = {}
-        for cell in self.trapezoids:
-            ending.setdefault(cell.x_right, []).append(cell)
-            starting.setdefault(cell.x_left, []).append(cell)
-        left_links = {cell.id: set() for cell in self.trapezoids}
-        right_links = {cell.id: set() for cell in self.trapezoids}
-
-        def vertical_interval(cell: Trapezoid, x: float) -> tuple[float, float]:
-            bottom = (ymin if cell.bottom_segment is None else
-                      _y_at(self.segments[cell.bottom_segment], x))
-            top = (ymax if cell.top_segment is None else
-                   _y_at(self.segments[cell.top_segment], x))
-            return bottom, top
-
-        for wall in ending.keys() & starting.keys():
-            for left_cell in ending[wall]:
-                left_bottom, left_top = vertical_interval(left_cell, wall)
-                for right_cell in starting[wall]:
-                    right_bottom, right_top = vertical_interval(right_cell, wall)
-                    if max(left_bottom, right_bottom) < min(left_top, right_top):
-                        right_links[left_cell.id].add(right_cell.id)
-                        left_links[right_cell.id].add(left_cell.id)
-        for cell in self.trapezoids:
-            cell.left_neighbors = tuple(sorted(left_links[cell.id]))
-            cell.right_neighbors = tuple(sorted(right_links[cell.id]))
+        self._assign_neighbor_links(self.trapezoids)
 
     def _build_y_tree(self, active: list[int], cells: list[Trapezoid],
                       mid: float):
