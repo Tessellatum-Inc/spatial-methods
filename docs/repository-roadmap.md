@@ -388,3 +388,150 @@ The package is a stationary M/M/c teaching model, not a time-varying simulation.
 - [x] Add a finite-grid elliptical Poisson scan with explicit shape/orientation candidate controls, tie handling, tests, lesson and conditional Monte Carlo calibration.
 - [x] Add a bounded exhaustive FleXScan-style connected-zone scan with adjacency validation, K-neighbour restriction, tests, lesson and conditional Monte Carlo calibration.
 - [ ] Compare circular, elliptical and flexible scan families against reference software; assess optimized enumeration and secondary-cluster methods.
+
+
+## Algorithm implementation backlog — refreshed 16 November 2026
+
+This is the current implementation worklist, reconciled against the repository's coverage matrix, section indexes and implementation inventory. It supersedes older lists that describe already-present algorithms as outstanding. It is **not** a declaration that the 47-page source has been fully audited: the 22 section indexes preserve 694 grouped source-entry rows, and source-entry identity, bibliography, technical claims and rights still require separate review.
+
+### Completion rule
+
+A source item is not complete merely because it has a Markdown page, a package directory or a name in the catalogue. For each item, record the appropriate deliverables for its record kind:
+
+- a precise scope, mathematical definition, assumptions and variants;
+- runnable implementation when executable treatment is appropriate, with explicit input, coordinate, units, numerical and failure contracts;
+- tests for normal cases, edge cases and degeneracies;
+- independent numerical, analytical or reference-software verification where practical;
+- a worked example or notebook when it materially improves understanding;
+- source provenance, references, limitations and a verification-ledger entry;
+- CI execution on the exact commit before claiming tests passed.
+
+A reference wrapper, teaching baseline, partial implementation and production-grade algorithm are different completion levels. Preserve those distinctions.
+
+### 1. Geometry and computational geometry
+
+**Already represented — do not re-add as missing:** Graham scan, Jarvis march, Quickhull, alpha shapes; rotating-calipers diameter/width work and minimum-area rectangle baselines; Welzl minimum enclosing circle; largest-empty-circle baseline and Polylabel; Hausdorff and discrete/continuous Fréchet; proximity graph baselines; visibility-polygon reference implementation; ear clipping and monotone triangulation; DCEL representation, quad-edge and winged-edge structures; BSP/CSG teaching implementation; polygon overlay families including Greiner–Hormann, Weiler–Atherton, Martinez–Rueda partial work and the native Vatti scanbeam work. Several are deliberately scoped and must not be described as complete general-purpose kernels.
+
+**Next gaps and completion work:**
+
+1. General randomized trapezoidal-map construction and point location; the current static slab locator is not a randomized map.
+2. Native Fortune Voronoi sweep and native Bowyer–Watson/incremental Delaunay construction; the existing Voronoi/Delaunay material uses SciPy/Qhull and is a wrapper, not these native algorithms.
+3. Ruppert Delaunay refinement with encroachment handling, termination conditions and quality/size controls; the existing constrained-Delaunay package is not a refinement algorithm.
+4. Robust medial-axis construction and straight-skeleton wavefront/event processing; current material is explanatory/reference-level, not a complete event-driven implementation.
+5. Finish the Boolean-clipping implementations by their actual missing cases: Vatti local-minimum/scanbeam lifecycle and full horizontal/join rules; Martinez–Rueda neighbour-event scheduling and robust coincident/touch handling; broader independent differential tests for concave polygons, holes, self-intersections and multiway degeneracies.
+6. Upgrade visibility polygons from perturbed-ray reference casting to a robust rotational sweep with explicit vertex/edge degeneracy handling.
+7. Complete scalable Delaunay-based proximity constructions and the researched O(n log n) Yao construction; current blocker scans and teaching variants remain limited.
+8. Continue arrangement construction/noding and topology-preserving simplification only where the source audit identifies a genuinely uncovered method or guarantee.
+
+### 2. Spatial indexing, encodings and query processing
+
+**Already represented:** STR-packed R-tree, mutable in-memory R*-tree (including deletion and exact best-first kNN), k-d tree, point-region quadtree, octree, ball tree, VP-tree, filter-and-refine spatial join, point KNN join, reverse-KNN baseline, closest pair, Hilbert-packed R-tree research/implementation and several spatial encodings. Existing structures have different dimensionality, update and persistence contracts; do not imply that one is a universal index.
+
+**Next gaps:**
+
+- R+-tree and a proper Hilbert R-tree comparison/implementation where distinct from the existing Hilbert-packed bulk loader; dynamic and disk-page variants.
+- Grid File and KD-B-tree.
+- Morton/Z-order and Hilbert encoders/decoders with locality and round-trip tests; complete Geohash, H3, S2 and HEALPix treatment at the appropriate level (grid definition, indexing, hierarchy, neighbourhood and exact cell geometry must be distinguished).
+- Spatial skyline and top-k spatial-keyword queries.
+- Partition-based and scalable spatial joins beyond the current teaching filter/refine and point-KNN cases.
+- Selectivity estimation, spatial histograms, learned spatial indexes and workload-aware query planning.
+- Moving-object indexes: TPR-tree, HR-tree, MV3R-tree and related predictive query/update policies.
+- Benchmark indexed methods against brute-force or established implementations on controlled distributions, including skew and adversarial cases.
+
+### 3. Networks, routing, transit and transport
+
+**Already represented:** Dijkstra, A*, bidirectional Dijkstra, ALT, Yen's k-shortest paths, turn-aware routing, FIFO time-dependent routing, RAPTOR, Connection Scan, Pareto multi-criteria shortest paths, many-to-many/isochrone foundations, max-flow/min-cut, Steiner-tree and k-core work. These are not evidence that all scalable routing and transit methods are covered.
+
+**Next gaps:**
+
+- Contraction hierarchies and customizable route planning, with preprocessing/query trade-offs and update/customization tests.
+- Hub labeling, transit-node routing, highway hierarchies, reach, arc flags, PHAST and RPHAST.
+- Non-FIFO time-dependent routing, including explicit assumptions and algorithmic alternatives to FIFO label-setting.
+- Transit transfers and multimodal timetable routing beyond the current RAPTOR/CSA baselines; service calendars, footpaths, frequency services and realtime updates.
+- Scalable many-to-many routing and service-area/isochrone construction, including approximation/error contracts.
+- Full HMM map matching and ST-Matching with candidate generation, transition/emission models and trajectory edge cases.
+- TSP/VRP families: Christofides, Lin–Kernighan, Clarke–Wright, VRPTW, ALNS and column-generation baselines; distinguish heuristics from exact formulations.
+- Transit line planning, stop spacing/consolidation, network design and active-mobility accessibility.
+- Complete network resilience/flow families only where the source index shows a real method-level gap.
+
+### 4. Spatial statistics, point patterns and spatial inference
+
+**Already represented:** global/local Moran and Geary, Getis–Ord, join-count, DBSCAN/ST-DBSCAN, Clark–Evans, G/F/J, fixed and adaptive KDE, Ripley's K/L, pair-correlation summaries and corrections, cross-type point-pattern summaries, selected scan statistics, Thomas and Matérn cluster processes, discretised log-Gaussian Cox simulation, Strauss sampling, selected spatial regression/econometric baselines, eigenvector filtering and spatial cross-validation.
+
+**Next gaps:**
+
+- Network K-functions and network KDE with explicit network-distance and edge-correction contracts.
+- Inhomogeneous point-process inference and diagnostics beyond supplied-intensity summaries and bounded simulation baselines; broader Cox/Gibbs families and parameter estimation.
+- Polygon-window edge corrections and comparative isotropic, translation and border corrections; global envelope methods beyond pointwise simulation bands.
+- Spatial/block bootstrap and dependence-aware uncertainty estimation.
+- Dutilleul's modified t-test and other source-listed spatially adjusted inference.
+- Broader Bayesian spatial clustering, partition models and uncertainty summaries.
+- Regionalization: SKATER, REDCAP, AZP and Max-p with contiguity, objective and feasibility tests.
+- Spatial eigenvector filtering variants and restricted spatial regression, with confounding/identifiability diagnostics.
+- Complete spatial regression estimation and model diagnostics beyond current selected dense teaching baselines.
+
+### 5. Raster, terrain, hydrology and geophysics
+
+**Already represented:** D8, D-infinity, multiple-flow-direction routing, Priority-Flood filling, HAND, terrain derivatives including slope/aspect and curvature, TPI/TRI and other morphometry, hillshade, TWI, distance/cost distance, resampling, zonal statistics, raster components, watershed and stream ordering, plus selected potential-field and geophysical gridding methods.
+
+**Next gaps:**
+
+- Sink breaching, flat resolution and hydro-conditioning alternatives; compare fill/breach methods on preserved drainage and elevation error.
+- Viewshed algorithms, cumulative visibility and observer/target-height semantics.
+- Solar radiation, wind exposure and microclimate methods with temporal/terrain inputs and validation.
+- Rainfall-runoff models: Green–Ampt, SCS curve number and TOPMODEL; distinguish event models from continuous models.
+- Muskingum channel routing and hydraulic/hydrodynamic inundation models.
+- Flood frequency, groundwater flow/recharge and uncertainty/sensitivity workflows.
+- Remaining terrain classification/geomorphon and landform methods not yet covered by TPI/TRI/curvature.
+- Geophysical gridding, continuation, derivatives, filtering, inversion and potential-field methods: separate algorithms and physical assumptions rather than grouping them as one package.
+- Adaptive sampling and spatial distribution-shift tests for raster/model deployment.
+
+### 6. Remote sensing, LiDAR and photogrammetry
+
+**Already represented:** NDVI and a growing spectral-index family; selected hyperspectral endmember extraction/unmixing (VCA, N-FINDR, ATGP, FCLS), anomaly/target detection (RX, matched filter, CEM, ACE), spectral similarity (SAM/SID), image filters/transforms, edge/thresholding, optical flow and selected image-processing baselines.
+
+**Next gaps:**
+
+- Radiometric and atmospheric correction, sensor calibration and reflectance/BRDF/illumination normalisation.
+- Registration: SIFT, ORB, phase correlation, RANSAC, ICP and NDT; include robust correspondence rejection and independent transform checks.
+- Optical–SAR matching and multimodal registration.
+- LiDAR ground filtering, point-cloud classification/segmentation, tree/crown extraction, strip adjustment and waveform processing.
+- Photogrammetry: feature matching, SfM, bundle adjustment, aerial triangulation, camera calibration, dense matching, MVS and surface reconstruction.
+- Hyperspectral PPI, additional unmixing, band selection, continuum removal and denoising.
+- SAR speckle filtering, polarimetric decomposition, CFAR, InSAR phase unwrapping and time-series workflows.
+- Change detection: image differencing, CVA, post-classification, IR-MAD and learned methods with leakage-aware validation.
+- Thermal/LST, evapotranspiration, water quality, aerosol, cryosphere and ocean retrieval methods.
+- Accuracy assessment, uncertainty propagation and sensor/product-specific reproducibility.
+
+### 7. GeoAI, spatiotemporal modelling and applied methods
+
+**Already represented:** spatial and spatiotemporal validation baselines, selected change-point methods, ARIMA/STL and Theil–Sen materials, state-estimation/Kalman methods, optical flow, masked autoencoding baseline, contrastive-learning material, tensor methods and selected spatial distribution-shift diagnostics.
+
+**Next gaps:**
+
+- Full HMM parameter estimation and spatiotemporal forecasting baselines with leakage-safe spatial/temporal validation.
+- Bayesian online change-point detection with complete Student-t predictive updates and calibrated tests.
+- Bayesian optimisation and adaptive experimental design for spatial sampling and model tuning.
+- Geographic area-of-applicability and covariate-shift diagnostics, including uncertainty under extrapolation.
+- Graph neural networks and spatiotemporal transformers with clear task/data contracts and non-neural baselines.
+- Neural fields and implicit spatial representations; distinguish coordinate networks, occupancy/density fields and geospatial reconstruction tasks.
+- Image geolocation, multimodal spatial retrieval and spatial-language grounding with reproducible evaluation.
+- Differentiable hydrology/flood forecasting and physical-model coupling.
+- Spatial interaction/gravity models, functional regions, mobility and emissions modelling.
+- Marine, cryosphere, climate-event tracking, spatial epidemiology, phylogeography and surveillance methods.
+- Keep architecture, pretrained model, dataset, benchmark and workflow records distinct; do not promise a runnable implementation where rights/data/model access prevent it.
+
+### 8. Remaining source sections and audit work
+
+Sections 7–22 are not a miscellaneous appendix. Work through all 22 source indexes and all 47 transcription pages in order, retaining the explicit source cautions for remembered names and adjacent-field additions. The next domain batches should be chosen from the source-entry rows with the highest combination of: (a) source relevance, (b) no adequate canonical record, (c) an implementable and testable scope, and (d) reuse value across other methods.
+
+The source-to-implementation ledger must track, per source entry and child method: original label/page, canonical identity, record kind, existing lesson, implementation tier, tests, independent verification, notebook/example, bibliography/technical-claim status and rights. Recalculate the review dashboard whenever source-row labels change. Do not turn a linked record into a fully verified label without checking the whole grouped entry across the separate verification dimensions.
+
+### Batch execution policy
+
+- Work in substantial batches of up to five algorithm families, not one tiny decision per turn.
+- Inspect the live tree, section index, existing implementation and verification note before selecting each batch.
+- Avoid duplicating completed work; extend a partial implementation only when its remaining scope is explicit.
+- Deliver the complete set of appropriate materials for every algorithm in the batch: implementation, tests, independent oracle/reference checks, documentation, examples/notebooks where useful, catalogue links, verification records and CI registration.
+- Run the relevant package suites and then full repository CI on the exact resulting head when practical. Report package tests and full CI separately.
+- Keep the compendium open until all 47 pages and 22 sections have been reconciled and every entry has an evidence-backed disposition. Patreon/membership work remains downstream of that gate.
