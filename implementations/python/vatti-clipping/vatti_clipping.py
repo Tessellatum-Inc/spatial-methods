@@ -48,6 +48,15 @@ def _paths(rings, scale, name):
 def _from_path(path, scale):
     return [(x / scale, y / scale) for x, y in path]
 
+def _simplify_paths(paths, fill_type):
+    """Node self-crossings into simple contours under the selected fill rule."""
+    result = []
+    for path in paths:
+        simplified = pyclipper.SimplifyPolygon(path, fill_type)
+        result.extend(simplified or [path])
+    return result
+
+
 def _components(tree, scale):
     result = []
     def visit(node):
@@ -81,8 +90,8 @@ def boolean_clip(subjects: Sequence[Sequence[Point]], clips: Sequence[Sequence[P
         raise ValueError(f"fill_rule must be one of {', '.join(_FILL_RULES)}")
     if not isinstance(scale, int) or isinstance(scale, bool) or scale <= 0:
         raise ValueError("scale must be a positive integer")
-    subject_paths = _paths(subjects, scale, "subjects")
-    clip_paths = _paths(clips, scale, "clips")
+    subject_paths = _simplify_paths(_paths(subjects, scale, "subjects"), _FILL_RULES[fill_rule])
+    clip_paths = _simplify_paths(_paths(clips, scale, "clips"), _FILL_RULES[fill_rule])
     if not subject_paths and not clip_paths:
         return []
     engine = pyclipper.Pyclipper()
