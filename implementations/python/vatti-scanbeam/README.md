@@ -15,7 +15,11 @@ scanbeam events are now extracted for horizontal/bound endpoint or interior
 contacts, and horizontal/horizontal point contacts versus positive-length
 overlaps are distinguished. These are reference calculations rather than a
 production sweep scheduler: crossing discovery remains O(m²), and winding
-transitions are not yet combined with subject/clip fill rules.
+transitions are not yet derived from a complete arrangement. Fill-rule
+predicates (even-odd, non-zero, positive, negative) and Boolean point
+classification (intersection, union, difference, XOR) are now implemented as
+separate, testable truth-table helpers. They consume winding counts; they do
+not yet calculate those counts through the sweep.
 
 It does **not** yet update an active-edge list incrementally in-place, process
 horizontal edges through clipping, or emit output contours. It is therefore a tested algorithmic foundation, not a
