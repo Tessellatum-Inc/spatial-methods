@@ -113,3 +113,8 @@ A bounded ISO 7726-style globe-thermometer MRT estimator now includes natural/fo
 The point-process model extension now includes a stationary Matérn disc-cluster simulator, tests, a canonical lesson, walkthrough and executable lab example. Its Poisson parents are generated in a radius-expanded rectangle; compact-support offspring are uniform in parent-centred discs. It complements, but does not replace, the Gaussian Thomas simulator. Log-Gaussian Cox and Strauss simulators are now implemented; general Gibbs models and inferential fitting remain open.
 
 The point-process model package now also contains a bounded log-Gaussian Cox simulator, tests, canonical lesson and lab example. It uses a dense exponential-covariance Gaussian field on a regular grid followed by conditional Poisson cell sampling; this is an explicitly discretised small-grid approximation, not fitted continuous-field inference.
+
+
+## Section 20 — spectral-index family extension
+
+The spectral-index package now includes tested formula implementations for GNDVI, ARVI, GCI/CIgreen, CIrededge, MSAVI-2, OSAVI, WDRVI, NIRv, kNDVI, MTCI, REIP, TCARI, PSRI, ARI, CRI1/2, SIPI, PRI, NDII, NMDI, BSI, NDTI, STI and hyperspectral CAI. Formula variants, wavelength requirements and sensor-specific limitations are recorded in the canonical lesson. Clay/mineral ratios, ASTER-specific indices, field validation and the other Section 20 retrieval families remain open.

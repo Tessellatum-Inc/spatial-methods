@@ -22,6 +22,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 - [Proximity graphs](geometry/proximity-graphs.md) — compare Gabriel, relative-neighbourhood and Euclidean minimum-spanning graphs.
 - [Planar point location](geometry/point-location.md) — understand slab decompositions and randomized trapezoidal maps, with a tested restricted static slab locator.
 
+## Query processing
+
+- [Spatial skyline queries](query-processing/spatial-skyline.md) — return objects not dominated across distance to a query location and selected attributes.
+
 ## Optimization and location science
 
 - [The p-median problem](optimization/p-median.md) — choose a fixed number of candidate facilities to minimise weighted assignment cost.

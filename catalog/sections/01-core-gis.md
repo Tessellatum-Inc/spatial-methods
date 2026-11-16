@@ -99,3 +99,11 @@ Publisher or authoritative bibliographic records were checked for the core sourc
 - Boissonnat and Preparata (2000), “Robust plane sweep for intersecting segments,” *SIAM Journal on Computing*, 29(5), 1401–1421, [10.1137/S0097539797329373](https://doi.org/10.1137/S0097539797329373).
 
 This pass confirms citation metadata for these selected sources. It does not verify every Section 1 source entry, all algorithmic claims or the correctness of third-party software.
+
+
+### Spatial skyline queries
+
+- **Source:** page 1, “Queries: range, kNN, reverse kNN, closest pair, spatial skyline, top-k spatial keyword, geofencing”.
+- **Kind:** query algorithm.
+- **Treatment:** tested block-nested-loop reference for location-aware multi-criteria dominance. Indexed skyline variants and top-k spatial keyword search remain separate items.
+- **Canonical record:** [spatial skyline](../../algorithms/query-processing/spatial-skyline.md).

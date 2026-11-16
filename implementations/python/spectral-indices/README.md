@@ -17,6 +17,11 @@ undefined (zero-denominator) pixels where applicable.
 - NBR and dNBR: NIR/SWIR2 burn ratio and pre-minus-post differenced NBR.
 - NDSI: common green/SWIR1 snow index.
 - AWEI_sh and AWEI_nsh: shadow and non-shadow automated water extraction indices.
+- GNDVI, ARVI, GCI/CIgreen and CIrededge.
+- MSAVI-2, OSAVI, WDRVI, NIRv and kNDVI.
+- MTCI, four-band REIP and TCARI.
+- PSRI, ARI, CRI1/CRI2, SIPI and PRI.
+- NDII, NMDI, BSI, NDTI, STI and hyperspectral CAI.
 
 ## Run
 
@@ -40,3 +45,13 @@ unscaled digital numbers.
 
 Read the [NDVI lesson](../../../algorithms/remote-sensing/ndvi.md) and
 [extended index family lesson](../../../algorithms/remote-sensing/spectral-index-family.md).
+
+
+## Band and formula variants
+
+The added indices are explicit reflectance formulae, not sensor-independent band-number recipes. Map bands by wavelength and spectral response. OSAVI uses the 1.16 scale factor with L=0.16; WDRVI exposes alpha (default 0.1); ARVI exposes its blue-band correction gamma (default 1). REIP expects bands near 670, 700, 740 and 780 nm; MTCI and TCARI also require red-edge bands. CAI requires hyperspectral reflectance near 2030, 2100 and 2210 nm and should not be approximated with broad multispectral bands. Several published indices have variants; the lesson records the selected formula and assumptions.
+
+
+## Band and formula variants
+
+The added indices are explicit reflectance formulae, not sensor-independent band-number recipes. Map bands by wavelength and spectral response. OSAVI uses the 1.16 scale factor with L=0.16; WDRVI exposes alpha (default 0.1); ARVI exposes its blue-band correction gamma (default 1). REIP expects bands near 670, 700, 740 and 780 nm; MTCI and TCARI also require red-edge bands. CAI requires hyperspectral reflectance near 2030, 2100 and 2210 nm and should not be approximated with broad multispectral bands. Several published indices have variants; the lesson records the selected formula and assumptions.

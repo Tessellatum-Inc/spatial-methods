@@ -12,9 +12,9 @@
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Vegetation: GNDVI, ARVI, GCI, MSAVI, OSAVI, WDRVI, NIRv, kNDVI, MTCI, REIP, TCARI, CIgreen, CIrededge | Spectral indices | 41 | Not checked — intake only |
-| Pigments and stress: PSRI, ARI, CRI, SIPI, PRI, NDII, NMDI | Spectral indices | 41 | Not checked — intake only |
-| Soil, residue and minerals: BSI, NDTI, STI, CAI (crop residue), clay mineral ratio, iron oxide ratio, ferrous iron index, ASTER mineral indices | Spectral indices / mineral retrieval ratios | 41 | Not checked — intake only |
+| Vegetation: GNDVI, ARVI, GCI, MSAVI, OSAVI, WDRVI, NIRv, kNDVI, MTCI, REIP, TCARI, CIgreen, CIrededge | Spectral indices | 41 | Partially implemented: all listed vegetation and red-edge indices now have NumPy functions and formula tests; sensor-specific wavelength mapping and field validation remain open |
+| Pigments and stress: PSRI, ARI, CRI, SIPI, PRI, NDII, NMDI | Spectral indices | 41 | Partially implemented: PSRI, ARI, CRI1/2, SIPI, PRI, NDII and NMDI have tested formula implementations; variants and narrow-band sensor calibration remain open |
+| Soil, residue and minerals: BSI, NDTI, STI, CAI (crop residue), clay mineral ratio, iron oxide ratio, ferrous iron index, ASTER mineral indices | Spectral indices / mineral retrieval ratios | 41 | Partially implemented: BSI, NDTI, STI and hyperspectral CAI are implemented; clay/mineral ratios and ASTER-specific formulations remain open |
 
 ## Thermal and land surface temperature
 
@@ -85,3 +85,8 @@
 3. Distinguish event definition, event detection and event tracking.
 4. State temporal resolution and observation gaps for climate and ocean event examples.
 5. Treat causal language carefully: temporal association or information transfer does not by itself establish causal identification.
+
+
+### Spectral-index implementation update
+
+The existing spectral-indices package now covers the named vegetation, pigment, moisture, soil/tillage and crop-residue indices listed above where a stable formula and band contract could be stated. The lesson records formula variants and wavelength requirements; this is not a substitute for sensor-specific calibration or field validation. Mineral ratios and ASTER-specific indices remain research tasks.

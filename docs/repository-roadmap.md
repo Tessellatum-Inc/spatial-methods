@@ -574,3 +574,8 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Correct Martinez broad-phase interval queries to keep epsilon expansion in exact rational arithmetic; large integer coordinates must not be rounded when querying active y-intervals.
 - [x] Correct the Vatti scanbeam fill-rule test orientation for the implementation's Cartesian y-up winding convention, and simplify self-crossing paths before Clipper execution in the Vatti adapter.
 - [ ] Verify the complete latest-head Actions run before marking these regression fixes as passing. Martinez neighbour-ordered event scheduling remains open.
+
+
+## Notebook execution environment — 16 November 2026
+
+- [x] Configure every CI notebook execution to use the repository root as its working directory. Existing notebooks use repository-relative package paths; nbconvert's default notebook-directory working directory made those imports fail even when the package existed. A single explicit `ExecutePreprocessor.cwd=.` setting now gives all labs a consistent import base.
