@@ -47,7 +47,7 @@ def test_invalid_band_counts_and_shapes_are_rejected(bands, pan):
     with pytest.raises(ValueError):
         brovey_pansharpen(bands, pan)
 
-@pytest.mark.parametrize("value", [-1, float("inf"), True, "bad"])
+@pytest.mark.parametrize("value", [-1, True, "bad"])
 def test_invalid_valid_pixel_values_are_rejected(value):
     with pytest.raises(ValueError):
         brovey_pansharpen([[[value]], [[1]]], [[1]])
@@ -58,5 +58,11 @@ def test_ragged_pan_grid_is_rejected():
 
 def test_nan_is_treated_as_missing_and_masked():
     result = brovey_pansharpen([[[1, float("nan")]], [[2, 3]]], [[4, 4]])
+    assert result["valid_mask"] == [[True, False]]
+    assert result["bands"][0][0][1] is None
+
+@pytest.mark.parametrize("missing", [float("nan"), float("inf"), -float("inf")])
+def test_nonfinite_pixels_are_treated_as_missing(missing):
+    result = brovey_pansharpen([[[1, missing]], [[2, 3]]], [[4, 4]])
     assert result["valid_mask"] == [[True, False]]
     assert result["bands"][0][0][1] is None
