@@ -16,7 +16,7 @@ triangles = constrained_delaunay_with_diagonals(ring, [((0,0),(2,4))])
 ## Scope
 - One valid simple polygon ring; clockwise and explicitly closed rings are accepted.
 - Boundary edges are the constraints.
-- Non-crossing interior constraints are supported when each segment joins existing normalized polygon vertices; each constraint partitions the polygon, and all resulting piece boundaries remain constrained. Crossing constraints, holes, Steiner points, quality refinement and mesh-size controls are unsupported.
+- Non-crossing interior constraints are supported when each segment joins existing normalized polygon vertices; each constraint partitions the polygon, and all resulting piece boundaries remain constrained. Crossing or overlapping constraints, holes, Steiner points, quality refinement and mesh-size controls are unsupported. Distinct constraints may meet at a shared endpoint when their directions are non-collinear or form opposite collinear rays; same-ray overlap is rejected.
 - Lawson flips occur only across convex quadrilaterals. The separate `constrained_delaunay_with_diagonals` entry point accepts a non-crossing set of interior diagonals and triangulates each resulting simple piece independently.
 - Exact rational orientation and incircle predicates avoid floating-point sign errors for supplied decimal coordinates.
 - Cocircular configurations may have multiple valid triangulations; the existing diagonal is retained.
