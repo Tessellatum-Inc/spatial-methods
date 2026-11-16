@@ -508,9 +508,7 @@ jobs:
           - example: arima-forecasting
             directory: implementations/python/arima-forecasting
             pythonpath: ""
-          - example: compositional-data
-            directory: implementations/python/compositional-data
-            pythonpath: ""
+
           - example: d8-flow-direction
             directory: implementations/python/d8-flow-direction
             pythonpath: ""
