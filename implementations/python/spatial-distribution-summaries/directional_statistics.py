@@ -133,3 +133,33 @@ def rose_histogram(angles: Sequence[float], *, bins: int = 16,
             raise ValueError("weights must be finite, nonnegative and match angles")
     counts, edges = np.histogram(values, bins=int(bins), range=(0.0, 2.0*pi), weights=w)
     return {"counts": counts, "edges": edges, "total_weight": float(w.sum())}
+
+
+def watson_u2_uniformity_test(angles: Sequence[float]) -> dict:
+    """Watson U-squared rotation-invariant test against circular uniformity.
+
+    Uses the asymptotic upper-tail series for the Watson U-squared statistic.
+    This is an omnibus uniformity test; its p-value is approximate for finite
+    samples and should be treated cautiously when angles are tied or discrete.
+    """
+    values = np.sort(_angles(angles) / (2.0 * pi))
+    n = len(values)
+    if n < 2:
+        raise ValueError("Watson U-squared test requires at least two angles")
+    expected = (np.arange(n, dtype=float) + 0.5) / n
+    deviations = values - expected
+    centred = deviations - float(np.mean(deviations))
+    u2 = float(np.sum(centred * centred) + 1.0 / (12.0 * n))
+    # Asymptotic survival function: 2 sum (-1)^(j-1) exp(-2 j^2 pi^2 U^2).
+    p = 0.0
+    for j in range(1, 1000):
+        term = 2.0 * ((-1.0) ** (j - 1)) * exp(-2.0 * j*j*pi*pi*u2)
+        p += term
+        if abs(term) < 1e-14:
+            break
+    return {
+        "statistic_u2": u2,
+        "pvalue": float(min(1.0, max(0.0, p))),
+        "n": n,
+        "alternative": "any departure from circular uniformity",
+    }
