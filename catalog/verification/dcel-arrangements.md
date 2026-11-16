@@ -8,7 +8,9 @@
 - Input face boundary cycles with next/previous links.\n- Exact-rational orientation and segment predicates for rejecting zero-area and self-intersecting input rings.
 - Pairwise input-edge validation rejects un-noded crossings, T-junctions and partial collinear overlaps.
 - Cross-ring noding guard rejects proper crossings, T-junctions and partial collinear overlaps; already-shared complete edges are deduplicated.
-- Angular outgoing-edge order and exterior twin-cycle linkage.
+- Exact rational counter-clockwise angular ordering of outgoing-edge fans (using decimal rationalization of stored coordinates).
+- Exterior-cycle successor selection skips bounded-face half-edges and remains on exterior edges at shared multi-face junctions.
+- Three-adjacent-face chain regression checks complete exterior-cycle closure and edge membership.
 - Explicit invariant checker for twin, next and previous reciprocity.
 
 ## Tests authored
@@ -22,7 +24,7 @@ boundaries; non-finite coordinates, un-noded crossings, T-junctions and partial 
 This is not yet a complete planar arrangement or Boolean overlay. It assumes
 noded input boundaries and does not split crossings, resolve collinear overlaps,
 infer shell/hole containment, or unify disconnected components of the unbounded
-face. Tests must be run in CI before this implementation is marked verified.
+face. Tests must be run in CI before this implementation is marked verified. The exact angular comparator and exterior-only successor correction are authored but not yet CI-verified.
 
 
 ## Latest correction awaiting CI
