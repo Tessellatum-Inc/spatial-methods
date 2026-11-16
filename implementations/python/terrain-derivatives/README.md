@@ -116,3 +116,8 @@ The `terrain_openness` helper returns positive and negative radial horizon-openn
 ## Channel chi, slope-area and knickpoint screening
 
 The `channel_morphometry.py` module adds trapezoidal channel chi integration from supplied drainage area, an OLS log slope-area relationship, and a moving-window chord-residual knickpoint screen. These operate on a single ordered channel profile and do not extract channels or infer geomorphic causes. See [the canonical lesson](../../../algorithms/raster/channel-morphometry.md) and `test_channel_morphometry.py`.
+
+
+## USLE/RUSLE erosion factors
+
+The `erosion.py` module implements the USLE/RUSLE factor product A=R×K×LS×C×P and a conventional slope-length/steepness LS calculation from slope degrees and horizontal slope length. Factors broadcast across raster arrays and are validated as finite/non-negative. The LS formulation is an empirical baseline, not a flow-accumulation-aware method for convergent terrain. Regional calibration, sediment delivery and gully/channel erosion are outside scope. See [the canonical lesson](../../../algorithms/raster/usle-rusle-erosion.md) and `test_erosion.py`.
