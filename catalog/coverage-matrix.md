@@ -169,3 +169,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 4 terrain derivatives: added radial positive and negative terrain openness angles with bilinear sampling, configurable azimuth/radial resolution, maximum distance and strict support/NoData masking. This is an explicit approximation, not the full geomorphon openness method or a red-relief image-map renderer.
+
+
+- Section 4 geomorphology: added channel chi integration, log slope-area OLS and a moving-window chord-residual knickpoint screen with tests and stated profile-level assumptions. Drainage-basin morphometry, channel extraction, tributary-aware segmentation and geological interpretation remain open.
