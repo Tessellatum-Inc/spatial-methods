@@ -135,3 +135,108 @@ def ordinary_kriging_grid(
         "prediction": prediction.reshape(shape),
         "variance": variance.reshape(shape),
     }
+
+
+def _analysis_grid(points, values, x_coordinates, y_coordinates, radii, background):
+    """Validate a rectilinear analysis grid and prepare a first-guess field."""
+    p, v = _samples(points, values)
+    x = np.asarray(x_coordinates, dtype=float)
+    y = np.asarray(y_coordinates, dtype=float)
+    if x.ndim != 1 or y.ndim != 1 or len(x) < 2 or len(y) < 2:
+        raise ValueError("objective analysis needs at least two coordinates on each axis")
+    if not np.all(np.isfinite(x)) or not np.all(np.isfinite(y)):
+        raise ValueError("grid coordinates must be finite")
+    if np.any(np.diff(x) <= 0) or np.any(np.diff(y) <= 0):
+        raise ValueError("grid coordinates must be strictly increasing")
+    if np.any(p[:, 0] < x[0]) or np.any(p[:, 0] > x[-1]) or np.any(p[:, 1] < y[0]) or np.any(p[:, 1] > y[-1]):
+        raise ValueError("all observations must lie inside the analysis grid")
+    r = np.asarray(radii, dtype=float)
+    if r.ndim != 1 or len(r) < 1 or not np.all(np.isfinite(r)) or np.any(r <= 0):
+        raise ValueError("radii must be a non-empty sequence of finite positive values")
+    if len(r) > 1 and np.any(np.diff(r) >= 0):
+        raise ValueError("radii must be strictly decreasing from coarse to fine")
+    xx, yy = np.meshgrid(x, y)
+    if background is None:
+        field = np.zeros_like(xx, dtype=float)
+    else:
+        b = np.asarray(background, dtype=float)
+        if b.ndim == 0:
+            field = np.full(xx.shape, float(b), dtype=float)
+        elif b.shape == xx.shape:
+            field = b.copy()
+        else:
+            raise ValueError("background must be a scalar or have shape (len(y), len(x))")
+        if not np.all(np.isfinite(field)):
+            raise ValueError("background must be finite")
+    return p, v, x, y, xx, yy, r, field
+
+
+def _objective_analysis(points, values, x_coordinates, y_coordinates, radii,
+                        background, kernel, kappa=1.0, gamma=1.0):
+    from scipy.interpolate import RegularGridInterpolator
+
+    p, v, x, y, xx, yy, radii, field = _analysis_grid(
+        points, values, x_coordinates, y_coordinates, radii, background
+    )
+    gammas = np.asarray(gamma, dtype=float)
+    if gammas.ndim == 0:
+        gammas = np.full(len(radii), float(gammas))
+    if gammas.shape != radii.shape or not np.all(np.isfinite(gammas)) or np.any(gammas <= 0) or np.any(gammas > 1):
+        raise ValueError("gamma must be in (0, 1] or provide one value per radius")
+    kappa = float(kappa)
+    if kernel == "barnes" and (not np.isfinite(kappa) or kappa <= 0):
+        raise ValueError("kappa must be finite and positive")
+
+    # Distances are computed in the same planar coordinate units as x/y.
+    d2 = (xx[..., None] - p[None, None, :, 0]) ** 2 + (yy[..., None] - p[None, None, :, 1]) ** 2
+    sample_locations = np.column_stack((p[:, 1], p[:, 0]))
+    for radius, relaxation in zip(radii, gammas):
+        interpolator = RegularGridInterpolator((y, x), field, bounds_error=True)
+        residual = v - interpolator(sample_locations)
+        if kernel == "cressman":
+            radius2 = radius * radius
+            weights = np.where(d2 < radius2, (radius2 - d2) / (radius2 + d2), 0.0)
+        else:
+            weights = np.exp(-d2 / (kappa * radius * radius))
+        denominator = weights.sum(axis=2)
+        correction = np.divide(
+            np.sum(weights * residual[None, None, :], axis=2),
+            denominator,
+            out=np.zeros_like(field),
+            where=denominator > 0,
+        )
+        field += relaxation * correction
+    return field
+
+
+def cressman_grid(points, values, x_coordinates, y_coordinates, radii,
+                  background=None):
+    """Iterative Cressman objective analysis on a regular rectilinear grid.
+
+    At each pass, observation residuals are formed against bilinear
+    interpolation of the current grid. Grid-node corrections use
+    w=(R²-d²)/(R²+d²) for d<R and zero otherwise. Radii are supplied in
+    strictly decreasing coarse-to-fine order. Coordinates must be planar
+    and share units. The default first guess is zero.
+    """
+    return _objective_analysis(
+        points, values, x_coordinates, y_coordinates, radii, background,
+        kernel="cressman",
+    )
+
+
+def barnes_grid(points, values, x_coordinates, y_coordinates, radii,
+                background=None, kappa=1.0, gamma=1.0):
+    """Iterative Barnes objective analysis using Gaussian correction weights.
+
+    Each pass weights residuals by exp(-d²/(kappa*R²)); gamma in (0,1]
+    relaxes each correction. Supply strictly decreasing radii. A scalar
+    gamma is reused for every pass or a sequence supplies one value per
+    radius. This is a transparent educational Barnes-style successive
+    correction scheme; parameter conventions differ among operational
+    implementations, so kappa, gamma and radii must be reported.
+    """
+    return _objective_analysis(
+        points, values, x_coordinates, y_coordinates, radii, background,
+        kernel="barnes", kappa=kappa, gamma=gamma,
+    )
