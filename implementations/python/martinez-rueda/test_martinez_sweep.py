@@ -409,3 +409,17 @@ def test_split_parameters_are_exact_fractions():
     assert len(fragments)==3
     assert all(isinstance(f.t0,Fraction) and isinstance(f.t1,Fraction)
                for f in fragments)
+
+
+def test_side_probes_do_not_jump_across_faces_narrower_than_epsilon():
+    # The clip is a 1e-12-wide rectangle: much narrower than the default
+    # 1e-10 epsilon. Exact clearance-bounded probes must preserve it.
+    subject=[(0,0),(2,0),(2,2),(0,2)]
+    clip=[(2,0),(2+1e-12,0),(2+1e-12,2),(2,2)]
+    union=boolean_overlay_rings([[subject],[clip]],operation="union")
+    intersection=boolean_overlay_rings([[subject],[clip]],operation="intersection")
+    difference=boolean_overlay_rings([[subject],[clip]],operation="difference")
+    assert union["area"] == pytest.approx(4.0+2e-12,abs=1e-14)
+    assert len(union["rings"]) == 1
+    assert intersection["area"] == pytest.approx(0.0,abs=1e-14)
+    assert difference["area"] == pytest.approx(4.0,abs=1e-14)
