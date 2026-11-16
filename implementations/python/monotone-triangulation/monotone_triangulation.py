@@ -178,3 +178,167 @@ def triangle_area(triangle: Triangle) -> Fraction:
 
 def polygon_area(vertices: Iterable[Sequence[float | int]]) -> Fraction:
     return abs(_area2(_clean(vertices))) / 2
+
+
+def _edge_x(ring: Sequence[Point], edge: tuple[int, int], y: Fraction) -> Fraction:
+    a, b = ring[edge[0]], ring[edge[1]]
+    if a[1] == b[1]:
+        raise ValueError("Horizontal edges are unsupported by the strict-y sweep.")
+    return a[0] + (y - a[1]) * (b[0] - a[0]) / (b[1] - a[1])
+
+
+def _diagonal_is_valid(ring: Sequence[Point], i: int, j: int) -> bool:
+    n = len(ring)
+    if i == j or (i - j) % n in (1, n - 1):
+        return False
+    a, b = ring[i], ring[j]
+    for k in range(n):
+        l = (k + 1) % n
+        if k in (i, j) or l in (i, j):
+            continue
+        if _intersects(a, b, ring[k], ring[l]):
+            return False
+    midpoint = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
+    return _inside_ring(ring, midpoint)
+
+
+def _inside_ring(ring: Sequence[Point], point: Point) -> bool:
+    x, y = point
+    inside = False
+    for i, a in enumerate(ring):
+        b = ring[(i + 1) % len(ring)]
+        if _on_segment(a, b, point):
+            return True
+        if (a[1] > y) != (b[1] > y):
+            crossing_x = a[0] + (y - a[1]) * (b[0] - a[0]) / (b[1] - a[1])
+            if crossing_x > x:
+                inside = not inside
+    return inside
+
+
+def partition_y_monotone(vertices: Iterable[Sequence[float | int]]) -> list[list[Point]]:
+    """Partition a simple polygon into strictly y-monotone pieces.
+
+    Uses the standard start/end/split/merge/regular vertex sweep. Input vertices
+    must have distinct y-coordinates (so horizontal edges and event ties are
+    excluded). The sweep status is a simple Python list: this transparent
+    reference implementation is O(n^2) in the worst case, not the O(n log n)
+    bound of a balanced-tree implementation. Predicates are exact Fractions.
+    """
+    ring = _clean(vertices)
+    n = len(ring)
+    ys = [p[1] for p in ring]
+    if len(set(ys)) != n:
+        raise ValueError("The partition sweep requires distinct vertex y-coordinates.")
+    previous = [(i - 1) % n for i in range(n)]
+    following = [(i + 1) % n for i in range(n)]
+    events = sorted(range(n), key=lambda i: (-ring[i][1], ring[i][0]))
+    status: list[tuple[int, int]] = []
+    helper: dict[tuple[int, int], int] = {}
+    diagonals: list[tuple[int, int]] = []
+
+    def is_convex(v: int) -> bool:
+        return orient(ring[previous[v]], ring[v], ring[following[v]]) > 0
+
+    def add_diagonal(a: int, b: int) -> None:
+        if a == b or (a - b) % n in (1, n - 1):
+            return
+        pair = (min(a, b), max(a, b))
+        if pair not in diagonals:
+            if not _diagonal_is_valid(ring, a, b):
+                raise RuntimeError(f"Sweep proposed an invalid diagonal: {a}-{b}.")
+            diagonals.append(pair)
+
+    def left_edge(v: int) -> tuple[int, int]:
+        vx, vy = ring[v]
+        candidates = [( _edge_x(ring, edge, vy), edge) for edge in status
+                      if _edge_x(ring, edge, vy) < vx]
+        if not candidates:
+            raise RuntimeError(f"No status edge lies left of sweep vertex {v}.")
+        return max(candidates, key=lambda item: item[0])[1]
+
+    for v in events:
+        p, q = previous[v], following[v]
+        p_above, q_above = ring[p][1] > ring[v][1], ring[q][1] > ring[v][1]
+        p_below, q_below = ring[p][1] < ring[v][1], ring[q][1] < ring[v][1]
+        convex = is_convex(v)
+
+        if p_below and q_below:  # start or split
+            if convex:
+                edge = (v, q)
+                status.append(edge)
+                helper[edge] = v
+            else:
+                edge = left_edge(v)
+                add_diagonal(v, helper[edge])
+                helper[edge] = v
+                new_edge = (v, q)
+                status.append(new_edge)
+                helper[new_edge] = v
+
+        elif p_above and q_above:  # end or merge
+            upper_edge = (p, v)
+            if upper_edge not in status:
+                raise RuntimeError("Sweep status lost an incoming polygon edge.")
+            if helper.get(upper_edge) is not None and not is_convex(helper[upper_edge]):
+                add_diagonal(v, helper[upper_edge])
+            status.remove(upper_edge)
+            helper.pop(upper_edge, None)
+            if not convex:
+                edge = left_edge(v)
+                if not is_convex(helper[edge]):
+                    add_diagonal(v, helper[edge])
+                helper[edge] = v
+
+        else:  # regular vertex
+            if p_above and q_below:  # polygon interior lies to the right
+                upper_edge = (p, v)
+                if upper_edge not in status:
+                    raise RuntimeError("Sweep status lost an incoming regular edge.")
+                if not is_convex(helper[upper_edge]):
+                    add_diagonal(v, helper[upper_edge])
+                status.remove(upper_edge)
+                helper.pop(upper_edge, None)
+                lower_edge = (v, q)
+                status.append(lower_edge)
+                helper[lower_edge] = v
+            else:
+                edge = left_edge(v)
+                if not is_convex(helper[edge]):
+                    add_diagonal(v, helper[edge])
+                helper[edge] = v
+
+    pieces: list[list[int]] = [list(range(n))]
+    for i, j in diagonals:
+        for piece_index, piece in enumerate(pieces):
+            if i in piece and j in piece:
+                a, b = piece.index(i), piece.index(j)
+                if a > b:
+                    a, b = b, a
+                first = piece[a:b + 1]
+                second = piece[b:] + piece[:a + 1]
+                if len(first) < 3 or len(second) < 3:
+                    raise RuntimeError("A partition diagonal produced a degenerate piece.")
+                pieces[piece_index:piece_index + 1] = [first, second]
+                break
+        else:
+            raise RuntimeError("Partition diagonals do not form a valid non-crossing split.")
+
+    result = [[ring[i] for i in piece] for piece in pieces]
+    for piece in result:
+        _monotone_chains(piece)
+    if len(result) != len(diagonals) + 1:
+        raise RuntimeError("Partition did not produce one additional piece per diagonal.")
+    return result
+
+
+def triangulate_general(vertices: Iterable[Sequence[float | int]]) -> list[Triangle]:
+    """Triangulate a simple strict-y polygon by monotone partition + stack scan."""
+    pieces = partition_y_monotone(vertices)
+    triangles = [triangle for piece in pieces for triangle in triangulate(piece)]
+    ring = _clean(vertices)
+    if len(triangles) != len(ring) - 2:
+        raise RuntimeError("Partition triangulation did not produce n-2 triangles.")
+    if sum((abs(orient(*t)) for t in triangles), Fraction(0)) != abs(_area2(ring)):
+        raise RuntimeError("Partition triangulation failed exact area conservation.")
+    return triangles
