@@ -671,6 +671,9 @@ jobs:
           - example: spectral-similarity
             directory: implementations/python/spectral-similarity
             pythonpath: ""
+          - example: ppi-endmembers
+            directory: implementations/python/ppi-endmembers
+            pythonpath: ""
           - example: vca-endmembers
             directory: implementations/python/vca-endmembers
             pythonpath: ""
