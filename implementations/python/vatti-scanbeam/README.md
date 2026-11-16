@@ -54,3 +54,30 @@ intersection-list algorithm. Coincident input boundaries, horizontal-boundary
 state transitions, robust touch-point policies and an optimized neighbour
 event queue remain open. The algorithm has not been certified against an
 independent geometry kernel yet.
+
+
+## Degeneracy handling and event scheduling
+
+The sweep now groups coincident active bounds by exact rational slope and
+intercept. Each bundle retains all source edges and sums subject and clip
+winding deltas independently. This handles identical boundaries, opposite
+edge directions, and shared vertical segments without processing duplicate
+crossing events.
+
+Crossings are scheduled from adjacent bundles in a rational event heap.
+When several edges meet at one point, the entire incident block is reordered
+together by slope, then only newly adjacent pairs are scheduled. This replaces
+the previous all-pairs crossing scan in the Boolean sweep. The older
+`crossings_in_band()` and `sweep_active_edge_slices()` remain available as
+transparent reference utilities and regression comparators.
+
+Horizontal-boundary contacts are carried into the cell arrangement as exact
+noding points. The filled state on either side of a scanbeam level is still
+derived from the non-horizontal bound bundles; horizontal edges define and
+node the level boundary rather than incrementing the open-band winding count.
+This distinction is important at shared horizontal edges and vertex contacts.
+
+The test matrix now includes coincident rings, opposite direction copies,
+full and partial shared boundaries, vertex-only contact, multiway crossing
+events, and a Shapely differential oracle for all four Boolean operations.
+Shapely is used only as an independent test oracle, not by the implementation.
