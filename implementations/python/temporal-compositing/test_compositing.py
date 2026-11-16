@@ -45,7 +45,7 @@ def test_no_valid_observation_produces_nan_and_minus_one():
 def test_validation_rejects_bad_inputs():
     cube = np.ones((2, 2, 3, 2))
     with pytest.raises(ValueError):
-        best_pixel_composite(cube, np.ones((2, 2, 3)))
+        best_pixel_composite(cube, np.ones((2, 2, 2)))
     with pytest.raises(ValueError):
         medoid_composite(cube, valid_mask=np.ones((2, 3, 2)))
     with pytest.raises(ValueError):

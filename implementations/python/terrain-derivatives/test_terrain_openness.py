@@ -40,4 +40,4 @@ def test_nodata_or_boundary_rays_are_masked():
 ])
 def test_invalid_parameters(kwargs):
     with pytest.raises(ValueError):
-        terrain_openness(np.zeros((9, 9)), max_distance=2, **kwargs)
+        terrain_openness(np.zeros((9, 9)), **({"max_distance": 2} | kwargs))

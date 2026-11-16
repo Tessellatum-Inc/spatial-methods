@@ -31,7 +31,7 @@ def rusle_ls_factor(slope_degrees, slope_length, *, m=None):
     l_factor = (length / 22.13) ** exponent
     percent_slope = np.tan(np.radians(slope)) * 100.0
     s_factor = np.where(percent_slope < 9.0, 10.8 * sin_slope + 0.03, 16.8 * sin_slope - 0.50)
-    s_factor = np.maximum(s_factor, 0.0)
+    s_factor = np.where(slope == 0.0, 0.0, np.maximum(s_factor, 0.0))
     return l_factor * s_factor
 
 

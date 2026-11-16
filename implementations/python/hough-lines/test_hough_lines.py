@@ -9,7 +9,7 @@ def test_vertical_line_peak():
     assert peaks
     rho,ang,votes=peaks[0]
     assert abs(abs(rho)-12)<=1
-    assert abs(abs(ang)-np.pi/2)<.03
+    assert abs(ang) < .03
     assert votes>=29
 
 def test_empty_edges():

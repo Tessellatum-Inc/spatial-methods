@@ -68,7 +68,7 @@ def test_dean_profile_and_integral_match_analytic_values():
     from coastal_processes import dean_equilibrium_profile, dean_profile_volume
     x = np.array([0., 1., 8., 27.])
     np.testing.assert_allclose(dean_equilibrium_profile(x, .5), .5*x**(2/3))
-    assert dean_profile_volume(.5, 0, 8) == pytest.approx(4.8)
+    assert dean_profile_volume(.5, 0, 8) == pytest.approx(9.6)
     assert dean_profile_volume(.5, 3, 3) == pytest.approx(0)
 
 
@@ -116,7 +116,7 @@ def test_multibeam_grid_validation():
 def test_six_variable_coastal_vulnerability_index():
     from coastal_processes import coastal_vulnerability_index
     assert coastal_vulnerability_index([1, 1, 1, 1, 1, 1]) == pytest.approx(1)
-    assert coastal_vulnerability_index([5, 5, 5, 5, 5, 5]) == pytest.approx(25)
+    assert coastal_vulnerability_index([5, 5, 5, 5, 5, 5]) == pytest.approx(125)
     got = coastal_vulnerability_index([[1, 1, 1, 1, 1, 1], [2, 2, 2, 2, 2, 2]])
     np.testing.assert_allclose(got, [1, 8])
 

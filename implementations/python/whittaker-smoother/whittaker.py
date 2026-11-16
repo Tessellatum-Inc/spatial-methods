@@ -26,8 +26,8 @@ def whittaker_smooth(values, lam=10.0, order=2, weights=None):
     observed = np.isfinite(y)
     w = w.copy()
     w[~observed] = 0.0
-    if not np.any(w > 0):
-        raise ValueError("at least one observation must have positive weight")
+    if np.count_nonzero(w > 0) < order:
+        raise ValueError("at least order positive-weight observations are required to identify the smoothing null space")
     safe_y = np.where(observed, y, 0.0)
     if lam == 0:
         if np.any(w == 0):

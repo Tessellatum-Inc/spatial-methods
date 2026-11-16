@@ -25,13 +25,29 @@ def radon_transform(image, theta=None, rho_resolution=1.0, circle=False):
     diag=np.hypot(h-1,w-1)/2
     limit=diag if not circle else min(cx,cy)
     rho=np.arange(-limit,limit+rho_resolution*.5,rho_resolution)
-    t=np.arange(-diag,diag+1,1.0)
     sino=np.zeros((rho.size,angles.size),dtype=float)
     for j,deg in enumerate(angles):
         rad=np.deg2rad(deg); co=np.cos(rad); si=np.sin(rad)
         for i,r in enumerate(rho):
-            # A point on the line plus its unit direction vector.
-            x=cx+r*co-t*si; y=cy+r*si+t*co
-            vals=map_coordinates(work,[y,x],order=1,mode="constant",cval=0.0,prefilter=False)
-            sino[i,j]=vals.sum()
+            x0, y0 = cx+r*co, cy+r*si
+            vx, vy = -si, co
+            lower, upper = -np.inf, np.inf
+            for origin, direction, maximum in ((x0, vx, w-1), (y0, vy, h-1)):
+                if abs(direction) < 1e-14:
+                    if origin < 0 or origin > maximum:
+                        lower, upper = 1.0, 0.0
+                        break
+                else:
+                    a0, a1 = (0.0-origin)/direction, (maximum-origin)/direction
+                    lower = max(lower, min(a0, a1))
+                    upper = min(upper, max(a0, a1))
+            if lower > upper:
+                continue
+            # Sample supported integer-spaced positions along the line. This
+            # preserves the expected nine-pixel centre chord on a 9x9 image.
+            t = np.arange(np.ceil(lower-1e-12), np.floor(upper+1e-12)+1.0)
+            if t.size:
+                x, y = x0+t*vx, y0+t*vy
+                vals=map_coordinates(work,[y,x],order=1,mode="constant",cval=0.0,prefilter=False)
+                sino[i,j]=vals.sum()
     return sino,rho,angles

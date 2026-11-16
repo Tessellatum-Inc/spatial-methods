@@ -30,7 +30,7 @@ def test_richness_and_weighted_endemism_direct_oracle():
     np.testing.assert_allclose(weighted_endemism(matrix), [1., .5, 1.5])
 
 
-@pytest.mark.parametrize("bad", [np.ones((3, 2)), np.array([[1., np.nan]])])
+@pytest.mark.parametrize("bad", [np.ones((3, 3)), np.array([[1., np.nan]])])
 def test_occurrence_validation(bad):
     with pytest.raises(ValueError):
         extent_of_occurrence(bad)

@@ -72,7 +72,7 @@ def ir_mad(reference, target, *, valid_mask=None, max_iterations=50,
     x = ref.reshape(-1, ref.shape[-1])[valid.ravel()]
     y = tgt.reshape(-1, tgt.shape[-1])[valid.ravel()]
     components = min(x.shape[1], y.shape[1])
-    if x.shape[0] <= max(x.shape[1], y.shape[1], 2):
+    if x.shape[0] <= max(x.shape[1], y.shape[1], 2) + 1:
         raise ValueError("too few valid pixels for the requested band dimensions")
 
     weights = np.ones(x.shape[0], dtype=float)

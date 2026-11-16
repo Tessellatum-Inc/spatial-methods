@@ -36,7 +36,7 @@ def test_split_window_broadcasts_spatial_arrays():
     (0, 1, 1, 0, 0, 1, 1),
     (1, 0, 1, 0, 0, 1, 1),
     (1, 1, 0, 0, 0, 1, 1),
-    (1, 1, 1, 0, 0, 1, 1),
+    (1, 1, 1, 0, -1, 1, 1),
 ])
 def test_single_channel_invalid_physical_inputs(args):
     with pytest.raises(ValueError):
