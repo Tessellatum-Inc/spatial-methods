@@ -1,1 +1,0 @@
-# Quad-edge verification\n\nImplemented: four-dart rotation cycle; origin-ring initialization; primal/dual/symmetry navigation; splice; connect; delete; structural validation.\n\nTests authored for edge initialization, splice involution, connect and deletion. Not executed in this environment.

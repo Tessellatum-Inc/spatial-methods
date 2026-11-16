@@ -59,7 +59,7 @@
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Entropy measures: Shannon, Renyi, Tsallis, sample entropy, permutation entropy, spatial entropy variants | Information-theoretic measures | 42 | Partially implemented: Shannon, Renyi, Tsallis, categorical raster, permutation and sample entropy are tested; directed-edge spatial conditional entropy and mutual information are tested; transfer entropy and spatial information-flow variants remain open |
-| Dynamics: recurrence plots and recurrence quantification analysis, Lyapunov exponents | Nonlinear time-series analysis methods | 42 | Partially implemented: fixed-threshold recurrence plots and RR, DET, diagonal/vertical line statistics, divergence and entropy are implemented with tests; Lyapunov exponents and multivariate/continuous-time variants remain open |
+| Dynamics: recurrence plots and recurrence quantification analysis, Lyapunov exponents | Nonlinear time-series analysis methods | 42 | [Recurrence analysis package](../../implementations/python/recurrence-analysis/README.md) implements fixed-threshold recurrence plots, RR, DET, diagonal/vertical line statistics, divergence, entropy and a Rosenstein largest-Lyapunov-exponent estimator with tests; multivariate/continuous-time variants remain open |
 | Causality: Granger causality, transfer entropy, convergent cross mapping, causal networks from gridded fields (PCMCI-style), teleconnection graphs | Causal and information-flow methods | 42 | Not checked — intake only |
 
 ## Phylogeography and survey sampling

@@ -1,2 +1,0 @@
-# Standard library implementation; pytest is required to run the package test suite.
-pytest>=7.0

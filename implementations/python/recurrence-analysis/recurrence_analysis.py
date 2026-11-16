@@ -97,3 +97,57 @@ def recurrence_quantification(series, *, threshold, dimension=1, delay=1,
         "eligible_pairs": eligible_pairs,
         "recurrence_matrix": r,
     }
+
+
+def largest_lyapunov_rosenstein(series, *, dimension=3, delay=1, theiler=10,
+                                max_horizon=20, fit_range=(1, 6), sampling_interval=1.0):
+    """Estimate the largest Lyapunov exponent with the Rosenstein method.
+
+    Nearest neighbours are selected in delay-coordinate space while excluding
+    temporally adjacent points within theiler samples. Their trajectories are
+    followed for max_horizon steps; the slope of mean log separation over the
+    half-open fit_range is the exponent per unit time.
+    """
+    if not isinstance(theiler,int) or theiler<0:
+        raise ValueError("theiler must be a non-negative integer")
+    if not isinstance(max_horizon,int) or max_horizon<2:
+        raise ValueError("max_horizon must be an integer >= 2")
+    if not math.isfinite(sampling_interval) or sampling_interval<=0:
+        raise ValueError("sampling_interval must be finite and positive")
+    if len(fit_range)!=2 or not all(isinstance(v,int) for v in fit_range):
+        raise ValueError("fit_range must be a pair of integer indices")
+    fit_start,fit_stop=fit_range
+    if fit_start<0 or fit_stop>max_horizon or fit_stop-fit_start<2:
+        raise ValueError("fit_range must select at least two points within the divergence curve")
+    points=_embedded(series,dimension,delay)
+    usable=len(points)-max_horizon
+    if usable<2:
+        raise ValueError("series is too short for max_horizon")
+    initial=np.linalg.norm(points[:usable,None,:]-points[None,:usable,:],axis=2)
+    np.fill_diagonal(initial,np.inf)
+    rows,cols=np.indices(initial.shape)
+    initial[np.abs(rows-cols)<=theiler]=np.inf
+    neighbours=np.argmin(initial,axis=1)
+    distances=initial[np.arange(usable),neighbours]
+    valid=np.isfinite(distances)&(distances>0)
+    anchors=np.flatnonzero(valid)
+    neighbours=neighbours[valid]
+    if anchors.size<2:
+        raise ValueError("fewer than two valid temporally separated nearest-neighbour pairs")
+    curve=np.full(max_horizon+1,np.nan,dtype=float)
+    counts=np.zeros(max_horizon+1,dtype=int)
+    for step in range(max_horizon+1):
+        separation=np.linalg.norm(points[anchors+step]-points[neighbours+step],axis=1)
+        positive=separation>0
+        if np.any(positive):
+            curve[step]=float(np.mean(np.log(separation[positive])))
+            counts[step]=int(np.count_nonzero(positive))
+    selected=np.arange(fit_start,fit_stop)
+    finite=np.isfinite(curve[selected])
+    if np.count_nonzero(finite)<2:
+        raise ValueError("fit range has fewer than two finite mean log-divergence values")
+    slope,intercept=np.polyfit(selected[finite]*sampling_interval,curve[selected][finite],1)
+    return {"exponent":float(slope),"intercept":float(intercept),
+            "divergence_curve":curve,"pair_counts":counts,
+            "anchor_indices":anchors,"neighbor_indices":neighbours,
+            "fit_range":fit_range,"sampling_interval":float(sampling_interval)}

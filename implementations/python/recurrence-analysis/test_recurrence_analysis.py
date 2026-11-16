@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from recurrence_analysis import recurrence_plot,recurrence_quantification
+from recurrence_analysis import (largest_lyapunov_rosenstein, recurrence_plot, recurrence_quantification)
 
 
 def test_recurrence_plot_exact_small_example():
@@ -41,3 +41,21 @@ def test_invalid_inputs():
     with pytest.raises(ValueError): recurrence_plot([1,2],threshold=1,dimension=3)
     with pytest.raises(ValueError): recurrence_quantification([1,2,3],threshold=1,theiler=-1)
     with pytest.raises(ValueError): recurrence_quantification([1,2,3],threshold=1,min_diagonal=1)
+
+
+def test_rosenstein_largest_lyapunov_on_logistic_map():
+    x=np.empty(5000,dtype=float)
+    x[0]=0.213
+    for i in range(1,len(x)):
+        x[i]=4*x[i-1]*(1-x[i-1])
+    result=largest_lyapunov_rosenstein(x,dimension=3,delay=1,theiler=10,
+                                       max_horizon=12,fit_range=(1,6))
+    assert 0.35<result["exponent"]<1.1
+    assert result["anchor_indices"].size>100
+    assert result["pair_counts"][1:6].min()>0
+
+
+def test_rosenstein_rejects_invalid_fit_and_short_series():
+    with pytest.raises(ValueError): largest_lyapunov_rosenstein([1,2,3],max_horizon=20)
+    with pytest.raises(ValueError): largest_lyapunov_rosenstein(np.arange(100.),fit_range=(4,4))
+    with pytest.raises(ValueError): largest_lyapunov_rosenstein(np.arange(100.),sampling_interval=0)
