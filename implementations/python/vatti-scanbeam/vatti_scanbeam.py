@@ -307,3 +307,43 @@ def horizontal_events_at(
         event.other_edge_id, event.other_kind
     ))
     return tuple(events)
+
+
+def is_filled(winding: int, fill_rule: str = "non_zero") -> bool:
+    """Evaluate one contour-set winding count under a Clipper-style fill rule."""
+    rules = {
+        "even_odd": lambda value: abs(value) % 2 == 1,
+        "non_zero": lambda value: value != 0,
+        "positive": lambda value: value > 0,
+        "negative": lambda value: value < 0,
+    }
+    try:
+        predicate = rules[fill_rule]
+    except KeyError as exc:
+        raise ValueError(f"unsupported fill rule: {fill_rule}") from exc
+    return predicate(int(winding))
+
+
+def boolean_result(
+    subject_winding: int,
+    clip_winding: int,
+    operation: str,
+    fill_rule: str = "non_zero",
+) -> bool:
+    """Evaluate a Boolean operation from subject and clip winding counts.
+
+    This is the point-classification truth table only; it does not build a
+    planar arrangement or derive winding counts from polygon edges.
+    """
+    subject = is_filled(subject_winding, fill_rule)
+    clip = is_filled(clip_winding, fill_rule)
+    operations = {
+        "intersection": subject and clip,
+        "union": subject or clip,
+        "difference": subject and not clip,
+        "xor": subject != clip,
+    }
+    try:
+        return operations[operation]
+    except KeyError as exc:
+        raise ValueError(f"unsupported Boolean operation: {operation}") from exc
