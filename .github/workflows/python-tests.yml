@@ -789,9 +789,6 @@ jobs:
           - example: statistical-downscaling
             directory: implementations/python/statistical-downscaling
             pythonpath: ""
-          - example: spatial-microsimulation
-            directory: implementations/python/spatial-microsimulation
-            pythonpath: ""
 
     steps:
       - name: Check out repository
