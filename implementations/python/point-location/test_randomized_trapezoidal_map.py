@@ -176,3 +176,66 @@ def test_corridor_cells_have_reciprocal_neighbor_links():
     for corridor in locator.insertion_corridors:
         for left, right in zip(corridor, corridor[1:]):
             assert right.id in left.right_neighbors
+
+
+def _trapezoid_area(locator, cell):
+    xmin, ymin, xmax, ymax = locator.bounds
+    def height(x):
+        bottom = ymin if cell.bottom_segment is None else (
+            locator.segments[cell.bottom_segment][0][1]
+            + (x-locator.segments[cell.bottom_segment][0][0])
+            * (locator.segments[cell.bottom_segment][1][1]
+               - locator.segments[cell.bottom_segment][0][1])
+            / (locator.segments[cell.bottom_segment][1][0]
+               - locator.segments[cell.bottom_segment][0][0])
+        )
+        top = ymax if cell.top_segment is None else (
+            locator.segments[cell.top_segment][0][1]
+            + (x-locator.segments[cell.top_segment][0][0])
+            * (locator.segments[cell.top_segment][1][1]
+               - locator.segments[cell.top_segment][0][1])
+            / (locator.segments[cell.top_segment][1][0]
+               - locator.segments[cell.top_segment][0][0])
+        )
+        return top-bottom
+    return (cell.x_right-cell.x_left) * (
+        height(cell.x_left)+height(cell.x_right)
+    ) / 2
+
+
+def test_persistent_corridor_replacements_preserve_full_domain_and_reciprocity():
+    locator = RandomizedTrapezoidalMap(segments(), (0, 0, 10, 10), seed=19)
+    assert len(locator.insertion_replacements) == len(segments())
+    assert len(locator.replacement_graph_snapshots) == len(segments())
+    for replacement, snapshot in zip(
+        locator.insertion_replacements, locator.replacement_graph_snapshots
+    ):
+        by_id = {cell.id: cell for cell in snapshot}
+        assert not (set(replacement.removed_cell_ids) & set(by_id))
+        assert set(cell.id for cell in replacement.added_cells) <= set(by_id)
+        assert all(cell.x_left < cell.x_right for cell in snapshot)
+        for cell in snapshot:
+            for neighbor_id in cell.right_neighbors:
+                assert cell.id in by_id[neighbor_id].left_neighbors
+            for neighbor_id in cell.left_neighbors:
+                assert cell.id in by_id[neighbor_id].right_neighbors
+        assert sum(_trapezoid_area(locator, cell) for cell in snapshot) == pytest.approx(100.0)
+
+
+def test_endpoint_cells_keep_uncrossed_caps_in_replacement_record():
+    locator = RandomizedTrapezoidalMap(segments(), (0, 0, 10, 10), seed=19)
+    for sid, corridor, replacement in zip(
+        locator.insertion_order, locator.insertion_corridors,
+        locator.insertion_replacements
+    ):
+        x0, x1 = locator.segments[sid][0][0], locator.segments[sid][1][0]
+        caps = [
+            cell for cell in replacement.added_cells
+            if (cell.top_segment, cell.bottom_segment) == (
+                corridor[0].top_segment, corridor[0].bottom_segment
+            ) or (cell.top_segment, cell.bottom_segment) == (
+                corridor[-1].top_segment, corridor[-1].bottom_segment
+            )
+        ]
+        assert any(cell.x_right == x0 for cell in caps) or corridor[0].x_left == x0
+        assert any(cell.x_left == x1 for cell in caps) or corridor[-1].x_right == x1
