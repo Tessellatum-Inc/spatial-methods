@@ -47,7 +47,7 @@ The source groups raster operations, terrain analysis, hydrological modelling, g
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Chi analysis, slope-area analysis, knickpoint detection, drainage basin morphometry | Geomorphic analysis methods / morphometric measures | 7 | Not checked — intake only |
+| Chi analysis, slope-area analysis, knickpoint detection, drainage basin morphometry | Geomorphic analysis methods / morphometric measures | 7 | Partially implemented: channel chi integration, log slope-area OLS and moving-window chord-residual knickpoint screening have tested reference methods; drainage-basin morphometry and automated channel extraction/segmentation remain open |
 | Landslide susceptibility (frequency ratio, logistic regression), SHALSTAB, weights of evidence | Susceptibility models / statistical methods | 7 | Not checked — intake only |
 | Glacier mass balance, snow models, avalanche runout | Cryosphere models / hazard modelling | 7 | Not checked — intake only |
 | Erosion: USLE, RUSLE, hydraulic and thermal erosion simulation | Empirical models / physical simulation | 7 | Not checked — intake only |
@@ -93,3 +93,6 @@ The flood-frequency source entry now includes annual-maximum Weibull plotting po
 
 
 Terrain openness now has a separate radial-sampling implementation for positive and negative horizon openness. It reports both angular measures, masks unsupported/NoData rays and exposes search distance, azimuth count and sample spacing. It is a scoped approximation and does not claim equivalence to geomorphon openness or red-relief image maps.
+
+
+The channel-morphometry source entry now includes a tested chi-coordinate integrator, a log slope-area regression and a signed moving-window chord-residual knickpoint screen. These are profile-level methods that consume ordered channel samples and supplied drainage areas; basin morphometry, channel extraction, tributary-aware segmentation and geological interpretation remain open.
