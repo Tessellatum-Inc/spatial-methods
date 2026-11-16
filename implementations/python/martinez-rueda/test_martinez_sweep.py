@@ -20,7 +20,9 @@ def test_concave_ring_multiple_crossings():
 
 def test_shared_endpoint_is_not_proper_crossing():
     a=[(0,0),(2,0),(2,2),(0,2)]; b=[(2,2),(4,2),(4,4),(2,4)]
-    assert not sweep_split_segments([[a],[b]])["intersection_events"]
+    result=sweep_split_segments([[a],[b]])
+    assert not result["intersection_events"]
+    assert any(event.kind=="contact" for event in result["node_events"])
 
 def test_collinear_overlap_is_split_at_both_bundle_endpoints():
     a=[(0,0),(2,0),(2,2),(0,2)]
@@ -477,3 +479,12 @@ def test_near_miss_smaller_than_epsilon_is_not_a_false_intersection():
     overlay=boolean_overlay_rings([[a],[b]],operation="union",epsilon=1e-10)
     assert overlay["area"] == pytest.approx(8.0,abs=1e-14)
     assert len(overlay["rings"]) == 2
+
+
+def test_collinear_bundle_endpoints_are_coalesced_into_node_events():
+    a=[(0,0),(2,0),(2,2),(0,2)]
+    b=[(1,0),(3,0),(3,2),(1,2)]
+    result=sweep_split_segments([[a],[b]])
+    contacts=[event for event in result["node_events"] if event.kind=="contact"]
+    assert len(contacts)==4
+    assert all(len(event.segment_ids)==2 for event in contacts)
