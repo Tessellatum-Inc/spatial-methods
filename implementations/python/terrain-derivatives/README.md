@@ -111,3 +111,8 @@ The companion `flood_frequency.py` module provides Weibull plotting positions fo
 ## Positive and negative terrain openness
 
 The `terrain_openness` helper returns positive and negative radial horizon-openness angles in degrees. Both approach 90° on a flat surface; enclosing ridges reduce positive openness and enclosing valley walls reduce negative openness. It uses bilinear radial samples, explicit maximum distance, azimuth count and sample spacing. Incomplete edge rays and NoData intersections are masked. This is a documented radial approximation, not the exact geomorphon method or a sky-view-factor calculation. See [the canonical lesson](../../../algorithms/raster/terrain-openness.md) and `test_terrain_openness.py`.
+
+
+## Channel chi, slope-area and knickpoint screening
+
+The `channel_morphometry.py` module adds trapezoidal channel chi integration from supplied drainage area, an OLS log slope-area relationship, and a moving-window chord-residual knickpoint screen. These operate on a single ordered channel profile and do not extract channels or infer geomorphic causes. See [the canonical lesson](../../../algorithms/raster/channel-morphometry.md) and `test_channel_morphometry.py`.
