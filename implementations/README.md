@@ -227,3 +227,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Spatial microsimulation
 
 - [Iterative proportional fitting](python/spatial-microsimulation/README.md): row/column raking with structural-zero preservation, convergence diagnostics, tests and an [implementation walkthrough](python/spatial-microsimulation/implementation-walkthrough.md).
+
+
+### Time-series analysis
+
+- [HANTS harmonic time-series fitting](python/hants-time-series/README.md): Fourier fitting with iterative low/high residual rejection and missing-value reconstruction, with tests and an [implementation walkthrough](python/hants-time-series/implementation-walkthrough.md).

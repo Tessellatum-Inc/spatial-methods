@@ -782,3 +782,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Preserve structural zeros, reject unsupported positive margins and report convergence diagnostics.
 - [x] Add known-margin, structural-zero, zero-margin, nonconvergence and invalid-input tests; register in Python CI.
 - [ ] Add integerisation/simulated annealing, areal interpolation and full synthetic-population validation as separate work packages.
+
+
+## HANTS time-series baseline — 17 November 2026
+
+- [x] Add Fourier harmonic fitting with iterative one-at-a-time residual rejection.
+- [x] Support low/high/both rejection, NaN missing values, irregular time coordinates and explicit convergence reporting.
+- [x] Add synthetic periodic-signal, outlier, missingness, irregular-time and invalid-input tests; register in Python CI.
+- [ ] Validate against an independently sourced HANTS reference implementation and add sensor-specific quality-mask workflows.

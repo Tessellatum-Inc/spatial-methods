@@ -395,3 +395,6 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [Iterative proportional fitting](statistics/iterative-proportional-fitting.md) — raking of nonnegative tables to supplied row and column margins.
+
+
+- [HANTS harmonic time-series fitting](statistics/hants.md) — iterative Fourier fitting with directional residual rejection and gap reconstruction.

@@ -789,6 +789,9 @@ jobs:
           - example: statistical-downscaling
             directory: implementations/python/statistical-downscaling
             pythonpath: ""
+          - example: hants-time-series
+            directory: implementations/python/hants-time-series
+            pythonpath: ""
 
     steps:
       - name: Check out repository
