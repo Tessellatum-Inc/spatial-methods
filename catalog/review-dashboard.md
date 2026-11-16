@@ -8,9 +8,9 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 
 | Measure | Entries | Meaning |
 |---|---:|---|
-| Source-entry rows counted | 695 | Rows with a source-entry review status in the section indexes |
-| Partial | 161 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 534 | The source wording is preserved, but no independent review is recorded |
+| Source-entry rows counted | 696 | Rows with a source-entry review status in the section indexes |
+| Partial | 163 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 533 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -20,7 +20,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | Section | Source entries | Partial | Intake only |
 |---:|---:|---:|---:|
 | 1 — Core GIS | 33 | 26 | 7 |
-| 2 — Spatial statistics | 27 | 13 | 14 |
+| 2 — Spatial statistics | 28 | 14 | 14 |
 | 3 — Geostatistics | 26 | 3 | 23 |
 | 4 — Raster, terrain and hydrology | 27 | 20 | 7 |
 | 5 — Remote sensing | 36 | 15 | 21 |
@@ -34,16 +34,16 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 13 — GeoFM workflows, urban mobility and LLMs | 29 | 0 | 29 |
 | 14 — Databases, graphics, morphology and hazards | 33 | 1 | 32 |
 | 15 — Vision, registration and vector extraction | 33 | 3 | 30 |
-| 16 — Flows, regions, deformation and marine | 25 | 6 | 19 |
+| 16 — Flows, regions, deformation and marine | 25 | 7 | 18 |
 | 17 — Geometry, scalability, design and siting | 27 | 8 | 19 |
 | 18 — Moving objects, routing, transit and water | 32 | 4 | 28 |
 | 19 — African applications, addressing and finance | 32 | 0 | 32 |
 | 20 — Indices, microwave, events and information | 25 | 8 | 17 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 3 | 23 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 6 | 22 |
-| **Total** | **695** | **161** | **534** |
+| **Total** | **696** | **163** | **533** |
 
-The 17 November recount finds **161 partial**, **534 intake-only** and **zero fully verified** source-entry rows across **695 rows**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Some section indexes have changed row counts since the prior snapshot, so the table below supersedes all historical totals in the reconciliation notes.
+The 17 November recount finds **163 partial**, **533 intake-only** and **zero fully verified** source-entry rows across **696 rows**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Some section indexes have changed row counts since the prior snapshot, so the table below supersedes all historical totals in the reconciliation notes.
 
 ## How to interpret this
 
@@ -128,4 +128,7 @@ The community-detection source row now links to a seeded multilevel weighted Lou
 Section 15 now has a generalized ICP implementation alongside point-to-point and point-to-plane ICP. It remains partial because NDT, colored ICP, FPFH/RANSAC, TEASER++ and learned registration are not represented by this addition. Section 16 now has additive-tolerance least-cost raster corridors and a climate-velocity package covering Mahalanobis analog ranking and gradient-derived isocline displacement. These are bounded numerical methods, not complete operational climate-refugia or corridor-planning systems. The current row recount is 695 source entries: 160 partial, 535 intake-only and zero fully verified. Independent bibliographic, technical-claim, rights and full-source-row review remains required.
 
 
-A Mogi point-source elastic half-space displacement implementation has since moved one Section 16 source row from intake-only to partial. The source-entry total remains 695; the current review-label totals are 161 partial and 534 intake-only.
+A Mogi point-source elastic half-space displacement implementation has since moved one Section 16 source row from intake-only to partial. The source-entry total remains 696; the current review-label totals are 163 partial and 533 intake-only.
+
+
+The Section 2 source-entry recount also identifies an implementation-linked Ripley's K/L entry whose status description is more detailed than the standard “Partial” label. It is counted as partial rather than intake-only. Section 16's intervening-opportunities entry is now also implementation-linked. The current row totals are 696 source entries, 163 partial and 533 intake-only.
