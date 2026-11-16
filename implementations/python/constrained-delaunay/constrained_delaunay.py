@@ -4,8 +4,9 @@ from collections import defaultdict
 from fractions import Fraction
 from math import isfinite
 from typing import Iterable, Sequence
-from ear_clipping import (Triangle, _clean_ring, orient,
-                          triangulate as ear_triangulate)
+from ear_clipping import (Triangle, _clean_ring, _on_segment,
+                          _segments_intersect, _signed_area2, _validate_simple,
+                          orient, triangulate as ear_triangulate)
 Point = tuple[Fraction, Fraction]
 Edge = tuple[Point, Point]
 
