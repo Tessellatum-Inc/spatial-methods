@@ -23,5 +23,5 @@ simple-polygon sweep that classifies start, end, split, merge and regular
 vertices, maintains helper edges, and inserts partition diagonals. Its current
 status structure is a Python list, so the implementation is O(n^2) worst case;
 a balanced search tree is needed for the textbook O(n log n) bound. It requires
-distinct vertex heights and does not yet handle holes or horizontal event ties.
+distinct vertex heights, rejects consecutive collinear event triples, and does not yet handle holes or horizontal event ties.
 `triangulate_general` composes this partition with the stack triangulator.
