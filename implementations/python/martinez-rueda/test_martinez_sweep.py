@@ -451,3 +451,29 @@ def test_overlay_preserves_large_integer_coordinate_precision():
     assert len(result["rings"]) == 1
     assert all(isinstance(value,Fraction)
                for ring in result["rings"] for point in ring for value in point)
+
+
+def test_exact_overlap_smaller_than_epsilon_is_not_discarded():
+    from fractions import Fraction
+    a=[(0,0),(2,0),(2,2),(0,2)]
+    b=[(2-1e-12,0),(4,0),(4,2),(2-1e-12,2)]
+    result=sweep_split_segments([[a],[b]],epsilon=1e-10)
+    assert len(result["intersection_events"]) == 0
+    shared_bottom=[
+        f for f in result["split_segments"]
+        if f.source==0 and f.index==0
+    ]
+    assert len(shared_bottom)==2
+    assert shared_bottom[0].b[0] == Fraction(str(2-1e-12))
+    assert shared_bottom[1].a[0] == Fraction(2)
+
+
+def test_near_miss_smaller_than_epsilon_is_not_a_false_intersection():
+    a=[(0,0),(2,0),(2,2),(0,2)]
+    b=[(2+1e-12,0),(4,0),(4,2),(2+1e-12,2)]
+    result=sweep_split_segments([[a],[b]],epsilon=1e-10)
+    assert result["intersection_events"] == ()
+    assert len(result["split_segments"]) == 8
+    overlay=boolean_overlay_rings([[a],[b]],operation="union",epsilon=1e-10)
+    assert overlay["area"] == pytest.approx(8.0,abs=1e-14)
+    assert len(overlay["rings"]) == 2
