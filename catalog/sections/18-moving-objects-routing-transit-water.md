@@ -36,7 +36,7 @@
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Photogrammetric flight design: ground sample distance, forward and side overlap, corridor mapping, terrain-following flight | Survey mission design / photogrammetric planning | 38 | Not checked — intake only |
+| Photogrammetric flight design: ground sample distance, forward and side overlap, corridor mapping, terrain-following flight | Survey mission design / photogrammetric planning | 38 | Partially implemented: nadir GSD, camera footprint and forward/side overlap spacing have tested calculation baselines; corridor planning, terrain following and camera geometry corrections remain outstanding |
 | Coverage path planning with camera footprints, multi-UAV swarm coverage, battery-aware routing | Coverage path planning / multi-agent routing and scheduling | 38 | Not checked — intake only |
 
 ## Surface water, altimetry and river remote sensing
