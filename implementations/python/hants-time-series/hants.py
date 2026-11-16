@@ -67,6 +67,13 @@ def hants(values, *, period, harmonics=2, times=None, direction="low",
         _, worst = max(candidates)
         valid[worst] = False
         rejected.append(worst)
+    # Ensure returned fitted values and residuals correspond to the final
+    # retained set, including when the iteration limit was reached.
+    coefficients, _, rank, _ = np.linalg.lstsq(design[valid], y[valid], rcond=None)
+    if rank != p:
+        raise ValueError("final retained harmonic design matrix is rank deficient")
+    fitted = design @ coefficients
+    residuals = np.where(np.isfinite(y), y - fitted, np.nan)
     return {
         "fitted": fitted.tolist(), "residuals": residuals.tolist(),
         "coefficients": coefficients.tolist(), "valid_indices": np.flatnonzero(valid).tolist(),
