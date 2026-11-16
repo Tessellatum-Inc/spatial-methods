@@ -92,24 +92,68 @@ def convex_decompose(vertices: Iterable[RawPoint]) -> list[list[Point]]:
     """
     ring = list(vertices)
     triangles = triangulate(ring)
-    pieces: list[list[Point]] = [list(t) for t in triangles]
+    # Maintain piece adjacency by undirected edge. The former implementation
+    # rescanned every pair after every successful merge. This worklist only
+    # revisits pairs that share an edge with a newly-created piece.
+    from collections import deque
 
-    changed = True
-    while changed:
-        changed = False
-        for i in range(len(pieces)):
-            if changed:
-                break
-            for j in range(i + 1, len(pieces)):
-                merged = _merge_if_convex(pieces[i], pieces[j])
-                if merged is not None:
-                    pieces[i] = merged
-                    pieces.pop(j)
-                    changed = True
-                    break
+    pieces: dict[int, list[Point]] = {i: list(t) for i, t in enumerate(triangles)}
+    next_id = len(pieces)
+    edge_owners: dict[tuple[Point, Point], set[int]] = {}
+    queue: deque[tuple[int, int]] = deque()
+    queued: set[tuple[int, int]] = set()
 
+    def edge_key(a: Point, b: Point) -> tuple[Point, Point]:
+        return (a, b) if a < b else (b, a)
+
+    def enqueue_pair(a: int, b: int) -> None:
+        pair = (a, b) if a < b else (b, a)
+        if pair not in queued:
+            queued.add(pair)
+            queue.append(pair)
+
+    for pid, piece in pieces.items():
+        for a, b in zip(piece, piece[1:] + piece[:1]):
+            key = edge_key(a, b)
+            owners = edge_owners.setdefault(key, set())
+            for other in owners:
+                enqueue_pair(pid, other)
+            owners.add(pid)
+
+    while queue:
+        a_id, b_id = queue.popleft()
+        if a_id not in pieces or b_id not in pieces:
+            continue
+        merged = _merge_if_convex(pieces[a_id], pieces[b_id])
+        if merged is None:
+            continue
+
+        # Remove both old pieces from the edge index before inserting their
+        # replacement. Empty owner sets are discarded to keep the index small.
+        for pid in (a_id, b_id):
+            piece = pieces[pid]
+            for a, b in zip(piece, piece[1:] + piece[:1]):
+                key = edge_key(a, b)
+                owners = edge_owners.get(key)
+                if owners is not None:
+                    owners.discard(pid)
+                    if not owners:
+                        del edge_owners[key]
+            del pieces[pid]
+
+        merged_id = next_id
+        next_id += 1
+        pieces[merged_id] = merged
+        for a, b in zip(merged, merged[1:] + merged[:1]):
+            key = edge_key(a, b)
+            owners = edge_owners.setdefault(key, set())
+            for other in owners:
+                enqueue_pair(merged_id, other)
+            owners.add(merged_id)
+
+    result = list(pieces.values())
     expected_area = polygon_area(ring)
-    actual_area = sum((abs(_area2(piece)) / 2 for piece in pieces), Fraction(0))
+    actual_area = sum((abs(_area2(piece)) / 2 for piece in result), Fraction(0))
     if actual_area != expected_area:
         raise RuntimeError("convex partition failed area conservation")
-    return pieces
+    return result
