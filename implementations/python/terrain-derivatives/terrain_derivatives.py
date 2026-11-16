@@ -125,3 +125,70 @@ def terrain_curvature(elevation: Sequence[Sequence[float]] | np.ndarray, *, cell
     profile[target] = profile_inner
     plan[target] = plan_inner
     return {"profile_curvature": profile, "plan_curvature": plan}
+
+
+def multiscale_terrain_curvature(
+    elevation: Sequence[Sequence[float]] | np.ndarray,
+    scales: Sequence[float],
+    *,
+    cell_size_x: float = 1.0,
+    cell_size_y: float = 1.0,
+    z_factor: float = 1.0,
+) -> dict[float, dict[str, np.ndarray]]:
+    """Return Gaussian-scale profile and plan curvature for each map-unit scale.
+
+    Each scale is the standard deviation of an isotropic Gaussian in
+    horizontal map units. The Gaussian is evaluated separably on the raster;
+    derivatives are then estimated by the existing 3x3 central-difference
+    curvature operator. Reflective padding avoids introducing an artificial
+    zero-elevation frame, while the curvature operator still marks its
+    one-cell border as NoData. This reference implementation requires a
+    fully finite DEM; fill or mask voids explicitly before filtering.
+
+    Results are keyed by the exact requested scale. Curvature has inverse
+    horizontal-unit units. This is scale-space curvature, not a geomorphon
+    classifier or a substitute for terrain-specific boundary conditions.
+    """
+    dem = np.asarray(elevation, dtype=float)
+    if dem.ndim != 2 or dem.size == 0:
+        raise ValueError("elevation must be a non-empty 2D array")
+    if min(dem.shape) < 3:
+        raise ValueError("elevation must be at least 3 by 3")
+    if not np.all(np.isfinite(dem)):
+        raise ValueError("multiscale curvature requires a fully finite DEM")
+    try:
+        dx, dy, vertical = float(cell_size_x), float(cell_size_y), float(z_factor)
+    except (TypeError, ValueError):
+        raise ValueError("cell sizes and z_factor must be finite and positive") from None
+    if not np.all(np.isfinite([dx, dy, vertical])) or min(dx, dy, vertical) <= 0:
+        raise ValueError("cell sizes and z_factor must be finite and positive")
+    scale_values = np.asarray(scales, dtype=float)
+    if scale_values.ndim != 1 or scale_values.size == 0:
+        raise ValueError("scales must be a non-empty one-dimensional sequence")
+    if not np.all(np.isfinite(scale_values)) or np.any(scale_values <= 0):
+        raise ValueError("scales must be finite and positive")
+    if len(np.unique(scale_values)) != len(scale_values):
+        raise ValueError("scales must be unique")
+
+    def smooth_axis(array, sigma_pixels, axis):
+        if sigma_pixels <= 1e-12:
+            return array.copy()
+        radius = max(1, int(np.ceil(3.0 * sigma_pixels)))
+        offsets = np.arange(-radius, radius + 1, dtype=float)
+        kernel = np.exp(-0.5 * (offsets / sigma_pixels) ** 2)
+        kernel /= kernel.sum()
+        moved = np.moveaxis(array, axis, -1)
+        padded = np.pad(moved, [(0, 0)] * (moved.ndim - 1) + [(radius, radius)], mode="reflect")
+        filtered = np.zeros_like(moved, dtype=float)
+        for weight, offset in zip(kernel, range(2 * radius + 1)):
+            filtered += weight * padded[..., offset:offset + moved.shape[-1]]
+        return np.moveaxis(filtered, -1, axis)
+
+    output = {}
+    for scale in scale_values:
+        smoothed = smooth_axis(dem, float(scale / dy), axis=0)
+        smoothed = smooth_axis(smoothed, float(scale / dx), axis=1)
+        output[float(scale)] = terrain_curvature(
+            smoothed, cell_size_x=dx, cell_size_y=dy, z_factor=vertical
+        )
+    return output
