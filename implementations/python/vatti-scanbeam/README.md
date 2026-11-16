@@ -18,8 +18,10 @@ production sweep scheduler: crossing discovery remains O(m²), and winding
 transitions are not yet derived from a complete arrangement. Fill-rule
 predicates (even-odd, non-zero, positive, negative) and Boolean point
 classification (intersection, union, difference, XOR) are now implemented as
-separate, testable truth-table helpers. They consume winding counts; they do
-not yet calculate those counts through the sweep.
+separate, testable truth-table helpers. They consume winding counts; the new `fill_transitions` helper now propagates
+separate subject and clip counts across a caller-supplied left-to-right active
+edge sequence and records when the selected Boolean result changes. It still
+does not schedule/reorder edges itself or assemble output contours.
 
 It does **not** yet update an active-edge list incrementally in-place, process
 horizontal edges through clipping, or emit output contours. It is therefore a tested algorithmic foundation, not a
