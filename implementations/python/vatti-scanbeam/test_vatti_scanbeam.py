@@ -129,8 +129,11 @@ def test_horizontal_events_find_interior_crossings():
     horizontal_rect = [(-1, 2), (5, 2), (5, 3), (-1, 3)]
     result = decompose_scanbeams([vertical_rect, horizontal_rect])
     events = horizontal_events_at(result, 2)
+    subject_bound_ids = {edge.edge_id for edge in result.bounds if edge.ring_id == 0}
     crossings = [event for event in events
-                 if event.other_kind == "bound" and event.horizontal_edge_id in {
+                 if event.other_kind == "bound"
+                 and event.other_edge_id in subject_bound_ids
+                 and event.horizontal_edge_id in {
                      edge.edge_id for edge in result.horizontals
                      if edge.ring_id == 1 and edge.a[1] == 2
                  }]
