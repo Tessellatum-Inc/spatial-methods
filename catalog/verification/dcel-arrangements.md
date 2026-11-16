@@ -13,7 +13,7 @@
 
 ## Tests authored
 
-Single polygon with exterior twin cycle; two adjacent faces sharing a boundary;
+Single polygon with exterior twin cycle; two adjacent faces sharing a boundary, including collinear outer boundary edges that meet at one shared noded endpoint;
 two disconnected components; malformed/open rings; duplicate same-direction
 boundaries; non-finite coordinates, un-noded crossings, T-junctions and partial collinear overlaps.
 
@@ -23,3 +23,8 @@ This is not yet a complete planar arrangement or Boolean overlay. It assumes
 noded input boundaries and does not split crossings, resolve collinear overlaps,
 infer shell/hole containment, or unify disconnected components of the unbounded
 face. Tests must be run in CI before this implementation is marked verified.
+
+
+## Latest correction awaiting CI
+
+The collinear-overlap guard now distinguishes a genuine positive-length overlap or endpoint-on-interior T-junction from two collinear edges that merely share one endpoint. The latter is valid noded topology. A regression test covers adjacent rectangular faces whose bottom boundary edges are collinear and meet at their common vertex. This correction is authored but not yet CI-verified.
