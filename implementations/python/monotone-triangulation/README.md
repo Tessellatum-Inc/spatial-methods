@@ -1,8 +1,9 @@
 # Y-monotone polygon triangulation
 
-A stack-based triangulator for a single strictly y-monotone simple polygon. It
-normalizes orientation, validates simplicity and monotonicity, uses exact
-rational orientation predicates, and returns counter-clockwise triangles.
+A two-stage triangulation toolkit: a general simple-polygon partition sweep
+followed by a stack-based triangulator for each strictly y-monotone piece. It
+normalizes orientation, validates simplicity, uses exact rational predicates,
+and returns counter-clockwise triangles.
 
 ## Scope
 
@@ -12,15 +13,21 @@ rational orientation predicates, and returns counter-clockwise triangles.
 - Accepts either input winding and removes a repeated closing vertex and
   consecutive duplicate vertices.
 - Rejects self-intersections and non-monotone rings.
-- Does not partition an arbitrary simple polygon into monotone pieces, support
-  holes, or perform constrained-Delaunay refinement.
+- `partition_y_monotone` implements start/end/split/merge/regular event handling
+  and returns a set of strictly y-monotone rings for a simple input polygon.
+- `triangulate_general` partitions first, then applies the stack triangulator.
+- The sweep status is intentionally a Python list in this reference version,
+  so partitioning is O(n^2) worst case; it is not the O(n log n) balanced-tree
+  implementation described in computational-geometry textbooks.
+- Horizontal edges, equal-height events, holes and self-intersecting inputs are
+  not supported. Constrained-Delaunay refinement is also out of scope.
 
-The stack method is O(n log n), dominated by sorting vertices; the stack scan
-and output are linear. Exact rational arithmetic can increase predicate cost.
+The stack method is O(n log n), dominated by sorting vertices; its stack scan
+is linear. Exact rational arithmetic can increase predicate cost.
 
 ## Verification
 
 Tests check triangle count, CCW orientation, exact area conservation, both
-windings, non-monotone rejection, tied-y rejection and self-intersection
-rejection. Area and count are necessary invariants, not a full proof of
-non-overlap; independent triangulation comparisons remain a follow-up.
+windings, non-monotone rejection, tied-y rejection, self-intersection rejection
+and a concave U-shaped polygon requiring multiple monotone pieces. Independent
+triangulation comparisons and edge-incidence/overlap checks remain follow-ups.
