@@ -206,9 +206,8 @@ def _validate_polygon_rings(rings,eps):
                 s1=Segment(0,i,k,a[k],a[(k+1)%len(a)])
                 for m in range(len(b)):
                     s2=Segment(1,j,m,b[m],b[(m+1)%len(b)])
-                    try: hit=_intersection(s1,s2,eps)
-                    except NotImplementedError: raise ValueError('rings in one polygon may not share collinear boundary segments')
-                    if hit is not None: raise ValueError('shell and hole boundaries must not touch or cross')
+                    if _intersection_all(s1,s2,eps):
+                        raise ValueError('shell and hole boundaries must not touch or cross')
             if i>0 and (_inside(a[0],b) or _inside(b[0],a)):
                 raise ValueError('holes must be disjoint and non-nested')
     return rings
