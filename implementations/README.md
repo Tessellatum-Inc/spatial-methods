@@ -232,3 +232,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Time-series analysis
 
 - [HANTS harmonic time-series fitting](python/hants-time-series/README.md): Fourier fitting with iterative low/high residual rejection and missing-value reconstruction, with tests and an [implementation walkthrough](python/hants-time-series/implementation-walkthrough.md).
+
+
+### Matrix completion
+
+- [Soft-Impute matrix completion](python/matrix-completion/README.md): dense low-rank SVD thresholding with observed-cell clamping, rank control, tests and an [implementation walkthrough](python/matrix-completion/implementation-walkthrough.md).

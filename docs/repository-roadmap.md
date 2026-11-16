@@ -790,3 +790,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Support low/high/both rejection, NaN missing values, irregular time coordinates and explicit convergence reporting.
 - [x] Add synthetic periodic-signal, outlier, missingness, irregular-time and invalid-input tests; register in Python CI.
 - [ ] Validate against an independently sourced HANTS reference implementation and add sensor-specific quality-mask workflows.
+
+
+## Soft-Impute matrix completion — 17 November 2026
+
+- [x] Implement dense low-rank completion with nuclear-norm singular-value thresholding and optional rank cap.
+- [x] Clamp observed values exactly, handle all-observed matrices, and report convergence diagnostics.
+- [x] Add synthetic low-rank, observed-cell preservation, rank-cap and invalid-input tests; register in Python CI.
+- [ ] Add tensor completion, spatial regularization, uncertainty and scalable sparse solvers as separate methods.

@@ -398,3 +398,6 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [HANTS harmonic time-series fitting](statistics/hants.md) — iterative Fourier fitting with directional residual rejection and gap reconstruction.
+
+
+- [Soft-Impute matrix completion](statistics/soft-impute-matrix-completion.md) — low-rank matrix completion by iterative singular-value thresholding.

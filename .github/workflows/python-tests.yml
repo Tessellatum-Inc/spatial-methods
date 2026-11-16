@@ -792,6 +792,9 @@ jobs:
           - example: hants-time-series
             directory: implementations/python/hants-time-series
             pythonpath: ""
+          - example: matrix-completion
+            directory: implementations/python/matrix-completion
+            pythonpath: ""
 
     steps:
       - name: Check out repository
