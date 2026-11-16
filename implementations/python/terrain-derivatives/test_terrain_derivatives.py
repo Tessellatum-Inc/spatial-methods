@@ -328,3 +328,47 @@ def test_cut_fill_rejects_shape_and_mask_mismatch():
         cut_fill_volume(np.ones((2, 2)), np.zeros((3, 3)))
     with pytest.raises(ValueError, match="valid_mask"):
         cut_fill_volume(np.ones((2, 2)), np.zeros((2, 2)), valid_mask=np.ones((3, 3)))
+
+
+def test_multiscale_curvature_is_zero_for_a_planar_surface_at_all_scales():
+    from terrain_derivatives import multiscale_terrain_curvature
+    dem = np.fromfunction(lambda r, c: 2.0*c - 3.0*r + 7.0, (21, 23), dtype=float)
+    result = multiscale_terrain_curvature(dem, [1.0, 2.5, 5.0])
+    assert set(result) == {1.0, 2.5, 5.0}
+    for scale_result in result.values():
+        np.testing.assert_allclose(scale_result["profile_curvature"][1:-1, 1:-1], 0, atol=1e-11)
+        np.testing.assert_allclose(scale_result["plan_curvature"][1:-1, 1:-1], 0, atol=1e-11)
+
+
+def test_multiscale_curvature_suppresses_short_wavelength_noise():
+    from terrain_derivatives import multiscale_terrain_curvature
+    rows, cols = np.indices((31, 31))
+    dem = 0.02 * cols**2 + 0.01 * rows**2 + 0.8 * ((rows + cols) % 2 * 2 - 1)
+    result = multiscale_terrain_curvature(dem, [0.5, 2.0, 4.0])
+    centre = (15, 15)
+    magnitudes = [abs(result[s]["profile_curvature"][centre]) for s in (0.5, 2.0, 4.0)]
+    assert magnitudes[2] < magnitudes[0]
+
+
+def test_multiscale_curvature_respects_rectangular_cell_spacing_and_nodata_contract():
+    from terrain_derivatives import multiscale_terrain_curvature
+    dem = np.fromfunction(lambda r, c: 0.1*c**2 + 0.2*r**2, (15, 17), dtype=float)
+    result = multiscale_terrain_curvature(dem, [2.0], cell_size_x=2.0, cell_size_y=3.0)
+    assert result[2.0]["profile_curvature"].shape == dem.shape
+    assert np.isnan(result[2.0]["profile_curvature"][0]).all()
+    dem[7, 7] = np.nan
+    with pytest.raises(ValueError, match="fully finite"):
+        multiscale_terrain_curvature(dem, [2.0])
+
+
+@pytest.mark.parametrize("scales", [[], [0], [-1], [1, 1], [float("nan")]])
+def test_multiscale_curvature_rejects_invalid_scales(scales):
+    from terrain_derivatives import multiscale_terrain_curvature
+    with pytest.raises(ValueError):
+        multiscale_terrain_curvature(np.ones((5, 5)), scales)
+
+
+def test_multiscale_curvature_rejects_invalid_spacing():
+    from terrain_derivatives import multiscale_terrain_curvature
+    with pytest.raises(ValueError):
+        multiscale_terrain_curvature(np.ones((5, 5)), [1.0], cell_size_x=0)
