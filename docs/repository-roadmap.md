@@ -547,8 +547,10 @@ The source-to-implementation ledger must track, per source entry and child metho
 - [x] Replace epsilon-quantized stitch vertex keys with exact decimal-rational coordinate keys, avoiding accidental merging of distinct nearby vertices.
 - [x] Add regression coverage for partial collinear overlap, identical/reversed coincident polygons and all four Boolean operations on polygons sharing an edge.
 - [ ] Run the Martinez–Rueda package suite and full repository CI on the resulting head; connector status lookup did not expose a run for these direct main-branch commits, so these changes are not yet marked CI-verified.
-- [ ] Extend the same regression matrix against an independent geometry engine and seeded multiway/touching fixtures.
+- [x] Add independent Shapely differential suites for seeded rectangle overlays in Martinez–Rueda and Vatti, plus concave disconnected and hole-aware Vatti cases; compare symmetric-difference geometry, not area alone.
+- [ ] Execute both differential suites and resolve any oracle mismatches on the exact head commit.
 - [ ] Implement the full neighbour-ordered event scheduler; the current y-interval treap remains a broad-phase candidate filter, not the Martinez–Rueda sweep status.
+- [ ] Complete Vatti multiway horizontal/boundary event semantics and differential coverage for the full source-listed fill-rule and contour lifecycle.
 - [ ] Resolve robust multiway vertex event grouping, near-coincident tolerance semantics and complete face-walk topology before claiming a general-purpose overlay kernel.
 
 The change is a meaningful extension, not completion of the polygon overlay work package. In particular, side-probe classification is exact for its chosen rational probe coordinates, but the finite probe offset still requires adversarial clearance tests; the implementation remains a staged teaching/native kernel with explicit limitations.
