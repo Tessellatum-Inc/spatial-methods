@@ -121,3 +121,8 @@ The `channel_morphometry.py` module adds trapezoidal channel chi integration fro
 ## USLE/RUSLE erosion factors
 
 The `erosion.py` module implements the USLE/RUSLE factor product A=R×K×LS×C×P and a conventional slope-length/steepness LS calculation from slope degrees and horizontal slope length. Factors broadcast across raster arrays and are validated as finite/non-negative. The LS formulation is an empirical baseline, not a flow-accumulation-aware method for convergent terrain. Regional calibration, sediment delivery and gully/channel erosion are outside scope. See [the canonical lesson](../../../algorithms/raster/usle-rusle-erosion.md) and `test_erosion.py`.
+
+
+## Groundwater and landslide susceptibility baselines
+
+The `susceptibility.py` module includes the conventional seven-layer weighted DRASTIC index, categorical frequency-ratio mapping and ridge-regularized binary logistic regression with probability prediction. These functions consume already prepared ratings, categories or feature matrices; they do not derive environmental classes, validate inventories or establish local hazard thresholds. Spatially blocked validation and independent field evidence are essential before interpretation. See [the canonical lesson](../../../algorithms/raster/susceptibility-indices.md) and `test_susceptibility.py`.
