@@ -59,8 +59,8 @@ This section groups applied methods across spatial interaction, functional regio
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| IUCN range metrics: extent of occurrence (convex hull, alpha hull), area of occupancy, range fragmentation indices | Range metrics / spatial biodiversity measures | 34 | Not checked — intake only |
-| Essential biodiversity variables, protected area gap analysis, key biodiversity area delineation, species richness and endemism indices (weighted endemism, phylogenetic diversity) | Biodiversity indicators / conservation planning and assessment | 34 | Not checked — intake only |
+| IUCN range metrics: extent of occurrence (convex hull, alpha hull), area of occupancy, range fragmentation indices | Range metrics / spatial biodiversity measures | 34 | Partial — planar convex-hull EOO and aligned-grid AOO are implemented; alpha hulls and range-fragmentation indices remain open |
+| Essential biodiversity variables, protected area gap analysis, key biodiversity area delineation, species richness and endemism indices (weighted endemism, phylogenetic diversity) | Biodiversity indicators / conservation planning and assessment | 34 | Partial — cellwise species richness and weighted endemism are implemented from binary presence matrices; phylogenetic diversity, essential-variable frameworks, protected-area gap analysis and KBA delineation remain open |
 | Wildlife crime and anti-poaching: green security games, learned patrol planning, risk maps from patrol data | Security games / patrol optimisation / risk mapping | 34 | Not checked — intake only |
 
 ## Climate analogs, velocity and refugia
@@ -115,3 +115,8 @@ A tested Mogi elastic half-space point-source model now returns east, north and 
 ### Intervening-opportunities implementation update
 
 The regional-dynamics package now includes a cumulative exponential intervening-opportunities allocation model. Destinations are ordered by generalized cost; tied-cost groups share the acceptance probability in proportion to their opportunity mass. The residual probability is returned as unallocated flow, preserving origin totals without forcing all trips to be assigned. The model is a transparent Stouffer-style baseline; competing-destinations formulations and spatial filtering of OD flows remain separate open methods.
+
+
+### Biodiversity range metrics implementation update
+
+A new `biodiversity-metrics` package provides planar convex-hull extent of occurrence, aligned-grid area of occupancy, cellwise species richness and inverse-range-size weighted endemism. Analytic geometry and direct matrix oracles cover the numerical kernels. These do not constitute a complete IUCN assessment: alpha hulls, range fragmentation, sampling-bias correction, phylogenetic diversity and key-biodiversity-area criteria remain outstanding.
