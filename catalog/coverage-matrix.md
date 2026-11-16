@@ -187,3 +187,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 5 relative radiometric normalization: added per-band empirical-quantile histogram matching and a robustly selected pseudo-invariant-feature affine normalization baseline, with synthetic affine-recovery tests, mask/NoData controls and explicit limitations. These are not IR-MAD and do not replace sensor calibration or atmospheric/BRDF correction.
+
+
+- Section 5 indices/transforms: added a sensor-coefficient-driven Tasseled Cap linear projection with explicit band/component matrix and optional per-band offset. Tests compare against a direct matrix-product oracle. Sensor-specific coefficient tables and calibration conventions must still be curated; this is not fitted PCA.

@@ -45,3 +45,27 @@ def transform_pca(data, model):
     if x.ndim != 2 or x.shape[1] != len(model["mean"]):
         raise ValueError("data band count does not match fitted PCA model")
     return ((x - model["mean"]) / model["scale"]) @ model["components"]
+
+
+def tasseled_cap_transform(data, coefficients, *, offset=None):
+    """Apply a sensor-specific Tasseled Cap linear transform.
+
+    Data is (samples, bands); coefficients are (bands, components), with
+    columns commonly representing brightness, greenness and wetness. Optional
+    offset is a per-band vector subtracted before projection. Coefficients
+    must be supplied for the sensor/product and reflectance convention in use;
+    no cross-sensor universal matrix is assumed.
+    """
+    x = np.asarray(data, dtype=float)
+    matrix = np.asarray(coefficients, dtype=float)
+    if x.ndim != 2 or x.shape[0] < 1 or x.shape[1] < 1 or not np.all(np.isfinite(x)):
+        raise ValueError("data must be a finite non-empty (samples, bands) matrix")
+    if matrix.ndim != 2 or matrix.shape[0] != x.shape[1] or matrix.shape[1] < 1 or not np.all(np.isfinite(matrix)):
+        raise ValueError("coefficients must be finite (bands, components) matching data bands")
+    if offset is None:
+        bias = np.zeros(x.shape[1])
+    else:
+        bias = np.asarray(offset, dtype=float)
+        if bias.shape != (x.shape[1],) or not np.all(np.isfinite(bias)):
+            raise ValueError("offset must be a finite vector with one value per band")
+    return (x - bias) @ matrix
