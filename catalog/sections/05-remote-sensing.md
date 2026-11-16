@@ -38,7 +38,7 @@ The canonical records now cover the spectral-index family, global Otsu threshold
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Pixel-based: maximum likelihood, SVM, random forest, XGBoost, LightGBM, stacked generalization, k-means, ISODATA | Classification models / ensemble methods / clustering | 8 | Not checked — intake only |
+| Pixel-based: [Gaussian maximum likelihood and k-means](../../algorithms/remote-sensing/classical-classification.md), SVM, random forest, XGBoost, LightGBM, stacked generalization, ISODATA | Classification models / ensemble methods / clustering | 8 | Partial — tested class-specific Gaussian maximum-likelihood classification and k-means++ clustering baselines are implemented; SVM/ensemble learners, ISODATA split-merge logic, spatial regularization, model selection and accuracy assessment remain open |
 | Segmentation: watershed, SLIC superpixels, mean shift, region growing, multiresolution segmentation, graph cuts, MRF and CRF, active contours, level sets | Segmentation algorithms / optimisation and probabilistic models | 8 | Not checked — intake only |
 | Object-based image analysis (OBIA) | Analysis workflow / method family | 8 | Not checked — intake only |
 | Time-series classification: TempCNN, Transformer, InceptionTime, TimeMatch, DTW, TWDTW | Time-series models / matching methods | 8 | Not checked — intake only |

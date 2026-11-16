@@ -692,6 +692,9 @@ jobs:
           - example: thermal-lst
             directory: implementations/python/thermal-lst
             pythonpath: ""
+          - example: remote-classification
+            directory: implementations/python/remote-classification
+            pythonpath: ""
           - example: temporal-compositing
             directory: implementations/python/temporal-compositing
             pythonpath: ""

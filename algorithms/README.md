@@ -344,4 +344,4 @@ Records may have different evidence and implementation status. Check the status 
 - [IR-MAD](remote-sensing/ir-mad.md) — weighted canonical correlation analysis for relative radiometric normalization and change screening.
 
 - [Tasseled Cap transform](remote-sensing/tasseled-cap.md) — apply caller-supplied sensor-specific brightness/greenness/wetness coefficient matrices to multispectral pixels.
-\n- [Thermal land-surface temperature](remote-sensing/thermal-land-surface-temperature.md) — invert Planck and single-channel radiative-transfer equations and apply a sensor-calibrated generalized split-window model.\n
+\n- [Thermal land-surface temperature](remote-sensing/thermal-land-surface-temperature.md) — invert Planck and single-channel radiative-transfer equations and apply a sensor-calibrated generalized split-window model.\n\n- [Classical multispectral classification](remote-sensing/classical-classification.md) — Gaussian maximum-likelihood pixel classification and k-means++ clustering baselines.\n
