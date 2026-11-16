@@ -182,3 +182,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Coastal optical retrieval
 
 - [Stumpf bathymetry and OC4v4 chlorophyll](python/coastal-optical-retrieval/README.md): calibrated empirical satellite-derived depth and SeaWiFS-specific chlorophyll-a reference methods.
+
+
+### DEM quality
+
+- [DEM void filling](python/dem-void-fill/README.md): iterative IDW gap filling with explicit masks, neighbourhood controls and map-unit pixel dimensions.
