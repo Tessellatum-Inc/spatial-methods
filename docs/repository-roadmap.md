@@ -611,3 +611,12 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [ ] Execute both new package suites and verify the complete repository Actions run on the resulting head. The commit-status lookup currently returns no status contexts, so these packages are integrated but not CI-verified.
 - [ ] Resolve the source's "coffee-house" sampling label from a precise definition before implementing it; implement flow-refueling location (FRLM) as a distinct range-feasibility model; derive charging demand from trajectories with an independently tested map-matching / route-aggregation contract.
 - [ ] Continue Section 17 with ball-pivoting surface reconstruction, remaining Voronoi/triangulation variants, approximate-nearest-neighbour structures and sparse/large-scale spatial-statistics methods.
+
+
+## Syndromic surveillance continuation — 17 November 2026
+
+- [x] Implement two-sided tabular CUSUM with explicit target, allowance and decision threshold.
+- [x] Implement EARS-style C1/C2/C3 count-series scores with lagged baseline windows, variance floor, missing warm-up scores and threshold flags.
+- [x] Add reference tests for hand-computed recursions, lagged baselines, rolling C3 aggregation, low-count variance handling and invalid input.
+- [x] Add method documentation and register the package in the Python CI matrix.
+- [ ] Run the package tests and verify the full repository workflow on the latest head. Farrington regression, seasonality adjustment, spatial/space-time scan and covariate/population-offset models remain distinct work.
