@@ -213,6 +213,9 @@ jobs:
           - example: optical-flow
             directory: implementations/python/optical-flow
             pythonpath: ""
+          - example: point-cloud-registration
+            directory: implementations/python/point-cloud-registration
+            pythonpath: ""
           - example: remote-sensing-change
             directory: implementations/python/remote-sensing-change
             pythonpath: ""
