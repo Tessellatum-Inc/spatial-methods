@@ -13,15 +13,20 @@ def test_diagonal_spd_logdet_matches_exact_result():
     assert np.all(result["lanczos_steps_used"] <= 5)
 
 
-def test_dense_non_diagonal_spd_matches_slogdet_at_full_krylov_depth():
+def test_dense_non_diagonal_spd_matches_exact_probe_quadratic_forms():
     rng = np.random.default_rng(8)
     matrix = rng.normal(size=(6, 6))
     matrix = matrix.T @ matrix + np.eye(6) * .5
-    sign, expected = np.linalg.slogdet(matrix)
     result = stochastic_lanczos_logdet(matrix, n_probes=3,
                                        lanczos_steps=6, random_state=12)
-    assert sign == 1
-    assert result["estimate"] == pytest.approx(expected, abs=1e-9)
+    eigenvalues, eigenvectors = np.linalg.eigh(matrix)
+    log_matrix = (eigenvectors * np.log(eigenvalues)) @ eigenvectors.T
+    probes = np.random.default_rng(12).choice([-1., 1.], size=(3, 6))
+    oracle = np.sum((probes @ log_matrix) * probes, axis=1)
+    # Full Krylov depth resolves each quadratic form; the finite-probe
+    # average remains a stochastic trace estimate, not exact log(det(A)).
+    np.testing.assert_allclose(result["probe_estimates"], oracle, atol=1e-9)
+    assert result["estimate"] == pytest.approx(oracle.mean(), abs=1e-9)
 
 
 def test_sparse_diagonal_matrix_matches_exact_logdet():
