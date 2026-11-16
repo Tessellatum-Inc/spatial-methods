@@ -62,7 +62,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Flow-capturing location model (FCLM), flow-refueling location model (FRLM), charging demand estimation from trajectories | Flow-based facility location / demand estimation | 36 | Partially implemented: exact small-instance and greedy cardinality-constrained FCLM solvers maximize unique captured path flow from caller-supplied path/site incidence; FRLM and trajectory-derived demand remain outstanding |
+| Flow-capturing location model (FCLM), flow-refueling location model (FRLM), charging demand estimation from trajectories | Flow-based facility location / demand estimation | 36 | Partially implemented: exact and greedy FCLM plus an exact small-instance FRLM range-feasibility solver are tested; trajectory-derived charging demand and scalable FRLM heuristics remain outstanding |
 | Charging coverage with queuing, grid-capacity-aware siting, hydrogen station siting, V2G scheduling | Infrastructure siting / queueing and energy scheduling | 36 | Not checked — intake only |
 
 ## Surveillance and anomaly detection
