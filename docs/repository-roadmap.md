@@ -418,7 +418,7 @@ A reference wrapper, teaching baseline, partial implementation and production-gr
 2. Native Fortune Voronoi sweep and native Bowyer–Watson/incremental Delaunay construction; the existing Voronoi/Delaunay material uses SciPy/Qhull and is a wrapper, not these native algorithms.
 3. Ruppert Delaunay refinement with encroachment handling, termination conditions and quality/size controls; the existing constrained-Delaunay package is not a refinement algorithm.
 4. Robust medial-axis construction and straight-skeleton wavefront/event processing; current material is explanatory/reference-level, not a complete event-driven implementation.
-5. Finish the Boolean-clipping implementations by their actual missing cases: Vatti local-minimum/scanbeam lifecycle and full horizontal/join rules; Martinez–Rueda neighbour-event scheduling and robust coincident/touch handling; broader independent differential tests for concave polygons, holes, self-intersections and multiway degeneracies.
+5. Finish the Boolean-clipping implementations by their actual missing cases: Vatti local-minimum/scanbeam lifecycle and full horizontal/join rules; Martinez–Rueda now splits positive-length collinear overlaps at both endpoints, classifies boundaries by exact side probes and deduplicates coincident output fragments, but still needs full neighbour-event scheduling, atomic multiway vertex/touch handling and a documented precision policy; broaden independent differential tests for concave polygons, holes, self-intersections and multiway degeneracies.
 6. Upgrade visibility polygons from perturbed-ray reference casting to a robust rotational sweep with explicit vertex/edge degeneracy handling.
 7. Complete scalable Delaunay-based proximity constructions and the researched O(n log n) Yao construction; current blocker scans and teaching variants remain limited.
 8. Continue arrangement construction/noding and topology-preserving simplification only where the source audit identifies a genuinely uncovered method or guarantee.
@@ -535,3 +535,20 @@ The source-to-implementation ledger must track, per source entry and child metho
 - Deliver the complete set of appropriate materials for every algorithm in the batch: implementation, tests, independent oracle/reference checks, documentation, examples/notebooks where useful, catalogue links, verification records and CI registration.
 - Run the relevant package suites and then full repository CI on the exact resulting head when practical. Report package tests and full CI separately.
 - Keep the compendium open until all 47 pages and 22 sections have been reconciled and every entry has an evidence-backed disposition. Patreon/membership work remains downstream of that gate.
+
+
+## Polygon overlay work-package log — 16 November 2026
+
+### Martinez–Rueda native overlay: coincident-edge increment
+
+- [x] Preserve exact-rational crossing predicates and add a multi-hit collinear intersection path that emits both endpoints of a positive-length overlap, so both source edges are split into matching atomic fragments.
+- [x] Replace midpoint-only boundary selection with exact rational left/right side probes. A fragment is retained only when the Boolean result changes across it, and it is directed with result interior on its left. This handles coincident edges without treating a boundary midpoint as simply outside.
+- [x] Deduplicate same-direction coincident output fragments before stitching.
+- [x] Replace epsilon-quantized stitch vertex keys with exact decimal-rational coordinate keys, avoiding accidental merging of distinct nearby vertices.
+- [x] Add regression coverage for partial collinear overlap, identical/reversed coincident polygons and all four Boolean operations on polygons sharing an edge.
+- [ ] Run the Martinez–Rueda package suite and full repository CI on the resulting head; connector status lookup did not expose a run for these direct main-branch commits, so these changes are not yet marked CI-verified.
+- [ ] Extend the same regression matrix against an independent geometry engine and seeded multiway/touching fixtures.
+- [ ] Implement the full neighbour-ordered event scheduler; the current y-interval treap remains a broad-phase candidate filter, not the Martinez–Rueda sweep status.
+- [ ] Resolve robust multiway vertex event grouping, near-coincident tolerance semantics and complete face-walk topology before claiming a general-purpose overlay kernel.
+
+The change is a meaningful extension, not completion of the polygon overlay work package. In particular, side-probe classification is exact for its chosen rational probe coordinates, but the finite probe offset still requires adversarial clearance tests; the implementation remains a staged teaching/native kernel with explicit limitations.
