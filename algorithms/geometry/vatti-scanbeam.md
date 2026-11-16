@@ -16,7 +16,9 @@ provides:
 - active-edge ordering at a scanbeam-band midpoint;
 - exact pairwise crossing events within a band;
 - band subdivision at crossing levels and active-edge reordering on either side;
-- cumulative signed winding transitions in left-to-right edge order.
+- cumulative signed winding transitions in left-to-right edge order;
+- horizontal/bound endpoint and interior intersection events;
+- horizontal/horizontal point contacts and positive-length overlaps, classified separately.
 
 The current crossing scheduler is an O(m²) reference calculation, not the
 optimized neighbour-event scheduler used by a full sweep-line clipper. This
