@@ -267,6 +267,9 @@ jobs:
           - example: flow-capturing-location
             directory: implementations/python/flow-capturing-location
             pythonpath: ""
+          - example: moving-object-prediction
+            directory: implementations/python/moving-object-prediction
+            pythonpath: ""
           - example: syndromic-surveillance
             directory: implementations/python/syndromic-surveillance
             pythonpath: ""
