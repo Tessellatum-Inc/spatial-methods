@@ -8,6 +8,11 @@ from shapely.ops import unary_union
 from vatti_scanbeam import clip_rings, decompose_scanbeams
 
 
+def _rect(x0, y0, x1, y1, *, ccw=True):
+    ring = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
+    return ring if ccw else list(reversed(ring))
+
+
 def _signed_area(ring):
     points = list(ring)
     if points and points[0] == points[-1]:
