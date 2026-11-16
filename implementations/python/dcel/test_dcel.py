@@ -23,6 +23,16 @@ def test_adjacent_faces_share_twins_and_have_consistent_cycles():
     assert d.halfedges[shared[0].twin].face=="west" or d.halfedges[shared[0].twin].face=="east"
     assert len(d.vertices)==6
     assert len(d.unbounded_cycles)==1
+    # The exterior cycle must consist only of exterior half-edges, even at
+    # vertices shared by multiple bounded faces.
+    start = d.unbounded_cycles[0]
+    cycle, current = [], start
+    while not cycle or current != start:
+        cycle.append(current)
+        edge = d.halfedges[current]
+        assert edge.face is None
+        current = edge.next
+    assert len(cycle) == 6
 
 def test_multiple_disconnected_faces_have_separate_exterior_components():
     d=DCEL.from_faces({"a":[rect(0,0,1,1)],"b":[rect(3,0,4,1)]})
