@@ -23,3 +23,10 @@ The initial triangulation uses the current ear-clipping package, whose transpare
 ## Merge-candidate maintenance
 
 The greedy merge stage now indexes piece ownership by undirected boundary edge and processes candidate pairs from a work queue. When two pieces merge, only the new piece's edge-neighbours are added to the queue; the implementation no longer rescans every pair of current pieces after every successful merge. This reduces unnecessary candidate comparisons on partitions with many triangles. It remains a greedy triangulate-and-merge teaching baseline, not the optimized Hertel–Mehlhorn algorithm and not a minimum-piece partition.
+
+
+## Hertel–Mehlhorn-style diagonal removal
+
+The module also exposes `hertel_mehlhorn_decompose(vertices)`. It starts from the same ear-clipping triangulation, freezes the initial internal-diagonal set, and considers each original diagonal once. A diagonal is removed only when its two current incident pieces have a convex union. This is a distinct single-pass variant from `convex_decompose`, whose work queue may revisit newly exposed adjacencies.
+
+This is an executable diagonal-removal baseline, not a certified reproduction of every implementation detail or complexity guarantee in the published Hertel–Mehlhorn algorithm. The repository's ear-clipping seed is O(n^3) in the worst case, and the current merge predicates are not the specialized linear-time post-processing implementation. No minimum-piece guarantee is claimed.
