@@ -51,5 +51,8 @@
 - Complete Vatti topological output policies for all coincident/touching configurations, including multiway horizontal/bound intersections.
 - Production-grade Vatti intersection-list scheduling and complete horizontal edge transition semantics.
 
-Shapely differential tests are optional locally when the dependency is absent; CI installs it through this package's requirements. Tests must run in CI before this component is marked
-verified.
+## CI result
+
+- GitHub Actions run [43793055809](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/43793055809), commit `8b493812c8b39a9e5167657ca94801a744f360e2`.
+- `Test vatti-scanbeam`: **64 passed** on Python 3.13 with Shapely 2.2.0.
+- The Vatti scanbeam package job completed successfully. The repository-wide workflow was still running when this ledger entry was prepared.
