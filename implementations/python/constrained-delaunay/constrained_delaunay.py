@@ -138,7 +138,10 @@ def constrained_delaunay_with_diagonals(
 
     # Reject chords that leave the polygon or touch/cross a non-incident boundary.
     boundary = list(zip(ring, ring[1:] + ring[:1]))
+    boundary_edges = {_edge(c, d) for c, d in boundary}
     for a, b in parsed:
+        if _edge(a, b) in boundary_edges:
+            continue
         for c, d in boundary:
             if c in (a, b) or d in (a, b):
                 continue
