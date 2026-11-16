@@ -16,3 +16,16 @@ already been aligned and resampled to the same grid. It does not implement
 IHS, Gram-Schmidt, wavelet, Bayesian, spatiotemporal or learned fusion, nor
 does it compensate for sensor point-spread functions or modulation transfer
 functions. See the Python reference package for code and tests.
+
+
+## IHS intensity substitution
+
+For three co-registered RGB bands, the IHS method converts each pixel to
+intensity, hue and saturation, replaces intensity with the panchromatic
+pixel, then converts back to RGB. The reference implementation uses a
+piecewise HSI inverse transform and preserves the validity mask.
+
+IHS is restricted here to three RGB bands in a common radiometric scale.
+It is not a general multispectral transform and does not compensate for
+sensor spectral-response mismatch. Brovey and IHS are alternative component-
+substitution baselines, not complete image-fusion solutions.

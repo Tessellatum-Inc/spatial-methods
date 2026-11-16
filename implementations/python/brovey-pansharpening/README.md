@@ -26,3 +26,13 @@ fusion. Validate spectral and spatial fidelity for the sensor/application.
 ## Tests
 
     python -m pytest -q
+
+
+## IHS intensity substitution
+
+The same module also provides an RGB intensity-hue-saturation (IHS) baseline.
+It converts each RGB pixel to HSI, substitutes the panchromatic value for
+intensity, and transforms back to RGB. The input bands and PAN must share a
+radiometric scale. This is a three-band RGB method, not a general multispectral
+Gram-Schmidt transform. Hue/saturation preservation is approximate in
+practice because sensor responses and PAN spectral coverage differ.

@@ -66,3 +66,31 @@ def test_nonfinite_pixels_are_treated_as_missing(missing):
     result = brovey_pansharpen([[[1, missing]], [[2, 3]]], [[4, 4]])
     assert result["valid_mask"] == [[True, False]]
     assert result["bands"][0][0][1] is None
+
+
+def test_ihs_replaces_intensity_with_pan_for_grey_pixel():
+    from brovey import ihs_pansharpen
+    result = ihs_pansharpen([[0.2]], [[0.2]], [[0.2]], [[0.6]])
+    values = [band[0][0] for band in result["bands"]]
+    assert values == pytest.approx([0.6, 0.6, 0.6])
+    assert result["valid_mask"] == [[True]]
+
+def test_ihs_output_intensity_matches_pan_for_chromatic_pixel():
+    from brovey import ihs_pansharpen
+    result = ihs_pansharpen([[0.8]], [[0.4]], [[0.2]], [[0.6]])
+    values = [band[0][0] for band in result["bands"]]
+    assert sum(values) / 3 == pytest.approx(0.6)
+    assert min(values) >= 0
+
+def test_ihs_preserves_valid_pixel_mask_and_propagates_nodata():
+    from brovey import ihs_pansharpen
+    result = ihs_pansharpen([[0.8, -9999]], [[0.4, 0.3]], [[0.2, 0.1]], [[0.6, 0.5]], nodata=-9999)
+    assert result["valid_mask"] == [[True, False]]
+    assert all(band[0][1] is None for band in result["bands"])
+
+def test_ihs_rejects_shape_mismatch_and_invalid_values():
+    from brovey import ihs_pansharpen
+    with pytest.raises(ValueError):
+        ihs_pansharpen([[1]], [[1, 2]], [[1]], [[1]])
+    with pytest.raises(ValueError):
+        ihs_pansharpen([[-1]], [[1]], [[1]], [[1]])

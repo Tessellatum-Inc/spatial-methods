@@ -701,3 +701,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Implement bracketed-bisection inversion for normal depth, with explicit geometry, roughness, slope and convergence validation.
 - [x] Add hand-calculated formula tests, inversion tests and invalid-input tests; document SI assumptions and uniform-flow limits; register in Python CI.
 - [ ] Execute full CI and validate against measured channel data. Gradually varied/backwater profiles, unsteady Saint-Venant and 2D shallow-water solvers remain open.
+
+
+## IHS pan-sharpening continuation — 17 November 2026
+
+- [x] Add RGB-to-HSI and HSI-to-RGB intensity substitution using a co-registered panchromatic grid.
+- [x] Add tests for grey/chromatic pixels, PAN intensity substitution, NoData propagation and invalid dimensions/values.
+- [x] Extend the Brovey fusion documentation and source-entry status; reuse the existing CI package registration.
+- [ ] Execute full CI and evaluate spectral distortion/quality against sensor-specific reference products. Gram-Schmidt, wavelet, Bayesian, spatiotemporal and learned fusion remain open.
