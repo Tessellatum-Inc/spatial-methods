@@ -89,3 +89,26 @@ def test_crossing_scheduler_ignores_parallel_edges():
     first = BoundEdge(0, 0, 0, (0, 0), (2, 4), 1)
     second = BoundEdge(1, 0, 1, (1, 0), (3, 4), 1)
     assert crossings_in_band([first, second], 0, 4) == ()
+
+
+def test_active_edges_swap_order_across_crossing_event():
+    from vatti_scanbeam import active_edges_for_band, sweep_active_edge_slices
+    bow_tie = [(0, 0), (4, 4), (0, 4), (4, 0)]
+    decomposition = decompose_scanbeams([bow_tie])
+    active = active_edges_for_band(decomposition, 0, 4)
+    slices = sweep_active_edge_slices(active, 0, 4)
+    assert len(slices) == 2
+    assert (slices[0].lower_y, slices[0].upper_y) == (0, 2)
+    assert (slices[1].lower_y, slices[1].upper_y) == (2, 4)
+    assert [e.edge_id for e in slices[0].edges] == [0, 2]
+    assert [e.edge_id for e in slices[1].edges] == [2, 0]
+
+
+def test_winding_states_are_cumulative_in_active_edge_order():
+    from vatti_scanbeam import BoundEdge, winding_states
+    edges = [
+        BoundEdge(0, 0, 0, (0, 0), (1, 2), 1),
+        BoundEdge(1, 1, 0, (2, 0), (3, 2), -1),
+        BoundEdge(2, 2, 0, (4, 0), (5, 2), 1),
+    ]
+    assert winding_states(edges) == ((1,), (0,), (1,))
