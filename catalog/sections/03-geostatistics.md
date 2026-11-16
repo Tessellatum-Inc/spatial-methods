@@ -12,7 +12,7 @@ This section combines surface estimation, stochastic spatial models, simulation,
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Deterministic: [IDW](../../algorithms/interpolation/inverse-distance-weighting.md), natural neighbor, spline, thin plate spline, RBF, Shepard, Cressman, Barnes, trend surface, TIN, Whittaker smoother | Interpolation methods / surface models | 4 | Partial — related record exists; source-entry review pending |
+| Deterministic: [IDW](../../algorithms/interpolation/inverse-distance-weighting.md), natural neighbor, spline, thin plate spline, RBF, Shepard, [Cressman objective analysis](../../methods/geophysical-gridding.md#6-cressman-successive-correction-objective-analysis), [Barnes objective analysis](../../methods/geophysical-gridding.md#7-barnes-gaussian-successive-correction-analysis), trend surface, TIN, Whittaker smoother | Interpolation methods / surface models | 4 | Partial — related record exists; Cressman and Barnes now have tested iterative objective-analysis baselines; natural neighbour, Shepard, trend surface, Whittaker and source-entry review remain pending |
 | Climate and gap filling: PRISM, Daymet, ANUSPLIN, DINEOF, HANTS, matrix and tensor completion, deep inpainting, spatiotemporal fusion (STARFM, ESTARFM, FSDAF) | Climate products / interpolation and gap-filling methods / fusion workflows | 4 | Not checked — intake only |
 
 ## Kriging and geostatistics
