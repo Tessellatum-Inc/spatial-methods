@@ -52,3 +52,17 @@ def test_repeated_vertex_and_invalid_flip_limit_rejected():
         constrained_delaunay_triangulate([(0,0),(2,0),(2,2),(0,2),(2,0)])
     with pytest.raises(ValueError):
         constrained_delaunay_triangulate([(0,0),(1,0),(1,1)],max_flips=-1)
+
+
+def test_collinear_boundary_vertices_are_normalized_before_constraints():
+    ring = [(0,0),(2,0),(4,0),(4,4),(0,4),(0,0)]
+    tris = constrained_delaunay_triangulate(ring)
+    assert len(tris) == 2
+    assert sum((triangle_area(t) for t in tris), Fraction(0)) == 16
+
+
+def test_non_finite_coordinates_are_rejected():
+    with pytest.raises(ValueError, match="finite"):
+        constrained_delaunay_triangulate([(0,0),(1,0),(1,float("nan"))])
+    with pytest.raises(ValueError, match="finite"):
+        constrained_delaunay_triangulate([(0,0),(1,0),(1,float("inf"))])
