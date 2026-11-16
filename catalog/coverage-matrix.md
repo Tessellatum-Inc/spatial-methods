@@ -144,3 +144,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 4 (coastal subsection, source page 7): [Coastal empirical processes](../algorithms/coastal/coastal-processes.md) now has tested Stockdon runup, scoped CERC longshore transport, and EPR/OLS/WLR shoreline-rate estimators. Waterline extraction, tide coordination, full DSAS transect workflows, Kamphuis, Bruun, Dean profile, coastal vulnerability and bathymetry remain open.
+
+
+- Section 4 coastal models: the coastal-process package also implements the idealized Bruun-rule recession relation and Dean equilibrium profile with analytic cross-shore integral. These are equation-level reference methods with strong assumptions, not validated coastal forecasts. Kamphuis transport and coastal vulnerability index remain open; bathymetric retrieval and gridding are separate unimplemented workflows.
