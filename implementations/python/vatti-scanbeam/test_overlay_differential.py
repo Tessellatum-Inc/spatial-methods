@@ -134,8 +134,8 @@ def test_hole_aware_vatti_overlay_matches_shapely(operation):
     [
         ("even_odd", False),
         ("non_zero", False),
-        ("positive", False),
-        ("negative", True),
+        ("positive", True),
+        ("negative", False),
     ],
 )
 @pytest.mark.parametrize("operation", ("intersection", "union", "difference", "xor"))
