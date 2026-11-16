@@ -257,3 +257,61 @@ def test_fill_transitions_reject_ambiguous_ring_ownership():
         fill_transitions([edge], {3}, {3})
     with pytest.raises(ValueError, match="every active edge"):
         fill_transitions([edge], {1}, {2})
+
+
+def _cell_area(cell):
+    vertices = cell.vertices
+    return abs(sum(
+        vertices[i][0] * vertices[(i + 1) % len(vertices)][1]
+        - vertices[(i + 1) % len(vertices)][0] * vertices[i][1]
+        for i in range(len(vertices))
+    )) / 2
+
+
+def _overlapping_rectangles():
+    subject = [(0, 0), (4, 0), (4, 4), (0, 4)]
+    clip = [(2, -1), (6, -1), (6, 3), (2, 3)]
+    return decompose_scanbeams([subject, clip])
+
+
+@pytest.mark.parametrize("operation,expected_area", [
+    ("intersection", 6),
+    ("union", 26),
+    ("difference", 10),
+    ("xor", 20),
+])
+def test_full_scanbeam_sweep_decomposes_boolean_areas(operation, expected_area):
+    from vatti_scanbeam import sweep_boolean
+    result = sweep_boolean(_overlapping_rectangles(), {0}, {1}, operation)
+    assert sum(_cell_area(cell) for cell in result.cells) == expected_area
+    assert result.band_slice_count >= 3
+    assert len(result.levels) == 4
+
+
+def test_full_scanbeam_sweep_carries_horizontal_events_and_local_minima():
+    from vatti_scanbeam import sweep_boolean
+    result = sweep_boolean(_overlapping_rectangles(), {0}, {1}, "intersection")
+    bottom = result.levels[0]
+    assert bottom.y == -1
+    assert bottom.horizontal_edges
+    assert bottom.local_minima
+    assert bottom.horizontal_events
+
+
+def test_full_scanbeam_sweep_splits_cells_at_edge_crossings():
+    from vatti_scanbeam import sweep_boolean
+    bow_tie = [(0, 0), (4, 4), (0, 4), (4, 0)]
+    clip = [(-1, -1), (5, -1), (5, 5), (-1, 5)]
+    result = sweep_boolean(decompose_scanbeams([bow_tie, clip]), {0}, {1},
+                           "intersection")
+    assert result.band_slice_count >= 3
+    assert result.cells
+    assert all(cell.lower_y < cell.upper_y for cell in result.cells)
+
+
+def test_full_scanbeam_sweep_rejects_unassigned_rings_and_invalid_operands():
+    from vatti_scanbeam import sweep_boolean
+    with pytest.raises(ValueError, match="every bound edge"):
+        sweep_boolean(_overlapping_rectangles(), {0}, {2})
+    with pytest.raises(ValueError, match="non-empty"):
+        sweep_boolean(_overlapping_rectangles(), {0}, set())
