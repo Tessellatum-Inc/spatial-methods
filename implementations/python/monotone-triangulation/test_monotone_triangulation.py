@@ -145,3 +145,13 @@ def test_general_partition_rejects_collinear_event_vertex():
 
     with pytest.raises(ValueError, match="consecutive collinear"):
         partition_y_monotone([(0, 0), (5, 1), (4, 2), (3, 3), (1, 5), (0, 4)])
+
+
+def test_general_triangulation_accepts_one_shot_vertex_iterables():
+    from monotone_triangulation import triangulate_general
+
+    ring = [(0, 0), (6, 0.2), (6, 6.3), (5.2, 6.0),
+            (4.8, 1.5), (1.8, 1.7), (1.2, 5.8), (0, 6.1)]
+    triangles = triangulate_general(iter(ring))
+    assert len(triangles) == len(ring) - 2
+    assert sum((triangle_area(t) for t in triangles), 0) == polygon_area(ring)
