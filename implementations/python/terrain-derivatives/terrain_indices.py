@@ -416,3 +416,35 @@ def reservoir_stage_storage(elevation, stage_levels, *, cell_area=1.0, valid_mas
         "storage": depths.sum(axis=1) * area,
         "valid_cell_count": int(cells.size),
     }
+
+def scs_curve_number_runoff(precipitation, curve_number, *, abstraction_ratio=0.2):
+    """Estimate event direct-runoff depth with the SCS curve-number method.
+    Precipitation and runoff are in the same depth unit (commonly mm).
+    Curve number is in (0, 100]; abstraction_ratio is the Ia/S ratio.
+    The conventional default is 0.2; local calibration may justify another.
+    """
+    p, cn = np.broadcast_arrays(np.asarray(precipitation, float), np.asarray(curve_number, float))
+    try: lam = float(abstraction_ratio)
+    except (TypeError, ValueError): raise ValueError("abstraction_ratio must be finite and non-negative") from None
+    if not np.isfinite(lam) or lam < 0: raise ValueError("abstraction_ratio must be finite and non-negative")
+    if np.any(~np.isfinite(p) | (p < 0)): raise ValueError("precipitation must be finite and non-negative")
+    if np.any(~np.isfinite(cn) | (cn <= 0) | (cn > 100)): raise ValueError("curve_number must be in (0, 100]")
+    storage = np.maximum(0.0, 25400.0 / cn - 254.0)
+    initial_abstraction = lam * storage
+    excess = np.maximum(p - initial_abstraction, 0.0)
+    runoff = np.zeros(p.shape, dtype=float)
+    denominator = excess + storage
+    np.divide(excess * excess, denominator, out=runoff, where=denominator > 0)
+    return runoff
+
+
+def scs_curve_number_antecedent(curve_number_ii):
+    """Convert AMC-II curve numbers to dry (I) and wet (III) conditions.
+    Uses the conventional empirical SCS conversions; outputs are bounded
+    to the physical 1–100 curve-number interval.
+    """
+    cn = np.asarray(curve_number_ii, dtype=float)
+    if np.any(~np.isfinite(cn) | (cn <= 0) | (cn > 100)): raise ValueError("curve_number_ii must be in (0, 100]")
+    dry = cn / (2.281 - 0.01281 * cn)
+    wet = cn / (0.427 + 0.00573 * cn)
+    return np.clip(dry, 1.0, 100.0), np.clip(wet, 1.0, 100.0)
