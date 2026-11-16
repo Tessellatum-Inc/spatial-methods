@@ -236,6 +236,6 @@ def coastal_vulnerability_index(variable_ranks, *, axis=-1):
     if not isinstance(axis, (int, np.integer)) or not -r.ndim <= axis < r.ndim:
         raise ValueError('axis is outside the rank array dimensions')
     if r.shape[axis] != 6: raise ValueError('CVI requires exactly six variable ranks')
-    if np.any(~np.isfinite(r) | (r < 1) | (r > 5) | (r != np.floor(r)):
+    if np.any(~np.isfinite(r) | (r < 1) | (r > 5) | (r != np.floor(r))):
         raise ValueError('each variable rank must be an integer from 1 through 5')
     return np.sqrt(np.prod(r, axis=axis))
