@@ -151,7 +151,7 @@ def hypsometric_curve(elevation, *, valid_mask=None):
     cumulative = np.cumsum(counts[::-1])[::-1] / values.size
     return {
         "relative_elevation": relative[::-1].astype(float),
-        "area_fraction_above": cumulative.astype(float),
+        "area_fraction_above": cumulative[::-1].astype(float),
         "hypsometric_integral": float(np.mean((values - low) / relief)),
         "valid_cell_count": int(values.size),
         "minimum_elevation": low,
