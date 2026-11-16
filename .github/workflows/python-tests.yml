@@ -677,6 +677,9 @@ jobs:
           - example: spectral-similarity
             directory: implementations/python/spectral-similarity
             pythonpath: ""
+          - example: empirical-corrections
+            directory: implementations/python/empirical-corrections
+            pythonpath: ""
           - example: temporal-compositing
             directory: implementations/python/temporal-compositing
             pythonpath: ""
