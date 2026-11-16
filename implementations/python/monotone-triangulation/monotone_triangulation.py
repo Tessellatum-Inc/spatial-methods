@@ -1,8 +1,8 @@
-"""Stack-based triangulation of strictly y-monotone simple polygons.
+"""Exact-predicate y-monotone partitioning and triangulation for simple polygons.
 
-This first version deliberately requires distinct vertex y-coordinates.  It uses
-exact rational predicates and emits CCW triangles.  It is not a general polygon
-partitioner and does not accept holes.
+The module provides a stack triangulator for already-monotone rings and a
+start/end/split/merge/regular sweep that partitions general strict-y simple
+polygons before triangulation. Horizontal event ties and holes are unsupported.
 """
 from __future__ import annotations
 
