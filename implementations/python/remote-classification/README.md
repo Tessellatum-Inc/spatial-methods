@@ -31,7 +31,9 @@ matrices but does not compensate for unrepresentative training samples.
 
 K-means minimizes within-cluster squared Euclidean distance. It assumes a
 chosen cluster count, favors compact approximately spherical groups, and is
-sensitive to feature scaling and initialization. It is not ISODATA: automatic
-cluster splitting/merging and class-count adaptation are not implemented.
-Neither method performs image segmentation, spatial regularization,
-cross-validation, probability calibration or accuracy assessment.
+sensitive to feature scaling and initialization. ISODATA adds heuristic
+minimum-size deletion, spread-based splitting and closest-centroid merging.
+Its thresholds are expressed in feature units and need scale-aware inputs.
+Neither clustering method performs image segmentation or spatial
+regularization; the classifier does not provide cross-validation, probability
+calibration or accuracy assessment.
