@@ -2,6 +2,10 @@
 
 Each record explains one method or operation, its assumptions, where it is useful, and what can go wrong. The collection is growing from the supplied [source inventory](../source-inventory/README.md); an entry is not treated as verified merely because it appears in that inventory.
 
+## Interpolation and geostatistics
+
+- [Sibson natural-neighbour interpolation](interpolation/natural-neighbour.md) — interpolate from Voronoi-cell areas stolen when a query is inserted; the reference implementation rejects extrapolation.
+
 ## Geometry
 
 - [Point in polygon](geometry/point-in-polygon.md) — classify a point as inside, outside or on a polygon boundary.
