@@ -142,10 +142,10 @@ def test_gicp_covariance_weighting_has_independent_analytic_fixture():
 
 
 def test_gicp_rejects_invalid_controls_and_underdetermined_geometry():
-    cloud = np.array([[x, y, 0.] for x in range(4) for y in range(4)], dtype=float)
+    cloud = np.array([[float(x), 0., 0.] for x in range(12)])
     with pytest.raises(ValueError, match="neighbors"):
         generalized_icp(cloud, cloud, neighbors=2)
     with pytest.raises(ValueError, match="regularization"):
         generalized_icp(cloud, cloud, covariance_regularization=0)
     with pytest.raises(ValueError, match="do not constrain"):
-        generalized_icp(cloud, cloud)
+        generalized_icp(cloud, cloud, neighbors=3)
