@@ -12,6 +12,7 @@
 - Cumulative signed winding transition helper.
 - Horizontal/bound endpoint and interior intersection events.
 - Horizontal/horizontal point-contact and overlap classification.
+- Four fill-rule winding predicates and four Boolean-operation truth tables.
 
 ## Tests authored
 - Rectangle scanbeam and minimum fixture.
@@ -25,7 +26,7 @@
 - Efficient neighbour-only intersection scheduling and in-place active-edge updates.
 - Efficient neighbour-only intersection scheduling.
 - Full horizontal-edge clipping transitions and their integration into active-edge updates.
-- Winding/fill-state propagation.
+- Deriving and propagating subject/clip winding counts through the sweep.
 - Output contour construction and Boolean operations.
 
 Tests have been authored but must run in CI before this component is marked
