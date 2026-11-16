@@ -693,3 +693,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Enforce non-negative coefficient stability bounds and expose reach storage diagnostics.
 - [x] Add recurrence, steady-flow, storage, initial-condition and invalid-input tests; document assumptions and register in Python CI.
 - [ ] Execute full CI and validate calibration on observed reach hydrographs. Manning flow, kinematic wave, Saint-Venant, 2D shallow-water and SPH remain separate numerical models.
+
+
+## Manning open-channel flow continuation — 17 November 2026
+
+- [x] Implement Manning discharge for rectangular and trapezoidal channel sections.
+- [x] Implement bracketed-bisection inversion for normal depth, with explicit geometry, roughness, slope and convergence validation.
+- [x] Add hand-calculated formula tests, inversion tests and invalid-input tests; document SI assumptions and uniform-flow limits; register in Python CI.
+- [ ] Execute full CI and validate against measured channel data. Gradually varied/backwater profiles, unsteady Saint-Venant and 2D shallow-water solvers remain open.

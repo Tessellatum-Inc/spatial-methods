@@ -285,6 +285,9 @@ jobs:
           - example: photogrammetric-flight-design
             directory: implementations/python/photogrammetric-flight-design
             pythonpath: ""
+          - example: manning-open-channel
+            directory: implementations/python/manning-open-channel
+            pythonpath: ""
           - example: muskingum-routing
             directory: implementations/python/muskingum-routing
             pythonpath: ""

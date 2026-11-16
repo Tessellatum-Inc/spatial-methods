@@ -8,6 +8,8 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Raster and terrain
 
+- [Manning open-channel flow](raster/manning-open-channel.md) — calculate uniform-flow discharge and invert for normal depth in rectangular/trapezoidal channels.
+
 - [Muskingum channel routing](raster/muskingum-routing.md) — linear reach routing with explicit coefficient stability conditions and storage diagnostics.
 
 - [Brovey pan-sharpening](remote-sensing/brovey-pan-sharpening.md) — inject a co-registered panchromatic intensity into multispectral bands with an explicit NoData policy.

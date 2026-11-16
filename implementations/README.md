@@ -197,3 +197,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Hydrologic routing
 
 - [Muskingum channel routing](python/muskingum-routing/README.md): linear storage routing for equally spaced inflow hydrographs, with stability and storage tests.
+
+
+### Open-channel hydraulics
+
+- [Manning open-channel flow](python/manning-open-channel/README.md): trapezoidal/rectangular discharge and bracketed normal-depth inversion.
