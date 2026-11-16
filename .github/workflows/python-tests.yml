@@ -414,6 +414,9 @@ jobs:
           - example: marine-reserve-selection
             directory: implementations/python/marine-reserve-selection
             pythonpath: ""
+          - example: land-degradation
+            directory: implementations/python/land-degradation
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""

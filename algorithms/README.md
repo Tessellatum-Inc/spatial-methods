@@ -377,3 +377,5 @@ Records may have different evidence and implementation status. Check the status 
 - [CPUE standardization](fisheries/cpue-standardization.md) — effort-offset Poisson and NB2 log-linear catch-rate models with reference-condition predictions.
 
 - [Marine reserve selection](marine/marine-reserve-selection.md) — simulated-annealing selection against representation targets, zone costs and boundary penalties.
+
+- [RESTREND land-degradation screening](remote-sensing/resttrend-land-degradation.md) — regress NDVI against precipitation and estimate the temporal trend in residuals per pixel.

@@ -68,7 +68,7 @@ This section groups applied methods across spatial interaction, functional regio
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Climate analogs and novel climates (Mahalanobis distance based), climate velocity, climate-change refugia, bioclimatic envelope shifts | Climate similarity and velocity metrics / ecological modelling | 34 | Partial — global-covariance Mahalanobis analog ranking and gradient-based climate-velocity vectors are implemented and tested; climate refugia and bioclimatic envelope workflows remain open |
-| Land degradation analysis: RESTREND, NPP residual methods, desertification indicators, soil salinity mapping | Land degradation assessment / remote-sensing indicators | 34 | Not checked — intake only |
+| Land degradation analysis: RESTREND, NPP residual methods, desertification indicators, soil salinity mapping | Land degradation assessment / remote-sensing indicators | 34 | Partial — per-pixel RESTREND rainfall-response regression and residual-trend diagnostics are implemented and tested; NPP residual variants, soil salinity retrieval and calibrated desertification indicators remain open |
 
 ## Humanitarian, food security and conflict
 
@@ -155,3 +155,8 @@ An effort-offset log-linear catch-rate model is now available under Poisson and 
 ### Marine reserve-selection baseline
 
 A Marxan-style simulated-annealing selector now minimizes zone acquisition cost, squared feature-target shortfall penalties and selected/unselected boundary length. It accepts an explicit zone-feature matrix, costs, targets and adjacency boundary lengths. This is a compact educational heuristic, not the full Marxan solver or Zonation's iterative removal algorithm; feature quality, costs, targets and connectivity constraints remain analyst-supplied. Benthic habitat classification from calibrated multibeam backscatter remains open.
+
+
+### RESTREND land-degradation screening
+
+A per-pixel RESTREND baseline now fits NDVI against precipitation, calculates rainfall-adjusted residuals and estimates the residual temporal trend with slope, R-squared and p-value. Pixels with insufficient valid paired observations are left as NoData. This is a screening statistic, not a causal degradation diagnosis; precipitation-product bias, land-cover change, irrigation, fire, sensor harmonization and NPP/soil-salinity variants remain open.
