@@ -146,6 +146,8 @@ def local_feature_matches(reference, moving, *, detector="ORB",
         feature_detector = cv2.SIFT_create(nfeatures=max_features)
         norm = cv2.NORM_L2
     elif method == "AKAZE":
+        if not hasattr(cv2, "AKAZE_create"):
+            raise RuntimeError("this OpenCV build does not provide AKAZE")
         feature_detector = cv2.AKAZE_create()
         norm = cv2.NORM_HAMMING
     else:

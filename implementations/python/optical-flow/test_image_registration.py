@@ -179,3 +179,11 @@ def test_mutual_information_translation_validates_controls():
     with pytest.raises(ValueError, match="bins"):
         mutual_information_translation(np.arange(256).reshape(16, 16),
                                         np.arange(256).reshape(16, 16), bins=4)
+
+
+def test_akaze_unavailable_build_raises_clear_error(monkeypatch):
+    import cv2
+    monkeypatch.delattr(cv2, "AKAZE_create", raising=False)
+    image = np.zeros((32, 32), dtype=np.uint8)
+    with pytest.raises(RuntimeError, match="AKAZE"):
+        local_feature_matches(image, image, detector="AKAZE")
