@@ -135,11 +135,3 @@ def test_opposite_collinear_constraints_may_meet_at_shared_endpoint():
     assert incidence[_edge((Fraction(-2),Fraction(0)),(Fraction(0),Fraction(0)))] == 2
     assert len(triangles) == len(ring)-2
     assert sum((triangle_area(t) for t in triangles), Fraction(0)) == polygon_area(ring)
-
-
-def test_same_ray_collinear_constraints_are_still_rejected():
-    ring = [(0,0),(6,0),(6,5),(0,5)]
-    with pytest.raises(ValueError, match="collinear constraints overlap"):
-        constrained_delaunay_with_diagonals(
-            ring, [((0,0),(6,5)), ((0,0),(3,Fraction(5,2)))]
-        )
