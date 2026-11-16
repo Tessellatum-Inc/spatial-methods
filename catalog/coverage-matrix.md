@@ -172,3 +172,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 4 geomorphology: added channel chi integration, log slope-area OLS and a moving-window chord-residual knickpoint screen with tests and stated profile-level assumptions. Drainage-basin morphometry, channel extraction, tributary-aware segmentation and geological interpretation remain open.
+
+
+- Section 4 erosion: added USLE/RUSLE factor-product soil-loss calculation and a conventional slope-length/steepness factor with tests. Regional R/K/C/P derivation, flow-accumulation-aware LS, sediment delivery and hydraulic/thermal erosion simulation remain open.
