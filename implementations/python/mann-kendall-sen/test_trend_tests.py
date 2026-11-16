@@ -17,7 +17,7 @@ def test_mann_kendall_detects_strictly_decreasing_series():
 
 def test_mann_kendall_tie_corrected_variance():
     result = mann_kendall([1,1,2,2,3])
-    assert result["variance_s"] < 25*35/18
+    assert result["variance_s"] == pytest.approx(264/18)
     assert result["s"] == 8
 
 def test_constant_series_has_neutral_test_result():
