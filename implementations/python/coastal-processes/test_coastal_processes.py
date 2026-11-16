@@ -46,3 +46,32 @@ def test_shoreline_weighted_regression_and_validation():
     with pytest.raises(ValueError): shoreline_change_rates([1, 1], [2, 3])
     with pytest.raises(ValueError): shoreline_change_rates([1, 2], [2, np.nan])
     with pytest.raises(ValueError): shoreline_change_rates([1, 2], [2, 3], uncertainties=[0, 1])
+
+
+def test_bruun_rule_recession_scales_with_rise_and_width():
+    from coastal_processes import bruun_rule_recession
+    assert bruun_rule_recession(1, 100, 2, 8) == pytest.approx(10)
+    assert bruun_rule_recession(2, 100, 2, 8) == pytest.approx(20)
+    np.testing.assert_allclose(bruun_rule_recession([1, 2], 100, 2, 8), [10, 20])
+
+
+def test_bruun_rule_rejects_invalid_geometry():
+    from coastal_processes import bruun_rule_recession
+    with pytest.raises(ValueError): bruun_rule_recession(-1, 100, 2, 8)
+    with pytest.raises(ValueError): bruun_rule_recession(1, 0, 2, 8)
+    with pytest.raises(ValueError): bruun_rule_recession(1, 100, 2, 0)
+
+
+def test_dean_profile_and_integral_match_analytic_values():
+    from coastal_processes import dean_equilibrium_profile, dean_profile_volume
+    x = np.array([0., 1., 8., 27.])
+    np.testing.assert_allclose(dean_equilibrium_profile(x, .5), .5*x**(2/3))
+    assert dean_profile_volume(.5, 0, 8) == pytest.approx(4.8)
+    assert dean_profile_volume(.5, 3, 3) == pytest.approx(0)
+
+
+def test_dean_profile_validates_inputs():
+    from coastal_processes import dean_equilibrium_profile, dean_profile_volume
+    with pytest.raises(ValueError): dean_equilibrium_profile([-1, 2], .5)
+    with pytest.raises(ValueError): dean_equilibrium_profile([0, 2], 0)
+    with pytest.raises(ValueError): dean_profile_volume(.5, 4, 3)
