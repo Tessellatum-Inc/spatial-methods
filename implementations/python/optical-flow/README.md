@@ -38,3 +38,8 @@ See the [method-selection guide](../../../methods/optical-flow.md) for assumptio
 
 
 The pure-Python `lucas_kanade_dense_reference` function exposes the local normal-equation accumulation directly and uses the smallest structure-tensor eigenvalue as its conditioning test. It is intentionally slower than the vectorised `lucas_kanade` function and is included as a transparent reference, not a production path.
+
+
+## Image co-registration
+
+The companion `image_registration.py` module provides FFT phase correlation for global row/column translation and RANSAC affine estimation from matched (x,y) point pairs. Phase correlation returns the shift to apply to the moving image; affine estimation returns a 2×2 matrix, offset and inlier diagnostics. These are transform estimators, not feature detectors or orthorectification. See [the canonical lesson](../../../algorithms/remote-sensing/image-coregistration.md) and `test_image_registration.py`.
