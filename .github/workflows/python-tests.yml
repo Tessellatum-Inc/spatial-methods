@@ -396,6 +396,9 @@ jobs:
           - example: mogi-source
             directory: implementations/python/mogi-source
             pythonpath: ""
+          - example: lagrangian-connectivity
+            directory: implementations/python/lagrangian-connectivity
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""

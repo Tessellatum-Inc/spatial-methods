@@ -52,7 +52,7 @@ This section groups applied methods across spatial interaction, functional regio
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | CPUE standardization (GAM and spatiotemporal models such as VAST-style vector autoregressive models), spatial stock assessment, fishing effort allocation | Fisheries statistical models / stock assessment / allocation | 34 | Not checked — intake only |
-| Larval dispersal and ocean connectivity: Lagrangian tools (Parcels, OpenDrift), connectivity matrices, marine protected area network design | Particle tracking / connectivity analysis / reserve design | 34 | Not checked — intake only |
+| Larval dispersal and ocean connectivity: Lagrangian tools (Parcels, OpenDrift), connectivity matrices, marine protected area network design | Particle tracking / connectivity analysis / reserve design | 34 | Partial — steady-field RK4 particle advection and weighted source-to-destination connectivity matrices are implemented and tested; time-varying currents, diffusion, vertical motion and reserve-design optimisation remain open |
 | Marine spatial planning with Marxan and Zonation, benthic habitat mapping from multibeam backscatter | Spatial planning software / habitat mapping workflows | 34 | Not checked — intake only |
 
 ## Biodiversity assessment and conservation planning
@@ -120,3 +120,8 @@ The regional-dynamics package now includes a cumulative exponential intervening-
 ### Biodiversity range metrics implementation update
 
 A new `biodiversity-metrics` package provides planar convex-hull extent of occurrence, aligned-grid area of occupancy, cellwise species richness and inverse-range-size weighted endemism. Analytic geometry and direct matrix oracles cover the numerical kernels. These do not constitute a complete IUCN assessment: alpha hulls, range fragmentation, sampling-bias correction, phylogenetic diversity and key-biodiversity-area criteria remain outstanding.
+
+
+### Lagrangian particle advection and connectivity implementation update
+
+A steady two-dimensional velocity-field particle integrator now uses fourth-order Runge–Kutta interpolation on a rectilinear grid. A companion connectivity aggregator converts released particle source regions and final destination regions into weighted counts and row-normalized probabilities, retaining unassigned particles separately. This is a deterministic advection baseline, not a full ocean particle framework: time-varying currents, diffusion, vertical motion, beaching, decay and uncertainty remain open.
