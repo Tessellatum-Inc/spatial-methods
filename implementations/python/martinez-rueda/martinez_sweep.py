@@ -302,7 +302,7 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
             for p in ring:
                 if len(p)!=2 or not all(isfinite(float(v)) for v in p):
                     raise ValueError("rings require finite 2D coordinates")
-                pts.append((p[0],p[1]))
+                pts.append(_fraction_point(p))
             if len(pts)<3 or len(set(pts))<3: raise ValueError("rings need three distinct points")
             if _signed_area_exact(pts)==0: raise ValueError("ring area must be non-zero")
             if not _ring_is_simple(pts,epsilon): raise ValueError("input rings must be simple and non-self-touching")
