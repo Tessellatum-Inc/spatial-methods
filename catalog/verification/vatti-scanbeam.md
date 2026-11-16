@@ -36,7 +36,8 @@
 - Empty contour result and unequal shared-edge subdivision.
 - Coincident and opposite-direction coincident rings.
 - Full/partial shared boundaries and vertex-touching components.
-- Three-way simultaneous crossing and neighbour-event order changes.
+- Three-way simultaneous crossing, distinct same-Y crossing events and neighbour-event order changes.
+- Horizontal entry/exit transitions at scanbeam levels and shared-horizontal-edge continuity.
 - Shapely differential area, symmetric-difference geometry and component comparisons across 29 deterministic fixtures and four operations.
 - Clockwise/counter-clockwise equivalence.
 - Non-horizontal minimum and horizontal bottom plateau.
