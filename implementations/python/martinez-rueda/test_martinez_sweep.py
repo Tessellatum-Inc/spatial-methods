@@ -488,3 +488,12 @@ def test_collinear_bundle_endpoints_are_coalesced_into_node_events():
     contacts=[event for event in result["node_events"] if event.kind=="contact"]
     assert len(contacts)==4
     assert all(len(event.segment_ids)==2 for event in contacts)
+
+
+def test_contour_face_walk_uses_exact_polar_order_for_nearly_collinear_rays():
+    from fractions import Fraction
+    from martinez_sweep import _polar_compare
+    almost_horizontal=(Fraction(1),Fraction(1,10**40))
+    horizontal=(Fraction(1),Fraction(0))
+    assert _polar_compare(horizontal,almost_horizontal) < 0
+    assert _polar_compare(almost_horizontal,horizontal) > 0
