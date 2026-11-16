@@ -43,3 +43,7 @@ def test_invalid_controls_are_rejected(kwargs):
 def test_invalid_samples_values_and_queries_are_rejected(samples,values,queries):
     with pytest.raises(ValueError):
         idw_interpolate(samples, values, queries)
+
+def test_non_sequence_values_are_rejected():
+    with pytest.raises(ValueError):
+        idw_interpolate([(0, 0)], None, [(1, 1)])
