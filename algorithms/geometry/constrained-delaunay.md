@@ -10,10 +10,10 @@ A constrained Delaunay triangulation (CDT) preserves specified segments even whe
 4. If the quadrilateral is convex and the exact incircle predicate is positive, flip the diagonal.
 5. Repeat until no unconstrained interior edge is locally illegal.
 
-Cocircular edges are left unchanged, so the result is weakly Delaunay. Tests verify (n-2) CCW triangles, exact area conservation, boundary preservation and local incircle legality on convex, concave, clockwise and seeded radial rings.
+Cocircular edges are left unchanged, so the result is weakly Delaunay. The additional `constrained_delaunay_with_diagonals` entry point accepts non-crossing segments between existing normalized polygon vertices. It splits the polygon along those diagonals and triangulates each resulting piece, keeping every supplied diagonal as a piece boundary. Tests verify constraint-edge incidence, exact area conservation, invalid crossing/exterior constraints, and shared-endpoint constraint sets.
 
 ## Limits
 
-This is a polygon-boundary CDT baseline, not a general constrained mesh engine: no holes, internal constraint segments, Steiner points, constrained-segment recovery, refinement or mesh-quality guarantees. Edge incidence is rebuilt after each flip, so this is not intended for large meshes.
+This remains a polygonal CDT baseline, not a general constrained mesh engine: no holes, arbitrary segment recovery, Steiner points, refinement or mesh-quality guarantees. Interior constraints are restricted to non-crossing diagonals between existing polygon vertices and are enforced by polygon partitioning rather than general edge recovery. Edge incidence is rebuilt after each flip, so this is not intended for large meshes.
 
 See the [Python implementation](../../implementations/python/constrained-delaunay/README.md) and [verification record](../../catalog/verification/constrained-delaunay.md).
