@@ -107,16 +107,14 @@ def estimate_affine_ransac(source_points, target_points, *, residual_threshold=2
             "residuals": residuals, "inlier_count": int(inliers.sum())}
 
 
-def orb_feature_matches(reference, moving, *, max_features=2000,
-                        fast_threshold=7, ratio=0.75):
-    """Find ORB descriptor correspondences from moving-image to reference.
+def local_feature_matches(reference, moving, *, detector="ORB",
+                            max_features=2000, fast_threshold=7, ratio=0.75):
+    """Match ORB, SIFT or AKAZE local features from moving to reference.
 
     Returned source_points are (x,y) coordinates in moving; target_points are
-    corresponding (x,y) coordinates in reference. Pass them to
-    estimate_affine_ransac to estimate a robust global affine transform.
-    Inputs are finite single-channel arrays interpreted on an 8-bit 0..255
-    intensity scale. ORB is rotation/scale tolerant within its operating
-    range, but not invariant to arbitrary radiometry or cross-modal appearance.
+    corresponding (x,y) coordinates in reference. Feed these to
+    estimate_affine_ransac for a robust global affine estimate. Inputs are
+    finite single-channel images interpreted on an 8-bit 0..255 scale.
     """
     import cv2
 
@@ -137,23 +135,44 @@ def orb_feature_matches(reference, moving, *, max_features=2000,
         raise ValueError("ratio must be in (0, 1)") from None
     if not np.isfinite(ratio) or not 0 < ratio < 1:
         raise ValueError("ratio must be in (0, 1)")
+    method = str(detector).upper()
+    if method == "ORB":
+        feature_detector = cv2.ORB_create(nfeatures=max_features,
+                                          fastThreshold=fast_threshold)
+        norm = cv2.NORM_HAMMING
+    elif method == "SIFT":
+        if not hasattr(cv2, "SIFT_create"):
+            raise RuntimeError("this OpenCV build does not provide SIFT")
+        feature_detector = cv2.SIFT_create(nfeatures=max_features)
+        norm = cv2.NORM_L2
+    elif method == "AKAZE":
+        feature_detector = cv2.AKAZE_create()
+        norm = cv2.NORM_HAMMING
+    else:
+        raise ValueError("detector must be ORB, SIFT or AKAZE")
 
     ref8 = np.clip(ref, 0, 255).astype(np.uint8)
     mov8 = np.clip(mov, 0, 255).astype(np.uint8)
-    detector = cv2.ORB_create(nfeatures=max_features, fastThreshold=fast_threshold)
-    key_m, desc_m = detector.detectAndCompute(mov8, None)
-    key_r, desc_r = detector.detectAndCompute(ref8, None)
+    key_m, desc_m = feature_detector.detectAndCompute(mov8, None)
+    key_r, desc_r = feature_detector.detectAndCompute(ref8, None)
     if desc_m is None or desc_r is None:
-        raise ValueError("ORB found too few features in one or both images")
-    pairs = cv2.BFMatcher(cv2.NORM_HAMMING).knnMatch(desc_m, desc_r, k=2)
+        raise ValueError(f"{method} found too few features in one or both images")
+    pairs = cv2.BFMatcher(norm).knnMatch(desc_m, desc_r, k=2)
     good = [pair[0] for pair in pairs if len(pair) == 2 and
             pair[0].distance < ratio * pair[1].distance]
     if len(good) < 3:
-        raise ValueError("fewer than three ORB matches passed the ratio test")
+        raise ValueError(f"fewer than three {method} matches passed the ratio test")
     source = np.asarray([key_m[m.queryIdx].pt for m in good], dtype=float)
     target = np.asarray([key_r[m.trainIdx].pt for m in good], dtype=float)
     distances = np.asarray([m.distance for m in good], dtype=float)
     return {"source_points": source, "target_points": target,
             "descriptor_distances": distances, "match_count": len(good),
             "source_keypoint_count": len(key_m),
-            "target_keypoint_count": len(key_r)}
+            "target_keypoint_count": len(key_r), "detector": method}
+
+
+def orb_feature_matches(reference, moving, *, max_features=2000,
+                        fast_threshold=7, ratio=0.75):
+    """Compatibility wrapper for ORB descriptor matching."""
+    return local_feature_matches(reference, moving, detector="ORB",
+        max_features=max_features, fast_threshold=fast_threshold, ratio=ratio)
