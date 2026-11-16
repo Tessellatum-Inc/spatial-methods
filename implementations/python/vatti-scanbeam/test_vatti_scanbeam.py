@@ -416,7 +416,7 @@ def test_shared_vertical_boundary_is_not_double_counted(operation, expected_area
 
 
 def test_partial_collinear_shared_boundary_and_horizontal_events():
-    from vatti_scanbeam import clip_rings
+    from vatti_scanbeam import clip_rings, sweep_boolean
     d = decompose_scanbeams([_rect(0, 0, 2, 4), _rect(2, 1, 4, 3)])
     result = clip_rings(d, {0}, {1}, "union")
     assert len(result.rings) == 1
