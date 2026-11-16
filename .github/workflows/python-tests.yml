@@ -267,6 +267,9 @@ jobs:
           - example: flow-capturing-location
             directory: implementations/python/flow-capturing-location
             pythonpath: ""
+          - example: photogrammetric-flight-design
+            directory: implementations/python/photogrammetric-flight-design
+            pythonpath: ""
           - example: moving-object-prediction
             directory: implementations/python/moving-object-prediction
             pythonpath: ""
