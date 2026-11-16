@@ -400,6 +400,17 @@ def fill_transitions(
 
 
 @dataclass(frozen=True)
+class HorizontalFillTransition:
+    """An interval whose Boolean fill state changes across a scanbeam level."""
+    y: Fraction
+    x_start: Fraction
+    x_end: Fraction
+    below_filled: bool
+    above_filled: bool
+    horizontal_edge_ids: tuple[int, ...]
+
+
+@dataclass(frozen=True)
 class ScanbeamLevel:
     y: Fraction
     starting_edges: tuple[BoundEdge, ...]
@@ -407,6 +418,7 @@ class ScanbeamLevel:
     horizontal_edges: tuple[HorizontalEdge, ...]
     horizontal_events: tuple[HorizontalEvent, ...]
     local_minima: tuple[LocalMinimum, ...]
+    fill_transitions: tuple[HorizontalFillTransition, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -531,6 +543,18 @@ def sweep_boolean(
                     cells.append(FilledCell(
                         lo, hi, left.edge_id, right.edge_id, vertices
                     ))
+    levels = [
+        ScanbeamLevel(
+            level.y, level.starting_edges, level.ending_edges,
+            level.horizontal_edges, level.horizontal_events,
+            level.local_minima,
+            horizontal_fill_transitions(
+                decomposition, level.y, subject_ring_ids, clip_ring_ids,
+                operation, fill_rule
+            )
+        )
+        for level in levels
+    ]
     cells = list(_node_cells_at_horizontal_events(cells, levels))
     return BooleanSweep(tuple(levels), tuple(cells), slice_count)
 
@@ -916,6 +940,11 @@ def _node_cells_at_horizontal_events(cells, levels):
             event_points.setdefault(event.y, set()).update(
                 ((event.x_start, event.y), (event.x_end, event.y))
             )
+        for transition in level.fill_transitions:
+            event_points.setdefault(transition.y, set()).update(
+                ((transition.x_start, transition.y),
+                 (transition.x_end, transition.y))
+            )
     noded = []
     for cell in cells:
         points = list(cell.vertices)
@@ -937,3 +966,72 @@ def _node_cells_at_horizontal_events(cells, levels):
             cell.right_edge_id, tuple(expanded)
         ))
     return tuple(noded)
+
+
+
+def horizontal_fill_transitions(
+    decomposition: ScanbeamDecomposition,
+    y: Fraction,
+    subject_ring_ids: set[int],
+    clip_ring_ids: set[int],
+    operation: str = "intersection",
+    fill_rule: str = "non_zero",
+) -> tuple[HorizontalFillTransition, ...]:
+    """Derive Boolean fill changes immediately below and above a scanbeam.
+
+    Each adjacent open band supplies its own edge order at the level. Edges
+    tied at a vertex are ordered by slope in the appropriate one-sided limit:
+    descending slope below, ascending slope above. The resulting filled
+    intervals are overlaid with horizontal source-edge endpoints and contact
+    events. Every interval whose Boolean occupancy changes is emitted as a
+    horizontal fill transition and becomes a contour noding constraint.
+    """
+    levels = tuple(_q(value) for value in decomposition.scanbeams)
+    if y not in levels:
+        raise ValueError("horizontal transition level must be a scanbeam")
+    index = levels.index(y)
+
+    def intervals_for_band(lower, upper, below):
+        active = active_edges_for_band(decomposition, lower, upper)
+        bundles = bundle_active_edges(active, subject_ring_ids, clip_ring_ids)
+        if below:
+            ordered = sorted(bundles, key=lambda b: (
+                b.x_at(y), -b.slope, b.representative.edge_id
+            ))
+        else:
+            ordered = sorted(bundles, key=lambda b: (
+                b.x_at(y), b.slope, b.representative.edge_id
+            ))
+        spans = _bundle_spans(ordered, operation, fill_rule)
+        return tuple((left.x_at(y), right.x_at(y)) for left, right in spans
+                     if left.x_at(y) < right.x_at(y))
+
+    below = intervals_for_band(levels[index-1], y, True) if index > 0 else ()
+    above = intervals_for_band(y, levels[index+1], False) if index+1 < len(levels) else ()
+
+    horizontal = [edge for edge in decomposition.horizontals
+                  if _q(edge.a[1]) == y]
+    cuts = {x for interval in below + above for x in interval}
+    for edge in horizontal:
+        cuts.update((_q(edge.a[0]), _q(edge.b[0])))
+    for event in horizontal_events_at(decomposition, y):
+        cuts.update((event.x_start, event.x_end))
+    ordered_cuts = sorted(cuts)
+    transitions = []
+    for x0, x1 in zip(ordered_cuts, ordered_cuts[1:]):
+        if x0 == x1:
+            continue
+        midpoint = (x0 + x1) / 2
+        below_filled = any(a < midpoint < b for a, b in below)
+        above_filled = any(a < midpoint < b for a, b in above)
+        if below_filled == above_filled:
+            continue
+        source_ids = tuple(sorted(
+            edge.edge_id for edge in horizontal
+            if min(_q(edge.a[0]), _q(edge.b[0])) <= midpoint <=
+               max(_q(edge.a[0]), _q(edge.b[0]))
+        ))
+        transitions.append(HorizontalFillTransition(
+            y, x0, x1, below_filled, above_filled, source_ids
+        ))
+    return tuple(transitions)
