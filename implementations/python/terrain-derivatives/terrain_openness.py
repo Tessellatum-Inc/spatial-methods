@@ -26,8 +26,8 @@ def terrain_openness(
     geomorphon method. Distances and elevations must use matching units.
     """
     dem = np.asarray(elevation, dtype=float)
-    if dem.ndim != 2 or dem.size == 0:
-        raise ValueError("elevation must be a non-empty 2D array")
+    if dem.ndim != 2 or min(dem.shape) < 2:
+        raise ValueError("elevation must be a 2D array with at least two rows and columns")
     try:
         dx, dy, distance = map(float, (cell_size_x, cell_size_y, max_distance))
         step = min(dx, dy) / 2 if sample_spacing is None else float(sample_spacing)
@@ -58,9 +58,6 @@ def terrain_openness(
                     supported = False
                     break
                 c0, r0 = min(int(np.floor(c)), cols - 2), min(int(np.floor(r)), rows - 2)
-                if cols < 2 or rows < 2:
-                    supported = False
-                    break
                 fc, fr = c - c0, r - r0
                 z = np.array([dem[r0,c0],dem[r0,c0+1],dem[r0+1,c0],dem[r0+1,c0+1]])
                 if not np.all(np.isfinite(z)):
