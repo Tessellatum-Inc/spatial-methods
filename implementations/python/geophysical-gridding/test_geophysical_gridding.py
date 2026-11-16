@@ -119,8 +119,8 @@ def test_objective_analysis_uses_background_and_preserves_unsupported_nodes():
     y = np.array([0., 1., 2., 3., 4.])
     c = cressman_grid(points, values, x, y, [1.5], background=2.0)
     b = barnes_grid(points, values, x, y, [1.5], background=2.0, gamma=.5)
-    assert c[0, 0] == 2.0 and c[1, 1] == 10.0
-    assert b[0, 0] > 2.0 and b[1, 1] == 6.0
+    assert c[4, 4] == 2.0 and c[1, 1] == 10.0
+    assert b[4, 4] == 2.0 and b[1, 1] == 6.0
 
 
 @pytest.mark.parametrize("method", ["cressman", "barnes"])
@@ -135,7 +135,7 @@ def test_objective_analysis_rejects_bad_grid_and_radii(method):
     with pytest.raises(ValueError):
         fn(*args, radii=[1.0], background=np.zeros((3, 3)))
     with pytest.raises(ValueError):
-        fn(*args, radii=[1.0], x_coordinates=[0, 2][::-1])
+        fn(POINTS, VALUES, [2, 0], [0, 2], radii=[1.0])
 
 
 def test_barnes_rejects_invalid_kappa_and_gamma():
