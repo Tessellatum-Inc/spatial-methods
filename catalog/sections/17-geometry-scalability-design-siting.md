@@ -56,7 +56,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Competitive facility location: Huff-based, Stackelberg and Nash formulations, Voronoi games | Competitive location models / game-theoretic formulations | 36 | Partially implemented: Huff attractiveness/impedance probabilities and demand aggregation are tested; Stackelberg/Nash competition and Voronoi games remain open |
-| Stable matching (Gale-Shapley), auction algorithms, school choice and spatial assignment with preferences | Matching and assignment algorithms / allocation problems | 36 | Not checked — intake only |
+| Stable matching (Gale-Shapley), auction algorithms, school choice and spatial assignment with preferences | Matching and assignment algorithms / allocation problems | 36 | Partially implemented: resident-proposing many-to-one deferred acceptance with incomplete strict preferences, capacities and a blocking-pair audit is tested; ties, couples, auctions and other preference-allocation models remain open |
 
 ## EV charging and refueling siting
 
