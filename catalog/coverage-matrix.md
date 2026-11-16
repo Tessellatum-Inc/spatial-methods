@@ -166,3 +166,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 4 flood frequency: added Weibull plotting positions for annual maxima, Gumbel and GEV L-moment fitting, return-level quantiles and a design-flood table. These stationary univariate baselines do not supply uncertainty intervals, regional pooling, trend/nonstationarity tests, goodness-of-fit selection, peak-over-threshold analysis or hydraulic inundation.
+
+
+- Section 4 terrain derivatives: added radial positive and negative terrain openness angles with bilinear sampling, configurable azimuth/radial resolution, maximum distance and strict support/NoData masking. This is an explicit approximation, not the full geomorphon openness method or a red-relief image-map renderer.
