@@ -4,7 +4,7 @@ import pytest
 
 from directional_statistics import (
     circular_summary, kuiper_uniformity_test, rayleigh_test,
-    rose_histogram, von_mises_density,
+    rose_histogram, von_mises_density, watson_u2_uniformity_test,
 )
 
 
@@ -79,3 +79,19 @@ def test_invalid_histogram_and_density_parameters_are_rejected():
         von_mises_density([0, 1], concentration=-1)
     with pytest.raises(ValueError, match="finite"):
         von_mises_density([0, 1], mean_direction=float("nan"))
+
+
+def test_watson_u2_detects_concentration_and_is_rotation_invariant():
+    angles = np.linspace(-0.04, 0.04, 40)
+    a = watson_u2_uniformity_test(angles)
+    b = watson_u2_uniformity_test(angles + 2.17)
+    assert a["statistic_u2"] == pytest.approx(b["statistic_u2"], abs=1e-12)
+    assert a["pvalue"] == pytest.approx(b["pvalue"], abs=1e-12)
+    assert a["pvalue"] < 1e-6
+
+
+def test_watson_u2_uniform_grid_has_small_statistic_and_rejects_singleton():
+    result = watson_u2_uniformity_test(2*math.pi*(np.arange(20)+0.5)/20)
+    assert result["statistic_u2"] == pytest.approx(1/(12*20))
+    with pytest.raises(ValueError, match="two"):
+        watson_u2_uniformity_test([0])
