@@ -227,7 +227,9 @@ def test_persistent_corridor_replacements_preserve_full_domain_and_reciprocity()
         prefix = locator.insertion_order[:insertion_index + 1]
         locator._build(prefix)
         signature = lambda cells: sorted(
-            (cell.x_left, cell.x_right, cell.bottom_segment, cell.top_segment)
+            (cell.x_left, cell.x_right,
+             -1 if cell.bottom_segment is None else cell.bottom_segment,
+             -1 if cell.top_segment is None else cell.top_segment)
             for cell in cells
         )
         assert signature(snapshot) == signature(locator.trapezoids)
