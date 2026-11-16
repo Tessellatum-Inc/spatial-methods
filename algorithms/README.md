@@ -83,7 +83,8 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Empirical optical and terrain corrections
 
-- [Empirical corrections](remote-sensing/empirical-corrections.md) — dark-object subtraction, C-correction and Minnaert terrain correction with explicit assumptions.
+- [Empirical corrections](remote-sensing/empirical-corrections.md) — dark-object subtraction, C-correction, Minnaert, histogram matching and pseudo-invariant-feature affine normalization.
+- [IR-MAD](remote-sensing/ir-mad.md) — iteratively reweighted canonical variates and chi-square no-change scores for bitemporal imagery.
 
 ## Temporal image compositing
 
@@ -340,5 +341,6 @@ Records may have different evidence and implementation status. Check the status 
 - [Bitemporal change detection: CVA and post-classification comparison](remote-sensing/change-vector-analysis.md) — compare aligned multispectral dates with spectral change vectors and summarize categorical transitions.
 
 - [Empirical atmospheric, terrain and relative radiometric corrections](remote-sensing/empirical-corrections.md) — dark-object subtraction, C-correction, Minnaert, histogram matching and a pseudo-invariant-feature normalization baseline.
+- [IR-MAD](remote-sensing/ir-mad.md) — weighted canonical correlation analysis for relative radiometric normalization and change screening.
 
 - [Tasseled Cap transform](remote-sensing/tasseled-cap.md) — apply caller-supplied sensor-specific brightness/greenness/wetness coefficient matrices to multispectral pixels.

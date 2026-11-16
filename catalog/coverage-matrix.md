@@ -183,10 +183,10 @@ Four source-listed streaming summaries now have tested reference implementations
 - Section 5 image registration: added FFT phase correlation for global translation and RANSAC affine transform estimation from matched point pairs, with tests and limitations. Feature detection/matching, local deformation, orthorectification, mosaicking and seamline optimization remain open.
 
 
-- Section 5 change detection: added tested bitemporal change-vector analysis with Euclidean and covariance-standardized magnitudes, plus post-classification transition matrices and pixel change masks. The independent tests include direct linear-algebra and pixelwise counting oracles. IR-MAD, learned Siamese/ChangeFormer models, threshold calibration and accuracy-adjusted change estimates remain open.
+- Section 5 change detection: added tested bitemporal change-vector analysis with Euclidean and covariance-standardized magnitudes, plus post-classification transition matrices and pixel change masks. The independent tests include direct linear-algebra and pixelwise counting oracles. learned Siamese/ChangeFormer models, threshold calibration and accuracy-adjusted change estimates remain open; IR-MAD now supplies a weighted canonical-variate baseline with chi-square scores.
 
 
-- Section 5 relative radiometric normalization: added per-band empirical-quantile histogram matching and a robustly selected pseudo-invariant-feature affine normalization baseline, with synthetic affine-recovery tests, mask/NoData controls and explicit limitations. These are not IR-MAD and do not replace sensor calibration or atmospheric/BRDF correction.
+- Section 5 relative radiometric normalization: added per-band empirical-quantile histogram matching and a robustly selected pseudo-invariant-feature affine normalization baseline, with synthetic affine-recovery tests, explicit valid-mask controls and explicit limitations. The separate IR-MAD implementation estimates canonical variates and iteratively reweights pixels using chi-square tail scores. None replaces sensor calibration or atmospheric/BRDF correction.
 
 
 - Section 5 indices/transforms: added a sensor-coefficient-driven Tasseled Cap linear projection with explicit band/component matrix and optional per-band offset. Tests compare against a direct matrix-product oracle. Sensor-specific coefficient tables and calibration conventions must still be curated; this is not fitted PCA.
