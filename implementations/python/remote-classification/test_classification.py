@@ -61,3 +61,7 @@ def test_gaussian_classifier_rejects_bad_training_data_and_priors():
         fit_gaussian_maximum_likelihood(x, y, priors={0: 1})
     with pytest.raises(ValueError):
         fit_gaussian_maximum_likelihood(x, np.zeros(6))
+    bad_labels = y.astype(float)
+    bad_labels[0] = np.nan
+    with pytest.raises(ValueError):
+        fit_gaussian_maximum_likelihood(x, bad_labels)

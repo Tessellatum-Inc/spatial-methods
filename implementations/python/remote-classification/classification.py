@@ -23,6 +23,8 @@ def fit_gaussian_maximum_likelihood(samples, labels, *, ridge=1e-6, priors=None)
     y = np.asarray(labels)
     if y.ndim != 1 or y.shape[0] != x.shape[0] or y.dtype.kind not in "biufUS":
         raise ValueError("labels must be a one-dimensional array matching samples")
+    if y.dtype.kind in "fiu" and not np.all(np.isfinite(y)):
+        raise ValueError("numeric class labels must be finite")
     classes, counts = np.unique(y, return_counts=True)
     if classes.size < 2 or np.any(counts < 2):
         raise ValueError("at least two classes with two or more samples each are required")
