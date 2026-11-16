@@ -26,6 +26,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Spatial skyline queries](query-processing/spatial-skyline.md) — return objects not dominated across distance to a query location and selected attributes.
 
+## Cartographic classification
+
+- [Classification breaks](cartography/classification-breaks.md) — compare geometric, standard-deviation, box-plot, head/tail, Dalenius–Hodges and exact 1D ckmeans breaks.
+
 ## Streaming and sketching
 
 - [Streaming sketches for spatial data](streaming/streaming-sketches.md) — approximate distinct counts, event frequencies, membership screening and uniform reservoir samples.

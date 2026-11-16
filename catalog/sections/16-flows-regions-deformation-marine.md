@@ -4,7 +4,7 @@
 - **Source pages:** 33–34
 - **Source transcription:** [pages 31–35](../../source-inventory/pages-31-35.md)
 - **Review state:** source entries extracted into this index; not every entry independently verified
-- **Current canonical records:** none yet
+- **Current canonical records:** [classification breaks](../../algorithms/cartography/classification-breaks.md), with six tested one-dimensional methods including exact dynamic-programming ckmeans; other flow, regionalisation, movement, geophysical, marine, biodiversity and humanitarian entries remain to be verified
 
 This section groups applied methods across spatial interaction, functional regions, classification, movement, geophysics, marine systems, biodiversity and humanitarian analysis.
 
@@ -28,7 +28,7 @@ This section groups applied methods across spatial interaction, functional regio
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Head/tail breaks, maximum breaks, geometric interval, standard deviation, box plot, pretty breaks, Dalenius-Hodges, optimal 1D k-means (ckmeans) | Classification and binning methods | 33 | Not checked — intake only |
+| Head/tail breaks, maximum breaks, geometric interval, standard deviation, box plot, pretty breaks, Dalenius-Hodges, optimal 1D k-means (ckmeans) | Classification and binning methods | 33 | Partially implemented: head/tail, geometric interval, standard deviation, box plot, Dalenius–Hodges and exact 1D ckmeans are tested; “maximum breaks” and “pretty breaks” remain unresolved names |
 | Zone design and aggregation: AMOEBA, automated zoning procedures, scale-effect analysis, variance by aggregation level | Spatial regionalisation / aggregation and scale analysis | 33 | Not checked — intake only |
 
 ## Cost surfaces and movement through terrain
@@ -85,3 +85,8 @@ This section groups applied methods across spatial interaction, functional regio
 3. Record uncertainty and sensor limitations in deformation and marine applications.
 4. Use conservation and humanitarian examples with transparent data provenance and careful privacy review.
 5. Treat named products and tools as implementations or data sources, not interchangeable with the underlying method.
+
+
+### Classification implementation update
+
+Six classification methods now have a NumPy package, tests and a canonical lesson. The ckmeans dynamic program is checked against exhaustive partition enumeration on small samples. The source's “maximum breaks” and “pretty breaks” labels remain open pending identity verification; they are not guessed to mean Jenks or ckmeans.

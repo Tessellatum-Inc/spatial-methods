@@ -105,6 +105,9 @@ jobs:
           - example: spatial-streaming-sketches
             directory: implementations/python/spatial-streaming-sketches
             pythonpath: ""
+          - example: classification-breaks
+            directory: implementations/python/classification-breaks
+            pythonpath: ""
           - example: reverse-knn
             directory: implementations/python/reverse-knn
             pythonpath: "../kd-tree"

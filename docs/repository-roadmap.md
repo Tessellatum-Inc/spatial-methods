@@ -585,3 +585,9 @@ The change is a meaningful extension, not completion of the polygon overlay work
 
 - [x] Add HyperLogLog, Count-Min Sketch, Bloom filter and Algorithm R reservoir sampling as separate bounded-memory streaming structures, with deterministic hashing, parameter validation, tests and a canonical comparison lesson.
 - [ ] Add spatially partitioned/distributed merge patterns and workload benchmarks; sketches do not replace exact geometry or event storage.
+
+
+## Classification continuation — 16 November 2026
+
+- [x] Implement geometric interval, standard-deviation, box-plot, head/tail, Dalenius–Hodges and exact 1D ckmeans classification breaks, with explicit assumptions and a brute-force partition oracle for ckmeans.
+- [ ] Resolve the source's “maximum breaks” and “pretty breaks” labels before implementing them; continue with the remaining Section 16 flow, regionalisation, movement, marine, biodiversity and humanitarian algorithms.
