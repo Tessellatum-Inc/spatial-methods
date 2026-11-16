@@ -73,3 +73,8 @@ The multidirectional_hillshade function averages equally weighted local hillshad
 ## Sky-view factor
 
 `sky_view_factor` estimates the visible-sky fraction by radial horizon sampling at evenly spaced azimuths. It bilinearly samples the DEM, records the maximum positive horizon angle on each ray, and averages the squared cosine of those angles. It requires complete ray support to the declared maximum distance: cells whose rays leave the raster or encounter NoData are returned as NaN. This is an azimuth-sampled local approximation, not an exact hemispherical solid-angle integration, cast-shadow engine or solar-radiation model. Runtime grows with raster cells, azimuth count and radial samples.
+
+
+## Local relief model and multi-scale TPI
+
+The local-relief model subtracts a Gaussian-smoothed terrain background from the original DEM. Its Gaussian standard deviation is specified in horizontal map units and converted using x/y cell spacing. Normalized convolution uses finite-cell weights, so NoData holes do not act as zero-elevation pits; source NoData remains NoData in the residual. Positive residuals are locally higher than the smoothed background and negative residuals are locally lower. The result is scale-dependent and is not a landform class. The multi-scale TPI helper evaluates the existing focal TPI at several odd window sizes and returns one raster per scale.
