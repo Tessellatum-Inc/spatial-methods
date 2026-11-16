@@ -118,3 +118,40 @@ def shoreline_change_rates(years, positions, *, uncertainties=None):
         wintercept = ybar - wslope*xbar
         result.update({"wlr_rate": float(wslope), "wlr_intercept": float(wintercept)})
     return result
+
+
+def bruun_rule_recession(sea_level_rise, active_profile_width, berm_height, closure_depth):
+    """Idealized Bruun-rule recession R = S*W/(B+h*); consistent length units.
+    This equilibrium cross-shore sediment-conservation relation omits
+    alongshore transport, geology, barriers and profile disequilibrium.
+    It is not a site-specific shoreline forecast.
+    """
+    s, width, berm, depth = np.broadcast_arrays(
+        np.asarray(sea_level_rise, float), np.asarray(active_profile_width, float),
+        np.asarray(berm_height, float), np.asarray(closure_depth, float))
+    if np.any(~np.isfinite(s) | (s < 0) | ~np.isfinite(width) | (width <= 0)
+              | ~np.isfinite(berm) | (berm < 0) | ~np.isfinite(depth) | (depth <= 0)):
+        raise ValueError("rise and berm must be non-negative; width and closure depth positive")
+    return s * width / (berm + depth)
+
+
+def dean_equilibrium_profile(distance, scale_parameter):
+    """Dean equilibrium profile h(x)=A*x**(2/3); x>=0, A>0.
+    A has units length**(1/3) when x and h use the same length unit.
+    """
+    x = np.asarray(distance, dtype=float)
+    a = _finite_positive("scale_parameter", scale_parameter)
+    if np.any(~np.isfinite(x) | (x < 0)): raise ValueError("distance must be finite and non-negative")
+    return a * np.power(x, 2.0 / 3.0)
+
+
+def dean_profile_volume(scale_parameter, x_start, x_end):
+    """Analytically integrate Dean profile depth from x_start to x_end.
+    Returns (3/5)*A*(x_end**(5/3)-x_start**(5/3)); units are length**2.
+    """
+    a = _finite_positive("scale_parameter", scale_parameter)
+    try: x0, x1 = float(x_start), float(x_end)
+    except (TypeError, ValueError): raise ValueError("profile bounds must be finite") from None
+    if not np.isfinite([x0, x1]).all() or x0 < 0 or x1 < x0:
+        raise ValueError("profile bounds must be finite, non-negative and ordered")
+    return 3.0 * a / 5.0 * (x1 ** (5.0 / 3.0) - x0 ** (5.0 / 3.0))
