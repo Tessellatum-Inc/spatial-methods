@@ -8,6 +8,8 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Raster and terrain
 
+- [Brovey pan-sharpening](remote-sensing/brovey-pan-sharpening.md) — inject a co-registered panchromatic intensity into multispectral bands with an explicit NoData policy.
+
 - [DEM void filling](raster/dem-void-filling.md) — bounded synchronous inverse-distance interpolation for missing elevation cells.
 
 - [Stumpf bathymetry and SeaWiFS OC4v4 chlorophyll](remote-sensing/stumpf-bathymetry-and-oc4v4.md) — local log-band-ratio depth calibration and the sensor-specific OC4v4 chlorophyll polynomial.
