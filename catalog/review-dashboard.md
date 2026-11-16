@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 696 | Rows with a source-entry review status in the section indexes |
-| Partial | 167 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 529 | The source wording is preserved, but no independent review is recorded |
+| Partial | 168 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 528 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -35,7 +35,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 14 — Databases, graphics, morphology and hazards | 33 | 1 | 32 |
 | 15 — Vision, registration and vector extraction | 33 | 3 | 30 |
 | 16 — Flows, regions, deformation and marine | 25 | 9 | 16 |
-| 17 — Geometry, scalability, design and siting | 27 | 10 | 17 |
+| 17 — Geometry, scalability, design and siting | 27 | 11 | 16 |
 | 18 — Moving objects, routing, transit and water | 32 | 4 | 28 |
 | 19 — African applications, addressing and finance | 32 | 0 | 32 |
 | 20 — Indices, microwave, events and information | 25 | 8 | 17 |
