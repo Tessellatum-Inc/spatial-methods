@@ -96,3 +96,8 @@ The terrain-indices module now includes event direct-runoff depth using the SCS 
 The terrain/hydrology module now includes a time-stepped Green-Ampt infiltration update for constant rainfall intensity, including the analytical ponding threshold and implicit integration of the ponded phase. Inputs use millimetres and hours. It returns infiltration, cumulative infiltration, excess rainfall and ponding state. It assumes a homogeneous one-dimensional soil column and constant parameters during each step.
 
 It also includes discrete unit-hydrograph convolution. Rainfall-excess depths are convolved with ordinates expressed as discharge per unit depth, returning the full time/discharge series. The catchment-specific unit hydrograph and consistent interval/units must be supplied by the caller; this function does not derive or calibrate that hydrograph.
+
+
+## Raster viewshed and cumulative visibility
+
+The companion `viewshed` routine calculates observer-to-cell line of sight using discrete centre-to-centre Bresenham rays, optional observer/target heights and optional Earth-curvature/refraction correction. `cumulative_viewshed` sums visibility across supplied observer cells. NoData on a ray is conservatively treated as not visible. This is a transparent O(targets × ray length) baseline, not R3/R2/XDraw or an exact continuous-surface viewshed. See [the canonical lesson](../../../algorithms/raster/viewshed.md) and `test_viewshed.py`.
