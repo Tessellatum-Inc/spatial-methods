@@ -536,6 +536,9 @@ The source-to-implementation ledger must track, per source entry and child metho
 - Run the relevant package suites and then full repository CI on the exact resulting head when practical. Report package tests and full CI separately.
 - Keep the compendium open until all 47 pages and 22 sections have been reconciled and every entry has an evidence-backed disposition. Patreon/membership work remains downstream of that gate.
 
+- [x] Add explicit multiway-node regressions: four incident edges meeting at a shared polygon vertex, and three independently sourced proper-crossing edges meeting at one exact rational node. The tests assert event coalescing and that every participating edge is noded at the common coordinate.
+- [ ] Execute the new multiway regressions and full Martinez package suite; these additions are not yet runtime-verified.
+
 
 ## Polygon overlay work-package log — 16 November 2026
 
