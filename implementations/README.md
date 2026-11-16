@@ -212,3 +212,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Trend analysis
 
 - [Mann-Kendall and Sen trend methods](python/mann-kendall-sen/README.md): tie-corrected monotonic trend testing and median pairwise slope with optional time coordinates.
+
+
+### Small-area estimation
+
+- [Fay-Herriot area-level model](python/fay-herriot/README.md): REML estimation of between-area variance, GLS fixed effects, empirical BLUP predictions and a qualified plug-in MSE approximation, with tests and an [implementation walkthrough](python/fay-herriot/implementation-walkthrough.md).

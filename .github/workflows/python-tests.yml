@@ -783,6 +783,9 @@ jobs:
           - example: coastal-processes
             directory: implementations/python/coastal-processes
             pythonpath: ""
+          - example: fay-herriot
+            directory: implementations/python/fay-herriot
+            pythonpath: ""
 
     steps:
       - name: Check out repository

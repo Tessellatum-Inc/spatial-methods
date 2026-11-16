@@ -750,3 +750,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Add design-rank, underdetermined-model, known-coefficient and multi-harmonic tests.
 - [x] Document period units, coefficient ordering and the absence of autocorrelation-robust inference.
 - [ ] Add model-selection and dependence-aware inference only with explicit source review and independent validation.
+
+
+## Fay-Herriot small-area estimation — 17 November 2026
+
+- [x] Implement the area-level normal-normal model with REML variance-component estimation and GLS fixed effects.
+- [x] Return empirical BLUP predictions, shrinkage factors and a qualified plug-in MSE approximation.
+- [x] Add boundary, covariate, shrinkage and invalid-design tests; register the package in Python CI.
+- [ ] Implement unit-level small-area models, Horvitz-Thompson, model-assisted estimation and MRP as separate methods.
