@@ -1,14 +1,14 @@
-"""Native scanbeam decomposition primitives for a Vatti-family polygon clipper.
+"""Reference scanbeam and Boolean-cell pipeline for a Vatti-family clipper.
 
-This module deliberately stops before active-edge intersection processing and
-Boolean output construction. It extracts scanbeams, horizontal edges, bound
-edges and local minima from polygon contours.
+The implementation prioritizes exact-rational reference calculations and
+explicitly documents where it is not yet a production Vatti event scheduler.
 """
 from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction
 from math import isfinite
 from collections.abc import Sequence
+from functools import cmp_to_key
 
 Point = tuple[float, float]
 
@@ -534,3 +534,192 @@ def sweep_boolean(
                         lo, hi, left.edge_id, right.edge_id, vertices
                     ))
     return BooleanSweep(tuple(levels), tuple(cells), slice_count)
+
+
+@dataclass(frozen=True)
+class ContourResult:
+    """Closed output rings; shells are CCW and holes are CW by construction."""
+    rings: tuple[tuple[tuple[Fraction, Fraction], ...], ...]
+    boundary_edge_count: int
+
+
+def _cross(a, b):
+    return a[0] * b[1] - a[1] * b[0]
+
+
+def _polar_compare(a, b):
+    """Exact CCW polar ordering for non-zero vectors."""
+    ha = 0 if (a[1] > 0 or (a[1] == 0 and a[0] >= 0)) else 1
+    hb = 0 if (b[1] > 0 or (b[1] == 0 and b[0] >= 0)) else 1
+    if ha != hb:
+        return -1 if ha < hb else 1
+    cross = _cross(a, b)
+    if cross:
+        return -1 if cross > 0 else 1
+    da = a[0] * a[0] + a[1] * a[1]
+    db = b[0] * b[0] + b[1] * b[1]
+    return (da > db) - (da < db)
+
+
+def _point_on_segment(a, b, p):
+    return (_cross((b[0]-a[0], b[1]-a[1]),
+                   (p[0]-a[0], p[1]-a[1])) == 0 and
+            min(a[0], b[0]) <= p[0] <= max(a[0], b[0]) and
+            min(a[1], b[1]) <= p[1] <= max(a[1], b[1]))
+
+
+def _segment_parameter(a, b, p):
+    dx, dy = b[0]-a[0], b[1]-a[1]
+    return (p[0]-a[0])/dx if dx else (p[1]-a[1])/dy
+
+
+def _cell_boundary_segments(cells):
+    """Node cell edges at every cell vertex before cancelling shared edges.
+
+    This handles unequal subdivisions of a shared straight boundary (for
+    example, a long edge adjacent to two shorter edges) without floating point.
+    """
+    raw = []
+    vertices = set()
+    for cell in cells:
+        points = cell.vertices
+        vertices.update(points)
+        raw.extend((points[i], points[(i+1) % len(points)])
+                   for i in range(len(points)))
+    atomic = []
+    for a, b in raw:
+        cuts = sorted((p for p in vertices if _point_on_segment(a, b, p)),
+                      key=lambda p: _segment_parameter(a, b, p))
+        atomic.extend((u, v) for u, v in zip(cuts, cuts[1:]) if u != v)
+    return atomic
+
+
+def _cancel_shared_cell_edges(cells):
+    """Return directed exterior atomic edges after exact reverse-edge cancel."""
+    counts = {}
+    for a, b in _cell_boundary_segments(cells):
+        key = (a, b) if a < b else (b, a)
+        direction = 1 if (a, b) == key else -1
+        counts[key] = counts.get(key, 0) + direction
+    boundary = []
+    for (a, b), count in counts.items():
+        if abs(count) > 1:
+            raise ValueError("overlapping filled cells produce duplicate boundary edges")
+        if count == 1:
+            boundary.append((a, b))
+        elif count == -1:
+            boundary.append((b, a))
+    return tuple(boundary)
+
+
+def _ring_area2(ring):
+    return sum(ring[i][0] * ring[(i+1) % len(ring)][1] -
+               ring[(i+1) % len(ring)][0] * ring[i][1]
+               for i in range(len(ring)))
+
+
+def _simplify_ring(ring):
+    """Remove redundant collinear vertices while retaining exact coordinates."""
+    points = list(ring)
+    changed = True
+    while changed and len(points) > 3:
+        changed = False
+        kept = []
+        n = len(points)
+        for i, point in enumerate(points):
+            prev, nxt = points[(i-1) % n], points[(i+1) % n]
+            if _cross((point[0]-prev[0], point[1]-prev[1]),
+                      (nxt[0]-point[0], nxt[1]-point[1])) == 0:
+                changed = True
+            else:
+                kept.append(point)
+        if len(kept) < 3:
+            raise ValueError("contour collapsed during collinear simplification")
+        points = kept
+    return tuple(points)
+
+
+def stitch_filled_cells(cells: Sequence[FilledCell]) -> ContourResult:
+    """Cancel cell seams and stitch exact directed boundary edges into rings.
+
+    Each input cell is CCW, so its filled interior lies to the left of every
+    directed edge. Shared seams are noded at all cell vertices and cancelled.
+    At a multi-edge vertex, the clockwise predecessor of the incoming twin
+    defines the same local face-walk convention used by a planar DCEL.
+    """
+    boundary = _cancel_shared_cell_edges(cells)
+    if not boundary:
+        return ContourResult((), 0)
+
+    outgoing = {}
+    incoming_count = {}
+    for eid, (a, b) in enumerate(boundary):
+        outgoing.setdefault(a, []).append(eid)
+        incoming_count[b] = incoming_count.get(b, 0) + 1
+    if set(outgoing) != set(incoming_count):
+        raise ValueError("cell boundary has dangling vertices")
+    for vertex, edges in outgoing.items():
+        if len(edges) != incoming_count[vertex]:
+            raise ValueError("cell boundary is not balanced at a vertex")
+
+    successor = {}
+    for eid, (a, b) in enumerate(boundary):
+        candidates = outgoing[b]
+        reverse = (a[0]-b[0], a[1]-b[1])
+        ordered = sorted(candidates, key=cmp_to_key(
+            lambda first, second: _polar_compare(
+                (boundary[first][1][0]-b[0], boundary[first][1][1]-b[1]),
+                (boundary[second][1][0]-b[0], boundary[second][1][1]-b[1])
+            )))
+        predecessor = None
+        for candidate in ordered:
+            vector = (boundary[candidate][1][0]-b[0],
+                      boundary[candidate][1][1]-b[1])
+            if _polar_compare(vector, reverse) < 0:
+                predecessor = candidate
+            else:
+                break
+        successor[eid] = predecessor if predecessor is not None else ordered[-1]
+
+    if len(set(successor.values())) != len(boundary):
+        raise ValueError("boundary face-walk is not one-to-one at a vertex")
+
+    visited = set()
+    rings = []
+    for start in range(len(boundary)):
+        if start in visited:
+            continue
+        ring = []
+        current = start
+        while current not in visited:
+            visited.add(current)
+            ring.append(boundary[current][0])
+            current = successor[current]
+        if current != start:
+            raise ValueError("boundary walk entered a previously visited contour")
+        ring = _simplify_ring(ring)
+        if _ring_area2(ring) == 0:
+            raise ValueError("stitched contour has zero signed area")
+        rings.append(tuple(ring) + (ring[0],))
+
+    # Deterministic ordering: shells first, then holes; larger rings first.
+    rings.sort(key=lambda ring: (
+        0 if _ring_area2(ring[:-1]) > 0 else 1,
+        -abs(_ring_area2(ring[:-1])),
+        ring[0]
+    ))
+    return ContourResult(tuple(rings), len(boundary))
+
+
+def clip_rings(
+    decomposition: ScanbeamDecomposition,
+    subject_ring_ids: set[int],
+    clip_ring_ids: set[int],
+    operation: str = "intersection",
+    fill_rule: str = "non_zero",
+) -> ContourResult:
+    """Reference Boolean clipping API returning stitched polygon boundary rings."""
+    sweep = sweep_boolean(
+        decomposition, subject_ring_ids, clip_ring_ids, operation, fill_rule
+    )
+    return stitch_filled_cells(sweep.cells)
