@@ -120,7 +120,10 @@ def test_adjacent_collinear_boundary_edges_may_meet_at_one_noded_vertex():
     # have disjoint interiors. They are valid in a noded planar subdivision.
     d = DCEL.from_faces({"west": [rect(0, 0, 1, 1)], "east": [rect(1, 0, 2, 1)]})
     assert len(d.faces) == 2
-    shared = [edge for edge in d.halfedges if edge.twin >= 0 and d.halfedges[edge.twin].face is not None]
+    # Count only bounded-face half-edges whose twins also belong to a
+    # bounded face; exterior twins are not shared subdivision edges.
+    shared = [edge for edge in d.halfedges
+              if edge.face is not None and d.halfedges[edge.twin].face is not None]
     assert len(shared) == 2
 
 
