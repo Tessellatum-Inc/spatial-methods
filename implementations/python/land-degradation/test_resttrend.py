@@ -5,8 +5,15 @@ from resttrend import resttrend
 
 def test_resttrend_recovers_rainfall_response_and_residual_trend():
     years = np.arange(2000., 2012.)
-    precipitation = np.column_stack((np.linspace(100., 500., 12),
-                                     np.tile([100., 300., 500.], 4)))
+    time = years - years.mean()
+    phase = np.arange(len(years), dtype=float)
+    raw1 = np.sin(phase*1.7)
+    raw2 = np.cos(phase*1.1)
+    raw1 -= raw1.mean()
+    raw2 -= raw2.mean()
+    raw1 -= time * (time @ raw1) / (time @ time)
+    raw2 -= time * (time @ raw2) / (time @ time)
+    precipitation = np.column_stack((200. + 100.*raw1, 250. + 80.*raw2))
     residual_trend = np.array([-.02, .03])
     ndvi = .2 + .0015*precipitation + (years-years[0])[:,None]*residual_trend
     result = resttrend(ndvi, precipitation, years, min_observations=6)
