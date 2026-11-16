@@ -160,3 +160,6 @@ Four source-listed streaming summaries now have tested reference implementations
 - Section 4 rainfall-runoff: added the SCS event curve-number runoff-depth equation and AMC-II to dry/wet empirical curve-number conversions, with threshold, analytic, broadcast and validation tests. Unit hydrograph routing, Green-Ampt infiltration, TOPMODEL and full SWAT/HEC-HMS/LISFLOOD/VIC systems remain separate work.
 
 - Section 4 rainfall-runoff: added Green-Ampt constant-intensity infiltration stepping with ponding-onset handling and implicit ponded-phase integration, plus full discrete unit-hydrograph convolution of rainfall excess. The latter consumes a caller-supplied catchment-specific hydrograph; hydrograph derivation/calibration, TOPMODEL and full catchment-model systems remain open.
+
+
+- Section 4 visibility: added a tested discrete raster viewshed and cumulative viewshed count using Bresenham centre-to-centre rays, observer/target heights and optional Earth-curvature/refraction correction. The implementation conservatively marks targets with NoData along the ray as not visible; R3/R2/XDraw, exact continuous-surface viewsheds, isovists, radar coverage and Fresnel clearance remain open.
