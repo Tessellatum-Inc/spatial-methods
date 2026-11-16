@@ -260,7 +260,7 @@ class RandomizedTrapezoidalMap:
         self._x_root = self._build_x_tree(0, len(self.slabs))
 
     def _link_trapezoid_neighbors(self) -> None:
-        \"\"\"Build reciprocal adjacency across shared vertical trapezoid sides.\"\"\"
+        """Build reciprocal adjacency across shared vertical trapezoid sides."""
         xmin, ymin, xmax, ymax = self.bounds
         ending: dict[float, list[Trapezoid]] = {}
         starting: dict[float, list[Trapezoid]] = {}
