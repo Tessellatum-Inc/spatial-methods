@@ -2,7 +2,7 @@
 import random
 
 import pytest
-from shapely.geometry import GeometryCollection, Point, Polygon
+from shapely.geometry import GeometryCollection, Polygon
 from shapely.ops import unary_union
 
 from vatti_scanbeam import clip_rings, decompose_scanbeams
@@ -100,3 +100,25 @@ def test_concave_disconnected_overlay_matches_shapely(operation):
     if operation == "intersection":
         assert actual.geom_type == "MultiPolygon"
         assert len(actual.geoms) == 2
+
+
+@pytest.mark.parametrize(
+    "operation", ("intersection", "union", "difference", "xor")
+)
+def test_hole_aware_vatti_overlay_matches_shapely(operation):
+    outer = [(0, 0), (10, 0), (10, 10), (0, 10)]
+    hole = [(3, 3), (3, 7), (7, 7), (7, 3)]
+    clip = [(5, -1), (12, -1), (12, 12), (5, 12)]
+    decomposition = decompose_scanbeams([outer, hole, clip])
+    rings = clip_rings(decomposition, {0, 1}, {2}, operation).rings
+    actual = _native_geometry(rings)
+    left, right = Polygon(outer, [hole]), Polygon(clip)
+    expected = {
+        "intersection": left.intersection,
+        "union": left.union,
+        "difference": left.difference,
+        "xor": left.symmetric_difference,
+    }[operation](right)
+    tolerance = 1e-9 * max(1.0, expected.area)
+    assert actual.is_valid
+    assert actual.symmetric_difference(expected).area <= tolerance
