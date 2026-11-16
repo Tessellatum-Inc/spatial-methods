@@ -19,14 +19,14 @@ def test_weibull_plotting_positions_are_descending_and_ranked():
 def test_gumbel_fit_and_return_levels_increase_with_period():
     p = fit_gumbel_lmoments(sample())
     assert p["scale"] > 0
-    q = gumbel_return_level([2, 10, 100], **p)
+    q = gumbel_return_level([2, 10, 100], location=p["location"], scale=p["scale"])
     assert np.all(np.diff(q) > 0)
 
 
 def test_gev_fit_produces_finite_parameters_and_increasing_quantiles():
     p = fit_gev_lmoments(sample())
     assert p["scale"] > 0
-    q = gev_return_level([2, 10, 100], **p)
+    q = gev_return_level([2, 10, 100], location=p["location"], scale=p["scale"], shape=p["shape"])
     assert np.isfinite(q).all()
     assert np.all(np.diff(q) > 0)
 
