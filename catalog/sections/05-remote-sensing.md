@@ -42,7 +42,7 @@ The canonical records now cover the spectral-index family, global Otsu threshold
 | Segmentation: watershed, SLIC superpixels, mean shift, region growing, multiresolution segmentation, graph cuts, MRF and CRF, active contours, level sets | Segmentation algorithms / optimisation and probabilistic models | 8 | Not checked — intake only |
 | Object-based image analysis (OBIA) | Analysis workflow / method family | 8 | Not checked — intake only |
 | Time-series classification: TempCNN, Transformer, InceptionTime, TimeMatch, DTW, TWDTW | Time-series models / matching methods | 8 | Not checked — intake only |
-| Change detection: differencing, CVA, post-classification, IR-MAD, Siamese networks, ChangeFormer | Change-detection methods / model families | 8 | Not checked — intake only |
+| Change detection: [differencing and CVA](../../algorithms/remote-sensing/change-vector-analysis.md), post-classification, IR-MAD, Siamese networks, ChangeFormer | Change-detection methods / model families | 8 | Partial — tested bitemporal spectral differencing/CVA (Euclidean and covariance-standardized magnitudes) and ordered post-classification transition matrices are implemented; IR-MAD, learned Siamese/ChangeFormer methods, threshold calibration and accuracy-adjusted change estimation remain open |
 | Fractional cover: spectral mixture analysis, regression trees, vegetation continuous fields | Spectral unmixing / regression / derived products | 8 | Not checked — intake only |
 
 ## Hyperspectral
@@ -109,3 +109,6 @@ The NDVI report identity, author list and report number were checked against the
 
 
 The co-registration source entry now includes a tested FFT phase-correlation translation estimator and a RANSAC affine estimator for supplied point correspondences. Feature detection/matching, local deformation, orthorectification, mosaicking, color balancing and seamline optimization remain separate outstanding workflows.
+
+
+The change-detection source entry now has a NumPy CVA baseline (after-minus-before vectors, Euclidean magnitude and ridge-stabilized Mahalanobis magnitude) plus post-classification transition matrices and change masks. These require aligned, radiometrically comparable dates and do not implement IR-MAD or learned change-detection architectures.

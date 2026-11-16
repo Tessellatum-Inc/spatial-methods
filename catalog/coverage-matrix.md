@@ -181,3 +181,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 5 image registration: added FFT phase correlation for global translation and RANSAC affine transform estimation from matched point pairs, with tests and limitations. Feature detection/matching, local deformation, orthorectification, mosaicking and seamline optimization remain open.
+
+
+- Section 5 change detection: added tested bitemporal change-vector analysis with Euclidean and covariance-standardized magnitudes, plus post-classification transition matrices and pixel change masks. The independent tests include direct linear-algebra and pixelwise counting oracles. IR-MAD, learned Siamese/ChangeFormer models, threshold calibration and accuracy-adjusted change estimates remain open.

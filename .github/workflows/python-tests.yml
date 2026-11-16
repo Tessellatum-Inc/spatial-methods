@@ -213,6 +213,9 @@ jobs:
           - example: optical-flow
             directory: implementations/python/optical-flow
             pythonpath: ""
+          - example: remote-sensing-change
+            directory: implementations/python/remote-sensing-change
+            pythonpath: ""
           - example: distribution-shift
             directory: implementations/python/distribution-shift
             pythonpath: ""

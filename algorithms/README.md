@@ -335,3 +335,6 @@ Records may have different evidence and implementation status. Check the status 
 - [DRASTIC and landslide susceptibility baselines](raster/susceptibility-indices.md) — calculate weighted DRASTIC ratings, categorical frequency ratios and ridge-regularized logistic susceptibility probabilities.
 
 - [Image co-registration](remote-sensing/image-coregistration.md) — estimate global translation by phase correlation and robust affine transforms from matched point correspondences.
+
+
+- [Bitemporal change detection: CVA and post-classification comparison](remote-sensing/change-vector-analysis.md) — compare aligned multispectral dates with spectral change vectors and summarize categorical transitions.
