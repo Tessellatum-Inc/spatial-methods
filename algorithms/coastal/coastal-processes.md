@@ -1,0 +1,32 @@
+# Coastal empirical processes and shoreline change rates
+
+## Stockdon wave runup
+
+Stockdon et al.'s empirical parameterization estimates the 2% exceedance vertical runup statistic from deep-water significant wave height, peak period and foreshore slope:
+
+\[
+R_{2\%}=1.1\left[0.35\beta_f\sqrt{H_0L_0}
++0.5\sqrt{H_0L_0(0.563\beta_f^2+0.004)}\right],
+\qquad L_0=\frac{gT^2}{2\pi}.
+\]
+
+The package also exposes scaled R1, mean and low summaries. It is an empirical screening model, not a coupled tide-surge-wave inundation solver.
+
+## CERC longshore transport
+
+The implemented CERC-style bulk estimate uses breaking wave height (H_b), angle (alpha) from shore-normal and a shallow-water group velocity approximation (C_g=\sqrt{gH_b}):
+
+\[
+P_{ls}=\frac{\rho_w g H_b^2 C_g}{8}\sin\alpha\cos\alpha,
+\qquad Q=\frac{K P_{ls}}{(\rho_s-\rho_w)g(1-p)}.
+\]
+
+The sign follows wave-angle sign. Coefficients and breaking-wave transformation are site-sensitive; Kamphuis' alternative is not represented by this formula.
+
+## Shoreline change statistics
+
+For transect positions (y_i) at survey years (t_i), EPR is ((y_n-y_1)/(t_n-t_1)). OLS fits (y_i=a+bt_i+\epsilon_i). Optional WLR minimizes weighted squared residuals using (w_i=1/\sigma_i^2). These are rate estimators only, not the full Digital Shoreline Analysis System workflow.
+
+## Reference implementation
+
+See [coastal-processes](../../implementations/python/coastal-processes/README.md). All methods state their units, inputs and scope; tests use analytic sign, scaling and regression cases.
