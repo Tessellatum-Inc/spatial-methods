@@ -177,3 +177,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Solar geometry
 
 - [Solar geometry](python/solar-geometry/README.md): UTC-normalized solar position and top-of-atmosphere irradiance, with timezone and coordinate validation.
+
+
+### Coastal optical retrieval
+
+- [Stumpf bathymetry and OC4v4 chlorophyll](python/coastal-optical-retrieval/README.md): calibrated empirical satellite-derived depth and SeaWiFS-specific chlorophyll-a reference methods.
