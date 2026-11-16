@@ -23,6 +23,8 @@ def idw_interpolate(samples, values, queries, *, power=2.0,
     """
     sample_points = _points(samples, "sample")
     query_points = _points(queries, "query")
+    if isinstance(values, (str, bytes)) or not isinstance(values, (list, tuple)):
+        raise ValueError("values must be a sequence")
     if not sample_points or len(sample_points) != len(values):
         raise ValueError("samples and values must have equal non-zero length")
     sample_values = []
