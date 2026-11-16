@@ -401,6 +401,14 @@ def classify_boundary_fragments(polygons, *, operation='intersection', epsilon=1
         a,b=(f.b,f.a) if reverse else (f.a,f.b)
         t0,t1=(f.t1,f.t0) if reverse else (f.t0,f.t1)
         selected.append(SplitSegment(f.source,f.ring,f.index,a,b,t0,t1))
+    # Coincident source boundaries can generate the same oriented result edge
+    # from both operands. Keep one geometric representative before stitching.
+    unique=[]; seen=set()
+    for edge in selected:
+        signature=(_fraction_point(edge.a),_fraction_point(edge.b))
+        if signature in seen: continue
+        seen.add(signature); unique.append(edge)
+    selected=unique
     return {'operation':operation,'selected_fragments':tuple(selected),
             'intersection_events':result['intersection_events']}
 
