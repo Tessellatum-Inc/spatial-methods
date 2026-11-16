@@ -870,7 +870,7 @@ def sweep_neighbour_ordered_bundles(
     current_y = lower
     while events:
         y, x, _, index, pair = heapq.heappop(events)
-        if y <= current_y:
+        if y < current_y:
             continue
         if y >= upper:
             break
@@ -885,7 +885,7 @@ def sweep_neighbour_ordered_bundles(
             continue
         if y > current_y:
             slices.append(BundleSlice(current_y, y, tuple(ordered)))
-        current_y = y
+            current_y = y
 
         # Expand the event to every bundle incident at this same geometric
         # vertex, handling multiway crossings as one atomic order change.
