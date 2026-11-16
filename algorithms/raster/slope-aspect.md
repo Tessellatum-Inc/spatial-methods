@@ -74,7 +74,7 @@ Slope and curvature are sensitive to DEM resolution and noise. Aspect and direct
 - Horn, B. K. P. (1981), *Hill shading and the reflectance map*, Proceedings of the IEEE, 69(1), 14–47.
 - Burrough, P. A. and McDonnell, R. A. (1998), *Principles of Geographical Information Systems*, Oxford University Press.
 
-**Scope:** local Horn and Zevenbergen–Thorne slope/aspect plus central-difference profile/plan curvature; no multiscale derivatives, geographic-grid correction or DEM conditioning.
+**Scope:** local Horn and Zevenbergen–Thorne slope/aspect plus central-difference profile/plan curvature; multiscale curvature is provided as a separate Gaussian scale-space baseline; no geographic-grid correction, geomorphon classification or DEM conditioning.
 
 
 ## Profile and plan curvature
@@ -88,3 +88,10 @@ $$k_{plan}=-\frac{z_{xx}z_y^2-2z_{xy}z_xz_y+z_{yy}z_x^2}{p^2\sqrt{1+p^2}}$$
 The numerators project the Hessian onto the downslope direction and its perpendicular, respectively. These are signed curvatures under the convention shown; software packages may use different signs or scaled variants. The companion `terrain_curvature` function estimates derivatives with central differences and returns inverse-horizontal-unit values. Flat cells are undefined because the directional axes cannot be selected. It uses a strict 3×3 NoData and border rule.
 
 A useful check is a plane, whose two curvatures are zero, and a cylindrical parabola (z=x^2), whose profile curvature is nonzero while plan curvature is zero. These local estimates are resolution- and noise-sensitive; they are not substitutes for multiscale terrain classification.
+
+
+## Multiscale Gaussian curvature
+
+The companion `multiscale_terrain_curvature` evaluates profile and plan curvature after separable Gaussian smoothing. Each requested scale is a Gaussian standard deviation in horizontal map units; the implementation converts it independently to row and column pixel units, applies reflective padding, and then calls the same central-difference curvature estimator. The result is a mapping from scale to the two curvature rasters.
+
+This separates terrain form at different spatial scales: small scales retain more local variation, while larger scales suppress short-wavelength roughness. The current reference implementation requires a fully finite DEM rather than silently allowing NoData to contaminate the Gaussian convolution. It is computationally direct and intended for teaching and moderate grids, not as a replacement for optimized large-raster filtering. Scale values, cell size, vertical conversion and boundary handling should accompany any derived map.
