@@ -14,11 +14,13 @@ provides:
 - local-minimum pairs, including horizontal bottom plateaus;
 - exact rational slope ordering for the two bounds at each minimum;
 - active-edge ordering at a scanbeam-band midpoint;
-- exact pairwise crossing events within a band.
+- exact pairwise crossing events within a band;
+- band subdivision at crossing levels and active-edge reordering on either side;
+- cumulative signed winding transitions in left-to-right edge order.
 
 The current crossing scheduler is an O(m²) reference calculation, not the
 optimized neighbour-event scheduler used by a full sweep-line clipper. This
-is a **partial native implementation**. Incremental active-edge updates,
+is a **partial native implementation**. Efficient neighbour-only intersection scheduling, incremental active-edge updates,
 horizontal processing, fill-rule propagation and Boolean output construction
 remain outstanding.
 
