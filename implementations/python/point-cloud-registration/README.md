@@ -15,7 +15,7 @@ The iterative_closest_point function estimates a proper rigid transform from sou
 
 The point_to_plane_icp function requires target-frame surface normals. It minimises signed point-to-plane residuals with a linearised six-parameter rigid update at each iteration. Normals are normalised internally; the method reports point-to-plane RMSE, transform, fitness and convergence diagnostics. The Jacobian must constrain all six degrees of freedom, so planar, symmetric or poorly distributed geometry is rejected or may be ill-conditioned. A useful initial pose and sufficient overlap remain essential.
 
-Both methods are local optimisers. Neither implements generalized ICP, normal estimation, NDT, feature descriptors, RANSAC correspondence generation, loop closure or uncertainty. Point-to-plane accuracy depends on normal quality and spatial distribution; validate with independent checkpoints and residual maps.
+Both methods are local optimisers. These methods do not provide normal estimation, feature descriptors, RANSAC correspondence generation, loop closure or uncertainty. Point-to-plane accuracy depends on normal quality and spatial distribution; validate with independent checkpoints and residual maps.
 
 ## Point-cloud comparison
 
