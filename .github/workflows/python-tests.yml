@@ -586,6 +586,9 @@ jobs:
           - example: stochastic-logdet
             directory: implementations/python/stochastic-logdet
             pythonpath: ""
+          - example: spatial-linear-solvers
+            directory: implementations/python/spatial-linear-solvers
+            pythonpath: ""
           - example: regional-dynamics
             directory: implementations/python/regional-dynamics
             pythonpath: ""

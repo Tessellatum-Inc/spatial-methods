@@ -365,3 +365,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Biodiversity occurrence and grid metrics](biodiversity/range-metrics.md) — convex-hull extent of occurrence, grid-based area of occupancy, species richness and weighted endemism.
 
 - [Stochastic Lanczos log-determinant](statistics/stochastic-lanczos-logdet.md) — Rademacher trace probes and Lanczos quadrature for dense/sparse SPD matrices.
+
+- [Spatial linear solvers and Kronecker operators](statistics/spatial-linear-solvers.md) — preconditioned conjugate gradient and matrix-free Kronecker matrix-vector products.

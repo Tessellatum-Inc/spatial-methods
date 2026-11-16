@@ -24,7 +24,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Log-determinant approximation: Chebyshev, Monte Carlo trace estimators, Lanczos, Pace-Barry, sparse Cholesky | Numerical approximation / sparse matrix methods | 35 | Partial — stochastic Lanczos quadrature and Chebyshev polynomial trace estimators with Rademacher probes are implemented and tested for dense and sparse symmetric matrices; Pace–Barry and sparse Cholesky alternatives remain open |
-| Gaussian Markov random field sampling, conjugate gradient solvers, Kronecker-structured covariances, circulant embedding with FFT on regular grids | Spatial stochastic simulation / numerical solvers / covariance structures | 35 | Not checked — intake only |
+| Gaussian Markov random field sampling, conjugate gradient solvers, Kronecker-structured covariances, circulant embedding with FFT on regular grids | Spatial stochastic simulation / numerical solvers / covariance structures | 35 | Partial — tested preconditioned conjugate-gradient and matrix-free Kronecker-product matrix-vector kernels are implemented; GMRF sampling and circulant embedding remain open |
 | Sparse GP methods: inducing points, SVGP, Nystrom, structured kernel interpolation (KISS-GP), random Fourier features, hierarchical matrices, fast multipole | Scalable Gaussian-process approximations | 35 | Not checked — intake only |
 | Variogram estimation: Matheron, Cressie-Hawkins and Genton robust estimators, REML, composite likelihood, cross-validation-based fitting | Variogram estimators / model-fitting methods | 35 | Partially implemented: Matheron and Cressie-Hawkins empirical estimators, directional bins and spherical/exponential/Gaussian nonlinear fitting are tested; Genton, REML, composite likelihood and CV fitting remain open |
 
@@ -122,3 +122,8 @@ A stochastic Lanczos quadrature estimator now approximates log determinants usin
 ### Chebyshev log-determinant implementation update
 
 The same package now includes a Chebyshev polynomial trace estimator. It applies a truncated expansion of the logarithm to dense or sparse matrices using matrix-vector recurrences and Rademacher probes. Positive spectral bounds are supplied explicitly by the caller; convergence must be checked by increasing polynomial degree and probe count.
+
+
+### Iterative linear solver and Kronecker operator implementation update
+
+A symmetric-positive-definite conjugate-gradient solver with optional Jacobi preconditioning and a matrix-free Kronecker-product matrix-vector operator now have independent dense/sparse and direct-product tests. The addition does not implement GMRF sampling, circulant embedding, or structured covariance estimation.

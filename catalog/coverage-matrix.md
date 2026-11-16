@@ -205,3 +205,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 Section 17 now includes a tested stochastic Lanczos quadrature log-determinant estimator for dense and sparse symmetric positive-definite matrices. It does not close the full scalable log-determinant family: Chebyshev, Pace–Barry and sparse Cholesky implementations remain open.
+
+
+Section 17 now includes a tested conjugate-gradient solver and matrix-free Kronecker matrix-vector product. GMRF sampling and circulant embedding remain open.
