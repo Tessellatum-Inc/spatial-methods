@@ -114,6 +114,8 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Raster operations
 
+- [Raster range reclassification](raster/raster-reclassification.md) — apply explicit non-overlapping half-open intervals to raster values while preserving NoData.
+
 - [Euclidean distance transform](raster/euclidean-distance-transform.md) — calculate centre-to-centre distance from every grid cell to the nearest target cell.
 - [Focal raster statistics](raster/focal-statistics.md) — calculate NoData-aware square-window means efficiently using integral images.
 - [Priority-Flood](raster/priority-flood.md) — fill DEM depressions to their lowest spill elevation and inspect the fill-depth surface.
