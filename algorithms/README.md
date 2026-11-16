@@ -387,3 +387,8 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [Biodiversity occurrence and grid metrics](biodiversity/range-metrics.md) — convex-hull extent of occurrence, grid-based area of occupancy, species richness and weighted endemism.
+
+
+- [Fay-Herriot area-level model](statistics/fay-herriot.md) — REML small-area estimation with empirical BLUP prediction.
+- [Horvitz-Thompson estimator](statistics/horvitz-thompson.md) — design-based population total and mean with pairwise inclusion-probability variance.
+- [Statistical downscaling](statistics/statistical-downscaling.md) — empirical quantile mapping and additive/multiplicative delta-change baselines.

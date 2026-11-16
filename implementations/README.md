@@ -217,3 +217,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Small-area estimation
 
 - [Fay-Herriot area-level model](python/fay-herriot/README.md): REML estimation of between-area variance, GLS fixed effects, empirical BLUP predictions and a qualified plug-in MSE approximation, with tests and an [implementation walkthrough](python/fay-herriot/implementation-walkthrough.md).
+
+
+### Statistical downscaling
+
+- [Quantile mapping and delta change](python/statistical-downscaling/README.md): empirical univariate quantile mapping and additive/multiplicative mean-change adjustment, with tests and an [implementation walkthrough](python/statistical-downscaling/implementation-walkthrough.md).

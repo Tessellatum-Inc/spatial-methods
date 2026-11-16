@@ -766,3 +766,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Add the pairwise-inclusion variance estimator with symmetry, diagonal and positivity validation.
 - [x] Add an SRS-without-replacement hand-check, census zero-variance test and invalid-design tests.
 - [ ] Add model-assisted survey estimators and document variance-estimation requirements for additional sampling designs.
+
+
+## Statistical downscaling baselines — 17 November 2026
+
+- [x] Implement univariate empirical quantile mapping with duplicate-knot handling and explicit constant-tail behaviour.
+- [x] Implement additive and multiplicative delta-change methods with shape-preserving outputs.
+- [x] Add known-mapping, tail, constant-calibration, shape and invalid-input tests; register in Python CI.
+- [ ] Add BCSD, analog methods and multivariate dependence correction as separate validated workflows.

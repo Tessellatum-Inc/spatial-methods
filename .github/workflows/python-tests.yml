@@ -786,6 +786,9 @@ jobs:
           - example: fay-herriot
             directory: implementations/python/fay-herriot
             pythonpath: ""
+          - example: statistical-downscaling
+            directory: implementations/python/statistical-downscaling
+            pythonpath: ""
 
     steps:
       - name: Check out repository
