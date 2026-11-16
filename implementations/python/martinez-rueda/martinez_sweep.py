@@ -2,7 +2,8 @@
 from dataclasses import dataclass
 import heapq
 from fractions import Fraction
-from math import isfinite, atan2, pi
+from math import isfinite
+from functools import cmp_to_key
 
 @dataclass(frozen=True)
 class Segment:
@@ -499,6 +500,22 @@ def fragment_area_contribution(fragments):
     """Signed shoelace contribution; meaningful when selected fragments close."""
     return 0.5*sum(f.a[0]*f.b[1]-f.b[0]*f.a[1] for f in fragments)
 
+def _polar_half(vector):
+    x,y=vector
+    return 0 if (y>0 or (y==0 and x>=0)) else 1
+
+
+def _polar_compare(first,second):
+    """Exact counter-clockwise polar ordering for non-zero rational vectors."""
+    h1,h2=_polar_half(first),_polar_half(second)
+    if h1!=h2:
+        return -1 if h1<h2 else 1
+    cross=first[0]*second[1]-first[1]*second[0]
+    if cross>0: return -1
+    if cross<0: return 1
+    return 0
+
+
 def stitch_boundary_fragments(fragments, *, epsilon=1e-10):
     """Stitch directed fragments into closed rings using a planar face walk.
     Raises rather than returning open or degenerate chains.
@@ -521,11 +538,21 @@ def stitch_boundary_fragments(fragments, *, epsilon=1e-10):
                 ring.pop(); break
             candidates=[i for i in outgoing.get(end_key,()) if i not in used]
             if not candidates: raise ValueError('selected boundary fragments contain an open chain')
-            reverse_angle=atan2(edge.a[1]-edge.b[1],edge.a[0]-edge.b[0])
-            def turn(i):
-                nxt=edges[i]; angle=atan2(nxt.b[1]-nxt.a[1],nxt.b[0]-nxt.a[0])
-                return ((reverse_angle-angle)%(2*pi),i)
-            current=min(candidates,key=turn)
+            reverse=(edge.a[0]-edge.b[0],edge.a[1]-edge.b[1])
+            def vector(i):
+                nxt=edges[i]
+                return (nxt.b[0]-nxt.a[0],nxt.b[1]-nxt.a[1])
+            ordered=sorted(candidates,key=cmp_to_key(
+                lambda first,second: _polar_compare(vector(first),vector(second))
+                or (first>second)-(first<second)
+            ))
+            predecessor=None
+            for candidate in ordered:
+                if _polar_compare(vector(candidate),reverse)<=0:
+                    predecessor=candidate
+                else:
+                    break
+            current=predecessor if predecessor is not None else ordered[-1]
         else: raise ValueError('boundary traversal exceeded fragment count')
         if len(ring)<3 or _signed_area_exact(ring)==0: raise ValueError('stitched boundary is degenerate')
         rings.append(tuple(ring))
