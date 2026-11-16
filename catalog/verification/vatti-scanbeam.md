@@ -35,7 +35,7 @@
 - Coincident and opposite-direction coincident rings.
 - Full/partial shared boundaries and vertex-touching components.
 - Three-way simultaneous crossing and neighbour-event order changes.
-- Shapely differential area and polygon-component comparisons across five fixtures and four operations.
+- Shapely differential area, symmetric-difference geometry and component comparisons across 29 deterministic fixtures and four operations.
 - Clockwise/counter-clockwise equivalence.
 - Non-horizontal minimum and horizontal bottom plateau.
 - Multiple local minima.
