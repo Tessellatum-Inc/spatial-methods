@@ -360,3 +360,6 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [Intervening-opportunities spatial interaction](spatial-interaction/intervening-opportunities.md) — cumulative opportunity-acceptance allocation by increasing generalized cost, with explicit unallocated mass.
+
+
+- [Biodiversity occurrence and grid metrics](biodiversity/range-metrics.md) — convex-hull extent of occurrence, grid-based area of occupancy, species richness and weighted endemism.
