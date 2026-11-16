@@ -273,6 +273,9 @@ jobs:
           - example: flow-capturing-location
             directory: implementations/python/flow-capturing-location
             pythonpath: ""
+          - example: brovey-pansharpening
+            directory: implementations/python/brovey-pansharpening
+            pythonpath: ""
           - example: coastal-optical-retrieval
             directory: implementations/python/coastal-optical-retrieval
             pythonpath: ""
