@@ -152,3 +152,7 @@ Four source-listed streaming summaries now have tested reference implementations
 - Section 4 bathymetry: added a calibration-based satellite log-band-ratio depth estimator and multibeam sounding mean/median gridding with per-cell counts. These are scoped empirical/aggregation baselines. Physics-based optical inversion, atmospheric and water-column correction, ICESat-2 calibration, CUBE uncertainty estimation and LiDAR refraction correction remain open.
 
 - Coastal vulnerability: added the conventional six-variable ordinal CVI aggregation (square root of the product of 1–5 ranks). Local variable selection, normalization/ranking thresholds and validation against observed impacts remain study-specific and are not supplied by the generic function.
+
+
+- Section 4 terrain/hydrology: the terrain-indices package now includes local peak/pit detection with complete-window NoData handling and a prominence threshold, plus DEM-derived reservoir stage-area-storage curves. The latter assumes horizontal-prism cells and does not enforce hydrological connectivity, spill thresholds or hydraulic operation. Geomorphons and ridge/valley extraction remain open.
+- Section 4 catalogue correction: bathymetry implementation status is recorded on the bathymetry source row, not the unrelated compression/formats row. Compression formats remain unreviewed.
