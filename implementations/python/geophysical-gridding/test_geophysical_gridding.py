@@ -97,3 +97,52 @@ def test_ordinary_kriging_rejects_single_sample():
     from geophysical_gridding import ordinary_kriging_grid
     with pytest.raises(ValueError):
         ordinary_kriging_grid([[0, 0]], [1], [0], [0], 1, 1)
+
+
+def test_cressman_and_barnes_reproduce_constant_field():
+    from geophysical_gridding import cressman_grid, barnes_grid
+    points = np.array([[1, 1], [3, 1], [1, 3], [3, 3]], dtype=float)
+    values = np.full(4, 12.5)
+    x = np.linspace(0, 4, 9)
+    y = np.linspace(0, 4, 9)
+    cressman = cressman_grid(points, values, x, y, [4.0, 2.0])
+    barnes = barnes_grid(points, values, x, y, [4.0, 2.0], kappa=1.0, gamma=[1.0, .5])
+    np.testing.assert_allclose(cressman, 12.5, atol=1e-12)
+    np.testing.assert_allclose(barnes, 12.5, atol=1e-12)
+
+
+def test_objective_analysis_uses_background_and_preserves_unsupported_nodes():
+    from geophysical_gridding import cressman_grid, barnes_grid
+    points = np.array([[1, 1]], dtype=float)
+    values = np.array([10.0])
+    x = np.array([0., 1., 2., 3., 4.])
+    y = np.array([0., 1., 2., 3., 4.])
+    c = cressman_grid(points, values, x, y, [1.5], background=2.0)
+    b = barnes_grid(points, values, x, y, [1.5], background=2.0, gamma=.5)
+    assert c[0, 0] == 2.0 and c[1, 1] == 10.0
+    assert b[0, 0] > 2.0 and b[1, 1] == 6.0
+
+
+@pytest.mark.parametrize("method", ["cressman", "barnes"])
+def test_objective_analysis_rejects_bad_grid_and_radii(method):
+    from geophysical_gridding import cressman_grid, barnes_grid
+    fn = cressman_grid if method == "cressman" else barnes_grid
+    args = (POINTS, VALUES, [0, 2], [0, 2])
+    with pytest.raises(ValueError):
+        fn(*args, radii=[1.0, 2.0])
+    with pytest.raises(ValueError):
+        fn(*args, radii=[0.0])
+    with pytest.raises(ValueError):
+        fn(*args, radii=[1.0], background=np.zeros((3, 3)))
+    with pytest.raises(ValueError):
+        fn(*args, radii=[1.0], x_coordinates=[0, 2][::-1])
+
+
+def test_barnes_rejects_invalid_kappa_and_gamma():
+    from geophysical_gridding import barnes_grid
+    with pytest.raises(ValueError):
+        barnes_grid(POINTS, VALUES, [0, 1, 2], [0, 1, 2], [3], kappa=0)
+    with pytest.raises(ValueError):
+        barnes_grid(POINTS, VALUES, [0, 1, 2], [0, 1, 2], [3], gamma=1.1)
+    with pytest.raises(ValueError):
+        barnes_grid(POINTS, VALUES, [0, 1, 2], [0, 1, 2], [3, 2], gamma=[1.0])
