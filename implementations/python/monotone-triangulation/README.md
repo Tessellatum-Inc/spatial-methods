@@ -31,3 +31,6 @@ Tests check triangle count, CCW orientation, exact area conservation, both
 windings, non-monotone rejection, tied-y rejection, self-intersection rejection
 and a concave U-shaped polygon requiring multiple monotone pieces. Independent
 triangulation comparisons and edge-incidence/overlap checks remain follow-ups.
+
+
+**Implementation note:** The triangulator validates strict y-monotonicity, then uses exact rational ear clipping as the robust reference path. This is O(n²), not the O(n log n) stack bound. The general-polygon path first partitions with the start/end/split/merge/regular sweep; that sweep currently uses a list status and is also O(n²). Horizontal event ties and holes remain unsupported.

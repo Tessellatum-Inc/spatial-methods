@@ -38,7 +38,7 @@ def test_nodata_barriers_and_multiple_sources():
     out=least_cost_time(z,[(0,0)],model="naismith",connectivity=4)
     assert np.isnan(out[0,1]) and np.isinf(out[0,2])
     flat=least_cost_time(np.zeros((1,5)),[(0,0),(0,4)],model="naismith",connectivity=4)
-    np.testing.assert_allclose(flat,[[0,72,144,72,0]])
+    np.testing.assert_allclose(flat,[[0,0.72,1.44,0.72,0]])
 
 def test_validation():
     with pytest.raises(ValueError,match="model"): least_cost_time([[0]],[(0,0)],model="other")

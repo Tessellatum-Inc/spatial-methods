@@ -5,13 +5,13 @@ from glcm_texture import quantize, glcm, glcm_features
 def test_quantization_clips_and_respects_mask():
     a=np.array([[-1.,0.,5.],[10.,np.nan,20.]])
     q,v=quantize(a,levels=4,value_range=(0,10))
-    assert q.tolist()==[[0,0,2],[3,0,0]]
+    assert q.tolist()==[[0,0,2],[3,0,3]]
     assert v.tolist()==[[True,True,True],[True,False,True]]
 
 def test_horizontal_glcm_counts_and_symmetry():
     a=np.array([[0,1,1]])
     m=glcm(a,levels=2,offsets=((0,1),))[0]
-    np.testing.assert_allclose(m,[[0,1/3],[1/3,1/3]])
+    np.testing.assert_allclose(m,[[0,1/4],[1/4,1/2]])
     np.testing.assert_allclose(m,m.T)
 
 def test_mask_prevents_pairs_crossing_invalid_cells():

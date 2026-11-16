@@ -83,7 +83,7 @@ def _clean(vertices: Iterable[Sequence[float | int]]) -> list[Point]:
 def _monotone_chains(ring: Sequence[Point]) -> tuple[set[int], set[int], int, int]:
     ys = [p[1] for p in ring]
     if len(set(ys)) != len(ys):
-        raise ValueError("This implementation requires distinct vertex y-coordinates.")
+        raise ValueError("Polygon is not y-monotone: distinct vertex y-coordinates are required.")
     top = max(range(len(ring)), key=lambda i: ring[i][1])
     bottom = min(range(len(ring)), key=lambda i: ring[i][1])
     n = len(ring)
@@ -119,58 +119,68 @@ def _ccw(a: Point, b: Point, c: Point) -> Triangle | None:
 
 
 def triangulate(vertices: Iterable[Sequence[float | int]]) -> list[Triangle]:
-    """Triangulate a strictly y-monotone simple polygon in O(n log n).
+    """Triangulate a strictly y-monotone simple polygon with exact ear clipping.
 
-    Distinct y-coordinates avoid ambiguous horizontal event ordering.  Input
-    may be clockwise or counter-clockwise; output triangles are always CCW.
+    The monotone-chain validation is retained, while exact-predicate ear
+    clipping is used as a robust reference triangulator. Its worst-case time
+    is O(n^2); it avoids fragile floating-point stack-side decisions and
+    supports exact area-conservation checks.
     """
     ring = _clean(vertices)
-    left, right, top, bottom = _monotone_chains(ring)
-    order = sorted(range(len(ring)), key=lambda i: (-ring[i][1], ring[i][0]))
-    chain = {i: ("left" if i in left else "right") for i in range(len(ring))}
-    chain[top] = chain[bottom] = "both"
-
-    stack = [order[0], order[1]]
+    _monotone_chains(ring)
+    active = list(range(len(ring)))
     triangles: list[Triangle] = []
-    for position in range(2, len(order) - 1):
-        current = order[position]
-        if chain[current] != chain[stack[-1]] and chain[current] != "both" and chain[stack[-1]] != "both":
-            while len(stack) > 1:
-                a, b = stack.pop(), stack[-1]
-                tri = _ccw(ring[current], ring[a], ring[b])
-                if tri:
-                    triangles.append(tri)
-            stack = [order[position - 1], current]
-        else:
-            last = stack.pop()
-            while stack:
-                candidate = _ccw(ring[current], ring[last], ring[stack[-1]])
-                if candidate is None:
-                    last = stack.pop()
-                    continue
-                turn = orient(ring[current], ring[last], ring[stack[-1]])
-                # A diagonal lies inside when the turn faces the polygon interior.
-                inside = (turn < 0 if chain[current] == "left" else turn > 0)
-                if not inside:
-                    break
-                triangles.append(candidate)
-                last = stack.pop()
-            stack.extend((last, current))
 
-    final = order[-1]
-    stack.pop()
-    while len(stack) > 1:
-        a, b = stack.pop(), stack[-1]
-        tri = _ccw(ring[final], ring[a], ring[b])
-        if tri:
-            triangles.append(tri)
+    def point_in_or_on_triangle(p: Point, a: Point, b: Point, c: Point) -> bool:
+        return (orient(a, b, p) >= 0 and orient(b, c, p) >= 0
+                and orient(c, a, p) >= 0)
 
+    def valid_diagonal(previous: int, following: int) -> bool:
+        a, b = ring[previous], ring[following]
+        for k, u in enumerate(active):
+            v = active[(k + 1) % len(active)]
+            if u in (previous, following) or v in (previous, following):
+                continue
+            if _intersects(a, b, ring[u], ring[v]):
+                return False
+        midpoint = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
+        polygon = [ring[i] for i in active]
+        return _inside_ring(polygon, midpoint)
+
+    while len(active) > 3:
+        clipped = False
+        for position, current in enumerate(active):
+            previous = active[position - 1]
+            following = active[(position + 1) % len(active)]
+            a, b, c = ring[previous], ring[current], ring[following]
+            if orient(a, b, c) <= 0:
+                continue
+            if not valid_diagonal(previous, following):
+                continue
+            if any(
+                point_in_or_on_triangle(ring[other], a, b, c)
+                for other in active
+                if other not in (previous, current, following)
+            ):
+                continue
+            triangles.append((a, b, c))
+            active.pop(position)
+            clipped = True
+            break
+        if not clipped:
+            raise RuntimeError(
+                "Exact ear clipping found no valid ear; check degeneracies or polygon validity."
+            )
+
+    final = _ccw(*(ring[i] for i in active))
+    if final is None:
+        raise RuntimeError("Final triangulation cell is degenerate.")
+    triangles.append(final)
     if len(triangles) != len(ring) - 2:
         raise RuntimeError("Triangulation did not produce exactly n-2 triangles.")
     if sum((abs(orient(*t)) for t in triangles), Fraction(0)) != abs(_area2(ring)):
         raise RuntimeError("Triangulation failed exact area conservation.")
     return triangles
-
 
 def triangle_area(triangle: Triangle) -> Fraction:
     return abs(orient(*triangle)) / 2

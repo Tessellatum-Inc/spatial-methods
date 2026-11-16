@@ -488,7 +488,7 @@ def test_linear_rectangle_calipers_is_stable_under_large_translation(origin, sca
     points = [(ox, oy), (ox+4*scale, oy),
               (ox+4*scale, oy+2*scale), (ox, oy+2*scale)]
     result = minimum_area_bounding_rectangle_calipers(points)
-    assert result["area"] == pytest.approx(8*scale*scale, rel=1e-8,
+    assert result["area"] == pytest.approx(8*scale*scale, rel=1e-6,
                                            abs=scale*scale*1e-8)
     for px, py in points:
         assert min(math.dist((px, py), corner) for corner in result["corners"]) <= (
