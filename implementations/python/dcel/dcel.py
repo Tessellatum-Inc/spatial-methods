@@ -193,7 +193,8 @@ class DCEL:
                 d.halfedges[eid].twin = tid
                 d.vertices[v].outgoing.append(tid)
 
-        # At each target, take the CCW successor of the incoming edge's twin.
+        # At each target, take the clockwise predecessor of the incoming edge's twin.
+        # This keeps the unbounded face on the right and skips shared interior edges.
         for vertex in d.vertices:
             vertex.outgoing.sort(key=lambda e: atan2(
                 d.vertices[d.halfedges[e].target].point[1] - vertex.point[1],
@@ -202,7 +203,7 @@ class DCEL:
             if edge.face is None:
                 outgoing = d.vertices[edge.target].outgoing
                 twin_pos = outgoing.index(edge.twin)
-                edge.next = outgoing[(twin_pos+1) % len(outgoing)]
+                edge.next = outgoing[(twin_pos-1) % len(outgoing)]
         for edge in d.halfedges:
             if edge.face is None:
                 d.halfedges[edge.next].prev = edge.id
