@@ -333,3 +333,5 @@ Records may have different evidence and implementation status. Check the status 
 - [USLE/RUSLE soil-loss factors](raster/usle-rusle-erosion.md) — calculate the empirical R×K×LS×C×P product and a conventional slope-length/steepness factor.
 
 - [DRASTIC and landslide susceptibility baselines](raster/susceptibility-indices.md) — calculate weighted DRASTIC ratings, categorical frequency ratios and ridge-regularized logistic susceptibility probabilities.
+
+- [Image co-registration](remote-sensing/image-coregistration.md) — estimate global translation by phase correlation and robust affine transforms from matched point correspondences.
