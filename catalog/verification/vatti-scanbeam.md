@@ -10,6 +10,8 @@
 - Exact pairwise crossing events strictly within a band.
 - Crossing-level band subdivision and edge-order swaps on either side.
 - Cumulative signed winding transition helper.
+- Horizontal/bound endpoint and interior intersection events.
+- Horizontal/horizontal point-contact and overlap classification.
 
 ## Tests authored
 - Rectangle scanbeam and minimum fixture.
@@ -22,7 +24,7 @@
 ## Not implemented
 - Efficient neighbour-only intersection scheduling and in-place active-edge updates.
 - Efficient neighbour-only intersection scheduling.
-- Horizontal-edge clipping transitions.
+- Full horizontal-edge clipping transitions and their integration into active-edge updates.
 - Winding/fill-state propagation.
 - Output contour construction and Boolean operations.
 
