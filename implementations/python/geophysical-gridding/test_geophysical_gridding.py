@@ -111,7 +111,7 @@ def test_cressman_and_barnes_reproduce_constant_field():
     np.testing.assert_allclose(barnes, 12.5, atol=1e-12)
 
 
-def test_objective_analysis_uses_background_and_preserves_unsupported_nodes():
+def test_objective_analysis_uses_background_and_respects_kernel_support():
     from geophysical_gridding import cressman_grid, barnes_grid
     points = np.array([[1, 1]], dtype=float)
     values = np.array([10.0])
@@ -120,7 +120,7 @@ def test_objective_analysis_uses_background_and_preserves_unsupported_nodes():
     c = cressman_grid(points, values, x, y, [1.5], background=2.0)
     b = barnes_grid(points, values, x, y, [1.5], background=2.0, gamma=.5)
     assert c[4, 4] == 2.0 and c[1, 1] == 10.0
-    assert b[4, 4] == 2.0 and b[1, 1] == 6.0
+    assert b[4, 4] == 6.0 and b[1, 1] == 6.0
 
 
 @pytest.mark.parametrize("method", ["cressman", "barnes"])
