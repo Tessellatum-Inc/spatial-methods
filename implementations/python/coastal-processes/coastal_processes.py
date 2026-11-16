@@ -223,3 +223,19 @@ def grid_multibeam_soundings(x, y, depth, *, cell_size, origin=(0.0, 0.0), stati
     xc = ox + (np.arange(ncol)+minc+0.5)*cell_size
     yc = oy - (np.arange(nrow)+minr+0.5)*cell_size
     return grid, counts, xc, yc
+
+def coastal_vulnerability_index(variable_ranks, *, axis=-1):
+    """Compute the conventional six-variable CVI as sqrt(product of ranks).
+    Ranks must be finite integers from 1 through 5. The selected axis must
+    contain exactly six variables (commonly geomorphology, shoreline-change
+    rate, coastal slope, relative sea-level change, significant wave height
+    and tidal range). This combines ordinal ranks; it is not a probability.
+    """
+    r = np.asarray(variable_ranks, dtype=float)
+    if r.ndim == 0: raise ValueError('ranks must include a six-variable axis')
+    if not isinstance(axis, (int, np.integer)) or not -r.ndim <= axis < r.ndim:
+        raise ValueError('axis is outside the rank array dimensions')
+    if r.shape[axis] != 6: raise ValueError('CVI requires exactly six variable ranks')
+    if np.any(~np.isfinite(r) | (r < 1) | (r > 5) | (r != np.floor(r)):
+        raise ValueError('each variable rank must be an integer from 1 through 5')
+    return np.sqrt(np.prod(r, axis=axis))
