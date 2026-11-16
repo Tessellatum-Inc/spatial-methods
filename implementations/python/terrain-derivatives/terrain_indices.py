@@ -291,3 +291,69 @@ def sky_view_factor(
         if supported and len(horizon_terms) == azimuth_count:
             result[row, col] = float(np.mean(horizon_terms))
     return result
+
+
+def _gaussian_smooth_masked(dem: np.ndarray, sigma_rows: float, sigma_cols: float) -> np.ndarray:
+    """Separable Gaussian smoothing with normalized finite-cell weights."""
+    values = np.where(np.isfinite(dem), dem, 0.0).astype(float)
+    weights = np.isfinite(dem).astype(float)
+    for axis, sigma in ((0, sigma_rows), (1, sigma_cols)):
+        if sigma <= 1e-12:
+            continue
+        radius = max(1, int(np.ceil(3.0 * sigma)))
+        offsets = np.arange(-radius, radius + 1, dtype=float)
+        kernel = np.exp(-0.5 * (offsets / sigma) ** 2)
+        kernel /= kernel.sum()
+        def convolve(array):
+            moved = np.moveaxis(array, axis, -1)
+            padded = np.pad(moved, [(0, 0)] * (moved.ndim - 1) + [(radius, radius)], mode="reflect")
+            out = np.zeros_like(moved, dtype=float)
+            for j, weight in enumerate(kernel):
+                out += weight * padded[..., j:j + moved.shape[-1]]
+            return np.moveaxis(out, -1, axis)
+        values = convolve(values)
+        weights = convolve(weights)
+    result = np.full(dem.shape, np.nan, dtype=float)
+    np.divide(values, weights, out=result, where=weights > np.finfo(float).eps)
+    return result
+
+
+def local_relief_model(elevation, *, scale: float, cell_size_x: float = 1.0, cell_size_y: float = 1.0) -> np.ndarray:
+    """Return DEM minus a Gaussian-smoothed background at a declared map scale.
+
+    Finite-cell normalized convolution prevents NoData holes acting as zero
+    elevations. Source NoData remains NoData in the residual. Positive values
+    are locally elevated relative to the smoothed background; negative values
+    are locally depressed. This is scale-dependent, not a landform classifier.
+    """
+    dem = np.asarray(elevation, dtype=float)
+    if dem.ndim != 2 or dem.size == 0:
+        raise ValueError("elevation must be a non-empty 2D array")
+    try:
+        scale, dx, dy = float(scale), float(cell_size_x), float(cell_size_y)
+    except (TypeError, ValueError):
+        raise ValueError("scale and cell sizes must be finite and positive") from None
+    if not np.isfinite([scale, dx, dy]).all() or min(scale, dx, dy) <= 0:
+        raise ValueError("scale and cell sizes must be finite and positive")
+    smooth = _gaussian_smooth_masked(dem, scale / dy, scale / dx)
+    result = dem - smooth
+    result[~np.isfinite(dem)] = np.nan
+    return result
+
+
+def multiscale_topographic_position_index(elevation, window_sizes, *, min_valid_fraction: float = 1.0) -> dict[int, np.ndarray]:
+    """Evaluate focal TPI at several distinct odd window sizes."""
+    try:
+        sizes = list(window_sizes)
+    except TypeError:
+        raise ValueError("window_sizes must be a non-empty sequence") from None
+    if not sizes:
+        raise ValueError("window_sizes must be a non-empty sequence")
+    normalized = []
+    for size in sizes:
+        if isinstance(size, (bool, np.bool_)) or not isinstance(size, (int, np.integer)) or size < 3 or size % 2 == 0:
+            raise ValueError("every window size must be an odd integer of at least 3")
+        normalized.append(int(size))
+    if len(set(normalized)) != len(normalized):
+        raise ValueError("window_sizes must be unique")
+    return {size: topographic_position_index(elevation, window_size=size, min_valid_fraction=min_valid_fraction) for size in normalized}
