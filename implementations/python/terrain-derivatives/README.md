@@ -89,3 +89,10 @@ Both additions have analytic and validation tests. See the canonical reservoir s
 ## SCS curve-number rainfall-runoff baseline
 
 The terrain-indices module now includes event direct-runoff depth using the SCS curve-number equation and conventional antecedent-moisture conversions from AMC-II to dry (I) and wet (III) curve numbers. Precipitation/runoff use the same depth unit, conventionally millimetres. The default initial-abstraction ratio is 0.2 but is explicit and configurable. This is an event-volume abstraction model, not a time-distributed unit hydrograph, continuous soil-water balance or calibrated catchment model.
+
+
+## Green-Ampt infiltration and unit-hydrograph routing
+
+The terrain/hydrology module now includes a time-stepped Green-Ampt infiltration update for constant rainfall intensity, including the analytical ponding threshold and implicit integration of the ponded phase. Inputs use millimetres and hours. It returns infiltration, cumulative infiltration, excess rainfall and ponding state. It assumes a homogeneous one-dimensional soil column and constant parameters during each step.
+
+It also includes discrete unit-hydrograph convolution. Rainfall-excess depths are convolved with ordinates expressed as discharge per unit depth, returning the full time/discharge series. The catchment-specific unit hydrograph and consistent interval/units must be supplied by the caller; this function does not derive or calibrate that hydrograph.
