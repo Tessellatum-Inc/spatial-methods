@@ -30,3 +30,5 @@ These are equation-level reference methods. Bruun-rule assumptions are restricti
 - **Satellite-derived bathymetry (empirical ratio calibration)**: fit a linear depth-versus-log-band-ratio model from paired chart/field calibration samples, then apply it to image ratios with optional depth-domain masking. This is a deliberately transparent empirical baseline, not a physics-based optical inversion; it does not correct for water-column optical properties, bottom type, turbidity, sunglint or atmospheric effects.
 - **Multibeam sounding gridding**: aggregate finite soundings into a north-up regular grid using cell mean or median and retain per-cell counts. This is not a CUBE/uncertainty-aware bathymetric estimator and does not replace sound-velocity, motion, tide or datum corrections.
 
+
+- **Six-variable coastal vulnerability index (CVI)**: computes the conventional square root of the product of six ordinal 1–5 variable ranks. The rank schema and choice of six variables must be supplied by the study; this function does not define local thresholds, normalize raw measurements or imply probabilistic risk.
