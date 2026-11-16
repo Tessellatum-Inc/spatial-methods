@@ -423,3 +423,31 @@ def test_side_probes_do_not_jump_across_faces_narrower_than_epsilon():
     assert len(union["rings"]) == 1
     assert intersection["area"] == pytest.approx(0.0,abs=1e-14)
     assert difference["area"] == pytest.approx(4.0,abs=1e-14)
+
+
+def test_sweep_retains_exact_rational_intersection_nodes():
+    from fractions import Fraction
+    a=[(0,0),(3,0),(3,3),(0,3)]
+    b=[(1,-1),(2,-1),(2,4),(1,4)]
+    result=sweep_split_segments([[a],[b]])
+    nodes=[
+        point for fragment in result["split_segments"]
+        for point in (fragment.a,fragment.b)
+        if point[0] in (Fraction(1),Fraction(2))
+    ]
+    assert nodes
+    assert all(isinstance(value,Fraction) for point in nodes for value in point)
+    assert (Fraction(1),Fraction(0)) in nodes
+    assert (Fraction(2),Fraction(0)) in nodes
+
+
+def test_overlay_preserves_large_integer_coordinate_precision():
+    from fractions import Fraction
+    base=10**18
+    a=[(base,base),(base+8,base),(base+8,base+8),(base,base+8)]
+    b=[(base+4,base-2),(base+10,base-2),(base+10,base+6),(base+4,base+6)]
+    result=boolean_overlay_rings([[a],[b]],operation="intersection")
+    assert result["area"] == pytest.approx(24.0)
+    assert len(result["rings"]) == 1
+    assert all(isinstance(value,Fraction)
+               for ring in result["rings"] for point in ring for value in point)
