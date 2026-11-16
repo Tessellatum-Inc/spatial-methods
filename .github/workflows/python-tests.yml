@@ -423,6 +423,9 @@ jobs:
           - example: green-security-games
             directory: implementations/python/green-security-games
             pythonpath: ""
+          - example: insar-time-series
+            directory: implementations/python/insar-time-series
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""

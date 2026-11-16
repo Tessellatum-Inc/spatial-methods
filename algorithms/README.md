@@ -383,3 +383,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Two-market food price transmission](economics/food-price-transmission.md) — estimate a long-run price relation and short-run error-correction dynamics.
 
 - [Green security-game patrol allocation](security/green-security-games.md) — allocate fractional patrol coverage to minimize worst-case attacker payoff under a resource budget.
+
+- [InSAR orbital-ramp removal and SBAS inversion](insar/insar-time-series.md) — fit spatial polynomial ramps and invert unwrapped interferogram networks to acquisition displacement time series.

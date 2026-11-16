@@ -43,8 +43,8 @@ This section groups applied methods across spatial interaction, functional regio
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | SAR geometry: radiometric terrain correction (RTC), geocoding, multilooking, calibration, enhanced spectral diversity (ESD) coregistration | SAR geometry and preprocessing workflows | 34 | Not checked — intake only |
-| Phase corrections: atmospheric phase screen estimation, GACOS and ERA5-based tropospheric correction, orbital ramp removal, DEM error correction | Interferometric phase correction methods | 34 | Not checked — intake only |
-| Time-series InSAR workflows: SBAS variants, NSBAS, MintPy-style and LiCSBAS-style pipelines, GNSS-InSAR integration for 3D velocity decomposition | InSAR time-series processing / geodetic data integration | 34 | Not checked — intake only |
+| Phase corrections: atmospheric phase screen estimation, GACOS and ERA5-based tropospheric correction, orbital ramp removal, DEM error correction | Interferometric phase correction methods | 34 | Partial — polynomial orbital-ramp estimation and removal are implemented and tested; atmospheric phase-screen estimation, GACOS/ERA5 tropospheric correction and DEM-error correction remain open |
+| Time-series InSAR workflows: SBAS variants, NSBAS, MintPy-style and LiCSBAS-style pipelines, GNSS-InSAR integration for 3D velocity decomposition | InSAR time-series processing / geodetic data integration | 34 | Partial — a tested per-pixel small-baseline network least-squares inversion estimates acquisition displacement relative to a reference date; phase unwrapping, atmospheric correction, robust time-series pipelines and GNSS 3D decomposition remain open |
 | Source modeling: Okada dislocation, Mogi source, finite fault slip inversion, elastic and viscoelastic deformation models | Geophysical source and deformation models | 34 | Partial — tested Mogi point-source elastic half-space displacement is implemented; Okada finite dislocations, finite-fault inversion and viscoelastic models remain open |
 
 ## Marine and fisheries spatial analysis
@@ -175,3 +175,8 @@ A compact Stackelberg security-game baseline allocates fractional patrol coverag
 ### Humanitarian and conflict-analysis crosswalk
 
 The humanitarian entry is partially covered by the repository's tested p-median/capacitated p-median and shortest-path/routing implementations; the remaining camp delineation and imagery-based tent/structure counting are not implemented. The conflict-analysis entry is partially covered by tested ST-DBSCAN, spatial scan statistics and temporal change-point methods; dedicated conflict diffusion and forecasting models are not implemented. These links establish method overlap, not validation for humanitarian or conflict operational use.
+
+
+### InSAR orbital-ramp removal and SBAS network inversion
+
+The new InSAR package fits and removes first- or second-order spatial polynomial ramps from unwrapped interferometric phase, and solves per-pixel small-baseline acquisition networks by weighted least squares relative to a reference date. The inversion reports only pixels whose available interferogram network has full rank. It is not a complete SBAS/NSBAS processing chain: phase unwrapping, coherence estimation, atmospheric screens, DEM-error correction, temporal regularization and GNSS integration remain open.
