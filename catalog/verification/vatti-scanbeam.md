@@ -17,11 +17,18 @@
 - Boolean-result entry/exit transitions for intersection, union, difference and XOR.
 - Full scanbeam reference pass coordinating level events, crossing-split band slices and subject/clip winding transitions.
 - Exact-rational filled-cell decomposition for all four Boolean operations.
+- Exact-rational cell-edge noding at shared vertices, including unequal subdivisions.
+- Cancellation of internal cell seams and directed boundary face-walk.
+- Closed contour output with disconnected shells and clockwise holes.
+- Public reference API `clip_rings()` combining the sweep and contour assembly.
 
 ## Tests authored
 - Rectangle scanbeam and minimum fixture.
 - Overlapping-rectangle area checks for intersection (6), union (26), difference (10) and XOR (20).
 - Crossing-split cell decomposition and scanbeam horizontal/minimum event records.
+- Contour outputs for intersection, union, difference and two-component XOR.
+- Nested-hole plus disconnected-shell preservation.
+- Empty contour result and unequal shared-edge subdivision.
 - Clockwise/counter-clockwise equivalence.
 - Non-horizontal minimum and horizontal bottom plateau.
 - Multiple local minima.
@@ -30,12 +37,9 @@
 
 ## Not implemented
 - Efficient neighbour-only intersection scheduling and in-place active-edge updates.
-- Efficient neighbour-only intersection scheduling.
 - Full horizontal-edge clipping transitions and their integration into active-edge updates.
 - Deriving the correct active-edge order from a complete sweep, including coincident-edge rules and horizontal-event integration.
 - Full Vatti intersection-list scheduling, coincident-edge bundles and horizontal transition integration.
-- Coincident/overlapping bound-edge bundle semantics.
-- Incremental neighbour-only active-edge scheduling and in-place updates.
 
 Tests have been authored but must run in CI before this component is marked
 verified.
