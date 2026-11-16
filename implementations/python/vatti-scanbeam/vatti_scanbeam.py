@@ -463,15 +463,14 @@ def sweep_boolean(
 ) -> BooleanSweep:
     """Sweep all scanbeam bands and decompose the Boolean result into cells.
 
-    Every band is subdivided at all pairwise edge crossings. Within each
-    crossing-free slice, edges are ordered at its rational midpoint, subject
-    and clip winding states are propagated, and each filled interval becomes
-    a trapezoid or triangle cell. Horizontal contacts and local minima are
-    attached to their scanbeam-level event records.
-
-    This is a complete reference decomposition pass for non-coincident
-    boundaries, not yet a contour clipper: cells are not stitched into rings,
-    and coincident/overlapping bound edges need a dedicated bundle policy.
+    Every band first coalesces coincident active bounds into operand-aware
+    winding bundles. A neighbour-event heap schedules adjacent bundle
+    intersections; simultaneous multiway crossings are reordered atomically.
+    Each crossing-free slice propagates subject/clip winding states and emits
+    exact-rational filled cells. Horizontal contacts are attached to scanbeam
+    levels and inserted as noding points along cell boundaries before contour
+    assembly. The result is a reference sweep, not yet the complete Vatti
+    intersection-list algorithm.
     """
     if not subject_ring_ids or not clip_ring_ids:
         raise ValueError("subject and clip ring sets must both be non-empty")
