@@ -55,3 +55,6 @@ These records are part of the broader [algorithm collection](../README.md). The 
 
 - [BSP tree constructive solid geometry](bsp-csg.md) — split convex 3D boundary polygons by planes and implement union, intersection and difference.
 - [BSP CSG implementation](../../implementations/python/bsp-csg/README.md) — floating-tolerance polygon splitting and box-based Boolean volume tests.
+
+- [Constrained Delaunay triangulation](constrained-delaunay.md) — polygon-boundary CDT with exact-predicate Lawson flips, plus non-crossing interior diagonals between existing polygon vertices.
+- [DCEL polygon subdivision core](dcel-arrangements.md) — construct half-edge topology from already-noded face rings, with explicit exterior-cycle traversal.
