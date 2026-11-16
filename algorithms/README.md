@@ -327,3 +327,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Flood-frequency analysis](raster/flood-frequency-analysis.md) — estimate annual-maximum return levels using Weibull plotting positions and Gumbel/GEV L-moment fits.
 
 - [Positive and negative terrain openness](raster/terrain-openness.md) — summarize radial horizon openness above and below terrain cells using explicit search and sampling parameters.
+
+- [Channel chi, slope-area and knickpoint analysis](raster/channel-morphometry.md) — calculate chi coordinates, fit log slope-area relationships and screen longitudinal profiles for chord-residual knickpoints.
