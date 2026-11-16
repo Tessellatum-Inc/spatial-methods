@@ -24,10 +24,10 @@ def main():
             path for path in package_root.iterdir() if path.is_dir()
         ) if package_root.is_dir() else []
         bootstrap = nbformat.v4.new_code_cell(
-            "import sys\\n"
-            + "from pathlib import Path\\n"
-            + "for package_path in " + repr([str(p.resolve()) for p in package_paths]) + ":\\n"
-            + "    sys.path.insert(0, package_path)\\n"
+            "import sys\n"
+            + "from pathlib import Path\n"
+            + "for package_path in " + repr([str(p.resolve()) for p in package_paths]) + ":\n"
+            + "    sys.path.insert(0, package_path)\n"
         )
         notebook.cells.insert(0, bootstrap)
         executor = ExecutePreprocessor(timeout=timeout)
