@@ -270,6 +270,9 @@ jobs:
           - example: flow-capturing-location
             directory: implementations/python/flow-capturing-location
             pythonpath: ""
+          - example: coastal-optical-retrieval
+            directory: implementations/python/coastal-optical-retrieval
+            pythonpath: ""
           - example: compositional-data
             directory: implementations/python/compositional-data
             pythonpath: ""
