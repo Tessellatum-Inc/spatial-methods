@@ -1,6 +1,6 @@
 # Constrained Delaunay triangulation
 
-This package triangulates one simple polygon ring. It starts with the exact-predicate ear-clipping implementation and applies Lawson edge flips to unconstrained interior edges that violate the local Delaunay condition. Polygon boundary edges remain constrained.
+This package triangulates one simple polygon ring. It starts with the exact-predicate ear-clipping implementation and applies Lawson edge flips to unconstrained interior edges that violate the local Delaunay condition. Polygon boundary edges remain constrained. Consecutive duplicate and exactly collinear intermediate boundary vertices are normalized using the shared ear-clipping ring cleaner before the constraint set is built; non-finite coordinates are rejected.
 
 Returned triangles are counter-clockwise and use exact decimal-rational coordinates. The implementation preserves polygon area and tests local weak-Delaunay legality using an exact incircle determinant. Cocircular edges are left unchanged.
 
