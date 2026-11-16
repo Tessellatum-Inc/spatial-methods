@@ -10,7 +10,7 @@ R_{2\%}=1.1\left[0.35\beta_f\sqrt{H_0L_0}
 \qquad L_0=\frac{gT^2}{2\pi}.
 \]
 
-The package also exposes scaled R1, mean and low summaries. It is an empirical screening model, not a coupled tide-surge-wave inundation solver.
+The package also exposes R1 and mean scaled summaries and the low-runup expression based on setup minus swash. These empirical summaries are not independent fitted quantiles. It is an empirical screening model, not a coupled tide-surge-wave inundation solver.
 
 ## CERC longshore transport
 
