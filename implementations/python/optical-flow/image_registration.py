@@ -176,3 +176,63 @@ def orb_feature_matches(reference, moving, *, max_features=2000,
     """Compatibility wrapper for ORB descriptor matching."""
     return local_feature_matches(reference, moving, detector="ORB",
         max_features=max_features, fast_threshold=fast_threshold, ratio=ratio)
+
+
+def ecc_register(reference, moving, *, motion_model="affine",
+                 max_iterations=500, epsilon=1e-7, gauss_filter_size=5,
+                 initial_warp=None):
+    """Register moving to reference by maximising enhanced correlation.
+
+    Returns the OpenCV inverse-map warp matrix, aligned moving image in [0,1],
+    and ECC correlation coefficient. The matrix is intended for
+    warpAffine/warpPerspective with WARP_INVERSE_MAP. ECC is a local optimiser:
+    use feature-based or phase-correlation initialisation for larger offsets.
+    """
+    import cv2
+
+    ref, mov = np.asarray(reference), np.asarray(moving)
+    if ref.ndim != 2 or ref.shape != mov.shape or min(ref.shape) < 8:
+        raise ValueError("reference and moving must be matching 2D images of at least 8x8")
+    if not np.issubdtype(ref.dtype, np.number) or not np.issubdtype(mov.dtype, np.number):
+        raise ValueError("images must be numeric")
+    if np.any(~np.isfinite(ref)) or np.any(~np.isfinite(mov)):
+        raise ValueError("images must contain only finite values")
+    models = {"translation": cv2.MOTION_TRANSLATION,
+              "euclidean": cv2.MOTION_EUCLIDEAN,
+              "affine": cv2.MOTION_AFFINE,
+              "homography": cv2.MOTION_HOMOGRAPHY}
+    model = str(motion_model).lower()
+    if model not in models:
+        raise ValueError("motion_model must be translation, euclidean, affine or homography")
+    if isinstance(max_iterations, bool) or not isinstance(max_iterations, int) or max_iterations < 1:
+        raise ValueError("max_iterations must be a positive integer")
+    try:
+        epsilon = float(epsilon)
+    except (TypeError, ValueError):
+        raise ValueError("epsilon must be positive") from None
+    if not np.isfinite(epsilon) or epsilon <= 0:
+        raise ValueError("epsilon must be positive")
+    if isinstance(gauss_filter_size, bool) or not isinstance(gauss_filter_size, int) or gauss_filter_size < 1 or gauss_filter_size % 2 == 0:
+        raise ValueError("gauss_filter_size must be a positive odd integer")
+    shape = (3, 3) if model == "homography" else (2, 3)
+    if initial_warp is None:
+        warp = np.eye(3, dtype=np.float32) if model == "homography" else np.eye(2, 3, dtype=np.float32)
+    else:
+        warp = np.asarray(initial_warp, dtype=np.float32)
+        if warp.shape != shape or np.any(~np.isfinite(warp)):
+            raise ValueError(f"initial_warp must be finite with shape {shape}")
+        warp = warp.copy()
+    ref32 = np.clip(ref, 0, 255).astype(np.float32) / 255.0
+    mov32 = np.clip(mov, 0, 255).astype(np.float32) / 255.0
+    criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT,
+                int(max_iterations), epsilon)
+    correlation, warp = cv2.findTransformECC(
+        ref32, mov32, warp, models[model], criteria, None, gauss_filter_size)
+    height, width = ref.shape
+    flags = cv2.INTER_LINEAR | cv2.WARP_INVERSE_MAP
+    if model == "homography":
+        aligned = cv2.warpPerspective(mov32, warp, (width, height), flags=flags)
+    else:
+        aligned = cv2.warpAffine(mov32, warp, (width, height), flags=flags)
+    return {"warp_matrix": warp, "aligned": aligned,
+            "correlation": float(correlation), "motion_model": model}

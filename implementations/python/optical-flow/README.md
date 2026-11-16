@@ -48,3 +48,8 @@ The companion `image_registration.py` module provides FFT phase correlation for 
 ## ORB feature matching
 
 The image-registration module exposes ORB and AKAZE binary feature detection plus SIFT floating-point descriptors. It returns moving-image source coordinates and reference-image target coordinates after a Hamming-distance nearest-neighbour ratio test. Pass those arrays to the affine RANSAC estimator to obtain a robust moving-to-reference transform. Intensities are interpreted on a 0–255 scale; scale scientific imagery before use. These are classical single-image-modality feature baselines, not cross-modal optical-SAR matchers. SIFT uses L2 descriptor distance; ORB and AKAZE use Hamming distance. Repeated texture, weak texture, strong seasonal change and radiometric differences can produce incorrect matches.
+
+
+## Enhanced-correlation coefficient (ECC) registration
+
+The ecc_register function estimates translation, Euclidean, affine or projective homography alignment by maximising the enhanced correlation coefficient. It returns an OpenCV inverse-map warp matrix, aligned moving image and correlation coefficient. The warp matrix is applied internally with WARP_INVERSE_MAP. ECC is a local optimiser and is sensitive to initial displacement, overlap and radiometric differences; initialise large offsets with phase correlation or feature-based matching. Inputs are interpreted on a 0–255 intensity scale and the aligned output is float32 in [0,1].

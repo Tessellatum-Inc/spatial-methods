@@ -16,3 +16,8 @@ These functions estimate global translation or affine geometry. They do not dete
 ## ORB feature correspondences
 
 The local-feature matcher supports ORB and AKAZE binary descriptors (Hamming distance) and SIFT descriptors (L2 distance). It detects keypoints in both images, matches moving-image descriptors to reference-image descriptors and filters ambiguous pairs with a nearest-neighbour ratio test. Its output coordinates feed the affine RANSAC estimator above. These are classical single-modality methods; learned matchers, optical-SAR matching and local deformation models remain open.
+
+
+## Enhanced correlation coefficient registration
+
+ECC optimises a global parametric warp by maximising a photometrically normalised correlation objective. The reference implementation supports translation, Euclidean, affine and projective homography models through OpenCV. Its returned matrix follows OpenCV's inverse-map convention and is used with WARP_INVERSE_MAP when resampling the moving image. ECC is a local optimiser; use phase correlation or feature correspondences to initialise large shifts, and inspect overlap and independent checkpoints. It is not a substitute for sensor-model orthorectification or local deformation modelling.

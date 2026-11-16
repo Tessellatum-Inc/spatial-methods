@@ -96,3 +96,30 @@ def test_local_feature_matching_rejects_unknown_detector():
     with pytest.raises(ValueError, match="detector must be"):
         local_feature_matches(np.ones((32, 32)), np.ones((32, 32)),
                               detector="unsupported")
+
+
+from image_registration import ecc_register
+
+
+def test_ecc_translation_registration_recovers_subpixel_shift():
+    import cv2
+    rng = np.random.default_rng(4)
+    reference = (rng.random((128, 128)) * 255).astype(np.uint8)
+    reference = cv2.GaussianBlur(reference, (3, 3), 0.8)
+    expected = np.array([[1., 0., 1.5], [0., 1., -1.25]], dtype=np.float32)
+    moving = cv2.warpAffine(reference, expected, (128, 128),
+                            flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+    result = ecc_register(reference, moving, motion_model="translation",
+                          max_iterations=500, epsilon=1e-7)
+    np.testing.assert_allclose(result["warp_matrix"], expected, atol=0.06)
+    assert result["correlation"] > 0.85
+    assert result["aligned"].shape == reference.shape
+
+
+def test_ecc_rejects_invalid_controls_and_shapes():
+    with pytest.raises(ValueError, match="matching 2D"):
+        ecc_register(np.ones((16, 16)), np.ones((16, 15)))
+    with pytest.raises(ValueError, match="motion_model"):
+        ecc_register(np.ones((16, 16)), np.ones((16, 16)), motion_model="rigid3d")
+    with pytest.raises(ValueError, match="positive odd"):
+        ecc_register(np.ones((16, 16)), np.ones((16, 16)), gauss_filter_size=4)
