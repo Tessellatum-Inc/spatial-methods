@@ -58,8 +58,8 @@
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Entropy measures: Shannon, Renyi, Tsallis, sample entropy, permutation entropy, spatial entropy variants | Information-theoretic measures | 42 | Partially implemented: Shannon, Renyi, Tsallis, categorical raster and permutation entropy are tested; sample entropy and spatially conditioned/information-flow variants remain open |
-| Dynamics: recurrence plots and recurrence quantification analysis, Lyapunov exponents | Nonlinear time-series analysis methods | 42 | Not checked — intake only |
+| Entropy measures: Shannon, Renyi, Tsallis, sample entropy, permutation entropy, spatial entropy variants | Information-theoretic measures | 42 | Partially implemented: Shannon, Renyi, Tsallis, categorical raster, permutation and sample entropy are tested; directed-edge spatial conditional entropy and mutual information are tested; transfer entropy and spatial information-flow variants remain open |
+| Dynamics: recurrence plots and recurrence quantification analysis, Lyapunov exponents | Nonlinear time-series analysis methods | 42 | Partially implemented: fixed-threshold recurrence plots and RR, DET, diagonal/vertical line statistics, divergence and entropy are implemented with tests; Lyapunov exponents and multivariate/continuous-time variants remain open |
 | Causality: Granger causality, transfer entropy, convergent cross mapping, causal networks from gridded fields (PCMCI-style), teleconnection graphs | Causal and information-flow methods | 42 | Not checked — intake only |
 
 ## Phylogeography and survey sampling
@@ -94,4 +94,4 @@ The existing spectral-indices package now covers the named vegetation, pigment, 
 
 ### Information-theory implementation update
 
-The spatial-information-theory package adds tested Shannon, Renyi and Tsallis entropy, masked categorical-map entropy and normalized permutation entropy. Stable ordinal sorting defines deterministic tie handling. Spatial dependence corrections, transfer entropy, recurrence analysis and causal inference remain separate open methods.
+The spatial-information-theory package adds tested Shannon, Renyi and Tsallis entropy, masked categorical-map entropy, normalized permutation entropy, sample entropy and adjacency-weighted spatial conditional entropy/mutual information. Stable ordinal sorting defines deterministic tie handling. Recurrence analysis is implemented separately with fixed-threshold recurrence plots and standard RQA measures. Transfer entropy, spatial information flow and causal inference remain separate open methods.
