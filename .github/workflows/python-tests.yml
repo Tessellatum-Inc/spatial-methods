@@ -441,6 +441,9 @@ jobs:
           - example: knox-test
             directory: implementations/python/knox-test
             pythonpath: ""
+          - example: small-area-estimation
+            directory: implementations/python/small-area-estimation
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""

@@ -60,7 +60,7 @@ This section combines surface estimation, stochastic spatial models, simulation,
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Fay-Herriot, unit-level small-area models, Horvitz-Thompson, model-assisted estimation, MRP | Small-area estimators / survey estimators / multilevel modelling | 6 | Not checked — intake only |
+| Fay-Herriot, unit-level small-area models, Horvitz-Thompson, model-assisted estimation, MRP | Small-area estimators / survey estimators / multilevel modelling | 6 | Partial — a tested area-level Fay–Herriot empirical-Bayes estimator with REML random-effect variance estimation is implemented; unit-level models, Horvitz–Thompson, model-assisted estimation and MRP remain open |
 | Spatial microsimulation (IPF, simulated annealing), areal interpolation, dasymetric mapping, WorldPop-style random forest population surfaces | Spatial microsimulation / areal estimation / mapping workflows | 6 | Not checked — intake only |
 | Statistical downscaling: quantile mapping, BCSD, delta change, analog methods | Downscaling methods | 6 | Not checked — intake only |
 
@@ -95,3 +95,8 @@ A tested reference package propagates independent bounded uniform input uncertai
 ### Knox space-time interaction test
 
 The Knox test counts event pairs that are simultaneously within a declared spatial distance and temporal interval. Its reference permutation test holds event locations fixed and randomly permutes event times, testing for excess close pairs under temporal-label exchangeability. It is a pairwise interaction test, not a space-time scan statistic or a full space-time point-process model.
+
+
+### Fay–Herriot area-level small-area estimation
+
+An area-level Gaussian Fay–Herriot model now estimates regression coefficients by generalized least squares and the between-area random-effect variance by restricted maximum likelihood. It returns empirical-Bayes area estimates and conditional random-effect variances. This does not implement unit-level models, survey-weighted Horvitz–Thompson estimators, model-assisted estimation or multilevel regression and poststratification (MRP).
