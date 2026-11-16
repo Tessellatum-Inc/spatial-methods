@@ -532,3 +532,30 @@ def test_neighbour_scheduler_handles_distinct_crossings_at_same_y():
     assert slices[0].upper_y == 2
     assert [b.representative.edge_id for b in slices[0].bundles] == [0, 1, 2, 3]
     assert [b.representative.edge_id for b in slices[1].bundles] == [1, 0, 3, 2]
+
+def test_horizontal_fill_transitions_compare_both_sides_of_scanbeam():
+    from fractions import Fraction
+    from vatti_scanbeam import sweep_boolean
+    result = sweep_boolean(
+        _overlapping_rectangles(), {0}, {1}, "intersection"
+    )
+    transitions = {level.y: level.fill_transitions for level in result.levels}
+    assert [(item.x_start, item.x_end, item.below_filled, item.above_filled)
+            for item in transitions[Fraction(0)]] == [
+                (Fraction(2), Fraction(4), False, True)
+            ]
+    assert [(item.x_start, item.x_end, item.below_filled, item.above_filled)
+            for item in transitions[Fraction(3)]] == [
+                (Fraction(2), Fraction(4), True, False)
+            ]
+
+
+def test_shared_horizontal_edge_has_no_false_union_fill_transition():
+    from vatti_scanbeam import sweep_boolean
+    d = decompose_scanbeams([
+        _rect(0, 0, 2, 2), _rect(0, 2, 2, 4)
+    ])
+    result = sweep_boolean(d, {0}, {1}, "union")
+    shared_level = next(level for level in result.levels if level.y == 2)
+    assert shared_level.horizontal_events
+    assert shared_level.fill_transitions == ()
