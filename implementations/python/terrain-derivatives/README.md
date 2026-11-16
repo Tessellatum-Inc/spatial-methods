@@ -63,3 +63,13 @@ The cut_fill_volume function compares aligned existing and design elevation surf
 ## Multidirectional hillshade
 
 The multidirectional_hillshade function averages equally weighted local hillshade values from multiple sun azimuths at a shared altitude. Its default four azimuths are 225°, 270°, 315° and 360°. This reduces the directional bias of a single illumination direction but remains a local reflectance-style visualization: it does not calculate cast shadows, diffuse sky light, atmospheric effects or solar irradiance. Missing derivative cells remain NoData; flat cells use the single-direction flat-surface illumination in each component.
+
+
+## Multiscale curvature
+
+`multiscale_terrain_curvature` applies separable Gaussian smoothing at each requested standard-deviation scale (in horizontal map units), then calculates profile and plan curvature. It requires a fully finite DEM, uses reflective padding, and returns one pair of curvature rasters per scale. Larger scales suppress short-wavelength terrain variation; scale and grid resolution must be reported together.
+
+
+## Sky-view factor
+
+`sky_view_factor` estimates the visible-sky fraction by radial horizon sampling at evenly spaced azimuths. It bilinearly samples the DEM, records the maximum positive horizon angle on each ray, and averages the squared cosine of those angles. It requires complete ray support to the declared maximum distance: cells whose rays leave the raster or encounter NoData are returned as NaN. This is an azimuth-sampled local approximation, not an exact hemispherical solid-angle integration, cast-shadow engine or solar-radiation model. Runtime grows with raster cells, azimuth count and radial samples.
