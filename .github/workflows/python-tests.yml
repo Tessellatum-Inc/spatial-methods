@@ -342,6 +342,9 @@ jobs:
           - example: geostatistics
             directory: implementations/python/geostatistics
             pythonpath: ""
+          - example: mann-kendall-sen
+            directory: implementations/python/mann-kendall-sen
+            pythonpath: ""
           - example: inverse-distance-weighting
             directory: implementations/python/inverse-distance-weighting
             pythonpath: ""

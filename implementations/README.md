@@ -207,3 +207,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Image segmentation
 
 - [SLIC superpixels](python/slic-superpixels/README.md): feature-space/spatial clustering with local assignment and explicit connectivity limitations.
+
+
+### Trend analysis
+
+- [Mann-Kendall and Sen trend methods](python/mann-kendall-sen/README.md): tie-corrected monotonic trend testing and median pairwise slope with optional time coordinates.

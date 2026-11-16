@@ -36,7 +36,7 @@ This section combines surface estimation, stochastic spatial models, simulation,
 | Space-time scan statistics, Knox test, space-time K function, space-time cube, emerging hot spot analysis | Spatiotemporal tests / summary methods / analysis workflow | 5 | Not checked — intake only |
 | Spatial survival and frailty models | Survival model families | 5 | Not checked — intake only |
 | Spatiotemporal point processes: Hawkes, LGCP, ETAS | Point-process model families | 5 | Not checked — intake only |
-| Trend and change: Mann-Kendall, Sen's slope, harmonic regression, BFAST, LandTrendr, CCDC | Trend tests / regression / change-detection methods | 5 | Not checked — intake only |
+| Trend and change: Mann-Kendall, Sen's slope, harmonic regression, BFAST, LandTrendr, CCDC | Trend tests / regression / change-detection methods | 5 | Partially implemented: tie-corrected Mann-Kendall S/tau-b with continuity-corrected normal p-value and Sen's median pairwise slope/intercept have tested baselines; serial-correlation correction, seasonal variants, harmonic regression, BFAST, LandTrendr and CCDC remain open |
 
 ## Data assimilation and inverse methods
 
