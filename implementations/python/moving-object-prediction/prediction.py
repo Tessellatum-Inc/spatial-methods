@@ -51,9 +51,11 @@ def position_confidence_ellipse(state, covariance, *, confidence_level=0.95):
         raise ValueError("state must be a finite [x, y, vx, vy] vector")
     if p.shape != (4, 4) or not np.all(np.isfinite(p)):
         raise ValueError("covariance must be a finite 4x4 matrix")
+    if not np.allclose(p, p.T, atol=1e-10, rtol=1e-10):
+        raise ValueError("covariance must be symmetric")
+    if np.min(np.linalg.eigvalsh(p)) < -1e-10:
+        raise ValueError("covariance must be positive semidefinite")
     position_covariance = p[:2, :2]
-    if not np.allclose(position_covariance, position_covariance.T, atol=1e-10):
-        raise ValueError("position covariance must be symmetric")
     values, vectors = np.linalg.eigh(position_covariance)
     if values[0] < -1e-10:
         raise ValueError("position covariance must be positive semidefinite")
@@ -128,7 +130,7 @@ def predictive_range_candidates(states, covariances, query_bounds, *,
     state_array = np.asarray(states, dtype=float)
     covariance_array = np.asarray(covariances, dtype=float)
     bounds = np.asarray(query_bounds, dtype=float)
-    if state_array.ndim != 2 or state_array.shape[1] != 4 or not np.all(np.isfinite(state_array)):
+    if state_array.ndim != 2 or state_array.shape[1] != 4 or len(state_array) == 0 or not np.all(np.isfinite(state_array)):
         raise ValueError("states must be a finite (objects, 4) matrix")
     if covariance_array.shape != (len(state_array), 4, 4) or not np.all(np.isfinite(covariance_array)):
         raise ValueError("covariances must have shape (objects, 4, 4) and be finite")

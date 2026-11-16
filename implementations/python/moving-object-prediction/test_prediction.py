@@ -96,3 +96,10 @@ def test_predictive_range_rejects_invalid_bounds_and_shapes():
                                     [2., 0., 1., 1.])
     with pytest.raises(ValueError, match="covariances"):
         predictive_range_candidates([[0., 0., 0., 0.]], [], [0., 0., 1., 1.])
+
+
+def test_confidence_ellipse_rejects_nonsymmetric_covariance():
+    covariance = np.eye(4)
+    covariance[0, 1] = .5
+    with pytest.raises(ValueError, match="symmetric"):
+        position_confidence_ellipse([0., 0., 0., 0.], covariance)
