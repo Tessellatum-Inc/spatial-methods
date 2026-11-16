@@ -21,7 +21,8 @@ def test_chi_rejects_nonmonotonic_distance_and_invalid_area():
 
 def test_slope_area_fit_recovers_power_law_exponent():
     area = np.array([1., 2., 4., 8., 16., 32.])
-    slope = 3.0 * area ** -0.5
+    segment_area = 0.5 * (area[:-1] + area[1:])
+    slope = 3.0 * segment_area ** -0.5
     distance = np.arange(area.size, dtype=float)
     elevation = np.concatenate(([0.], -np.cumsum(slope)))
     result = slope_area_relationship(distance, elevation, area)
@@ -31,7 +32,7 @@ def test_slope_area_fit_recovers_power_law_exponent():
 
 def test_knickpoint_detection_reports_signed_chord_residual():
     x = np.arange(7, dtype=float)
-    z = np.array([10, 8, 6, 9, 2, 1, 0], dtype=float)
+    z = np.array([10, 8, 9, 7, 2, 1, 0], dtype=float)
     result = detect_knickpoints(x, z, window_size=5, min_relief=1)
     assert result["knickpoint"][2]
     assert result["kind"][2] == "convex-up"
