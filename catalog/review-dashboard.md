@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 696 | Rows with a source-entry review status in the section indexes |
-| Partial | 166 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 530 | The source wording is preserved, but no independent review is recorded |
+| Partial | 167 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 529 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -34,16 +34,16 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 13 — GeoFM workflows, urban mobility and LLMs | 29 | 0 | 29 |
 | 14 — Databases, graphics, morphology and hazards | 33 | 1 | 32 |
 | 15 — Vision, registration and vector extraction | 33 | 3 | 30 |
-| 16 — Flows, regions, deformation and marine | 25 | 10 | 15 |
+| 16 — Flows, regions, deformation and marine | 25 | 11 | 14 |
 | 17 — Geometry, scalability, design and siting | 27 | 8 | 19 |
 | 18 — Moving objects, routing, transit and water | 32 | 4 | 28 |
 | 19 — African applications, addressing and finance | 32 | 0 | 32 |
 | 20 — Indices, microwave, events and information | 25 | 8 | 17 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 3 | 23 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 6 | 22 |
-| **Total** | **696** | **166** | **530** |
+| **Total** | **696** | **167** | **529** |
 
-The 17 November recount finds **166 partial**, **530 intake-only** and **zero fully verified** source-entry rows across **696 rows**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Some section indexes have changed row counts since the prior snapshot, so the table below supersedes all historical totals in the reconciliation notes.
+The 17 November recount finds **167 partial**, **529 intake-only** and **zero fully verified** source-entry rows across **696 rows**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Some section indexes have changed row counts since the prior snapshot, so the table below supersedes all historical totals in the reconciliation notes.
 
 ## How to interpret this
 
@@ -135,3 +135,6 @@ The Section 2 source-entry recount also identifies an implementation-linked Ripl
 
 
 Section 16's Lagrangian particle-advection and connectivity entry is now implementation-linked. The source-row total remains 696; the current review labels are 166 partial and 530 intake-only. The package implements steady two-dimensional RK4 advection and weighted zone connectivity only; operational ocean-drift physics and reserve design remain open.
+
+
+Section 16's flow clustering, line-integrated KDE and grid hotspot entry is now implementation-linked. The source-entry total remains 696; the current review labels are 167 partial and 529 intake-only. These are scoped baselines and do not constitute full source-entry verification.

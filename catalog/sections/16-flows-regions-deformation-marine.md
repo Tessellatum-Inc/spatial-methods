@@ -14,7 +14,7 @@ This section groups applied methods across spatial interaction, functional regio
 |---|---|---:|--- |
 | Entropy-maximizing models (Wilson), production, attraction and doubly constrained forms, Poisson and negative binomial gravity models | Spatial interaction models / statistical specifications | 33 | Partially implemented: unconstrained, production-constrained, attraction-constrained and doubly constrained flows plus an exponential-cost entropy-maximising IPF variant; PPML regression already exists. Negative-binomial estimation and calibrated impedance/parameter estimation remain open |
 | Competing destinations, intervening opportunities variants, spatial autocorrelation in flows (Griffith eigenvector filtering, LeSage-Pace origin-destination models) | Interaction models / flow autocorrelation and econometric methods | 33 | Partial — a cumulative exponential intervening-opportunities allocation baseline is implemented with tied-cost handling and explicit unallocated mass; competing-destinations specifications and Griffith/LeSage–Pace flow-autocorrelation models remain open |
-| Flow clustering and flow mapping: flow-based community detection, flow KDE, OD flow hotspot detection | Flow clustering / density estimation / hotspot methods | 33 | Not checked — intake only |
+| Flow clustering and flow mapping: flow-based community detection, flow KDE, OD flow hotspot detection | Flow clustering / density estimation / hotspot methods | 33 | Partial — DBSCAN clustering in origin-destination feature space, line-integrated Gaussian flow KDE and grid-cell hotspot extraction are implemented and tested; network-constrained community detection and inferential hotspot significance remain open |
 
 ## Functional regions and urban boundaries
 
@@ -125,3 +125,8 @@ A new `biodiversity-metrics` package provides planar convex-hull extent of occur
 ### Lagrangian particle advection and connectivity implementation update
 
 A steady two-dimensional velocity-field particle integrator now uses fourth-order Runge–Kutta interpolation on a rectilinear grid. A companion connectivity aggregator converts released particle source regions and final destination regions into weighted counts and row-normalized probabilities, retaining unassigned particles separately. This is a deterministic advection baseline, not a full ocean particle framework: time-varying currents, diffusion, vertical motion, beaching, decay and uncertainty remain open.
+
+
+### Flow clustering, line KDE and hotspot implementation update
+
+The flow-analysis package now clusters OD records using DBSCAN over separately scaled origin and destination coordinates, estimates a line-integrated Gaussian kernel density surface using Gauss–Legendre quadrature along each OD segment, and extracts local grid maxima above a caller-selected quantile. These are exploratory spatial-analysis baselines: they do not implement network-constrained flow communities, inferential hotspot significance, edge effects, adaptive bandwidth selection or uncertainty estimation.

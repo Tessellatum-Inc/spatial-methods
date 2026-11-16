@@ -399,6 +399,9 @@ jobs:
           - example: lagrangian-connectivity
             directory: implementations/python/lagrangian-connectivity
             pythonpath: ""
+          - example: flow-analysis
+            directory: implementations/python/flow-analysis
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""

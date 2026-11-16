@@ -365,3 +365,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Biodiversity occurrence and grid metrics](biodiversity/range-metrics.md) — convex-hull extent of occurrence, grid-based area of occupancy, species richness and weighted endemism.
 
 - [Lagrangian particle advection and connectivity](marine/lagrangian-particle-tracking.md) — RK4 advection in a steady 2D velocity field and weighted source-to-destination connectivity.
+
+- [OD flow clustering, line KDE and hotspots](networks/flow-analysis.md) — DBSCAN over origin-destination coordinates, line-integrated Gaussian density and local grid maxima.
