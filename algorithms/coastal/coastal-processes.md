@@ -39,3 +39,8 @@ The idealized Bruun relation estimates cross-shore recession as R = S W / (B + h
 ## Dean equilibrium beach profile
 
 Dean's idealized profile is h(x)=A x^(2/3), with analytic integral from x0 to x1 equal to (3A/5)(x1^(5/3)-x0^(5/3)). The package evaluates both. A has units length to the one-third power when x and h use the same length unit.
+
+
+## Empirical satellite-derived bathymetry and multibeam gridding
+
+The package includes a linear calibration baseline for depth as a function of a supplied log-band ratio, fitted from paired known depths, and a prediction function with optional calibrated-domain masking. It does not perform atmospheric correction, water-column inversion or bottom-type correction. Multibeam soundings can be aggregated to regular cells by mean or median, with counts and cell-centre coordinates returned; this is not a CUBE estimator or a hydrographic uncertainty model.
