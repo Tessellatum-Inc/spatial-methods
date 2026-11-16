@@ -240,3 +240,44 @@ def barnes_grid(points, values, x_coordinates, y_coordinates, radii,
         points, values, x_coordinates, y_coordinates, radii, background,
         kernel="barnes", kappa=kappa, gamma=gamma,
     )
+
+
+def trend_surface_grid(points, values, x_coordinates, y_coordinates, *,
+                       degree=1, weights=None):
+    """Fit and evaluate a global polynomial trend surface of total degree 1–3.
+
+    Coordinates are centred and scaled before constructing the polynomial
+    basis. Optional positive observation weights define weighted least
+    squares (not robust regression). The function returns the fitted trend
+    on the requested grid; it is a global model and therefore extrapolates.
+    """
+    p, v = _samples(points, values)
+    if isinstance(degree, (bool, np.bool_)) or not isinstance(degree, (int, np.integer)) or degree not in (1, 2, 3):
+        raise ValueError("degree must be an integer from 1 to 3")
+    centre = (p.min(axis=0) + p.max(axis=0)) / 2.0
+    scale = (p.max(axis=0) - p.min(axis=0)) / 2.0
+    if np.any(scale <= 0):
+        raise ValueError("sample coordinates must span both x and y dimensions")
+    normalized = (p - centre) / scale
+    terms = [(i, total - i) for total in range(degree + 1) for i in range(total, -1, -1)]
+    design = np.column_stack([
+        normalized[:, 0] ** i * normalized[:, 1] ** j for i, j in terms
+    ])
+    if weights is None:
+        sqrt_weights = np.ones(len(v), dtype=float)
+    else:
+        w = np.asarray(weights, dtype=float)
+        if w.shape != v.shape or not np.all(np.isfinite(w)) or np.any(w <= 0):
+            raise ValueError("weights must be finite, positive and match values")
+        sqrt_weights = np.sqrt(w)
+    weighted_design = design * sqrt_weights[:, None]
+    weighted_values = v * sqrt_weights
+    if np.linalg.matrix_rank(weighted_design) < design.shape[1]:
+        raise ValueError("sample geometry does not support the requested polynomial degree")
+    coefficients, _, _, _ = np.linalg.lstsq(weighted_design, weighted_values, rcond=None)
+    q, shape = _grid(x_coordinates, y_coordinates)
+    qn = (q - centre) / scale
+    grid_design = np.column_stack([
+        qn[:, 0] ** i * qn[:, 1] ** j for i, j in terms
+    ])
+    return (grid_design @ coefficients).reshape(shape)
