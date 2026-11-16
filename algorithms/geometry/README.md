@@ -14,7 +14,7 @@
 
 These records are part of the broader [algorithm collection](../README.md). The source inventory identifies the methods to investigate; each record documents its own scope, assumptions and evidence.
 
-- [Y-monotone triangulation](monotone-triangulation.md) — stack-based triangulation for already-monotone simple polygons.
+- [Y-monotone partition and triangulation](monotone-triangulation.md) — start/end/split/merge/regular sweep for simple polygons, followed by stack triangulation of monotone pieces.
 - [Ear clipping](ear-clipping.md) — triangulate a simple polygon ring by repeatedly removing an interior ear.
 
 - [Convex decomposition](convex-decomposition.md) — partition a polygon into convex pieces, and distinguish exact from approximate objectives.
