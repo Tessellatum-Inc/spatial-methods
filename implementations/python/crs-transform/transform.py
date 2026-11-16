@@ -2,7 +2,7 @@
 from __future__ import annotations
 from typing import Sequence
 import numpy as np
-from pyproj import CRS, Transformer
+from pyproj import CRS, Geod, Transformer
 from pyproj.exceptions import ProjError
 
 def transform_points(points: Sequence[Sequence[float]]|np.ndarray, source_crs, target_crs) -> np.ndarray:
@@ -34,14 +34,14 @@ def _geod_from_ellipsoid(ellipsoid="WGS84"):
     """Build a PROJ geodesic calculator from a CRS or ellipsoid definition."""
     try:
         crs = CRS.from_user_input(ellipsoid)
-        if crs.is_geographic:
-            geod = crs.get_geod()
-        else:
-            geod = crs.geodetic_crs.get_geod()
-        if geod is None:
-            raise ValueError("input CRS has no usable geodetic ellipsoid")
-        return geod
-    except (ProjError, ValueError, TypeError, AttributeError) as error:
+        geod = crs.get_geod() if crs.is_geographic else crs.geodetic_crs.get_geod()
+        if geod is not None:
+            return geod
+    except (ProjError, ValueError, TypeError, AttributeError):
+        pass
+    try:
+        return Geod(ellps=str(ellipsoid))
+    except (ProjError, ValueError, TypeError) as error:
         raise ValueError(f"invalid ellipsoid or CRS: {error}") from error
 
 
