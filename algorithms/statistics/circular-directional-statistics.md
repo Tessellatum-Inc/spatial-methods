@@ -59,3 +59,12 @@ The dependency-light Python baseline is in [spatial-distribution-summaries](../.
 - The Kuiper p-value is asymptotic, not an exact finite-sample distribution.
 - Neither test corrects for spatial dependence, temporal dependence, sampling bias or measurement uncertainty.
 - These planar circular methods are not substitutes for spherical statistics on global locations or 3D orientations.
+
+
+## References
+
+- Fisher, N. I. (1993). *Statistical Analysis of Circular Data*. Cambridge University Press.
+- Mardia, K. V., and Jupp, P. E. (2000). *Directional Statistics*. Wiley.
+- Stephens, M. A. (1965). “The goodness-of-fit statistic V_n: distribution and significance points.” *Biometrika*, 52(3–4), 309–321.
+
+These references support the circular-data framework and the Kuiper goodness-of-fit statistic. The repository's implementation remains a transparent numerical baseline; its approximations and scope are stated above.
