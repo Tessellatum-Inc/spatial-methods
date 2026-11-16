@@ -147,3 +147,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 4 coastal models: the coastal-process package also implements the idealized Bruun-rule recession relation and Dean equilibrium profile with analytic cross-shore integral. These are equation-level reference methods with strong assumptions, not validated coastal forecasts. Kamphuis transport and coastal vulnerability index remain open; bathymetric retrieval and gridding are separate unimplemented workflows.
+
+
+- Section 4 bathymetry: added a calibration-based satellite log-band-ratio depth estimator and multibeam sounding mean/median gridding with per-cell counts. These are scoped empirical/aggregation baselines. Physics-based optical inversion, atmospheric and water-column correction, ICESat-2 calibration, CUBE uncertainty estimation and LiDAR refraction correction remain open.
