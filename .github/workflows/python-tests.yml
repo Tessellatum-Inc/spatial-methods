@@ -580,6 +580,9 @@ jobs:
           - example: network-resilience
             directory: implementations/python/network-resilience
             pythonpath: ""
+          - example: biodiversity-metrics
+            directory: implementations/python/biodiversity-metrics
+            pythonpath: ""
           - example: regional-dynamics
             directory: implementations/python/regional-dynamics
             pythonpath: ""
