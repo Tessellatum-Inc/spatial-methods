@@ -689,6 +689,9 @@ jobs:
           - example: ir-mad
             directory: implementations/python/ir-mad
             pythonpath: ""
+          - example: thermal-lst
+            directory: implementations/python/thermal-lst
+            pythonpath: ""
           - example: temporal-compositing
             directory: implementations/python/temporal-compositing
             pythonpath: ""
