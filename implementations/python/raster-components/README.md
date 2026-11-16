@@ -19,3 +19,10 @@ python -m pytest -q
 - This is a simple BFS baseline; it does not implement run-length/union-find optimizations, distributed labeling or vector polygonization.
 
 Read the [canonical lesson](../../../algorithms/raster/connected-components.md) and [intern walkthrough](implementation-walkthrough.md).
+
+
+## Three-dimensional voxel connected components
+
+The module also provides `connected_components_3d` for binary volumes. Choose 6-connectivity (face neighbours), 18-connectivity (faces and edges) or 26-connectivity (faces, edges and corners). An optional valid-voxel mask makes invalid cells barriers. Labels are deterministic in z/y/x scan order and component sizes are returned.
+
+This is a basic spatial-volume primitive that can support event-object extraction from time stacks or 3-D model outputs. It does not perform temporal object linking, split/merge tracking, periodic-boundary handling or tiled/parallel reconciliation. Tests cover connectivity distinctions, barriers and invalid inputs.
