@@ -4,7 +4,7 @@
 - **Source pages:** 35–37
 - **Source transcription:** [pages 31–35](../../source-inventory/pages-31-35.md) and [pages 36–40](../../source-inventory/pages-36-40.md)
 - **Review state:** source entries extracted into this index; not every entry independently verified
-- **Current canonical records:** [Stable matching](../../algorithms/networks/stable-matching.md) with resident-proposing deferred acceptance (partial coverage of the matching/allocation family); [Huff competitive facility choice](../../algorithms/spatial-interaction/huff-competitive-location.md), a probabilistic attractiveness/impedance market-share model; [FFT-grid KDE](../../algorithms/statistics/fft-grid-kde.md), a tested binned Gaussian KDE with FFT convolution; mesh smoothing, indexed half-edge topology, conservative triangle-mesh cleanup, local isotropic-style remeshing, winged-edge and quad-edge (partial coverage of the source mesh-processing family), plus tested HyperLogLog, Count-Min, Bloom-filter and reservoir-sampling sketches; ball pivoting remains outstanding
+- **Current canonical records:** [Stable matching](../../algorithms/networks/stable-matching.md) with resident-proposing deferred acceptance (partial coverage of the matching/allocation family); [Huff competitive facility choice](../../algorithms/spatial-interaction/huff-competitive-location.md), a probabilistic attractiveness/impedance market-share model; [FFT-grid KDE](../../algorithms/statistics/fft-grid-kde.md), a tested binned Gaussian KDE with FFT convolution; mesh smoothing, indexed half-edge topology, conservative triangle-mesh cleanup, local isotropic-style remeshing, winged-edge and quad-edge (partial coverage of the source mesh-processing family), plus tested HyperLogLog, Count-Min, Bloom-filter and reservoir-sampling sketches; space-filling LHS/maximin and k-means coverage are now implemented; ball pivoting remains outstanding
 
 This section extends computational geometry and adds scalable statistics, fast density methods, sampling design, 3D data formats, competitive location, charging infrastructure, surveillance and a representative implementation map.
 
@@ -39,7 +39,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Space-filling designs: maximin, coffee-house, spatial coverage design (k-means based), Latin hypercube | Spatial sampling and experimental design | 35 | Not checked — intake only |
+| Space-filling designs: maximin, coffee-house, spatial coverage design (k-means based), Latin hypercube | Spatial sampling and experimental design | 35 | Partially implemented: Latin hypercube, centered LHS, multi-start normalized maximin LHS and deterministic k-means coverage have code and tests; coffee-house design remains unresolved because the source gives no reproducible definition |
 | Model-based design: kriging variance minimization, Bayesian optimal design, sequential and adaptive designs, mutual information sensor selection (submodular greedy) | Model-based and adaptive experimental design | 36 | Not checked — intake only |
 | Robotic sampling: adaptive sampling with AUVs and drones, informative path planning | Mobile sensing / robotic path planning | 36 | Not checked — intake only |
 
