@@ -3,6 +3,7 @@ from fractions import Fraction
 import pytest
 
 from convex_decomposition import convex_decompose, hertel_mehlhorn_decompose
+from ear_clipping import polygon_area
 
 
 def area2(ring):
@@ -79,7 +80,8 @@ def test_many_reflex_vertices_use_adjacency_worklist_and_preserve_partition_area
     for i in range(24):
         angle = 2 * math.pi * i / 24
         radius = 10 if i % 2 == 0 else 6
-        ring.append((radius * math.cos(angle), radius * math.sin(angle)))
+        ring.append((Fraction(str(radius * math.cos(angle))),
+                    Fraction(str(radius * math.sin(angle)))))
     pieces = convex_decompose(ring)
     assert len(pieces) > 1
     assert all(is_convex(piece) for piece in pieces)
