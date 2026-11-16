@@ -1,6 +1,6 @@
 # Stochastic Lanczos log-determinant
 
-This package estimates log determinants of dense or sparse symmetric positive-definite matrices using stochastic Lanczos quadrature (SLQ).
+This package estimates log determinants of dense or sparse symmetric positive-definite matrices using stochastic Lanczos quadrature (SLQ) and Chebyshev polynomial trace approximation.
 
 ## Install and test
 
@@ -20,3 +20,8 @@ Dense NumPy arrays and SciPy sparse matrices are supported. The caller is respon
 The method requires a symmetric positive-definite matrix. Positive Ritz values are checked for each probe, but a finite set of probes is not a formal proof that the full matrix is positive definite. The package does not implement Chebyshev approximations, Pace–Barry methods, sparse Cholesky, preconditioning or distributed trace estimation.
 
 See `algorithms/statistics/stochastic-lanczos-logdet.md`.
+
+
+## Chebyshev trace approximation
+
+`chebyshev_logdet` approximates log(lambda) on caller-supplied positive spectral bounds and evaluates the resulting Chebyshev polynomial with a matrix-vector recurrence. Rademacher probes estimate the trace. The caller must provide conservative bounds containing the spectrum; a poor lower bound can severely degrade the approximation. Degree controls polynomial truncation and probe count controls stochastic trace error.

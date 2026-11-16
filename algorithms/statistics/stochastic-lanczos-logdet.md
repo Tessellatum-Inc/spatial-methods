@@ -15,3 +15,10 @@ Chebyshev polynomial approximations, Pace–Barry, sparse Cholesky, precondition
 Tests compare diagonal and non-diagonal small SPD matrices against exact numpy.linalg.slogdet, compare a SciPy sparse diagonal matrix with its analytic log determinant, verify seeded reproducibility, and reject nonsymmetric, non-finite, indefinite and invalid-control inputs.
 
 See the [implementation package](../../implementations/python/stochastic-logdet/README.md).
+
+
+## Chebyshev polynomial trace estimator
+
+A second approximation expands (\log(\lambda)) in Chebyshev polynomials over caller-supplied spectral bounds ([a,b]), where (0<a<b). The matrix is mapped to the interval ([-1,1]), and the polynomial is applied to each Rademacher probe by the three-term Chebyshev recurrence. Probe quadratic forms estimate the trace. This avoids Lanczos eigendecompositions but requires reliable spectral bounds; the polynomial degree and probe count control separate approximation errors.
+
+The implementation accepts dense NumPy and SciPy sparse symmetric matrices. It does not estimate spectral bounds automatically, and a bound that fails to contain the spectrum invalidates the approximation.

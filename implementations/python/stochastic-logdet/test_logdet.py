@@ -60,3 +60,43 @@ def test_invalid_controls_are_rejected():
         stochastic_lanczos_logdet(np.eye(3), n_probes=0)
     with pytest.raises(ValueError, match="lanczos_steps"):
         stochastic_lanczos_logdet(np.eye(3), lanczos_steps=0)
+
+
+from logdet import chebyshev_logdet
+
+
+def test_chebyshev_logdet_diagonal_matches_exact_logdet():
+    diagonal = np.array([.5, 1., 2., 4., 7.])
+    result = chebyshev_logdet(np.diag(diagonal), spectral_bounds=(.5, 7.),
+        degree=100, n_probes=4, random_state=4, quadrature_order=256)
+    assert result["estimate"] == pytest.approx(np.log(diagonal).sum(), abs=1e-10)
+
+
+def test_chebyshev_logdet_dense_probe_values_match_eigendecomposition_oracle():
+    rng = np.random.default_rng(44)
+    matrix = rng.normal(size=(5, 5))
+    matrix = matrix.T @ matrix + np.eye(5)
+    eigenvalues, eigenvectors = np.linalg.eigh(matrix)
+    log_matrix = (eigenvectors * np.log(eigenvalues)) @ eigenvectors.T
+    bounds = (float(eigenvalues[0]), float(eigenvalues[-1]))
+    result = chebyshev_logdet(matrix, spectral_bounds=bounds, degree=100,
+        n_probes=3, random_state=17, quadrature_order=256)
+    probes = np.random.default_rng(17).choice([-1., 1.], size=(3, 5))
+    oracle = np.sum((probes @ log_matrix) * probes, axis=1)
+    np.testing.assert_allclose(result["probe_estimates"], oracle, atol=1e-9)
+
+
+def test_chebyshev_logdet_supports_sparse_diagonal_matrices():
+    diagonal = np.array([.7, 1.5, 2.2, 4.8])
+    result = chebyshev_logdet(sparse.diags(diagonal),
+        spectral_bounds=(.7, 4.8), degree=100, n_probes=4,
+        random_state=9, quadrature_order=256)
+    assert result["estimate"] == pytest.approx(np.log(diagonal).sum(), abs=1e-10)
+
+
+def test_chebyshev_logdet_rejects_invalid_bounds_and_controls():
+    with pytest.raises(ValueError, match="spectral_bounds"):
+        chebyshev_logdet(np.eye(3), spectral_bounds=(0., 1.))
+    with pytest.raises(ValueError, match="quadrature_order"):
+        chebyshev_logdet(np.eye(3), spectral_bounds=(.5, 2.), degree=10,
+                         quadrature_order=5)
