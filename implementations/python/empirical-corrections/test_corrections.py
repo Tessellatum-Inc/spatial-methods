@@ -1,7 +1,8 @@
 import numpy as np
 import pytest
 from corrections import (dark_object_subtraction, c_correction, minnaert_correction,
-                          histogram_match, pseudo_invariant_feature_normalization)
+                          histogram_match, pseudo_invariant_feature_normalization,
+                          fit_empirical_line, apply_empirical_line)
 
 
 def test_dark_object_subtraction_per_band_and_mask():
@@ -100,3 +101,35 @@ def test_pif_normalization_rejects_insufficient_or_constant_data():
     with pytest.raises(ValueError):
         pseudo_invariant_feature_normalization(np.ones((2, 2)), np.ones((2, 2)),
                                                 stable_fraction=0)
+
+
+
+def test_empirical_line_fits_and_applies_multiband_calibration():
+    dn = np.array([[10., 20.], [20., 30.], [40., 50.], [60., 80.]])
+    reflectance = dn * np.array([0.002, 0.001]) + np.array([0.01, 0.03])
+    calibration = fit_empirical_line(dn, reflectance)
+    np.testing.assert_allclose(calibration["gain"], [0.002, 0.001], atol=1e-12)
+    np.testing.assert_allclose(calibration["offset"], [0.01, 0.03], atol=1e-12)
+    np.testing.assert_allclose(calibration["r_squared"], 1.0)
+    image = np.stack([dn.reshape(2, 2, 2)[:, :, 0],
+                      dn.reshape(2, 2, 2)[:, :, 1]], axis=-1)
+    calibrated = apply_empirical_line(image, calibration)
+    np.testing.assert_allclose(calibrated, image * [0.002, 0.001] + [0.01, 0.03])
+
+
+def test_empirical_line_single_band_and_explicit_clipping():
+    calibration = fit_empirical_line([0, 10, 20], [0.0, 0.5, 1.0])
+    image = np.array([[-5., 10.], [20., 30.]])
+    result = apply_empirical_line(image, calibration, clip=(0.0, 1.0))
+    np.testing.assert_allclose(result, [[0.0, 0.5], [1.0, 1.0]])
+
+
+def test_empirical_line_rejects_invalid_samples_and_coefficients():
+    with pytest.raises(ValueError):
+        fit_empirical_line([1, 1, 1], [0.1, 0.2, 0.3])
+    with pytest.raises(ValueError):
+        fit_empirical_line([[1, 2], [2, 3]], [[0.1], [0.2]])
+    with pytest.raises(ValueError):
+        apply_empirical_line(np.ones((2, 2, 3)), {"gain": [1, 2], "offset": [0, 0]})
+    with pytest.raises(ValueError):
+        apply_empirical_line(np.ones((2, 2)), {"gain": [1], "offset": [0]}, clip=(2, 1))

@@ -22,3 +22,14 @@ The [NumPy reference package](../../implementations/python/empirical-corrections
 
 - Schott et al. (1988), “Radiometric scene normalization using pseudo-invariant features,” *Remote Sensing of Environment*, 26(1), 1–16, [doi:10.1016/0034-4257(88)90001-1](https://doi.org/10.1016/0034-4257(88)90001-1).
 - Hall et al. (1991), “Radiometric rectification: toward a common radiometric response among multidate, multisensor images,” *Remote Sensing of Environment*, 35(1), 11–27, [doi:10.1016/0034-4257(91)90084-8](https://doi.org/10.1016/0034-4257(91)90084-8).
+
+
+## Empirical-line calibration
+
+The empirical-line method fits a per-band affine relationship from paired image digital-number samples and reference-target reflectance samples:
+
+`reflectance = gain × DN + offset`
+
+The implementation accepts paired `(samples, bands)` arrays (or one-dimensional single-band vectors), estimates ordinary least-squares coefficients independently per band, and reports gain, offset, R-squared and RMSE. Apply the returned calibration to a single-band or matching multiband image. Values are not clipped by default; optional bounds must be explicitly requested.
+
+The reference samples should represent targets with known reflectance and be measured under acquisition conditions representative of the scene. Target selection, panel calibration, atmospheric stability, sensor linearity and independent validation remain the user's responsibility. This is a practical empirical calibration baseline, not a substitute for radiative-transfer correction or sensor-specific processing.

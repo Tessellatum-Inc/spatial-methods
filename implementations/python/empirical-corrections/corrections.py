@@ -204,3 +204,66 @@ def pseudo_invariant_feature_normalization(reference, target, *, valid_mask=None
     return {"normalized": corrected[..., 0] if was_2d else corrected,
             "stable_mask": stable, "gain": gains[0] if was_2d else gains,
             "offset": offsets[0] if was_2d else offsets}
+
+
+
+def fit_empirical_line(digital_numbers, reference_reflectance):
+    """Fit per-band empirical-line DN-to-reflectance calibration.
+
+    Inputs are paired ROI/sample means shaped (samples, bands), or 1D
+    single-band vectors. Ordinary least squares fits reflectance = gain*DN
+    + offset independently per band. At least two distinct DN values are
+    required in every band. The caller is responsible for panel/target
+    selection, co-registration, and reference reflectance provenance.
+    """
+    dn = np.asarray(digital_numbers, dtype=float)
+    rho = np.asarray(reference_reflectance, dtype=float)
+    if dn.ndim == 1:
+        dn = dn[:, None]
+    if rho.ndim == 1:
+        rho = rho[:, None]
+    if dn.ndim != 2 or rho.shape != dn.shape or dn.shape[0] < 2 or dn.shape[1] < 1:
+        raise ValueError("inputs must be matching (samples, bands) arrays with at least two samples")
+    if not np.all(np.isfinite(dn)) or not np.all(np.isfinite(rho)):
+        raise ValueError("calibration samples must be finite")
+    gains = np.empty(dn.shape[1])
+    offsets = np.empty(dn.shape[1])
+    r_squared = np.empty(dn.shape[1])
+    rmse = np.empty(dn.shape[1])
+    for band in range(dn.shape[1]):
+        x, y = dn[:, band], rho[:, band]
+        centered = x - x.mean()
+        denominator = float(centered @ centered)
+        if denominator <= np.finfo(float).eps * max(1.0, float(x @ x)):
+            raise ValueError("each band requires at least two distinct DN values")
+        gain = float(centered @ (y - y.mean()) / denominator)
+        offset = float(y.mean() - gain * x.mean())
+        residual = y - (gain * x + offset)
+        total = float(np.sum((y - y.mean()) ** 2))
+        gains[band], offsets[band] = gain, offset
+        rmse[band] = float(np.sqrt(np.mean(residual ** 2)))
+        r_squared[band] = 1.0 if total <= np.finfo(float).eps else 1.0 - float(residual @ residual) / total
+    return {"gain": gains, "offset": offsets, "r_squared": r_squared, "rmse": rmse}
+
+
+def apply_empirical_line(image, calibration, *, clip=None):
+    """Apply a fitted empirical-line calibration to a 2D or multiband image.
+
+    A 2D image uses a one-band calibration; a (rows, cols, bands) image
+    requires matching coefficient vectors. Reflectance is not clipped unless
+    an explicit (minimum, maximum) pair is supplied.
+    """
+    x, was_2d = _image(image)
+    gain = np.asarray(calibration.get("gain"), dtype=float)
+    offset = np.asarray(calibration.get("offset"), dtype=float)
+    if gain.ndim != 1 or offset.shape != gain.shape or gain.size != x.shape[-1]:
+        raise ValueError("calibration gain and offset must match the image band count")
+    if not np.all(np.isfinite(gain)) or not np.all(np.isfinite(offset)):
+        raise ValueError("calibration coefficients must be finite")
+    result = x * gain.reshape(1, 1, -1) + offset.reshape(1, 1, -1)
+    if clip is not None:
+        bounds = np.asarray(clip, dtype=float)
+        if bounds.shape != (2,) or not np.all(np.isfinite(bounds)) or bounds[0] > bounds[1]:
+            raise ValueError("clip must be a finite (minimum, maximum) pair")
+        result = np.clip(result, bounds[0], bounds[1])
+    return result[..., 0] if was_2d else result

@@ -83,7 +83,7 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Empirical optical and terrain corrections
 
-- [Empirical corrections](remote-sensing/empirical-corrections.md) — dark-object subtraction, C-correction, Minnaert, histogram matching and pseudo-invariant-feature affine normalization.
+- [Empirical corrections](remote-sensing/empirical-corrections.md) — dark-object subtraction, C-correction, Minnaert, histogram matching, pseudo-invariant-feature affine normalization and empirical-line DN-to-reflectance calibration.
 - [IR-MAD](remote-sensing/ir-mad.md) — iteratively reweighted canonical variates and chi-square no-change scores for bitemporal imagery.
 
 ## Temporal image compositing
