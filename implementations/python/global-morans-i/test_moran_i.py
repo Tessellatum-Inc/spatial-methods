@@ -86,3 +86,24 @@ def test_negative_weights_are_rejected():
 def test_non_finite_values_are_rejected():
     with pytest.raises(ValueError, match="finite"):
         morans_i([1, 2, float("nan"), 4], CHAIN_WEIGHTS)
+
+
+
+def test_permutation_inference_is_seeded_and_uses_plus_one_correction():
+    from moran_i import morans_i_permutation
+    first=morans_i_permutation([1,2,3,4],CHAIN_WEIGHTS,permutations=99,seed=7)
+    second=morans_i_permutation([1,2,3,4],CHAIN_WEIGHTS,permutations=99,seed=7)
+    assert first==second
+    assert first["statistic"]==pytest.approx(1/3)
+    assert first["expected"]==pytest.approx(-1/3)
+    assert 1/100<=first["p_value"]<=1
+
+
+def test_permutation_alternatives_and_invalid_controls():
+    from moran_i import morans_i_permutation
+    assert morans_i_permutation([1,2,3,4],CHAIN_WEIGHTS,permutations=20,
+                                alternative="greater",seed=2)["p_value"]>0
+    assert morans_i_permutation([1,2,3,4],CHAIN_WEIGHTS,permutations=20,
+                                alternative="less",seed=2)["p_value"]>0
+    with pytest.raises(ValueError): morans_i_permutation([1,2,3,4],CHAIN_WEIGHTS,permutations=0)
+    with pytest.raises(ValueError): morans_i_permutation([1,2,3,4],CHAIN_WEIGHTS,alternative="upper")
