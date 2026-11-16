@@ -123,3 +123,10 @@ The spectral-index package now includes tested formula implementations for GNDVI
 ## Section 17 — streaming sketches
 
 Four source-listed streaming summaries now have tested reference implementations: HyperLogLog, Count-Min Sketch, Bloom filter and reservoir sampling. Their error/guarantee contracts and memory trade-offs are documented. Spatially partitioned/distributed deployments and workload benchmarks remain open.
+
+
+## Cross-section additions — 16 November 2026
+
+- Section 18: [Path-size logit](../algorithms/networks/path-size-logit.md) provides edge-overlap factors, stable route-choice probabilities and chosen-path log likelihood. Coefficient estimation, C-logit and stochastic user equilibrium remain open.
+- Section 19: [Drought condition indices](../algorithms/remote-sensing/drought-condition-indices.md) provides VCI, TCI, VHI and mixed-zero gamma SPI. Seasonal calibration and impact/basis-risk modelling remain open.
+- Section 21: [Land-change accounting](../algorithms/statistics/land-change-accounting.md) provides two-date transition matrices, gains/losses/net/swap, quantity/allocation disagreement and annualized class intensities. Multi-interval significance analysis and uncertainty propagation remain open.

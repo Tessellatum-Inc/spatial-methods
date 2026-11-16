@@ -26,6 +26,18 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Spatial skyline queries](query-processing/spatial-skyline.md) — return objects not dominated across distance to a query location and selected attributes.
 
+## Route choice
+
+- [Path-size logit](networks/path-size-logit.md) — overlap-corrected route-choice probabilities for alternatives sharing network edges.
+
+## Drought indices
+
+- [Drought condition indices](remote-sensing/drought-condition-indices.md) — VCI, TCI, VHI and gamma SPI.
+
+## Land-change accounting
+
+- [Land-change accounting](statistics/land-change-accounting.md) — transition matrices, gains/losses, disagreement and intensity summaries.
+
 ## Terrain travel time
 
 - [Directional terrain travel-time models](raster/terrain-travel-time.md) — Tobler's hiking function, Naismith's rule, Langmuir's descent correction and raster Dijkstra accumulation.
