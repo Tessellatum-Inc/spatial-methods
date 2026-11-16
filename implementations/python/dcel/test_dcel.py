@@ -122,3 +122,23 @@ def test_adjacent_collinear_boundary_edges_may_meet_at_one_noded_vertex():
     assert len(d.faces) == 2
     shared = [edge for edge in d.halfedges if edge.twin >= 0 and d.halfedges[edge.twin].face is not None]
     assert len(shared) == 2
+
+
+def test_exterior_cycle_skips_internal_edges_at_three_face_junctions():
+    d = DCEL.from_faces({
+        "west": [rect(0, 0, 1, 1)],
+        "middle": [rect(1, 0, 2, 1)],
+        "east": [rect(2, 0, 3, 1)],
+    })
+    assert d.validate()
+    assert len(d.unbounded_cycles) == 1
+    start = d.unbounded_cycles[0]
+    current, cycle = start, []
+    while not cycle or current != start:
+        assert current not in cycle
+        cycle.append(current)
+        edge = d.halfedges[current]
+        assert edge.face is None
+        current = edge.next
+    assert len(cycle) == 8
+    assert set(cycle) == {edge.id for edge in d.halfedges if edge.face is None}
