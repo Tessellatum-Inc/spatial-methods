@@ -44,3 +44,8 @@ Dean's idealized profile is h(x)=A x^(2/3), with analytic integral from x0 to x1
 ## Empirical satellite-derived bathymetry and multibeam gridding
 
 The package includes a linear calibration baseline for depth as a function of a supplied log-band ratio, fitted from paired known depths, and a prediction function with optional calibrated-domain masking. It does not perform atmospheric correction, water-column inversion or bottom-type correction. Multibeam soundings can be aggregated to regular cells by mean or median, with counts and cell-centre coordinates returned; this is not a CUBE estimator or a hydrographic uncertainty model.
+
+
+## Six-variable coastal vulnerability index
+
+For six ordinal variable ranks (r_i\in\{1,2,3,4,5\}), the conventional index is (\mathrm{CVI}=\sqrt{\prod_{i=1}^{6}r_i}\). The implementation validates the six-rank axis and supports arrays of sites. The choice of variables and local rank thresholds are study-specific; the output is an ordinal composite, not an annual probability or calibrated risk estimate.
