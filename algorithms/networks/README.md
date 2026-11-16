@@ -14,7 +14,7 @@ This index links the algorithm dossiers to their runnable reference implementati
 - [RAPTOR](raptor.md) — round-based timetable earliest-arrival baseline with footpaths; [Python package](../../implementations/python/raptor/README.md).
 - [Connection Scan Algorithm](connection-scan.md) — departure-ordered timetable scan with transfer constraints; [Python package](../../implementations/python/csa/README.md).
 
-## Network structure and partitioning
+## Matching and allocation\n\n- [Stable matching](stable-matching.md) — resident-proposing deferred acceptance for capacity-constrained institutions, with a separate blocking-pair audit; [Python package](../../implementations/python/stable-matching/README.md).\n\n## Network structure and partitioning
 
 - [Centrality](centrality.md) — betweenness, closeness, and PageRank; [Python package](../../implementations/python/network-centrality/README.md).
 - [Label propagation](label-propagation.md) — seeded label-propagation community detection; [Python package](../../implementations/python/network-communities/README.md).
