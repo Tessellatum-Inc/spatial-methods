@@ -347,3 +347,53 @@ def boolean_result(
         return operations[operation]
     except KeyError as exc:
         raise ValueError(f"unsupported Boolean operation: {operation}") from exc
+
+
+@dataclass(frozen=True)
+class FillTransition:
+    edge_id: int
+    ring_id: int
+    subject_before: int
+    subject_after: int
+    clip_before: int
+    clip_after: int
+    result_before: bool
+    result_after: bool
+
+
+def fill_transitions(
+    active_edges: Sequence[BoundEdge],
+    subject_ring_ids: set[int],
+    clip_ring_ids: set[int],
+    operation: str = "intersection",
+    fill_rule: str = "non_zero",
+) -> tuple[FillTransition, ...]:
+    """Propagate subject/clip winding counts across a left-to-right edge list.
+
+    The caller supplies edges in their current left-to-right order and assigns
+    every ring to exactly one operand. This computes fill-state transitions
+    only; it does not schedule intersections, repair coincident edges, or
+    construct output contours.
+    """
+    if subject_ring_ids & clip_ring_ids:
+        raise ValueError("subject and clip ring sets must be disjoint")
+    if operation not in {"intersection", "union", "difference", "xor"}:
+        raise ValueError(f"unsupported Boolean operation: {operation}")
+    known = subject_ring_ids | clip_ring_ids
+    if any(edge.ring_id not in known for edge in active_edges):
+        raise ValueError("every active edge must belong to subject or clip")
+    subject = clip = 0
+    transitions = []
+    for edge in active_edges:
+        before_subject, before_clip = subject, clip
+        if edge.ring_id in subject_ring_ids:
+            subject += edge.winding_delta
+        else:
+            clip += edge.winding_delta
+        before = boolean_result(before_subject, before_clip, operation, fill_rule)
+        after = boolean_result(subject, clip, operation, fill_rule)
+        transitions.append(FillTransition(
+            edge.edge_id, edge.ring_id,
+            before_subject, subject, before_clip, clip, before, after
+        ))
+    return tuple(transitions)
