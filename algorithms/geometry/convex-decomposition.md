@@ -96,7 +96,7 @@ The input model matters too: one simple ring, a polygon with holes, a polygonal 
 
 ## Runnable teaching baseline
 
-A [Python triangulate-and-merge baseline](../../implementations/python/convex-decomposition/README.md) is now available with exact predicates, area-conservation checks, tests and an [intern walkthrough](../../implementations/python/convex-decomposition/implementation-walkthrough.md). The [visual lab](../../notebooks/convex-decomposition-lab.ipynb) shows a concave polygon becoming convex pieces.
+A [Python triangulate-and-merge baseline](../../implementations/python/convex-decomposition/README.md) is available with exact predicates, an edge-indexed merge-candidate worklist, area-conservation checks, tests and an [intern walkthrough](../../implementations/python/convex-decomposition/implementation-walkthrough.md). The [visual lab](../../notebooks/convex-decomposition-lab.ipynb) shows a concave polygon becoming convex pieces.
 
 This is a deliberately straightforward greedy merge, not an optimized Hertel–Mehlhorn implementation. It does not claim the published approximation guarantee or a minimum-piece partition. Its initial ear-clipping stage and repeated pair scans are teaching baselines with higher worst-case cost.
 
