@@ -546,10 +546,11 @@ The source-to-implementation ledger must track, per source entry and child metho
 - [x] Deduplicate same-direction coincident output fragments before stitching.
 - [x] Normalize input vertices and generated intersection nodes to exact `Fraction` coordinates; preserve large integers and rational crossing coordinates through noding and stitching.
 - [x] Replace epsilon-quantized stitch vertex keys with exact rational coordinate keys, avoiding accidental merging of distinct nearby vertices.
+- [x] Make final segment contact decisions exact (epsilon is only a broad-phase expansion), preserving both sub-epsilon overlaps and near misses without false contacts.
 - [x] Coalesce pairwise proper-crossing and endpoint/overlap contacts into exact-coordinate node events with all incident segment IDs.
 - [x] Replace floating-angle contour successor selection with exact rational polar ordering at high-degree vertices.
 - [x] Add regression coverage for partial collinear overlap, identical/reversed coincident polygons and all four Boolean operations on polygons sharing an edge.
-- [ ] Run the Martinez–Rueda package suite and full repository CI on the resulting head. The GitHub status endpoint currently returns no status contexts for the direct main-branch commits; this is not evidence of a passing run, so these changes are not marked CI-verified.
+- [ ] Run the Martinez–Rueda package suite and full repository CI on the resulting head. The workflow is configured for pushes affecting Python implementations and Markdown, but the available commit-status lookup returns no status contexts for these commits; this is not evidence of a passing run, so these changes are not marked CI-verified.
 - [x] Add independent Shapely differential suites for seeded rectangle overlays in Martinez–Rueda and Vatti, plus concave disconnected and hole-aware Vatti cases; compare symmetric-difference geometry, not area alone.
 - [x] Expand Martinez differential coverage to vertex-only contacts, partial shared-edge contacts, sub-epsilon narrow faces, and shell/hole/island topology; add rational-node and large-integer precision regressions.
 - [ ] Execute both differential suites and resolve any oracle mismatches on the exact head commit.
