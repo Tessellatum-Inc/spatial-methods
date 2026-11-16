@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from heapq import heappop, heappush
+from itertools import count
 from math import hypot, isfinite
 from numbers import Integral
 from typing import Hashable, Sequence
@@ -35,16 +36,17 @@ def _all_pairs_shortest_paths(adjacency):
     result = {}
     for source in adjacency:
         distances = {source: 0.0}
-        queue = [(0.0, source)]
+        sequence = count()
+        queue = [(0.0, next(sequence), source)]
         while queue:
-            distance, node = heappop(queue)
+            distance, _, node = heappop(queue)
             if distance != distances[node]:
                 continue
             for neighbour, weight in adjacency[node]:
                 candidate = distance + weight
                 if candidate < distances.get(neighbour, float("inf")):
                     distances[neighbour] = candidate
-                    heappush(queue, (candidate, neighbour))
+                    heappush(queue, (candidate, next(sequence), neighbour))
         result[source] = distances
     return result
 
