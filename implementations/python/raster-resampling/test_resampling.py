@@ -47,13 +47,30 @@ def test_continuous_kernels_preserve_constant_surface(method):
     np.testing.assert_allclose(result, 12.25, atol=1e-10)
 
 
-@pytest.mark.parametrize("method", ["cubic", "lanczos"])
-def test_negative_lobed_kernels_reproduce_linear_ramp_interior(method):
+def test_cubic_kernel_reproduces_linear_ramp_interior():
     source = np.fromfunction(lambda r, c: 2 * r - 3 * c + 5, (12, 13), dtype=float)
-    result = resample_to_shape(source, (24, 26), method=method)
-    # Interior target pixel maps to a fractional source coordinate. Both
-    # symmetric kernels reproduce affine functions away from the edge.
+    result = resample_to_shape(source, (24, 26), method="cubic")
     np.testing.assert_allclose(result[10, 12], 2 * 4.75 - 3 * 5.75 + 5, atol=1e-9)
+
+
+def test_lanczos_matches_independent_windowed_sinc_reference():
+    source = np.fromfunction(lambda r, c: 2 * r - 3 * c + 5, (12, 13), dtype=float)
+    result = resample_to_shape(source, (24, 26), method="lanczos")
+    # Lanczos-3 is a truncated windowed-sinc interpolator; unlike ideal
+    # infinite sinc, its discrete first moment is not exactly zero at every
+    # fractional offset. Compare with a direct independent kernel sum.
+    sr, sc = 4.75, 5.75
+    expected_numerator = 0.0
+    expected_denominator = 0.0
+    for rr in range(2, 8):
+        wr = np.sinc(sr - rr) * np.sinc((sr - rr) / 3)
+        for cc in range(3, 9):
+            wc = np.sinc(sc - cc) * np.sinc((sc - cc) / 3)
+            weight = wr * wc
+            expected_numerator += source[rr, cc] * weight
+            expected_denominator += weight
+    expected = expected_numerator / expected_denominator
+    np.testing.assert_allclose(result[10, 12], expected, atol=1e-12)
 
 
 @pytest.mark.parametrize("method", ["cubic", "lanczos"])
