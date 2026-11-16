@@ -38,7 +38,7 @@ def test_concave_l_shape_is_partitioned_into_convex_pieces():
     pieces = convex_decompose(polygon)
     assert len(pieces) >= 2
     assert all(is_convex(piece) for piece in pieces)
-    assert sum((abs(area2(piece)) for piece in pieces), Fraction(0)) == 8
+    assert sum((abs(area2(piece)) for piece in pieces), Fraction(0)) == 10
 
 
 def test_clockwise_input_is_normalized():
@@ -93,7 +93,7 @@ def test_hertel_mehlhorn_pass_returns_convex_partition_for_concave_ring():
     pieces = hertel_mehlhorn_decompose(polygon)
     assert len(pieces) >= 2
     assert all(is_convex(piece) for piece in pieces)
-    assert sum((abs(area2(piece)) for piece in pieces), Fraction(0)) == 13
+    assert sum((abs(area2(piece)) for piece in pieces), Fraction(0)) == 26
 
 
 def test_hertel_mehlhorn_pass_is_deterministic_and_handles_convex_input():
@@ -109,4 +109,4 @@ def test_hertel_mehlhorn_pass_handles_generator_input():
     polygon = [(0, 0), (3, 0), (3, 2), (1, 2), (1, 4), (0, 4)]
     pieces = hertel_mehlhorn_decompose(iter(polygon))
     assert all(is_convex(piece) for piece in pieces)
-    assert sum((abs(area2(piece)) for piece in pieces), Fraction(0)) == 8
+    assert sum((abs(area2(piece)) for piece in pieces), Fraction(0)) == 16
