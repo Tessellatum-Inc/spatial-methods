@@ -123,6 +123,9 @@ jobs:
           - example: spatial-information-theory
             directory: implementations/python/spatial-information-theory
             pythonpath: ""
+          - example: recurrence-analysis
+            directory: implementations/python/recurrence-analysis
+            pythonpath: ""
           - example: path-size-logit
             directory: implementations/python/path-size-logit
             pythonpath: ""
