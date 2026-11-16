@@ -138,3 +138,10 @@ def test_partition_sweep_on_multiple_reflex_vertices():
     triangles = triangulate_general(ring)
     assert len(triangles) == len(ring) - 2
     _assert_triangle_mesh(ring, triangles)
+
+
+def test_general_partition_rejects_collinear_event_vertex():
+    from monotone_triangulation import partition_y_monotone
+
+    with pytest.raises(ValueError, match="consecutive collinear"):
+        partition_y_monotone([(0, 0), (5, 1), (4, 2), (3, 3), (1, 5), (0, 4)])
