@@ -172,17 +172,27 @@ class RandomizedTrapezoidalMap:
         self.insertion_splits: list[tuple[CorridorSplit, ...]] = []
         self.insertion_replacements: list[CorridorReplacement] = []
         self.replacement_graph_snapshots: list[tuple[Trapezoid, ...]] = []
-        self._persistent_cells: dict[tuple[int, ...], Trapezoid] = {}
+        self._build(())
+        self._persistent_cells: dict[tuple[int, ...], Trapezoid] = {
+            cell.id: cell for cell in self.trapezoids
+        }
         for insertion_index, sid in enumerate(order):
             self._build(tuple(inserted))
-            if insertion_index == 0:
-                self._persistent_cells = {cell.id: cell for cell in self.trapezoids}
-            else:
-                self._persistent_cells = {
-                    cell.id: self._persistent_cells.get(cell.id, cell)
-                    for cell in self.trapezoids
-                }
-            corridor = self._trace_segment_corridor(sid)
+            traced = self._trace_segment_corridor(sid)
+            persistent_by_geometry = {
+                (cell.x_left, cell.x_right, cell.bottom_segment, cell.top_segment): cell
+                for cell in self._persistent_cells.values()
+            }
+            try:
+                corridor = [
+                    persistent_by_geometry[
+                        (cell.x_left, cell.x_right, cell.bottom_segment, cell.top_segment)
+                    ] for cell in traced
+                ]
+            except KeyError:
+                raise ValueError(
+                    "persistent trapezoid graph does not match rebuilt decomposition"
+                ) from None
             self.insertion_corridors.append(tuple(corridor))
             self.insertion_splits.append(tuple(
                 self._split_corridor_cell(sid, cell) for cell in corridor
