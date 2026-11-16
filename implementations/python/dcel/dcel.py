@@ -7,7 +7,8 @@ edges must occur once per incident face in opposite directions.
 from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction
-from math import atan2, isfinite
+from functools import cmp_to_key
+from math import isfinite
 from typing import Hashable, Mapping, Sequence
 
 
@@ -33,6 +34,24 @@ def _segments_intersect(a, b, c, d):
             (o2 == 0 and _on_segment(a,b,d)) or
             (o3 == 0 and _on_segment(c,d,a)) or
             (o4 == 0 and _on_segment(c,d,b)))
+
+
+def _angle_compare(origin, first, second, vertices, halfedges):
+    """Exact CCW ordering of two outgoing half-edges around one vertex."""
+    ox, oy = _q(origin)
+    p1 = _q(vertices[halfedges[first].target].point)
+    p2 = _q(vertices[halfedges[second].target].point)
+    ax, ay = p1[0]-ox, p1[1]-oy
+    bx, by = p2[0]-ox, p2[1]-oy
+    ha = 0 if (ay > 0 or (ay == 0 and ax >= 0)) else 1
+    hb = 0 if (by > 0 or (by == 0 and bx >= 0)) else 1
+    if ha != hb:
+        return -1 if ha < hb else 1
+    cross = ax*by - ay*bx
+    if cross:
+        return -1 if cross > 0 else 1
+    da, db = ax*ax + ay*ay, bx*bx + by*by
+    return (da > db) - (da < db)
 
 
 def _validate_noded_segments(segments):
@@ -196,9 +215,11 @@ class DCEL:
         # At each target, take the clockwise predecessor of the incoming edge's twin.
         # This keeps the unbounded face on the right and skips shared interior edges.
         for vertex in d.vertices:
-            vertex.outgoing.sort(key=lambda e: atan2(
-                d.vertices[d.halfedges[e].target].point[1] - vertex.point[1],
-                d.vertices[d.halfedges[e].target].point[0] - vertex.point[0]))
+            vertex.outgoing.sort(key=cmp_to_key(
+                lambda first, second: _angle_compare(
+                    vertex.point, first, second, d.vertices, d.halfedges
+                )
+            ))
         for edge in d.halfedges:
             if edge.face is None:
                 outgoing = d.vertices[edge.target].outgoing
