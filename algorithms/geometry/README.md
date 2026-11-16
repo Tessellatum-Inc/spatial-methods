@@ -52,3 +52,6 @@ These records are part of the broader [algorithm collection](../README.md). The 
 - [Martinez–Rueda sweep-line front end](martinez-rueda.md) — initial event-queue, segment-intersection and splitting stage; full Boolean classification and stitching remain outstanding.
 
 - [Martinez–Rueda polygon overlay](martinez-rueda.md) — staged Boolean overlay with oriented ring stitching and explicit shell/hole component assembly.
+
+- [BSP tree constructive solid geometry](bsp-csg.md) — split convex 3D boundary polygons by planes and implement union, intersection and difference.
+- [BSP CSG implementation](../../implementations/python/bsp-csg/README.md) — floating-tolerance polygon splitting and box-based Boolean volume tests.
