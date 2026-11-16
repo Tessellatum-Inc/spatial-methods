@@ -503,10 +503,12 @@ def sweep_boolean(
             horizontal_events_at(decomposition, y), minima
         ))
 
+    slice_count = 0
     for lower_y, upper_y in zip(decomposition.scanbeams,
                                 decomposition.scanbeams[1:]):
         active = active_edges_for_band(decomposition, lower_y, upper_y)
         slices = sweep_active_edge_slices(active, lower_y, upper_y)
+        slice_count += len(slices)
         for slice_ in slices:
             spans = _filled_spans(
                 slice_.edges, subject_ring_ids, clip_ring_ids,
@@ -531,9 +533,4 @@ def sweep_boolean(
                     cells.append(FilledCell(
                         lo, hi, left.edge_id, right.edge_id, vertices
                     ))
-    return BooleanSweep(tuple(levels), tuple(cells),
-                        sum(max(0, len(sweep_active_edge_slices(
-                            active_edges_for_band(decomposition, lo, hi), lo, hi
-                        ))) for lo, hi in zip(
-                            decomposition.scanbeams, decomposition.scanbeams[1:]
-                        )))
+    return BooleanSweep(tuple(levels), tuple(cells), slice_count)
