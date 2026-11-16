@@ -8,9 +8,7 @@ incidence.
 
 The implementation in this repository builds this structure from already
 noded polygon face rings. It pairs shared boundaries when adjacent faces encode
-the same geometric edge in opposite directions. At vertices, outgoing edges
-are sorted by polar angle and the exterior-side rotation is linked by taking
-the predecessor of the twin in that order.
+the same geometric edge in opposite directions. At vertices, outgoing edges are sorted counter-clockwise with an exact rational angular comparator rather than `atan2`. For an incoming exterior half-edge, traversal scans clockwise from its twin and selects the next exterior half-edge, skipping bounded-face edges at multi-face junctions.
 
 This is deliberately a representation layer rather than a complete Boolean
 arrangement engine. It does not node intersections, support overlapping
@@ -31,8 +29,8 @@ a robust noder and explicit arrangement face classification.
 For V vertices and E undirected edges, vertex creation and edge pairing use
 hash maps in expected O(V+E). The correctness-first check for un-noded
 crossings, T-junctions and partial collinear overlaps currently costs O(E²).
-Sorting outgoing edges costs
-O(sum(deg(v) log deg(v))). Cycle construction and invariant validation are
+Exact angular sorting of outgoing edges costs
+O(sum(deg(v) log deg(v))) rational comparisons. Cycle construction and invariant validation are
 O(E). The representation uses O(V+E) storage.
 
 ## Limitations
