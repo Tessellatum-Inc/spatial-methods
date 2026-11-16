@@ -475,8 +475,10 @@ def green_ampt_infiltration_step(cumulative_infiltration, rainfall_intensity, sa
     A = psi * deficit
     if supply == 0:
         infiltration = 0.0
-    elif A == 0 or rain <= Ks:
+    elif rain <= Ks:
         infiltration = supply
+    elif A == 0:
+        infiltration = min(supply, Ks * dt)
     else:
         ponding_F = A / (rain / Ks - 1.0)
         if F0 < ponding_F:
