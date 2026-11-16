@@ -30,6 +30,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Laplace approximation and slice sampling](statistics/laplace-and-slice-inference.md) — posterior mode, local Gaussian approximation and componentwise slice sampling.
 
+## Volumetric raster analysis
+
+- [Three-dimensional connected components](raster/3d-connected-components.md) — label voxel objects under 6-, 18- or 26-neighbour connectivity with invalid voxels as barriers.
+
 ## Ellipsoidal geodesy
 
 - [Ellipsoidal geodesic operations](geodesy/ellipsoidal-geodesic-operations.md) — solve direct and inverse geodesics, polygon area/perimeter and sampled geodesic-radius buffers with an explicit ellipsoid.
