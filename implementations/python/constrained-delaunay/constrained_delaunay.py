@@ -85,7 +85,7 @@ def triangle_area(triangle: Triangle) -> Fraction:
 
 
 def _inside_ring(point: Point, ring: Sequence[Point]) -> bool:
-    """Exact even-odd point-in-ring test; boundary is reported separately."""
+    """Return True only for strict interior; points on the boundary return False."""
     x, y = point
     inside = False
     for a, b in zip(ring, list(ring[1:]) + [ring[0]]):
