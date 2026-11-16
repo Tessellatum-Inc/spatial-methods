@@ -240,7 +240,7 @@ def sweep_active_edge_slices(
     return tuple(slices)
 
 
-def winding_states(edges: Sequence[BoundEdge]) -> tuple[tuple[int, ...], ...]:
+def winding_states(edges: Sequence[BoundEdge]) -> tuple[int, ...]:
     """Return cumulative signed winding after each edge in left-to-right order.
 
     This exposes the raw winding transitions only. Subject/clip attribution,
@@ -251,5 +251,5 @@ def winding_states(edges: Sequence[BoundEdge]) -> tuple[tuple[int, ...], ...]:
     states = []
     for edge in edges:
         total += edge.winding_delta
-        states.append((total,))
+        states.append(total)
     return tuple(states)
