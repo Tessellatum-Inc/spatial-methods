@@ -481,3 +481,43 @@ def test_scs_curve_number_antecedent_conversions_are_ordered_and_bounded():
     assert np.all(wet > [40, 70, 95])
     assert np.all((dry >= 1) & (wet <= 100))
     with pytest.raises(ValueError): scs_curve_number_antecedent(0)
+
+
+
+def test_green_ampt_no_ponding_and_ponded_analytic_step():
+    from terrain_indices import green_ampt_infiltration_step
+    result = green_ampt_infiltration_step(0, 5, 10, 100, .2, 1)
+    assert result["infiltration"] == pytest.approx(5)
+    assert result["runoff_excess"] == pytest.approx(0)
+    # With F0=100 mm, suction term A=20 mm and rain=20 mm/h,
+    # the surface is ponded throughout; implicit solution is bracketed.
+    result = green_ampt_infiltration_step(100, 20, 5, 100, .2, 1)
+    assert 5 < result["infiltration"] < 20
+    assert result["ponded"] and result["runoff_excess"] > 0
+    assert result["cumulative_infiltration"] == pytest.approx(100 + result["infiltration"])
+
+
+def test_green_ampt_ponding_threshold_and_validation():
+    from terrain_indices import green_ampt_infiltration_step
+    # Initially unponded; rainfall first fills the capillary ponding threshold.
+    result = green_ampt_infiltration_step(0, 20, 5, 100, .2, .01)
+    assert result["infiltration"] == pytest.approx(.2)
+    assert result["runoff_excess"] == pytest.approx(0)
+    with pytest.raises(ValueError): green_ampt_infiltration_step(0, 1, 0, 10, .2, 1)
+    with pytest.raises(ValueError): green_ampt_infiltration_step(0, 1, 5, 10, 2, 1)
+
+
+def test_unit_hydrograph_convolution_full_series_and_mass_scaling():
+    from terrain_indices import unit_hydrograph_convolution
+    result = unit_hydrograph_convolution([1, 2], [0, 1, 2], time_step=.5)
+    np.testing.assert_allclose(result["discharge"], [0, 1, 4, 4])
+    np.testing.assert_allclose(result["time"], [0, .5, 1, 1.5])
+    scaled = unit_hydrograph_convolution([2, 4], [0, 1, 2])
+    np.testing.assert_allclose(scaled["discharge"], 2 * np.convolve([1, 2], [0, 1, 2]))
+
+
+def test_unit_hydrograph_rejects_invalid_series():
+    from terrain_indices import unit_hydrograph_convolution
+    with pytest.raises(ValueError): unit_hydrograph_convolution([], [1])
+    with pytest.raises(ValueError): unit_hydrograph_convolution([1], [-1])
+    with pytest.raises(ValueError): unit_hydrograph_convolution([1], [1], time_step=0)
