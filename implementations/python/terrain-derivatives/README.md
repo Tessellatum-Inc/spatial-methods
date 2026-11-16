@@ -85,3 +85,7 @@ The local-relief model subtracts a Gaussian-smoothed terrain background from the
 - reservoir_stage_storage derives DEM-based inundated area and storage at ordered water stages using constant horizontal cell area and horizontal-prism cells. It is not a hydraulic model and does not enforce basin connectivity or spill constraints.
 
 Both additions have analytic and validation tests. See the canonical reservoir stage-storage lesson.
+
+## SCS curve-number rainfall-runoff baseline
+
+The terrain-indices module now includes event direct-runoff depth using the SCS curve-number equation and conventional antecedent-moisture conversions from AMC-II to dry (I) and wet (III) curve numbers. Precipitation/runoff use the same depth unit, conventionally millimetres. The default initial-abstraction ratio is 0.2 but is explicit and configurable. This is an event-volume abstraction model, not a time-distributed unit hydrograph, continuous soil-water balance or calibrated catchment model.
