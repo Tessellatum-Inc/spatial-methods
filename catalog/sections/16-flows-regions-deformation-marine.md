@@ -4,7 +4,7 @@
 - **Source pages:** 33–34
 - **Source transcription:** [pages 31–35](../../source-inventory/pages-31-35.md)
 - **Review state:** source entries extracted into this index; not every entry independently verified
-- **Current canonical records:** [classification breaks](../../algorithms/cartography/classification-breaks.md), with six tested one-dimensional methods including exact dynamic-programming ckmeans; other flow, regionalisation, movement, geophysical, marine, biodiversity and humanitarian entries remain to be verified
+- **Current canonical records:** [Constrained gravity-flow models](../../algorithms/spatial-interaction/gravity-flow-models.md), including the four constraint forms and an exponential-cost entropy-maximising IPF baseline; [classification breaks](../../algorithms/cartography/classification-breaks.md), with six tested one-dimensional methods including exact dynamic-programming ckmeans; other flow, regionalisation, movement, geophysical, marine, biodiversity and humanitarian entries remain to be verified
 
 This section groups applied methods across spatial interaction, functional regions, classification, movement, geophysics, marine systems, biodiversity and humanitarian analysis.
 
@@ -12,7 +12,7 @@ This section groups applied methods across spatial interaction, functional regio
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Entropy-maximizing models (Wilson), production, attraction and doubly constrained forms, Poisson and negative binomial gravity models | Spatial interaction models / statistical specifications | 33 | Not checked — intake only |
+| Entropy-maximizing models (Wilson), production, attraction and doubly constrained forms, Poisson and negative binomial gravity models | Spatial interaction models / statistical specifications | 33 | Partially implemented: unconstrained, production-constrained, attraction-constrained and doubly constrained flows plus an exponential-cost entropy-maximising IPF variant; PPML regression already exists. Negative-binomial estimation and calibrated impedance/parameter estimation remain open |
 | Competing destinations, intervening opportunities variants, spatial autocorrelation in flows (Griffith eigenvector filtering, LeSage-Pace origin-destination models) | Interaction models / flow autocorrelation and econometric methods | 33 | Not checked — intake only |
 | Flow clustering and flow mapping: flow-based community detection, flow KDE, OD flow hotspot detection | Flow clustering / density estimation / hotspot methods | 33 | Not checked — intake only |
 
@@ -90,3 +90,8 @@ This section groups applied methods across spatial interaction, functional regio
 ### Classification implementation update
 
 Six classification methods now have a NumPy package, tests and a canonical lesson. The ckmeans dynamic program is checked against exhaustive partition enumeration on small samples. The source's “maximum breaks” and “pretty breaks” labels remain open pending identity verification; they are not guessed to mean Jenks or ckmeans.
+
+
+### Spatial-interaction implementation update
+
+The regional-dynamics package now distinguishes aggregate flow allocation from regression estimation: unconstrained, singly constrained and doubly constrained gravity flows are implemented, and the doubly constrained form is balanced by iterative proportional fitting. The entropy-maximising wrapper uses an explicit exponential generalized-cost deterrence term. PPML remains a separate count-regression method; negative-binomial estimation, competing destinations, intervening opportunities and flow-network clustering remain open.

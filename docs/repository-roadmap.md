@@ -591,3 +591,9 @@ The change is a meaningful extension, not completion of the polygon overlay work
 
 - [x] Implement geometric interval, standard-deviation, box-plot, head/tail, Dalenius–Hodges and exact 1D ckmeans classification breaks, with explicit assumptions and a brute-force partition oracle for ckmeans.
 - [ ] Resolve the source's “maximum breaks” and “pretty breaks” labels before implementing them; continue with the remaining Section 16 flow, regionalisation, movement, marine, biodiversity and humanitarian algorithms.
+
+
+## Spatial-interaction continuation — 16 November 2026
+
+- [x] Add unconstrained, production-constrained, attraction-constrained and doubly constrained gravity-flow allocation, with IPF balancing and an exponential generalized-cost entropy-maximising wrapper.
+- [ ] Add negative-binomial gravity estimation, impedance/parameter calibration, competing-destination and intervening-opportunity variants, then continue with flow clustering and functional regionalisation.

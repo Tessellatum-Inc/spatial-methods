@@ -26,6 +26,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Spatial skyline queries](query-processing/spatial-skyline.md) — return objects not dominated across distance to a query location and selected attributes.
 
+## Spatial interaction
+
+- [Constrained gravity-flow models](spatial-interaction/gravity-flow-models.md) — compare unconstrained, production-constrained, attraction-constrained, doubly constrained and entropy-maximising flow allocation.
+
 ## Cartographic classification
 
 - [Classification breaks](cartography/classification-breaks.md) — compare geometric, standard-deviation, box-plot, head/tail, Dalenius–Hodges and exact 1D ckmeans breaks.

@@ -22,3 +22,6 @@ These Markov/LISA routines do not estimate spatial panel models, continuous dist
 - **PPML gravity:** cross-sectional Poisson pseudo-maximum-likelihood regression with log link, optional offset, Newton/IRLS scoring and HC0 sandwich covariance. Zero outcomes are retained; high-dimensional fixed effects, clustered covariance and separation handling are not implemented. See the [PPML lesson](../../../methods/poisson-pseudo-maximum-likelihood-gravity.md) and [synthetic lab](../../../notebooks/regional-gravity-ppml-lab.ipynb).
 
 - **Harris-style market potential:** destination market mass weighted by inverse-power generalized travel cost, with optional self-potential exclusion. This is a descriptive index, not an estimated gravity or equilibrium model. See the [method](../../../methods/harris-market-potential.md) and [lab](../../../notebooks/harris-market-potential-lab.ipynb).
+
+
+- **Constrained gravity flows:** unconstrained, production-constrained, attraction-constrained and doubly constrained flows; the latter uses iterative proportional fitting. A Wilson-style exponential-cost entropy-maximising variant is included. This complements, but does not replace, the PPML regression estimator.

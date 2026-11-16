@@ -24,3 +24,7 @@ Run `python -m pytest -q --import-mode=importlib` in `implementations/python/reg
 
 - Santos Silva, J. M. C. and Tenreyro, S. (2006). The Log of Gravity. Review of Economics and Statistics, 88(4), 641–658. https://doi.org/10.1162/rest.88.4.641.
 - Santos Silva, J. M. C. and Tenreyro, S. (2022). The Log of Gravity at 15. Portuguese Economic Journal, 21, 423–437. https://doi.org/10.1007/S10258-021-00203-w.
+
+## Related spatial-interaction specifications
+
+The [constrained gravity-flow family](../algorithms/spatial-interaction/gravity-flow-models.md) implements unconstrained, production-constrained, attraction-constrained and doubly constrained allocation, plus an exponential-cost entropy-maximising variant solved by iterative proportional fitting. This is an aggregate flow-allocation baseline, distinct from the cross-sectional PPML regression above. Negative-binomial estimation, high-dimensional fixed effects, competing-destination and intervening-opportunity variants remain open.

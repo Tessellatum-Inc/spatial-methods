@@ -882,6 +882,7 @@ jobs:
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.cwd=. --ExecutePreprocessor.timeout=180 notebooks/regional-beta-convergence-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.cwd=. --ExecutePreprocessor.timeout=180 notebooks/regional-distribution-dynamics-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.cwd=. --ExecutePreprocessor.timeout=180 notebooks/regional-gravity-ppml-lab.ipynb
+          python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.cwd=. --ExecutePreprocessor.timeout=180 notebooks/gravity-flow-models-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.cwd=. --ExecutePreprocessor.timeout=180 notebooks/spatial-and-spacetime-kde-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.cwd=. --ExecutePreprocessor.timeout=180 notebooks/spatial-distribution-summaries-lab.ipynb
           python -m nbconvert --to notebook --execute --output-dir /tmp/notebook-output --ExecutePreprocessor.cwd=. --ExecutePreprocessor.timeout=180 notebooks/spatial-inequality-lab.ipynb
