@@ -42,7 +42,7 @@ This section groups applied methods across spatial interaction, functional regio
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| SAR geometry: radiometric terrain correction (RTC), geocoding, multilooking, calibration, enhanced spectral diversity (ESD) coregistration | SAR geometry and preprocessing workflows | 34 | Not checked — intake only |
+| SAR geometry: radiometric terrain correction (RTC), geocoding, multilooking, calibration, enhanced spectral diversity (ESD) coregistration | SAR geometry and preprocessing workflows | 34 | Partial — calibrated sigma-nought/beta-nought/gamma-nought backscatter and block multilooking are implemented and tested; terrain correction, geocoding and ESD coregistration remain open |
 | Phase corrections: atmospheric phase screen estimation, GACOS and ERA5-based tropospheric correction, orbital ramp removal, DEM error correction | Interferometric phase correction methods | 34 | Partial — polynomial orbital-ramp estimation and removal are implemented and tested; atmospheric phase-screen estimation, GACOS/ERA5 tropospheric correction and DEM-error correction remain open |
 | Time-series InSAR workflows: SBAS variants, NSBAS, MintPy-style and LiCSBAS-style pipelines, GNSS-InSAR integration for 3D velocity decomposition | InSAR time-series processing / geodetic data integration | 34 | Partial — a tested per-pixel small-baseline network least-squares inversion estimates acquisition displacement relative to a reference date; phase unwrapping, atmospheric correction, robust time-series pipelines and GNSS 3D decomposition remain open |
 | Source modeling: Okada dislocation, Mogi source, finite fault slip inversion, elastic and viscoelastic deformation models | Geophysical source and deformation models | 34 | Partial — tested Mogi point-source elastic half-space displacement is implemented; Okada finite dislocations, finite-fault inversion and viscoelastic models remain open |
@@ -185,3 +185,8 @@ The new InSAR package fits and removes first- or second-order spatial polynomial
 ### Spatially constrained zoning and scale effects
 
 A spatially constrained Ward agglomeration baseline now merges only adjacent planning units, using the Ward increase in within-zone attribute sum of squares. A scale-effect utility evaluates within-zone variance across requested zone counts. This is not the AMOEBA algorithm or a full modifiable-areal-unit-problem study; choice of attributes, contiguity graph, zone count and boundary constraints remain substantive modelling decisions.
+
+
+### SAR radiometric calibration and multilooking
+
+A SAR preprocessing baseline converts complex or detected digital numbers to calibrated sigma-nought, beta-nought or gamma-nought backscatter using caller-supplied calibration factors and incidence angles. It also provides block multilooking with explicit NoData handling. This does not perform DEM-based radiometric terrain correction, geocoding, orbit refinement, TOPS enhanced spectral diversity coregistration or sensor-specific noise-floor estimation.

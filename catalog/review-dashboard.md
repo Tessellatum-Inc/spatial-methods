@@ -9,8 +9,8 @@ This dashboard tracks source-entry review state, not technical completion. An im
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 695 | Rows with a source-entry review status in the 22 section indexes |
-| Partial | 179 | At least one related method has an implementation or canonical record, but the grouped source entry remains incompletely reviewed |
-| Not checked — intake only | 516 | Source wording is preserved, but no adequate independent review is recorded |
+| Partial | 180 | At least one related method has an implementation or canonical record, but the grouped source entry remains incompletely reviewed |
+| Not checked — intake only | 515 | Source wording is preserved, but no adequate independent review is recorded |
 | Fully verified | 0 | No row has passed all independent verification dimensions |
 
 ## By section
@@ -32,14 +32,14 @@ This dashboard tracks source-entry review state, not technical completion. An im
 | 13 — GeoFM workflows, urban mobility and LLMs | 29 | 0 | 29 |
 | 14 — Databases, graphics, morphology and hazards | 33 | 1 | 32 |
 | 15 — Vision, registration and vector extraction | 33 | 3 | 30 |
-| 16 — Flows, regions, deformation and marine | 25 | 24 | 1 |
+| 16 — Flows, regions, deformation and marine | 25 | 25 | 0 |
 | 17 — Geometry, scalability, design and siting | 27 | 8 | 19 |
 | 18 — Moving objects, routing, transit and water | 32 | 4 | 28 |
 | 19 — African applications, addressing and finance | 32 | 1 | 31 |
 | 20 — Indices, microwave, events and information | 25 | 8 | 17 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 3 | 23 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 6 | 22 |
-| **Total** | **695** | **179** | **516** |
+| **Total** | **695** | **180** | **515** |
 
 The totals include implementation-linked custom status descriptions in Sections 2, 17 and 20 as partial, and Section 4's storage/compression row as intake-only. Counts exclude lesson inventories, implementation inventories, explanatory tables and software lists.
 
@@ -60,4 +60,4 @@ The totals include implementation-linked custom status descriptions in Sections 
 6. Run the relevant package tests, notebook execution, link checks and full CI; record exact results.
 7. Change the row label only after the underlying evidence is present.
 
-No source row is currently labelled fully verified. The remaining 516 intake-only rows and the 179 partial rows remain in scope; this dashboard must not be read as a completion claim.
+No source row is currently labelled fully verified. The remaining 515 intake-only rows and the 180 partial rows remain in scope; this dashboard must not be read as a completion claim.

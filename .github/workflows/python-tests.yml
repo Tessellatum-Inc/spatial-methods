@@ -429,6 +429,9 @@ jobs:
           - example: spatial-zoning
             directory: implementations/python/spatial-zoning
             pythonpath: ""
+          - example: sar-calibration
+            directory: implementations/python/sar-calibration
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""
