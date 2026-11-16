@@ -34,4 +34,6 @@ The implementation uses edge extension (replicating the nearest edge cell) when 
 - There is no CRS transformation, affine georeferencing, rotated-grid support, area-weighted aggregation or antialiasing prefilter for substantial downsampling.
 - This is a transparent reference implementation, not a replacement for GDAL/rasterio production warping.
 
+An additional `area_weighted_resample` routine in `area_aggregation.py` integrates exact rectangular source/target overlap areas. It is intended for same-extent, axis-aligned grid aggregation and preserves the global mean for fully valid grids, including non-integer scale ratios. It treats source values as piecewise-constant cell means; it does not correct for latitude-dependent or geodesic cell areas.
+
 See the [canonical lesson](../../../algorithms/raster/resampling.md) and [intern walkthrough](implementation-walkthrough.md).
