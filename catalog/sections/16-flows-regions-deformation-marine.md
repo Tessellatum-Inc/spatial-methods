@@ -53,7 +53,7 @@ This section groups applied methods across spatial interaction, functional regio
 |---|---|---:|--- |
 | CPUE standardization (GAM and spatiotemporal models such as VAST-style vector autoregressive models), spatial stock assessment, fishing effort allocation | Fisheries statistical models / stock assessment / allocation | 34 | Partial — effort-offset Poisson and NB2 log-linear standardization models with reference-condition CPUE predictions are implemented and tested; GAM smooths, VAST spatiotemporal random fields, stock assessment and effort-allocation optimization remain open |
 | Larval dispersal and ocean connectivity: Lagrangian tools (Parcels, OpenDrift), connectivity matrices, marine protected area network design | Particle tracking / connectivity analysis / reserve design | 34 | Partial — steady-field RK4 particle advection and weighted source-to-destination connectivity matrices are implemented and tested; time-varying currents, diffusion, vertical motion and reserve-design optimisation remain open |
-| Marine spatial planning with Marxan and Zonation, benthic habitat mapping from multibeam backscatter | Spatial planning software / habitat mapping workflows | 34 | Not checked — intake only |
+| Marine spatial planning with Marxan and Zonation, benthic habitat mapping from multibeam backscatter | Spatial planning software / habitat mapping workflows | 34 | Partial — a tested Marxan-style simulated-annealing reserve-selection baseline covers representation targets, planning-unit costs and boundary penalties; Zonation and calibrated benthic backscatter classification remain open |
 
 ## Biodiversity assessment and conservation planning
 
@@ -76,7 +76,7 @@ This section groups applied methods across spatial interaction, functional regio
 |---|---|---:|--- |
 | Relief facility location, humanitarian logistics routing, displacement camp mapping, tent and structure counting from imagery | Humanitarian location and routing / settlement mapping | 34 | Partial — existing tested p-median/capacitated p-median siting and network shortest-path/routing baselines cover facility-location and logistics-routing primitives; camp mapping and imagery-based tent/structure counting remain open |
 | Food security: IPC-style analysis, FEWS NET-style outlooks, livelihood zone delineation, market integration and price transmission models | Food-security analysis / early-warning and regional economic methods | 34 | Partial — a tested two-market Engle–Granger-style long-run relation and error-correction price-transmission model is implemented; IPC/FEWS NET workflows, livelihood-zone delineation and multi-market spatial equilibrium remain open |
-| Conflict analysis: ACLED-style event analysis, conflict diffusion models, forecasting systems such as ViEWS, spatial event clustering and early warning indicators | Event analysis / diffusion and forecasting models | 34 | Not checked — intake only |
+| Conflict analysis: ACLED-style event analysis, conflict diffusion models, forecasting systems such as ViEWS, spatial event clustering and early warning indicators | Event analysis / diffusion and forecasting models | 34 | Partial — tested ST-DBSCAN, spatial scan statistics and temporal change-point methods provide event-clustering and screening primitives; dedicated conflict diffusion models, ViEWS-style forecasting and calibrated early-warning systems remain open |
 
 ## Decisions for the next pass
 
