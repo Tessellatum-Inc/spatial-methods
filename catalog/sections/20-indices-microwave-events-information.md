@@ -4,7 +4,7 @@
 - **Source pages:** 41–43
 - **Source transcription:** [pages 41–47](../../source-inventory/pages-41-47.md)
 - **Review state:** intake extracted; source says names are from memory and should be verified
-- **Current canonical records:** [Spectral-index family](../../algorithms/remote-sensing/spectral-index-family.md), now with tested implementations for the source-listed vegetation, pigment, moisture, tillage and residue formulas where a stable band contract is available. [Triple collocation](../../methods/triple-collocation.md), with a tested NumPy baseline, intern walkthrough, exercise and visual notebook. The lesson covers the classical three-product error-variance estimator only; extended TC, error covariance estimation and product merging remain open. A researched [marine heatwave detection lesson](../../methods/marine-heatwave-detection.md) and tested single-series event detector cover the Hobday-style threshold-run and short-gap stage; seasonal climatology construction and gridded spatial feature tracking remain open. A [visual notebook](../../notebooks/marine-heatwave-detection-lab.ipynb) demonstrates the single-series workflow with synthetic data.
+- **Current canonical records:** [Spatial information-theoretic measures](../../algorithms/statistics/spatial-information-theory.md), including Shannon, Renyi, Tsallis, categorical-map and ordinal-pattern entropy; [Spectral-index family](../../algorithms/remote-sensing/spectral-index-family.md), now with tested implementations for the source-listed vegetation, pigment, moisture, tillage and residue formulas where a stable band contract is available. [Triple collocation](../../methods/triple-collocation.md), with a tested NumPy baseline, intern walkthrough, exercise and visual notebook. The lesson covers the classical three-product error-variance estimator only; extended TC, error covariance estimation and product merging remain open. A researched [marine heatwave detection lesson](../../methods/marine-heatwave-detection.md) and tested single-series event detector cover the Hobday-style threshold-run and short-gap stage; seasonal climatology construction and gridded spatial feature tracking remain open. A [visual notebook](../../notebooks/marine-heatwave-detection-lab.ipynb) demonstrates the single-series workflow with synthetic data.
 
 **Source caution:** the source says coverage is broad and additions are increasingly narrow variants. Verify the name, formula, sensor requirements and intended use of every index or retrieval method.
 
@@ -90,3 +90,8 @@
 ### Spectral-index implementation update
 
 The existing spectral-indices package now covers the named vegetation, pigment, moisture, soil/tillage and crop-residue indices listed above where a stable formula and band contract could be stated. The lesson records formula variants and wavelength requirements; this is not a substitute for sensor-specific calibration or field validation. Mineral ratios and ASTER-specific indices remain research tasks.
+
+
+### Information-theory implementation update
+
+The spatial-information-theory package adds tested Shannon, Renyi and Tsallis entropy, masked categorical-map entropy and normalized permutation entropy. Stable ordinal sorting defines deterministic tie handling. Spatial dependence corrections, transfer entropy, recurrence analysis and causal inference remain separate open methods.

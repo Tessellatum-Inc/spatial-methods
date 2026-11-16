@@ -26,6 +26,14 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Spatial skyline queries](query-processing/spatial-skyline.md) — return objects not dominated across distance to a query location and selected attributes.
 
+## Scalable density estimation
+
+- [FFT-grid KDE](statistics/fft-grid-kde.md) — weighted binned Gaussian KDE using FFT convolution.
+
+## Information theory
+
+- [Spatial information-theoretic measures](statistics/spatial-information-theory.md) — Shannon, Renyi, Tsallis and permutation entropy.
+
 ## Route choice
 
 - [Path-size logit](networks/path-size-logit.md) — overlap-corrected route-choice probabilities for alternatives sharing network edges.

@@ -4,7 +4,7 @@
 - **Source pages:** 35–37
 - **Source transcription:** [pages 31–35](../../source-inventory/pages-31-35.md) and [pages 36–40](../../source-inventory/pages-36-40.md)
 - **Review state:** source entries extracted into this index; not every entry independently verified
-- **Current canonical records:** mesh smoothing, indexed half-edge topology, conservative triangle-mesh cleanup, local isotropic-style remeshing, winged-edge and quad-edge (partial coverage of the source mesh-processing family), plus tested HyperLogLog, Count-Min, Bloom-filter and reservoir-sampling sketches; ball pivoting remains outstanding
+- **Current canonical records:** [FFT-grid KDE](../../algorithms/statistics/fft-grid-kde.md), a tested binned Gaussian KDE with FFT convolution; mesh smoothing, indexed half-edge topology, conservative triangle-mesh cleanup, local isotropic-style remeshing, winged-edge and quad-edge (partial coverage of the source mesh-processing family), plus tested HyperLogLog, Count-Min, Bloom-filter and reservoir-sampling sketches; ball pivoting remains outstanding
 
 This section extends computational geometry and adds scalable statistics, fast density methods, sampling design, 3D data formats, competitive location, charging infrastructure, surveillance and a representative implementation map.
 
@@ -107,3 +107,8 @@ The source lists software families, not algorithms. Treat this as an orientation
 ### Streaming-sketch implementation update
 
 The new package supplies HyperLogLog cardinality estimation, Count-Min frequency estimation, Bloom membership screening and Algorithm R reservoir sampling. These are generic streaming summaries suitable for tile/feature keys; they do not preserve geometries or source records.
+
+
+### Fast KDE implementation update
+
+The FFT-grid KDE package adds weighted point binning, truncated Gaussian convolution, density scaling and optional discrete boundary correction. It is an approximate regular-grid estimator; dual-tree KDE, adaptive bandwidths and distributed implementations remain open.

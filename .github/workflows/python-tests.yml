@@ -108,6 +108,12 @@ jobs:
           - example: classification-breaks
             directory: implementations/python/classification-breaks
             pythonpath: ""
+          - example: fft-grid-kde
+            directory: implementations/python/fft-grid-kde
+            pythonpath: ""
+          - example: spatial-information-theory
+            directory: implementations/python/spatial-information-theory
+            pythonpath: ""
           - example: path-size-logit
             directory: implementations/python/path-size-logit
             pythonpath: ""
