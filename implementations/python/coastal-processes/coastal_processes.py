@@ -155,3 +155,71 @@ def dean_profile_volume(scale_parameter, x_start, x_end):
     if not np.isfinite([x0, x1]).all() or x0 < 0 or x1 < x0:
         raise ValueError("profile bounds must be finite, non-negative and ordered")
     return 3.0 * a / 5.0 * (x1 ** (5.0 / 3.0) - x0 ** (5.0 / 3.0))
+
+def fit_satellite_bathymetry_ratio(log_band_ratio, known_depths):
+    """Fit a simple linear calibration depth = intercept + slope*log_ratio.
+    Inputs must be paired finite 1D calibration samples with at least two
+    distinct ratios. This is a transparent empirical baseline, not a
+    physics-based radiative-transfer inversion.
+    """
+    x, y = np.asarray(log_band_ratio, float), np.asarray(known_depths, float)
+    if x.ndim != 1 or y.ndim != 1 or x.shape != y.shape or x.size < 2:
+        raise ValueError("calibration arrays must be equal-length 1D arrays with at least two samples")
+    if np.any(~np.isfinite(x) | ~np.isfinite(y)) or np.ptp(x) == 0:
+        raise ValueError("calibration samples must be finite with varying log ratios")
+    slope, intercept = np.polyfit(x, y, 1)
+    return {"intercept": float(intercept), "slope": float(slope),
+            "r_squared": float(1 - np.sum((y-(intercept+slope*x))**2)/np.sum((y-y.mean())**2)) if np.ptp(y)>0 else 1.0}
+
+
+def satellite_bathymetry_ratio(log_band_ratio, calibration, *, min_depth=None, max_depth=None):
+    """Apply a fitted linear log-band-ratio calibration to depth estimates.
+    NaNs are preserved. Optional depth limits mask predictions outside the
+    calibrated operating interval; they do not extrapolate or clip values.
+    """
+    x = np.asarray(log_band_ratio, dtype=float)
+    if np.any(np.isinf(x)): raise ValueError("log band ratio cannot contain infinity")
+    try: intercept, slope = float(calibration["intercept"]), float(calibration["slope"])
+    except (KeyError, TypeError, ValueError): raise ValueError("calibration needs finite intercept and slope") from None
+    if not np.isfinite([intercept, slope]).all(): raise ValueError("calibration coefficients must be finite")
+    out = intercept + slope*x
+    if min_depth is not None:
+        if not np.isfinite(min_depth): raise ValueError("min_depth must be finite")
+        out = np.where(out >= min_depth, out, np.nan)
+    if max_depth is not None:
+        if not np.isfinite(max_depth): raise ValueError("max_depth must be finite")
+        out = np.where(out <= max_depth, out, np.nan)
+    if min_depth is not None and max_depth is not None and min_depth > max_depth:
+        raise ValueError("min_depth cannot exceed max_depth")
+    return out
+
+
+def grid_multibeam_soundings(x, y, depth, *, cell_size, origin=(0.0, 0.0), statistic='mean'):
+    """Bin soundings to a north-up regular grid using mean or median depth.
+    Returns (depth_grid, count_grid, x_centres, y_centres). Grid indices
+    increase eastward and southward; empty cells are NaN with count zero.
+    The grid is an aggregation, not a hydrographic uncertainty or CUBE solver.
+    """
+    x, y, z = np.broadcast_arrays(np.asarray(x,float), np.asarray(y,float), np.asarray(depth,float))
+    if x.ndim != 1: raise ValueError("soundings must be 1D arrays")
+    if not np.isfinite(cell_size) or cell_size <= 0: raise ValueError("cell_size must be positive and finite")
+    ox, oy = map(float, origin)
+    if not np.isfinite([ox, oy]).all(): raise ValueError("origin must be finite")
+    valid = np.isfinite(x) & np.isfinite(y) & np.isfinite(z)
+    if not np.any(valid): raise ValueError("at least one finite sounding is required")
+    if statistic not in {"mean", "median"}: raise ValueError("statistic must be mean or median")
+    col = np.floor((x[valid]-ox)/cell_size).astype(int)
+    row = np.floor((oy-y[valid])/cell_size).astype(int)
+    minc, maxc, minr, maxr = col.min(), col.max(), row.min(), row.max()
+    ncol, nrow = maxc-minc+1, maxr-minr+1
+    bins = [[] for _ in range(nrow*ncol)]
+    for rr, cc, zz in zip(row-minr, col-minc, z[valid]): bins[rr*ncol+cc].append(float(zz))
+    grid = np.full((nrow,ncol), np.nan); counts = np.zeros((nrow,ncol), dtype=int)
+    for i, values in enumerate(bins):
+        if values:
+            rr, cc = divmod(i,ncol)
+            grid[rr,cc] = np.mean(values) if statistic == "mean" else np.median(values)
+            counts[rr,cc] = len(values)
+    xc = ox + (np.arange(ncol)+minc+0.5)*cell_size
+    yc = oy - (np.arange(nrow)+minr+0.5)*cell_size
+    return grid, counts, xc, yc
