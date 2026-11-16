@@ -20,7 +20,7 @@ The canonical records now cover the spectral-index family, global Otsu threshold
 | Topographic and BRDF: C-correction, SCS+C, Minnaert, Ross-Li, BRDF normalization | Topographic correction / reflectance modelling | 7 | Partial — tested C-correction and caller-exponent Minnaert baselines are implemented; SCS+C, Ross-Li and BRDF normalization remain open |
 | Relative normalization: IR-MAD, pseudo-invariant features, histogram matching, empirical line calibration | Radiometric normalisation / calibration methods | 7 | Not checked — intake only |
 | Cloud and shadow masking: Fmask, s2cloudless, CloudSEN12-style models; sensor harmonization (HLS) | Masking algorithms / model families / harmonisation products | 8 | Not checked — intake only |
-| Mosaicking, seamline detection (Voronoi, graph cut), color balancing, orthorectification, co-registration | Image assembly / seamline algorithms / geometric correction | 8 | Not checked — intake only |
+| Mosaicking, seamline detection (Voronoi, graph cut), color balancing, orthorectification, co-registration | Image assembly / seamline algorithms / geometric correction | 8 | Partially implemented: phase-correlation translation and RANSAC affine estimation from matched points have tested baselines; feature detection/matching, local deformation, orthorectification, mosaicking and seamline optimization remain open |
 | Fusion: pan-sharpening (Brovey, IHS, Gram-Schmidt, PCA, wavelet, CNN), spatiotemporal fusion, Bayesian and Kalman fusion, sub-pixel and super-resolution mapping | Image fusion methods / statistical methods / neural approaches | 8 | Not checked — intake only |
 
 ## Indices and transforms
@@ -106,3 +106,6 @@ The canonical records now cover the spectral-index family, global Otsu threshold
 - Huete, Liu, Batchily and van Leeuwen (1997), “A comparison of vegetation indices over a global set of TM images for EOS-MODIS,” *Remote Sensing of Environment*, 59(3), 440–451, [10.1016/S0034-4257(96)00112-5](https://doi.org/10.1016/S0034-4257(96)00112-5).
 
 The NDVI report identity, author list and report number were checked against the NASA record and report title page. The journal metadata for SAVI, EVI, NDWI and MNDWI was checked against publisher records. This is a selected bibliography pass, not a technical audit of all Section 5 indices, preprocessing workflows or remote-sensing source entries.
+
+
+The co-registration source entry now includes a tested FFT phase-correlation translation estimator and a RANSAC affine estimator for supplied point correspondences. Feature detection/matching, local deformation, orthorectification, mosaicking, color balancing and seamline optimization remain separate outstanding workflows.
