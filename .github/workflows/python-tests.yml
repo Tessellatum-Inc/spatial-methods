@@ -390,6 +390,9 @@ jobs:
           - example: zonal-statistics
             directory: implementations/python/zonal-statistics
             pythonpath: ""
+          - example: raster-object-tracking
+            directory: implementations/python/raster-object-tracking
+            pythonpath: ""
           - example: raster-components
             directory: implementations/python/raster-components
             pythonpath: ""
