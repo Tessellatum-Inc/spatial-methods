@@ -55,3 +55,73 @@ def connected_components(foreground: Sequence[Sequence[bool]]|np.ndarray, *, con
                         queue.append((nr,nc))
             sizes[next_label]=size
     return labels,sizes
+
+
+def connected_components_3d(
+    foreground: Sequence[Sequence[Sequence[bool]]] | np.ndarray, *,
+    connectivity: int = 26,
+    valid: Sequence[Sequence[Sequence[bool]]] | np.ndarray | None = None,
+) -> tuple[np.ndarray, dict[int, int]]:
+    """Label 3-D foreground voxels using 6-, 18- or 26-neighbour connectivity.
+
+    Labels are assigned in deterministic z/y/x discovery order. Zero denotes
+    background or invalid voxels; invalid voxels are barriers. This is a
+    breadth-first reference implementation, not a parallel or tiled labeler.
+    """
+    raw = np.asarray(foreground)
+    if raw.ndim != 3 or raw.size == 0:
+        raise ValueError("foreground must be a non-empty 3D array")
+    if not (np.issubdtype(raw.dtype, np.bool_) or np.issubdtype(raw.dtype, np.number)):
+        raise ValueError("foreground must be boolean or numeric 0/1")
+    if not np.isfinite(raw).all() or not np.isin(raw, [0, 1]).all():
+        raise ValueError("foreground must contain only finite boolean/0/1 values")
+    mask = raw.astype(bool)
+    if connectivity not in (6, 18, 26):
+        raise ValueError("connectivity must be 6, 18 or 26")
+    if valid is None:
+        valid_mask = np.ones(mask.shape, dtype=bool)
+    else:
+        raw_valid = np.asarray(valid)
+        if raw_valid.ndim != 3 or raw_valid.shape != mask.shape:
+            raise ValueError("valid mask must have the same 3D shape as foreground")
+        if (not (np.issubdtype(raw_valid.dtype, np.bool_) or np.issubdtype(raw_valid.dtype, np.number))
+                or not np.isfinite(raw_valid).all() or not np.isin(raw_valid, [0, 1]).all()):
+            raise ValueError("valid mask must contain only finite boolean/0/1 values")
+        valid_mask = raw_valid.astype(bool)
+    offsets = []
+    for dz in (-1, 0, 1):
+        for dy in (-1, 0, 1):
+            for dx in (-1, 0, 1):
+                order = abs(dz) + abs(dy) + abs(dx)
+                if order == 0:
+                    continue
+                if connectivity == 6 and order != 1:
+                    continue
+                if connectivity == 18 and order == 3:
+                    continue
+                offsets.append((dz, dy, dx))
+    depth, rows, cols = mask.shape
+    labels = np.zeros(mask.shape, dtype=np.int32)
+    sizes = {}
+    next_label = 0
+    for z in range(depth):
+        for y in range(rows):
+            for x in range(cols):
+                if not mask[z, y, x] or not valid_mask[z, y, x] or labels[z, y, x] != 0:
+                    continue
+                next_label += 1
+                labels[z, y, x] = next_label
+                queue = deque([(z, y, x)])
+                size = 0
+                while queue:
+                    cz, cy, cx = queue.popleft()
+                    size += 1
+                    for dz, dy, dx in offsets:
+                        nz, ny, nx = cz + dz, cy + dy, cx + dx
+                        if (0 <= nz < depth and 0 <= ny < rows and 0 <= nx < cols
+                                and mask[nz, ny, nx] and valid_mask[nz, ny, nx]
+                                and labels[nz, ny, nx] == 0):
+                            labels[nz, ny, nx] = next_label
+                            queue.append((nz, ny, nx))
+                sizes[next_label] = size
+    return labels, sizes
