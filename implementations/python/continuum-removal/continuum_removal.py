@@ -46,7 +46,7 @@ def continuum_removal(reflectance, wavelengths):
         raise ValueError("upper-hull continuum must be positive at every wavelength")
     ratio = flat / continuum
     depth = 1.0 - ratio
-    area = np.trapz(depth, wave, axis=1)
+    area = np.sum(0.5 * (depth[:, 1:] + depth[:, :-1]) * np.diff(wave), axis=1)
     output_shape = spectra.shape
     return {
         "continuum": continuum.reshape(output_shape),
