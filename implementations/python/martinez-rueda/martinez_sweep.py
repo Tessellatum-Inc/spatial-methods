@@ -148,42 +148,49 @@ def _intersection(s1,s2,eps):
     return None
 
 def _intersection_all(s1,s2,eps):
-    """Return every exact split event, including both ends of collinear overlap.
+    """Return exact segment contacts and both endpoints of every overlap.
 
-    The legacy scalar predicate remains available for callers that need a
-    single proper/contact hit. The sweep uses this multi-hit form so a shared
-    edge is split into atomic coincident bundles instead of being rejected.
+    Unlike the legacy scalar predicate, this routine never uses epsilon to
+    decide whether two segments intersect. Epsilon must not erase a real
+    sub-tolerance overlap or turn a near miss into a false contact.
     """
-    try:
-        hit=_intersection(s1,s2,eps)
-        if hit is None:
+    aa,bb=_fraction_point(s1.a),_fraction_point(s1.b)
+    cc,dd=_fraction_point(s2.a),_fraction_point(s2.b)
+    rx,ry=bb[0]-aa[0],bb[1]-aa[1]
+    sx,sy=dd[0]-cc[0],dd[1]-cc[1]
+    qx,qy=cc[0]-aa[0],cc[1]-aa[1]
+    den=rx*sy-ry*sx
+
+    def parameter(a,b,p):
+        dx,dy=b[0]-a[0],b[1]-a[1]
+        axis=0 if abs(dx)>=abs(dy) else 1
+        return (p[axis]-a[axis])/(b[axis]-a[axis])
+
+    if den==0:
+        if qx*ry-qy*rx!=0:
             return ()
-        t,u,_point,proper=hit
-        aa,bb=_fraction_point(s1.a),_fraction_point(s1.b)
-        exact_point=(aa[0]+t*(bb[0]-aa[0]),aa[1]+t*(bb[1]-aa[1]))
-        return ((t,u,exact_point,proper),)
-    except NotImplementedError:
-        aa,bb=_fraction_point(s1.a),_fraction_point(s1.b)
-        cc,dd=_fraction_point(s2.a),_fraction_point(s2.b)
-        if _orientation(s1.a,s1.b,s2.a)!=0 or _orientation(s1.a,s1.b,s2.b)!=0:
+        axis=0 if abs(rx)>=abs(ry) else 1
+        low=max(min(aa[axis],bb[axis]),min(cc[axis],dd[axis]))
+        high=min(max(aa[axis],bb[axis]),max(cc[axis],dd[axis]))
+        if low>high:
             return ()
-        def parameter(a,b,p):
-            dx,dy=b[0]-a[0],b[1]-a[1]
-            axis=0 if abs(dx)>=abs(dy) else 1
-            return (p[axis]-a[axis])/(b[axis]-a[axis])
-        shared=sorted(set((aa,bb,cc,dd)) & {
-            p for p in (aa,bb,cc,dd)
-            if _on_segment_exact(s1.a,s1.b,p) and
-               _on_segment_exact(s2.a,s2.b,p)
-        })
-        if not shared:
-            return ()
-        hits=[]
-        for p in shared:
-            t=parameter(aa,bb,p)
-            u=parameter(cc,dd,p)
-            hits.append((t,u,p,False))
-        return tuple(hits)
+        def point_at(value):
+            if axis==0:
+                return (value,aa[1]+(value-aa[0])*ry/rx)
+            return (aa[0]+(value-aa[1])*rx/ry,value)
+        points=(point_at(low),) if low==high else (point_at(low),point_at(high))
+        return tuple(
+            (parameter(aa,bb,p),parameter(cc,dd,p),p,False)
+            for p in points
+        )
+
+    t=(qx*sy-qy*sx)/den
+    u=(qx*ry-qy*rx)/den
+    if not (0<=t<=1 and 0<=u<=1):
+        return ()
+    point=(aa[0]+t*rx,aa[1]+t*ry)
+    proper=0<t<1 and 0<u<1
+    return ((t,u,point,proper),)
 
 
 def _validate_polygon_rings(rings,eps):
