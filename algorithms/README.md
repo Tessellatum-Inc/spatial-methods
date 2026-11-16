@@ -399,3 +399,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Fay–Herriot small-area estimation](statistics/fay-herriot.md) — area-level Gaussian empirical-Bayes estimates with REML estimation of between-area variance.
 
 - [Exponential Hawkes process](statistics/hawkes-process.md) — Ogata thinning simulation and conditional log-likelihood for a univariate temporal self-exciting point process.
+
+- [Mann–Kendall trend testing](statistics/mann-kendall.md) — tie-corrected monotonic trend test and seasonal variant; serial-correlation adjustment is not included.

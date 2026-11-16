@@ -18,3 +18,8 @@ It returns a point estimate only. It does not provide a confidence interval,
 correct for serial correlation, remove seasonality, or distinguish a smooth
 trend from a step change. For large series, use a specialised selection
 algorithm or a vetted scientific library and document its exact variant.
+
+
+## Mann–Kendall trend tests
+
+The package also provides a two-sided Mann–Kendall rank test with tie-corrected normal-approximation variance and a seasonal variant that compares observations in matching positions within cycles. This is a significance test, unlike the Theil–Sen slope point estimator. It does not correct for serial correlation, irregular missingness, multiple testing or change points. Interpret p-values under the exchangeability assumptions of the test.

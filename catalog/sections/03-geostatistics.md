@@ -36,7 +36,7 @@ This section combines surface estimation, stochastic spatial models, simulation,
 | Space-time scan statistics, Knox test, space-time K function, space-time cube, emerging hot spot analysis | Spatiotemporal tests / summary methods / analysis workflow | 5 | Partial — a permutation-based Knox test for excess space-time close pairs is implemented and tested; space-time scan statistics, space-time K, cube analytics and emerging-hotspot workflows remain open |
 | Spatial survival and frailty models | Survival model families | 5 | Not checked — intake only |
 | Spatiotemporal point processes: Hawkes, LGCP, ETAS | Point-process model families | 5 | Partial — a tested univariate exponential Hawkes process simulator and point-process log-likelihood are implemented; spatial Hawkes/LGCP, ETAS earthquake triggering and marked multivariate processes remain open |
-| Trend and change: Mann-Kendall, Sen's slope, harmonic regression, BFAST, LandTrendr, CCDC | Trend tests / regression / change-detection methods | 5 | Not checked — intake only |
+| Trend and change: Mann-Kendall, Sen's slope, harmonic regression, BFAST, LandTrendr, CCDC | Trend tests / regression / change-detection methods | 5 | Partial — tested Mann–Kendall and seasonal Mann–Kendall significance tests plus Theil–Sen slope estimation are implemented; harmonic regression, BFAST, LandTrendr and CCDC remain open |
 
 ## Data assimilation and inverse methods
 
@@ -105,3 +105,8 @@ An area-level Gaussian Fay–Herriot model now estimates regression coefficients
 ### Exponential Hawkes self-exciting process
 
 A univariate temporal Hawkes process with exponential triggering kernel now has Ogata-thinning simulation and an exact conditional log-likelihood for observed event times over a finite window. The baseline assumes a stationary subcritical process with branching ratio below one. Spatial Hawkes processes, log-Gaussian Cox processes, ETAS earthquake models and marked/multivariate variants remain open.
+
+
+### Mann–Kendall and Theil–Sen trend analysis
+
+The existing Theil–Sen package now includes tie-corrected Mann–Kendall and seasonal Mann–Kendall tests alongside the median pairwise slope estimator. The rank test uses a normal approximation and assumes no unmodelled serial dependence; neither method alone diagnoses seasonality, structural breaks or causal drivers.

@@ -9,8 +9,8 @@ This dashboard tracks source-entry review state, not technical completion. An im
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 695 | Rows with a source-entry review status in the 22 section indexes |
-| Partial | 184 | At least one related method has an implementation or canonical record, but the grouped source entry remains incompletely reviewed |
-| Not checked — intake only | 511 | Source wording is preserved, but no adequate independent review is recorded |
+| Partial | 185 | At least one related method has an implementation or canonical record, but the grouped source entry remains incompletely reviewed |
+| Not checked — intake only | 510 | Source wording is preserved, but no adequate independent review is recorded |
 | Fully verified | 0 | No row has passed all independent verification dimensions |
 
 ## By section
@@ -19,7 +19,7 @@ This dashboard tracks source-entry review state, not technical completion. An im
 |---:|---:|---:|---:|
 | 1 — Core GIS | 33 | 26 | 7 |
 | 2 — Spatial statistics | 27 | 13 | 14 |
-| 3 — Geostatistics | 26 | 7 | 19 |
+| 3 — Geostatistics | 26 | 8 | 18 |
 | 4 — Raster, terrain and hydrology | 27 | 20 | 7 |
 | 5 — Remote sensing | 36 | 15 | 21 |
 | 6 — Optimization, mobility and transport | 31 | 4 | 27 |
@@ -39,7 +39,7 @@ This dashboard tracks source-entry review state, not technical completion. An im
 | 20 — Indices, microwave, events and information | 25 | 8 | 17 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 3 | 23 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 6 | 22 |
-| **Total** | **695** | **184** | **511** |
+| **Total** | **695** | **185** | **510** |
 
 The totals include implementation-linked custom status descriptions in Sections 2, 17 and 20 as partial, and Section 4's storage/compression row as intake-only. Counts exclude lesson inventories, implementation inventories, explanatory tables and software lists.
 
@@ -60,4 +60,4 @@ The totals include implementation-linked custom status descriptions in Sections 
 6. Run the relevant package tests, notebook execution, link checks and full CI; record exact results.
 7. Change the row label only after the underlying evidence is present.
 
-No source row is currently labelled fully verified. The remaining 511 intake-only rows and the 184 partial rows remain in scope; this dashboard must not be read as a completion claim.
+No source row is currently labelled fully verified. The remaining 510 intake-only rows and the 185 partial rows remain in scope; this dashboard must not be read as a completion claim.
