@@ -135,6 +135,9 @@ jobs:
           - example: vatti-clipping
             directory: implementations/python/vatti-clipping
             pythonpath: ""
+          - example: vatti-scanbeam
+            directory: implementations/python/vatti-scanbeam
+            pythonpath: ""
           - example: martinez-rueda
             directory: implementations/python/martinez-rueda
             pythonpath: ""
