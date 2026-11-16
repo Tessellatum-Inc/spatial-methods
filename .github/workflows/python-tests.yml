@@ -402,6 +402,9 @@ jobs:
           - example: flow-analysis
             directory: implementations/python/flow-analysis
             pythonpath: "../louvain"
+          - example: urban-boundaries
+            directory: implementations/python/urban-boundaries
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""

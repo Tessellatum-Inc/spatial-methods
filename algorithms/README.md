@@ -369,3 +369,5 @@ Records may have different evidence and implementation status. Check the status 
 - [OD flow clustering, line KDE and hotspots](networks/flow-analysis.md) — DBSCAN over origin-destination coordinates, line-integrated Gaussian density and local grid maxima.
 
 - [OD flow clustering, line KDE and hotspots](networks/flow-analysis.md) — DBSCAN over origin-destination coordinates, line-integrated Gaussian density, local grid maxima and weighted Louvain flow communities.
+
+- [Urban boundaries and natural cities](urban/urban-boundaries.md) — building-point DBSCAN, density-grid aggregation, connected urban components and recursive head/tail thresholds.

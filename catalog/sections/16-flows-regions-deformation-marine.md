@@ -21,7 +21,7 @@ This section groups applied methods across spatial interaction, functional regio
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Functional region delineation from flows: Intramax, CURDS, Louvain and Leiden on flow networks, commuting zone definition | Functional regionalisation algorithms / network clustering | 33 | Partial — reciprocal OD-flow weighted Louvain communities with optional contiguity-constrained edges are implemented and tested; Intramax, CURDS, Leiden and commuting-zone calibration remain open |
-| Urban boundary delineation: city clustering algorithm (CCA), DBSCAN on building density, percolation-based clustering, natural cities via head/tail breaks | Urban boundary detection / clustering and classification methods | 33 | Not checked — intake only |
+| Urban boundary delineation: city clustering algorithm (CCA), DBSCAN on building density, percolation-based clustering, natural cities via head/tail breaks | Urban boundary detection / clustering and classification methods | 33 | Partial — building-point DBSCAN, density-grid aggregation, connected density-component extraction and recursive head/tail natural-city thresholds are implemented and tested; full CCA, stochastic percolation and boundary calibration remain open |
 | Home and work location inference from traces, activity space delineation, co-location and contact pattern extraction | Mobility inference / activity-space and contact analysis | 33 | Not checked — intake only |
 
 ## Classification schemes and aggregation
@@ -135,3 +135,8 @@ The flow-analysis package now clusters OD records using DBSCAN over separately s
 ### Functional regions from origin-destination flows
 
 The flow-analysis package converts a directed OD matrix into an undirected weighted graph by summing reciprocal movements, then applies the repository's tested Louvain modularity implementation. An optional zone-neighbour adjacency constrains graph edges. This is a flow-network community baseline, not Intramax, CURDS, Leiden or an empirically calibrated commuting-zone workflow.
+
+
+### Urban boundary and natural-city baselines
+
+The urban-boundaries package provides DBSCAN clustering of building centroids, point-to-grid building density aggregation, connected-component extraction above a density threshold, and a recursive head/tail threshold for natural-city candidate masks. These are exploratory delineation methods: they do not replace full city-clustering algorithm calibration, stochastic percolation models, building-footprint quality control or administrative boundary validation.
