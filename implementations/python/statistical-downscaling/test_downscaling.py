@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 from downscaling import empirical_quantile_mapping, delta_change
 
@@ -24,7 +25,7 @@ def test_delta_change_multiplicative():
 
 
 def test_delta_change_preserves_future_shape():
-    assert delta_change([10, 20], [5, 15], [[6, 7], [8, 9]]) == pytest.approx([[11, 12], [13, 14]])
+    assert np.asarray(delta_change([10, 20], [5, 15], [[6, 7], [8, 9]])) == pytest.approx(np.array([[11, 12], [13, 14]]))
 
 
 @pytest.mark.parametrize("mode", ["ratio", "unknown"])
