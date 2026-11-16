@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from pca_transform import fit_pca, transform_pca
+from pca_transform import fit_pca, transform_pca, tasseled_cap_transform
 
 def test_projection_matches_covariance_eigenpairs():
     x=np.array([[1.,2.],[2.,1.],[3.,4.],[4.,3.],[5.,6.]])
@@ -34,3 +34,18 @@ def test_invalid_mask_and_component_count():
     x=np.arange(12.).reshape(6,2)
     with pytest.raises(ValueError): fit_pca(x,mask=[True])
     with pytest.raises(ValueError): fit_pca(x,n_components=3)
+
+
+def test_tasseled_cap_transform_matches_independent_matrix_product():
+    data = np.array([[1., 2., 3.], [4., 5., 6.]])
+    coefficients = np.array([[1., 0.], [0., 2.], [-1., 1.]])
+    offset = np.array([0.5, 1.0, 2.0])
+    expected = np.array([[-0.5, 3.0], [-0.5, 12.0]])
+    np.testing.assert_allclose(tasseled_cap_transform(data, coefficients, offset=offset), expected)
+
+
+def test_tasseled_cap_validates_sensor_matrix_and_band_contract():
+    with pytest.raises(ValueError):
+        tasseled_cap_transform(np.ones((3, 4)), np.ones((3, 2)))
+    with pytest.raises(ValueError):
+        tasseled_cap_transform(np.ones((3, 2)), np.ones((2, 2)), offset=[0.0])
