@@ -31,3 +31,26 @@ O(m²) pairwise crossing discovery and re-sorts each slice; horizontal events
 are recorded at scanbeam levels but coincident/overlapping bound bundles do
 not yet have full clipping semantics. Filled cells are not yet stitched into
 output contours, so holes and connected-component ring assembly remain open.
+
+## Boolean contour assembly
+
+The reference API now includes `clip_rings(decomposition, subject_ring_ids,
+clip_ring_ids, operation, fill_rule)`. It runs the cell sweep and assembles
+the resulting cells into closed output rings:
+
+- Nodes shared cell edges at every exact-rational cell vertex, including
+  unequal subdivisions along the same straight seam.
+- Cancels oppositely directed internal edges.
+- Walks the remaining directed boundary with an exact polar-angle comparator.
+- Removes redundant collinear vertices while preserving rational coordinates.
+- Preserves disconnected shells and clockwise hole rings.
+
+The contour stage is tested against overlapping rectangles for all four
+Boolean operations, including XOR's two disconnected components. A nested
+subject fixture checks a clockwise hole and a separate clip component.
+
+This is still a cell-boundary assembly reference, not the full Vatti
+intersection-list algorithm. Coincident input boundaries, horizontal-boundary
+state transitions, robust touch-point policies and an optimized neighbour
+event queue remain open. The algorithm has not been certified against an
+independent geometry kernel yet.
