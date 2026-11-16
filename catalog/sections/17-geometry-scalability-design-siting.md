@@ -4,7 +4,7 @@
 - **Source pages:** 35–37
 - **Source transcription:** [pages 31–35](../../source-inventory/pages-31-35.md) and [pages 36–40](../../source-inventory/pages-36-40.md)
 - **Review state:** source entries extracted into this index; not every entry independently verified
-- **Current canonical records:** [Stable matching](../../algorithms/networks/stable-matching.md) with resident-proposing deferred acceptance (partial coverage of the matching/allocation family); [Huff competitive facility choice](../../algorithms/spatial-interaction/huff-competitive-location.md), a probabilistic attractiveness/impedance market-share model; [FFT-grid KDE](../../algorithms/statistics/fft-grid-kde.md), a tested binned Gaussian KDE with FFT convolution; mesh smoothing, indexed half-edge topology, conservative triangle-mesh cleanup, local isotropic-style remeshing, winged-edge and quad-edge (partial coverage of the source mesh-processing family), plus tested HyperLogLog, Count-Min, Bloom-filter and reservoir-sampling sketches; space-filling LHS/maximin and k-means coverage are now implemented; ball pivoting remains outstanding
+- **Current canonical records:** [Stable matching](../../algorithms/networks/stable-matching.md) with resident-proposing deferred acceptance (partial coverage of the matching/allocation family); [Huff competitive facility choice](../../algorithms/spatial-interaction/huff-competitive-location.md), a probabilistic attractiveness/impedance market-share model; [FFT-grid KDE](../../algorithms/statistics/fft-grid-kde.md), a tested binned Gaussian KDE with FFT convolution; mesh smoothing, indexed half-edge topology, conservative triangle-mesh cleanup, local isotropic-style remeshing, winged-edge and quad-edge (partial coverage of the source mesh-processing family), plus tested HyperLogLog, Count-Min, Bloom-filter and reservoir-sampling sketches; space-filling LHS/maximin and k-means coverage, plus exact/greedy FCLM, are now implemented; ball pivoting remains outstanding
 
 This section extends computational geometry and adds scalable statistics, fast density methods, sampling design, 3D data formats, competitive location, charging infrastructure, surveillance and a representative implementation map.
 
@@ -62,7 +62,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Flow-capturing location model (FCLM), flow-refueling location model (FRLM), charging demand estimation from trajectories | Flow-based facility location / demand estimation | 36 | Not checked — intake only |
+| Flow-capturing location model (FCLM), flow-refueling location model (FRLM), charging demand estimation from trajectories | Flow-based facility location / demand estimation | 36 | Partially implemented: exact small-instance and greedy cardinality-constrained FCLM solvers maximize unique captured path flow from caller-supplied path/site incidence; FRLM and trajectory-derived demand remain outstanding |
 | Charging coverage with queuing, grid-capacity-aware siting, hydrogen station siting, V2G scheduling | Infrastructure siting / queueing and energy scheduling | 36 | Not checked — intake only |
 
 ## Surveillance and anomaly detection
