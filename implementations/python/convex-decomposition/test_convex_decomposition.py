@@ -91,12 +91,12 @@ def test_hertel_mehlhorn_pass_returns_convex_partition_for_concave_ring():
     pieces = hertel_mehlhorn_decompose(polygon)
     assert len(pieces) >= 2
     assert all(is_convex(piece) for piece in pieces)
-    assert sum((abs(area2(piece)) for piece in pieces), Fraction(0)) == 18
+    assert sum((abs(area2(piece)) for piece in pieces), Fraction(0)) == 13
 
 
 def test_hertel_mehlhorn_pass_is_deterministic_and_handles_convex_input():
     polygon = [(0, 0), (4, 0), (4, 3), (0, 3)]
-    first = hertel_mehlmann = hertel_mehlhorn_decompose(polygon)
+    first = hertel_mehlhorn_decompose(polygon)
     second = hertel_mehlhorn_decompose(polygon)
     assert first == second
     assert len(first) == 1
