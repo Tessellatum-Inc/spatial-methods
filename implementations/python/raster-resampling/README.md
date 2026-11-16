@@ -1,6 +1,6 @@
-# Raster resampling: nearest neighbour and bilinear interpolation
+# Raster resampling: nearest, bilinear, cubic and Lanczos
 
-This teaching implementation resamples a 2D array to a new shape over the same extent and orientation. It implements nearest-neighbour and bilinear methods, not a full geospatial warp.
+This teaching implementation resamples a 2D array to a new shape over the same extent and orientation. It implements nearest-neighbour, bilinear, Keys cubic-convolution (Catmull–Rom, a=-0.5) and Lanczos-3 interpolation. It is not a full geospatial warp.
 
 ## Install and test
 
@@ -11,23 +11,27 @@ python -m pytest -q
 
 ## Method selection
 
-- Nearest neighbour copies the closest source cell. It preserves categorical labels and class codes, but can create blocky continuous surfaces.
-- Bilinear interpolation forms a weighted average of the four surrounding source samples. It is appropriate for many continuous surfaces, but should not be used for nominal categories.
+- **Nearest neighbour** copies the closest source cell. It preserves categorical labels and class codes.
+- **Bilinear** uses the four surrounding samples. It is appropriate for many continuous surfaces, but smooths local extremes.
+- **Cubic convolution** uses a 4×4 support and a Keys cubic kernel with a=-0.5. It often produces visually smoother imagery than bilinear interpolation, but may overshoot near sharp transitions.
+- **Lanczos-3** uses a 6×6 windowed-sinc support. It preserves more high-frequency detail in many imagery workflows, but can ring near strong edges.
+
+Cubic and Lanczos should not be used for nominal categories. Neither method is guaranteed to preserve the source value range.
 
 ## NoData policy
 
-Bilinear interpolation offers two explicit policies:
-- strict: if any neighbour with positive interpolation weight is NoData, the output is NoData;
-- renormalize: ignore missing neighbours and renormalize the remaining weights.
+All non-finite source values are NoData.
 
-Nearest neighbour returns NoData when the selected source cell is non-finite. All non-finite source values are treated as NoData.
+- **strict:** any nonzero-weight missing sample invalidates the output.
+- **renormalize:** omit missing samples and renormalize the remaining kernel weights. For negative-lobed cubic and Lanczos kernels this changes the effective filter; if the remaining signed weight is numerically close to zero, the result is NoData rather than an unstable division.
+
+The implementation uses edge extension (replicating the nearest edge cell) when a kernel footprint crosses the array boundary.
 
 ## Scope and limitations
 
-- Target and source grids cover the same extent and orientation; only the output shape changes.
-- The implementation does not use CRS transformations, affine georeferencing, reprojection, rotated grids or antialiasing.
-- Cubic convolution, Lanczos and area-weighted aggregation are not implemented.
-- Bilinear interpolation changes values and may smooth extremes. Nearest neighbour is generally preferred for categorical rasters.
-- A production workflow must preserve the full transform, CRS, pixel alignment and resampling metadata.
+- Source and target grids cover the same extent and orientation; only output shape changes.
+- Pixel centres are mapped linearly in source-index coordinates.
+- There is no CRS transformation, affine georeferencing, rotated-grid support, area-weighted aggregation or antialiasing prefilter for substantial downsampling.
+- This is a transparent reference implementation, not a replacement for GDAL/rasterio production warping.
 
 See the [canonical lesson](../../../algorithms/raster/resampling.md) and [intern walkthrough](implementation-walkthrough.md).
