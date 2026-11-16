@@ -2,8 +2,8 @@
 
 Vatti's general polygon clipping method processes polygon contours through
 scanbeams, active edges, local minima, horizontal edges and intersection
-events. The first native component implemented here extracts the geometric
-events and edge bounds needed to initialise that process.
+events. The native component implemented here extracts the geometric
+primitives needed to initialise and inspect that process.
 
 The package
 [implementations/python/vatti-scanbeam](../../implementations/python/vatti-scanbeam/README.md)
@@ -12,11 +12,15 @@ provides:
 - non-horizontal bounds stored lower-to-upper with original traversal winding;
 - explicit horizontal-edge records;
 - local-minimum pairs, including horizontal bottom plateaus;
-- exact rational slope ordering for the two bounds at each minimum.
+- exact rational slope ordering for the two bounds at each minimum;
+- active-edge ordering at a scanbeam-band midpoint;
+- exact pairwise crossing events within a band.
 
-This is a **partial native implementation**. It does not yet process the
-active-edge list, compute edge crossings, apply fill rules or emit Boolean
-output. It must not be described as a complete Vatti clipper.
+The current crossing scheduler is an O(m²) reference calculation, not the
+optimized neighbour-event scheduler used by a full sweep-line clipper. This
+is a **partial native implementation**. Incremental active-edge updates,
+horizontal processing, fill-rule propagation and Boolean output construction
+remain outstanding.
 
 ## References
 
