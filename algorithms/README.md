@@ -9,6 +9,7 @@ Each record explains one method or operation, its assumptions, where it is usefu
 ## Interpolation and geostatistics
 
 - [Sibson natural-neighbour interpolation](interpolation/natural-neighbour.md) — interpolate from Voronoi-cell areas stolen when a query is inserted; the reference implementation rejects extrapolation.
+- [Whittaker-Eilers smoothing](interpolation/whittaker-smoother.md) — smooth ordered sequences with a weighted finite-difference penalty and explicit missing-observation handling.
 
 ## Geometry
 
