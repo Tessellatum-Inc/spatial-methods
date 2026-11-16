@@ -420,6 +420,9 @@ jobs:
           - example: food-price-transmission
             directory: implementations/python/food-price-transmission
             pythonpath: ""
+          - example: green-security-games
+            directory: implementations/python/green-security-games
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""

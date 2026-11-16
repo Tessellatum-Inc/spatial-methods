@@ -381,3 +381,5 @@ Records may have different evidence and implementation status. Check the status 
 - [RESTREND land-degradation screening](remote-sensing/resttrend-land-degradation.md) — regress NDVI against precipitation and estimate the temporal trend in residuals per pixel.
 
 - [Two-market food price transmission](economics/food-price-transmission.md) — estimate a long-run price relation and short-run error-correction dynamics.
+
+- [Green security-game patrol allocation](security/green-security-games.md) — allocate fractional patrol coverage to minimize worst-case attacker payoff under a resource budget.

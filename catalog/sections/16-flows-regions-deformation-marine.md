@@ -61,7 +61,7 @@ This section groups applied methods across spatial interaction, functional regio
 |---|---|---:|--- |
 | IUCN range metrics: extent of occurrence (convex hull, alpha hull), area of occupancy, range fragmentation indices | Range metrics / spatial biodiversity measures | 34 | Partial — planar convex-hull EOO and aligned-grid AOO are implemented; alpha hulls and range-fragmentation indices remain open |
 | Essential biodiversity variables, protected area gap analysis, key biodiversity area delineation, species richness and endemism indices (weighted endemism, phylogenetic diversity) | Biodiversity indicators / conservation planning and assessment | 34 | Partial — cellwise species richness and weighted endemism are implemented from binary presence matrices; phylogenetic diversity, essential-variable frameworks, protected-area gap analysis and KBA delineation remain open |
-| Wildlife crime and anti-poaching: green security games, learned patrol planning, risk maps from patrol data | Security games / patrol optimisation / risk mapping | 34 | Not checked — intake only |
+| Wildlife crime and anti-poaching: green security games, learned patrol planning, risk maps from patrol data | Security games / patrol optimisation / risk mapping | 34 | Partial — a tested minimax Stackelberg patrol-coverage allocation baseline is implemented; route-constrained patrol scheduling, learned defender strategies and patrol-data risk mapping remain open |
 
 ## Climate analogs, velocity and refugia
 
@@ -165,3 +165,8 @@ A per-pixel RESTREND baseline now fits NDVI against precipitation, calculates ra
 ### Two-market price transmission
 
 A two-stage error-correction baseline estimates a long-run price relation between two markets, then models short-run target-market price changes as a function of lagged disequilibrium and contemporaneous source-market changes. It reports the error-correction speed and standard errors. This is a pairwise econometric teaching model, not a complete food-security early-warning system or multi-market spatial equilibrium model.
+
+
+### Green security-game patrol allocation
+
+A compact Stackelberg security-game baseline allocates fractional patrol coverage across sites to minimize the attacker's best-response expected payoff under a fixed resource budget and site-specific detection effectiveness. It solves the equalized-payoff water-filling condition by bisection. This is a single-period coverage game, not route-constrained patrol planning, a learned defender policy or a complete anti-poaching risk system.
