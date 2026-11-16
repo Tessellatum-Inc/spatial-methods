@@ -537,7 +537,9 @@ def stitch_boundary_fragments(fragments, *, epsilon=1e-10):
             if end_key==start_key:
                 ring.pop(); break
             candidates=[i for i in outgoing.get(end_key,()) if i not in used]
-            if not candidates: raise ValueError('selected boundary fragments contain an open chain')
+            if not candidates:
+                detail=[(tuple(map(str,edge.a)),tuple(map(str,edge.b))) for edge in edges]
+                raise ValueError(f'selected boundary fragments contain an open chain at {tuple(map(str,edge.b))}; edges={detail}')
             reverse=(edge.a[0]-edge.b[0],edge.a[1]-edge.b[1])
             def vector(i):
                 nxt=edges[i]
