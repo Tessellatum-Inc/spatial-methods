@@ -597,3 +597,17 @@ The change is a meaningful extension, not completion of the polygon overlay work
 
 - [x] Add unconstrained, production-constrained, attraction-constrained and doubly constrained gravity-flow allocation, with IPF balancing and an exponential generalized-cost entropy-maximising wrapper.
 - [ ] Add negative-binomial gravity estimation, impedance/parameter calibration, competing-destination and intervening-opportunity variants, then continue with flow clustering and functional regionalisation.
+
+
+
+## Spatial design and network siting continuation — 17 November 2026
+
+- [x] Add pure-Python Latin hypercube and centered Latin hypercube designs with one sample per marginal stratum, reproducible local RNG, and input validation.
+- [x] Add multi-start normalized maximin selection over LHS candidates, with an explicit distinction between the best generated candidate and a globally optimal design.
+- [x] Add deterministic farthest-first / Lloyd k-means coverage centroids for supplied point sets; document the Euclidean-coordinate and local-optimum assumptions.
+- [x] Add independent tests for marginal strata, reproducibility, candidate selection, centroid recovery and invalid inputs; register the package in the Python CI matrix.
+- [x] Add an exact small-instance flow-capturing location solver and a greedy marginal-flow baseline. Path weights are counted once, the exact solver provides an oracle, and the greedy guarantee is stated only for the monotone submodular cardinality model.
+- [x] Add tests for exact subset enumeration, path de-duplication, deterministic ties, zero budget and invalid model inputs; register the package in the Python CI matrix.
+- [ ] Execute both new package suites and verify the complete repository Actions run on the resulting head. The commit-status lookup currently returns no status contexts, so these packages are integrated but not CI-verified.
+- [ ] Resolve the source's "coffee-house" sampling label from a precise definition before implementing it; implement flow-refueling location (FRLM) as a distinct range-feasibility model; derive charging demand from trajectories with an independently tested map-matching / route-aggregation contract.
+- [ ] Continue Section 17 with ball-pivoting surface reconstruction, remaining Voronoi/triangulation variants, approximate-nearest-neighbour structures and sparse/large-scale spatial-statistics methods.
