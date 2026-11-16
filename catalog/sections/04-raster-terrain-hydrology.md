@@ -81,3 +81,6 @@ The [focal raster statistics lesson](../../algorithms/raster/focal-statistics.md
 - Shreve (1966), “Statistical law of stream numbers,” *The Journal of Geology*, 74(1), 17–37, [10.1086/627137](https://doi.org/10.1086/627137).
 
 These are selected bibliographic checks for the D8, watershed and stream-order lessons, not a complete audit of all raster/hydrology entries or all DEM-conditioning assumptions.
+
+
+The terrain-index package now also includes a tested Gaussian local-relief model (DEM minus smoothed background, with normalized finite-cell convolution) and a multi-window TPI helper. These provide scale-explicit local terrain residuals and TPI rasters; geomorphons, openness, red-relief mapping and a landform classifier remain open.
