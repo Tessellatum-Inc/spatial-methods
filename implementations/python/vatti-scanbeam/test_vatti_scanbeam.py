@@ -421,9 +421,16 @@ def test_partial_collinear_shared_boundary_and_horizontal_events():
     result = clip_rings(d, {0}, {1}, "union")
     assert len(result.rings) == 1
     assert sum(_signed_ring_area(r) for r in result.rings) == 12
-    assert any(event.kind == "overlap" and event.other_kind == "horizontal"
+    assert any(event.kind == "point" and event.other_kind == "bound"
                for level in sweep_boolean(d, {0}, {1}, "union").levels
                for event in level.horizontal_events)
+    horizontal_shared = decompose_scanbeams([
+        _rect(0, 0, 2, 2), _rect(0, 2, 2, 4)
+    ])
+    assert any(event.kind == "overlap" and event.other_kind == "horizontal"
+               for level in sweep_boolean(
+                   horizontal_shared, {0}, {1}, "union"
+               ).levels for event in level.horizontal_events)
 
 
 def test_vertex_touching_components_remain_separate_shells():
@@ -434,11 +441,14 @@ def test_vertex_touching_components_remain_separate_shells():
     assert sum(_signed_ring_area(r) for r in result.rings) == 8
 
 
-def test_opposite_orientation_coincident_ring_cancels_under_nonzero():
+def test_opposite_orientation_coincident_operand_rings_remain_filled():
     from vatti_scanbeam import clip_rings
-    d = decompose_scanbeams([_rect(0, 0, 2, 2), _rect(0, 0, 2, 2, ccw=False)])
+    d = decompose_scanbeams([
+        _rect(0, 0, 2, 2), _rect(0, 0, 2, 2, ccw=False)
+    ])
     result = clip_rings(d, {0}, {1}, "union", fill_rule="non_zero")
-    assert result.rings == ()
+    assert len(result.rings) == 1
+    assert _signed_ring_area(result.rings[0]) == 4
 
 
 def test_neighbour_event_sweep_orders_three_way_crossing_atomically():
@@ -483,7 +493,10 @@ def test_shapely_differential_boolean_oracle():
             actual = clip_rings(d, {0}, {1}, operation)
             assert abs(sum(_signed_ring_area(r) for r in actual.rings)
                        - expected.area) < 1e-9
-            assert len(actual.rings) == (
-                len(expected.geoms) if hasattr(expected, "geoms")
-                else (0 if expected.is_empty else 1)
-            )
+            if expected.geom_type == "Polygon":
+                expected_components = 0 if expected.is_empty else 1
+            elif expected.geom_type == "MultiPolygon":
+                expected_components = len(expected.geoms)
+            else:
+                expected_components = 0
+            assert len(actual.rings) == expected_components
