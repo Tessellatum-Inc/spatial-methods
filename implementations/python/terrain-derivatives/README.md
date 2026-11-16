@@ -78,3 +78,10 @@ The multidirectional_hillshade function averages equally weighted local hillshad
 ## Local relief model and multi-scale TPI
 
 The local-relief model subtracts a Gaussian-smoothed terrain background from the original DEM. Its Gaussian standard deviation is specified in horizontal map units and converted using x/y cell spacing. Normalized convolution uses finite-cell weights, so NoData holes do not act as zero-elevation pits; source NoData remains NoData in the residual. Positive residuals are locally higher than the smoothed background and negative residuals are locally lower. The result is scale-dependent and is not a landform class. The multi-scale TPI helper evaluates the existing focal TPI at several odd window sizes and returns one raster per scale.
+
+## Local extrema and reservoir stage-storage
+
+- detect_local_extrema returns Boolean local-maximum and local-minimum masks using complete square neighbourhoods and a minimum prominence threshold. It is not a geomorphon classifier or connected-plateau extraction method.
+- reservoir_stage_storage derives DEM-based inundated area and storage at ordered water stages using constant horizontal cell area and horizontal-prism cells. It is not a hydraulic model and does not enforce basin connectivity or spill constraints.
+
+Both additions have analytic and validation tests. See the canonical reservoir stage-storage lesson.
