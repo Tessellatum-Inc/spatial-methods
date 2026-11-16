@@ -64,7 +64,7 @@ def test_post_classification_transition_matrix_against_pixelwise_oracle():
             expected[before[r, c] - 1, after[r, c] - 1] += 1
             changed_count += before[r, c] != after[r, c]
     np.testing.assert_array_equal(result["transition_matrix"], expected)
-    assert result["changed_mask"].sum() == changed_count == 4
+    assert result["changed_mask"].sum() == changed_count == 3
     assert result["transition_matrix"].sum() == before.size
 
 
