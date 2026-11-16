@@ -556,7 +556,8 @@ The source-to-implementation ledger must track, per source entry and child metho
 - [ ] Execute both differential suites and resolve any oracle mismatches on the exact head commit.
 - [ ] Implement the full neighbour-ordered event scheduler; the current y-interval treap remains a broad-phase candidate filter, not the Martinez–Rueda sweep status. Vatti already has a separate neighbour-ordered bundle scheduler with atomic multiway crossing reordering; porting or independently validating a full x-sweep for Martinez remains open.
 - [x] Implement Vatti coincident active-edge bundling and a neighbour-ordered rational event heap that reorders all bundles at a multiway crossing; horizontal fill transitions and contour noding are integrated, with tests for three-way crossings, shared horizontal boundaries and all four Boolean operations.
-- [ ] Expand Vatti differential coverage across the complete source-listed fill-rule and contour lifecycle, then execute the package suite.
+- [x] Add Shapely differential coverage for even-odd, non-zero, positive and negative fill rules across all four Boolean operations.
+- [ ] Execute Vatti and Martinez package suites, then run full repository CI on the exact head.
 - [x] Add exact-coordinate multiway node-event grouping for pairwise reports, including endpoint and collinear-bundle contacts.
 - [ ] Validate multiway node grouping and exact face walks against adversarial multi-segment vertices, overlapping bundles and independent topology oracles before claiming a general-purpose overlay kernel.
 
