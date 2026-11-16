@@ -629,3 +629,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Add dead-reckoning update triggers based on observed-versus-predicted displacement error.
 - [x] Add tests, implementation and algorithm documentation, and Python CI registration.
 - [ ] Execute the package and full CI suite. TPR/HR/MV3R indexing, probabilistic covariance regions, acceleration models, continuous queries and network-constrained trajectories remain separate tasks.
+
+
+## Photogrammetric flight-design continuation — 17 November 2026
+
+- [x] Implement nadir ground sample distance from flying height, pixel pitch and focal length.
+- [x] Implement approximate ground footprint and forward/side-overlap image spacing.
+- [x] Add hand-calculated tests, input validation, implementation and algorithm documentation, and CI registration.
+- [ ] Execute the package and full CI suite. Corridor geometry, terrain following, relief displacement, lens/camera calibration and multi-UAV coverage planning remain open.
