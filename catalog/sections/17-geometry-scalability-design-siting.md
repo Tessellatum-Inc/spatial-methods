@@ -69,7 +69,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Syndromic surveillance: CUSUM, EARS, Farrington, spatial and space-time variants | Surveillance and outbreak detection methods | 36 | Not checked — intake only |
+| Syndromic surveillance: CUSUM, EARS, Farrington, spatial and space-time variants | Surveillance and outbreak detection methods | 36 | Partially implemented: two-sided tabular CUSUM and an explicitly specified EARS-style C1/C2/C3 count-series detector have tests; Farrington, seasonality/covariates, spatial and space-time variants remain outstanding |
 | Event detection from sensor networks, graph-based anomaly detection, spatial scan on counts with covariates | Event and anomaly detection methods | 36 | Not checked — intake only |
 
 ## Infrastructure and land-use mapping from imagery
