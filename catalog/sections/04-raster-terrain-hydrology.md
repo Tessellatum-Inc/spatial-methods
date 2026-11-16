@@ -12,7 +12,7 @@ The source groups raster operations, terrain analysis, hydrological modelling, g
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Map algebra: local, focal, zonal and global operations; reclassification; resampling (nearest, bilinear, cubic, Lanczos) | Raster operations / resampling methods | 6 | Not checked — intake only |
+| Map algebra: local, focal, zonal and global operations; reclassification; resampling (nearest, bilinear, cubic, Lanczos) | Raster operations / resampling methods | 6 | Partially implemented: focal and zonal statistics, nearest/bilinear resampling and explicit half-open range reclassification have tested baselines; local/global map algebra, categorical lookup tables, cubic/Lanczos resampling and CRS-aware warping remain open |
 | Connected component labeling, flood fill, run-length encoding, image pyramids | Image and raster algorithms / data structures | 6 | Not checked — intake only |
 | Distance: Euclidean distance transform (Felzenszwalb), chamfer, cost-distance, least-cost path, fast marching and Eikonal solvers, heat method | Distance transforms / path methods / numerical solvers | 6 | Not checked — intake only |
 | Efficient statistics: integral images for focal statistics, zonal histograms | Data structures / statistical summaries | 6 | Not checked — intake only |
