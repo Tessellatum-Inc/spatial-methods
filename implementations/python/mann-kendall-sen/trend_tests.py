@@ -127,3 +127,54 @@ def seasonal_sen_slope(values, seasons, times=None):
     return {"slope": slope,
             "intercept": median([v - slope * t for t, v in zip(x, y)]),
             "pair_count": len(slopes)}
+
+
+def harmonic_regression(values, times=None, *, period, harmonics=1, include_trend=True):
+    """Fit intercept + optional linear trend + Fourier sine/cosine terms.
+
+    Uses least squares. Times must be strictly increasing; period uses the
+    same units as times. The returned fit is descriptive and includes no
+    inferential standard errors or autocorrelation correction.
+    """
+    import numpy as np
+
+    y = np.asarray(_values(values, "values"), dtype=float)
+    x = np.asarray(_times(times, len(y)), dtype=float)
+    if isinstance(period, bool) or not isinstance(period, (int, float)) or not math.isfinite(period) or period <= 0:
+        raise ValueError("period must be a finite positive number")
+    if isinstance(harmonics, bool) or not isinstance(harmonics, int) or harmonics < 1:
+        raise ValueError("harmonics must be a positive integer")
+    if not isinstance(include_trend, bool):
+        raise ValueError("include_trend must be boolean")
+    origin = float(x[0])
+    columns = [np.ones(len(x))]
+    if include_trend:
+        columns.append(x - origin)
+    for k in range(1, harmonics + 1):
+        angle = 2.0 * math.pi * k * (x - origin) / float(period)
+        columns.extend((np.sin(angle), np.cos(angle)))
+    design = np.column_stack(columns)
+    if len(y) < design.shape[1]:
+        raise ValueError("not enough observations for the requested harmonic model")
+    coefficients, _, rank, _ = np.linalg.lstsq(design, y, rcond=None)
+    if rank != design.shape[1]:
+        raise ValueError("harmonic design matrix is rank deficient")
+    fitted = design @ coefficients
+    residuals = y - fitted
+    sse = float(residuals @ residuals)
+    centered = y - float(np.mean(y))
+    total = float(centered @ centered)
+    r_squared = 1.0 - sse / total if total > 0 else (1.0 if sse <= 1e-24 else 0.0)
+    return {
+        "coefficients": coefficients.tolist(),
+        "fitted": fitted.tolist(),
+        "residuals": residuals.tolist(),
+        "rmse": math.sqrt(sse / len(y)),
+        "r_squared": r_squared,
+        "rank": int(rank),
+        "parameter_count": int(design.shape[1]),
+        "time_origin": origin,
+        "period": float(period),
+        "harmonics": harmonics,
+        "include_trend": include_trend,
+    }

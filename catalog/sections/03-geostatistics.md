@@ -83,3 +83,6 @@ Matheron (1963), “Principles of geostatistics,” *Economic Geology*, 58(8), 1
 
 
 The trend/change source entry now also links to seasonal Mann-Kendall and seasonal Sen slope reference methods. Seasonal comparisons are restricted to matching season labels; score and tie-corrected variance are aggregated across seasons, and the slope is the median of within-season pair slopes. The implementation is dependency-free and covered by tests. It does not correct serial correlation within seasons, dependence between seasons, missingness mechanisms or multiple testing, and its p-value remains a normal approximation. The grouped source row remains partial; harmonic regression, BFAST, LandTrendr and CCDC remain open.
+
+
+The trend/change source entry now also links to a least-squares harmonic regression baseline with configurable period, number of Fourier harmonics and optional linear trend. It returns coefficients, fitted values, residuals, RMSE and R², with rank and sample-size checks. The implementation does not provide autocorrelation-robust inference, automatic period selection, BFAST, LandTrendr or CCDC; the grouped source row remains partial.

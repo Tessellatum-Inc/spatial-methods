@@ -742,3 +742,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Add tests for seasonal offsets, tie corrections, time spacing, invalid labels and insufficient within-season pairs.
 - [x] Update the source-linked lesson and package documentation; reuse the existing Python CI package registration.
 - [ ] Run the complete repository workflow and evaluate serial-correlation corrections, seasonal dependence and small-sample inference. These are not claimed by this baseline.
+
+
+## Harmonic trend modelling — 17 November 2026
+
+- [x] Add least-squares harmonic regression with optional linear trend and configurable Fourier harmonics.
+- [x] Add design-rank, underdetermined-model, known-coefficient and multi-harmonic tests.
+- [x] Document period units, coefficient ordering and the absence of autocorrelation-robust inference.
+- [ ] Add model-selection and dependence-aware inference only with explicit source review and independent validation.

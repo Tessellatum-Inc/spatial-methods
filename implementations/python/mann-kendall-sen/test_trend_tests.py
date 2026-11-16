@@ -90,3 +90,37 @@ def test_seasonal_sen_requires_a_within_season_pair():
 def test_seasonal_methods_reject_length_mismatch():
     with pytest.raises(ValueError):
         seasonal_mann_kendall([1, 2, 3], ["a", "b"])
+
+
+def test_harmonic_regression_recovers_trend_and_first_harmonic():
+    import math
+    import numpy as np
+    from trend_tests import harmonic_regression
+    times = list(range(24))
+    values = [4 + 0.25*t + 3*math.sin(2*math.pi*t/12) - 1.5*math.cos(2*math.pi*t/12)
+              for t in times]
+    result = harmonic_regression(values, times, period=12)
+    assert result["rmse"] < 1e-10
+    assert result["r_squared"] == pytest.approx(1)
+    assert result["coefficients"] == pytest.approx([4, 0.25, 3, -1.5], abs=1e-9)
+
+
+def test_harmonic_regression_supports_multiple_harmonics_without_trend():
+    import math
+    from trend_tests import harmonic_regression
+    times = list(range(48))
+    values = [2 + 1.2*math.sin(2*math.pi*t/12) + 0.4*math.cos(4*math.pi*t/12)
+              for t in times]
+    result = harmonic_regression(values, times, period=12, harmonics=2, include_trend=False)
+    assert result["rmse"] < 1e-10
+    assert result["parameter_count"] == 5
+
+
+def test_harmonic_regression_rejects_underdetermined_and_invalid_models():
+    from trend_tests import harmonic_regression
+    with pytest.raises(ValueError):
+        harmonic_regression([1, 2, 3], period=2, harmonics=2)
+    with pytest.raises(ValueError):
+        harmonic_regression([1, 2, 3, 4], period=0)
+    with pytest.raises(ValueError):
+        harmonic_regression([1, 2, 3, 4], period=2, harmonics=0)

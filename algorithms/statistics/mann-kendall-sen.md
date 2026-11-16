@@ -28,3 +28,16 @@ p-value is not an exact small-sample test. Assess dependence and sampling
 structure before interpreting significance.
 
 See the dependency-free Python package for tests and usage.
+
+
+## Harmonic regression
+
+A harmonic regression represents periodic structure with Fourier terms:
+
+    y(t) = beta0 + beta1*t + sum_k [a_k sin(2*pi*k*t/P) + b_k cos(2*pi*k*t/P)]
+
+The optional linear trend and selected harmonics are estimated by least
+squares. The reference package validates the design matrix and returns
+fitted values and residual diagnostics. Period P uses the time-coordinate
+units. This is a descriptive model: it does not estimate autocorrelation-
+robust standard errors, choose a period, or implement BFAST/LandTrendr/CCDC.

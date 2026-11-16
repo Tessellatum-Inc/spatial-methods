@@ -33,3 +33,17 @@ and memory.
 ## Tests
 
     python -m pytest -q
+
+
+## Harmonic regression
+
+`harmonic_regression` fits an intercept, optional linear trend, and a
+user-selected number of Fourier sine/cosine pairs by least squares. The
+period is expressed in the same units as the supplied time coordinates.
+The function returns coefficients, fitted values, residuals, RMSE and R².
+The design is checked for sufficient observations and full column rank.
+
+This is a descriptive least-squares baseline. It does not provide coefficient
+standard errors, model-selection procedures, robust errors or correction for
+serial correlation. Choose the period and harmonic count from domain
+knowledge and validation, not by assuming the default is universally right.
