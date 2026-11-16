@@ -146,7 +146,7 @@ def test_gicp_rejects_invalid_controls_and_underdetermined_geometry():
     with pytest.raises(ValueError, match="neighbors"):
         generalized_icp(cloud, cloud, neighbors=2)
     with pytest.raises(ValueError, match="regularization"):
-        generalized_icp(cloud, cloud, covariance_regularization=0)
+        generalized_icp(cloud, cloud, neighbors=3, covariance_regularization=0)
     with pytest.raises(ValueError, match="do not constrain"):
         generalized_icp(cloud, cloud, neighbors=3)
 
