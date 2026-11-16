@@ -93,3 +93,66 @@ def distance_to_targets(
     for column in range(width):
         squared[:, column] = distance_transform_1d(horizontal[:, column], row_spacing)
     return np.sqrt(squared)
+
+
+def chamfer_distance_to_targets(
+    target_mask: np.ndarray,
+    *,
+    cell_size: Sequence[float] = (1.0, 1.0),
+) -> np.ndarray:
+    """Return 8-neighbour chamfer graph distance to the nearest target.
+
+    A forward and reverse raster scan relax the four predecessor/successor
+    directions in each half-pass. Orthogonal moves cost their cell spacing;
+    diagonal moves cost hypot(row_spacing, column_spacing). This computes
+    shortest-path distance on the 8-neighbour raster graph without barriers.
+    It is an approximation to continuous Euclidean distance and differs from
+    the exact lower-envelope transform in distance_to_targets.
+    """
+    mask = np.asarray(target_mask, dtype=bool)
+    if mask.ndim != 2 or mask.size == 0:
+        raise ValueError("target_mask must be a non-empty 2D array")
+    try:
+        if len(cell_size) != 2:
+            raise ValueError("cell_size must contain row and column spacing")
+        row_spacing, column_spacing = map(float, cell_size)
+    except TypeError as exc:
+        raise ValueError("cell_size must contain row and column spacing") from exc
+    if not all(isfinite(value) and value > 0 for value in (row_spacing, column_spacing)):
+        raise ValueError("cell_size values must be finite and greater than zero")
+    if not mask.any():
+        raise ValueError("target_mask must contain at least one target cell")
+
+    height, width = mask.shape
+    diagonal = float(np.hypot(row_spacing, column_spacing))
+    distance = np.where(mask, 0.0, np.inf)
+
+    # Every shortest path in an obstacle-free 8-neighbour grid can be
+    # represented by monotone coordinate steps, so the two raster scans
+    # recover the exact graph metric for this neighbourhood.
+    for row in range(height):
+        for col in range(width):
+            best = distance[row, col]
+            if row > 0:
+                best = min(best, distance[row - 1, col] + row_spacing)
+                if col > 0:
+                    best = min(best, distance[row - 1, col - 1] + diagonal)
+                if col + 1 < width:
+                    best = min(best, distance[row - 1, col + 1] + diagonal)
+            if col > 0:
+                best = min(best, distance[row, col - 1] + column_spacing)
+            distance[row, col] = best
+
+    for row in range(height - 1, -1, -1):
+        for col in range(width - 1, -1, -1):
+            best = distance[row, col]
+            if row + 1 < height:
+                best = min(best, distance[row + 1, col] + row_spacing)
+                if col > 0:
+                    best = min(best, distance[row + 1, col - 1] + diagonal)
+                if col + 1 < width:
+                    best = min(best, distance[row + 1, col + 1] + diagonal)
+            if col + 1 < width:
+                best = min(best, distance[row, col + 1] + column_spacing)
+            distance[row, col] = best
+    return distance
