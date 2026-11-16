@@ -199,3 +199,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 15 point-cloud registration: added a tested hard-voxel normal-distributions-transform (NDT) baseline with target Gaussian means/covariances, covariance regularisation, voxel occupancy controls and damped six-parameter Gauss–Newton pose updates. It is explicitly a local single-resolution teaching implementation; multi-resolution NDT, neighbouring-voxel likelihoods, line-search optimisation, colored ICP, FPFH/RANSAC, TEASER++ and learned registration remain open.
+
+
+- Section 16 biodiversity: added convex-hull extent of occurrence, aligned-grid area of occupancy, cellwise species richness and inverse-range-size weighted endemism with analytic and direct-matrix tests. These descriptive kernels require caller-supplied projected/equal-area coordinates and grid alignment; alpha hulls, fragmentation metrics, phylogenetic diversity, sampling-bias correction and formal KBA assessment remain open.
