@@ -13,7 +13,7 @@ Each implementation should state:
 - known limitations and what the example does not implement;
 - a step-by-step walkthrough that explains the code, decisions and validation.
 
-## Examples\n\n### Statistical surveillance\n\n- [Syndromic surveillance](python/syndromic-surveillance/README.md): two-sided tabular CUSUM and explicit EARS-style C1/C2/C3 count-series detectors, with lagged baselines, validation and reference tests.\n
+## Examples\n\n### Moving objects\n\n- [Moving-object prediction](python/moving-object-prediction/README.md): constant-velocity prediction, uncertainty-aware predictive range queries and dead-reckoning update policy with reference tests.\n\n\n### Statistical surveillance\n\n- [Syndromic surveillance](python/syndromic-surveillance/README.md): two-sided tabular CUSUM and explicit EARS-style C1/C2/C3 count-series detectors, with lagged baselines, validation and reference tests.\n
 
 ### Forecast verification
 
