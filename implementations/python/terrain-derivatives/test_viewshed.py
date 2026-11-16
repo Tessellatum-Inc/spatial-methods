@@ -46,6 +46,6 @@ def test_cumulative_viewshed_counts_observers_and_validates():
     dem = np.zeros((3, 5))
     result = cumulative_viewshed(dem, [(1, 0), (1, 4)])
     assert result[1, 2] == 2
-    assert result[1, 0] == 1
+    assert result[1, 0] == 2
     with pytest.raises(ValueError):
         cumulative_viewshed(dem, [])
