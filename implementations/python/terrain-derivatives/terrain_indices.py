@@ -357,3 +357,62 @@ def multiscale_topographic_position_index(elevation, window_sizes, *, min_valid_
     if len(set(normalized)) != len(normalized):
         raise ValueError("window_sizes must be unique")
     return {size: topographic_position_index(elevation, window_size=size, min_valid_fraction=min_valid_fraction) for size in normalized}
+
+def detect_local_extrema(elevation, *, window_size=3, min_prominence=0.0):
+    """Return Boolean local-maximum and local-minimum masks.
+
+    A complete odd square window is required. A candidate must be at least
+    as high/low as every neighbour and differ from at least one neighbour;
+    this avoids marking a perfectly flat window as both a peak and a pit.
+    min_prominence is the difference from the most extreme neighbour.
+    Plateau edges may be marked; this is not connected-plateau extraction.
+    """
+    dem = np.asarray(elevation, dtype=float)
+    if dem.ndim != 2 or dem.size == 0: raise ValueError("elevation must be a non-empty 2D array")
+    if isinstance(window_size, (bool, np.bool_)) or not isinstance(window_size, (int, np.integer)) or window_size < 3 or window_size % 2 == 0:
+        raise ValueError("window_size must be an odd integer of at least 3")
+    try: prominence = float(min_prominence)
+    except (TypeError, ValueError): raise ValueError("min_prominence must be finite and non-negative") from None
+    if not np.isfinite(prominence) or prominence < 0: raise ValueError("min_prominence must be finite and non-negative")
+    radius = window_size // 2
+    maxima = np.zeros(dem.shape, dtype=bool); minima = np.zeros(dem.shape, dtype=bool)
+    if dem.shape[0] < window_size or dem.shape[1] < window_size: return maxima, minima
+    from numpy.lib.stride_tricks import sliding_window_view
+    windows = sliding_window_view(dem, (window_size, window_size))
+    centre = windows[:, :, radius, radius]
+    valid = np.isfinite(windows).all(axis=(-1, -2))
+    neighbours = windows.copy(); neighbours[:, :, radius, radius] = np.nan
+    local_max = np.nanmax(neighbours, axis=(-1, -2))
+    local_min = np.nanmin(neighbours, axis=(-1, -2))
+    is_max = valid & (centre >= local_max) & ((centre - local_max) >= prominence) & (centre > local_min)
+    is_min = valid & (centre <= local_min) & ((local_min - centre) >= prominence) & (centre < local_max)
+    maxima[radius:-radius, radius:-radius] = is_max
+    minima[radius:-radius, radius:-radius] = is_min
+    return maxima, minima
+
+
+def reservoir_stage_storage(elevation, stage_levels, *, cell_area=1.0, valid_mask=None):
+    """Compute DEM-based inundated area and storage at ordered water stages.
+    Cells are horizontal prisms: storage = sum(max(stage - elevation, 0))*area.
+    This is a hypsometric calculation, not a hydraulic reservoir model.
+    """
+    dem = np.asarray(elevation, dtype=float); stages = np.asarray(stage_levels, dtype=float)
+    if dem.ndim != 2 or dem.size == 0: raise ValueError("elevation must be a non-empty 2D array")
+    if stages.ndim != 1 or stages.size == 0 or np.any(~np.isfinite(stages)): raise ValueError("stage_levels must be a non-empty finite 1D array")
+    if np.any(np.diff(stages) <= 0): raise ValueError("stage_levels must be strictly increasing")
+    try: area = float(cell_area)
+    except (TypeError, ValueError): raise ValueError("cell_area must be finite and positive") from None
+    if not np.isfinite(area) or area <= 0: raise ValueError("cell_area must be finite and positive")
+    if valid_mask is None: valid = np.isfinite(dem)
+    else:
+        mask = np.asarray(valid_mask, dtype=bool)
+        if mask.shape != dem.shape: raise ValueError("valid_mask must match elevation shape")
+        valid = np.isfinite(dem) & mask
+    if not np.any(valid): raise ValueError("at least one valid elevation cell is required")
+    cells = dem[valid]; depths = np.maximum(stages[:, None] - cells[None, :], 0.0)
+    return {
+        "stage": stages.copy(),
+        "inundated_area": np.count_nonzero(depths > 0, axis=1).astype(float) * area,
+        "storage": depths.sum(axis=1) * area,
+        "valid_cell_count": int(cells.size),
+    }
