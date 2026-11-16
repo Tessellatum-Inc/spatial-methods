@@ -80,7 +80,7 @@ def sample_entropy(series, *, m=2, r=0.2, normalize_r=True):
     if not math.isfinite(r) or r<=0: raise ValueError("r must be finite and positive")
     if x.size<m+2: raise ValueError("series is too short for m")
     tolerance=r*float(np.std(x)) if normalize_r else r
-    templates_m=np.lib.stride_tricks.sliding_window_view(x,m)
+    templates_m=np.lib.stride_tricks.sliding_window_view(x,m)[:-1]
     templates_m1=np.lib.stride_tricks.sliding_window_view(x,m+1)
     def matches(templates):
         count=0
