@@ -156,7 +156,12 @@ def _intersection_all(s1,s2,eps):
     """
     try:
         hit=_intersection(s1,s2,eps)
-        return () if hit is None else (hit,)
+        if hit is None:
+            return ()
+        t,u,_point,proper=hit
+        aa,bb=_fraction_point(s1.a),_fraction_point(s1.b)
+        exact_point=(aa[0]+t*(bb[0]-aa[0]),aa[1]+t*(bb[1]-aa[1]))
+        return ((t,u,exact_point,proper),)
     except NotImplementedError:
         aa,bb=_fraction_point(s1.a),_fraction_point(s1.b)
         cc,dd=_fraction_point(s2.a),_fraction_point(s2.b)
@@ -177,7 +182,7 @@ def _intersection_all(s1,s2,eps):
         for p in shared:
             t=parameter(aa,bb,p)
             u=parameter(cc,dd,p)
-            hits.append((t,u,(float(p[0]),float(p[1])),False))
+            hits.append((t,u,p,False))
         return tuple(hits)
 
 
@@ -297,7 +302,7 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
             for p in ring:
                 if len(p)!=2 or not all(isfinite(float(v)) for v in p):
                     raise ValueError("rings require finite 2D coordinates")
-                pts.append((float(p[0]),float(p[1])))
+                pts.append((p[0],p[1]))
             if len(pts)<3 or len(set(pts))<3: raise ValueError("rings need three distinct points")
             if _signed_area_exact(pts)==0: raise ValueError("ring area must be non-zero")
             if not _ring_is_simple(pts,epsilon): raise ValueError("input rings must be simple and non-self-touching")
@@ -422,7 +427,7 @@ def classify_boundary_fragments(polygons, *, operation='intersection', epsilon=1
     result=sweep_split_segments(polygons,epsilon=epsilon)
     rings=[]
     for source in polygons:
-        source_rings=[[(float(p[0]),float(p[1])) for p in ring] for ring in source]
+        source_rings=[[(p[0],p[1]) for p in ring] for ring in source]
         for rid,ring in enumerate(source_rings):
             area=_signed_area_exact(ring)
             if (rid==0 and area<0) or (rid>0 and area>0): ring.reverse()
