@@ -325,3 +325,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Raster viewshed and cumulative visibility](raster/viewshed.md) — calculate discrete line-of-sight visibility from one or more raster observer cells, with optional curvature/refraction correction.
 
 - [Flood-frequency analysis](raster/flood-frequency-analysis.md) — estimate annual-maximum return levels using Weibull plotting positions and Gumbel/GEV L-moment fits.
+
+- [Positive and negative terrain openness](raster/terrain-openness.md) — summarize radial horizon openness above and below terrain cells using explicit search and sampling parameters.
