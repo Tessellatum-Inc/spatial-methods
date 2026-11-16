@@ -35,7 +35,7 @@ This section combines surface estimation, stochastic spatial models, simulation,
 | Spatiotemporal GP (separable and non-separable kernels), spatiotemporal INLA, functional data analysis | Spatiotemporal Gaussian processes / inference framework / statistical methods | 5 | Not checked — intake only |
 | Space-time scan statistics, Knox test, space-time K function, space-time cube, emerging hot spot analysis | Spatiotemporal tests / summary methods / analysis workflow | 5 | Partial — a permutation-based Knox test for excess space-time close pairs is implemented and tested; space-time scan statistics, space-time K, cube analytics and emerging-hotspot workflows remain open |
 | Spatial survival and frailty models | Survival model families | 5 | Not checked — intake only |
-| Spatiotemporal point processes: Hawkes, LGCP, ETAS | Point-process model families | 5 | Not checked — intake only |
+| Spatiotemporal point processes: Hawkes, LGCP, ETAS | Point-process model families | 5 | Partial — a tested univariate exponential Hawkes process simulator and point-process log-likelihood are implemented; spatial Hawkes/LGCP, ETAS earthquake triggering and marked multivariate processes remain open |
 | Trend and change: Mann-Kendall, Sen's slope, harmonic regression, BFAST, LandTrendr, CCDC | Trend tests / regression / change-detection methods | 5 | Not checked — intake only |
 
 ## Data assimilation and inverse methods
@@ -100,3 +100,8 @@ The Knox test counts event pairs that are simultaneously within a declared spati
 ### Fay–Herriot area-level small-area estimation
 
 An area-level Gaussian Fay–Herriot model now estimates regression coefficients by generalized least squares and the between-area random-effect variance by restricted maximum likelihood. It returns empirical-Bayes area estimates and conditional random-effect variances. This does not implement unit-level models, survey-weighted Horvitz–Thompson estimators, model-assisted estimation or multilevel regression and poststratification (MRP).
+
+
+### Exponential Hawkes self-exciting process
+
+A univariate temporal Hawkes process with exponential triggering kernel now has Ogata-thinning simulation and an exact conditional log-likelihood for observed event times over a finite window. The baseline assumes a stationary subcritical process with branching ratio below one. Spatial Hawkes processes, log-Gaussian Cox processes, ETAS earthquake models and marked/multivariate variants remain open.

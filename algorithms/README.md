@@ -397,3 +397,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Knox space-time interaction test](statistics/knox-test.md) — excess close event pairs evaluated against temporal-label permutations.
 
 - [Fay–Herriot small-area estimation](statistics/fay-herriot.md) — area-level Gaussian empirical-Bayes estimates with REML estimation of between-area variance.
+
+- [Exponential Hawkes process](statistics/hawkes-process.md) — Ogata thinning simulation and conditional log-likelihood for a univariate temporal self-exciting point process.

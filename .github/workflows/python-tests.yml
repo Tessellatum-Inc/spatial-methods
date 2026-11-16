@@ -444,6 +444,9 @@ jobs:
           - example: small-area-estimation
             directory: implementations/python/small-area-estimation
             pythonpath: ""
+          - example: hawkes-process
+            directory: implementations/python/hawkes-process
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""
