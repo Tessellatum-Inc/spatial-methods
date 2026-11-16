@@ -36,7 +36,7 @@ def fft_grid_kde(points, *, extent, shape=(128,128), bandwidth=1.0,
     if not inside.any() or w[inside].sum()<=0: raise ValueError("no positive-weight points fall inside extent")
     dx=(xmax-xmin)/nx;dy=(ymax-ymin)/ny
     counts,_,_=np.histogram2d(p[inside,0],p[inside,1],bins=(nx,ny),
-                              range=((xmin,xmax),(ymin,ymax)),weights=w[inside]))
+                              range=((xmin,xmax),(ymin,ymax)),weights=w[inside])
     rx=max(1,int(math.ceil(truncate*bandwidth/dx)))
     ry=max(1,int(math.ceil(truncate*bandwidth/dy)))
     gx=np.arange(-rx,rx+1)*dx;gy=np.arange(-ry,ry+1)*dy
