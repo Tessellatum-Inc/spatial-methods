@@ -758,3 +758,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Return empirical BLUP predictions, shrinkage factors and a qualified plug-in MSE approximation.
 - [x] Add boundary, covariate, shrinkage and invalid-design tests; register the package in Python CI.
 - [ ] Implement unit-level small-area models, Horvitz-Thompson, model-assisted estimation and MRP as separate methods.
+
+
+## Horvitz-Thompson survey estimation — 17 November 2026
+
+- [x] Add design-based total and optional mean estimation from first-order inclusion probabilities.
+- [x] Add the pairwise-inclusion variance estimator with symmetry, diagonal and positivity validation.
+- [x] Add an SRS-without-replacement hand-check, census zero-variance test and invalid-design tests.
+- [ ] Add model-assisted survey estimators and document variance-estimation requirements for additional sampling designs.

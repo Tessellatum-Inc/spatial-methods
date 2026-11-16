@@ -17,3 +17,13 @@
 Tests cover a boundary fit, finite predictions and MSE, covariate recovery,
 shrinkage bounds and invalid inputs. These checks do not establish that the
 model is suitable for a particular survey or geographic domain.
+
+
+## Horvitz-Thompson companion
+
+The companion `survey_estimators.py` module implements the design-based
+Horvitz-Thompson total using first-order inclusion probabilities. Its
+variance estimator uses the full second-order inclusion-probability matrix.
+The diagonal must match the first-order probabilities and all pairwise
+probabilities must be positive. This explicit contract avoids pretending
+that a variance can be recovered from first-order probabilities alone.

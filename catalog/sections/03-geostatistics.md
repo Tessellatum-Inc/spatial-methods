@@ -60,7 +60,7 @@ This section combines surface estimation, stochastic spatial models, simulation,
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Fay-Herriot, unit-level small-area models, Horvitz-Thompson, model-assisted estimation, MRP | Small-area estimators / survey estimators / multilevel modelling | 6 | Partial — tested area-level Fay-Herriot REML/EBLUP baseline; unit-level models, Horvitz-Thompson, model-assisted estimation and MRP remain open |
+| Fay-Herriot, unit-level small-area models, Horvitz-Thompson, model-assisted estimation, MRP | Small-area estimators / survey estimators / multilevel modelling | 6 | Partial — tested Fay-Herriot area-level REML/EBLUP and Horvitz-Thompson total/mean with pairwise design-variance estimator; unit-level models, model-assisted estimation and MRP remain open |
 | Spatial microsimulation (IPF, simulated annealing), areal interpolation, dasymetric mapping, WorldPop-style random forest population surfaces | Spatial microsimulation / areal estimation / mapping workflows | 6 | Not checked — intake only |
 | Statistical downscaling: quantile mapping, BCSD, delta change, analog methods | Downscaling methods | 6 | Not checked — intake only |
 

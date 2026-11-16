@@ -29,6 +29,8 @@ Each record explains one method or operation, its assumptions, where it is usefu
 ## Sampling and experimental design\n\n- [Space-filling sampling designs](statistics/space-filling-sampling.md) — Latin hypercube, centered LHS, multi-start maximin selection and k-means coverage for bounded continuous domains.\n\n## Interpolation and geostatistics
 
 - [Mann-Kendall and Sen trend methods](statistics/mann-kendall-sen.md) — non-parametric monotonic trend test and median pairwise slope estimator.
+- [Fay-Herriot area-level model](statistics/fay-herriot.md) — REML area-level small-area estimation with empirical BLUP prediction.
+- [Horvitz-Thompson estimation](statistics/horvitz-thompson.md) — design-based population total and mean using first- and second-order inclusion probabilities.
 
 - [Inverse-distance weighting](interpolation/inverse-distance-weighting.md) — deterministic point interpolation with exact-sample, radius and nearest-neighbour policies.
 

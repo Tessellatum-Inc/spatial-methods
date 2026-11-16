@@ -29,3 +29,25 @@ component estimation uncertainty. It assumes independent area random
 effects and known positive sampling variances. It does not implement spatial
 random effects, Horvitz-Thompson, model-assisted estimation, MRP or spatial
 microsimulation.
+
+
+## Horvitz-Thompson design-based estimator
+
+The companion survey module provides a Horvitz-Thompson population total and
+optional population mean when first- and second-order inclusion probabilities
+are supplied. The pairwise inclusion matrix must be symmetric, have the
+first-order probabilities on its diagonal, and contain positive values so
+the design variance estimator is identifiable from the observed sample.
+
+    from survey_estimators import horvitz_thompson
+    result = horvitz_thompson(
+        values=[10, 20],
+        inclusion_probabilities=[0.5, 0.5],
+        pairwise_inclusion=[[0.5, 1/6], [1/6, 0.5]],
+        population_size=4,
+    )
+
+This is a design-based estimator; it is not a Fay-Herriot model or a
+model-assisted estimator. The variance estimate can be negative for some
+valid designs and samples; in that case the implementation reports the
+signed variance and leaves the standard error undefined.
