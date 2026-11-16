@@ -216,3 +216,44 @@ def test_fill_rule_and_boolean_operation_names_are_validated():
         is_filled(1, "mystery")
     with pytest.raises(ValueError, match="operation"):
         boolean_result(1, 1, "symmetric")
+
+
+def test_subject_clip_fill_states_propagate_across_active_edge_order():
+    from vatti_scanbeam import BoundEdge, fill_transitions
+    edges = [
+        BoundEdge(0, 10, 0, (0, 0), (0, 4), 1),
+        BoundEdge(1, 20, 0, (1, 0), (1, 4), 1),
+        BoundEdge(2, 10, 1, (3, 0), (3, 4), -1),
+        BoundEdge(3, 20, 1, (4, 0), (4, 4), -1),
+    ]
+    states = fill_transitions(edges, {10}, {20}, "intersection")
+    assert [(s.subject_after, s.clip_after) for s in states] == [
+        (1, 0), (1, 1), (0, 1), (0, 0)]
+    assert [s.result_after for s in states] == [False, True, False, False]
+    assert [s.result_before for s in states] == [False, False, True, False]
+
+
+def test_fill_transitions_support_all_boolean_operations():
+    from vatti_scanbeam import BoundEdge, fill_transitions
+    edges = [
+        BoundEdge(0, 0, 0, (0, 0), (0, 1), 1),
+        BoundEdge(1, 1, 0, (1, 0), (1, 1), 1),
+    ]
+    expected = {
+        "intersection": [False, True],
+        "union": [True, True],
+        "difference": [True, False],
+        "xor": [True, False],
+    }
+    for operation, values in expected.items():
+        states = fill_transitions(edges, {0}, {1}, operation)
+        assert [state.result_after for state in states] == values
+
+
+def test_fill_transitions_reject_ambiguous_ring_ownership():
+    from vatti_scanbeam import BoundEdge, fill_transitions
+    edge = BoundEdge(0, 3, 0, (0, 0), (0, 1), 1)
+    with pytest.raises(ValueError, match="disjoint"):
+        fill_transitions([edge], {3}, {3})
+    with pytest.raises(ValueError, match="every active edge"):
+        fill_transitions([edge], {1}, {2})
