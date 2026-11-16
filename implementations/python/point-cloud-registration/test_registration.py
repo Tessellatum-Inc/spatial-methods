@@ -182,3 +182,57 @@ def test_ndt_rejects_invalid_parameters_and_sparse_voxel_model():
 
 
 from registration import normal_distributions_transform
+
+
+from registration import fpfh_descriptors, fpfh_ransac_registration
+
+
+def _asymmetric_surface_fixture():
+    rng = np.random.default_rng(123)
+    count = 300
+    azimuth = rng.uniform(0, 2*np.pi, count)
+    vertical = rng.uniform(-1, 1, count)
+    radial = np.sqrt(1 - vertical**2)
+    modulation = 1 + .16*np.sin(3*azimuth)*radial + .08*np.cos(5*azimuth)*vertical
+    return np.column_stack((1.3*radial*np.cos(azimuth)*modulation,
+                            .8*radial*np.sin(azimuth)*modulation,
+                            .6*vertical*modulation))
+
+
+def test_fpfh_descriptors_are_rigid_transform_invariant():
+    from scipy.spatial.transform import Rotation
+    source = _asymmetric_surface_fixture()
+    rotation = Rotation.from_rotvec([.12, -.08, .09])
+    target = rotation.apply(source) + [.4, -.2, .3]
+    a = fpfh_descriptors(source, k_neighbors=20)
+    b = fpfh_descriptors(target, k_neighbors=20)
+    np.testing.assert_allclose(a["descriptors"], b["descriptors"], atol=1e-10)
+    np.testing.assert_allclose(rotation.apply(a["normals"]), b["normals"], atol=1e-10)
+
+
+def test_fpfh_ransac_recovers_rigid_transform_from_unordered_descriptors():
+    from scipy.spatial.transform import Rotation
+    source = _asymmetric_surface_fixture()
+    expected_rotation = Rotation.from_rotvec([.12, -.08, .09])
+    expected_translation = np.array([.4, -.2, .3])
+    target = expected_rotation.apply(source) + expected_translation
+    result = fpfh_ransac_registration(source, target, k_neighbors=20,
+        inlier_threshold=1e-6, min_inliers=100, max_iterations=100,
+        random_state=9)
+    np.testing.assert_allclose(result["aligned"], target, atol=1e-8)
+    np.testing.assert_allclose(result["rotation"], expected_rotation.as_matrix().T,
+                               atol=1e-8)
+    np.testing.assert_allclose(result["translation"], expected_translation,
+                               atol=1e-8)
+    assert result["inlier_count"] == len(source)
+    assert result["fitness"] == 1.0
+
+
+def test_fpfh_and_ransac_reject_invalid_controls():
+    cloud = _asymmetric_surface_fixture()
+    with pytest.raises(ValueError, match="k_neighbors"):
+        fpfh_descriptors(cloud, k_neighbors=len(cloud))
+    with pytest.raises(ValueError, match="descriptor_ratio"):
+        fpfh_ransac_registration(cloud, cloud, descriptor_ratio=1.0)
+    with pytest.raises(ValueError, match="inlier_threshold"):
+        fpfh_ransac_registration(cloud, cloud, inlier_threshold=0)

@@ -30,3 +30,12 @@ Run the independent synthetic and brute-force tests in the implementation packag
 Normal distributions transform (NDT) replaces explicit point-to-point matches with a piecewise Gaussian model of the target cloud. A voxel containing enough target samples is represented by its sample mean and covariance. A transformed source point contributes a Mahalanobis residual to the Gaussian of its containing voxel. The implementation builds regularised voxel covariances, associates points by hard voxel membership and solves a damped six-parameter Gauss–Newton update. Its transform follows the same row-vector convention as the ICP methods.
 
 Voxel size controls the spatial scale of the probability model; minimum occupancy controls which cells are trusted. Too-small voxels produce sparse or unstable models, while too-large voxels blur local geometry. Hard voxel assignment creates discontinuities at cell boundaries, so this implementation is a bounded teaching baseline rather than a full multi-resolution production NDT system. It requires a reasonable initial pose and overlapping clouds. The reported RMSE is Euclidean distance to voxel means, not point-to-point nearest-neighbour RMSE.
+
+
+## FPFH feature matching and RANSAC
+
+Fast Point Feature Histograms describe local surface geometry using angular relationships between a point pair's Darboux frame and estimated normals. The reference implementation estimates normals by local PCA, orients them away from each cloud centroid, builds three 11-bin angular histograms and adds inverse-distance-weighted neighbour SPFH descriptors.
+
+For registration, source descriptors are matched to target descriptors with a ratio test and mutual-nearest filtering. RANSAC samples three correspondences, fits a proper rigid transform and retains geometrically consistent matches under a caller-specified distance threshold. The final transform is refined from the inliers. This is global initialisation from local descriptors, unlike ICP and NDT which are local optimisers.
+
+Centroid-based normal orientation assumes a closed, approximately star-shaped surface. Open scans should use sensor-viewpoint normal orientation; repetitive or symmetric geometry can produce ambiguous matches. The method remains sensitive to point density, neighbourhood scale, overlap and the inlier threshold. Colored ICP, TEASER++ and learned registration remain separate methods.

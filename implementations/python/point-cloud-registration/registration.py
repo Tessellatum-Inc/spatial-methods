@@ -419,3 +419,199 @@ def normal_distributions_transform(source, target, *, voxel_size=1.0,
             "iterations": iteration, "converged": converged,
             "correspondence_count": used, "fitness": used / src.shape[0],
             "voxel_count": len(model)}
+
+
+def fpfh_descriptors(points, *, k_neighbors=20, bins=11):
+    """Compute rotation-invariant Fast Point Feature Histograms.
+
+    Normals are estimated by local PCA and oriented away from the cloud
+    centroid. The 33-value descriptor concatenates alpha, phi and theta
+    histograms. This orientation convention is suitable for closed,
+    approximately star-shaped surfaces; open or strongly concave scans may
+    require sensor-viewpoint normal orientation instead.
+    """
+    cloud = _points(points, "points")
+    if isinstance(k_neighbors, (bool, np.bool_)) or not isinstance(k_neighbors, (int, np.integer)) or not 3 <= k_neighbors < len(cloud):
+        raise ValueError("k_neighbors must be an integer from 3 to point_count - 1")
+    if isinstance(bins, (bool, np.bool_)) or not isinstance(bins, (int, np.integer)) or bins < 2:
+        raise ValueError("bins must be an integer of at least 2")
+    tree = cKDTree(cloud)
+    _, neighbourhoods = tree.query(cloud, k=int(k_neighbors) + 1)
+    centroid = cloud.mean(axis=0)
+    normals = np.empty_like(cloud)
+    for i, indices in enumerate(neighbourhoods):
+        local = cloud[indices]
+        centred = local - local.mean(axis=0)
+        covariance = centred.T @ centred / max(len(local) - 1, 1)
+        values, vectors = np.linalg.eigh(covariance)
+        if values[-1] <= np.finfo(float).eps:
+            raise ValueError("point cloud contains degenerate local neighbourhoods")
+        normal = vectors[:, 0]
+        orientation = float(normal @ (cloud[i] - centroid))
+        if orientation < 0:
+            normal = -normal
+        elif abs(orientation) <= 1e-12:
+            pivot = int(np.argmax(np.abs(normal)))
+            if normal[pivot] < 0:
+                normal = -normal
+        normals[i] = normal / np.linalg.norm(normal)
+
+    spfh = np.zeros((len(cloud), 3 * int(bins)), dtype=float)
+    limits = ((-1.0, 1.0), (-1.0, 1.0), (-np.pi, np.pi))
+    for i, indices in enumerate(neighbourhoods):
+        count = 0
+        for j in indices:
+            if j == i:
+                continue
+            delta = cloud[j] - cloud[i]
+            distance = float(np.linalg.norm(delta))
+            if distance <= 1e-12:
+                continue
+            ni, nj = normals[i], normals[j]
+            u = ni
+            v = np.cross(delta, u)
+            v_norm = float(np.linalg.norm(v))
+            if v_norm <= 1e-12:
+                continue
+            v /= v_norm
+            w = np.cross(u, v)
+            features = (float(v @ nj), float(u @ delta) / distance,
+                        float(np.arctan2(w @ nj, u @ nj)))
+            for axis, (value, (lower, upper)) in enumerate(zip(features, limits)):
+                index = int(np.floor((value - lower) / (upper - lower) * bins))
+                index = int(np.clip(index, 0, bins - 1))
+                spfh[i, axis * bins + index] += 1.0
+            count += 1
+        if count:
+            spfh[i] /= count
+
+    descriptors = spfh.copy()
+    for i, indices in enumerate(neighbourhoods):
+        weighted = np.zeros(3 * int(bins), dtype=float)
+        weight_sum = 0.0
+        for j in indices:
+            if j == i:
+                continue
+            distance = float(np.linalg.norm(cloud[j] - cloud[i]))
+            if distance > 1e-12:
+                weight = 1.0 / distance
+                weighted += weight * spfh[j]
+                weight_sum += weight
+        if weight_sum > 0:
+            descriptors[i] += weighted / weight_sum
+    for axis in range(3):
+        section = slice(axis * bins, (axis + 1) * bins)
+        totals = descriptors[:, section].sum(axis=1)
+        descriptors[:, section] = np.divide(
+            descriptors[:, section], totals[:, None],
+            out=np.zeros((len(cloud), bins), dtype=float),
+            where=totals[:, None] > 0)
+    return {"descriptors": descriptors, "normals": normals}
+
+
+def _fit_rigid_correspondences(source, target):
+    source_centre = source.mean(axis=0)
+    target_centre = target.mean(axis=0)
+    covariance = (source - source_centre).T @ (target - target_centre)
+    u, singular, vt = np.linalg.svd(covariance)
+    if np.linalg.matrix_rank(covariance) < 2:
+        raise ValueError("rigid correspondence sample is degenerate")
+    correction = np.eye(3)
+    correction[-1, -1] = np.linalg.det(u @ vt)
+    rotation = u @ correction @ vt
+    translation = target_centre - source_centre @ rotation
+    return rotation, translation
+
+
+def fpfh_ransac_registration(source, target, *, k_neighbors=20, bins=11,
+                             descriptor_ratio=0.95, inlier_threshold=0.05,
+                             min_inliers=6, max_iterations=1000,
+                             random_state=None):
+    """Register two 3D clouds using FPFH descriptors and geometric RANSAC.
+
+    Descriptors are matched by nearest-neighbour search with a ratio test and
+    mutual-nearest filtering. RANSAC samples three correspondences, estimates
+    a proper rigid transform and scores Euclidean residuals. The best model
+    is refined on its inliers. Coordinates use the row-vector convention
+    aligned = source @ rotation + translation.
+    """
+    src, dst = _points(source, "source"), _points(target, "target")
+    if isinstance(k_neighbors, (bool, np.bool_)) or not isinstance(k_neighbors, (int, np.integer)) or not 3 <= k_neighbors < min(len(src), len(dst)):
+        raise ValueError("k_neighbors must be from 3 to both point_count - 1")
+    if isinstance(bins, (bool, np.bool_)) or not isinstance(bins, (int, np.integer)) or bins < 2:
+        raise ValueError("bins must be an integer of at least 2")
+    try:
+        ratio, threshold = float(descriptor_ratio), float(inlier_threshold)
+    except (TypeError, ValueError):
+        raise ValueError("descriptor_ratio and inlier_threshold must be numeric") from None
+    if not np.isfinite(ratio) or not 0 < ratio < 1:
+        raise ValueError("descriptor_ratio must be in (0, 1)")
+    if not np.isfinite(threshold) or threshold <= 0:
+        raise ValueError("inlier_threshold must be finite and positive")
+    if isinstance(min_inliers, (bool, np.bool_)) or not isinstance(min_inliers, (int, np.integer)) or min_inliers < 3:
+        raise ValueError("min_inliers must be an integer of at least 3")
+    if isinstance(max_iterations, (bool, np.bool_)) or not isinstance(max_iterations, (int, np.integer)) or max_iterations < 1:
+        raise ValueError("max_iterations must be a positive integer")
+
+    source_features = fpfh_descriptors(src, k_neighbors=k_neighbors, bins=bins)["descriptors"]
+    target_features = fpfh_descriptors(dst, k_neighbors=k_neighbors, bins=bins)["descriptors"]
+    target_tree = cKDTree(target_features)
+    distances, indices = target_tree.query(source_features, k=2)
+    source_ids = np.arange(len(src))
+    keep = distances[:, 0] < ratio * np.maximum(distances[:, 1], np.finfo(float).eps)
+    reverse_tree = cKDTree(source_features)
+    _, reverse = reverse_tree.query(target_features[indices[:, 0]], k=1)
+    keep &= reverse == source_ids
+    matched_source = source_ids[keep]
+    matched_target = indices[keep, 0]
+    if len(matched_source) < min_inliers:
+        raise ValueError("too few mutual FPFH matches for RANSAC")
+
+    rng = np.random.default_rng(random_state)
+    best_mask = None
+    best_count = 0
+    best_rmse = np.inf
+    iterations = 0
+    for iterations in range(1, int(max_iterations) + 1):
+        sample = rng.choice(len(matched_source), size=3, replace=False)
+        try:
+            rotation, translation = _fit_rigid_correspondences(
+                src[matched_source[sample]], dst[matched_target[sample]])
+        except ValueError:
+            continue
+        residuals = np.linalg.norm(
+            src[matched_source] @ rotation + translation - dst[matched_target],
+            axis=1)
+        mask = residuals <= threshold
+        count = int(mask.sum())
+        rmse = float(np.sqrt(np.mean(residuals[mask] ** 2))) if count else np.inf
+        if count > best_count or (count == best_count and rmse < best_rmse):
+            best_mask, best_count, best_rmse = mask, count, rmse
+            if best_count == len(matched_source):
+                break
+    if best_mask is None or best_count < min_inliers:
+        raise ValueError("RANSAC found fewer than min_inliers geometric matches")
+
+    for _ in range(5):
+        rotation, translation = _fit_rigid_correspondences(
+            src[matched_source[best_mask]], dst[matched_target[best_mask]])
+        residuals = np.linalg.norm(
+            src[matched_source] @ rotation + translation - dst[matched_target],
+            axis=1)
+        refined = residuals <= threshold
+        if np.array_equal(refined, best_mask):
+            break
+        if refined.sum() < min_inliers:
+            break
+        best_mask = refined
+    inlier_errors = residuals[best_mask]
+    aligned = src @ rotation + translation
+    return {"aligned": aligned, "rotation": rotation, "translation": translation,
+            "rmse": float(np.sqrt(np.mean(inlier_errors ** 2))),
+            "fitness": float(best_mask.sum() / len(src)),
+            "match_inlier_ratio": float(best_mask.mean()),
+            "inlier_count": int(best_mask.sum()),
+            "correspondence_count": int(len(matched_source)),
+            "source_match_indices": matched_source,
+            "target_match_indices": matched_target,
+            "inlier_mask": best_mask, "iterations": iterations}

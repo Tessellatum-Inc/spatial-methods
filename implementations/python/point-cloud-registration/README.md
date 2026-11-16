@@ -32,3 +32,10 @@ The `generalized_icp` function estimates regularised local covariance matrices f
 ## Normal distributions transform (NDT)
 
 The `normal_distributions_transform` function builds a Gaussian target model in fixed cubic voxels, retaining cells with at least the configured number of points. Each source point is associated with its containing populated voxel, and a covariance-weighted six-parameter Gauss–Newton update estimates the rigid pose. The returned RMSE is the Euclidean residual to voxel means; fitness is the fraction of source points associated with retained voxels. This hard-assignment implementation is a compact NDT teaching baseline: voxel size, minimum occupancy, initial pose and voxel-boundary effects matter. It does not implement multi-resolution NDT, neighbouring-voxel likelihood aggregation or production line-search strategies.
+
+
+## FPFH descriptors and RANSAC registration
+
+`fpfh_descriptors` estimates normals by local PCA, orients them away from the cloud centroid, and computes the 33-value Fast Point Feature Histogram descriptor. This orientation convention is intended for closed, approximately star-shaped surfaces; open or strongly concave scans may require viewpoint-oriented normals.
+
+`fpfh_ransac_registration` performs descriptor ratio matching, mutual-nearest filtering, three-point rigid RANSAC and inlier refinement. The geometric threshold uses the input coordinate unit. It requires overlap, distinctive local geometry and a useful point density. Repeated or symmetric geometry can produce ambiguous descriptors. The method is a teaching baseline, not a replacement for optimized Open3D/PCL pipelines or global registration methods such as TEASER++.

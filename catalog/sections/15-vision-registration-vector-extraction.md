@@ -32,7 +32,7 @@
 |---|---|---:|--- |
 | Self-supervised and large backbones: Point-BERT, Point-MAE, PointMLP, PointNeXt, SPVCNN, Cylinder3D, Point Transformer V3, Sonata | Point-cloud representation and segmentation architectures | 31 | Not checked — intake only |
 | Aerial LiDAR segmentation benchmarks: DALES, SensatUrban, Toronto-3D | Benchmark datasets | 31 | Not checked — intake only |
-| Registration: point-to-plane ICP, generalized ICP, NDT, colored ICP, FPFH with RANSAC, TEASER++, deep registration (DCP, PointNetLK, GeoTransformer) | Point-cloud registration algorithms | 31 | Partial — tested point-to-point, point-to-plane and generalized ICP plus Chamfer/Hausdorff metrics; colored ICP, FPFH/RANSAC, TEASER++ and listed learned variants remain open |
+| Registration: point-to-plane ICP, generalized ICP, NDT, colored ICP, FPFH with RANSAC, TEASER++, deep registration (DCP, PointNetLK, GeoTransformer) | Point-cloud registration algorithms | 31 | Partial — tested point-to-point, point-to-plane and generalized ICP, hard-voxel Gaussian NDT, FPFH descriptor matching with geometric RANSAC, and Chamfer/Hausdorff metrics; colored ICP, TEASER++ and listed learned variants remain open |
 | Building reconstruction: PolyFit, City3D, 2.5D dual contouring, roof plane segmentation (RANSAC, region growing), LoD2 generation, implicit surfaces (DeepSDF, occupancy networks) | Building reconstruction / geometric fitting / neural representations | 31 | Not checked — intake only |
 
 ## Image matching and multimodal registration
