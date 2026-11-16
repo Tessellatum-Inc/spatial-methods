@@ -323,3 +323,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Unit-hydrograph convolution](raster/unit-hydrograph-convolution.md) — route rainfall-excess depth through supplied discrete unit-hydrograph ordinates.
 
 - [Raster viewshed and cumulative visibility](raster/viewshed.md) — calculate discrete line-of-sight visibility from one or more raster observer cells, with optional curvature/refraction correction.
+
+- [Flood-frequency analysis](raster/flood-frequency-analysis.md) — estimate annual-maximum return levels using Weibull plotting positions and Gumbel/GEV L-moment fits.
