@@ -40,3 +40,45 @@ def test_invalid_shapes_and_connectivity_are_rejected():
         connected_components([[np.nan]])
     with pytest.raises(ValueError,match="finite boolean"):
         connected_components([[1]],valid=[[np.nan]])
+
+
+def test_3d_six_connectivity_joins_face_neighbours_only():
+    from connected_components import connected_components_3d
+    volume = np.zeros((2, 2, 2), dtype=bool)
+    volume[0, 0, 0] = True
+    volume[1, 0, 0] = True
+    volume[1, 1, 1] = True
+    labels, sizes = connected_components_3d(volume, connectivity=6)
+    assert len(sizes) == 2
+    assert sorted(sizes.values()) == [1, 2]
+    assert labels[0, 0, 0] == labels[1, 0, 0]
+
+
+def test_3d_eighteen_and_twenty_six_connectivity_differ_on_corner_touch():
+    from connected_components import connected_components_3d
+    volume = np.zeros((2, 2, 2), dtype=bool)
+    volume[0, 0, 0] = True
+    volume[1, 1, 1] = True
+    assert len(connected_components_3d(volume, connectivity=18)[1]) == 2
+    assert len(connected_components_3d(volume, connectivity=26)[1]) == 1
+
+
+def test_3d_valid_mask_is_barrier_and_labels_are_row_major():
+    from connected_components import connected_components_3d
+    volume = np.ones((1, 1, 3), dtype=bool)
+    valid = np.array([[[1, 0, 1]]], dtype=bool)
+    labels, sizes = connected_components_3d(volume, connectivity=6, valid=valid)
+    assert labels.tolist() == [[[1, 0, 2]]]
+    assert sizes == {1: 1, 2: 1}
+
+
+def test_3d_component_input_validation():
+    from connected_components import connected_components_3d
+    with pytest.raises(ValueError, match="3D"):
+        connected_components_3d([[1, 0]])
+    with pytest.raises(ValueError, match="connectivity"):
+        connected_components_3d(np.ones((2, 2, 2)), connectivity=12)
+    with pytest.raises(ValueError, match="same 3D shape"):
+        connected_components_3d(np.ones((2, 2, 2)), valid=np.ones((2, 2)))
+    with pytest.raises(ValueError, match="only finite"):
+        connected_components_3d(np.array([[[1, np.nan]]]))
