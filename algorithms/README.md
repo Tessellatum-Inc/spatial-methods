@@ -253,3 +253,8 @@ Records may have different evidence and implementation status. Check the status 
 
 
 
+
+
+## Recurrence analysis
+
+- [Recurrence plots and quantification](statistics/recurrence-analysis.md) — calculate fixed-threshold recurrence matrices and RR, DET, line-length, entropy and laminarity measures.
