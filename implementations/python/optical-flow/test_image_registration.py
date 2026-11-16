@@ -152,3 +152,30 @@ def test_local_phase_correlation_masks_textureless_windows():
     assert np.isnan(result["column_shift"]).all()
     with pytest.raises(ValueError, match="window_size"):
         local_phase_correlation_field(blank, blank, window_size=128)
+
+
+from image_registration import mutual_information_translation
+
+
+def test_mutual_information_translation_handles_nonlinear_radiometry():
+    import cv2
+    from scipy.ndimage import shift as nd_shift
+    rng = np.random.default_rng(19)
+    reference = rng.normal(size=(128, 128))
+    reference = cv2.GaussianBlur(reference.astype(np.float32), (3, 3), 0.7)
+    transformed = np.sign(reference) * np.log1p(np.abs(reference) * 2.0)
+    moving = nd_shift(transformed, shift=(2.5, -3.25), order=1,
+                      mode="constant", cval=0.0, prefilter=False)
+    result = mutual_information_translation(reference, moving,
+        max_shift=8.0, bins=32, min_overlap_fraction=0.5)
+    np.testing.assert_allclose(result["shift_to_apply"], (-2.5, 3.25), atol=0.2)
+    assert result["mutual_information"] > 0.8
+    assert result["overlap_fraction"] > 0.9
+
+
+def test_mutual_information_translation_validates_controls():
+    with pytest.raises(ValueError, match="non-zero intensity"):
+        mutual_information_translation(np.ones((16, 16)), np.ones((16, 16)))
+    with pytest.raises(ValueError, match="bins"):
+        mutual_information_translation(np.arange(256).reshape(16, 16),
+                                        np.arange(256).reshape(16, 16), bins=4)

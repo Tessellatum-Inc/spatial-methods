@@ -26,3 +26,8 @@ ECC optimises a global parametric warp by maximising a photometrically normalise
 ## Tiled local correlation for displacement fields
 
 The local phase-correlation field method runs the global phase-correlation estimator over a regular grid of image windows. Each window yields a subpixel translation, allowing spatial variation in apparent displacement to be inspected rather than forcing one global transform. Textureless windows are masked. This is a compact local correlation baseline, not the full COSI-Corr method; robust geophysical displacement analysis also needs stable feature content, uncertainty estimation, decorrelation screening, orthorectification and conversion from pixel displacement to ground coordinates.
+
+
+## Mutual-information registration
+
+The translation-only mutual-information estimator maximises the joint-histogram mutual information between the reference and shifted moving image. It can tolerate nonlinear intensity relationships better than direct pixelwise correlation, making it a useful baseline for some multimodal image pairs. Histogram binning, overlap changes, interpolation and search bounds influence the objective; inspect the returned overlap and use independent checkpoints. This is not a full multimodal affine or deformable registration system.

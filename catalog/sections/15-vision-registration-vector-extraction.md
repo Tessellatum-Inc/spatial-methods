@@ -39,7 +39,7 @@
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Classical features: SIFT, ORB, AKAZE; phase correlation, ECC, mutual information registration | Feature detection and image registration methods | 31 | Partial — ORB, SIFT and AKAZE feature matching, phase correlation, affine RANSAC and ECC parametric registration are implemented; mutual information and learned matching remain open |
+| Classical features: SIFT, ORB, AKAZE; phase correlation, ECC, mutual information registration | Feature detection and image registration methods | 31 | Partial — ORB, SIFT and AKAZE feature matching, phase correlation, affine RANSAC, ECC parametric registration and bounded mutual-information translation are implemented; multimodal feature descriptors and learned matching remain open |
 | Learned matching: SuperPoint with SuperGlue or LightGlue, LoFTR, DKM, RoMa, multimodal matchers (MINIMA) | Learned feature matching and registration architectures | 31 | Not checked — intake only |
 | Optical-SAR matching: RIFT, HOPC, CFOG, OS-SIFT, deep cross-modal descriptors | Cross-modal matching methods | 31 | Not checked — intake only |
 | Dense optical flow and sub-pixel displacement: COSI-Corr-style correlation, deep flow for glacier and landslide motion | Displacement estimation / optical flow workflows | 32 | Partial — tiled local phase correlation estimates subpixel translation fields; full COSI-Corr workflow and deep flow remain open |

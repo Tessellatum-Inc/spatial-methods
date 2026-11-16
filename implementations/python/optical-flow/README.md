@@ -58,3 +58,8 @@ The ecc_register function estimates translation, Euclidean, affine or projective
 ## Tiled local phase-correlation displacement
 
 The local_phase_correlation_field function estimates a regular grid of subpixel row/column shifts by applying phase correlation independently to overlapping square windows. It returns window centres, shift-to-apply fields and correlation responses; textureless windows remain NaN. This can expose spatially varying displacement that a single global translation cannot represent. Window size, step, overlap and response filtering affect reliability. It is a transparent local-correlation baseline, not a full COSI-Corr reproduction, dense optical-flow solver or geodetic ground-motion estimate.
+
+
+## Mutual-information translation registration
+
+The mutual_information_translation function maximises a joint-histogram mutual information objective over row/column translation, using linear interpolation and bounded Powell optimisation. This can be useful when reference and moving images have nonlinear radiometric relationships, including some multimodal cases. It is translation-only, histogram-bin and overlap sensitive, and local to the supplied search bounds and initial shift. It does not solve affine, projective or local deformation registration.

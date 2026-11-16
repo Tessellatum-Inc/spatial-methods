@@ -288,3 +288,76 @@ def local_phase_correlation_field(reference, moving, *, window_size=64,
             "column_centres": cols + (window_size - 1) / 2,
             "row_shift": row_shift, "column_shift": col_shift,
             "response": response}
+
+
+def mutual_information_translation(reference, moving, *, max_shift=12.0,
+                                   initial_shift=(0.0, 0.0), bins=32,
+                                   min_overlap_fraction=0.6,
+                                   max_iterations=200, tolerance=0.01):
+    """Estimate a translation by maximising joint-histogram mutual information.
+
+    The returned row/column shift is applied to moving. Linear interpolation
+    is used during optimisation. This is a translation-only multimodal
+    registration baseline; it does not estimate rotation, scale or deformation.
+    """
+    from scipy.ndimage import shift as nd_shift
+    from scipy.optimize import minimize
+
+    ref, mov = np.asarray(reference, float), np.asarray(moving, float)
+    if ref.ndim != 2 or ref.shape != mov.shape or min(ref.shape) < 8:
+        raise ValueError("reference and moving must be matching 2D images of at least 8x8")
+    if np.any(~np.isfinite(ref)) or np.any(~np.isfinite(mov)):
+        raise ValueError("images must contain only finite values")
+    if np.ptp(ref) <= 0 or np.ptp(mov) <= 0:
+        raise ValueError("images must have non-zero intensity range")
+    try:
+        bound = float(max_shift)
+        overlap_floor = float(min_overlap_fraction)
+        tol = float(tolerance)
+    except (TypeError, ValueError):
+        raise ValueError("max_shift, overlap and tolerance must be numeric") from None
+    if not np.isfinite(bound) or bound <= 0:
+        raise ValueError("max_shift must be finite and positive")
+    if not np.isfinite(overlap_floor) or not 0 < overlap_floor <= 1:
+        raise ValueError("min_overlap_fraction must be in (0, 1]")
+    if not np.isfinite(tol) or tol <= 0:
+        raise ValueError("tolerance must be finite and positive")
+    if isinstance(bins, bool) or not isinstance(bins, int) or bins < 8:
+        raise ValueError("bins must be an integer of at least 8")
+    if isinstance(max_iterations, bool) or not isinstance(max_iterations, int) or max_iterations < 1:
+        raise ValueError("max_iterations must be a positive integer")
+    start = np.asarray(initial_shift, dtype=float)
+    if start.shape != (2,) or np.any(~np.isfinite(start)) or np.any(np.abs(start) > bound):
+        raise ValueError("initial_shift must be a finite row/column pair within max_shift")
+    histogram_range = [(float(ref.min()), float(ref.max())),
+                       (float(mov.min()), float(mov.max()))]
+
+    def objective(shift):
+        aligned = nd_shift(mov, shift=shift, order=1, mode="constant",
+                           cval=np.nan, prefilter=False)
+        valid = np.isfinite(aligned)
+        fraction = float(valid.mean())
+        if fraction < overlap_floor:
+            return 1e3 + (overlap_floor - fraction) * 1e3
+        histogram, _, _ = np.histogram2d(
+            ref[valid], aligned[valid], bins=bins, range=histogram_range)
+        probability = histogram / histogram.sum()
+        marginal_ref = probability.sum(axis=1)
+        marginal_mov = probability.sum(axis=0)
+        occupied = probability > 0
+        denominator = marginal_ref[:, None] * marginal_mov[None, :]
+        information = np.sum(probability[occupied] *
+            np.log(probability[occupied] / denominator[occupied]))
+        return -float(information)
+
+    result = minimize(objective, start, method="Powell",
+        bounds=[(-bound, bound), (-bound, bound)],
+        options={"maxiter": int(max_iterations), "xtol": tol, "ftol": 1e-7})
+    aligned = nd_shift(mov, shift=result.x, order=1, mode="constant",
+                       cval=np.nan, prefilter=False)
+    valid = np.isfinite(aligned)
+    information = -objective(result.x)
+    return {"shift_to_apply": tuple(float(v) for v in result.x),
+            "mutual_information": float(information),
+            "overlap_fraction": float(valid.mean()),
+            "success": bool(result.success), "iterations": int(result.nit)}
