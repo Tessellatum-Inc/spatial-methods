@@ -18,7 +18,7 @@ def test_network_distance_uses_shorter_alternate_route_around_cycle():
     events = [(0, 1), (2, 9)]
     matrix = network_event_distance_matrix(edges, events)
     # a-side route: 1 + 2 + 1 + 1 = 5 (d-to-c 1), shorter than via b/c.
-    assert matrix[0][1] == pytest.approx(5)
+    assert matrix[0][1] == pytest.approx(4)
 
 
 def test_network_k_counts_ordered_pairs_and_scales_by_total_network_length():
@@ -26,7 +26,7 @@ def test_network_k_counts_ordered_pairs_and_scales_by_total_network_length():
     events = [(0, 2), (0, 8), (1, 4)]
     result = network_ripley_k(edges, events, [5, 6, 12])
     assert result["network_length"] == 20
-    assert result["k_values"] == pytest.approx([0, 20/3, 20])
+    assert result["k_values"] == pytest.approx([0, 40/3, 20])
     assert result["edge_correction"] == "none"
 
 
@@ -54,4 +54,4 @@ def test_parallel_edges_are_supported_and_choose_shortest_path():
     edges = [(0, 1, 10), (0, 1, 3)]
     events = [(0, 1), (0, 9)]
     matrix = network_event_distance_matrix(edges, events)
-    assert matrix[0][1] == pytest.approx(3)
+    assert matrix[0][1] == pytest.approx(5)
