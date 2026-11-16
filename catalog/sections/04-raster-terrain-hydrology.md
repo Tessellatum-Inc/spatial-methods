@@ -56,8 +56,8 @@ The source groups raster operations, terrain analysis, hydrological modelling, g
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| DSAS (end-point rate, linear and weighted regression), waterline extraction, tide-coordinated shorelines | Shoreline change analysis / extraction workflows | 7 | Not checked — intake only |
-| Wave runup (Stockdon), longshore transport (CERC, Kamphuis), Bruun rule, Dean profile, coastal vulnerability index | Coastal process models / empirical rules / vulnerability index | 7 | Not checked — intake only |
+| DSAS (end-point rate, linear and weighted regression), waterline extraction, tide-coordinated shorelines | Shoreline change analysis / extraction workflows | 7 | Partial — EPR, OLS and inverse-variance WLR rate estimators implemented; shoreline extraction, transect generation and tide coordination remain unimplemented |
+| Wave runup (Stockdon), longshore transport (CERC, Kamphuis), Bruun rule, Dean profile, coastal vulnerability index | Coastal process models / empirical rules / vulnerability index | 7 | Partial — Stockdon R2 and scoped CERC energy-flux estimate implemented; Kamphuis, Bruun, Dean profile and CVI remain unimplemented |
 | Bathymetry: satellite-derived (ratio, physics-based, ICESat-2 calibrated), multibeam gridding, topo-bathymetric lidar refraction correction | Bathymetric retrieval / gridding / sensor correction | 7 | Not checked — intake only |
 
 ## First audited lesson
