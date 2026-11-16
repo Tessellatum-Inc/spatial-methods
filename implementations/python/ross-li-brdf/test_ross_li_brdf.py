@@ -4,7 +4,7 @@ from ross_li_brdf import fit_ross_li_brdf, ross_li_kernels
 
 
 def test_kernels_are_finite_and_hotspot_geometry_changes_geometric_term():
-    kv, kg = ross_li_kernels([0.3, 0.3], [0.0, 0.0], [0.0, np.pi])
+    kv, kg = ross_li_kernels([0.3, 0.3], [0.2, 0.2], [0.0, np.pi])
     assert np.all(np.isfinite(kv)) and np.all(np.isfinite(kg))
     assert kg[0] > kg[1]
 
