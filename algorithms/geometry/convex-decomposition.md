@@ -90,7 +90,7 @@ The input model matters too: one simple ring, a polygon with holes, a polygonal 
 ## Follow the learning sequence
 
 - [Ear clipping](ear-clipping.md) explains how a simple polygon can first be triangulated.
-- [Ear-clipping implementation](../../implementations/python/ear-clipping/README.md) supplies the initial triangulation. A separate [greedy merge baseline](../../implementations/python/convex-decomposition/README.md) demonstrates the next step, but it is not an optimized Hertel–Mehlhorn implementation.
+- [Ear-clipping implementation](../../implementations/python/ear-clipping/README.md) supplies the initial triangulation. The [convex-decomposition package](../../implementations/python/convex-decomposition/README.md) now includes both a repeated-worklist greedy merge and a separate single-pass Hertel–Mehlhorn-style diagonal-removal baseline. Neither claims the specialized linear-time post-processing bound; the triangulation seed remains O(n^3).
 - [Convex decomposition exercise](../../exercises/convex-decomposition.md) asks you to derive and validate a partition.
 - [Minkowski sums](minkowski-sum.md) shows why the choice of convex decomposition affects downstream geometry operations.
 
@@ -98,7 +98,7 @@ The input model matters too: one simple ring, a polygon with holes, a polygonal 
 
 A [Python triangulate-and-merge baseline](../../implementations/python/convex-decomposition/README.md) is available with exact predicates, an edge-indexed merge-candidate worklist, area-conservation checks, tests and an [intern walkthrough](../../implementations/python/convex-decomposition/implementation-walkthrough.md). The [visual lab](../../notebooks/convex-decomposition-lab.ipynb) shows a concave polygon becoming convex pieces.
 
-This is a deliberately straightforward greedy merge, not an optimized Hertel–Mehlhorn implementation. It does not claim the published approximation guarantee or a minimum-piece partition. Its initial ear-clipping stage and repeated pair scans are teaching baselines with higher worst-case cost.
+The package exposes two related but distinct routines: a repeated-worklist greedy merge that can revisit newly exposed adjacencies, and a single-pass Hertel–Mehlhorn-style routine that considers each diagonal from the initial triangulation once. The latter is a practical diagonal-removal implementation, but this repository does not claim a certified reproduction of the published approximation theorem or the specialized linear-time post-processing bound. The current ear-clipping seed is O(n^3), and neither routine computes a minimum-piece partition.
 
 ## Further reading
 
