@@ -677,3 +677,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Preserve existing elevations, recognize None/NaN/NoData sentinels, return a fill mask and leave unsupported holes unresolved.
 - [x] Add tests for interpolation, preservation, NoData, iterative propagation, anisotropic distances and invalid grids; document limitations and register in Python CI.
 - [ ] Execute full CI. Breakline-aware interpolation, uncertainty/error modelling, multi-sensor fusion, bare-earth extraction, drainage conditioning and stream burning remain separate methods.
+
+
+## Brovey pan-sharpening continuation — 17 November 2026
+
+- [x] Implement N-band Brovey component substitution for aligned multispectral and panchromatic grids.
+- [x] Preserve per-pixel band ratios, return an explicit validity mask and propagate NoData/non-finite input pixels.
+- [x] Add formula, ratio-preservation, shape, zero-sum and invalid-value tests; document alignment and spectral-distortion caveats; register in Python CI.
+- [ ] Execute full CI and evaluate against sensor-specific spatial/spectral quality metrics. IHS, Gram-Schmidt, wavelet, Bayesian, spatiotemporal and learned fusion remain open.
