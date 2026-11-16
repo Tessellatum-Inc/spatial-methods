@@ -1,12 +1,13 @@
 # Empirical optical and relative radiometric normalization
 
-This package implements seven scoped methods:
+This package implements six scoped methods:
 
 - Percentile-based dark-object subtraction for a simple additive path-radiance estimate.
 - Per-band C-correction from a fitted reflectance–illumination relation.
 - Minnaert terrain correction with a caller-supplied exponent.
 - Per-band empirical-quantile histogram matching to a reference image.
-- Pseudo-invariant-feature (PIF) normalization: robustly rank candidate stable pixels by multiband date difference, then fit per-band affine target-to-reference corrections.\n- Empirical-line calibration: fit per-band DN-to-reflectance gain and offset from paired reference-target samples, then apply them to imagery.
+- Pseudo-invariant-feature (PIF) normalization: robustly rank candidate stable pixels by multiband date difference, then fit per-band affine target-to-reference corrections.
+- Empirical-line calibration: fit per-band DN-to-reflectance gain and offset from paired reference-target samples, then apply them to imagery.
 
 ## Run
 
