@@ -10,10 +10,12 @@ intentionally O(m²), making it a transparent correctness baseline rather
 than Vatti's optimized neighbour-based intersection scheduler.
 
 It can now split a band at pairwise crossing levels and recompute the edge
-order on either side, exposing the expected swaps. A small cumulative winding
-transition helper is also present. These are reference calculations rather
-than a production sweep scheduler: the crossing search remains O(m²), and
-winding transitions are not yet combined with subject/clip fill rules.
+order on either side, exposing the expected swaps. A small cumulative winding transition helper is also present. Horizontal
+scanbeam events are now extracted for horizontal/bound endpoint or interior
+contacts, and horizontal/horizontal point contacts versus positive-length
+overlaps are distinguished. These are reference calculations rather than a
+production sweep scheduler: crossing discovery remains O(m²), and winding
+transitions are not yet combined with subject/clip fill rules.
 
 It does **not** yet update an active-edge list incrementally in-place, process
 horizontal edges through clipping, or emit output contours. It is therefore a tested algorithmic foundation, not a
