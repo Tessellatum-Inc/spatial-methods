@@ -194,6 +194,6 @@ def test_trend_surface_rejects_rank_deficiency_and_bad_weights():
     with pytest.raises(ValueError, match="span both"):
         trend_surface_grid([[0, 0], [0, 1], [0, 2]], [1, 2, 3], [0], [0], degree=1)
     with pytest.raises(ValueError, match="does not support"):
-        trend_surface_grid([[0, 0], [1, 0], [2, 0], [3, 0]], [1, 2, 3, 4], [0], [0], degree=2)
+        trend_surface_grid([[0, 0], [1, 0], [0, 1], [1, 1], [.5, .5]], [1, 2, 3, 4, 2.5], [0], [0], degree=2)
     with pytest.raises(ValueError, match="weights"):
         trend_surface_grid(POINTS, VALUES, [0, 1], [0, 1], weights=[1, 1, 0, 1])
