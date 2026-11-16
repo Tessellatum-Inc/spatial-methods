@@ -18,3 +18,8 @@ PYTHONPATH=../ear-clipping python -m pytest -q
 - This is a teaching baseline, not a complexity-optimized or certified Hertel–Mehlhorn implementation.
 
 The initial triangulation uses the current ear-clipping package, whose transparent implementation has an (O(n^3)) worst-case bound. The merge pass also uses straightforward repeated pair scans. Do not attribute the linear-time bound of a specialized Hertel–Mehlhorn post-processing algorithm to this package.
+
+
+## Merge-candidate maintenance
+
+The greedy merge stage now indexes piece ownership by undirected boundary edge and processes candidate pairs from a work queue. When two pieces merge, only the new piece's edge-neighbours are added to the queue; the implementation no longer rescans every pair of current pieces after every successful merge. This reduces unnecessary candidate comparisons on partitions with many triangles. It remains a greedy triangulate-and-merge teaching baseline, not the optimized Hertel–Mehlhorn algorithm and not a minimum-piece partition.
