@@ -46,7 +46,7 @@ def stockdon_runup(h0, period, beach_slope, *, percentile=2, gravity=_G):
     if percentile == 50:
         return 0.5 * r2
     if percentile == 0:
-        return 0.0 * r2
+        return 0.5 * (setup - swash)
     raise ValueError("percentile must be one of 0, 1, 2 or 50")
 
 
