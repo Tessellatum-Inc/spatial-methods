@@ -157,3 +157,84 @@ def convex_decompose(vertices: Iterable[RawPoint]) -> list[list[Point]]:
     if actual_area != expected_area:
         raise RuntimeError("convex partition failed area conservation")
     return result
+
+
+def hertel_mehlhorn_decompose(
+    vertices: Iterable[RawPoint],
+) -> list[list[Point]]:
+    """Apply a Hertel–Mehlhorn-style diagonal-removal pass to an ear triangulation.
+
+    Each internal diagonal of the *initial* triangulation is considered once.
+    It is removed when its two current incident pieces have a convex union.
+    Newly-created diagonals are not added to the pass. This is intentionally
+    separate from :func:`convex_decompose`, whose repeated worklist can revisit
+    newly exposed adjacencies and is a more aggressive greedy variant.
+
+    The triangulation is the dominant cost in this repository's current
+    baseline (ear clipping is O(n^3)); this routine does not claim the
+    specialized linear-time post-processing bound or a minimum partition.
+    """
+    from collections import defaultdict
+
+    ring = list(vertices)
+    triangles = triangulate(ring)
+    pieces: dict[int, list[Point]] = {
+        i: list(triangle) for i, triangle in enumerate(triangles)
+    }
+    if len(pieces) <= 1:
+        return list(pieces.values())
+
+    def edge_key(a: Point, b: Point) -> tuple[Point, Point]:
+        return (a, b) if a < b else (b, a)
+
+    edge_owners: dict[tuple[Point, Point], set[int]] = defaultdict(set)
+
+    def add_piece(pid: int, piece: Sequence[Point]) -> None:
+        for a, b in zip(piece, list(piece[1:]) + [piece[0]]):
+            edge_owners[edge_key(a, b)].add(pid)
+
+    for pid, piece in pieces.items():
+        add_piece(pid, piece)
+
+    # Freeze the original triangulation's internal diagonals. A diagonal is
+    # considered once even if an earlier merge changes its incident pieces.
+    original_diagonals = sorted(
+        edge for edge, owners in edge_owners.items() if len(owners) == 2
+    )
+    next_id = len(pieces)
+    for diagonal in original_diagonals:
+        owners = edge_owners.get(diagonal, set())
+        if len(owners) != 2:
+            continue
+        a_id, b_id = sorted(owners)
+        merged = _merge_if_convex(pieces[a_id], pieces[b_id])
+        if merged is None:
+            continue
+
+        for pid in (a_id, b_id):
+            old_piece = pieces.pop(pid)
+            for a, b in zip(old_piece, old_piece[1:] + old_piece[:1]):
+                key = edge_key(a, b)
+                edge_owners[key].discard(pid)
+                if not edge_owners[key]:
+                    del edge_owners[key]
+
+        merged_id = next_id
+        next_id += 1
+        pieces[merged_id] = merged
+        add_piece(merged_id, merged)
+
+    result = list(pieces.values())
+    expected_area = polygon_area(ring)
+    actual_area = sum(
+        (abs(_area2(piece)) / 2 for piece in result), Fraction(0)
+    )
+    if actual_area != expected_area:
+        raise RuntimeError("Hertel-Mehlhorn pass failed area conservation")
+    if any(
+        any(_cross(piece[i - 1], piece[i], piece[(i + 1) % len(piece)]) < 0
+            for i in range(len(piece)))
+        for piece in result
+    ):
+        raise RuntimeError("Hertel-Mehlhorn pass produced a non-convex piece")
+    return result
