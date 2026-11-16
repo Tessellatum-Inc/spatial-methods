@@ -30,9 +30,9 @@ def test_ears_c2_and_c3_use_only_prior_baseline_and_positive_scores():
     counts = [2] * 9 + [8, 8, 2]
     result = ears(counts, baseline_window=7, c2_exclusion=2, threshold=3)
     assert result["c2"][9] == pytest.approx(6 / (2 ** 0.5))
-    assert result["c2"][10] == pytest.approx(6 / 2)
-    assert result["c3"][10] == pytest.approx(12 / (2 ** 0.5))
-    assert result["c3"][11] == pytest.approx(6.0)
+    assert result["c2"][10] == pytest.approx(6 / (2 ** 0.5))
+    assert result["c3"][10] is None  # Three prior C2 scores are not yet available.
+    assert result["c3"][11] == pytest.approx(12 / (2 ** 0.5))
 
 
 def test_ears_returns_no_alarm_until_baseline_is_available():
