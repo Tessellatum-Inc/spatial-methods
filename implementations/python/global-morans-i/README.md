@@ -2,12 +2,13 @@
 
 This small reference implementation shows how the global Moran's I statistic is calculated from a numeric attribute and a spatial weights matrix.
 
-It is deliberately dependency-free so the calculation is easy to read. It does **not** calculate a p-value or a permutation reference distribution.
+It is deliberately dependency-free so the calculation is easy to read. It now includes random-labelling permutation inference with seeded reproducibility, one- and two-sided alternatives, and a plus-one pseudo-p-value correction.
 
 ## What the example includes
 
 - a direct implementation of the global Moran's I formula;
 - a row-standardisation helper;
+- random-labelling permutation inference with a reported null expectation and simulation summary;
 - validation for misaligned inputs, non-finite values, negative weights, self-weights, constant data and zero-weight matrices;
 - tests for positive and negative spatial association, weight transformations and mathematical invariance properties.
 
@@ -59,7 +60,7 @@ Follow the [implementation walkthrough](implementation-walkthrough.md) to trace 
 - It assumes non-negative weights and a zero diagonal.
 - It does not check that the weights are symmetric or that they represent a defensible spatial relationship.
 - It does not handle missing data, construct neighbours from geometry or align geographic IDs.
-- It does not calculate analytical or permutation-based significance.
+- It does not implement analytical significance, spatially constrained permutations, or multiple-testing correction.
 
 For spatial weights construction and statistical inference, use a maintained library such as [PySAL](https://pysal.org/). The [official global Moran's I guide](https://pysal.org/esda/stable/user-guide/global_morans_i.html) demonstrates contiguity weights, spatial lags, analytical inference and permutation tests.
 
