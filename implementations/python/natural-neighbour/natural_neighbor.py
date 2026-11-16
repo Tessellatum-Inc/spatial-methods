@@ -75,6 +75,8 @@ def natural_neighbor(points, values, query_points):
         for site in p:
             cell = _clip(cell, 2.0 * (site - point),
                          float(site @ site - q2))
+            if len(cell) == 0:
+                raise ValueError("query points must lie strictly inside the convex hull")
         frame_tol = 1e-9 * margin
         if (np.any(np.abs(cell[:, 0] - xmin) <= frame_tol) or
                 np.any(np.abs(cell[:, 0] - xmax) <= frame_tol) or
