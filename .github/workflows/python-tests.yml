@@ -34,6 +34,9 @@ jobs:
           - example: raster-reclassification
             directory: implementations/python/raster-reclassification
             pythonpath: ""
+          - example: routing-heuristics
+            directory: implementations/python/routing-heuristics
+            pythonpath: ""
           - example: rasterization
             directory: implementations/python/rasterization
             pythonpath: ""
