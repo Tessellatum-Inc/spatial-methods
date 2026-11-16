@@ -67,9 +67,9 @@ def marching_squares(values, levels, x=None, y=None, valid=None):
                     # Connect around low corners when the centre is high;
                     # otherwise connect around high corners.
                     if centre_high == bool(high[0]):
-                        pairs = [(0, 3), (1, 2)]
-                    else:
                         pairs = [(0, 1), (2, 3)]
+                    else:
+                        pairs = [(0, 3), (1, 2)]
                 else:
                     continue
                 for a, b in pairs:
