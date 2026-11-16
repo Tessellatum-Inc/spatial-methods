@@ -45,3 +45,31 @@ print(C)
 The implementation uses the Legendre three-term recurrence and NumPy only. Its finite-dimensional eigenvalue checks are useful tests, but the validity claim comes from the non-negative Legendre-series construction, not from numerical checks on a handful of site sets.
 
 See the [method lesson](../../../methods/isotropic-covariance-on-the-sphere.md) and [intern walkthrough](implementation-walkthrough.md).
+
+
+## Spherical statistics
+
+The companion `spherical_statistics.py` module provides:
+
+- Great-circle angular distances between unit vectors.
+- An intrinsic Fréchet/Karcher mean on S2, with medoid initialization and explicit rejection of antipodal cut-locus cases.
+- Spherical k-means with seeded spherical k-means++ initialization.
+- The normalized three-dimensional von Mises–Fisher (vMF) density.
+- EM fitting of finite vMF mixtures, with component directions, concentrations, proportions and responsibilities.
+- Weighted spherical KDE as a mixture of vMF kernels with common concentration.
+
+~~~python
+from spherical_statistics import (
+    frechet_mean_sphere, spherical_kmeans, spherical_vmf_kde,
+    von_mises_fisher_density, von_mises_fisher_mixture,
+)
+
+mean = frechet_mean_sphere(unit_vectors)
+clusters = spherical_kmeans(unit_vectors, 4, seed=7)
+mixture = von_mises_fisher_mixture(unit_vectors, 4, seed=7)
+density = spherical_vmf_kde(query_vectors, unit_vectors, concentration=12)
+~~~
+
+All locations are unit XYZ vectors. Fréchet iteration and k-means/mixture fitting are local numerical methods. Use multiple initial seeds for mixtures, inspect convergence, and avoid interpreting an intrinsic mean across antipodal/cut-locus configurations as unique. vMF density is per unit solid angle on the unit sphere, not per unit ellipsoidal surface area.
+
+The tests are in `test_spherical_statistics.py`; the [spherical statistics walkthrough](implementation-walkthrough.md) explains the algorithms and limitations.
