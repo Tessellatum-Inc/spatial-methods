@@ -22,9 +22,47 @@ def test_shared_endpoint_is_not_proper_crossing():
     a=[(0,0),(2,0),(2,2),(0,2)]; b=[(2,2),(4,2),(4,4),(2,4)]
     assert not sweep_split_segments([[a],[b]])["intersection_events"]
 
-def test_collinear_overlap_rejected():
-    a=[(0,0),(2,0),(2,2),(0,2)]; b=[(1,0),(3,0),(3,2),(1,2)]
-    with pytest.raises(NotImplementedError): sweep_split_segments([[a],[b]])
+def test_collinear_overlap_is_split_at_both_bundle_endpoints():
+    a=[(0,0),(2,0),(2,2),(0,2)]
+    b=[(1,0),(3,0),(3,2),(1,2)]
+    result=sweep_split_segments([[a],[b]])
+    # Both shared horizontal edges are noded at x=1 and x=2.
+    assert len(result["split_segments"]) == 12
+    assert result["intersection_events"] == ()
+
+@pytest.mark.parametrize("operation,expected_area,expected_rings", [
+    ("intersection", 2.0, 1),
+    ("union", 10.0, 1),
+    ("difference", 2.0, 1),
+    ("symmetric_difference", 8.0, 2),
+])
+def test_partial_collinear_overlap_boolean_results(operation, expected_area, expected_rings):
+    a=[(0,0),(2,0),(2,2),(0,2)]
+    b=[(1,0),(3,0),(3,2),(1,2)]
+    result=boolean_overlay_rings([[a],[b]], operation=operation)
+    assert result["area"] == pytest.approx(expected_area)
+    assert len(result["rings"]) == expected_rings
+
+@pytest.mark.parametrize("operation,expected_area,expected_rings", [
+    ("intersection", 4.0, 1),
+    ("union", 4.0, 1),
+    ("difference", 0.0, 0),
+    ("symmetric_difference", 0.0, 0),
+])
+def test_identical_coincident_polygons_are_bundled_once(operation, expected_area, expected_rings):
+    a=[(0,0),(2,0),(2,2),(0,2)]
+    b=list(reversed(a))
+    result=boolean_overlay_rings([[a],[b]], operation=operation)
+    assert result["area"] == pytest.approx(expected_area)
+    assert len(result["rings"]) == expected_rings
+
+def test_adjacent_polygons_with_shared_edge_union_without_duplicate_boundary():
+    a=[(0,0),(2,0),(2,2),(0,2)]
+    b=[(2,0),(4,0),(4,2),(2,2)]
+    result=boolean_overlay_rings([[a],[b]], operation="union")
+    assert result["area"] == pytest.approx(8.0)
+    assert len(result["rings"]) == 1
+
 
 def test_invalid_input_rejected():
     with pytest.raises(ValueError): sweep_split_segments([ [[(0,0),(0,0),(1,1)]] ])
