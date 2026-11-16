@@ -1,15 +1,17 @@
-# Raster resampling: nearest neighbour and bilinear interpolation
+# Raster resampling: nearest, bilinear, cubic convolution and Lanczos
 
-Stable ID: SA-RASTER-RESAMPLING-NEAREST-BILINEAR · Draft 0.1 · Source compendium section 4, page 6
+Stable ID: SA-RASTER-RESAMPLING-NEAREST-BILINEAR-CUBIC-LANCZOS · Draft 0.2 · Source compendium section 4, page 6
 
 ## Why resampling is a modelling choice
 
 Raster grids often need to be brought onto a common cell size, alignment or shape. Resampling estimates values at new cell centres from the source grid. It changes the sampled surface; it is not merely a file-format conversion.
 
-Two common methods have different semantics:
+Four common methods have different semantics:
 
 - **Nearest neighbour** copies the closest source cell. It preserves categorical class codes and is usually appropriate for nominal rasters.
 - **Bilinear interpolation** forms a weighted average of four surrounding samples. It is often suitable for continuous variables, but smooths local extremes and is not appropriate for nominal categories.
+- **Cubic convolution** uses a compact 4×4 neighbourhood and a cubic kernel. The reference uses the Keys/Catmull–Rom parameter a=-0.5; it can overshoot near sharp transitions.
+- **Lanczos-3** uses a 6×6 windowed-sinc neighbourhood. It can retain high-frequency detail but may ring near sharp transitions.
 
 ## Same-extent grid mapping
 
@@ -29,7 +31,7 @@ $$
 (1-f_r)(1-f_c),\quad (1-f_r)f_c,\quad f_r(1-f_c),\quad f_rf_c
 $$
 
-The output is the weighted average of the available samples. The implementation offers two NoData policies: strict masking if any positive-weight neighbour is missing, or renormalization over the valid neighbours.
+The bilinear output is the weighted average of the four samples. The implementation also provides separable Keys cubic and Lanczos-3 kernels. For interpolating methods, NoData policies are strict masking when any nonzero-weight sample is missing, or renormalization over valid samples. Renormalization changes negative-lobed kernels and returns NoData if the remaining signed weight is numerically unstable.
 
 ## Choosing a method
 
@@ -39,7 +41,7 @@ The output is the weighted average of the available samples. The implementation 
 | Elevation, temperature, reflectance | Bilinear may be suitable | Continuous interpolation can be meaningful |
 | Aggregating fine cells into coarse cells | Area-weighted aggregation may be better | A point-sample interpolation is not a summary of all source area |
 
-Cubic convolution and Lanczos are also used for continuous imagery, but they can overshoot and need their own support and NoData policies. They are not implemented here.
+Cubic and Lanczos can overshoot or ring and are not appropriate for nominal categories. The reference implementation uses nearest-edge extension at array boundaries.
 
 ## Important distinction: resampling versus reprojection
 
@@ -52,10 +54,11 @@ A real geospatial warp maps coordinates through the target CRS, source CRS and s
 3. Insert NoData into one source cell. Compare strict and renormalized interpolation.
 4. Explain why bilinear interpolation is not appropriate for land-cover labels.
 5. Describe what additional transformations a CRS-aware warp must perform.
+6. Compare cubic and Lanczos overshoot/ringing on a sharp step edge.
 
 ## References
 
 - GDAL documentation, *gdalwarp — image reprojection and warping utility*, for production resampling and geospatial warp semantics.
 - Burrough, P. A. and McDonnell, R. A. (1998), *Principles of Geographical Information Systems*, Oxford University Press.
 
-**Scope:** same-extent array resampling with nearest and bilinear methods; no CRS-aware warp, cubic/Lanczos interpolation or area-weighted aggregation.
+**Scope:** same-extent array resampling with nearest, bilinear, Keys cubic and Lanczos-3; no CRS-aware warp, area-weighted aggregation or antialiasing prefilter.
