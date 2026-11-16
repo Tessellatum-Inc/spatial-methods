@@ -221,6 +221,17 @@ def test_persistent_corridor_replacements_preserve_full_domain_and_reciprocity()
                 assert cell.id in by_id[neighbor_id].right_neighbors
         assert sum(_trapezoid_area(locator, cell) for cell in snapshot) == pytest.approx(100.0)
 
+    # Compare every persistent snapshot with an independently rebuilt static
+    # decomposition of exactly the same insertion prefix.
+    for insertion_index, snapshot in enumerate(locator.replacement_graph_snapshots):
+        prefix = locator.insertion_order[:insertion_index + 1]
+        locator._build(prefix)
+        signature = lambda cells: sorted(
+            (cell.x_left, cell.x_right, cell.bottom_segment, cell.top_segment)
+            for cell in cells
+        )
+        assert signature(snapshot) == signature(locator.trapezoids)
+
 
 def test_endpoint_cells_keep_uncrossed_caps_in_replacement_record():
     locator = RandomizedTrapezoidalMap(segments(), (0, 0, 10, 10), seed=19)
