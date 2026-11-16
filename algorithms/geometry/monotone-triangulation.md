@@ -18,6 +18,10 @@ internal diagonals. Exact area conservation and positive triangle orientation
 are checked at runtime. These checks do not replace independent overlap and
 edge-incidence verification.
 
-This is a triangulator for polygons that are already y-monotone. It is not the
-monotone partition algorithm for arbitrary simple polygons; that sweep-line
-partition remains a separate implementation target.
+The same Python module now also contains `partition_y_monotone`, a general
+simple-polygon sweep that classifies start, end, split, merge and regular
+vertices, maintains helper edges, and inserts partition diagonals. Its current
+status structure is a Python list, so the implementation is O(n^2) worst case;
+a balanced search tree is needed for the textbook O(n log n) bound. It requires
+distinct vertex heights and does not yet handle holes or horizontal event ties.
+`triangulate_general` composes this partition with the stack triangulator.
