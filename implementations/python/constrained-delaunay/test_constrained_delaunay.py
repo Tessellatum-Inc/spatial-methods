@@ -115,7 +115,7 @@ def test_crossing_constraints_and_exterior_chords_are_rejected():
         )
     concave = [(0,0),(5,0),(5,1),(2,1),(2,4),(0,4)]
     with pytest.raises(ValueError, match="crosses or touches|interior"):
-        constrained_delaunay_with_diagonals(concave, [((0,0),(5,1))])
+        constrained_delaunay_with_diagonals(concave, [((0,4),(5,1))])
 
 
 def test_boundary_edge_can_be_redeclared_as_constraint():
