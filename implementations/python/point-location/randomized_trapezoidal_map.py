@@ -172,30 +172,48 @@ class RandomizedTrapezoidalMap:
         self._build(tuple(order))
 
     def _trace_segment_corridor(self, segment_id: int) -> list[Trapezoid]:
-        """Walk the existing vertical decomposition crossed by a new segment.
+        """Walk right-neighbor links through the cells crossed by a new segment.
 
-        The segment is not yet part of the map. Its open x-interval is
-        intersected with each current slab; the segment's y-position selects
-        exactly one cell per intersected slab. Consecutive repeated cells are
-        collapsed because slab boundaries can be artificial.
+        The segment starts strictly inside one existing slab because endpoint
+        x-coordinates are distinct. At each right wall its y-coordinate selects
+        the unique adjacent trapezoid containing that point. This follows the
+        actual cell adjacency graph rather than rescanning every slab.
         """
         segment = self.segments[segment_id]
         x0, x1 = segment[0][0], segment[1][0]
-        corridor: list[Trapezoid] = []
-        for slab_index, (active, cells, _root) in enumerate(self.slabs):
-            left, right = self.x_events[slab_index:slab_index+2]
-            lo, hi = max(left, x0), min(right, x1)
-            if lo >= hi:
-                continue
-            probe_x = (lo + hi) / 2
-            probe_y = _y_at(segment, probe_x)
-            gap = sum(
-                _y_at(self.segments[sid], probe_x) < probe_y
-                for sid in active
-            )
-            cell = cells[gap]
-            if not corridor or corridor[-1] is not cell:
-                corridor.append(cell)
+        slab_index = bisect_left(self.x_events, x0)
+        if slab_index == 0 or slab_index >= len(self.x_events):
+            raise ValueError("segment endpoint is outside the existing slab domain")
+        slab_index -= 1
+        active, cells, _root = self.slabs[slab_index]
+        start_y = _y_at(segment, x0)
+        gap = sum(_y_at(self.segments[sid], x0) < start_y for sid in active)
+        current = cells[gap]
+        by_id = {cell.id: cell for cell in self.trapezoids}
+        corridor = [current]
+        visited = {current.id}
+
+        while current.x_right < x1:
+            wall = current.x_right
+            probe_y = _y_at(segment, wall)
+            candidates = []
+            for neighbor_id in current.right_neighbors:
+                neighbor = by_id[neighbor_id]
+                bottom = (self.bounds[1] if neighbor.bottom_segment is None else
+                          _y_at(self.segments[neighbor.bottom_segment], wall))
+                top = (self.bounds[3] if neighbor.top_segment is None else
+                       _y_at(self.segments[neighbor.top_segment], wall))
+                if bottom < probe_y < top:
+                    candidates.append(neighbor)
+            if len(candidates) != 1:
+                raise ValueError(
+                    "corridor walk expected one adjacent trapezoid at each vertical wall"
+                )
+            current = candidates[0]
+            if current.id in visited:
+                raise ValueError("corridor adjacency contains a cycle")
+            visited.add(current.id)
+            corridor.append(current)
         return corridor
 
     def _split_corridor_cell(self, segment_id: int,
