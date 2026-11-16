@@ -686,6 +686,9 @@ jobs:
           - example: marching-squares
             directory: implementations/python/marching-squares
             pythonpath: ""
+          - example: whittaker-smoother
+            directory: implementations/python/whittaker-smoother
+            pythonpath: ""
 
     steps:
       - name: Check out repository
