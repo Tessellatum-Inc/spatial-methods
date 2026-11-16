@@ -37,7 +37,7 @@ def test_nested_island_is_separate_component():
     outer = [(0, 0), (12, 0), (12, 12), (0, 12)]
     hole = [(2, 2), (10, 2), (10, 10), (2, 10)]
     island = [(4, 4), (8, 4), (8, 8), (4, 8)]
-    result = boolean_clip([outer, island], [hole], "difference")
+    result = boolean_clip([outer], [hole, island], "difference")
     assert len(result) == 2
     assert sorted(net_area([p]) for p in result) == pytest.approx([16.0, 80.0])
 
