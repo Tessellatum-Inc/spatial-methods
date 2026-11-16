@@ -405,6 +405,9 @@ jobs:
           - example: urban-boundaries
             directory: implementations/python/urban-boundaries
             pythonpath: ""
+          - example: mobility-inference
+            directory: implementations/python/mobility-inference
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""
