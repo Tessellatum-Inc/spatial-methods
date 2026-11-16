@@ -175,3 +175,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 4 erosion: added USLE/RUSLE factor-product soil-loss calculation and a conventional slope-length/steepness factor with tests. Regional R/K/C/P derivation, flow-accumulation-aware LS, sediment delivery and hydraulic/thermal erosion simulation remain open.
+
+
+- Section 4 groundwater and susceptibility: added the seven-layer weighted DRASTIC index, categorical landslide frequency-ratio mapping and ridge-regularized binary logistic regression with probability prediction. MODFLOW/MODPATH/MT3D, recharge estimation, SHALSTAB, weights of evidence and spatially blocked validation remain open.
