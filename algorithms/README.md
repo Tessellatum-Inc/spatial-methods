@@ -2,6 +2,10 @@
 
 Each record explains one method or operation, its assumptions, where it is useful, and what can go wrong. The collection is growing from the supplied [source inventory](../source-inventory/README.md); an entry is not treated as verified merely because it appears in that inventory.
 
+## Networks and mobility
+
+- [Network algorithms index](networks/README.md) — graph search, shortest paths, transit routing, network structure, optimisation and stable matching.
+
 ## Raster and terrain
 
 - [Local raster map algebra](raster/local-map-algebra.md) — aligned cellwise arithmetic, reducers, comparisons and categorical lookup with explicit NoData policies.
