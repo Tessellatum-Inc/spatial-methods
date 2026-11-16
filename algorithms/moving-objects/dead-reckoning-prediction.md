@@ -25,3 +25,8 @@ The model assumes constant velocity between reports. It is not a full Kalman fil
 Tests compare state and covariance propagation with direct matrix equations, check the process-noise block analytically, verify confidence-ellipse axes, exercise each update trigger and validate invalid states/controls.
 
 See the [implementation package](../../implementations/python/moving-object-prediction/README.md).
+
+
+## Predictive range candidate filter
+
+For a rectangular query region, each predicted position confidence ellipse is enclosed by its axis-aligned bounding box. The implementation returns objects whose boxes intersect the query rectangle. This is a conservative candidate-generation step: it avoids false negatives but can return false positives that require an exact geometric refinement.

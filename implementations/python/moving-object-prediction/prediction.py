@@ -115,3 +115,40 @@ def dead_reckoning_update_decision(predicted_state, predicted_covariance,
             "predicted_displacement": displacement,
             "uncertainty_radius": ellipse["major_radius"],
             "ellipse": ellipse}
+
+
+def predictive_range_candidates(states, covariances, query_bounds, *,
+                                confidence_level=0.95):
+    """Return conservative candidates whose position ellipses meet a query box.
+
+    Each ellipse is converted to its axis-aligned bounding box. This is a
+    filter step: it may return false positives, but it will not discard an
+    ellipse that intersects the query rectangle.
+    """
+    state_array = np.asarray(states, dtype=float)
+    covariance_array = np.asarray(covariances, dtype=float)
+    bounds = np.asarray(query_bounds, dtype=float)
+    if state_array.ndim != 2 or state_array.shape[1] != 4 or not np.all(np.isfinite(state_array)):
+        raise ValueError("states must be a finite (objects, 4) matrix")
+    if covariance_array.shape != (len(state_array), 4, 4) or not np.all(np.isfinite(covariance_array)):
+        raise ValueError("covariances must have shape (objects, 4, 4) and be finite")
+    if bounds.shape != (4,) or not np.all(np.isfinite(bounds)):
+        raise ValueError("query_bounds must be finite [xmin, ymin, xmax, ymax]")
+    xmin, ymin, xmax, ymax = bounds
+    if xmin > xmax or ymin > ymax:
+        raise ValueError("query_bounds must have ordered minimum and maximum coordinates")
+    boxes = np.empty((len(state_array), 4), dtype=float)
+    for i, (state, covariance) in enumerate(zip(state_array, covariance_array)):
+        ellipse = position_confidence_ellipse(
+            state, covariance, confidence_level=confidence_level)
+        angle = ellipse["orientation_rad"]
+        major, minor = ellipse["major_radius"], ellipse["minor_radius"]
+        half_x = np.sqrt((major*np.cos(angle))**2 + (minor*np.sin(angle))**2)
+        half_y = np.sqrt((major*np.sin(angle))**2 + (minor*np.cos(angle))**2)
+        boxes[i] = [state[0]-half_x, state[1]-half_y,
+                    state[0]+half_x, state[1]+half_y]
+    intersects = ((boxes[:, 2] >= xmin) & (boxes[:, 0] <= xmax) &
+                  (boxes[:, 3] >= ymin) & (boxes[:, 1] <= ymax))
+    return {"candidate_indices": np.flatnonzero(intersects),
+            "bounding_boxes": boxes,
+            "candidate_mask": intersects}

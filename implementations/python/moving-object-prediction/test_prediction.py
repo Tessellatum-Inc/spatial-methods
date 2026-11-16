@@ -73,3 +73,26 @@ def test_prediction_rejects_invalid_state_covariance_and_controls():
     with pytest.raises(ValueError, match="confidence_level"):
         position_confidence_ellipse([0., 0., 0., 0.], np.eye(4),
                                     confidence_level=1.0)
+
+
+from prediction import predictive_range_candidates
+
+
+def test_predictive_range_filter_returns_ellipse_candidates_and_boxes():
+    states = np.array([[0., 0., 1., 0.], [100., 100., 0., 0.],
+                       [10., 0., 0., 0.]])
+    covariances = np.repeat(np.eye(4)[None, :, :] * .01, 3, axis=0)
+    covariances[2, :2, :2] = np.diag([9., .1])
+    result = predictive_range_candidates(states, covariances,
+                                         [-1., -1., 2., 2.])
+    assert result["candidate_indices"].tolist() == [0, 2]
+    assert result["bounding_boxes"].shape == (3, 4)
+    assert result["candidate_mask"].tolist() == [True, False, True]
+
+
+def test_predictive_range_rejects_invalid_bounds_and_shapes():
+    with pytest.raises(ValueError, match="ordered"):
+        predictive_range_candidates([[0., 0., 0., 0.]], [np.eye(4)],
+                                    [2., 0., 1., 1.])
+    with pytest.raises(ValueError, match="covariances"):
+        predictive_range_candidates([[0., 0., 0., 0.]], [], [0., 0., 1., 1.])
