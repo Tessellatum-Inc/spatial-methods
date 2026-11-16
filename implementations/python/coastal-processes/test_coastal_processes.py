@@ -77,3 +77,38 @@ def test_dean_profile_validates_inputs():
     with pytest.raises(ValueError): dean_equilibrium_profile([-1, 2], .5)
     with pytest.raises(ValueError): dean_equilibrium_profile([0, 2], 0)
     with pytest.raises(ValueError): dean_profile_volume(.5, 4, 3)
+
+def test_satellite_bathymetry_ratio_calibration_and_prediction():
+    from coastal_processes import fit_satellite_bathymetry_ratio, satellite_bathymetry_ratio
+    x = np.array([0., 1., 2., 3.]); y = 2. + 3.*x
+    model = fit_satellite_bathymetry_ratio(x, y)
+    assert model['slope'] == pytest.approx(3)
+    assert model['intercept'] == pytest.approx(2)
+    np.testing.assert_allclose(satellite_bathymetry_ratio([0, 1, np.nan], model), [2, 5, np.nan])
+    np.testing.assert_allclose(satellite_bathymetry_ratio([-1, 1, 3], model, min_depth=2, max_depth=8), [np.nan, 5, np.nan], equal_nan=True)
+
+
+def test_satellite_bathymetry_ratio_rejects_bad_calibration():
+    from coastal_processes import fit_satellite_bathymetry_ratio, satellite_bathymetry_ratio
+    with pytest.raises(ValueError): fit_satellite_bathymetry_ratio([1, 1], [2, 3])
+    with pytest.raises(ValueError): satellite_bathymetry_ratio([1], {'slope': np.nan, 'intercept': 0})
+
+
+def test_multibeam_grid_mean_median_counts_and_orientation():
+    from coastal_processes import grid_multibeam_soundings
+    x = [0.1, 0.2, 1.1, 0.2]; y = [1.9, 1.8, 1.9, 0.8]; z = [10, 14, 20, 30]
+    mean, count, xc, yc = grid_multibeam_soundings(x, y, z, cell_size=1, origin=(0, 2))
+    assert mean.shape == (2, 2)
+    assert mean[0,0] == pytest.approx(12) and count[0,0] == 2
+    assert mean[0,1] == pytest.approx(20) and mean[1,0] == pytest.approx(30)
+    assert np.isnan(mean[1,1]) and count[1,1] == 0
+    med, _, _, _ = grid_multibeam_soundings(x, y, z, cell_size=1, origin=(0,2), statistic='median')
+    assert med[0,0] == pytest.approx(12)
+    np.testing.assert_allclose(xc, [0.5,1.5]); np.testing.assert_allclose(yc, [1.5,0.5])
+
+
+def test_multibeam_grid_validation():
+    from coastal_processes import grid_multibeam_soundings
+    with pytest.raises(ValueError): grid_multibeam_soundings([0], [0], [1], cell_size=0)
+    with pytest.raises(ValueError): grid_multibeam_soundings([np.nan], [0], [1], cell_size=1)
+    with pytest.raises(ValueError): grid_multibeam_soundings([0], [0], [1], cell_size=1, statistic='mode')
