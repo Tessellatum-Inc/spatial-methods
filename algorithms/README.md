@@ -348,3 +348,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Thermal land-surface temperature](remote-sensing/thermal-land-surface-temperature.md) — invert Planck and single-channel radiative-transfer equations and apply a sensor-calibrated generalized split-window model.
 
 - [Classical multispectral classification](remote-sensing/classical-classification.md) — Gaussian maximum-likelihood pixel classification and k-means++ clustering baselines.
+
+- [RossThick-LiSparseR BRDF normalization](remote-sensing/ross-li-brdf.md) — fit kernel-driven volumetric/geometric reflectance terms and normalize multi-angle observations to a declared reference geometry.

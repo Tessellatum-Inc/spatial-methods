@@ -686,6 +686,9 @@ jobs:
           - example: empirical-corrections
             directory: implementations/python/empirical-corrections
             pythonpath: ""
+          - example: ross-li-brdf
+            directory: implementations/python/ross-li-brdf
+            pythonpath: ""
           - example: ir-mad
             directory: implementations/python/ir-mad
             pythonpath: ""

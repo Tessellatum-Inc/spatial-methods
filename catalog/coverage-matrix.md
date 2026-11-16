@@ -193,3 +193,6 @@ Four source-listed streaming summaries now have tested reference implementations
 - Section 5 thermal retrieval: added Planck radiance-to-brightness-temperature conversion, single-channel radiative-transfer inversion and a caller-calibrated generalized split-window kernel, with analytic round-trip tests. Atmospheric/emissivity retrieval, sensor-specific coefficient libraries and full SEBAL/METRIC/SEBS/ALEXI energy-balance models remain open.
 
 - Section 5 pixel classification: added Gaussian maximum-likelihood classification with class-specific regularized covariance and explicit priors, plus k-means++ clustering with multiple restarts and deterministic seeding. SVM and ensemble learners, spatial regularization, model selection and accuracy assessment remain open; ISODATA now has a tested adaptive split/merge baseline.
+
+
+- Section 5 BRDF: added RossThick volumetric and Li-Sparse-Reciprocal geometric kernels, per-band rank-checked least-squares fitting, reference-geometry normalization, fit diagnostics and synthetic coefficient-recovery tests. This is not the operational MODIS MCD43 workflow; angular sampling, atmospheric correction, quality flags and uncertainty products remain open.
