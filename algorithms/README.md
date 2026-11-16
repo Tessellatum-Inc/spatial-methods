@@ -26,6 +26,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Spatial skyline queries](query-processing/spatial-skyline.md) — return objects not dominated across distance to a query location and selected attributes.
 
+## Streaming and sketching
+
+- [Streaming sketches for spatial data](streaming/streaming-sketches.md) — approximate distinct counts, event frequencies, membership screening and uniform reservoir samples.
+
 ## Optimization and location science
 
 - [The p-median problem](optimization/p-median.md) — choose a fixed number of candidate facilities to minimise weighted assignment cost.

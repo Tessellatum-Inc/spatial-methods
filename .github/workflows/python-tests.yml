@@ -102,6 +102,9 @@ jobs:
           - example: spatial-skyline
             directory: implementations/python/spatial-skyline
             pythonpath: ""
+          - example: spatial-streaming-sketches
+            directory: implementations/python/spatial-streaming-sketches
+            pythonpath: ""
           - example: reverse-knn
             directory: implementations/python/reverse-knn
             pythonpath: "../kd-tree"

@@ -33,7 +33,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Fast KDE: binned KDE with FFT, dual-tree KDE, random Fourier feature KDE, quantized and grid-based DBSCAN | Scalable density estimation / clustering | 35 | Not checked — intake only |
-| Streaming sketches for grids and tiles: HyperLogLog for distinct counts, count-min sketch, Bloom filters for tile existence, reservoir sampling for spatial streams | Streaming summaries / probabilistic data structures / sampling | 35 | Not checked — intake only |
+| Streaming sketches for grids and tiles: HyperLogLog for distinct counts, count-min sketch, Bloom filters for tile existence, reservoir sampling for spatial streams | Streaming summaries / probabilistic data structures / sampling | 35 | Implemented as four tested bounded-memory reference structures; spatial partitioning, distributed merge/workload evaluation and exact-record integration remain open |
 
 ## Optimal sampling and experimental design
 
@@ -102,3 +102,8 @@ The source lists software families, not algorithms. Treat this as an orientation
 3. For adaptive sampling, define the objective, observation cost and stopping condition.
 4. For siting, record demand, network, capacity and equity constraints.
 5. Treat the implementation map as a dated software landscape, not a permanent endorsement list.
+
+
+### Streaming-sketch implementation update
+
+The new package supplies HyperLogLog cardinality estimation, Count-Min frequency estimation, Bloom membership screening and Algorithm R reservoir sampling. These are generic streaming summaries suitable for tile/feature keys; they do not preserve geometries or source records.

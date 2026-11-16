@@ -118,3 +118,8 @@ The point-process model package now also contains a bounded log-Gaussian Cox sim
 ## Section 20 — spectral-index family extension
 
 The spectral-index package now includes tested formula implementations for GNDVI, ARVI, GCI/CIgreen, CIrededge, MSAVI-2, OSAVI, WDRVI, NIRv, kNDVI, MTCI, REIP, TCARI, PSRI, ARI, CRI1/2, SIPI, PRI, NDII, NMDI, BSI, NDTI, STI and hyperspectral CAI. Formula variants, wavelength requirements and sensor-specific limitations are recorded in the canonical lesson. Clay/mineral ratios, ASTER-specific indices, field validation and the other Section 20 retrieval families remain open.
+
+
+## Section 17 — streaming sketches
+
+Four source-listed streaming summaries now have tested reference implementations: HyperLogLog, Count-Min Sketch, Bloom filter and reservoir sampling. Their error/guarantee contracts and memory trade-offs are documented. Spatially partitioned/distributed deployments and workload benchmarks remain open.

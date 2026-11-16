@@ -579,3 +579,9 @@ The change is a meaningful extension, not completion of the polygon overlay work
 ## Notebook execution environment — 16 November 2026
 
 - [x] Configure every CI notebook execution to use the repository root as its working directory. Existing notebooks use repository-relative package paths; nbconvert's default notebook-directory working directory made those imports fail even when the package existed. A single explicit `ExecutePreprocessor.cwd=.` setting now gives all labs a consistent import base.
+
+
+## Streaming-sketch continuation — 16 November 2026
+
+- [x] Add HyperLogLog, Count-Min Sketch, Bloom filter and Algorithm R reservoir sampling as separate bounded-memory streaming structures, with deterministic hashing, parameter validation, tests and a canonical comparison lesson.
+- [ ] Add spatially partitioned/distributed merge patterns and workload benchmarks; sketches do not replace exact geometry or event storage.
