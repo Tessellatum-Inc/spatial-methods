@@ -448,3 +448,88 @@ def scs_curve_number_antecedent(curve_number_ii):
     dry = cn / (2.281 - 0.01281 * cn)
     wet = cn / (0.427 + 0.00573 * cn)
     return np.clip(dry, 1.0, 100.0), np.clip(wet, 1.0, 100.0)
+
+
+
+def green_ampt_infiltration_step(cumulative_infiltration, rainfall_intensity, saturated_conductivity,
+                                 wetting_front_suction, moisture_deficit, duration):
+    """Advance one constant-rainfall Green-Ampt infiltration time step.
+
+    All depths are mm, intensities/conductivity mm per hour, duration hours.
+    Uses the ponding-time threshold and implicit Green-Ampt integration once
+    ponded. Rainfall not infiltrated is returned as excess/runoff depth.
+    This is a homogeneous one-dimensional event model, not a soil-column or
+    spatially distributed catchment simulator.
+    """
+    try:
+        F0, rain, Ks, psi, deficit, dt = map(float, (
+            cumulative_infiltration, rainfall_intensity, saturated_conductivity,
+            wetting_front_suction, moisture_deficit, duration))
+    except (TypeError, ValueError):
+        raise ValueError("all inputs must be finite scalars") from None
+    if not np.all(np.isfinite([F0, rain, Ks, psi, deficit, dt])):
+        raise ValueError("all inputs must be finite")
+    if F0 < 0 or rain < 0 or Ks <= 0 or psi < 0 or not 0 <= deficit <= 1 or dt <= 0:
+        raise ValueError("require F>=0, rain>=0, Ks>0, suction>=0, moisture deficit in [0,1], duration>0")
+    supply = rain * dt
+    A = psi * deficit
+    if supply == 0:
+        infiltration = 0.0
+    elif A == 0 or rain <= Ks:
+        infiltration = supply
+    else:
+        ponding_F = A / (rain / Ks - 1.0)
+        if F0 < ponding_F:
+            before_ponding = min(supply, ponding_F - F0)
+            remaining_time = dt - before_ponding / rain
+            Fp = F0 + before_ponding
+        else:
+            before_ponding = 0.0
+            remaining_time = dt
+            Fp = F0
+        if remaining_time <= 0:
+            infiltration = supply
+        else:
+            # Solve F1-Fp - Ks*t - A*ln((F1+A)/(Fp+A)) = 0.
+            lo, hi = Fp, Fp + rain * remaining_time
+            for _ in range(80):
+                mid = 0.5 * (lo + hi)
+                residual = (mid - Fp) - Ks * remaining_time - A * np.log((mid + A) / (Fp + A))
+                if residual > 0:
+                    hi = mid
+                else:
+                    lo = mid
+            infiltration = before_ponding + 0.5 * (lo + hi) - Fp
+    infiltration = min(supply, max(0.0, infiltration))
+    return {
+        "cumulative_infiltration": F0 + infiltration,
+        "infiltration": infiltration,
+        "runoff_excess": supply - infiltration,
+        "ponded": bool(infiltration < supply - 1e-12),
+    }
+
+
+def unit_hydrograph_convolution(rainfall_excess, unit_hydrograph, *, time_step=1.0):
+    """Convolve rainfall-excess depths with discrete unit-hydrograph ordinates.
+
+    Rainfall excess is depth per interval (mm). Unit-hydrograph ordinates are
+    discharge per mm of effective rainfall (e.g. m3/s/mm). Both series use
+    the same positive time step. Returns the full linear-convolution series.
+    The caller is responsible for deriving a catchment-specific unit
+    hydrograph and matching its duration/units to the rainfall intervals.
+    """
+    excess = np.asarray(rainfall_excess, dtype=float)
+    uh = np.asarray(unit_hydrograph, dtype=float)
+    try:
+        dt = float(time_step)
+    except (TypeError, ValueError):
+        raise ValueError("time_step must be finite and positive") from None
+    if excess.ndim != 1 or excess.size == 0 or np.any(~np.isfinite(excess)) or np.any(excess < 0):
+        raise ValueError("rainfall_excess must be a non-empty finite non-negative 1D array")
+    if uh.ndim != 1 or uh.size == 0 or np.any(~np.isfinite(uh)) or np.any(uh < 0):
+        raise ValueError("unit_hydrograph must be a non-empty finite non-negative 1D array")
+    if not np.isfinite(dt) or dt <= 0:
+        raise ValueError("time_step must be finite and positive")
+    discharge = np.convolve(excess, uh, mode="full")
+    time = np.arange(discharge.size, dtype=float) * dt
+    return {"time": time, "discharge": discharge}
