@@ -39,5 +39,7 @@ def test_nodata_or_boundary_rays_are_masked():
     {"azimuth_count": 2},
 ])
 def test_invalid_parameters(kwargs):
+    call_kwargs = {"max_distance": 2}
+    call_kwargs.update(kwargs)
     with pytest.raises(ValueError):
-        terrain_openness(np.zeros((9, 9)), max_distance=2, **kwargs)
+        terrain_openness(np.zeros((9, 9)), **call_kwargs)
