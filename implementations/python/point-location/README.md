@@ -36,7 +36,7 @@ The straightforward preprocessing stores an edge event in every x-slab it crosse
 This is not Seidel's randomized trapezoidal map and does not implement its expected bounds. It assumes non-crossing polygon boundaries and pairwise interior-disjoint faces. The input ring structure and polygon topology must be valid; this package does not validate arbitrary planar arrangements. It is a teaching implementation of a static slab locator. Use the [interactive point-location lab](../../../notebooks/point-location-lab.ipynb) to inspect the x-event lines, slab crossing groups, holes and boundary-query contract.
 
 
-## Randomized trapezoidal decomposition reference
+## Randomized trapezoidal map with persistent history DAG
 
 The adjacent `randomized_trapezoidal_map.py` module adds a second, deliberately narrower model: a set of pairwise disjoint, non-vertical segments in general position inside a bounding rectangle. It merges consecutive slab intervals with identical bounding segments into trapezoids, then builds a balanced x-decision tree and per-slab y-decision trees with shared decision subtrees. Queries return the containing trapezoid, `BOUNDARY` on an original segment, or `None` outside the bounding box.
 
