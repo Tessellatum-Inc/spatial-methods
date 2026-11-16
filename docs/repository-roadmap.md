@@ -645,3 +645,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Add explicit multiplicative zero replacement that preserves ratios among nonzero parts and validates total replacement mass.
 - [x] Add scale-invariance, simplex, zero-handling, distance symmetry and invalid-input tests; index the package and add it to Python CI.
 - [ ] Execute the package and full CI suite. Structural-zero models, detection-limit treatment, ILR bases, logistic-normal models and compositional kriging remain open.
+
+
+## Flow-refueling location continuation — 17 November 2026
+
+- [x] Implement exact small-instance FRLM site selection using route lengths, ordered station positions and finite vehicle range.
+- [x] Add feasibility tests for endpoint range, inter-station gaps, routes needing no station, independent subset enumeration and invalid inputs.
+- [x] Document the distinction from FCLM and register the package in the Python CI matrix.
+- [ ] Execute the package and full CI suite. Scalable FRLM heuristics, network route generation, partial charging, queues, heterogeneous vehicles and trajectory-derived charging demand remain open.
