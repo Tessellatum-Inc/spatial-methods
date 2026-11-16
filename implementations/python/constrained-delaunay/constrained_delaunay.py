@@ -2,13 +2,17 @@
 from __future__ import annotations
 from collections import defaultdict
 from fractions import Fraction
+from math import isfinite
 from typing import Iterable, Sequence
-from ear_clipping import Triangle, orient, triangulate as ear_triangulate
+from ear_clipping import (Triangle, _clean_ring, orient,
+                          triangulate as ear_triangulate)
 Point = tuple[Fraction, Fraction]
 Edge = tuple[Point, Point]
 
 def _point(value: Sequence[float | int]) -> Point:
     if len(value) != 2: raise ValueError("each vertex must contain exactly x and y")
+    if any(isinstance(v, float) and not isfinite(v) for v in value):
+        raise ValueError("coordinates must be finite")
     return Fraction(str(value[0])), Fraction(str(value[1]))
 
 def _edge(a: Point, b: Point) -> Edge:
@@ -39,14 +43,11 @@ def constrained_delaunay_triangulate(vertices: Iterable[Sequence[float | int]], 
     constraints, Steiner points and quality refinement are not supported.
     Cocircular edges are left unchanged (weakly-Delaunay output).
     """
-    ring=[_point(p) for p in vertices]
-    if len(ring)>1 and ring[0]==ring[-1]: ring.pop()
-    compact=[]
-    for p in ring:
-        if not compact or p!=compact[-1]: compact.append(p)
-    if len(compact)>1 and compact[0]==compact[-1]: compact.pop()
-    if len(compact)<3: raise ValueError("a polygon needs at least three distinct vertices")
-    if len(set(compact))!=len(compact): raise ValueError("repeated non-consecutive vertices are unsupported")
+    # Match ear clipping's normalization exactly: consecutive duplicates and
+    # redundant collinear boundary vertices are removed before constraints form.
+    compact = _clean_ring(_point(p) for p in vertices)
+    if len(set(compact)) != len(compact):
+        raise ValueError("repeated non-consecutive vertices are unsupported")
     triangles=ear_triangulate(compact)
     constraints={_edge(a,b) for a,b in zip(compact,compact[1:]+compact[:1])}
     limit=max_flips if max_flips is not None else max(100,20*len(triangles)**2)
