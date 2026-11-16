@@ -41,7 +41,7 @@ def _geod_from_ellipsoid(ellipsoid="WGS84"):
         pass
     try:
         return Geod(ellps=str(ellipsoid))
-    except (ProjError, ValueError, TypeError) as error:
+    except (ProjError, ValueError, TypeError, KeyError) as error:
         raise ValueError(f"invalid ellipsoid or CRS: {error}") from error
 
 
