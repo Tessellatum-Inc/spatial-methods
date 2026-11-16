@@ -150,3 +150,8 @@ A trace-processing baseline now detects dwell episodes by a maximum-radius/time-
 ### CPUE standardization baseline
 
 An effort-offset log-linear catch-rate model is now available under Poisson and NB2 negative-binomial likelihoods. It reports fitted catch, standardized predictions at mean covariates and unit effort, dispersion and coefficient diagnostics. It is not a GAM or VAST reproduction: nonlinear smooths, spatial/temporal random fields, zero inflation, stock dynamics and fishing-effort optimization remain open.
+
+
+### Marine reserve-selection baseline
+
+A Marxan-style simulated-annealing selector now minimizes zone acquisition cost, squared feature-target shortfall penalties and selected/unselected boundary length. It accepts an explicit zone-feature matrix, costs, targets and adjacency boundary lengths. This is a compact educational heuristic, not the full Marxan solver or Zonation's iterative removal algorithm; feature quality, costs, targets and connectivity constraints remain analyst-supplied. Benthic habitat classification from calibrated multibeam backscatter remains open.

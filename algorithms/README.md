@@ -375,3 +375,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Staypoints, home/work inference and activity spaces](mobility/mobility-inference.md) — dwell episode detection, day/night candidate locations and activity-space metrics.
 
 - [CPUE standardization](fisheries/cpue-standardization.md) — effort-offset Poisson and NB2 log-linear catch-rate models with reference-condition predictions.
+
+- [Marine reserve selection](marine/marine-reserve-selection.md) — simulated-annealing selection against representation targets, zone costs and boundary penalties.

@@ -411,6 +411,9 @@ jobs:
           - example: cpue-standardization
             directory: implementations/python/cpue-standardization
             pythonpath: ""
+          - example: marine-reserve-selection
+            directory: implementations/python/marine-reserve-selection
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""
