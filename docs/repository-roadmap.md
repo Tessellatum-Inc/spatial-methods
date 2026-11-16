@@ -669,3 +669,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Implement the SeaWiFS OC4v4 maximum-blue-to-green ratio polynomial using its published coefficient set.
 - [x] Add independent formula, coefficient, calibration-recovery and invalid-input tests; document sensor specificity and upstream correction assumptions; register the package in Python CI.
 - [ ] Execute full CI and validate against independent in-situ bathymetry/chlorophyll observations. Other sensor-specific OC algorithms, physics-based inversion, atmospheric correction, tide/datum correction and water-column modelling remain open.
+
+
+## DEM void-filling continuation — 17 November 2026
+
+- [x] Implement bounded inverse-distance void filling with configurable power, neighbourhood, pixel dimensions and synchronous iterations.
+- [x] Preserve existing elevations, recognize None/NaN/NoData sentinels, return a fill mask and leave unsupported holes unresolved.
+- [x] Add tests for interpolation, preservation, NoData, iterative propagation, anisotropic distances and invalid grids; document limitations and register in Python CI.
+- [ ] Execute full CI. Breakline-aware interpolation, uncertainty/error modelling, multi-sensor fusion, bare-earth extraction, drainage conditioning and stream burning remain separate methods.
