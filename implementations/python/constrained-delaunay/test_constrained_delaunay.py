@@ -1,7 +1,8 @@
 from collections import Counter
 from fractions import Fraction
 import math, random, pytest
-from constrained_delaunay import constrained_delaunay_triangulate, triangle_area, _incircle, _edge
+from constrained_delaunay import (constrained_delaunay_triangulate,
+    constrained_delaunay_with_diagonals, triangle_area, _incircle, _edge)
 from ear_clipping import orient, polygon_area
 
 def test_convex_count_orientation_area():
@@ -83,3 +84,41 @@ def test_one_shot_iterable_and_self_intersection_validation():
     assert len(constrained_delaunay_triangulate(iter(ring))) == len(ring)-2
     with pytest.raises(ValueError, match="simple polygon"):
         constrained_delaunay_triangulate([(0,0),(4,4),(0,4),(4,0)])
+
+
+def test_interior_diagonal_is_preserved_and_partitions_concave_polygon():
+    ring = [(0,0),(5,0),(5,1),(2,1),(2,4),(0,4)]
+    constraint = ((0,0),(2,4))
+    tris = constrained_delaunay_with_diagonals(ring, [constraint])
+    incidence = Counter(_edge(a,b) for tri in tris for a,b in zip(tri,tri[1:]+tri[:1]))
+    edge = _edge((Fraction(0),Fraction(0)),(Fraction(2),Fraction(4)))
+    assert incidence[edge] == 2
+    assert len(tris) == len(ring)-2
+    assert sum((triangle_area(t) for t in tris),Fraction(0)) == polygon_area(ring)
+
+
+def test_multiple_non_crossing_diagonals_can_share_a_vertex():
+    ring = [(0,0),(6,0),(6,5),(0,5)]
+    constraints = [((0,0),(6,5)), ((0,0),(6,0))]
+    tris = constrained_delaunay_with_diagonals(ring, constraints)
+    incidence = Counter(_edge(a,b) for tri in tris for a,b in zip(tri,tri[1:]+tri[:1]))
+    assert incidence[_edge((Fraction(0),Fraction(0)),(Fraction(6),Fraction(5)))] == 2
+    assert incidence[_edge((Fraction(0),Fraction(0)),(Fraction(6),Fraction(0)))] == 1
+    assert len(tris) == 2
+
+
+def test_crossing_constraints_and_exterior_chords_are_rejected():
+    square = [(0,0),(4,0),(4,4),(0,4)]
+    with pytest.raises(ValueError, match="cross or overlap"):
+        constrained_delaunay_with_diagonals(
+            square, [((0,0),(4,4)), ((0,4),(4,0))]
+        )
+    concave = [(0,0),(5,0),(5,1),(2,1),(2,4),(0,4)]
+    with pytest.raises(ValueError, match="crosses or touches|interior"):
+        constrained_delaunay_with_diagonals(concave, [((0,0),(5,1))])
+
+
+def test_boundary_edge_can_be_redeclared_as_constraint():
+    ring = [(0,0),(4,0),(4,4),(0,4)]
+    tris = constrained_delaunay_with_diagonals(ring, [((0,0),(4,0))])
+    assert len(tris) == 2
