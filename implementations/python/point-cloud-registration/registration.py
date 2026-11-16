@@ -110,3 +110,85 @@ def point_cloud_distances(first, second, *, threshold=None):
                        "f_score": 0.0 if precision + recall == 0 else
                        2 * precision * recall / (precision + recall)})
     return result
+
+def point_to_plane_icp(source, target, target_normals, *, max_iterations=50,
+                        tolerance=1e-8, max_correspondence_distance=None,
+                        trim_fraction=1.0):
+    """Align 3D points by minimising point-to-plane correspondence residuals.
+
+    Target normals must be supplied in the target frame. Each iteration solves
+    the linearised six-parameter rigid update with residual n dot (p - q).
+    The result uses the same row-vector transform convention as point-to-point
+    ICP. This local method needs a good initial pose, overlap and spatially
+    diverse normals; planar or symmetric geometry can be under-constrained.
+    """
+    from scipy.spatial.transform import Rotation
+
+    src, dst = _points(source, "source"), _points(target, "target")
+    normals = np.asarray(target_normals, dtype=float)
+    if normals.shape != dst.shape or not np.all(np.isfinite(normals)):
+        raise ValueError("target_normals must be finite and match target shape")
+    lengths = np.linalg.norm(normals, axis=1)
+    if np.any(lengths <= np.finfo(float).eps):
+        raise ValueError("target_normals must be non-zero")
+    normals = normals / lengths[:, None]
+    if isinstance(max_iterations, (bool, np.bool_)) or not isinstance(max_iterations, (int, np.integer)) or max_iterations < 1:
+        raise ValueError("max_iterations must be a positive integer")
+    try:
+        tol, trim = float(tolerance), float(trim_fraction)
+    except (TypeError, ValueError):
+        raise ValueError("tolerance and trim_fraction must be numeric") from None
+    if not np.isfinite(tol) or tol < 0 or not np.isfinite(trim) or not 0 < trim <= 1:
+        raise ValueError("tolerance must be non-negative and trim_fraction in (0, 1]")
+    gate = None if max_correspondence_distance is None else float(max_correspondence_distance)
+    if gate is not None and (not np.isfinite(gate) or gate <= 0):
+        raise ValueError("max_correspondence_distance must be positive")
+
+    tree = cKDTree(dst)
+    aligned = src.copy()
+    total_rotation = Rotation.identity()
+    total_translation = np.zeros(3)
+    previous_rmse = np.inf
+    converged = False
+    used = 0
+    for iteration in range(1, int(max_iterations) + 1):
+        distances, indices = tree.query(aligned, k=1)
+        candidates = np.flatnonzero(np.isfinite(distances) &
+                                    (True if gate is None else distances <= gate))
+        if candidates.size < 6:
+            raise ValueError("fewer than six correspondences satisfy the distance gate")
+        if trim < 1:
+            count = max(6, int(np.floor(trim * candidates.size)))
+            candidates = candidates[np.argsort(distances[candidates], kind="stable")[:count]]
+        p, q = aligned[candidates], dst[indices[candidates]]
+        n = normals[indices[candidates]]
+        residual = np.einsum("ij,ij->i", n, p - q)
+        jacobian = np.column_stack((np.cross(p, n), n))
+        update, _, rank, _ = np.linalg.lstsq(jacobian, -residual, rcond=None)
+        if rank < 6:
+            raise ValueError("point-to-plane correspondences do not constrain all six rigid degrees of freedom")
+        delta_rotation = Rotation.from_rotvec(update[:3])
+        delta_translation = update[3:]
+        aligned = delta_rotation.apply(aligned) + delta_translation
+        total_translation = delta_rotation.apply(total_translation) + delta_translation
+        total_rotation = delta_rotation * total_rotation
+
+        post_distances, post_indices = tree.query(aligned, k=1)
+        valid = np.isfinite(post_distances) & (True if gate is None else post_distances <= gate)
+        if not np.any(valid):
+            raise ValueError("registration produced no valid correspondences")
+        post_residual = np.einsum(
+            "ij,ij->i", normals[post_indices[valid]],
+            aligned[valid] - dst[post_indices[valid]])
+        rmse = float(np.sqrt(np.mean(post_residual ** 2)))
+        used = int(valid.sum())
+        if abs(previous_rmse - rmse) <= tol:
+            converged = True
+            break
+        previous_rmse = rmse
+
+    return {"aligned": aligned, "rotation": total_rotation.as_matrix().T,
+            "translation": total_translation, "rmse": rmse,
+            "iterations": iteration, "converged": converged,
+            "correspondence_count": used, "fitness": used / src.shape[0]}
+
