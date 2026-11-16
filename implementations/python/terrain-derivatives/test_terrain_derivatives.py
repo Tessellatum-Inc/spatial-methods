@@ -411,3 +411,45 @@ def test_multiscale_tpi_rejects_duplicate_and_even_windows():
     from terrain_indices import multiscale_topographic_position_index
     with pytest.raises(ValueError): multiscale_topographic_position_index(np.ones((5, 5)), [3, 3])
     with pytest.raises(ValueError): multiscale_topographic_position_index(np.ones((5, 5)), [4])
+
+def test_local_extrema_detects_peak_and_pit_with_nodata_windows():
+    from terrain_indices import detect_local_extrema
+    peak = np.zeros((5, 5)); peak[2, 2] = 10
+    maxima, minima = detect_local_extrema(peak)
+    assert maxima[2, 2] and not minima[2, 2]
+    pit = np.ones((5, 5)); pit[2, 2] = -5
+    maxima, minima = detect_local_extrema(pit)
+    assert minima[2, 2] and not maxima[2, 2]
+    pit[1, 1] = np.nan
+    maxima, minima = detect_local_extrema(pit)
+    assert not minima[2, 2]
+
+
+def test_local_extrema_prominence_window_and_flat_surface():
+    from terrain_indices import detect_local_extrema
+    dem = np.zeros((7, 7)); dem[3, 3] = 2
+    maxima, minima = detect_local_extrema(dem, window_size=5, min_prominence=3)
+    assert not maxima.any() and not minima.any()
+    maxima, minima = detect_local_extrema(np.ones((5, 5)))
+    assert not maxima.any() and not minima.any()
+    with pytest.raises(ValueError): detect_local_extrema(dem, window_size=4)
+    with pytest.raises(ValueError): detect_local_extrema(dem, min_prominence=-1)
+
+
+def test_reservoir_stage_storage_analytic_curve():
+    from terrain_indices import reservoir_stage_storage
+    dem = np.array([[0., 1.], [2., np.nan]])
+    result = reservoir_stage_storage(dem, [1., 2., 3.], cell_area=10)
+    np.testing.assert_allclose(result['inundated_area'], [10, 20, 30])
+    np.testing.assert_allclose(result['storage'], [10, 30, 60])
+    assert result['valid_cell_count'] == 3
+
+
+def test_reservoir_stage_storage_mask_and_validation():
+    from terrain_indices import reservoir_stage_storage
+    dem = np.array([[0., 1.], [2., 3.]])
+    result = reservoir_stage_storage(dem, [2., 4.], cell_area=2, valid_mask=[[True, False], [True, True]])
+    np.testing.assert_allclose(result['storage'], [4, 14])
+    with pytest.raises(ValueError): reservoir_stage_storage(dem, [2., 1.])
+    with pytest.raises(ValueError): reservoir_stage_storage(dem, [1.], cell_area=0)
+    with pytest.raises(ValueError): reservoir_stage_storage(dem, [1.], valid_mask=[[True]])
