@@ -44,7 +44,7 @@ def test_horizontal_bottom_plateau_forms_one_minimum():
 
 
 def test_two_local_minima_are_reported():
-    ring = [(0, 0), (2, 2), (4, 0), (6, 2), (8, 0), (8, 5), (0, 5)]
+    ring = [(0, 2), (2, 0), (4, 2), (6, 0), (8, 2), (8, 5), (0, 5)]
     result = decompose_scanbeams([ring])
     assert len(result.minima) == 2
 
