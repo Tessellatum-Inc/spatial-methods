@@ -80,3 +80,6 @@ The [empirical semivariogram lesson](../../methods/empirical-semivariogram.md) e
 ## Bibliographic check on the geostatistics foundation
 
 Matheron (1963), “Principles of geostatistics,” *Economic Geology*, 58(8), 1246–1266, [10.2113/gsecongeo.58.8.1246](https://doi.org/10.2113/gsecongeo.58.8.1246), was checked against the publisher and DOI records and is now cited in the interpolation lesson. This confirms the selected foundational citation only; it does not verify the full kriging family or all Section 3 source entries.
+
+
+The trend/change source entry now also links to seasonal Mann-Kendall and seasonal Sen slope reference methods. Seasonal comparisons are restricted to matching season labels; score and tie-corrected variance are aggregated across seasons, and the slope is the median of within-season pair slopes. The implementation is dependency-free and covered by tests. It does not correct serial correlation within seasons, dependence between seasons, missingness mechanisms or multiple testing, and its p-value remains a normal approximation. The grouped source row remains partial; harmonic regression, BFAST, LandTrendr and CCDC remain open.

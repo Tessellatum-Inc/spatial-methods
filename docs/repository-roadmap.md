@@ -733,3 +733,12 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Implement Sen's median pairwise slope and median intercept with optional irregular time coordinates.
 - [x] Add monotonic, tied, constant, irregular-time, affine-invariance and invalid-input tests; register in Python CI.
 - [ ] Execute full CI and add seasonal/autocorrelation-aware variants. Harmonic regression, BFAST, LandTrendr and CCDC remain open.
+
+
+## Seasonal trend methods — 17 November 2026
+
+- [x] Add seasonal Mann-Kendall with within-season pair comparisons and summed tie-corrected variance.
+- [x] Add seasonal Sen slope using only within-season pairs and optional irregular time coordinates.
+- [x] Add tests for seasonal offsets, tie corrections, time spacing, invalid labels and insufficient within-season pairs.
+- [x] Update the source-linked lesson and package documentation; reuse the existing Python CI package registration.
+- [ ] Run the complete repository workflow and evaluate serial-correlation corrections, seasonal dependence and small-sample inference. These are not claimed by this baseline.

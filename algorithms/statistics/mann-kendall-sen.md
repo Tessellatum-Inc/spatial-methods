@@ -1,4 +1,4 @@
-# Mann-Kendall trend test and Sen's slope
+# Mann-Kendall trend test, seasonal Mann-Kendall and Sen's slope
 
 The Mann-Kendall statistic is the sum of signs of all pairwise temporal
 differences:
@@ -14,6 +14,17 @@ and reports Kendall tau-b. Sen's slope is the median of pairwise slopes:
 The implementation accepts an optional strictly increasing time coordinate
 and reports a median intercept.
 
-The p-value is not an exact test and does not correct serial correlation,
-seasonality, missingness or multiple testing. These effects matter for
-environmental time series. See the Python package for tests and usage.
+## Seasonal Mann-Kendall
+
+For seasonal observations, compare only pairs that share a season label.
+Compute each season's Mann-Kendall score and tie-corrected variance, then sum
+the scores and variances across seasons. Apply the continuity-corrected
+normal approximation to the combined statistic. The seasonal Sen estimator
+takes the median of slopes formed only by within-season pairs.
+
+This implementation does not correct serial correlation within seasons,
+dependence between seasons, missingness mechanisms or multiple testing. Its
+p-value is not an exact small-sample test. Assess dependence and sampling
+structure before interpreting significance.
+
+See the dependency-free Python package for tests and usage.
