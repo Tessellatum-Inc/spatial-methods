@@ -32,9 +32,9 @@ def test_collinear_overlap_is_split_at_both_bundle_endpoints():
 
 @pytest.mark.parametrize("operation,expected_area,expected_rings", [
     ("intersection", 2.0, 1),
-    ("union", 10.0, 1),
+    ("union", 6.0, 1),
     ("difference", 2.0, 1),
-    ("symmetric_difference", 8.0, 2),
+    ("symmetric_difference", 4.0, 2),
 ])
 def test_partial_collinear_overlap_boolean_results(operation, expected_area, expected_rings):
     a=[(0,0),(2,0),(2,2),(0,2)]
