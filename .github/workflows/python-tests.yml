@@ -264,6 +264,9 @@ jobs:
           - example: louvain
             directory: implementations/python/louvain
             pythonpath: ""
+          - example: dem-void-fill
+            directory: implementations/python/dem-void-fill
+            pythonpath: ""
           - example: flow-refueling-location
             directory: implementations/python/flow-refueling-location
             pythonpath: ""
