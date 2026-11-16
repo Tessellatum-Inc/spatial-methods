@@ -338,3 +338,5 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [Bitemporal change detection: CVA and post-classification comparison](remote-sensing/change-vector-analysis.md) — compare aligned multispectral dates with spectral change vectors and summarize categorical transitions.
+
+- [Empirical atmospheric, terrain and relative radiometric corrections](remote-sensing/empirical-corrections.md) — dark-object subtraction, C-correction, Minnaert, histogram matching and a pseudo-invariant-feature normalization baseline.

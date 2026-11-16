@@ -109,3 +109,98 @@ def minnaert_correction(reflectance, cos_incidence, cos_zenith, k, *, valid_mask
         corrected[..., band][valid] = x[..., band][valid] * ratio[valid] ** exponent
     return {"corrected": corrected[..., 0] if was_2d else corrected,
             "k": exponents[0] if was_2d else exponents.copy()}
+
+
+def histogram_match(source, reference, *, valid_mask=None, quantiles=1024):
+    """Match each source band to a reference band's empirical distribution.
+
+    Both inputs are matching (rows, cols[, bands]) arrays. The piecewise
+    linear map is built from corresponding empirical quantiles. This is a
+    univariate distribution match, not physical calibration; it can erase
+    genuine distributional change and does not correct spatially varying
+    illumination or sensor response.
+    """
+    src, was_2d = _image(source)
+    ref, ref_2d = _image(reference)
+    if src.shape != ref.shape or was_2d != ref_2d:
+        raise ValueError("source and reference must have matching shapes and dimensionality")
+    if not isinstance(quantiles, (int, np.integer)) or quantiles < 2:
+        raise ValueError("quantiles must be an integer of at least 2")
+    valid = _valid_mask(valid_mask, src.shape[:2])
+    if valid.sum() < 2:
+        raise ValueError("valid_mask must select at least two pixels")
+    probabilities = np.linspace(0.0, 1.0, quantiles)
+    matched = np.empty_like(src)
+    for band in range(src.shape[-1]):
+        source_values = src[..., band][valid]
+        reference_values = ref[..., band][valid]
+        source_q = np.quantile(source_values, probabilities)
+        reference_q = np.quantile(reference_values, probabilities)
+        # Collapse repeated source quantiles before interpolation; this also
+        # handles constant-valued source bands without divide-by-zero.
+        unique_source, first = np.unique(source_q, return_index=True)
+        mapped_reference = reference_q[first]
+        if unique_source.size == 1:
+            matched[..., band] = reference_q[0]
+        else:
+            matched[..., band] = np.interp(src[..., band], unique_source, mapped_reference)
+    return {"matched": matched[..., 0] if was_2d else matched,
+            "quantile_probabilities": probabilities}
+
+
+def pseudo_invariant_feature_normalization(reference, target, *, valid_mask=None,
+                                           stable_fraction=0.5, ridge=1e-10):
+    """Linearly normalize target bands to reference using automatically selected PIFs.
+
+    A conservative baseline selects the lowest-change fraction of valid
+    pixels using a robustly scaled multiband difference score, then fits
+    reference_band = gain * target_band + offset on those pseudo-invariant
+    candidates. This is not IR-MAD: it does not estimate canonical variates,
+    iteratively reweight change probabilities, or model sensor noise.
+    """
+    ref, was_2d = _image(reference)
+    tgt, tgt_2d = _image(target)
+    if ref.shape != tgt.shape or was_2d != tgt_2d:
+        raise ValueError("reference and target must have matching shapes and dimensionality")
+    if not np.isfinite(stable_fraction) or not 0 < stable_fraction <= 1:
+        raise ValueError("stable_fraction must be in (0, 1]")
+    if not np.isfinite(ridge) or ridge <= 0:
+        raise ValueError("ridge must be finite and positive")
+    valid = _valid_mask(valid_mask, ref.shape[:2])
+    indices = np.flatnonzero(valid)
+    minimum = max(3, ref.shape[-1] + 1)
+    count = max(minimum, int(np.ceil(stable_fraction * indices.size)))
+    if count > indices.size:
+        raise ValueError("at least max(3, bands + 1) valid pixels are required")
+    difference = ref - tgt
+    samples = difference.reshape(-1, ref.shape[-1])[indices]
+    median = np.median(samples, axis=0)
+    mad = 1.4826 * np.median(np.abs(samples - median), axis=0)
+    scale = np.where(mad > ridge, mad, 1.0)
+    scores = np.linalg.norm((samples - median) / scale, axis=1)
+    chosen_local = np.argsort(scores, kind="stable")[:count]
+    stable_flat = indices[chosen_local]
+    stable = np.zeros(ref.shape[:2], dtype=bool)
+    stable.flat[stable_flat] = True
+
+    ref_samples = ref.reshape(-1, ref.shape[-1])[stable_flat]
+    tgt_samples = tgt.reshape(-1, tgt.shape[-1])[stable_flat]
+    gains = np.empty(ref.shape[-1])
+    offsets = np.empty(ref.shape[-1])
+    corrected = np.empty_like(tgt)
+    for band in range(ref.shape[-1]):
+        x = tgt_samples[:, band]
+        y = ref_samples[:, band]
+        centered = x - x.mean()
+        denominator = float(centered @ centered)
+        if denominator <= ridge:
+            raise ValueError("selected PIF target values have insufficient variance")
+        gain = float(centered @ (y - y.mean()) / denominator)
+        offset = float(y.mean() - gain * x.mean())
+        if not np.isfinite(gain) or not np.isfinite(offset):
+            raise ValueError("PIF regression produced non-finite coefficients")
+        gains[band], offsets[band] = gain, offset
+        corrected[..., band] = gain * tgt[..., band] + offset
+    return {"normalized": corrected[..., 0] if was_2d else corrected,
+            "stable_mask": stable, "gain": gains[0] if was_2d else gains,
+            "offset": offsets[0] if was_2d else offsets}

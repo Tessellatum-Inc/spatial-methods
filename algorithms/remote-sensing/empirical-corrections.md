@@ -1,15 +1,24 @@
-# Empirical atmospheric and terrain corrections
+# Empirical atmospheric, terrain and relative radiometric corrections
 
 ## Dark-object subtraction
 
-Dark-object subtraction estimates additive path radiance from a low percentile of valid image pixels in each band, then subtracts that estimate. This is an empirical haze-reduction heuristic. It is not a physical radiative-transfer solution and cannot replace 6S, MODTRAN, FLAASH or sensor-specific atmospheric processing.
+Dark-object subtraction estimates additive path radiance from a low percentile of valid image pixels in each band, then subtracts that estimate. This is an empirical haze-reduction heuristic, not a physical radiative-transfer solution and cannot replace 6S, MODTRAN, FLAASH or sensor-specific atmospheric processing.
 
-## C-correction
+## Terrain illumination correction
 
-C-correction fits a per-band linear relation between reflectance and local illumination cosine, estimates C as intercept divided by slope, and applies rho_corrected = rho * (cos(solar zenith) + C) / (cos(incidence) + C). The baseline excludes invalid and near-zero illumination cells and rejects unstable or negative C estimates. It assumes co-registration and a usable linear fit.
+C-correction fits a per-band linear relation between reflectance and local illumination cosine, estimates C as intercept divided by slope, and applies rho_corrected = rho * (cos(solar zenith) + C) / (cos(incidence) + C). Minnaert correction applies rho_corrected = rho * (cos(solar zenith) / cos(incidence))^k, with k supplied by the caller. Both assume co-registration and a usable illumination model; neither is a BRDF solution.
 
-## Minnaert correction
+## Histogram matching
 
-Minnaert correction applies rho_corrected = rho * (cos(solar zenith) / cos(incidence))^k. The exponent k is supplied by the caller, per band or scalar; it is not inferred from a single universal value. Non-illuminated cells are returned as NaN.
+For each band, histogram matching maps the empirical source quantiles to the corresponding reference-image quantiles using piecewise-linear interpolation. The mapping is univariate and clamps values beyond the fitted quantile range. It can harmonize marginal distributions but can also erase genuine distributional change; it is not radiometric calibration.
 
-These are distinct correction families with different assumptions. They do not perform cloud masking, BRDF normalization, atmospheric gas/aerosol retrieval or full sensor calibration.
+## Pseudo-invariant-feature normalization
+
+The implemented PIF baseline scores each valid pixel by robustly scaled multiband difference between reference and target dates, selects the lowest-change fraction, and fits per-band ordinary least-squares affine maps from target to reference. It requires enough candidate pixels and non-constant target values. This is deliberately not labelled IR-MAD: canonical variates, iterative change-probability weighting and noise covariance estimation are not implemented.
+
+## Tests, limitations and references
+
+The [NumPy reference package](../../implementations/python/empirical-corrections/README.md) includes synthetic affine-recovery tests, explicit masks and invalid-input cases. All methods assume matching grids and compatible band definitions. They do not model spatially varying sensor response, BRDF, atmosphere, cloud/shadow contamination or uncertainty in selected invariant features.
+
+- Schott et al. (1988), “Radiometric scene normalization using pseudo-invariant features,” *Remote Sensing of Environment*, 26(1), 1–16, [doi:10.1016/0034-4257(88)90001-1](https://doi.org/10.1016/0034-4257(88)90001-1).
+- Hall et al. (1991), “Radiometric rectification: toward a common radiometric response among multidate, multisensor images,” *Remote Sensing of Environment*, 35(1), 11–27, [doi:10.1016/0034-4257(91)90084-8](https://doi.org/10.1016/0034-4257(91)90084-8).

@@ -184,3 +184,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 5 change detection: added tested bitemporal change-vector analysis with Euclidean and covariance-standardized magnitudes, plus post-classification transition matrices and pixel change masks. The independent tests include direct linear-algebra and pixelwise counting oracles. IR-MAD, learned Siamese/ChangeFormer models, threshold calibration and accuracy-adjusted change estimates remain open.
+
+
+- Section 5 relative radiometric normalization: added per-band empirical-quantile histogram matching and a robustly selected pseudo-invariant-feature affine normalization baseline, with synthetic affine-recovery tests, mask/NoData controls and explicit limitations. These are not IR-MAD and do not replace sensor calibration or atmospheric/BRDF correction.
