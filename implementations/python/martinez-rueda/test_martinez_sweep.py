@@ -56,12 +56,20 @@ def test_identical_coincident_polygons_are_bundled_once(operation, expected_area
     assert result["area"] == pytest.approx(expected_area)
     assert len(result["rings"]) == expected_rings
 
-def test_adjacent_polygons_with_shared_edge_union_without_duplicate_boundary():
+@pytest.mark.parametrize("operation,expected_area,expected_rings", [
+    ("intersection", 0.0, 0),
+    ("union", 8.0, 1),
+    ("difference", 4.0, 1),
+    ("symmetric_difference", 8.0, 1),
+])
+def test_adjacent_polygons_with_shared_edge_all_boolean_operations(
+    operation, expected_area, expected_rings
+):
     a=[(0,0),(2,0),(2,2),(0,2)]
     b=[(2,0),(4,0),(4,2),(2,2)]
-    result=boolean_overlay_rings([[a],[b]], operation="union")
-    assert result["area"] == pytest.approx(8.0)
-    assert len(result["rings"]) == 1
+    result=boolean_overlay_rings([[a],[b]], operation=operation)
+    assert result["area"] == pytest.approx(expected_area)
+    assert len(result["rings"]) == expected_rings
 
 
 def test_invalid_input_rejected():
