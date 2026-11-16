@@ -426,6 +426,9 @@ jobs:
           - example: insar-time-series
             directory: implementations/python/insar-time-series
             pythonpath: ""
+          - example: spatial-zoning
+            directory: implementations/python/spatial-zoning
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""

@@ -29,7 +29,7 @@ This section groups applied methods across spatial interaction, functional regio
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Head/tail breaks, maximum breaks, geometric interval, standard deviation, box plot, pretty breaks, Dalenius-Hodges, optimal 1D k-means (ckmeans) | Classification and binning methods | 33 | Partially implemented: head/tail, geometric interval, standard deviation, box plot, Dalenius–Hodges and exact 1D ckmeans are tested; “maximum breaks” and “pretty breaks” remain unresolved names |
-| Zone design and aggregation: AMOEBA, automated zoning procedures, scale-effect analysis, variance by aggregation level | Spatial regionalisation / aggregation and scale analysis | 33 | Not checked — intake only |
+| Zone design and aggregation: AMOEBA, automated zoning procedures, scale-effect analysis, variance by aggregation level | Spatial regionalisation / aggregation and scale analysis | 33 | Partial — spatially constrained Ward agglomeration and a multi-scale within-zone variance curve are implemented and tested; AMOEBA and broader MAUP inference remain open |
 
 ## Cost surfaces and movement through terrain
 
@@ -180,3 +180,8 @@ The humanitarian entry is partially covered by the repository's tested p-median/
 ### InSAR orbital-ramp removal and SBAS network inversion
 
 The new InSAR package fits and removes first- or second-order spatial polynomial ramps from unwrapped interferometric phase, and solves per-pixel small-baseline acquisition networks by weighted least squares relative to a reference date. The inversion reports only pixels whose available interferogram network has full rank. It is not a complete SBAS/NSBAS processing chain: phase unwrapping, coherence estimation, atmospheric screens, DEM-error correction, temporal regularization and GNSS integration remain open.
+
+
+### Spatially constrained zoning and scale effects
+
+A spatially constrained Ward agglomeration baseline now merges only adjacent planning units, using the Ward increase in within-zone attribute sum of squares. A scale-effect utility evaluates within-zone variance across requested zone counts. This is not the AMOEBA algorithm or a full modifiable-areal-unit-problem study; choice of attributes, contiguity graph, zone count and boundary constraints remain substantive modelling decisions.

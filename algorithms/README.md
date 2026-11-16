@@ -385,3 +385,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Green security-game patrol allocation](security/green-security-games.md) — allocate fractional patrol coverage to minimize worst-case attacker payoff under a resource budget.
 
 - [InSAR orbital-ramp removal and SBAS inversion](insar/insar-time-series.md) — fit spatial polynomial ramps and invert unwrapped interferogram networks to acquisition displacement time series.
+
+- [Spatially constrained zoning and scale effects](regionalisation/spatial-zoning.md) — Ward agglomeration over adjacency graphs and within-zone variance across target zone counts.
