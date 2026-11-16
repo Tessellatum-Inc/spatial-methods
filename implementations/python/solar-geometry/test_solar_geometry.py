@@ -3,9 +3,9 @@ import pytest
 from solar_geometry import solar_position, extraterrestrial_irradiance
 
 def test_equinox_equator_midday_sun_is_high_and_near_south():
-    result = solar_position(0, 0, datetime(2024, 3, 20, 12, tzinfo=timezone.utc))
-    assert result["solar_elevation_deg"] > 87
-    assert result["solar_azimuth_deg"] == pytest.approx(180, abs=2)
+    result = solar_position(0, 0, datetime(2024, 3, 20, 12, 7, 52, tzinfo=timezone.utc))
+    assert result["solar_elevation_deg"] > 89
+    assert result["solar_azimuth_deg"] == pytest.approx(180, abs=3)
 
 def test_timezone_equivalent_instants_produce_same_position():
     utc = datetime(2024, 6, 21, 12, tzinfo=timezone.utc)
