@@ -250,3 +250,26 @@ def test_endpoint_cells_keep_uncrossed_caps_in_replacement_record():
         ]
         assert any(cell.x_right == x0 for cell in caps) or corridor[0].x_left == x0
         assert any(cell.x_left == x1 for cell in caps) or corridor[-1].x_right == x1
+
+
+def test_persistent_history_dag_matches_rebuilt_locator_on_seeded_queries():
+    rng = random.Random(20261116)
+    locator = RandomizedTrapezoidalMap(segments(), (0, 0, 10, 10), seed=19)
+    assert locator.history_node_count > 0
+    queries = [(rng.uniform(-1, 11), rng.uniform(-1, 11)) for _ in range(2000)]
+    queries.extend((a[0], a[1]) for a, _b in locator.segments)
+    queries.extend((b[0], b[1]) for _a, b in locator.segments)
+    for x, y in queries:
+        expected = locator.locate(x, y)
+        actual = locator._locate_history(x, y)
+        if expected == BOUNDARY or expected is None:
+            assert actual == expected
+        else:
+            assert isinstance(actual, Trapezoid)
+            assert (
+                actual.x_left, actual.x_right,
+                actual.bottom_segment, actual.top_segment
+            ) == (
+                expected.x_left, expected.x_right,
+                expected.bottom_segment, expected.top_segment
+            )
