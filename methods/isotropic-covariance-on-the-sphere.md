@@ -78,3 +78,21 @@ The tests check coordinate conversion, domain validation, diagonal variance, sym
 - *Spherical Process Models for Global Spatial Statistics*. Open-access review, including Schoenberg's Legendre characterization and examples of invalid Euclidean kernels under geodesic distance: [PMC article](https://pmc.ncbi.nlm.nih.gov/articles/PMC6457667/).
 - Schoenberg, I. J. (1942). Positive definite functions on spheres. *Duke Mathematical Journal*, 9, 96–108.
 - Gneiting, T. (2013). Strictly and non-strictly positive definite functions on spheres. [arXiv:1111.7077](https://arxiv.org/abs/1111.7077).
+
+
+## Spherical descriptive statistics and directional models
+
+The same unit-vector representation supports intrinsic summaries and directional probability models. The companion `spherical_statistics.py` module adds:
+
+- **Intrinsic Fréchet mean:** a Karcher tangent-vector iteration initialized at a sample medoid. It minimizes squared great-circle distance locally and explicitly rejects antipodal cut-locus singularities.
+- **Spherical k-means:** cosine-distance clustering with seeded spherical k-means++ initialization and normalized resultant centroids. Like ordinary k-means, it finds a local optimum.
+- **von Mises–Fisher density:** the normalized three-dimensional directional density
+  \[
+  f(x\mid\mu,\kappa)=\frac{\kappa}{4\pi\sinh\kappa}
+  \exp(\kappa\mu^\mathsf T x),
+  \]
+  with the uniform limit \(1/(4\pi)\) at zero concentration. The normalizer is evaluated in log-stable form.
+- **von Mises–Fisher mixtures:** an EM baseline updating mixture proportions, mean directions and component concentrations. Initialization and likelihood optimization are local; multiple seeds and model-selection checks are advisable.
+- **Spherical KDE:** a normalized weighted mixture of vMF kernels, with one common concentration parameter.
+
+The Fréchet mean is not the normalized arithmetic mean in general. The vMF density is a probability density per unit solid angle on the unit sphere, not per square kilometre on an ellipsoid. These methods do not fit a spherical Gaussian process or perform geodesic regression.
