@@ -163,13 +163,7 @@ def constrained_delaunay_with_diagonals(
             other_a = b if a == common else a
             other_b = d if c == common else c
             if orient(common, other_a, other_b) == 0:
-                # Collinear rays from a shared endpoint are invalid only when
-                # they point in the same direction and therefore overlap.
-                # Opposite rays meet at the endpoint without sharing length.
-                va = (other_a[0] - common[0], other_a[1] - common[1])
-                vb = (other_b[0] - common[0], other_b[1] - common[1])
-                if va[0] * vb[0] + va[1] * vb[1] > 0:
-                    raise ValueError("collinear constraints overlap")
+                raise ValueError("collinear constraints overlap or reverse")
 
     pieces: list[list[Point]] = [ring]
     for a, b in parsed:
