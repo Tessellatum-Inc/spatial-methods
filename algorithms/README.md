@@ -389,3 +389,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Spatially constrained zoning and scale effects](regionalisation/spatial-zoning.md) — Ward agglomeration over adjacency graphs and within-zone variance across target zone counts.
 
 - [SAR calibration and multilooking](remote-sensing/sar-calibration.md) — sigma0/beta0/gamma0 radiometric scaling and block multilooking with NoData policies.
+
+- [Universal kriging](geostatistics/universal-kriging.md) — dense covariance-system solver with constant, linear and quadratic drift and conditional prediction variance.

@@ -432,6 +432,9 @@ jobs:
           - example: sar-calibration
             directory: implementations/python/sar-calibration
             pythonpath: ""
+          - example: universal-kriging
+            directory: implementations/python/universal-kriging
+            pythonpath: "../variogram-models"
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""

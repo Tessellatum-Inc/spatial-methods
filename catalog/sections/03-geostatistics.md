@@ -19,7 +19,7 @@ This section combines surface estimation, stochastic spatial models, simulation,
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Kriging: [ordinary kriging](../../algorithms/geostatistics/interpolation.md), simple, universal, co-kriging, regression kriging, external drift, indicator, disjunctive, block, area-to-point, area-to-area, spatiotemporal | Geostatistical estimators / kriging variants | 4 | Partial — related record exists; source-entry review pending |
+| Kriging: [ordinary kriging](../../algorithms/geostatistics/interpolation.md), simple, universal, co-kriging, regression kriging, external drift, indicator, disjunctive, block, area-to-point, area-to-area, spatiotemporal | Geostatistical estimators / kriging variants | 4 | Partial — tested ordinary and universal kriging baselines use explicit spherical/exponential/Gaussian variogram parameters and polynomial drift; simple, co-kriging, regression/external-drift, indicator, disjunctive, block, area-to-point/area-to-area and spatiotemporal variants remain open |
 | [Empirical semivariogram](../../methods/empirical-semivariogram.md), theoretical variogram fitting, anisotropy, nonstationary covariance, spatial deformation, process convolution, multiscale kriging | Covariance and variogram modelling methods / geostatistical approaches | 4 | Partial — related record exists; source-entry review pending |
 | Large-data Gaussian processes: Vecchia, NNGP, covariance tapering, fixed rank kriging, predictive processes, lattice kriging, multi-resolution approximation | Gaussian-process approximations / scalable spatial models | 4 | Not checked — intake only |
 | Simulation: sequential Gaussian, indicator simulation, multiple-point statistics (SNESIM, direct sampling), object-based, p-field | Spatial simulation methods | 5 | Not checked — intake only |
@@ -80,3 +80,8 @@ The [empirical semivariogram lesson](../../methods/empirical-semivariogram.md) e
 ## Bibliographic check on the geostatistics foundation
 
 Matheron (1963), “Principles of geostatistics,” *Economic Geology*, 58(8), 1246–1266, [10.2113/gsecongeo.58.8.1246](https://doi.org/10.2113/gsecongeo.58.8.1246), was checked against the publisher and DOI records and is now cited in the interpolation lesson. This confirms the selected foundational citation only; it does not verify the full kriging family or all Section 3 source entries.
+
+
+### Universal kriging implementation update
+
+A dense universal-kriging solver now supports constant, linear and quadratic polynomial drift with caller-specified spherical, exponential or Gaussian variogram parameters. It returns predictions and conditional kriging variance and rejects rank-deficient drift designs. The implementation is a small-data reference solver; it does not fit variograms, select neighbourhoods, or implement co-kriging, regression/external drift, indicator, disjunctive, block, area-to-point or spatiotemporal kriging.
