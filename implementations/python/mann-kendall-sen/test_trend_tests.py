@@ -49,7 +49,7 @@ def test_invalid_sen_time_axis_rejected():
 
 
 def test_seasonal_mk_compares_only_matching_seasons():
-    values = [2, 100, 3, 90, 4, 80, 5, 70]
+    values = [2, 100, 3, 101, 4, 102, 5, 103]
     r = seasonal_mann_kendall(values, ["warm", "cold"] * 4)
     assert r["s"] == 12 and r["season_count"] == 2
     assert r["seasons"]["warm"]["s"] == 6
@@ -65,7 +65,7 @@ def test_seasonal_mk_tie_variance_is_summed_within_seasons():
 
 
 def test_seasonal_sen_uses_only_within_season_pairs():
-    r = seasonal_sen_slope([10, 100, 12, 90, 14, 80, 16, 70], ["warm", "cold"] * 4)
+    r = seasonal_sen_slope([10, 100, 12, 102, 14, 104, 16, 106], ["warm", "cold"] * 4)
     assert r["slope"] == pytest.approx(2) and r["pair_count"] == 12
 
 
