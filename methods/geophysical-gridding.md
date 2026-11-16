@@ -65,22 +65,22 @@ This is a discrete biharmonic minimum-curvature baseline with a Dirichlet perime
 - [Walkthrough](../implementations/python/geophysical-gridding/discrete-biharmonic-walkthrough.md)
 - [Lab](../notebooks/discrete-biharmonic-gridding-lab.ipynb)
 
-## Comparing the four scattered-point methods
+## Comparing the six scattered-point methods
 
 | Method | Surface behaviour | Outside convex hull |
 |---|---|---|
 | Nearest neighbour | Piecewise constant; preserves sample values | Defined everywhere; optional distance mask |
 | Delaunay linear | Piecewise planar; continuous, gradient changes at triangle edges | Fill value; no extrapolation |
 | Thin-plate spline | Smooth minimum-bending-energy surface; smoothing controls fit | Extrapolates; edge estimates can be unstable |
-| Ordinary kriging | Covariance-weighted estimate with model-based conditional variance | Defined by the covariance model |
+| Ordinary kriging | Covariance-weighted estimate with model-based conditional variance | Defined by the covariance model |\n| Cressman | Compact-support residual corrections over decreasing radii | Defined on the analysis grid; unsupported nodes retain the background |\n| Barnes | Gaussian residual corrections with explicit relaxation | Defined on the analysis grid |
 
 Kriging is not automatically superior to deterministic interpolation. Its usefulness depends on a defensible covariance model, sampling design and validation. A fair comparison should use spatially blocked validation and report prediction error as well as uncertainty calibration.
 
-## What remains outside this package
+## 6. Cressman successive-correction objective analysis\n\nCressman analysis begins with a first-guess field $f^{(0)}$. At pass $k$, interpolate the current grid to each observation to obtain residuals $e_i^{(k)}=z_i-f^{(k)}(s_i)$. At grid node $q$, calculate the weighted residual correction\n\n$\delta f^{(k)}(q)=\\frac{\\sum_{i:d_i<R_k}w_i e_i^{(k)}}{\\sum_{i:d_i<R_k}w_i},\\qquad w_i=\\frac{R_k^2-d_i^2}{R_k^2+d_i^2}.$\n\nAdd the correction to the field and repeat with decreasing radii. Nodes without support retain their previous value. The implementation uses bilinear interpolation from the current rectilinear grid to observation locations and defaults to a zero first guess; an explicit scalar or grid background can be supplied.\n\n## 7. Barnes Gaussian successive-correction analysis\n\nThe Barnes baseline uses Gaussian influence weights $w_i=\\exp[-d_i^2/(\\kappa R_k^2)]$ and applies a relaxed correction $\\gamma_k\\delta f^{(k)}(q)$ at each pass. The implementation exposes $\\kappa$ and $\\gamma_k$ instead of hiding method-specific conventions. Values and coordinates must use consistent planar units, radii decrease from coarse to fine, and observations must lie inside the analysis grid.\n\n## What remains outside this package
 
 - The full Briggs iterative minimum-curvature gridding algorithm for scattered observations, including its scattered-point constraints, initialization and multilevel/block convergence behaviour; the fixed-boundary discrete solver above is a separate bounded baseline.
 - Variogram fitting, anisotropic covariance models, universal kriging and scalable large-data kriging.
-- Natural-neighbour interpolation and explicit uncertainty models for the deterministic interpolators.
+- Natural-neighbour interpolation, fitted covariance models, and explicit uncertainty models for deterministic interpolators.
 
 ## Runnable material
 
