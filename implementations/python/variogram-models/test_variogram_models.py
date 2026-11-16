@@ -5,7 +5,8 @@ from variogram_models import variogram_model,directional_semivariogram,fit_vario
 @pytest.mark.parametrize("model",["spherical","exponential","gaussian"])
 def test_models_are_zero_at_origin_and_approach_sill(model):
     y=variogram_model([0,1e9],model=model,nugget=0.2,partial_sill=1.3,range_=5)
-    assert y[0]==pytest.approx(0.2)
+    assert y[0]==pytest.approx(0.0)
+    assert variogram_model([1e-9],model=model,nugget=0.2,partial_sill=1.3,range_=5)[0] >= 0.2
     assert y[1]==pytest.approx(1.5)
 
 def test_spherical_model_reaches_sill_at_range():
