@@ -16,8 +16,8 @@ The canonical records now cover the spectral-index family, global Otsu threshold
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Atmospheric: dark object subtraction, 6S, MODTRAN, FLAASH, Sen2Cor, ocean color atmospheric correction | Atmospheric correction methods / models / software | 7 | Not checked — intake only |
-| Topographic and BRDF: C-correction, SCS+C, Minnaert, Ross-Li, BRDF normalization | Topographic correction / reflectance modelling | 7 | Not checked — intake only |
+| Atmospheric: dark object subtraction, 6S, MODTRAN, FLAASH, Sen2Cor, ocean color atmospheric correction | Atmospheric correction methods / models / software | 7 | Partial — a tested percentile-based dark-object subtraction baseline is implemented; 6S/MODTRAN/FLAASH/Sen2Cor and ocean-colour atmospheric correction remain distinct physical or sensor-specific workflows |
+| Topographic and BRDF: C-correction, SCS+C, Minnaert, Ross-Li, BRDF normalization | Topographic correction / reflectance modelling | 7 | Partial — tested C-correction and caller-exponent Minnaert baselines are implemented; SCS+C, Ross-Li and BRDF normalization remain open |
 | Relative normalization: IR-MAD, pseudo-invariant features, histogram matching, empirical line calibration | Radiometric normalisation / calibration methods | 7 | Not checked — intake only |
 | Cloud and shadow masking: Fmask, s2cloudless, CloudSEN12-style models; sensor harmonization (HLS) | Masking algorithms / model families / harmonisation products | 8 | Not checked — intake only |
 | Mosaicking, seamline detection (Voronoi, graph cut), color balancing, orthorectification, co-registration | Image assembly / seamline algorithms / geometric correction | 8 | Not checked — intake only |
