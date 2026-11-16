@@ -30,6 +30,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Laplace approximation and slice sampling](statistics/laplace-and-slice-inference.md) — posterior mode, local Gaussian approximation and componentwise slice sampling.
 
+## Circular and directional statistics
+
+- [Circular and directional statistics](statistics/circular-directional-statistics.md) — summarize directions, test circular uniformity, evaluate the von Mises density and construct weighted rose histograms.
+
 ## Spatial Bayesian inference
 
 - [Proper Gaussian CAR Gibbs sampling](statistics/proper-car-gibbs-sampling.md) — fixed-hyperparameter latent Gaussian posterior sampling.
