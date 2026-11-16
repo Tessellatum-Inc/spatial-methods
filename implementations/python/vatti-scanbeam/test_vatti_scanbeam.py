@@ -168,3 +168,51 @@ def test_horizontal_events_are_empty_off_their_scanbeam():
     from vatti_scanbeam import horizontal_events_at
     result = decompose_scanbeams([[(0, 0), (4, 0), (4, 3), (0, 3)]])
     assert horizontal_events_at(result, 1) == ()
+
+
+@pytest.mark.parametrize("rule,values,expected", [
+    ("even_odd", [-2, -1, 0, 1, 2], [False, True, False, True, False]),
+    ("non_zero", [-2, -1, 0, 1, 2], [True, True, False, True, True]),
+    ("positive", [-2, -1, 0, 1, 2], [False, False, False, True, True]),
+    ("negative", [-2, -1, 0, 1, 2], [True, True, False, False, False]),
+])
+def test_fill_rule_winding_predicates(rule, values, expected):
+    from vatti_scanbeam import is_filled
+    assert [is_filled(value, rule) for value in values] == expected
+
+
+@pytest.mark.parametrize("operation,expected", [
+    ("intersection", True),
+    ("union", True),
+    ("difference", False),
+    ("xor", False),
+])
+def test_boolean_truth_table_when_both_inputs_filled(operation, expected):
+    from vatti_scanbeam import boolean_result
+    assert boolean_result(1, 1, operation) is expected
+
+
+@pytest.mark.parametrize("operation,expected", [
+    ("intersection", False),
+    ("union", True),
+    ("difference", True),
+    ("xor", True),
+])
+def test_boolean_truth_table_subject_only(operation, expected):
+    from vatti_scanbeam import boolean_result
+    assert boolean_result(1, 0, operation) is expected
+
+
+def test_boolean_truth_table_clip_only():
+    from vatti_scanbeam import boolean_result
+    assert [boolean_result(0, 1, operation) for operation in
+            ("intersection", "union", "difference", "xor")] == [
+                False, True, False, True]
+
+
+def test_fill_rule_and_boolean_operation_names_are_validated():
+    from vatti_scanbeam import boolean_result, is_filled
+    with pytest.raises(ValueError, match="fill rule"):
+        is_filled(1, "mystery")
+    with pytest.raises(ValueError, match="operation"):
+        boolean_result(1, 1, "symmetric")
