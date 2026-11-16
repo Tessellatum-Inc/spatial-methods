@@ -707,6 +707,9 @@ jobs:
           - example: whittaker-smoother
             directory: implementations/python/whittaker-smoother
             pythonpath: ""
+          - example: coastal-processes
+            directory: implementations/python/coastal-processes
+            pythonpath: ""
 
     steps:
       - name: Check out repository
