@@ -203,7 +203,16 @@ class DCEL:
             if edge.face is None:
                 outgoing = d.vertices[edge.target].outgoing
                 twin_pos = outgoing.index(edge.twin)
-                edge.next = outgoing[(twin_pos-1) % len(outgoing)]
+                # Skip bounded-face half-edges in the angular fan: the
+                # exterior boundary may pass a vertex where several bounded
+                # faces meet, but it must remain on exterior half-edges.
+                for offset in range(1, len(outgoing) + 1):
+                    candidate = outgoing[(twin_pos-offset) % len(outgoing)]
+                    if d.halfedges[candidate].face is None:
+                        edge.next = candidate
+                        break
+                if edge.next is None:
+                    raise ValueError("Exterior boundary has no successor at a vertex")
         for edge in d.halfedges:
             if edge.face is None:
                 d.halfedges[edge.next].prev = edge.id
