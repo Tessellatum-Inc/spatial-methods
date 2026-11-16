@@ -147,6 +147,40 @@ def _intersection(s1,s2,eps):
         return t,u,(float(p[0]),float(p[1])),proper
     return None
 
+def _intersection_all(s1,s2,eps):
+    """Return every exact split event, including both ends of collinear overlap.
+
+    The legacy scalar predicate remains available for callers that need a
+    single proper/contact hit. The sweep uses this multi-hit form so a shared
+    edge is split into atomic coincident bundles instead of being rejected.
+    """
+    try:
+        hit=_intersection(s1,s2,eps)
+        return () if hit is None else (hit,)
+    except NotImplementedError:
+        aa,bb=_fraction_point(s1.a),_fraction_point(s1.b)
+        cc,dd=_fraction_point(s2.a),_fraction_point(s2.b)
+        if _orientation(s1.a,s1.b,s2.a)!=0 or _orientation(s1.a,s1.b,s2.b)!=0:
+            return ()
+        def parameter(a,b,p):
+            dx,dy=b[0]-a[0],b[1]-a[1]
+            axis=0 if abs(dx)>=abs(dy) else 1
+            return (p[axis]-a[axis])/(b[axis]-a[axis])
+        shared=sorted(set((aa,bb,cc,dd)) & {
+            p for p in (aa,bb,cc,dd)
+            if _on_segment_exact(s1.a,s1.b,p) and
+               _on_segment_exact(s2.a,s2.b,p)
+        })
+        if not shared:
+            return ()
+        hits=[]
+        for p in shared:
+            t=parameter(aa,bb,p)
+            u=parameter(cc,dd,p)
+            hits.append((t,u,(float(p[0]),float(p[1])),False))
+        return tuple(hits)
+
+
 def _validate_polygon_rings(rings,eps):
     if not rings: raise ValueError('each polygon source needs one shell ring')
     shell=rings[0]
@@ -300,11 +334,10 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
             s1,s2=segments[sid],segments[other]
             if s1.source==s2.source: continue
             candidate_pairs+=1
-            hit=_intersection(s1,s2,epsilon)
-            if hit is None: continue
-            t,u,p,proper=hit
-            params[sid].append((t,p)); params[other].append((u,p))
-            if proper: crossings.append(Event(p,"intersection",tuple(sorted((sid,other)))))
+            for t,u,p,proper in _intersection_all(s1,s2,epsilon):
+                params[sid].append((t,p)); params[other].append((u,p))
+                if proper:
+                    crossings.append(Event(p,"intersection",tuple(sorted((sid,other)))))
         active_status.insert(sid,ymin,ymax); active_by_id[sid]=(xmax,ymin,ymax)
         heapq.heappush(expiry,(xmax,sid))
     fragments=[]
@@ -340,25 +373,34 @@ def classify_boundary_fragments(polygons, *, operation='intersection', epsilon=1
             if (rid==0 and area<0) or (rid>0 and area>0): ring.reverse()
         rings.append(source_rings)
     selected=[]
+    def result_filled(point):
+        subject=_inside_polygon(point,rings[0])
+        clip=_inside_polygon(point,rings[1])
+        if operation=='intersection': return subject and clip
+        if operation=='union': return subject or clip
+        if operation=='difference': return subject and not clip
+        return subject != clip
     for f in result['split_segments']:
-        midpoint=(
-            (_fraction_value(f.a[0])+_fraction_value(f.b[0]))/2,
-            (_fraction_value(f.a[1])+_fraction_value(f.b[1]))/2
-        )
-        inside=_inside_polygon(midpoint,rings[1-f.source])
-        if operation=='intersection':
-            keep=inside
-        elif operation=='union':
-            keep=not inside
-        elif operation=='difference':
-            keep=(not inside if f.source==0 else inside)
-        else:
-            keep=True
-        if keep:
-            reverse=(operation=='difference' and f.source==1) or (operation=='symmetric_difference' and inside)
-            a,b=(f.b,f.a) if reverse else (f.a,f.b)
-            t0,t1=(f.t1,f.t0) if reverse else (f.t0,f.t1)
-            selected.append(SplitSegment(f.source,f.ring,f.index,a,b,t0,t1))
+        ax,ay=_fraction_point(f.a); bx,by=_fraction_point(f.b)
+        dx,dy=bx-ax,by-ay
+        scale=max(abs(dx),abs(dy))
+        if scale==0: continue
+        # Exact infinitesimal-style side probes avoid classifying a coincident
+        # boundary midpoint as simply "outside". The offset is capped by the
+        # caller tolerance and is relative to the fragment length.
+        offset=min(Fraction(str(epsilon))/4,scale/Fraction(2**40))
+        nx,ny=-dy*offset/scale,dx*offset/scale
+        midpoint=((ax+bx)/2,(ay+by)/2)
+        left=(midpoint[0]+nx,midpoint[1]+ny)
+        right=(midpoint[0]-nx,midpoint[1]-ny)
+        left_filled=result_filled(left)
+        right_filled=result_filled(right)
+        if left_filled==right_filled:
+            continue
+        reverse=not left_filled
+        a,b=(f.b,f.a) if reverse else (f.a,f.b)
+        t0,t1=(f.t1,f.t0) if reverse else (f.t0,f.t1)
+        selected.append(SplitSegment(f.source,f.ring,f.index,a,b,t0,t1))
     return {'operation':operation,'selected_fragments':tuple(selected),
             'intersection_events':result['intersection_events']}
 
@@ -373,7 +415,7 @@ def stitch_boundary_fragments(fragments, *, epsilon=1e-10):
     if not isfinite(epsilon) or epsilon<=0: raise ValueError('epsilon must be finite and positive')
     edges=list(fragments)
     if not edges: return tuple()
-    def key(p): return (round(p[0]/epsilon),round(p[1]/epsilon))
+    def key(p): return _fraction_point(p)
     outgoing={}
     for i,e in enumerate(edges): outgoing.setdefault(key(e.a),[]).append(i)
     used=set(); rings=[]
