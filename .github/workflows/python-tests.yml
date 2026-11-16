@@ -405,6 +405,12 @@ jobs:
           - example: convex-decomposition
             directory: implementations/python/convex-decomposition
             pythonpath: "../ear-clipping"
+          - example: monotone-triangulation
+            directory: implementations/python/monotone-triangulation
+            pythonpath: ""
+          - example: bsp-csg
+            directory: implementations/python/bsp-csg
+            pythonpath: ""
 
           - example: ais-gap-detection
             directory: implementations/python/ais-gap-detection
