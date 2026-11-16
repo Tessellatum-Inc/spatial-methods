@@ -521,3 +521,12 @@ def test_unit_hydrograph_rejects_invalid_series():
     with pytest.raises(ValueError): unit_hydrograph_convolution([], [1])
     with pytest.raises(ValueError): unit_hydrograph_convolution([1], [-1])
     with pytest.raises(ValueError): unit_hydrograph_convolution([1], [1], time_step=0)
+
+
+
+def test_green_ampt_zero_suction_reduces_to_conductivity_limit():
+    from terrain_indices import green_ampt_infiltration_step
+    result = green_ampt_infiltration_step(0, 20, 5, 0, .2, 1)
+    assert result["infiltration"] == pytest.approx(5)
+    assert result["runoff_excess"] == pytest.approx(15)
+    assert result["ponded"]
