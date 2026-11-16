@@ -1,14 +1,14 @@
-"""Randomized trapezoidal decomposition and point-location search DAG.
+"""Randomized trapezoidal decomposition with a persistent history-DAG prototype.
 
-This is a correctness-first reference implementation for bounded, non-crossing,
-non-vertical segments in general position. Segments are inserted in a seeded
-random permutation. After each insertion the vertical decomposition and search
-DAG are rebuilt from the current set. This deliberately simple update strategy
-makes the insertion order and map invariants inspectable, but is NOT the
-asymptotically efficient local-update Seidel algorithm.
+The bounded input contract is pairwise disjoint, non-vertical segments in
+general position. Insertions follow a seeded random permutation. A persistent
+trapezoid-cell graph and search-history DAG are updated by corridor replacement;
+a rebuilt slab decomposition remains the independent reference oracle and
+currently backs the public locate() method. The prototype recomputes neighbor
+links globally and does not claim Seidel's expected construction bound.
 
-The final map supports point-to-trapezoid queries. Original segment boundaries
-return BOUNDARY; points outside the bounding box return None.
+The internal _locate_history() query is differentially tested against locate().
+Original segment boundaries return BOUNDARY; outside points return None.
 """
 from __future__ import annotations
 
@@ -138,10 +138,11 @@ class RandomizedTrapezoidalMap:
     * no two segments intersect, touch, or overlap;
     * all segments lie strictly inside the supplied bounding box.
 
-    The implementation uses a randomized insertion permutation but rebuilds
-    the vertical decomposition after each insertion. Search uses a balanced
-    x-decision tree followed by a balanced y-decision tree in the selected
-    slab. This is a reference search DAG, not the optimized history DAG.
+    The implementation maintains a corridor-replaced cell graph and a
+    persistent history DAG, while rebuilding a static slab locator as a
+    differential reference. The public locate() method uses that reference;
+    _locate_history() exercises the persistent DAG. Neighbor maintenance is
+    global per insertion, so optimized expected-time claims are not made.
     """
 
     def __init__(self, segments: Iterable[Sequence[Sequence[float]]],
