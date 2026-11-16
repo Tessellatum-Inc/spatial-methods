@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 696 | Rows with a source-entry review status in the section indexes |
-| Partial | 175 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 521 | The source wording is preserved, but no independent review is recorded |
+| Partial | 177 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 519 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -34,16 +34,16 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 13 — GeoFM workflows, urban mobility and LLMs | 29 | 0 | 29 |
 | 14 — Databases, graphics, morphology and hazards | 33 | 1 | 32 |
 | 15 — Vision, registration and vector extraction | 33 | 3 | 30 |
-| 16 — Flows, regions, deformation and marine | 25 | 19 | 6 |
+| 16 — Flows, regions, deformation and marine | 25 | 21 | 4 |
 | 17 — Geometry, scalability, design and siting | 27 | 8 | 19 |
 | 18 — Moving objects, routing, transit and water | 32 | 4 | 28 |
 | 19 — African applications, addressing and finance | 32 | 0 | 32 |
 | 20 — Indices, microwave, events and information | 25 | 8 | 17 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 3 | 23 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 6 | 22 |
-| **Total** | **696** | **175** | **521** |
+| **Total** | **696** | **177** | **519** |
 
-The 17 November recount finds **175 partial**, **521 intake-only** and **zero fully verified** source-entry rows across **696 rows**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Some section indexes have changed row counts since the prior snapshot, so the table below supersedes all historical totals in the reconciliation notes.
+The 17 November recount finds **177 partial**, **519 intake-only** and **zero fully verified** source-entry rows across **696 rows**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Some section indexes have changed row counts since the prior snapshot, so the table below supersedes all historical totals in the reconciliation notes.
 
 ## How to interpret this
 
@@ -162,3 +162,6 @@ Section 16's food-security entry now includes a tested two-market long-run price
 
 
 Section 16's wildlife-security entry now links to a tested minimax Stackelberg patrol-coverage allocator. Route-constrained patrol planning and learned strategies remain open; totals are 696 source rows, 175 partial and 521 intake-only.
+
+
+Section 16's humanitarian and conflict-analysis rows are now implementation-linked to existing facility-location/routing and spatiotemporal event-analysis methods respectively. Their grouped source entries remain partial; operational camp mapping, conflict diffusion and forecasting remain open. Current totals: 696 rows, 177 partial and 519 intake-only.

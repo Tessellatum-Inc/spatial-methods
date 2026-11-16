@@ -74,7 +74,7 @@ This section groups applied methods across spatial interaction, functional regio
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Relief facility location, humanitarian logistics routing, displacement camp mapping, tent and structure counting from imagery | Humanitarian location and routing / settlement mapping | 34 | Not checked — intake only |
+| Relief facility location, humanitarian logistics routing, displacement camp mapping, tent and structure counting from imagery | Humanitarian location and routing / settlement mapping | 34 | Partial — existing tested p-median/capacitated p-median siting and network shortest-path/routing baselines cover facility-location and logistics-routing primitives; camp mapping and imagery-based tent/structure counting remain open |
 | Food security: IPC-style analysis, FEWS NET-style outlooks, livelihood zone delineation, market integration and price transmission models | Food-security analysis / early-warning and regional economic methods | 34 | Partial — a tested two-market Engle–Granger-style long-run relation and error-correction price-transmission model is implemented; IPC/FEWS NET workflows, livelihood-zone delineation and multi-market spatial equilibrium remain open |
 | Conflict analysis: ACLED-style event analysis, conflict diffusion models, forecasting systems such as ViEWS, spatial event clustering and early warning indicators | Event analysis / diffusion and forecasting models | 34 | Not checked — intake only |
 
@@ -170,3 +170,8 @@ A two-stage error-correction baseline estimates a long-run price relation betwee
 ### Green security-game patrol allocation
 
 A compact Stackelberg security-game baseline allocates fractional patrol coverage across sites to minimize the attacker's best-response expected payoff under a fixed resource budget and site-specific detection effectiveness. It solves the equalized-payoff water-filling condition by bisection. This is a single-period coverage game, not route-constrained patrol planning, a learned defender policy or a complete anti-poaching risk system.
+
+
+### Humanitarian and conflict-analysis crosswalk
+
+The humanitarian entry is partially covered by the repository's tested p-median/capacitated p-median and shortest-path/routing implementations; the remaining camp delineation and imagery-based tent/structure counting are not implemented. The conflict-analysis entry is partially covered by tested ST-DBSCAN, spatial scan statistics and temporal change-point methods; dedicated conflict diffusion and forecasting models are not implemented. These links establish method overlap, not validation for humanitarian or conflict operational use.
