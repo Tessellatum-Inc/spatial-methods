@@ -230,6 +230,8 @@ def partition_y_monotone(vertices: Iterable[Sequence[float | int]]) -> list[list
     ys = [p[1] for p in ring]
     if len(set(ys)) != n:
         raise ValueError("The partition sweep requires distinct vertex y-coordinates.")
+    if any(orient(ring[i - 1], ring[i], ring[(i + 1) % n]) == 0 for i in range(n)):
+        raise ValueError("The partition sweep requires no three consecutive collinear vertices.")
     previous = [(i - 1) % n for i in range(n)]
     following = [(i + 1) % n for i in range(n)]
     events = sorted(range(n), key=lambda i: (-ring[i][1], ring[i][0]))
