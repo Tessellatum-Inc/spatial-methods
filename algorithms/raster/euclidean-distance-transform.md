@@ -66,3 +66,12 @@ The Felzenszwalb–Huttenlocher family computes the exact transform in time line
 - The implementation is checked against brute-force minimisation on seeded one- and two-dimensional cases; SciPy's `distance_transform_edt` can also serve as an independent external comparison.
 
 **Scope:** exact Euclidean distance on a regular 2D raster grid; no cost surface, obstacle-aware path or NoData policy is implemented.
+
+
+## Eight-neighbour chamfer distance
+
+The companion `chamfer_distance_to_targets` computes an 8-neighbour path metric. Cardinal moves cost the corresponding row or column spacing, and diagonal moves cost
+
+$$w_d=\sqrt{\Delta x^2+\Delta y^2}.$$
+
+A forward raster scan relaxes north, northwest, northeast and west predecessors; a reverse scan relaxes the opposite directions. With no barriers, shortest paths can be chosen monotone in row and column, so these two scans recover the shortest path on this eight-neighbour graph. The result is a chamfer approximation to Euclidean distance, not the exact centre-to-centre Euclidean distance produced by the lower-envelope transform above. The package tests both against independent brute-force references. This implementation does not model barriers or variable traversal costs.
