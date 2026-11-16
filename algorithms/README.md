@@ -316,3 +316,5 @@ Records may have different evidence and implementation status. Check the status 
 
 - [Local terrain extrema](raster/local-terrain-extrema.md) — identify local raster peaks and pits with complete-neighbourhood and prominence rules.
 - [Reservoir stage-storage curves](raster/reservoir-stage-storage.md) — derive DEM-based inundated area and storage over supplied water stages.
+
+- [SCS curve-number runoff](raster/scs-curve-number-runoff.md) — estimate event direct-runoff depth and convert AMC-II curve numbers to dry/wet antecedent conditions.
