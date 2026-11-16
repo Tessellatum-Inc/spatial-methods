@@ -497,3 +497,38 @@ def test_contour_face_walk_uses_exact_polar_order_for_nearly_collinear_rays():
     horizontal=(Fraction(1),Fraction(0))
     assert _polar_compare(horizontal,almost_horizontal) < 0
     assert _polar_compare(almost_horizontal,horizontal) > 0
+
+
+
+def test_multiway_endpoint_touch_groups_all_four_incident_edges():
+    # Two triangles meet at one vertex. Four edge-pair contacts must become
+    # one exact node event containing all four incident edge identifiers.
+    left=[(0,0),(-2,-1),(-2,1)]
+    right=[(0,0),(2,-1),(2,1)]
+    result=sweep_split_segments([[left],[right]])
+    node=next(event for event in result["node_events"]
+              if event.point==(0,0))
+    assert node.kind=="contact"
+    assert len(node.segment_ids)==4
+    assert len(set(node.segment_ids))==4
+
+
+def test_three_way_proper_crossing_is_one_exact_node_event():
+    # One boundary edge from each of three valid polygons passes through the
+    # origin. Pairwise reports must be coalesced into one 3-edge event.
+    horizontal=[(-1,0),(1,0),(0,-2)]
+    rising=[(-1,-1),(1,1),(2,-1)]
+    falling=[(-1,1),(1,-1),(-2,-1)]
+    result=sweep_split_segments([[horizontal],[rising],[falling]])
+    node=next(event for event in result["node_events"]
+              if event.point==(0,0))
+    assert node.kind=="intersection"
+    assert len(node.segment_ids)==3
+    assert len(set(node.segment_ids))==3
+    # Every participating edge is split at the exact shared coordinate.
+    for sid in node.segment_ids:
+        fragments=[f for f in result["split_segments"]
+                   if result["segments"][sid].source==f.source
+                   and result["segments"][sid].ring==f.ring
+                   and result["segments"][sid].index==f.index]
+        assert any(f.a==(0,0) or f.b==(0,0) for f in fragments)
