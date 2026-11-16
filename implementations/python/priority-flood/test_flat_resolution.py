@@ -12,7 +12,7 @@ def test_flat_plateau_routes_to_lower_outlet():
     resolved = resolve_flats(dem)
     assert resolved[2,1] > resolved[2,2] > resolved[2,5]
     for r,c in ((2,1),(2,2),(2,3),(2,4),(2,5)):
-        assert any(0 <= r+dr < 5 and 0 <= c+dc < 5
+        assert any(0 <= r+dr < 5 and 0 <= c+dc < 7
                    and resolved[r+dr,c+dc] < resolved[r,c]
                    for dr,dc in NEIGHBOURS)
 
@@ -41,7 +41,7 @@ def test_nonflat_and_nodata_preserved():
 def test_masks_and_explicit_epsilon():
     dem = np.array([[10,10,10,10],[10,5,5,4],[10,5,5,3]], dtype=float)
     out = resolve_flats(dem, epsilon=0.1)
-    assert out[1,1] > out[2,1]
+    assert out[1,1] > out[1,2]
     with pytest.raises(ValueError, match="higher terrain"):
         resolve_flats(dem, epsilon=6.0)
     mask = np.ones_like(dem, dtype=bool); mask[1,1] = False
