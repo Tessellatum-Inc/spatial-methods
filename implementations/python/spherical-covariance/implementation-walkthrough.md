@@ -51,3 +51,28 @@ The theorem requires non-negative coefficients. Tests additionally inspect symme
 ## 8. Boundaries
 
 This is a scalar, isotropic, stationary covariance on the perfect two-sphere. It is not an ellipsoidal geodesy library, a fitted model, a full Gaussian-process engine or a network covariance implementation.
+
+
+## 9. Intrinsic Fréchet mean
+
+The intrinsic mean minimizes the average squared great-circle angle. The implementation starts from the sample medoid, maps observations into the tangent plane with the sphere's logarithm map, averages tangent vectors and moves along the exponential map. This is a local iterative procedure. Antipodes are cut-locus singularities because the shortest geodesic direction is not unique; the function raises rather than inventing a direction.
+
+## 10. Spherical k-means
+
+Spherical k-means assigns each unit vector to the centroid with greatest dot product. Each centroid is the normalized resultant vector of its members. Seeded k-means++ initialization spreads starting directions; the algorithm can still converge to a local optimum. Empty or degenerate clusters are reseeded and should be inspected.
+
+## 11. von Mises–Fisher models
+
+For unit vector x, mean direction mu and concentration kappa, the 3-D vMF density is proportional to exp(kappa * dot(x, mu)). Its normalization is evaluated using a log-sinh identity to avoid overflow at large concentration. At zero concentration it becomes uniform over the sphere.
+
+The finite-mixture EM routine alternates posterior responsibilities and updates component proportions, normalized resultant directions and concentration estimates. It is a local maximum-likelihood fit; compare multiple seeds and inspect component collapse and effective membership. Spherical KDE evaluates a weighted mixture of vMF kernels, not a planar Gaussian KDE.
+
+## 12. Experiments and limitations
+
+1. Compare the normalized arithmetic mean with the intrinsic Fréchet mean on a broad cluster.
+2. Rotate every vector by the same 3-D rotation and verify that the Fréchet mean rotates with the data.
+3. Increase vMF concentration and observe the density sharpen around its mean direction.
+4. Fit mixtures with several seeds and compare log likelihoods.
+5. Integrate the vMF density numerically over solid angle; do not use a flat latitude-longitude grid without its cosine-latitude area factor.
+
+The methods operate on the perfect unit sphere. They do not implement ellipsoidal geodesics, directional regression, spherical splines or spherical Gaussian-process prediction.
