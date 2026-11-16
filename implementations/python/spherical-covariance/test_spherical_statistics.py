@@ -3,7 +3,7 @@ import pytest
 
 from spherical_statistics import (
     angular_distance, frechet_mean_sphere, spherical_kmeans,
-    spherical_vmf_kde, von_mises_fisher_density,
+    spherical_vmf_kde, von_mises_fisher_density, von_mises_fisher_mixture,
 )
 
 
@@ -104,3 +104,25 @@ def test_spherical_kmeans_and_density_validate_parameters():
         von_mises_fisher_density([unit(0)], unit(0), -1)
     with pytest.raises(ValueError, match="weights"):
         spherical_vmf_kde([unit(0)], [unit(0)], concentration=2, weights=[0])
+
+
+def test_vmf_mixture_recovers_separated_directional_modes():
+    rng = np.random.default_rng(23)
+    east = np.array([unit(a) for a in rng.normal(-25, 3, 80)])
+    west = np.array([unit(a) for a in rng.normal(55, 4, 90)])
+    points = np.vstack((east, west))
+    result = von_mises_fisher_mixture(points, 2, seed=8, max_iterations=200)
+    assert result["responsibilities"].shape == (170, 2)
+    assert result["weights"].sum() == pytest.approx(1.0)
+    assert np.all(result["concentrations"] >= 0)
+    assert result["log_likelihood"] > -500
+    labels = result["labels"]
+    assert max(np.mean(labels[:80] == labels[0]),
+               np.mean(labels[:80] != labels[0])) > 0.9
+    assert max(np.mean(labels[80:] == labels[80]),
+               np.mean(labels[80:] != labels[80])) > 0.9
+
+
+def test_vmf_mixture_rejects_invalid_component_count():
+    with pytest.raises(ValueError, match="n_components"):
+        von_mises_fisher_mixture([unit(0), unit(1)], 3)
