@@ -264,6 +264,9 @@ jobs:
           - example: louvain
             directory: implementations/python/louvain
             pythonpath: ""
+          - example: flow-refueling-location
+            directory: implementations/python/flow-refueling-location
+            pythonpath: ""
           - example: flow-capturing-location
             directory: implementations/python/flow-capturing-location
             pythonpath: ""
