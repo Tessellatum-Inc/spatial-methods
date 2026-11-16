@@ -479,6 +479,16 @@ def test_shapely_differential_boolean_oracle():
         (_rect(0, 0, 2, 2), _rect(2, 2, 4, 4)),
         (_rect(0, 0, 3, 3), _rect(1, 1, 4, 4)),
     ]
+    # Seeded axis-aligned cases broaden the independent comparison without
+    # making the regression suite dependent on nondeterministic randomness.
+    import random
+    rng = random.Random(20261116)
+    for _ in range(24):
+        x0, y0 = rng.randint(-8, 8), rng.randint(-8, 8)
+        x1, y1 = x0 + rng.randint(1, 7), y0 + rng.randint(1, 7)
+        u0, v0 = rng.randint(-8, 8), rng.randint(-8, 8)
+        u1, v1 = u0 + rng.randint(1, 7), v0 + rng.randint(1, 7)
+        fixtures.append((_rect(x0, y0, x1, y1), _rect(u0, v0, u1, v1)))
     operations = {
         "intersection": lambda a, b: a.intersection(b),
         "union": lambda a, b: a.union(b),
