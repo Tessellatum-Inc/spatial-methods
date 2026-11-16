@@ -1,4 +1,5 @@
 import pytest
+from itertools import permutations
 
 from stable_matching import blocking_pairs, stable_matching
 
@@ -84,3 +85,35 @@ def test_blocking_pair_audit_rejects_over_capacity_assignment():
             {"a": "x", "b": "x"},
             {"x": 1},
         )
+
+
+
+def _independent_stability_check(residents, hospitals, matching, capacities=None):
+    capacities = capacities or {hospital: 1 for hospital in hospitals}
+    for resident, preferences in residents.items():
+        current = matching[resident]
+        current_rank = preferences.index(current) if current in preferences else float("inf")
+        for hospital in preferences:
+            if residents[resident].index(hospital) >= current_rank:
+                continue
+            ranking = hospitals[hospital]
+            if resident not in ranking:
+                continue
+            incumbents = [r for r, h in matching.items() if h == hospital]
+            if len(incumbents) < capacities.get(hospital, 1):
+                raise AssertionError((resident, hospital, "vacancy"))
+            if incumbents and ranking.index(resident) < max(ranking.index(r) for r in incumbents):
+                raise AssertionError((resident, hospital, "preferred over incumbent"))
+
+
+def test_all_two_by_two_complete_strict_markets_are_stable():
+    agents = ("a", "b")
+    sites = ("x", "y")
+    for resident_orders in permutations(sites):
+        for second_order in permutations(sites):
+            residents = {"a": list(resident_orders), "b": list(second_order)}
+            for x_order in permutations(agents):
+                for y_order in permutations(agents):
+                    hospitals = {"x": list(x_order), "y": list(y_order)}
+                    result = stable_matching(residents, hospitals)
+                    _independent_stability_check(residents, hospitals, result)
