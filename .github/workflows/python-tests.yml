@@ -108,6 +108,9 @@ jobs:
           - example: classification-breaks
             directory: implementations/python/classification-breaks
             pythonpath: ""
+          - example: huff-model
+            directory: implementations/python/huff-model
+            pythonpath: ""
           - example: car-gibbs-sampler
             directory: implementations/python/car-gibbs-sampler
             pythonpath: ""

@@ -30,6 +30,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Proper Gaussian CAR Gibbs sampling](statistics/proper-car-gibbs-sampling.md) — fixed-hyperparameter latent Gaussian posterior sampling.
 
+## Competitive facility location
+
+- [Huff competitive location](spatial-interaction/huff-competitive-location.md) — probabilistic facility choice and expected market shares.
+
 ## Scalable density estimation
 
 - [FFT-grid KDE](statistics/fft-grid-kde.md) — weighted binned Gaussian KDE using FFT convolution.
@@ -41,6 +45,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 ## Route choice
 
 - [Path-size logit](networks/path-size-logit.md) — overlap-corrected route-choice probabilities for alternatives sharing network edges.
+
+## Threshold-run event detection
+
+- [Run-theory drought events](remote-sensing/run-theory-drought-events.md) — threshold runs, gap bridging and event severity.
 
 ## Drought indices
 

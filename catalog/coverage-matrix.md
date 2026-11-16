@@ -136,3 +136,6 @@ Four source-listed streaming summaries now have tested reference implementations
 - Section 20: [Spatial information theory](../algorithms/statistics/spatial-information-theory.md) now implements Shannon, Renyi, Tsallis, categorical and permutation entropy. Spatially conditioned information flow and causal methods remain open.
 
 - Section 22: [Proper Gaussian CAR Gibbs sampling](../algorithms/statistics/proper-car-gibbs-sampling.md) now provides a tested systematic-scan posterior sampler with fixed hyperparameters and analytic small-graph verification. Hyperparameter estimation, non-Gaussian models and MCMC diagnostics remain open.
+
+- Section 17: [Huff competitive location](../algorithms/spatial-interaction/huff-competitive-location.md) now estimates origin-to-facility choice probabilities and expected visits from attractiveness, generalized cost and demand. Strategic competition, capacity constraints and parameter calibration remain open.
+- Section 20: [Run-theory drought events](../algorithms/remote-sensing/run-theory-drought-events.md) now extracts threshold runs with optional gap bridging and duration/severity summaries. Spatial event tracking and return-period inference remain open.
