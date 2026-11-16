@@ -50,7 +50,7 @@ The source groups raster operations, terrain analysis, hydrological modelling, g
 | Chi analysis, slope-area analysis, knickpoint detection, drainage basin morphometry | Geomorphic analysis methods / morphometric measures | 7 | Partially implemented: channel chi integration, log slope-area OLS and moving-window chord-residual knickpoint screening have tested reference methods; drainage-basin morphometry and automated channel extraction/segmentation remain open |
 | Landslide susceptibility (frequency ratio, logistic regression), SHALSTAB, weights of evidence | Susceptibility models / statistical methods | 7 | Not checked — intake only |
 | Glacier mass balance, snow models, avalanche runout | Cryosphere models / hazard modelling | 7 | Not checked — intake only |
-| Erosion: USLE, RUSLE, hydraulic and thermal erosion simulation | Empirical models / physical simulation | 7 | Not checked — intake only |
+| Erosion: USLE, RUSLE, hydraulic and thermal erosion simulation | Empirical models / physical simulation | 7 | Partially implemented: a tested R×K×LS×C×P factor product and conventional slope-length/steepness factor are available; regional factor derivation, flow-accumulation-aware LS, sediment delivery and hydraulic/thermal erosion simulation remain open |
 
 ## Coastal
 
@@ -96,3 +96,6 @@ Terrain openness now has a separate radial-sampling implementation for positive 
 
 
 The channel-morphometry source entry now includes a tested chi-coordinate integrator, a log slope-area regression and a signed moving-window chord-residual knickpoint screen. These are profile-level methods that consume ordered channel samples and supplied drainage areas; basin morphometry, channel extraction, tributary-aware segmentation and geological interpretation remain open.
+
+
+The erosion source entry now includes a tested USLE/RUSLE factor-product implementation and a conventional slope-length/steepness calculation. The method remains an empirical sheet/rill erosion estimate; regional factor derivation, complex-terrain LS, sediment delivery and process-based hydraulic/thermal erosion are not implemented.
