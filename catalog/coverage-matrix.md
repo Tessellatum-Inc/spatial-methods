@@ -163,3 +163,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 4 visibility: added a tested discrete raster viewshed and cumulative viewshed count using Bresenham centre-to-centre rays, observer/target heights and optional Earth-curvature/refraction correction. The implementation conservatively marks targets with NoData along the ray as not visible; R3/R2/XDraw, exact continuous-surface viewsheds, isovists, radar coverage and Fresnel clearance remain open.
+
+
+- Section 4 flood frequency: added Weibull plotting positions for annual maxima, Gumbel and GEV L-moment fitting, return-level quantiles and a design-flood table. These stationary univariate baselines do not supply uncertainty intervals, regional pooling, trend/nonstationarity tests, goodness-of-fit selection, peak-over-threshold analysis or hydraulic inundation.
