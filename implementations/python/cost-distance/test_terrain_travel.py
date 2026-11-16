@@ -33,9 +33,9 @@ def test_naismith_and_langmuir_raster_times():
     assert n[0,1]==pytest.approx(100/5000*3600+10/600*3600)
     np.testing.assert_allclose(l,n)
 
-def test_nodata_and_multiple_sources():
+def test_nodata_barriers_and_multiple_sources():
     z=np.array([[0.,np.nan,2.],[0.,np.nan,2.]])
-    out=least_cost_time(z,[(0,0),(1,2)],model="naismith",connectivity=4)
+    out=least_cost_time(z,[(0,0)],model="naismith",connectivity=4)
     assert np.isnan(out[0,1]) and np.isinf(out[0,2])
     flat=least_cost_time(np.zeros((1,5)),[(0,0),(0,4)],model="naismith",connectivity=4)
     np.testing.assert_allclose(flat,[[0,72,144,72,0]])
