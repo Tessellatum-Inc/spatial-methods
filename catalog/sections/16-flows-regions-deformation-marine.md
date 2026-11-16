@@ -51,7 +51,7 @@ This section groups applied methods across spatial interaction, functional regio
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| CPUE standardization (GAM and spatiotemporal models such as VAST-style vector autoregressive models), spatial stock assessment, fishing effort allocation | Fisheries statistical models / stock assessment / allocation | 34 | Not checked — intake only |
+| CPUE standardization (GAM and spatiotemporal models such as VAST-style vector autoregressive models), spatial stock assessment, fishing effort allocation | Fisheries statistical models / stock assessment / allocation | 34 | Partial — effort-offset Poisson and NB2 log-linear standardization models with reference-condition CPUE predictions are implemented and tested; GAM smooths, VAST spatiotemporal random fields, stock assessment and effort-allocation optimization remain open |
 | Larval dispersal and ocean connectivity: Lagrangian tools (Parcels, OpenDrift), connectivity matrices, marine protected area network design | Particle tracking / connectivity analysis / reserve design | 34 | Partial — steady-field RK4 particle advection and weighted source-to-destination connectivity matrices are implemented and tested; time-varying currents, diffusion, vertical motion and reserve-design optimisation remain open |
 | Marine spatial planning with Marxan and Zonation, benthic habitat mapping from multibeam backscatter | Spatial planning software / habitat mapping workflows | 34 | Not checked — intake only |
 
@@ -145,3 +145,8 @@ The urban-boundaries package provides DBSCAN clustering of building centroids, p
 ### Staypoints, home/work inference and activity spaces
 
 A trace-processing baseline now detects dwell episodes by a maximum-radius/time-duration rule, infers candidate home and work clusters from night/day staypoints using DBSCAN and dwell-weighted centroids, and summarizes activity spaces by radius of gyration and convex-hull area. It does not infer social contacts, model irregular sampling or GPS uncertainty, or validate home/work roles over long periods; these outputs are candidates, not ground truth.
+
+
+### CPUE standardization baseline
+
+An effort-offset log-linear catch-rate model is now available under Poisson and NB2 negative-binomial likelihoods. It reports fitted catch, standardized predictions at mean covariates and unit effort, dispersion and coefficient diagnostics. It is not a GAM or VAST reproduction: nonlinear smooths, spatial/temporal random fields, zero inflation, stock dynamics and fishing-effort optimization remain open.

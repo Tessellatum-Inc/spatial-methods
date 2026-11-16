@@ -408,6 +408,9 @@ jobs:
           - example: mobility-inference
             directory: implementations/python/mobility-inference
             pythonpath: ""
+          - example: cpue-standardization
+            directory: implementations/python/cpue-standardization
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""

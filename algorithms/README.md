@@ -373,3 +373,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Urban boundaries and natural cities](urban/urban-boundaries.md) — building-point DBSCAN, density-grid aggregation, connected urban components and recursive head/tail thresholds.
 
 - [Staypoints, home/work inference and activity spaces](mobility/mobility-inference.md) — dwell episode detection, day/night candidate locations and activity-space metrics.
+
+- [CPUE standardization](fisheries/cpue-standardization.md) — effort-offset Poisson and NB2 log-linear catch-rate models with reference-condition predictions.
