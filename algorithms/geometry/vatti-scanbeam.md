@@ -18,7 +18,9 @@ provides:
 - band subdivision at crossing levels and active-edge reordering on either side;
 - cumulative signed winding transitions in left-to-right edge order;
 - horizontal/bound endpoint and interior intersection events;
-- horizontal/horizontal point contacts and positive-length overlaps, classified separately.
+- horizontal/horizontal point contacts and positive-length overlaps, classified separately;
+- fill-rule predicates for even-odd, non-zero, positive and negative winding;
+- Boolean point-classification truth tables for intersection, union, difference and XOR.
 
 The current crossing scheduler is an O(m²) reference calculation, not the
 optimized neighbour-event scheduler used by a full sweep-line clipper. This
