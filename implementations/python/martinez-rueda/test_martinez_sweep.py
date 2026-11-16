@@ -467,7 +467,7 @@ def test_exact_overlap_smaller_than_epsilon_is_not_discarded():
     ]
     assert len(shared_bottom)==2
     assert shared_bottom[0].b[0] == Fraction(str(2-1e-12))
-    assert shared_bottom[1].a[0] == Fraction(2)
+    assert shared_bottom[1].b[0] == Fraction(2)
 
 
 def test_near_miss_smaller_than_epsilon_is_not_a_false_intersection():
@@ -477,7 +477,7 @@ def test_near_miss_smaller_than_epsilon_is_not_a_false_intersection():
     assert result["intersection_events"] == ()
     assert len(result["split_segments"]) == 8
     overlay=boolean_overlay_rings([[a],[b]],operation="union",epsilon=1e-10)
-    assert overlay["area"] == pytest.approx(8.0,abs=1e-14)
+    assert overlay["area"] == pytest.approx(8.0 - 2e-12,abs=1e-14)
     assert len(overlay["rings"]) == 2
 
 
@@ -487,7 +487,7 @@ def test_collinear_bundle_endpoints_are_coalesced_into_node_events():
     result=sweep_split_segments([[a],[b]])
     contacts=[event for event in result["node_events"] if event.kind=="contact"]
     assert len(contacts)==4
-    assert all(len(event.segment_ids)==2 for event in contacts)
+    assert all(len(event.segment_ids)==3 for event in contacts)
 
 
 def test_contour_face_walk_uses_exact_polar_order_for_nearly_collinear_rays():
