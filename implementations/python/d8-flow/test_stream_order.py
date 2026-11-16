@@ -19,7 +19,7 @@ def test_three_headwaters_converge_to_second_order_and_magnitude_three():
         [0, 64, 0],
     ], dtype=int)
     mask = np.zeros(fd.shape, dtype=bool)
-    mask[0, 1] = mask[1, 0] = mask[1, 1] = mask[2, 1] = True
+    mask[0, 1] = mask[1, 0] = mask[1, 1] = mask[2, 1] = mask[1, 2] = True
     strahler, shreve = d8_stream_orders(fd, mask)
     assert strahler[1, 1] == 2
     assert shreve[1, 1] == 3
@@ -31,7 +31,7 @@ def test_first_order_tributary_does_not_raise_second_order_stream():
         [1, 1, 0],
     ], dtype=int)
     mask = np.zeros(fd.shape, dtype=bool)
-    mask[0, 1] = mask[1, 0] = mask[1, 1] = mask[0, 2] = True
+    mask[0, 1] = mask[1, 0] = mask[1, 1] = mask[0, 2] = mask[1, 2] = True
     strahler, shreve = d8_stream_orders(fd, mask)
     assert strahler[1, 1] == 2
     assert shreve[1, 1] == 2
