@@ -5,7 +5,7 @@ The package starts from a simple-polygon ear-clipping triangulation and applies 
 Tests check:
 - (n-2) triangle count and positive orientation;
 - exact polygon-area conservation for convex, concave and clockwise rings;
-- each polygon boundary edge appears exactly once;
+- each normalized polygon boundary edge appears exactly once, including redundant collinear boundary inputs;
 - every unconstrained two-triangle edge satisfies an exact incircle legality check;
 - seeded radial simple polygons across multiple vertex counts.
 
