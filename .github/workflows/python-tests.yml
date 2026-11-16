@@ -132,6 +132,9 @@ jobs:
           - example: greiner-hormann
             directory: implementations/python/greiner-hormann
             pythonpath: ""
+          - example: vatti-clipping
+            directory: implementations/python/vatti-clipping
+            pythonpath: ""
           - example: martinez-rueda
             directory: implementations/python/martinez-rueda
             pythonpath: ""
