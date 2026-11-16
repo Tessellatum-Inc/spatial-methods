@@ -25,3 +25,6 @@ These Markov/LISA routines do not estimate spatial panel models, continuous dist
 
 
 - **Constrained gravity flows:** unconstrained, production-constrained, attraction-constrained and doubly constrained flows; the latter uses iterative proportional fitting. A Wilson-style exponential-cost entropy-maximising variant is included. This complements, but does not replace, the PPML regression estimator.
+
+
+- **Intervening opportunities:** a cumulative exponential opportunity-acceptance model allocates origin mass to destination groups in increasing generalized-cost order. Equal-cost destinations share the group's probability in proportion to their opportunities; unallocated survival mass is returned explicitly. This is a stated Stouffer-style teaching formulation, not a calibrated competing-destinations model. See the [method note](../../../algorithms/spatial-interaction/intervening-opportunities.md).

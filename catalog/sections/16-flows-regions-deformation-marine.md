@@ -13,7 +13,7 @@ This section groups applied methods across spatial interaction, functional regio
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Entropy-maximizing models (Wilson), production, attraction and doubly constrained forms, Poisson and negative binomial gravity models | Spatial interaction models / statistical specifications | 33 | Partially implemented: unconstrained, production-constrained, attraction-constrained and doubly constrained flows plus an exponential-cost entropy-maximising IPF variant; PPML regression already exists. Negative-binomial estimation and calibrated impedance/parameter estimation remain open |
-| Competing destinations, intervening opportunities variants, spatial autocorrelation in flows (Griffith eigenvector filtering, LeSage-Pace origin-destination models) | Interaction models / flow autocorrelation and econometric methods | 33 | Not checked — intake only |
+| Competing destinations, intervening opportunities variants, spatial autocorrelation in flows (Griffith eigenvector filtering, LeSage-Pace origin-destination models) | Interaction models / flow autocorrelation and econometric methods | 33 | Partial — a cumulative exponential intervening-opportunities allocation baseline is implemented with tied-cost handling and explicit unallocated mass; competing-destinations specifications and Griffith/LeSage–Pace flow-autocorrelation models remain open |
 | Flow clustering and flow mapping: flow-based community detection, flow KDE, OD flow hotspot detection | Flow clustering / density estimation / hotspot methods | 33 | Not checked — intake only |
 
 ## Functional regions and urban boundaries
@@ -110,3 +110,8 @@ The new `climate-velocity` package ranks historical samples as multivariate Maha
 ### Mogi point-source deformation implementation update
 
 A tested Mogi elastic half-space point-source model now returns east, north and vertical surface displacement from source depth, volume change and Poisson ratio. It is an analytical point-source baseline; finite rectangular dislocations, layered or topographic media, finite-fault inversion and viscoelastic time dependence remain open.
+
+
+### Intervening-opportunities implementation update
+
+The regional-dynamics package now includes a cumulative exponential intervening-opportunities allocation model. Destinations are ordered by generalized cost; tied-cost groups share the acceptance probability in proportion to their opportunity mass. The residual probability is returned as unallocated flow, preserving origin totals without forcing all trips to be assigned. The model is a transparent Stouffer-style baseline; competing-destinations formulations and spatial filtering of OD flows remain separate open methods.

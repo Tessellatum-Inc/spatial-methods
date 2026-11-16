@@ -54,3 +54,44 @@ def test_validation_and_nonconvergence_diagnostics():
     with pytest.raises(ValueError,match="beta"): entropy_maximizing_gravity([1],[1],[[1]],beta=-1)
     result=doubly_constrained_gravity([10,20],[5,15,10],_example()[2],max_iter=1)
     assert not result.converged
+
+
+
+from gravity_flows import intervening_opportunities
+
+
+def test_intervening_opportunities_matches_cumulative_exponential_rule():
+    origins = np.array([100.])
+    opportunities = np.array([10., 20., 30.])
+    costs = np.array([[1., 2., 3.]])
+    alpha = 0.02
+    result = intervening_opportunities(origins, opportunities, costs, alpha=alpha)
+    survival = 1.0
+    expected = []
+    for amount in opportunities:
+        drop = survival * (1 - np.exp(-alpha * amount))
+        expected.append(origins[0] * drop)
+        survival *= np.exp(-alpha * amount)
+    np.testing.assert_allclose(result["flows"][0], expected, rtol=1e-12)
+    assert result["unallocated"][0] == pytest.approx(origins[0] * survival)
+    assert result["flows"].sum() + result["unallocated"].sum() == pytest.approx(100.)
+
+
+def test_intervening_opportunities_splits_equal_cost_group_proportionally():
+    result = intervening_opportunities([50.], [10., 30., 20.],
+                                       [[1., 1., 2.]], alpha=.1)
+    tied_total = 50 * (1 - np.exp(-.1 * 40))
+    np.testing.assert_allclose(result["flows"][0, :2], [tied_total / 4, 3 * tied_total / 4])
+    permuted = intervening_opportunities([50.], [30., 10., 20.],
+                                         [[1., 1., 2.]], alpha=.1)
+    np.testing.assert_allclose(permuted["flows"][0], result["flows"][0, [1, 0, 2]])
+
+
+def test_intervening_opportunities_validates_inputs_and_preserves_unallocated_mass():
+    result = intervening_opportunities([25.], [0., 0.], [[1., 2.]], alpha=.5)
+    assert result["flows"].sum() == 0
+    assert result["unallocated"][0] == 25.
+    with pytest.raises(ValueError, match="alpha"):
+        intervening_opportunities([1.], [1.], [[1.]], alpha=0)
+    with pytest.raises(ValueError, match="non-negative"):
+        intervening_opportunities([1.], [1.], [[-1.]], alpha=.1)

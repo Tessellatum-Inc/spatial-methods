@@ -357,3 +357,6 @@ Records may have different evidence and implementation status. Check the status 
 - [Climate analogs and velocity](remote-sensing/climate-analogs-velocity.md) — Mahalanobis climate analog ranking and gradient-derived climate velocity.
 
 - [Mogi point-source deformation](geodesy/mogi-point-source.md) — elastic half-space surface displacement from a point source.
+
+
+- [Intervening-opportunities spatial interaction](spatial-interaction/intervening-opportunities.md) — cumulative opportunity-acceptance allocation by increasing generalized cost, with explicit unallocated mass.

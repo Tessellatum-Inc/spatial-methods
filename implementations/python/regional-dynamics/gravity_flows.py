@@ -128,3 +128,39 @@ def entropy_maximizing_gravity(
     return doubly_constrained_gravity(
         origins, destinations, impedance, tolerance=tolerance, max_iter=max_iter
     )
+
+
+
+def intervening_opportunities(origins, destinations, generalized_cost, *, alpha):
+    """Allocate origin flows by a cumulative intervening-opportunities rule.
+
+    Destinations are encountered in increasing generalized-cost order.
+    For an origin, the probability mass assigned to a tied-cost group is
+    exp(-alpha * prior_opportunities) * (1 - exp(-alpha * group_opportunities)).
+    That mass is divided among destinations in the group in proportion to
+    their opportunity totals. Remaining survival probability is returned as
+    unallocated flow rather than silently renormalised to one.
+    """
+    o, d, cost = _inputs(origins, destinations, generalized_cost)
+    try:
+        rate = float(alpha)
+    except (TypeError, ValueError):
+        raise ValueError("alpha must be finite and positive") from None
+    if not np.isfinite(rate) or rate <= 0:
+        raise ValueError("alpha must be finite and positive")
+
+    flows = np.zeros((o.size, d.size), dtype=float)
+    unallocated = np.zeros(o.size, dtype=float)
+    for i in range(o.size):
+        survival = 1.0
+        # Group equal costs so ties do not depend on destination column order.
+        for level in np.unique(cost[i]):
+            group = np.flatnonzero(cost[i] == level)
+            opportunity = float(d[group].sum())
+            if opportunity <= 0:
+                continue
+            probability = survival * (-np.expm1(-rate * opportunity))
+            flows[i, group] = o[i] * probability * d[group] / opportunity
+            survival *= np.exp(-rate * opportunity)
+        unallocated[i] = o[i] * survival
+    return {"flows": flows, "unallocated": unallocated}
