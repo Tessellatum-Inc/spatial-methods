@@ -88,3 +88,55 @@ def test_shared_and_coincident_edges_match_shapely(operation):
         tolerance = 1e-9 * max(1.0, reference.area)
         assert actual.is_valid
         assert actual.symmetric_difference(reference).area <= tolerance
+
+
+@pytest.mark.parametrize(
+    "operation", ("intersection", "union", "difference", "symmetric_difference")
+)
+def test_vertex_and_partial_shared_edge_contacts_match_shapely(operation):
+    fixtures = [
+        # Point-only contact: union and XOR must retain two components.
+        (
+            [[(0, 0), (2, 0), (2, 2), (0, 2)]],
+            [[(2, 2), (4, 2), (4, 4), (2, 4)]],
+        ),
+        # Partial shared vertical edge terminating at a shell vertex.
+        (
+            [[(0, 0), (4, 0), (4, 4), (0, 4)]],
+            [[(4, 2), (6, 2), (6, 4), (4, 4)]],
+        ),
+        # A narrow face smaller than the public epsilon.
+        (
+            [[(0, 0), (2, 0), (2, 2), (0, 2)]],
+            [[(2, 0), (2 + 1e-12, 0), (2 + 1e-12, 2), (2, 2)]],
+        ),
+    ]
+    for a, b in fixtures:
+        native = boolean_overlay_rings([a, b], operation=operation)
+        actual = _native_geometry(native)
+        reference = _reference_operation(a, b, operation)
+        tolerance = 1e-9 * max(1.0, reference.area)
+        assert actual.is_valid
+        assert actual.symmetric_difference(reference).area <= tolerance
+
+
+@pytest.mark.parametrize(
+    "operation", ("intersection", "union", "difference", "symmetric_difference")
+)
+def test_hole_and_island_overlay_matches_shapely(operation):
+    shell = [(0, 0), (10, 0), (10, 10), (0, 10)]
+    hole = [(3, 3), (3, 7), (7, 7), (7, 3)]
+    island = [(4, 4), (6, 4), (6, 6), (4, 6)]
+    subject = [shell, hole]
+    clip = [island]
+    native = boolean_overlay_rings([subject, clip], operation=operation)
+    actual = _native_geometry(native)
+    left, right = Polygon(shell, [hole]), Polygon(island)
+    expected = {
+        "intersection": left.intersection,
+        "union": left.union,
+        "difference": left.difference,
+        "symmetric_difference": left.symmetric_difference,
+    }[operation](right)
+    assert actual.is_valid
+    assert actual.symmetric_difference(expected).area <= 1e-9
