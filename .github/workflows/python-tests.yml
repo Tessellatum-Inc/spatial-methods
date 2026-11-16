@@ -282,6 +282,9 @@ jobs:
           - example: syndromic-surveillance
             directory: implementations/python/syndromic-surveillance
             pythonpath: ""
+          - example: solar-geometry
+            directory: implementations/python/solar-geometry
+            pythonpath: ""
           - example: spatial-sampling-design
             directory: implementations/python/spatial-sampling-design
             pythonpath: ""
