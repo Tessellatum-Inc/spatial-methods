@@ -48,7 +48,7 @@ def test_connectivity_counts_and_probabilities_match_direct_oracle():
     expected = np.array([[0., 2., 1.], [4., 0., 2.], [0., 0., 0.]])
     np.testing.assert_allclose(result["counts"], expected)
     np.testing.assert_allclose(result["probabilities"][0], [0., .5, .25])
-    np.testing.assert_allclose(result["probabilities"][1], [.5, 0., .25])
+    np.testing.assert_allclose(result["probabilities"][1], [2/3, 0., 1/3])
     np.testing.assert_allclose(result["unassigned_fraction"], [.25, 0., 0.])
 
 
