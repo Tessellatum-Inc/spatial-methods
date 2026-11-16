@@ -115,6 +115,7 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 - [Strauss point process](statistics/strauss-point-process.md) — model repulsive interactions with a finite-window Gibbs density and a birth-death Metropolis–Hastings teaching sampler.
 - [Clark–Evans nearest-neighbour index](statistics/clark-evans.md) — compare observed mean nearest-neighbour spacing with a homogeneous Poisson reference.
 - [Kernel density estimation for point patterns](statistics/point-pattern-kde.md) — estimate a fixed-bandwidth planar Gaussian intensity surface and understand bandwidth and edge effects.
+- [Inhomogeneous Ripley's K](statistics/inhomogeneous-ripley-k.md) — adjust second-order pair counts for supplied spatially varying event intensities.
 
 
 - [DBSCAN](statistics/dbscan.md) — identify density-connected clusters and noise in planar point data.

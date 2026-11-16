@@ -565,3 +565,12 @@ The source-to-implementation ledger must track, per source entry and child metho
 - [ ] Validate multiway node grouping and exact face walks against adversarial multi-segment vertices, overlapping bundles and independent topology oracles before claiming a general-purpose overlay kernel.
 
 The change is a meaningful extension, not completion of the polygon overlay work package. Exact source coordinates and intersection nodes are retained, and finite side probes are now clearance-bounded rather than epsilon-bounded. The remaining major algorithmic gap is the full Martinez neighbour-ordered event sweep; the y-interval treap is still a broad-phase candidate filter. The expanded regression and differential suites still require execution on the exact resulting head before any Verified status is assigned.
+
+
+## Continuation batch — 16 November 2026
+
+- [x] Add a separate variogram-model package with spherical, exponential and Gaussian structures, nugget/partial-sill/range fitting, directional empirical variograms, and Matheron/Cressie estimators. Package tests are in CI; model selection, anisotropy and uncertainty remain open.
+- [x] Extend Ripley's K with an inhomogeneous estimator using caller-supplied event intensities and optional rectangular translation correction. Add constant-intensity equivalence and validation tests. First-order intensity estimation and its uncertainty remain outside this estimator.
+- [x] Correct Martinez broad-phase interval queries to keep epsilon expansion in exact rational arithmetic; large integer coordinates must not be rounded when querying active y-intervals.
+- [x] Correct the Vatti scanbeam fill-rule test orientation for the implementation's Cartesian y-up winding convention, and simplify self-crossing paths before Clipper execution in the Vatti adapter.
+- [ ] Verify the complete latest-head Actions run before marking these regression fixes as passing. Martinez neighbour-ordered event scheduling remains open.
