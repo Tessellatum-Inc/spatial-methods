@@ -40,7 +40,7 @@ def test_first_order_tributary_does_not_raise_second_order_stream():
 
 
 def test_nonstream_cells_are_nan_and_empty_mask_is_supported():
-    fd = np.array([[1, 0], [0, 0]], dtype=int)
+    fd = np.array([[0, 0], [0, 0]], dtype=int)
     mask = np.array([[True, False], [False, False]])
     s, m = d8_stream_orders(fd, mask)
     assert s[0, 0] == 1 and m[0, 0] == 1
