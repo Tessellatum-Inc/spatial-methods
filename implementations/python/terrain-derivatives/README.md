@@ -37,7 +37,7 @@ The companion `zevenbergen_thorne_slope_aspect` function uses central difference
 
 ## Profile and plan curvature
 
-`terrain_curvature` estimates signed profile and plan curvature from central first and second differences on a 3×3 neighbourhood. Profile curvature is measured along the steepest-slope direction; plan curvature is measured across it. Both outputs use inverse horizontal units, require positive cell spacing and a positive vertical conversion factor, and return NaN at borders, in any window containing NoData, and on flat cells where aspect/curvature directions are undefined. This is a local finite-difference teaching baseline; it does not implement multiscale curvature, robust smoothing, geographic-grid correction or geomorphon classification.
+`terrain_curvature` estimates signed profile and plan curvature from central first and second differences on a 3×3 neighbourhood. Profile curvature is measured along the steepest-slope direction; plan curvature is measured across it. Both outputs use inverse horizontal units, require positive cell spacing and a positive vertical conversion factor, and return NaN at borders, in any window containing NoData, and on flat cells where aspect/curvature directions are undefined. This is a local finite-difference teaching baseline. The companion `multiscale_terrain_curvature` applies separable Gaussian smoothing at one or more map-unit scales before calculating the same profile and plan curvature measures. It requires a fully finite DEM and uses reflective padding; scale, resolution and boundary policy must be reported. Geographic-grid correction and geomorphon classification remain outside scope.
 
 
 ## Topographic position index (TPI)
