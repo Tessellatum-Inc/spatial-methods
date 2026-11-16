@@ -379,3 +379,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Marine reserve selection](marine/marine-reserve-selection.md) — simulated-annealing selection against representation targets, zone costs and boundary penalties.
 
 - [RESTREND land-degradation screening](remote-sensing/resttrend-land-degradation.md) — regress NDVI against precipitation and estimate the temporal trend in residuals per pixel.
+
+- [Two-market food price transmission](economics/food-price-transmission.md) — estimate a long-run price relation and short-run error-correction dynamics.

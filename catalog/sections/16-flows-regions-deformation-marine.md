@@ -75,7 +75,7 @@ This section groups applied methods across spatial interaction, functional regio
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Relief facility location, humanitarian logistics routing, displacement camp mapping, tent and structure counting from imagery | Humanitarian location and routing / settlement mapping | 34 | Not checked — intake only |
-| Food security: IPC-style analysis, FEWS NET-style outlooks, livelihood zone delineation, market integration and price transmission models | Food-security analysis / early-warning and regional economic methods | 34 | Not checked — intake only |
+| Food security: IPC-style analysis, FEWS NET-style outlooks, livelihood zone delineation, market integration and price transmission models | Food-security analysis / early-warning and regional economic methods | 34 | Partial — a tested two-market Engle–Granger-style long-run relation and error-correction price-transmission model is implemented; IPC/FEWS NET workflows, livelihood-zone delineation and multi-market spatial equilibrium remain open |
 | Conflict analysis: ACLED-style event analysis, conflict diffusion models, forecasting systems such as ViEWS, spatial event clustering and early warning indicators | Event analysis / diffusion and forecasting models | 34 | Not checked — intake only |
 
 ## Decisions for the next pass
@@ -160,3 +160,8 @@ A Marxan-style simulated-annealing selector now minimizes zone acquisition cost,
 ### RESTREND land-degradation screening
 
 A per-pixel RESTREND baseline now fits NDVI against precipitation, calculates rainfall-adjusted residuals and estimates the residual temporal trend with slope, R-squared and p-value. Pixels with insufficient valid paired observations are left as NoData. This is a screening statistic, not a causal degradation diagnosis; precipitation-product bias, land-cover change, irrigation, fire, sensor harmonization and NPP/soil-salinity variants remain open.
+
+
+### Two-market price transmission
+
+A two-stage error-correction baseline estimates a long-run price relation between two markets, then models short-run target-market price changes as a function of lagged disequilibrium and contemporaneous source-market changes. It reports the error-correction speed and standard errors. This is a pairwise econometric teaching model, not a complete food-security early-warning system or multi-market spatial equilibrium model.

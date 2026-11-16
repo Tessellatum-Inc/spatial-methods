@@ -417,6 +417,9 @@ jobs:
           - example: land-degradation
             directory: implementations/python/land-degradation
             pythonpath: ""
+          - example: food-price-transmission
+            directory: implementations/python/food-price-transmission
+            pythonpath: ""
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""
