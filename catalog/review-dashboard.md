@@ -1,6 +1,6 @@
 # Source review dashboard
 
-Snapshot: 15 November 2026 (recounted after the latest Section 1, Section 2 and Section 18 implementation reconciliations)
+Snapshot: 17 November 2026 (recounted from the current 22 section indexes after the latest Section 15–17 implementation reconciliations)
 
 This dashboard counts the source-entry review labels in the 22 item-level section indexes. It is an inventory of review progress, not a claim that the entries have been technically verified.
 
@@ -8,9 +8,9 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 
 | Measure | Entries | Meaning |
 |---|---:|---|
-| Source-entry rows counted | 694 | Rows with a source-entry review status in the section indexes |
-| Partial | 92 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 602 | The source wording is preserved, but no independent review is recorded |
+| Source-entry rows counted | 695 | Rows with a source-entry review status in the section indexes |
+| Partial | 160 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 535 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -19,12 +19,12 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 
 | Section | Source entries | Partial | Intake only |
 |---:|---:|---:|---:|
-| 1 — Core GIS | 33 | 23 | 10 |
-| 2 — Spatial statistics | 27 | 10 | 17 |
+| 1 — Core GIS | 33 | 26 | 7 |
+| 2 — Spatial statistics | 27 | 13 | 14 |
 | 3 — Geostatistics | 26 | 3 | 23 |
-| 4 — Raster, terrain and hydrology | 27 | 2 | 25 |
-| 5 — Remote sensing | 36 | 2 | 34 |
-| 6 — Optimization, mobility and transport | 30 | 3 | 27 |
+| 4 — Raster, terrain and hydrology | 27 | 20 | 7 |
+| 5 — Remote sensing | 36 | 15 | 21 |
+| 6 — Optimization, mobility and transport | 31 | 4 | 27 |
 | 7 — Domain modeling | 48 | 1 | 47 |
 | 8 — GeoAI | 54 | 2 | 52 |
 | 9 — Geodesy, cartography and infrastructure | 39 | 1 | 38 |
@@ -33,17 +33,17 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 12 — Signal, GNSS and regional science | 28 | 14 | 14 |
 | 13 — GeoFM workflows, urban mobility and LLMs | 29 | 0 | 29 |
 | 14 — Databases, graphics, morphology and hazards | 33 | 1 | 32 |
-| 15 — Vision, registration and vector extraction | 33 | 0 | 33 |
-| 16 — Flows, regions, deformation and marine | 25 | 0 | 25 |
-| 17 — Geometry, scalability, design and siting | 27 | 0 | 27 |
-| 18 — Moving objects, routing, transit and water | 32 | 2 | 30 |
+| 15 — Vision, registration and vector extraction | 33 | 3 | 30 |
+| 16 — Flows, regions, deformation and marine | 25 | 5 | 20 |
+| 17 — Geometry, scalability, design and siting | 27 | 8 | 19 |
+| 18 — Moving objects, routing, transit and water | 32 | 4 | 28 |
 | 19 — African applications, addressing and finance | 32 | 0 | 32 |
-| 20 — Indices, microwave, events and information | 25 | 2 | 23 |
-| 21 — Neural fields, climate accounting and robust geometry | 26 | 2 | 24 |
-| 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 2 | 26 |
-| **Total** | **694** | **92** | **602** |
+| 20 — Indices, microwave, events and information | 25 | 8 | 17 |
+| 21 — Neural fields, climate accounting and robust geometry | 26 | 3 | 23 |
+| 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 6 | 22 |
+| **Total** | **695** | **160** | **535** |
 
-The latest recount on 15 November 2026 finds **92 partial**, **602 intake-only** and **zero fully verified** source-entry rows. Section 1 now has 23 partial / 10 intake-only rows; Section 2 has 10 partial / 17 intake-only; Section 18 has two partial / 30 intake-only. The total remains 694 rows. This recount was calculated directly from the status labels in all 22 section indexes; older reconciliation notes below preserve historical snapshots and should not be read as the current totals.
+The 17 November recount finds **160 partial**, **535 intake-only** and **zero fully verified** source-entry rows across **695 rows**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Some section indexes have changed row counts since the prior snapshot, so the table below supersedes all historical totals in the reconciliation notes.
 
 ## How to interpret this
 
@@ -121,3 +121,8 @@ Added a seeded multilevel weighted Louvain reference implementation, modularity 
 ## Implementation reconciliation — Louvain and spectral partitioning
 
 The community-detection source row now links to a seeded multilevel weighted Louvain implementation, a modularity evaluator, unit tests, a verification record and an executable notebook. Contracted internal edge weights are preserved as self-loops between levels. The same Section 1 family now links to normalized-Laplacian spectral bisection with a Fiedler-vector sweep over normalized cut; the dense eigensolver baseline covers weighted graphs, disconnected components and isolates. These additions bring the Python implementation matrix to 141 packages and the explicit notebook execution list to 127. Louvain remains heuristic; spectral bisection is a dense small/medium teaching baseline. Leiden, Infomap, sparse large-graph spectral solvers and METIS-style multilevel partitioning remain outstanding. The grouped source-entry review state remains partial.
+
+
+## Implementation reconciliation — 17 November 2026
+
+Section 15 now has a generalized ICP implementation alongside point-to-point and point-to-plane ICP. It remains partial because NDT, colored ICP, FPFH/RANSAC, TEASER++ and learned registration are not represented by this addition. Section 16 now has additive-tolerance least-cost raster corridors and a climate-velocity package covering Mahalanobis analog ranking and gradient-derived isocline displacement. These are bounded numerical methods, not complete operational climate-refugia or corridor-planning systems. The current row recount is 695 source entries: 160 partial, 535 intake-only and zero fully verified. Independent bibliographic, technical-claim, rights and full-source-row review remains required.
