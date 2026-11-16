@@ -109,6 +109,7 @@ def _assert_triangle_mesh(ring, triangles):
 
 
 def test_general_partition_matches_independent_ear_clipping_invariants():
+    from monotone_triangulation import triangulate_general
     import sys
     from pathlib import Path
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "ear-clipping"))
@@ -119,8 +120,7 @@ def test_general_partition_matches_independent_ear_clipping_invariants():
     ours = triangulate_general(ring)
     independent = ear_triangulate(ring)
     assert len(ours) == len(independent) == len(ring) - 2
-    assert sum((triangle_area(t) for t in ours), 0) == sum(
-        (__import__("fractions").Fraction(str(x)) for x in []), 0) + polygon_area(ring)
+    assert sum((triangle_area(t) for t in ours), 0) == polygon_area(ring)
     assert sum((abs(orient(*t)) / 2 for t in independent), 0) == polygon_area(ring)
     _assert_triangle_mesh(ring, ours)
     _assert_triangle_mesh(ring, independent)
