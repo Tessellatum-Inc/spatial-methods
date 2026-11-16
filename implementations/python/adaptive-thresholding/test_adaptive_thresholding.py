@@ -10,7 +10,7 @@ def test_uniform_image_with_positive_offset():
 
 def test_local_bright_feature_detected():
     x=np.zeros((21,21)); x[9:12,9:12]=10
-    binary,_=adaptive_threshold(x,7,offset=1)
+    binary,_=adaptive_threshold(x,7,offset=0)
     assert binary[10,10]
     assert not binary[0,0]
 

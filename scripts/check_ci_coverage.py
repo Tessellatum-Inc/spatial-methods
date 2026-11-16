@@ -1,5 +1,6 @@
 """Fail CI when implementation packages or learning notebooks are omitted."""
 from collections import Counter
+import ast
 from pathlib import Path
 import re
 import sys
@@ -7,6 +8,10 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 workflow_path = ROOT / ".github" / "workflows" / "python-tests.yml"
 workflow = workflow_path.read_text(encoding="utf-8")
+executor_path = ROOT / "scripts" / "execute_learning_notebooks.py"
+executor = ast.parse(executor_path.read_text(encoding="utf-8"))
+notebook_assignment = next(node for node in executor.body if isinstance(node, ast.Assign) and any(isinstance(target, ast.Name) and target.id == "NOTEBOOKS" for target in node.targets))
+notebook_manifest = ast.literal_eval(notebook_assignment.value)
 
 python_dirs = {
     path.relative_to(ROOT).as_posix()
@@ -23,10 +28,7 @@ notebook_files = {
     path.relative_to(ROOT).as_posix()
     for path in (ROOT / "notebooks").glob("*.ipynb")
 }
-notebook_refs = [
-    "notebooks/" + name
-    for name in re.findall(r"notebooks/([A-Za-z0-9._-]+\.ipynb)", workflow)
-]
+notebook_refs = ["notebooks/" + name for name, _timeout in notebook_manifest]
 
 errors = []
 for label, expected, actual in (
