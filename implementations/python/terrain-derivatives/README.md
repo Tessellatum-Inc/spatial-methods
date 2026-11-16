@@ -106,3 +106,8 @@ The companion `viewshed` routine calculates observer-to-cell line of sight using
 ## Flood-frequency analysis
 
 The companion `flood_frequency.py` module provides Weibull plotting positions for annual maxima, Gumbel and GEV L-moment fitting, return-level functions and a compact design-quantile table. Inputs are independent, stationary annual maxima in consistent units. The GEV shape estimate uses a polynomial L-skewness approximation; short records and extrapolated tails require diagnostics and uncertainty analysis. It is not a hydraulic design model. See [the canonical lesson](../../../algorithms/raster/flood-frequency-analysis.md) and `test_flood_frequency.py`.
+
+
+## Positive and negative terrain openness
+
+The `terrain_openness` helper returns positive and negative radial horizon-openness angles in degrees. Both approach 90° on a flat surface; enclosing ridges reduce positive openness and enclosing valley walls reduce negative openness. It uses bilinear radial samples, explicit maximum distance, azimuth count and sample spacing. Incomplete edge rays and NoData intersections are masked. This is a documented radial approximation, not the exact geomorphon method or a sky-view-factor calculation. See [the canonical lesson](../../../algorithms/raster/terrain-openness.md) and `test_terrain_openness.py`.
