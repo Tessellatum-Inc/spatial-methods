@@ -134,3 +134,5 @@ Four source-listed streaming summaries now have tested reference implementations
 
 - Section 17: [FFT-grid KDE](../algorithms/statistics/fft-grid-kde.md) now implements weighted point binning, Gaussian FFT convolution and optional grid-edge correction. Dual-tree and adaptive KDE remain open.
 - Section 20: [Spatial information theory](../algorithms/statistics/spatial-information-theory.md) now implements Shannon, Renyi, Tsallis, categorical and permutation entropy. Spatially conditioned information flow and causal methods remain open.
+
+- Section 22: [Proper Gaussian CAR Gibbs sampling](../algorithms/statistics/proper-car-gibbs-sampling.md) now provides a tested systematic-scan posterior sampler with fixed hyperparameters and analytic small-graph verification. Hyperparameter estimation, non-Gaussian models and MCMC diagnostics remain open.

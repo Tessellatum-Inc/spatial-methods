@@ -26,6 +26,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Spatial skyline queries](query-processing/spatial-skyline.md) — return objects not dominated across distance to a query location and selected attributes.
 
+## Spatial Bayesian inference
+
+- [Proper Gaussian CAR Gibbs sampling](statistics/proper-car-gibbs-sampling.md) — fixed-hyperparameter latent Gaussian posterior sampling.
+
 ## Scalable density estimation
 
 - [FFT-grid KDE](statistics/fft-grid-kde.md) — weighted binned Gaussian KDE using FFT convolution.

@@ -108,6 +108,9 @@ jobs:
           - example: classification-breaks
             directory: implementations/python/classification-breaks
             pythonpath: ""
+          - example: car-gibbs-sampler
+            directory: implementations/python/car-gibbs-sampler
+            pythonpath: ""
           - example: fft-grid-kde
             directory: implementations/python/fft-grid-kde
             pythonpath: ""
