@@ -331,3 +331,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Channel chi, slope-area and knickpoint analysis](raster/channel-morphometry.md) — calculate chi coordinates, fit log slope-area relationships and screen longitudinal profiles for chord-residual knickpoints.
 
 - [USLE/RUSLE soil-loss factors](raster/usle-rusle-erosion.md) — calculate the empirical R×K×LS×C×P product and a conventional slope-length/steepness factor.
+
+- [DRASTIC and landslide susceptibility baselines](raster/susceptibility-indices.md) — calculate weighted DRASTIC ratings, categorical frequency ratios and ridge-regularized logistic susceptibility probabilities.
