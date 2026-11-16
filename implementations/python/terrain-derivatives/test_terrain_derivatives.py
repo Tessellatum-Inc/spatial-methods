@@ -453,3 +453,31 @@ def test_reservoir_stage_storage_mask_and_validation():
     with pytest.raises(ValueError): reservoir_stage_storage(dem, [2., 1.])
     with pytest.raises(ValueError): reservoir_stage_storage(dem, [1.], cell_area=0)
     with pytest.raises(ValueError): reservoir_stage_storage(dem, [1.], valid_mask=[[True]])
+
+def test_scs_curve_number_runoff_threshold_and_known_values():
+    from terrain_indices import scs_curve_number_runoff
+    assert scs_curve_number_runoff(10, 80) == pytest.approx(0)
+    s = 25400/80 - 254
+    p = 100
+    expected = (p - .2*s)**2 / (p - .2*s + s)
+    assert scs_curve_number_runoff(p, 80) == pytest.approx(expected)
+    assert scs_curve_number_runoff([0, 10, 100], 100).tolist() == [0, 10, 100]
+
+
+def test_scs_curve_number_runoff_broadcasting_and_validation():
+    from terrain_indices import scs_curve_number_runoff
+    result = scs_curve_number_runoff([20, 50], [60, 90])
+    assert result.shape == (2,) and result[1] > result[0]
+    with pytest.raises(ValueError): scs_curve_number_runoff(-1, 80)
+    with pytest.raises(ValueError): scs_curve_number_runoff(10, 0)
+    with pytest.raises(ValueError): scs_curve_number_runoff(10, 101)
+    with pytest.raises(ValueError): scs_curve_number_runoff(10, 80, abstraction_ratio=-.1)
+
+
+def test_scs_curve_number_antecedent_conversions_are_ordered_and_bounded():
+    from terrain_indices import scs_curve_number_antecedent
+    dry, wet = scs_curve_number_antecedent(np.array([40., 70., 95.]))
+    assert np.all(dry < [40, 70, 95])
+    assert np.all(wet > [40, 70, 95])
+    assert np.all((dry >= 1) & (wet <= 100))
+    with pytest.raises(ValueError): scs_curve_number_antecedent(0)
