@@ -17,6 +17,10 @@ def test_mask_and_intensity():
     r=intensity_analysis(np.array([[1,1,2,2]]),np.array([[1,2,1,1]]),years=2,classes=[1,2])
     assert r["interval_intensity"]==pytest.approx(.375)
     np.testing.assert_allclose(r["gain_intensity"],[.5,.25]);np.testing.assert_allclose(r["loss_intensity"],[.25,.5])
+def test_numeric_nodata_is_excluded():
+    a=np.array([[1.,np.nan,2.]]);b=np.array([[1.,1.,1.]])
+    labels,m=transition_matrix(a,b,classes=[1.,2.])
+    assert int(m.sum())==2
 def test_validation():
     with pytest.raises(ValueError): transition_matrix([1,2],[1])
     with pytest.raises(ValueError): transition_matrix([1,2],[1,2],classes=[1])

@@ -11,7 +11,11 @@ def transition_matrix(before,after,*,classes=None,mask=None):
         m=np.asarray(mask)
         if m.shape!=a.shape or m.dtype!=bool: raise ValueError("mask must be boolean and match inputs")
         valid &= m
-    valid &= ~np.equal(a,None)&~np.equal(b,None)
+    for values in (a,b):
+        if np.issubdtype(values.dtype,np.number):
+            valid &= np.isfinite(values)
+        else:
+            valid &= np.fromiter((value is not None for value in values.flat),dtype=bool,count=values.size).reshape(values.shape)
     av,bv=a[valid],b[valid]
     labels=sorted(set(av.tolist())|set(bv.tolist()),key=lambda x:(str(type(x)),str(x))) if classes is None else list(classes)
     if not labels or len(set(labels))!=len(labels): raise ValueError("classes must be non-empty and unique")

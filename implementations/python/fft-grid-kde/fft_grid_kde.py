@@ -43,7 +43,7 @@ def fft_grid_kde(points, *, extent, shape=(128,128), bandwidth=1.0,
     xx,yy=np.meshgrid(gx,gy,indexing="ij")
     kernel=np.exp(-(xx*xx+yy*yy)/(2*bandwidth*bandwidth))
     kernel/=kernel.sum()
-    smoothed=fftconvolve(counts,kernel,mode="same")
+    smoothed=np.maximum(fftconvolve(counts,kernel,mode="same"),0.0)
     if boundary_correction:
         support=fftconvolve(np.ones_like(counts),kernel,mode="same")
         smoothed=np.divide(smoothed,support,out=np.zeros_like(smoothed),where=support>0)
