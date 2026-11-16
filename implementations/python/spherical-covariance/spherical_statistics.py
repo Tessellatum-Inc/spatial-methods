@@ -187,3 +187,86 @@ def spherical_vmf_kde(
     log_c = _log_vmf_normalizer_3d(kappa)
     density = np.exp(log_c + kappa * (query @ samples.T)) @ w
     return density / w.sum()
+
+
+def _estimate_vmf_concentration(resultant_length: float) -> float:
+    """Invert A3(kappa)=coth(kappa)-1/kappa by safeguarded Newton steps."""
+    r = float(np.clip(resultant_length, 0.0, 1.0 - 1e-12))
+    if r < 1e-10:
+        return 0.0
+    kappa = r * (3.0 - r*r) / max(1e-12, 1.0-r*r)
+    for _ in range(100):
+        if kappa > 20.0:
+            a = 1.0 - 1.0/kappa
+            derivative = 1.0/(kappa*kappa)
+        else:
+            a = 1.0/np.tanh(kappa) - 1.0/kappa
+            derivative = 1.0/(kappa*kappa) - 1.0/(np.sinh(kappa)**2)
+        step = (a-r) / max(derivative, 1e-14)
+        candidate = max(0.0, kappa-step)
+        if abs(candidate-kappa) <= 1e-10*max(1.0, kappa):
+            return float(candidate)
+        kappa = candidate
+    return float(kappa)
+
+
+def von_mises_fisher_mixture(
+    vectors: ArrayLike, n_components: int, *, max_iterations: int = 300,
+    tolerance: float = 1e-7, seed: int = 0, min_concentration: float = 1e-6
+) -> dict:
+    """Fit a finite vMF mixture on S2 by EM with component-specific concentration.
+
+    Initial directions come from spherical k-means. The E-step uses stable
+    log-sum-exp responsibilities; the M-step updates mixture proportions,
+    normalized resultant directions and the S2 concentration MLE. This is a
+    local-likelihood model, not a guarantee of the global mixture optimum.
+    """
+    x = _unit_rows(vectors)
+    n = len(x)
+    if isinstance(n_components, (bool, np.bool_)) or not isinstance(n_components, (int, np.integer)) or not 1 <= n_components <= n:
+        raise ValueError("n_components must be an integer between one and n")
+    if isinstance(max_iterations, (bool, np.bool_)) or not isinstance(max_iterations, (int, np.integer)) or max_iterations < 1:
+        raise ValueError("max_iterations must be a positive integer")
+    if not np.isfinite(tolerance) or tolerance <= 0:
+        raise ValueError("tolerance must be finite and positive")
+    initial = spherical_kmeans(x, int(n_components), seed=seed)
+    means = initial["centers"].copy()
+    kappas = np.full(int(n_components), 5.0)
+    proportions = np.full(int(n_components), 1.0/int(n_components))
+    previous = -np.inf
+    converged = False
+    for iteration in range(1, int(max_iterations)+1):
+        log_components = np.empty((n, int(n_components)), dtype=float)
+        for j in range(int(n_components)):
+            log_components[:, j] = (np.log(proportions[j]) +
+                _log_vmf_normalizer_3d(float(kappas[j])) + kappas[j]*(x @ means[j]))
+        row_max = np.max(log_components, axis=1)
+        log_norm = row_max + np.log(np.sum(np.exp(log_components-row_max[:, None]), axis=1))
+        log_likelihood = float(np.sum(log_norm))
+        responsibilities = np.exp(log_components-log_norm[:, None])
+        mass = responsibilities.sum(axis=0)
+        proportions = mass / n
+        for j in range(int(n_components)):
+            resultant = responsibilities[:, j] @ x
+            length = float(np.linalg.norm(resultant))
+            if length > 1e-12:
+                means[j] = resultant / length
+            kappas[j] = max(float(min_concentration),
+                            _estimate_vmf_concentration(length/max(mass[j], 1e-15)))
+        if abs(log_likelihood-previous) <= tolerance*(1.0+abs(previous)):
+            converged = True
+            break
+        previous = log_likelihood
+    # Recompute the final likelihood and responsibilities under final parameters.
+    log_components = np.column_stack([
+        np.log(proportions[j]) + _log_vmf_normalizer_3d(float(kappas[j])) +
+        kappas[j]*(x @ means[j]) for j in range(int(n_components))
+    ])
+    row_max = np.max(log_components, axis=1)
+    log_norm = row_max + np.log(np.sum(np.exp(log_components-row_max[:, None]), axis=1))
+    responsibilities = np.exp(log_components-log_norm[:, None])
+    return {"means": means, "concentrations": kappas, "weights": proportions,
+            "responsibilities": responsibilities,
+            "labels": np.argmax(responsibilities, axis=1),
+            "log_likelihood": float(np.sum(log_norm)),
+            "iterations": iteration, "converged": converged}
