@@ -8,6 +8,8 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Raster and terrain
 
+- [Stumpf bathymetry and SeaWiFS OC4v4 chlorophyll](remote-sensing/stumpf-bathymetry-and-oc4v4.md) — local log-band-ratio depth calibration and the sensor-specific OC4v4 chlorophyll polynomial.
+
 - [Solar geometry](raster/solar-geometry.md) — estimate solar elevation, zenith, azimuth and top-of-atmosphere irradiance from timezone-aware timestamps.
 
 - [Local raster map algebra](raster/local-map-algebra.md) — aligned cellwise arithmetic, reducers, comparisons and categorical lookup with explicit NoData policies.
