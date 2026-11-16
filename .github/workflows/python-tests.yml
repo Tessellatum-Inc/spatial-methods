@@ -264,6 +264,9 @@ jobs:
           - example: louvain
             directory: implementations/python/louvain
             pythonpath: ""
+          - example: flow-capturing-location
+            directory: implementations/python/flow-capturing-location
+            pythonpath: ""
           - example: spatial-sampling-design
             directory: implementations/python/spatial-sampling-design
             pythonpath: ""
