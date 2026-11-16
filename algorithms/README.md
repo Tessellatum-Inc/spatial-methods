@@ -75,6 +75,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Path-size logit](networks/path-size-logit.md) — overlap-corrected route-choice probabilities for alternatives sharing network edges.
 
+## Temporal image compositing
+
+- [Optical temporal compositing](remote-sensing/temporal-compositing.md) — best-pixel quality selection, observed-spectrum medoid and maximum-NDVI compositing.
+
 ## Spatiotemporal object tracking
 
 - [Raster object tracking](raster/object-tracking.md) — associate segmented raster objects through overlap graphs, retaining split/merge links and deterministic primary track IDs.
