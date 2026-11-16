@@ -25,7 +25,7 @@ and extent. This is a precision model, not a CRS transformation.
     project = [(5, -1), (10, -1), (10, 4), (5, 4)]
     pieces = boolean_clip([parcel], [project], "intersection", scale=1000)
 
-Supported fill rules: even_odd, non_zero, positive and negative. Nested islands
+Self-crossing input contours are first simplified into simple contours using\nthe selected fill rule. Supported fill rules: even_odd, non_zero, positive and negative. Nested islands
 inside holes are emitted as separate polygon components.
 
 ## Limits
