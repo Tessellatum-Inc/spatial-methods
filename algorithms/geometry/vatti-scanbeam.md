@@ -45,3 +45,18 @@ rings. It nodes cell boundaries at shared vertices, cancels internal seams,
 and stitches the remaining directed edges. Disconnected components and
 clockwise hole rings are preserved. See the implementation README and
 verification ledger for the current test matrix and limitations.
+
+
+## Degeneracies and sweep scheduling
+
+The Boolean sweep now coalesces coincident active bounds into operand-aware
+winding bundles and schedules intersections between adjacent bundles through
+an exact-rational event heap. Multiway crossings are reordered as a single
+event. Horizontal contact coordinates are propagated into cell-boundary
+noding before contour stitching.
+
+Regression coverage includes coincident rings, opposite edge directions,
+shared vertical and horizontal boundaries, partial collinear overlap,
+vertex-only contact and multiway crossings. Shapely is used as an independent
+test oracle for area and polygon-component comparisons; it is not a runtime
+dependency of the clipping implementation.
