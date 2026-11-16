@@ -77,6 +77,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Path-size logit](networks/path-size-logit.md) — overlap-corrected route-choice probabilities for alternatives sharing network edges.
 
+## Spectral continuum removal
+
+- [Spectral continuum removal](remote-sensing/continuum-removal.md) — upper-convex-hull normalization, absorption depth and integrated absorption area.
+
 ## Empirical optical and terrain corrections
 
 - [Empirical corrections](remote-sensing/empirical-corrections.md) — dark-object subtraction, C-correction and Minnaert terrain correction with explicit assumptions.
