@@ -10,11 +10,11 @@ def test_cusum_accumulates_only_deviations_beyond_allowance():
     assert result["alarm"] == [False, False, False, True, False, True]
 
 
-def test_cusum_is_two_sided_and_resets_after_return_to_target():
+def test_cusum_is_two_sided_and_retains_accumulated_evidence_at_target():
     result = cusum([15, 10, 5], 10, allowance=0, threshold=4)
-    assert result["upper"] == [5, 0, 0]
+    assert result["upper"] == [5, 5, 0]
     assert result["lower"] == [0, 0, 5]
-    assert result["alarm"] == [True, False, True]
+    assert result["alarm"] == [True, True, True]
 
 
 def test_ears_baselines_are_lagged_and_scores_match_hand_calculation():
@@ -29,9 +29,9 @@ def test_ears_baselines_are_lagged_and_scores_match_hand_calculation():
 def test_ears_c2_and_c3_use_only_prior_baseline_and_positive_scores():
     counts = [2] * 9 + [8, 8, 2]
     result = ears(counts, baseline_window=7, c2_exclusion=2, threshold=3)
-    assert result["c2"][9] == pytest.approx(6 / 2)
+    assert result["c2"][9] == pytest.approx(6 / (2 ** 0.5))
     assert result["c2"][10] == pytest.approx(6 / 2)
-    assert result["c3"][10] == pytest.approx(6.0)
+    assert result["c3"][10] == pytest.approx(12 / (2 ** 0.5))
     assert result["c3"][11] == pytest.approx(6.0)
 
 

@@ -62,7 +62,9 @@ def test_kmeans_coverage_recovers_two_separated_cluster_centres():
               for y in (0.0, 0.2)]
     centers = kmeans_coverage(points, 2)
     centers = sorted(centers)
-    expected = [(0.1, 0.1), (10.1, 0.1)]\n    for actual, target in zip(centers, expected):\n        assert actual == pytest.approx(target)
+    expected = [(0.1, 0.1), (10.1, 0.1)]
+    for actual, target in zip(centers, expected):
+        assert actual == pytest.approx(target)
 
 
 def test_kmeans_coverage_returns_requested_number_and_dimension():
