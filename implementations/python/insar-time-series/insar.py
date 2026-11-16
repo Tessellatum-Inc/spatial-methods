@@ -52,7 +52,7 @@ def sbas_network_inversion(interferograms, pairs, *, n_dates,
     """
     data = np.asarray(interferograms, dtype=float)
     edge = np.asarray(pairs)
-    if data.ndim < 2 or data.shape[0] == 0 or np.any(np.isinf(data)):
+    if data.ndim == 0 or data.shape[0] == 0 or np.any(np.isinf(data)):
         raise ValueError("interferograms must be a non-empty stack with no infinite values")
     if edge.shape != (data.shape[0], 2) or not np.issubdtype(edge.dtype, np.integer):
         raise ValueError("pairs must be an integer (n_interferograms, 2) array")
