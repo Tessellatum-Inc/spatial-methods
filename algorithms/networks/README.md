@@ -14,7 +14,9 @@ This index links the algorithm dossiers to their runnable reference implementati
 - [RAPTOR](raptor.md) — round-based timetable earliest-arrival baseline with footpaths; [Python package](../../implementations/python/raptor/README.md).
 - [Connection Scan Algorithm](connection-scan.md) — departure-ordered timetable scan with transfer constraints; [Python package](../../implementations/python/csa/README.md).
 
-## Facility location and allocation\n\n- [Flow-capturing location model](flow-capturing-location.md) — exact and greedy maximum captured-flow site selection over known network paths.\n\n## Matching and allocation\n\n- [Stable matching](stable-matching.md) — resident-proposing deferred acceptance for capacity-constrained institutions, with a separate blocking-pair audit; [Python package](../../implementations/python/stable-matching/README.md).\n\n## Network structure and partitioning
+## Facility location and allocation
+
+- [Flow-refueling location model](flow-refueling-location.md) — exact small-instance station selection under route-distance and vehicle-range feasibility.\n\n- [Flow-capturing location model](flow-capturing-location.md) — exact and greedy maximum captured-flow site selection over known network paths.\n\n## Matching and allocation\n\n- [Stable matching](stable-matching.md) — resident-proposing deferred acceptance for capacity-constrained institutions, with a separate blocking-pair audit; [Python package](../../implementations/python/stable-matching/README.md).\n\n## Network structure and partitioning
 
 - [Centrality](centrality.md) — betweenness, closeness, and PageRank; [Python package](../../implementations/python/network-centrality/README.md).
 - [Label propagation](label-propagation.md) — seeded label-propagation community detection; [Python package](../../implementations/python/network-communities/README.md).
