@@ -43,7 +43,7 @@ When diagonal movement is enabled, the implementation can prohibit a diagonal mo
 - This is a discrete raster graph, not a continuous fast-marching or Eikonal solver.
 - The method does not create the cost surface, choose sources, or infer barriers.
 - It does not calculate a least-cost path geometry; it calculates accumulated cost.
-- It does not implement anisotropic movement, directional turn penalties or a physical travel-time model.
+- The symmetric cost-surface function does not implement anisotropic movement, directional turn penalties or a physical travel-time model. A separate [terrain travel-time implementation](terrain-travel-time.md) now provides directional Tobler, Naismith and Langmuir edge models; it still does not provide backlink rasters or turn penalties.
 - Results depend on cell resolution, connectivity, cell spacing and edge-cost convention.
 
 ## Exercises
@@ -61,3 +61,8 @@ When diagonal movement is enabled, the implementation can prohibit a diagonal mo
 - Tobler, W. (1993), *Three presentations on geographical analysis and modeling*, NCGIA Technical Report 93-1.
 
 **Scope:** multi-source Dijkstra on a regular raster graph with symmetric mean-endpoint edge costs; no continuous Eikonal solver or path geometry.
+
+
+## Directional terrain time
+
+For terrain-following movement, use the separate [Tobler/Naismith/Langmuir travel-time methods](terrain-travel-time.md). They consume an elevation raster and calculate directed edge times; they are not interchangeable with a generic friction raster, and the rule-based estimates do not account for trail condition, load, weather, fitness or navigation.

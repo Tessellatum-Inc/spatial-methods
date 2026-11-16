@@ -27,3 +27,8 @@ python -m pytest -q
 - The cost surface must have a defensible interpretation and units. The result is accumulated cost, not necessarily physical distance or travel time.
 
 See the [canonical lesson](../../../algorithms/raster/cost-distance.md) and [intern walkthrough](implementation-walkthrough.md).
+
+
+## Directional terrain travel-time models
+
+The companion `terrain_travel.py` module adds Tobler's hiking function, Naismith's rule and Langmuir's descent correction, plus a directional multi-source Dijkstra accumulator over an elevation grid. Output units are seconds. Unlike the symmetric cost-surface routine above, each directed edge uses the elevation change from the current cell to the next cell. Non-finite elevation cells are barriers. The Langmuir correction is applied per raster edge and is therefore resolution-sensitive.

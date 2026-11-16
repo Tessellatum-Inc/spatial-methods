@@ -35,7 +35,7 @@ This section groups applied methods across spatial interaction, functional regio
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Anisotropic cost surfaces (Tobler hiking function, Naismith, Langmuir), path distance with vertical factors, backlink rasters | Cost-surface construction / terrain travel models | 33 | Not checked — intake only |
+| Anisotropic cost surfaces (Tobler hiking function, Naismith, Langmuir), path distance with vertical factors, backlink rasters | Cost-surface construction / terrain travel models | 33 | Partially implemented: directional raster travel-time Dijkstra with Tobler, Naismith and per-edge Langmuir models; vertical-factor variants, backlink rasters, turn penalties and continuous path-distance solvers remain open |
 | Least-cost corridors, cost-weighted distance with turning penalties, energy-expenditure models for walking and loaded travel | Corridor analysis / movement cost models | 33 | Not checked — intake only |
 
 ## SAR geometry, InSAR time series and crustal deformation
