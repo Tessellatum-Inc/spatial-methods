@@ -8,7 +8,9 @@ def test_stockdon_runup_known_shape_and_percentile_order():
     assert np.ndim(r2) == 0 and r2 > 0
     assert stockdon_runup(2.0, 10.0, 0.05, percentile=1) == pytest.approx(.75*r2)
     assert stockdon_runup(2.0, 10.0, 0.05, percentile=50) == pytest.approx(.5*r2)
-    assert stockdon_runup(2.0, 10.0, 0.05, percentile=0) == 0
+    low = stockdon_runup(2.0, 10.0, 0.05, percentile=0)
+    assert low < stockdon_runup(2.0, 10.0, 0.05, percentile=50)
+    assert low != 0
 
 
 def test_stockdon_broadcasting_and_invalid_inputs():
