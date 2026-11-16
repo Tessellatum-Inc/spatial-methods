@@ -68,3 +68,19 @@ def test_generator_input_is_supported():
     vertices = (point for point in [(0, 0), (2, 0), (2, 2), (0, 2)])
     pieces = convex_decompose(vertices)
     assert len(pieces) == 1
+
+
+def test_many_reflex_vertices_use_adjacency_worklist_and_preserve_partition_area():
+    import math
+
+    # A simple star-shaped radial ring with alternating radii creates many
+    # reflex vertices while keeping a known interior and no self-crossings.
+    ring = []
+    for i in range(24):
+        angle = 2 * math.pi * i / 24
+        radius = 10 if i % 2 == 0 else 6
+        ring.append((radius * math.cos(angle), radius * math.sin(angle)))
+    pieces = convex_decompose(ring)
+    assert len(pieces) > 1
+    assert all(is_convex(piece) for piece in pieces)
+    assert sum((abs(area2(piece)) for piece in pieces), Fraction(0)) == 2 * polygon_area(ring)
