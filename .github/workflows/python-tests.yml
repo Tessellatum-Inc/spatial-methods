@@ -683,6 +683,9 @@ jobs:
           - example: natural-neighbour
             directory: implementations/python/natural-neighbour
             pythonpath: ""
+          - example: marching-squares
+            directory: implementations/python/marching-squares
+            pythonpath: ""
 
     steps:
       - name: Check out repository
