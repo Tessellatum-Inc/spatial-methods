@@ -111,4 +111,4 @@ def test_winding_states_are_cumulative_in_active_edge_order():
         BoundEdge(1, 1, 0, (2, 0), (3, 2), -1),
         BoundEdge(2, 2, 0, (4, 0), (5, 2), 1),
     ]
-    assert winding_states(edges) == ((1,), (0,), (1,))
+    assert winding_states(edges) == (1, 0, 1)
