@@ -15,4 +15,4 @@ These functions estimate global translation or affine geometry. They do not dete
 
 ## ORB feature correspondences
 
-The companion ORB matcher detects keypoints and binary descriptors in each image, matches moving-image descriptors to reference-image descriptors with Hamming distance, and filters ambiguous pairs using a nearest-neighbour ratio test. Its output coordinates feed the affine RANSAC estimator above. This closes a basic classical feature-detection-and-matching path, but does not implement SIFT, AKAZE, learned matchers, multimodal matching or local deformation models.
+The local-feature matcher supports ORB and AKAZE binary descriptors (Hamming distance) and SIFT descriptors (L2 distance). It detects keypoints in both images, matches moving-image descriptors to reference-image descriptors and filters ambiguous pairs with a nearest-neighbour ratio test. Its output coordinates feed the affine RANSAC estimator above. These are classical single-modality methods; learned matchers, optical-SAR matching and local deformation models remain open.

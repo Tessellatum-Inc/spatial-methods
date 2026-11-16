@@ -67,3 +67,32 @@ def test_orb_feature_matches_rejects_blank_and_nonfinite_images():
     bad[0, 0] = np.nan
     with pytest.raises(ValueError, match="finite"):
         orb_feature_matches(bad, np.ones((32, 32)))
+
+
+from image_registration import local_feature_matches
+
+
+@pytest.mark.parametrize("detector", ["SIFT", "AKAZE"])
+def test_sift_and_akaze_match_translated_texture(detector):
+    import cv2
+    rng = np.random.default_rng(13)
+    reference = (rng.random((256, 256)) * 255).astype(np.uint8)
+    reference = cv2.GaussianBlur(reference, (3, 3), 0.7)
+    moving = cv2.warpAffine(reference,
+        np.array([[1., 0., 7.], [0., 1., -5.]], dtype=np.float32),
+        (256, 256), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+    matches = local_feature_matches(reference, moving, detector=detector,
+                                    max_features=1500)
+    assert matches["detector"] == detector
+    assert matches["match_count"] > 20
+    fit = estimate_affine_ransac(matches["source_points"], matches["target_points"],
+                                 residual_threshold=1.0, random_state=4)
+    assert fit["inlier_count"] > 20
+    np.testing.assert_allclose(fit["matrix"], np.eye(2), atol=0.03)
+    np.testing.assert_allclose(fit["offset"], [-7., 5.], atol=0.6)
+
+
+def test_local_feature_matching_rejects_unknown_detector():
+    with pytest.raises(ValueError, match="detector must be"):
+        local_feature_matches(np.ones((32, 32)), np.ones((32, 32)),
+                              detector="unsupported")
