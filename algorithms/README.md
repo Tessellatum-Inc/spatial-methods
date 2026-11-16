@@ -77,6 +77,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Path-size logit](networks/path-size-logit.md) — overlap-corrected route-choice probabilities for alternatives sharing network edges.
 
+## Empirical optical and terrain corrections
+
+- [Empirical corrections](remote-sensing/empirical-corrections.md) — dark-object subtraction, C-correction and Minnaert terrain correction with explicit assumptions.
+
 ## Temporal image compositing
 
 - [Optical temporal compositing](remote-sensing/temporal-compositing.md) — best-pixel quality selection, observed-spectrum medoid and maximum-NDVI compositing.
