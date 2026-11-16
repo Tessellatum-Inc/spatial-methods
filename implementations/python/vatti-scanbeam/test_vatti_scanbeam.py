@@ -112,3 +112,56 @@ def test_winding_states_are_cumulative_in_active_edge_order():
         BoundEdge(2, 2, 0, (4, 0), (5, 2), 1),
     ]
     assert winding_states(edges) == (1, 0, 1)
+
+
+def test_horizontal_events_include_bound_endpoint_contacts():
+    from vatti_scanbeam import horizontal_events_at
+    result = decompose_scanbeams([[(0, 0), (4, 0), (4, 3), (0, 3)]])
+    events = horizontal_events_at(result, 0)
+    bound_events = [event for event in events if event.other_kind == "bound"]
+    assert [(event.x_start, event.x_end) for event in bound_events] == [(0, 0), (4, 4)]
+    assert all(event.kind == "point" for event in bound_events)
+
+
+def test_horizontal_events_find_interior_crossings():
+    from vatti_scanbeam import horizontal_events_at
+    vertical_rect = [(0, 0), (4, 0), (4, 4), (0, 4)]
+    horizontal_rect = [(-1, 2), (5, 2), (5, 3), (-1, 3)]
+    result = decompose_scanbeams([vertical_rect, horizontal_rect])
+    events = horizontal_events_at(result, 2)
+    crossings = [event for event in events
+                 if event.other_kind == "bound" and event.horizontal_edge_id in {
+                     edge.edge_id for edge in result.horizontals
+                     if edge.ring_id == 1 and edge.a[1] == 2
+                 }]
+    assert [(event.x_start, event.x_end) for event in crossings] == [(0, 0), (4, 4)]
+
+
+def test_horizontal_horizontal_overlap_is_classified():
+    from vatti_scanbeam import horizontal_events_at
+    first = [(0, 0), (4, 0), (4, 2), (0, 2)]
+    second = [(2, 0), (6, 0), (6, -2), (2, -2)]
+    result = decompose_scanbeams([first, second])
+    overlaps = [event for event in horizontal_events_at(result, 0)
+                if event.other_kind == "horizontal"]
+    assert len(overlaps) == 1
+    assert (overlaps[0].x_start, overlaps[0].x_end) == (2, 4)
+    assert overlaps[0].kind == "overlap"
+
+
+def test_horizontal_horizontal_point_contact_is_not_overlap():
+    from vatti_scanbeam import horizontal_events_at
+    first = [(0, 0), (2, 0), (2, 2), (0, 2)]
+    second = [(2, 0), (4, 0), (4, -2), (2, -2)]
+    result = decompose_scanbeams([first, second])
+    contacts = [event for event in horizontal_events_at(result, 0)
+                if event.other_kind == "horizontal"]
+    assert len(contacts) == 1
+    assert (contacts[0].x_start, contacts[0].x_end) == (2, 2)
+    assert contacts[0].kind == "point"
+
+
+def test_horizontal_events_are_empty_off_their_scanbeam():
+    from vatti_scanbeam import horizontal_events_at
+    result = decompose_scanbeams([[(0, 0), (4, 0), (4, 3), (0, 3)]])
+    assert horizontal_events_at(result, 1) == ()
