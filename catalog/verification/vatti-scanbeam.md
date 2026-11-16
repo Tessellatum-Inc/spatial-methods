@@ -33,7 +33,7 @@
 - Efficient neighbour-only intersection scheduling.
 - Full horizontal-edge clipping transitions and their integration into active-edge updates.
 - Deriving the correct active-edge order from a complete sweep, including coincident-edge rules and horizontal-event integration.
-- Stitching filled cells into output contours, including holes and disconnected components.
+- Full Vatti intersection-list scheduling, coincident-edge bundles and horizontal transition integration.
 - Coincident/overlapping bound-edge bundle semantics.
 - Incremental neighbour-only active-edge scheduling and in-place updates.
 
