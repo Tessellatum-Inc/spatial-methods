@@ -329,3 +329,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Positive and negative terrain openness](raster/terrain-openness.md) — summarize radial horizon openness above and below terrain cells using explicit search and sampling parameters.
 
 - [Channel chi, slope-area and knickpoint analysis](raster/channel-morphometry.md) — calculate chi coordinates, fit log slope-area relationships and screen longitudinal profiles for chord-residual knickpoints.
+
+- [USLE/RUSLE soil-loss factors](raster/usle-rusle-erosion.md) — calculate the empirical R×K×LS×C×P product and a conventional slope-length/steepness factor.
