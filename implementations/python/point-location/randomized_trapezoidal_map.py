@@ -226,9 +226,16 @@ class RandomizedTrapezoidalMap:
             )
             self.insertion_replacements.append(replacement)
             self._update_history_dag(insertion_index, sid, corridor, replacement)
-            self.replacement_graph_snapshots.append(
-                tuple(self._persistent_cells[key] for key in sorted(self._persistent_cells))
-            )
+            # Freeze an independent snapshot: later insertions refresh
+            # neighbor links on surviving live cells.
+            self.replacement_graph_snapshots.append(tuple(
+                Trapezoid(
+                    cell.id, cell.x_left, cell.x_right,
+                    cell.bottom_segment, cell.top_segment,
+                    tuple(cell.left_neighbors), tuple(cell.right_neighbors),
+                )
+                for cell in sorted(self._persistent_cells.values(), key=lambda item: item.id)
+            ))
             inserted.append(sid)
             self.insertion_rebuild_sizes.append(len(self.trapezoids))
         self._build(tuple(order))
