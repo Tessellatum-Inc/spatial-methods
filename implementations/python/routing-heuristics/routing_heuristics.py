@@ -39,8 +39,9 @@ def two_opt(points: Iterable[Sequence[float]], route: Sequence[int] | None=None,
     if isinstance(max_passes,bool) or not isinstance(max_passes,int) or max_passes<1:
         raise ValueError("max_passes must be a positive integer")
     tour=list(range(n)) if route is None else list(route)
-    if len(tour)!=n or set(tour)!=set(range(n)):
-        raise ValueError("route must be a permutation of all point indices")
+    if (len(tour)!=n or any(isinstance(i,bool) or not isinstance(i,int) for i in tour)
+            or set(tour)!=set(range(n))):
+        raise ValueError("route must be a permutation of all integer point indices")
     if n<4: return tour
     if tour[0]!=0:
         k=tour.index(0); tour=tour[k:]+tour[:k]
