@@ -102,3 +102,47 @@ def morans_i(
     )
 
     return (n / s0) * (numerator / denominator)
+
+
+def morans_i_permutation(
+    values: Sequence[float],
+    weights: Sequence[Sequence[float]],
+    *,
+    permutations: int = 999,
+    alternative: str = "two-sided",
+    seed: int | None = None,
+) -> dict:
+    """Permutation inference for global Moran's I under random labelling.
+
+    The observed values are randomly reassigned to fixed spatial locations.
+    The pseudo-p-value uses the plus-one correction. Two-sided inference is
+    centred on the randomisation expectation -1/(n-1), not zero.
+    """
+    import random
+
+    if not isinstance(permutations, int) or permutations < 1:
+        raise ValueError("permutations must be a positive integer")
+    if alternative not in {"two-sided", "greater", "less"}:
+        raise ValueError("alternative must be two-sided, greater or less")
+    x=[float(value) for value in values]
+    observed=morans_i(x,weights)
+    expected=-1.0/(len(x)-1)
+    rng=random.Random(seed)
+    simulated=[]
+    for _ in range(permutations):
+        shuffled=x.copy()
+        rng.shuffle(shuffled)
+        simulated.append(morans_i(shuffled,weights))
+    if alternative=="greater":
+        extreme=sum(value>=observed for value in simulated)
+    elif alternative=="less":
+        extreme=sum(value<=observed for value in simulated)
+    else:
+        extreme=sum(abs(value-expected)>=abs(observed-expected) for value in simulated)
+    p_value=(extreme+1)/(permutations+1)
+    mean=sum(simulated)/permutations
+    variance=sum((value-mean)**2 for value in simulated)/(permutations-1) if permutations>1 else 0.0
+    return {"statistic":observed,"expected":expected,"p_value":p_value,
+            "alternative":alternative,"permutations":permutations,
+            "simulated":simulated,"simulation_mean":mean,
+            "simulation_std":variance**0.5}
