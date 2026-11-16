@@ -126,6 +126,8 @@ def test_randomized_insertions_trace_corridors_and_form_local_split_pieces():
         sid = locator.insertion_order[insertion_index]
         assert corridor
         assert len(corridor) == len(splits)
+        assert corridor[0].x_left < source[sid][0][0] < corridor[0].x_right
+        assert corridor[-1].x_left < source[sid][1][0] < corridor[-1].x_right
         for cell, split in zip(corridor, splits):
             assert split.source_trapezoid is cell
             assert split.lower.bottom_segment == cell.bottom_segment
