@@ -31,6 +31,10 @@ V=D^++D^-.
 
 Unlike a one-sided linear empirical-CDF statistic, the sum is invariant to rotation of the circle. The implementation reports a Stephens-corrected asymptotic p-value. Treat it cautiously for very small samples, ties and discrete directional data.
 
+## Watson U-squared test
+
+Watson's statistic centers the one-sample empirical-CDF deviations before squaring and summing, with the finite-sample correction \(1/(12n)\). Centering makes the statistic invariant to the choice of angular origin. The implementation reports the asymptotic upper-tail series, not an exact finite-sample p-value.
+
 ## von Mises density
 
 The von Mises distribution is the circular analogue of a symmetric normal-like distribution:
@@ -55,7 +59,7 @@ The dependency-light Python baseline is in [spatial-distribution-summaries](../.
 
 - The tests assume angular observations are measured on a common, meaningful reference frame.
 - A direction is not a compass bearing until its origin and rotation convention are specified.
-- Rayleigh is most useful for a unimodal concentration alternative; use Kuiper or a suitable model-based test for other departures.
+- Rayleigh is most useful for a unimodal concentration alternative; use Kuiper or Watson U-squared for broader departures. The Watson implementation uses an asymptotic upper-tail series.
 - The Kuiper p-value is asymptotic, not an exact finite-sample distribution.
 - Neither test corrects for spatial dependence, temporal dependence, sampling bias or measurement uncertainty.
 - These planar circular methods are not substitutes for spherical statistics on global locations or 3D orientations.
