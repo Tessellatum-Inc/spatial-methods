@@ -6,6 +6,8 @@ Two interpretable baselines for finite multispectral feature matrices:
   matrices, log-priors and ridge stabilization.
 - Lloyd k-means clustering with k-means++ initialization, multiple restarts,
   deterministic random-state control and empty-cluster reseeding.
+- ISODATA clustering with minimum-size deletion, spread-based splitting and
+  nearest-centroid merging under explicit cluster-count limits.
 
 Samples have shape (n_samples, n_features); each row is a pixel or object
 feature vector. Inputs are numeric and finite. The Gaussian classifier learns

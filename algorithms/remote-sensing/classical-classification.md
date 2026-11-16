@@ -43,3 +43,19 @@ contains both methods and synthetic classification/clustering tests. Inputs
 are finite sample-by-feature matrices; image tiling, spatial regularization,
 segmentation, model selection, cross-validation and accuracy assessment are
 outside this package.
+
+
+## ISODATA split-and-merge clustering
+
+ISODATA extends iterative centroid clustering by adapting the number of
+clusters. This implementation removes clusters below a minimum sample count
+when the configured minimum cluster count remains satisfied, splits the most
+dispersed clusters along their highest-variance feature, and greedily merges
+the closest centroid pair below a distance threshold. The user controls
+minimum/maximum cluster counts, minimum cluster size, split spread and merge
+distance.
+
+These thresholds are expressed in feature units and are therefore sensitive
+to scaling. This is a practical heuristic implementation, not every variant
+of the original ISODATA family; it does not include supervised labels,
+spatial contiguity, cluster validity selection or automatic threshold tuning.

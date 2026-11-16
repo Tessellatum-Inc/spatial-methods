@@ -65,3 +65,34 @@ def test_gaussian_classifier_rejects_bad_training_data_and_priors():
     bad_labels[0] = np.nan
     with pytest.raises(ValueError):
         fit_gaussian_maximum_likelihood(x, bad_labels)
+
+
+def test_isodata_splits_dispersed_cluster_and_is_deterministic():
+    from classification import isodata
+    x = np.array([[-4., 0], [-3., .1], [-2., -.1],
+                  [2., .1], [3., -.1], [4., 0]])
+    first = isodata(x, 1, max_clusters=2, split_std=1.0,
+                    merge_distance=0.0, random_state=13)
+    second = isodata(x, 1, max_clusters=2, split_std=1.0,
+                     merge_distance=0.0, random_state=13)
+    assert len(first["centroids"]) == 2
+    assert first["inertia"] < 5
+    assert np.array_equal(first["labels"], second["labels"])
+
+
+def test_isodata_merges_nearby_centroids_and_respects_minimum_count():
+    from classification import isodata
+    x = np.array([[0., 0], [.1, 0], [1., 0], [1.1, 0],
+                  [8., 0], [8.1, 0], [9., 0], [9.1, 0]])
+    result = isodata(x, 4, min_clusters=2, max_clusters=4,
+                     min_cluster_size=1, split_std=100,
+                     merge_distance=2.0, random_state=2)
+    assert len(result["centroids"]) >= 2
+    assert result["cluster_sizes"].sum() == len(x)
+
+
+def test_isodata_rejects_invalid_cluster_bounds():
+    from classification import isodata
+    x = np.arange(20.).reshape(10, 2)
+    with pytest.raises(ValueError):
+        isodata(x, 3, min_clusters=4, max_clusters=3)

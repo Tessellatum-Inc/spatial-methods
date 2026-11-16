@@ -145,3 +145,114 @@ def kmeans(samples, n_clusters, *, n_init=10, max_iterations=300,
                     "inertia": inertia, "iterations": iteration,
                     "converged": converged}
     return best
+
+
+def isodata(samples, initial_clusters, *, min_clusters=1, max_clusters=None,
+            min_cluster_size=2, max_iterations=100, split_std=1.0,
+            merge_distance=0.5, tolerance=1e-4, random_state=None):
+    """ISODATA clustering with adaptive cluster deletion, splitting and merging.
+
+    Cluster spread is measured by per-feature standard deviation; clusters
+    split along their highest-variance feature. The closest centroid pair is
+    greedily merged whenever its Euclidean distance is below merge_distance.
+    """
+    x = _features(samples, "samples")
+    n = x.shape[0]
+    if not isinstance(initial_clusters, (int, np.integer)) or not 1 <= initial_clusters <= n:
+        raise ValueError("initial_clusters must be between 1 and sample count")
+    if max_clusters is None:
+        max_clusters = max(initial_clusters, 2 * initial_clusters)
+    if not isinstance(max_clusters, (int, np.integer)) or max_clusters < 1:
+        raise ValueError("max_clusters must be a positive integer")
+    if not isinstance(min_clusters, (int, np.integer)) or not 1 <= min_clusters <= max_clusters:
+        raise ValueError("min_clusters must lie between 1 and max_clusters")
+    if initial_clusters > max_clusters:
+        raise ValueError("initial_clusters cannot exceed max_clusters")
+    if not isinstance(min_cluster_size, (int, np.integer)) or min_cluster_size < 1:
+        raise ValueError("min_cluster_size must be a positive integer")
+    if not isinstance(max_iterations, (int, np.integer)) or max_iterations < 1:
+        raise ValueError("max_iterations must be a positive integer")
+    if not np.isfinite(split_std) or split_std < 0:
+        raise ValueError("split_std must be finite and nonnegative")
+    if not np.isfinite(merge_distance) or merge_distance < 0:
+        raise ValueError("merge_distance must be finite and nonnegative")
+    if not np.isfinite(tolerance) or tolerance < 0:
+        raise ValueError("tolerance must be finite and nonnegative")
+
+    rng = np.random.default_rng(random_state)
+    centers = kmeans(x, initial_clusters, n_init=5,
+                     random_state=int(rng.integers(0, 2**32 - 1)))["centroids"]
+    converged = False
+    for iteration in range(1, max_iterations + 1):
+        previous = centers.copy()
+        distances = np.sum((x[:, None, :] - centers[None, :, :]) ** 2, axis=2)
+        labels = np.argmin(distances, axis=1)
+        counts = np.bincount(labels, minlength=len(centers))
+        keep = counts >= min_cluster_size
+        if np.count_nonzero(keep) >= min_clusters and not np.all(keep):
+            centers = centers[keep]
+            distances = np.sum((x[:, None, :] - centers[None, :, :]) ** 2, axis=2)
+            labels = np.argmin(distances, axis=1)
+        groups = [x[labels == j] for j in range(len(centers))]
+        nonempty = [g for g in groups if len(g)]
+        if len(nonempty) < len(centers):
+            centers = np.asarray([g.mean(axis=0) for g in nonempty])
+            groups = [x[np.argmin(np.sum((x[:, None, :] - centers[None, :, :]) ** 2,
+                                         axis=2), axis=1) == j]
+                      for j in range(len(centers))]
+        else:
+            centers = np.asarray([g.mean(axis=0) for g in groups])
+
+        # Split the most dispersed clusters first, up to the configured cap.
+        if len(centers) < max_clusters:
+            candidates = []
+            for j, group in enumerate(groups):
+                if len(group) >= 2:
+                    std = group.std(axis=0)
+                    axis = int(np.argmax(std))
+                    if std[axis] > split_std:
+                        candidates.append((float(std[axis]), j, axis, std[axis]))
+            candidates.sort(reverse=True)
+            for _, j, axis, spread in candidates:
+                if len(centers) >= max_clusters:
+                    break
+                center = centers[j].copy()
+                offset = np.zeros(x.shape[1])
+                offset[axis] = 0.5 * spread
+                centers[j] = center - offset
+                centers = np.vstack((centers, center + offset))
+
+        # Greedily merge the closest pair while preserving min_clusters.
+        while len(centers) > min_clusters:
+            pairwise = np.linalg.norm(centers[:, None, :] - centers[None, :, :], axis=2)
+            pairwise[np.triu_indices(len(centers))] = np.inf
+            i, j = np.unravel_index(np.argmin(pairwise), pairwise.shape)
+            if pairwise[i, j] >= merge_distance:
+                break
+            current_labels = np.argmin(
+                np.sum((x[:, None, :] - centers[None, :, :]) ** 2, axis=2), axis=1)
+            ni = max(1, int(np.count_nonzero(current_labels == i)))
+            nj = max(1, int(np.count_nonzero(current_labels == j)))
+            merged = (centers[i] * ni + centers[j] * nj) / (ni + nj)
+            centers = np.delete(centers, [i, j], axis=0)
+            centers = np.vstack((centers, merged))
+
+        shift = (float(np.max(np.linalg.norm(centers[:min(len(centers), len(previous))]
+                                              - previous[:min(len(centers), len(previous))],
+                                              axis=1)))
+                 if len(centers) == len(previous) else np.inf)
+        if len(centers) == len(previous) and shift <= tolerance:
+            converged = True
+            break
+
+    distances = np.sum((x[:, None, :] - centers[None, :, :]) ** 2, axis=2)
+    labels = np.argmin(distances, axis=1)
+    used = np.unique(labels)
+    centers = centers[used]
+    remap = np.full(int(used.max()) + 1, -1, dtype=int)
+    remap[used] = np.arange(len(used))
+    labels = remap[labels]
+    inertia = float(np.sum((x - centers[labels]) ** 2))
+    return {"labels": labels, "centroids": centers, "inertia": inertia,
+            "iterations": iteration, "converged": converged,
+            "cluster_sizes": np.bincount(labels, minlength=len(centers))}
