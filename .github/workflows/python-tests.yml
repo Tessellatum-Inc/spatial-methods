@@ -333,9 +333,6 @@ jobs:
           - example: ripley-k
             directory: implementations/python/ripley-k
             pythonpath: ""
-          - example: advanced-flow-routing
-            directory: implementations/python/advanced-flow-routing
-            pythonpath: ""
           - example: d8-flow
             directory: implementations/python/d8-flow
             pythonpath: ""
