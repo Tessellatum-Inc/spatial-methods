@@ -373,3 +373,41 @@ def test_multiscale_curvature_rejects_invalid_spacing():
     from terrain_derivatives import multiscale_terrain_curvature
     with pytest.raises(ValueError):
         multiscale_terrain_curvature(np.ones((5, 5)), [1.0], cell_size_x=0)
+
+
+def test_local_relief_model_removes_constant_and_preserves_local_peak_sign():
+    from terrain_indices import local_relief_model
+    flat = local_relief_model(np.full((11, 11), 25.0), scale=2.0)
+    np.testing.assert_allclose(flat, 0.0, atol=1e-12)
+    dem = np.zeros((21, 21)); dem[10, 10] = 10.0
+    result = local_relief_model(dem, scale=2.0)
+    assert result[10, 10] > 0
+    assert result[10, 9] < 0
+
+
+def test_local_relief_model_masks_nodata_and_handles_holes():
+    from terrain_indices import local_relief_model
+    dem = np.full((9, 9), 4.0); dem[4, 4] = np.nan
+    result = local_relief_model(dem, scale=1.5)
+    assert np.isnan(result[4, 4])
+    np.testing.assert_allclose(result[np.isfinite(result)], 0.0, atol=1e-12)
+
+
+def test_local_relief_model_rejects_invalid_scale_or_spacing():
+    from terrain_indices import local_relief_model
+    with pytest.raises(ValueError): local_relief_model(np.ones((5, 5)), scale=0)
+    with pytest.raises(ValueError): local_relief_model(np.ones((5, 5)), scale=1, cell_size_x=-1)
+
+
+def test_multiscale_tpi_returns_each_requested_scale():
+    from terrain_indices import multiscale_topographic_position_index
+    dem = np.zeros((15, 15)); dem[7, 7] = 8.0
+    result = multiscale_topographic_position_index(dem, [3, 5, 9])
+    assert list(result) == [3, 5, 9]
+    assert result[3][7, 7] > 0 and result[9][7, 7] > 0
+
+
+def test_multiscale_tpi_rejects_duplicate_and_even_windows():
+    from terrain_indices import multiscale_topographic_position_index
+    with pytest.raises(ValueError): multiscale_topographic_position_index(np.ones((5, 5)), [3, 3])
+    with pytest.raises(ValueError): multiscale_topographic_position_index(np.ones((5, 5)), [4])
