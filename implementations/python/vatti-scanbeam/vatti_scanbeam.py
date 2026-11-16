@@ -136,3 +136,69 @@ def decompose_scanbeams(rings: Sequence[Sequence[Point]]) -> ScanbeamDecompositi
                                m.left_bound.edge_id))
     return ScanbeamDecomposition(tuple(sorted(all_y)), tuple(bounds),
                                  tuple(horizontals), tuple(minima))
+
+
+@dataclass(frozen=True)
+class EdgeCrossing:
+    y: Fraction
+    x: Fraction
+    first_edge_id: int
+    second_edge_id: int
+
+
+def _x_at(edge: BoundEdge, y: Fraction) -> Fraction:
+    y0 = _q(edge.lower[1])
+    x0 = _q(edge.lower[0])
+    return x0 + edge.dx_dy * (y - y0)
+
+
+def active_edges_for_band(
+    decomposition: ScanbeamDecomposition, lower_y: float, upper_y: float
+) -> tuple[BoundEdge, ...]:
+    """Return the active-edge list order for one open scanbeam band.
+
+    The order is evaluated at the exact rational midpoint of two consecutive
+    scanbeam levels. Edges touching but not spanning the open band are omitted.
+    """
+    lower, upper = _q(lower_y), _q(upper_y)
+    if not lower < upper:
+        raise ValueError("scanbeam band must have positive height")
+    levels = tuple(_q(y) for y in decomposition.scanbeams)
+    if lower not in levels or upper not in levels or levels.index(upper) != levels.index(lower) + 1:
+        raise ValueError("band endpoints must be consecutive scanbeam levels")
+    mid = (lower + upper) / 2
+    active = [edge for edge in decomposition.bounds
+              if _q(edge.lower[1]) <= lower and _q(edge.upper[1]) >= upper]
+    active.sort(key=lambda edge: (_x_at(edge, mid), edge.dx_dy, edge.edge_id))
+    return tuple(active)
+
+
+def crossings_in_band(
+    active_edges: Sequence[BoundEdge], lower_y: float, upper_y: float
+) -> tuple[EdgeCrossing, ...]:
+    """Find pairwise bound-edge crossings strictly inside a scanbeam band.
+
+    This transparent O(m²) event generator is a correctness-oriented
+    foundation, not Vatti's optimized neighbour-only intersection scheduler.
+    """
+    lower, upper = _q(lower_y), _q(upper_y)
+    if not lower < upper:
+        raise ValueError("scanbeam band must have positive height")
+    events = []
+    for i, first in enumerate(active_edges):
+        m1 = first.dx_dy
+        b1 = _q(first.lower[0]) - m1 * _q(first.lower[1])
+        for second in active_edges[i + 1:]:
+            m2 = second.dx_dy
+            if m1 == m2:
+                continue
+            b2 = _q(second.lower[0]) - m2 * _q(second.lower[1])
+            y = (b2 - b1) / (m1 - m2)
+            if lower < y < upper:
+                x = m1 * y + b1
+                events.append(EdgeCrossing(y, x,
+                    min(first.edge_id, second.edge_id),
+                    max(first.edge_id, second.edge_id)))
+    events.sort(key=lambda event: (event.y, event.x,
+                                   event.first_edge_id, event.second_edge_id))
+    return tuple(events)
