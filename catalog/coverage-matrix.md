@@ -156,3 +156,5 @@ Four source-listed streaming summaries now have tested reference implementations
 
 - Section 4 terrain/hydrology: the terrain-indices package now includes local peak/pit detection with complete-window NoData handling and a prominence threshold, plus DEM-derived reservoir stage-area-storage curves. The latter assumes horizontal-prism cells and does not enforce hydrological connectivity, spill thresholds or hydraulic operation. Geomorphons and ridge/valley extraction remain open.
 - Section 4 catalogue correction: bathymetry implementation status is recorded on the bathymetry source row, not the unrelated compression/formats row. Compression formats remain unreviewed.
+
+- Section 4 rainfall-runoff: added the SCS event curve-number runoff-depth equation and AMC-II to dry/wet empirical curve-number conversions, with threshold, analytic, broadcast and validation tests. Unit hydrograph routing, Green-Ampt infiltration, TOPMODEL and full SWAT/HEC-HMS/LISFLOOD/VIC systems remain separate work.
