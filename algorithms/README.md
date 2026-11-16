@@ -321,3 +321,5 @@ Records may have different evidence and implementation status. Check the status 
 
 - [Green-Ampt infiltration](raster/green-ampt-infiltration.md) — advance a homogeneous soil-column infiltration state through constant-intensity rainfall steps, including ponding onset.
 - [Unit-hydrograph convolution](raster/unit-hydrograph-convolution.md) — route rainfall-excess depth through supplied discrete unit-hydrograph ordinates.
+
+- [Raster viewshed and cumulative visibility](raster/viewshed.md) — calculate discrete line-of-sight visibility from one or more raster observer cells, with optional curvature/refraction correction.
