@@ -637,3 +637,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Implement approximate ground footprint and forward/side-overlap image spacing.
 - [x] Add hand-calculated tests, input validation, implementation and algorithm documentation, and CI registration.
 - [ ] Execute the package and full CI suite. Corridor geometry, terrain following, relief displacement, lens/camera calibration and multi-UAV coverage planning remain open.
+
+
+## Compositional-data continuation — 17 November 2026
+
+- [x] Implement closure, centred log-ratio coordinates and Aitchison distance.
+- [x] Add explicit multiplicative zero replacement that preserves ratios among nonzero parts and validates total replacement mass.
+- [x] Add scale-invariance, simplex, zero-handling, distance symmetry and invalid-input tests; index the package and add it to Python CI.
+- [ ] Execute the package and full CI suite. Structural-zero models, detection-limit treatment, ILR bases, logistic-normal models and compositional kriging remain open.
