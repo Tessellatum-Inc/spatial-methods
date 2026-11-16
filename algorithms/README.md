@@ -2,7 +2,7 @@
 
 Each record explains one method or operation, its assumptions, where it is useful, and what can go wrong. The collection is growing from the supplied [source inventory](../source-inventory/README.md); an entry is not treated as verified merely because it appears in that inventory.
 
-## Networks and mobility\n\n- [Flow-capturing location](networks/flow-capturing-location.md) — select a cardinality-constrained set of sites to maximize unique weighted path coverage.
+## Statistical surveillance\n\n- [Syndromic surveillance](statistics/syndromic-surveillance.md) — two-sided CUSUM and explicit EARS-style C1/C2/C3 aberration scores for count series.\n\n## Networks and mobility\n\n- [Flow-capturing location](networks/flow-capturing-location.md) — select a cardinality-constrained set of sites to maximize unique weighted path coverage.
 
 - [Network algorithms index](networks/README.md) — graph search, shortest paths, transit routing, network structure, optimisation and stable matching.
 
