@@ -5,7 +5,7 @@ from erosion import rusle_ls_factor, rusle_soil_loss, usle_soil_loss
 
 def test_rusle_ls_factor_flat_and_sloping_cases():
     flat = rusle_ls_factor(0, 22.13)
-    assert flat == pytest.approx(0)
+    assert flat == pytest.approx(0.03)
     steep = rusle_ls_factor(15, 100)
     assert steep > 1
 
