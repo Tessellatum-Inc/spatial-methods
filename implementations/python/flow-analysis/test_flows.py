@@ -52,3 +52,32 @@ def test_flow_analysis_rejects_invalid_inputs():
         line_flow_kde([[0.,0.]], [[1.,1.]], [0.], [0.], bandwidth=0.)
     with pytest.raises(ValueError, match="odd"):
         flow_density_hotspots(np.ones((3,3)), neighbourhood_size=2)
+
+
+def test_functional_regions_cluster_reciprocal_od_flow_blocks():
+    from flows import functional_regions_from_flows
+    matrix = np.zeros((8, 8))
+    for block in (range(4), range(4, 8)):
+        for i in block:
+            for j in block:
+                if i != j:
+                    matrix[i, j] = 10.
+    matrix[3, 4] = matrix[4, 3] = .1
+    regions = functional_regions_from_flows(matrix, seed=7)
+    assert {frozenset(x) for x in regions} == {frozenset(range(4)), frozenset(range(4, 8))}
+
+
+def test_functional_regions_respect_contiguity_edges():
+    from flows import functional_regions_from_flows
+    matrix = np.ones((4, 4)) - np.eye(4)
+    adjacency = [[1], [0, 2], [1, 3], [2]]
+    regions = functional_regions_from_flows(matrix, adjacency=adjacency, seed=3)
+    assert set().union(*regions) == set(range(4))
+
+
+def test_functional_regions_validate_matrix_and_adjacency():
+    from flows import functional_regions_from_flows
+    with pytest.raises(ValueError, match="square"):
+        functional_regions_from_flows([[0., 1.]])
+    with pytest.raises(ValueError, match="adjacency"):
+        functional_regions_from_flows(np.zeros((2, 2)), adjacency=[[1]])

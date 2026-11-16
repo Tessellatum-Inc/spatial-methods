@@ -107,3 +107,40 @@ def flow_density_hotspots(density, *, quantile=0.95, neighbourhood_size=3):
     mask = finite & (z == local_max) & (z >= threshold)
     return {"mask": mask, "threshold": threshold,
             "rows_cols": np.argwhere(mask)}
+
+
+def functional_regions_from_flows(flow_matrix, *, adjacency=None,
+                                   resolution=1.0, seed=0):
+    """Louvain communities from reciprocal OD flows, optionally contiguous.
+
+    The square directed OD matrix is symmetrised by summing reciprocal flows.
+    When adjacency is supplied, only its undirected zone-neighbour pairs are
+    retained. This is not Intramax, CURDS or Leiden.
+    """
+    from community import louvain_communities
+    matrix = np.asarray(flow_matrix, dtype=float)
+    if matrix.ndim != 2 or matrix.shape[0] != matrix.shape[1] or matrix.shape[0] == 0:
+        raise ValueError("flow_matrix must be a non-empty square matrix")
+    if not np.all(np.isfinite(matrix)) or np.any(matrix < 0):
+        raise ValueError("flow_matrix must contain finite non-negative flows")
+    n = matrix.shape[0]
+    graph = {i: {} for i in range(n)}
+    allowed = None
+    if adjacency is not None:
+        if len(adjacency) != n:
+            raise ValueError("adjacency must contain one neighbour collection per zone")
+        allowed = set()
+        for i, neighbours in enumerate(adjacency):
+            for j in neighbours:
+                if isinstance(j, (bool, np.bool_)) or not isinstance(j, (int, np.integer)) or not 0 <= int(j) < n or int(j) == i:
+                    raise ValueError("adjacency contains an invalid zone identifier")
+                allowed.add((min(i, int(j)), max(i, int(j))))
+    for i in range(n):
+        for j in range(i + 1, n):
+            if allowed is not None and (i, j) not in allowed:
+                continue
+            weight = matrix[i, j] + matrix[j, i]
+            if weight > 0:
+                graph[i][j] = float(weight)
+                graph[j][i] = float(weight)
+    return louvain_communities(graph, resolution=resolution, seed=seed)

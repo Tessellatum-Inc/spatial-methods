@@ -367,3 +367,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Lagrangian particle advection and connectivity](marine/lagrangian-particle-tracking.md) — RK4 advection in a steady 2D velocity field and weighted source-to-destination connectivity.
 
 - [OD flow clustering, line KDE and hotspots](networks/flow-analysis.md) — DBSCAN over origin-destination coordinates, line-integrated Gaussian density and local grid maxima.
+
+- [OD flow clustering, line KDE and hotspots](networks/flow-analysis.md) — DBSCAN over origin-destination coordinates, line-integrated Gaussian density, local grid maxima and weighted Louvain flow communities.

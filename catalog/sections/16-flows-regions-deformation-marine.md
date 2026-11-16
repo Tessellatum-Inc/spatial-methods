@@ -20,7 +20,7 @@ This section groups applied methods across spatial interaction, functional regio
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Functional region delineation from flows: Intramax, CURDS, Louvain and Leiden on flow networks, commuting zone definition | Functional regionalisation algorithms / network clustering | 33 | Not checked — intake only |
+| Functional region delineation from flows: Intramax, CURDS, Louvain and Leiden on flow networks, commuting zone definition | Functional regionalisation algorithms / network clustering | 33 | Partial — reciprocal OD-flow weighted Louvain communities with optional contiguity-constrained edges are implemented and tested; Intramax, CURDS, Leiden and commuting-zone calibration remain open |
 | Urban boundary delineation: city clustering algorithm (CCA), DBSCAN on building density, percolation-based clustering, natural cities via head/tail breaks | Urban boundary detection / clustering and classification methods | 33 | Not checked — intake only |
 | Home and work location inference from traces, activity space delineation, co-location and contact pattern extraction | Mobility inference / activity-space and contact analysis | 33 | Not checked — intake only |
 
@@ -130,3 +130,8 @@ A steady two-dimensional velocity-field particle integrator now uses fourth-orde
 ### Flow clustering, line KDE and hotspot implementation update
 
 The flow-analysis package now clusters OD records using DBSCAN over separately scaled origin and destination coordinates, estimates a line-integrated Gaussian kernel density surface using Gauss–Legendre quadrature along each OD segment, and extracts local grid maxima above a caller-selected quantile. These are exploratory spatial-analysis baselines: they do not implement network-constrained flow communities, inferential hotspot significance, edge effects, adaptive bandwidth selection or uncertainty estimation.
+
+
+### Functional regions from origin-destination flows
+
+The flow-analysis package converts a directed OD matrix into an undirected weighted graph by summing reciprocal movements, then applies the repository's tested Louvain modularity implementation. An optional zone-neighbour adjacency constrains graph edges. This is a flow-network community baseline, not Intramax, CURDS, Leiden or an empirically calibrated commuting-zone workflow.

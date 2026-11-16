@@ -401,7 +401,7 @@ jobs:
             pythonpath: ""
           - example: flow-analysis
             directory: implementations/python/flow-analysis
-            pythonpath: ""
+            pythonpath: "../louvain"
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""
