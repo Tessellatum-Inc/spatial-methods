@@ -661,3 +661,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Implement top-of-atmosphere normal and horizontal irradiance with Earth–Sun distance correction.
 - [x] Add timezone-equivalence, equinox, night/day bounds and invalid-input tests; document the distinction between extraterrestrial and ground-level radiation; register in Python CI.
 - [ ] Execute this package and the full CI suite. Atmospheric attenuation, diffuse radiation, terrain horizon obstruction, slope incidence and microclimate remain open.
+
+
+## Coastal optical retrieval continuation — 17 November 2026
+
+- [x] Implement Stumpf log-band-ratio bathymetry with local ordinary-least-squares calibration and prediction.
+- [x] Implement the SeaWiFS OC4v4 maximum-blue-to-green ratio polynomial using its published coefficient set.
+- [x] Add independent formula, coefficient, calibration-recovery and invalid-input tests; document sensor specificity and upstream correction assumptions; register the package in Python CI.
+- [ ] Execute full CI and validate against independent in-situ bathymetry/chlorophyll observations. Other sensor-specific OC algorithms, physics-based inversion, atmospheric correction, tide/datum correction and water-column modelling remain open.
