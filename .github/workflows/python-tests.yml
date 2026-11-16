@@ -589,6 +589,9 @@ jobs:
           - example: spatial-distribution-summaries
             directory: implementations/python/spatial-distribution-summaries
             pythonpath: ""
+          - example: moving-object-prediction
+            directory: implementations/python/moving-object-prediction
+            pythonpath: ""
           - example: spatial-inequality
             directory: implementations/python/spatial-inequality
             pythonpath: ""

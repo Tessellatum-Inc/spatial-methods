@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 696 | Rows with a source-entry review status in the section indexes |
-| Partial | 165 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 531 | The source wording is preserved, but no independent review is recorded |
+| Partial | 166 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 530 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -36,14 +36,14 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 15 — Vision, registration and vector extraction | 33 | 3 | 30 |
 | 16 — Flows, regions, deformation and marine | 25 | 9 | 16 |
 | 17 — Geometry, scalability, design and siting | 27 | 8 | 19 |
-| 18 — Moving objects, routing, transit and water | 32 | 4 | 28 |
+| 18 — Moving objects, routing, transit and water | 32 | 5 | 27 |
 | 19 — African applications, addressing and finance | 32 | 0 | 32 |
 | 20 — Indices, microwave, events and information | 25 | 8 | 17 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 3 | 23 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 6 | 22 |
-| **Total** | **696** | **165** | **531** |
+| **Total** | **696** | **166** | **530** |
 
-The 17 November recount finds **165 partial**, **531 intake-only** and **zero fully verified** source-entry rows across **696 rows**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Some section indexes have changed row counts since the prior snapshot, so the table below supersedes all historical totals in the reconciliation notes.
+The 17 November recount finds **166 partial**, **530 intake-only** and **zero fully verified** source-entry rows across **696 rows**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Some section indexes have changed row counts since the prior snapshot, so the table below supersedes all historical totals in the reconciliation notes.
 
 ## How to interpret this
 
@@ -132,3 +132,6 @@ A Mogi point-source elastic half-space displacement implementation has since mov
 
 
 The Section 2 source-entry recount also identifies an implementation-linked Ripley's K/L entry whose status description is more detailed than the standard “Partial” label. It is counted as partial rather than intake-only. Section 16's intervening-opportunities entry is now also implementation-linked. The current row totals are 696 source entries, 163 partial and 533 intake-only.
+
+
+Section 18's moving-object query entry is now implementation-linked through constant-velocity prediction, confidence ellipses and a threshold-based dead-reckoning update policy. The total remains 696 source entries; current review labels are 166 partial and 530 intake-only.

@@ -102,3 +102,8 @@
 3. For transit examples, record service calendar, feed version, frequency and real-time data semantics.
 4. Document sensor, temporal resolution and retrieval assumptions for water, ice and emissions.
 5. Treat trajectory and location data as sensitive; apply privacy review before publishing examples.
+
+
+### Dead-reckoning prediction and update policy
+
+A constant-velocity state transition with white-acceleration process noise now propagates position/velocity and covariance. A companion confidence-ellipse calculation and update policy trigger reporting when displacement, uncertainty radius or elapsed time reaches a configured threshold. This is a tracking-state and communication-policy baseline, not a moving-object database or full predictive range-query engine.
