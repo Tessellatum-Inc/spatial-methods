@@ -206,3 +206,88 @@ def cut_fill_volume(existing_surface, design_surface, *, cell_size_x=1.0,
         "valid_cell_count": int(valid.sum()),
         "cell_area": area,
     }
+
+
+def sky_view_factor(
+    elevation,
+    *,
+    cell_size_x: float = 1.0,
+    cell_size_y: float = 1.0,
+    max_distance: float,
+    azimuth_count: int = 16,
+    sample_spacing: float | None = None,
+) -> np.ndarray:
+    """Estimate sky-view factor by radial horizon sampling.
+
+    For each cell, sample bilinearly along evenly spaced azimuths and retain
+    the maximum positive horizon angle on each ray. The approximation is
+    mean(cos(horizon_angle)**2) over azimuth. A result is emitted only where
+    every ray is supported to max_distance; incomplete boundary or NoData
+    rays return NaN. This is a transparent local horizon approximation, not
+    a full hemispherical solid-angle integration or cast-shadow model.
+    """
+    dem = np.asarray(elevation, dtype=float)
+    if dem.ndim != 2 or dem.size == 0:
+        raise ValueError("elevation must be a non-empty 2D array")
+    try:
+        dx, dy, distance = float(cell_size_x), float(cell_size_y), float(max_distance)
+    except (TypeError, ValueError):
+        raise ValueError("cell sizes and max_distance must be finite and positive") from None
+    if not np.all(np.isfinite([dx, dy, distance])) or min(dx, dy, distance) <= 0:
+        raise ValueError("cell sizes and max_distance must be finite and positive")
+    if isinstance(azimuth_count, (bool, np.bool_)) or not isinstance(azimuth_count, (int, np.integer)) or azimuth_count < 4:
+        raise ValueError("azimuth_count must be an integer of at least four")
+    if sample_spacing is None:
+        step = min(dx, dy) / 2.0
+    else:
+        try:
+            step = float(sample_spacing)
+        except (TypeError, ValueError):
+            raise ValueError("sample_spacing must be finite and positive") from None
+        if not np.isfinite(step) or step <= 0:
+            raise ValueError("sample_spacing must be finite and positive")
+    distances = np.arange(step, distance + step * 0.5, step)
+    distances = distances[distances <= distance]
+    if distances.size == 0 or distances[-1] < distance:
+        distances = np.append(distances, distance)
+
+    rows, cols = dem.shape
+    result = np.full(dem.shape, np.nan, dtype=float)
+    azimuths = np.arange(azimuth_count, dtype=float) * (2.0 * np.pi / azimuth_count)
+    for row, col in np.ndindex(dem.shape):
+        origin = dem[row, col]
+        if not np.isfinite(origin):
+            continue
+        horizon_terms = []
+        supported = True
+        for azimuth in azimuths:
+            dx_direction = np.sin(azimuth)
+            north_direction = np.cos(azimuth)
+            ray_angles = []
+            for radial_distance in distances:
+                sample_col = col + dx_direction * radial_distance / dx
+                sample_row = row - north_direction * radial_distance / dy
+                if sample_col < 0 or sample_col > cols - 1 or sample_row < 0 or sample_row > rows - 1:
+                    supported = False
+                    break
+                c0 = min(int(np.floor(sample_col)), cols - 2)
+                r0 = min(int(np.floor(sample_row)), rows - 2)
+                fc, fr = sample_col - c0, sample_row - r0
+                neighbours = np.array([
+                    dem[r0, c0], dem[r0, c0 + 1],
+                    dem[r0 + 1, c0], dem[r0 + 1, c0 + 1],
+                ])
+                if not np.all(np.isfinite(neighbours)):
+                    supported = False
+                    break
+                top = neighbours[0] * (1.0 - fc) + neighbours[1] * fc
+                bottom = neighbours[2] * (1.0 - fc) + neighbours[3] * fc
+                sample_z = top * (1.0 - fr) + bottom * fr
+                ray_angles.append(np.arctan2(sample_z - origin, radial_distance))
+            if not supported:
+                break
+            horizon = max(0.0, float(np.max(ray_angles)))
+            horizon_terms.append(np.cos(horizon) ** 2)
+        if supported and len(horizon_terms) == azimuth_count:
+            result[row, col] = float(np.mean(horizon_terms))
+    return result
