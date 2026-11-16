@@ -315,3 +315,66 @@ def test_full_scanbeam_sweep_rejects_unassigned_rings_and_invalid_operands():
         sweep_boolean(_overlapping_rectangles(), {0}, {2})
     with pytest.raises(ValueError, match="non-empty"):
         sweep_boolean(_overlapping_rectangles(), {0}, set())
+
+
+def _signed_ring_area(ring):
+    core = ring[:-1]
+    return sum(
+        core[i][0] * core[(i+1) % len(core)][1]
+        - core[(i+1) % len(core)][0] * core[i][1]
+        for i in range(len(core))
+    ) / 2
+
+
+@pytest.mark.parametrize("operation,expected_area,expected_rings", [
+    ("intersection", 6, 1),
+    ("union", 26, 1),
+    ("difference", 10, 1),
+    ("xor", 20, 2),
+])
+def test_contour_clipper_stitches_all_boolean_operations(
+    operation, expected_area, expected_rings
+):
+    from vatti_scanbeam import clip_rings
+    result = clip_rings(_overlapping_rectangles(), {0}, {1}, operation)
+    assert len(result.rings) == expected_rings
+    assert result.boundary_edge_count > 0
+    assert all(ring[0] == ring[-1] for ring in result.rings)
+    assert sum(_signed_ring_area(ring) for ring in result.rings) == expected_area
+    assert all(_signed_ring_area(ring) > 0 for ring in result.rings)
+
+
+def test_contour_stitching_preserves_a_hole_and_a_disconnected_shell():
+    from vatti_scanbeam import clip_rings
+    outer = [(0, 0), (10, 0), (10, 10), (0, 10)]
+    hole_cw = [(3, 3), (3, 7), (7, 7), (7, 3)]
+    separate_clip = [(20, 20), (22, 20), (22, 22), (20, 22)]
+    decomposition = decompose_scanbeams([outer, hole_cw, separate_clip])
+    result = clip_rings(decomposition, {0, 1}, {2}, "union")
+    signed_areas = sorted((_signed_ring_area(ring) for ring in result.rings))
+    assert signed_areas == [-16, 4, 100]
+    assert len(result.rings) == 3
+    assert all(ring[0] == ring[-1] for ring in result.rings)
+
+
+def test_stitch_filled_cells_returns_empty_for_no_filled_cells():
+    from vatti_scanbeam import stitch_filled_cells
+    assert stitch_filled_cells(()).rings == ()
+
+
+def test_contour_stitching_nodes_unequal_shared_edge_subdivisions():
+    from fractions import Fraction
+    from vatti_scanbeam import FilledCell, stitch_filled_cells
+    # Two adjacent CCW rectangles; the left cell's right edge is split at y=1.
+    cells = (
+        FilledCell(Fraction(0), Fraction(2), 0, 1, (
+            (Fraction(0), Fraction(0)), (Fraction(1), Fraction(0)),
+            (Fraction(1), Fraction(1)), (Fraction(1), Fraction(2)),
+            (Fraction(0), Fraction(2)))),
+        FilledCell(Fraction(0), Fraction(2), 1, 2, (
+            (Fraction(1), Fraction(0)), (Fraction(2), Fraction(0)),
+            (Fraction(2), Fraction(2)), (Fraction(1), Fraction(2)))),
+    )
+    result = stitch_filled_cells(cells)
+    assert len(result.rings) == 1
+    assert _signed_ring_area(result.rings[0]) == 4
