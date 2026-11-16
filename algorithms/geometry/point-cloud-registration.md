@@ -18,6 +18,8 @@ The package calculates symmetric Chamfer distance (the mean of the two directed 
 
 ## Scope and validation
 
-These are rigid local-registration baselines, not generalized ICP, NDT, colored ICP, FPFH/RANSAC, TEASER++, or learned registration. Validate with independent checkpoints, spatially distributed residuals and task-specific geometric constraints; a low nearest-neighbour or point-to-plane RMSE alone does not prove correct registration.
+Generalized ICP extends the correspondence objective with local covariance models. For source point covariance (C_s), target covariance (C_t), and current rotation (R), the combined residual covariance is (C_t + R C_s R^T). The implementation estimates each covariance from a k-neighbourhood, applies a relative eigenvalue floor for numerical stability, and minimizes the corresponding Mahalanobis residuals with a six-parameter Gauss–Newton update. It reports Euclidean and Mahalanobis residual measures separately. The result remains a local optimizer and is sensitive to neighbourhood scale and initial alignment.
+
+These are rigid local-registration baselines, not NDT, colored ICP, FPFH/RANSAC, TEASER++, or learned registration. Validate with independent checkpoints, spatially distributed residuals and task-specific geometric constraints; a low nearest-neighbour or point-to-plane RMSE alone does not prove correct registration.
 
 Run the independent synthetic and brute-force tests in the implementation package README.

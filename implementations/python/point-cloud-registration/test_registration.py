@@ -105,3 +105,47 @@ def test_point_to_plane_icp_rejects_degenerate_normal_geometry():
     normals[0] = 0
     with pytest.raises(ValueError, match="non-zero"):
         point_to_plane_icp(cloud, cloud, normals)
+
+
+
+from scipy.spatial import cKDTree
+from registration import generalized_icp
+
+
+def test_generalized_icp_recovers_small_rigid_pose_on_anisotropic_cloud():
+    rng = np.random.default_rng(73)
+    target = rng.normal(size=(700, 3)) * np.array([2.0, 1.1, 0.6])
+    from scipy.spatial.transform import Rotation
+    expected = Rotation.from_rotvec([0.002, -0.003, 0.0015])
+    translation = np.array([0.004, -0.003, 0.002])
+    source = expected.inv().apply(target - translation)
+    result = generalized_icp(source, target, neighbors=24, max_iterations=35,
+        tolerance=1e-10, max_correspondence_distance=0.15)
+    np.testing.assert_allclose(result["aligned"], target, atol=2e-5)
+    np.testing.assert_allclose(result["rotation"], expected.as_matrix().T, atol=2e-5)
+    np.testing.assert_allclose(result["translation"], translation, atol=2e-5)
+    assert result["rmse"] < 2e-5
+    assert result["mahalanobis_rmse"] >= 0
+    assert result["fitness"] == 1.0
+
+
+def test_gicp_covariance_weighting_has_independent_analytic_fixture():
+    from registration import _local_covariances
+    points = np.array([[0., 0., 0.], [1., 0., 0.], [0., 2., 0.],
+                       [0., 0., 3.], [1., 2., 1.]])
+    cov = _local_covariances(points, cKDTree(points), 5, 1e-3)[0]
+    centred = points - points.mean(axis=0)
+    expected = centred.T @ centred / 4
+    values = np.linalg.eigvalsh(expected)
+    assert np.all(np.linalg.eigvalsh(cov) > 0)
+    assert np.linalg.eigvalsh(cov)[-1] == pytest.approx(values[-1])
+
+
+def test_gicp_rejects_invalid_controls_and_underdetermined_geometry():
+    cloud = np.array([[x, y, 0.] for x in range(4) for y in range(4)], dtype=float)
+    with pytest.raises(ValueError, match="neighbors"):
+        generalized_icp(cloud, cloud, neighbors=2)
+    with pytest.raises(ValueError, match="regularization"):
+        generalized_icp(cloud, cloud, covariance_regularization=0)
+    with pytest.raises(ValueError, match="do not constrain"):
+        generalized_icp(cloud, cloud)

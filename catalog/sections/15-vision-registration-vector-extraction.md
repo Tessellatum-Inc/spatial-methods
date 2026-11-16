@@ -32,7 +32,7 @@
 |---|---|---:|--- |
 | Self-supervised and large backbones: Point-BERT, Point-MAE, PointMLP, PointNeXt, SPVCNN, Cylinder3D, Point Transformer V3, Sonata | Point-cloud representation and segmentation architectures | 31 | Not checked — intake only |
 | Aerial LiDAR segmentation benchmarks: DALES, SensatUrban, Toronto-3D | Benchmark datasets | 31 | Not checked — intake only |
-| Registration: point-to-plane ICP, generalized ICP, NDT, colored ICP, FPFH with RANSAC, TEASER++, deep registration (DCP, PointNetLK, GeoTransformer) | Point-cloud registration algorithms | 31 | Partial — tested point-to-point and point-to-plane ICP plus Chamfer/Hausdorff metrics; generalized ICP, NDT and listed advanced variants remain open |
+| Registration: point-to-plane ICP, generalized ICP, NDT, colored ICP, FPFH with RANSAC, TEASER++, deep registration (DCP, PointNetLK, GeoTransformer) | Point-cloud registration algorithms | 31 | Partial — tested point-to-point, point-to-plane and generalized ICP plus Chamfer/Hausdorff metrics; NDT, colored ICP, FPFH/RANSAC, TEASER++ and listed learned variants remain open |
 | Building reconstruction: PolyFit, City3D, 2.5D dual contouring, roof plane segmentation (RANSAC, region growing), LoD2 generation, implicit surfaces (DeepSDF, occupancy networks) | Building reconstruction / geometric fitting / neural representations | 31 | Not checked — intake only |
 
 ## Image matching and multimodal registration
@@ -101,4 +101,4 @@
 
 ## Implemented classical registration baselines
 
-The image-registration package includes FFT phase correlation for global translation and RANSAC affine fitting from caller-supplied correspondences. A separate point-cloud package now includes point-to-point and point-to-plane rigid ICP, plus symmetric Chamfer/Hausdorff and threshold F-score metrics. These are scoped classical baselines: point-to-plane/generalized ICP, NDT, descriptors and learned registration remain unimplemented. See [the point-cloud registration lesson](../../algorithms/geometry/point-cloud-registration.md).
+The image-registration package includes FFT phase correlation for global translation and RANSAC affine fitting from caller-supplied correspondences. A separate point-cloud package now includes point-to-point, point-to-plane and generalized rigid ICP, plus symmetric Chamfer/Hausdorff and threshold F-score metrics. These are scoped classical baselines: NDT, colored ICP, FPFH/RANSAC, TEASER++ and learned registration remain unimplemented. See [the point-cloud registration lesson](../../algorithms/geometry/point-cloud-registration.md).

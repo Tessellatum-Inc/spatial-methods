@@ -1,6 +1,6 @@
 # Point-cloud registration and geometric evaluation
 
-This package provides point-to-point and point-to-plane rigid ICP baselines, plus symmetric point-cloud distance metrics.
+This package provides point-to-point, point-to-plane and generalized rigid ICP baselines, plus symmetric point-cloud distance metrics.
 
 ## Install and test
 
@@ -22,3 +22,8 @@ Both methods are local optimisers. Neither implements generalized ICP, normal es
 The point_cloud_distances function returns symmetric Chamfer and Hausdorff distances from nearest-neighbour distances. An optional distance threshold also returns precision, recall and F-score. These metrics are sampling-density-sensitive and do not replace registration diagnostics or semantic/topological validation.
 
 See the canonical lesson at algorithms/geometry/point-cloud-registration.md.
+
+
+## Generalized ICP
+
+The `generalized_icp` function estimates regularised local covariance matrices from each cloud's k-neighbourhoods. Each correspondence is weighted by the inverse combined covariance (C_t + R C_s R^T), and a six-parameter Gauss–Newton update estimates the rigid pose. It reports Euclidean nearest-neighbour RMSE and covariance-weighted Mahalanobis RMSE separately. The neighbourhood size and relative eigenvalue floor are explicit controls. This is a compact teaching implementation of the GICP objective, not a replacement for optimized production implementations; neighbourhood scale, initialization, overlap and outliers materially affect results.

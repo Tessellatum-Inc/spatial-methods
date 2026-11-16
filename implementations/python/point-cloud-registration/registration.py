@@ -192,3 +192,121 @@ def point_to_plane_icp(source, target, target_normals, *, max_iterations=50,
             "iterations": iteration, "converged": converged,
             "correspondence_count": used, "fitness": used / src.shape[0]}
 
+
+
+def _local_covariances(points, tree, neighbors, regularization):
+    """Estimate regularised local 3D covariance matrices from k-neighbourhoods."""
+    _, indices = tree.query(points, k=neighbors)
+    covariances = np.empty((len(points), 3, 3), dtype=float)
+    for i, ids in enumerate(np.atleast_2d(indices)):
+        neighbourhood = points[ids]
+        centred = neighbourhood - neighbourhood.mean(axis=0)
+        covariance = centred.T @ centred / max(len(ids) - 1, 1)
+        values, vectors = np.linalg.eigh(covariance)
+        floor = max(float(values[-1]) * regularization,
+                    np.finfo(float).eps * max(float(values[-1]), 1.0))
+        covariances[i] = (vectors * np.maximum(values, floor)) @ vectors.T
+    return covariances
+
+
+def generalized_icp(source, target, *, neighbors=20, max_iterations=50,
+                    tolerance=1e-7, max_correspondence_distance=None,
+                    trim_fraction=1.0, covariance_regularization=1e-3):
+    """Generalized ICP (GICP) with local anisotropic covariance weighting.
+
+    Local covariances are estimated from k-neighbourhoods in each cloud.
+    For each nearest-neighbour pair, the residual is weighted by the inverse
+    of C_target + R C_source R.T. A six-parameter Gauss-Newton rigid update
+    is solved in the target frame. Coordinates are row vectors and the
+    returned transform obeys aligned = source @ rotation + translation.
+
+    This is a local rigid optimizer: it needs a useful initial pose, overlap,
+    adequate sampling and well-conditioned 3D neighbourhoods. It is not
+    globally convergent and does not estimate scale or deformation.
+    """
+    from scipy.spatial.transform import Rotation
+
+    src, dst = _points(source, "source"), _points(target, "target")
+    if isinstance(neighbors, (bool, np.bool_)) or not isinstance(neighbors, (int, np.integer)) or not 3 <= neighbors <= min(len(src), len(dst)):
+        raise ValueError("neighbors must be an integer between 3 and both cloud sizes")
+    if isinstance(max_iterations, (bool, np.bool_)) or not isinstance(max_iterations, (int, np.integer)) or max_iterations < 1:
+        raise ValueError("max_iterations must be a positive integer")
+    try:
+        tol, trim, reg = float(tolerance), float(trim_fraction), float(covariance_regularization)
+    except (TypeError, ValueError):
+        raise ValueError("tolerance, trim_fraction and covariance_regularization must be numeric") from None
+    if not np.isfinite(tol) or tol < 0:
+        raise ValueError("tolerance must be finite and non-negative")
+    if not np.isfinite(trim) or not 0 < trim <= 1:
+        raise ValueError("trim_fraction must be in (0, 1]")
+    if not np.isfinite(reg) or not 0 < reg < 1:
+        raise ValueError("covariance_regularization must be in (0, 1)")
+    gate = None if max_correspondence_distance is None else float(max_correspondence_distance)
+    if gate is not None and (not np.isfinite(gate) or gate <= 0):
+        raise ValueError("max_correspondence_distance must be positive")
+
+    source_tree, target_tree = cKDTree(src), cKDTree(dst)
+    source_cov = _local_covariances(src, source_tree, int(neighbors), reg)
+    target_cov = _local_covariances(dst, target_tree, int(neighbors), reg)
+    aligned = src.copy()
+    total_rotation = Rotation.identity()
+    total_translation = np.zeros(3)
+    previous_rmse, converged = np.inf, False
+    used, mahalanobis_rmse = 0, np.inf
+
+    for iteration in range(1, int(max_iterations) + 1):
+        distances, indices = target_tree.query(aligned, k=1)
+        candidates = np.flatnonzero(np.isfinite(distances) &
+                                    (True if gate is None else distances <= gate))
+        if candidates.size < 6:
+            raise ValueError("fewer than six correspondences satisfy the distance gate")
+        if trim < 1:
+            count = max(6, int(np.floor(trim * candidates.size)))
+            candidates = candidates[np.argsort(distances[candidates], kind="stable")[:count]]
+
+        rotation = total_rotation.as_matrix()
+        hessian, gradient = np.zeros((6, 6)), np.zeros(6)
+        weighted_error = 0.0
+        for i in candidates:
+            p, q = aligned[i], dst[indices[i]]
+            covariance = target_cov[indices[i]] + rotation @ source_cov[i] @ rotation.T
+            precision = np.linalg.inv(covariance)
+            residual = p - q
+            x, y, z = p
+            skew = np.array([[0.0, -z, y], [z, 0.0, -x], [-y, x, 0.0]])
+            jacobian = np.column_stack((-skew, np.eye(3)))
+            hessian += jacobian.T @ precision @ jacobian
+            gradient += jacobian.T @ precision @ residual
+            weighted_error += float(residual @ precision @ residual)
+        if np.linalg.matrix_rank(hessian) < 6:
+            raise ValueError("GICP correspondences do not constrain all six rigid degrees of freedom")
+        update = np.linalg.solve(hessian, -gradient)
+        delta_rotation = Rotation.from_rotvec(update[:3])
+        delta_translation = update[3:]
+        aligned = delta_rotation.apply(aligned) + delta_translation
+        total_translation = delta_rotation.apply(total_translation) + delta_translation
+        total_rotation = delta_rotation * total_rotation
+
+        post_distances, post_indices = target_tree.query(aligned, k=1)
+        valid = np.isfinite(post_distances) & (True if gate is None else post_distances <= gate)
+        if valid.sum() < 6:
+            raise ValueError("registration produced fewer than six valid correspondences")
+        euclidean_rmse = float(np.sqrt(np.mean(post_distances[valid] ** 2)))
+        post_rotation = total_rotation.as_matrix()
+        post_weighted = 0.0
+        for i in np.flatnonzero(valid):
+            covariance = target_cov[post_indices[i]] + post_rotation @ source_cov[i] @ post_rotation.T
+            residual = aligned[i] - dst[post_indices[i]]
+            post_weighted += float(residual @ np.linalg.solve(covariance, residual))
+        mahalanobis_rmse = float(np.sqrt(post_weighted / valid.sum()))
+        used = int(valid.sum())
+        if abs(previous_rmse - euclidean_rmse) <= tol and np.linalg.norm(update) <= np.sqrt(tol + 1e-15):
+            converged = True
+            break
+        previous_rmse = euclidean_rmse
+
+    return {"aligned": aligned, "rotation": total_rotation.as_matrix().T,
+            "translation": total_translation, "rmse": euclidean_rmse,
+            "mahalanobis_rmse": mahalanobis_rmse, "iterations": iteration,
+            "converged": converged, "correspondence_count": used,
+            "fitness": used / src.shape[0]}
