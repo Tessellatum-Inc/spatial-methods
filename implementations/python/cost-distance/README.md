@@ -32,3 +32,8 @@ See the [canonical lesson](../../../algorithms/raster/cost-distance.md) and [int
 ## Directional terrain travel-time models
 
 The companion `terrain_travel.py` module adds Tobler's hiking function, Naismith's rule and Langmuir's descent correction, plus a directional multi-source Dijkstra accumulator over an elevation grid. Output units are seconds. Unlike the symmetric cost-surface routine above, each directed edge uses the elevation change from the current cell to the next cell. Non-finite elevation cells are barriers. The Langmuir correction is applied per raster edge and is therefore resolution-sensitive.
+
+
+## Least-cost corridors
+
+The `least_cost_corridor` function runs the same multi-source Dijkstra solver from the source and destination. A cell belongs to the corridor when its source-to-cell plus cell-to-destination accumulated cost is no greater than the optimum source-to-destination cost plus a caller-specified additive tolerance. The output includes both distance surfaces, their through-cost sum, the optimum and a Boolean corridor mask. The method inherits the package's raster connectivity, endpoint-averaged edge costs, cell spacing, NoData and corner-cutting rules. It is a graph-based corridor, not a probabilistic uncertainty surface or a continuous geometric buffer.

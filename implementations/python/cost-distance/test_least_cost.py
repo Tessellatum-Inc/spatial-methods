@@ -55,3 +55,59 @@ def test_invalid_sources_costs_and_parameters_are_rejected():
         least_cost_distance([[-1]],[(0,0)])
     with pytest.raises(ValueError,match="connectivity"):
         least_cost_distance([[1]],[(0,0)],connectivity=6)
+
+
+from least_cost import least_cost_corridor
+
+
+def test_zero_tolerance_corridor_matches_unique_four_neighbour_path():
+    result = least_cost_corridor(np.ones((5, 5)), (2, 0), (2, 4),
+                                 connectivity=4, tolerance=0)
+    expected = np.zeros((5, 5), dtype=bool)
+    expected[2, :] = True
+    np.testing.assert_array_equal(result["corridor"], expected)
+    assert result["optimal_cost"] == pytest.approx(4.0)
+    np.testing.assert_allclose(result["through_cost"][2], 4.0)
+
+
+def test_corridor_expands_with_additive_tolerance_and_respects_barriers():
+    cost = np.ones((5, 5))
+    cost[2, 2] = np.nan
+    narrow = least_cost_corridor(cost, (2, 0), (2, 4),
+                                 connectivity=4, tolerance=0)
+    wide = least_cost_corridor(cost, (2, 0), (2, 4),
+                               connectivity=4, tolerance=2)
+    assert not narrow["corridor"][2, 2]
+    assert not wide["corridor"][2, 2]
+    assert wide["corridor"].sum() >= narrow["corridor"].sum()
+    assert np.all(np.isfinite(wide["through_cost"][wide["corridor"]]))
+
+
+def test_corridor_costs_match_independent_exhaustive_path_oracle():
+    cost = np.array([[1., 2., 1.], [1., 4., 1.], [1., 1., 1.]])
+    # Enumerate every simple 4-neighbour path on this tiny grid.
+    from functools import lru_cache
+    start, finish = (0, 0), (0, 2)
+    paths = []
+    def visit(cell, seen, total):
+        if cell == finish:
+            paths.append(total)
+            return
+        r, c = cell
+        for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+            nxt = (r + dr, c + dc)
+            if (0 <= nxt[0] < 3 and 0 <= nxt[1] < 3 and
+                    nxt not in seen and np.isfinite(cost[nxt])):
+                edge = 0.5 * (cost[cell] + cost[nxt])
+                visit(nxt, seen | {nxt}, total + edge)
+    visit(start, {start}, 0.0)
+    result = least_cost_corridor(cost, start, finish, connectivity=4)
+    assert result["optimal_cost"] == pytest.approx(min(paths))
+    assert result["corridor"][0, 0] and result["corridor"][0, 2]
+
+
+def test_corridor_rejects_invalid_tolerance_and_disconnected_target():
+    with pytest.raises(ValueError, match="tolerance"):
+        least_cost_corridor([[1, 1]], (0, 0), (0, 1), tolerance=-1)
+    with pytest.raises(ValueError, match="unreachable"):
+        least_cost_corridor([[1, np.nan, 1]], (0, 0), (0, 2), connectivity=4)

@@ -63,3 +63,39 @@ def least_cost_distance(cost_surface: Sequence[Sequence[float]] | np.ndarray, so
                 heappush(queue,(candidate,nr,nc))
     distance[~valid]=np.nan
     return distance
+
+
+def least_cost_corridor(cost_surface, source, target, *, tolerance=0.0,
+                        cell_size_x=1.0, cell_size_y=1.0, connectivity=8,
+                        prevent_corner_cutting=True):
+    """Return cells within an additive cost tolerance of an optimal path.
+
+    The corridor is based on d(source, cell) + d(cell, target) <=
+    d(source, target) + tolerance. It is a raster-graph corridor, not a
+    probabilistic corridor or a continuous-width geometric buffer.
+    """
+    try:
+        tol = float(tolerance)
+    except (TypeError, ValueError):
+        raise ValueError("tolerance must be finite and non-negative") from None
+    if not np.isfinite(tol) or tol < 0:
+        raise ValueError("tolerance must be finite and non-negative")
+    cost = np.asarray(cost_surface, dtype=float)
+    if cost.ndim != 2 or cost.size == 0:
+        raise ValueError("cost_surface must be a non-empty 2D array")
+    # Reuse the same source, connectivity, NoData and edge-cost contract.
+    from_source = least_cost_distance(
+        cost, [source], cell_size_x=cell_size_x, cell_size_y=cell_size_y,
+        connectivity=connectivity, prevent_corner_cutting=prevent_corner_cutting)
+    to_target = least_cost_distance(
+        cost, [target], cell_size_x=cell_size_x, cell_size_y=cell_size_y,
+        connectivity=connectivity, prevent_corner_cutting=prevent_corner_cutting)
+    optimum = float(from_source[tuple(target)])
+    if not np.isfinite(optimum):
+        raise ValueError("target is unreachable from source")
+    total = from_source + to_target
+    corridor = np.isfinite(total) & (total <= optimum + tol +
+                                      1e-12 * max(1.0, abs(optimum)))
+    return {"source_distance": from_source, "target_distance": to_target,
+            "through_cost": total, "optimal_cost": optimum,
+            "corridor": corridor}

@@ -36,7 +36,7 @@ This section groups applied methods across spatial interaction, functional regio
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Anisotropic cost surfaces (Tobler hiking function, Naismith, Langmuir), path distance with vertical factors, backlink rasters | Cost-surface construction / terrain travel models | 33 | Partially implemented: directional raster travel-time Dijkstra with Tobler, Naismith and per-edge Langmuir models; vertical-factor variants, backlink rasters, turn penalties and continuous path-distance solvers remain open |
-| Least-cost corridors, cost-weighted distance with turning penalties, energy-expenditure models for walking and loaded travel | Corridor analysis / movement cost models | 33 | Not checked — intake only |
+| Least-cost corridors, cost-weighted distance with turning penalties, energy-expenditure models for walking and loaded travel | Corridor analysis / movement cost models | 33 | Partial — additive-tolerance raster least-cost corridors now implemented and tested; turn penalties and calibrated energy-expenditure models remain open |
 
 ## SAR geometry, InSAR time series and crustal deformation
 
@@ -95,3 +95,8 @@ Six classification methods now have a NumPy package, tests and a canonical lesso
 ### Spatial-interaction implementation update
 
 The regional-dynamics package now distinguishes aggregate flow allocation from regression estimation: unconstrained, singly constrained and doubly constrained gravity flows are implemented, and the doubly constrained form is balanced by iterative proportional fitting. The entropy-maximising wrapper uses an explicit exponential generalized-cost deterrence term. PPML remains a separate count-regression method; negative-binomial estimation, competing destinations, intervening opportunities and flow-network clustering remain open.
+
+
+### Least-cost corridor implementation update
+
+A raster-graph corridor now combines source and destination Dijkstra surfaces and retains cells whose through-cost is within an additive tolerance of the optimum. Tests include an exhaustive simple-path oracle on a small grid. This is not a probabilistic corridor, a directional travel-time corridor or a continuous-surface solver.
