@@ -30,6 +30,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Laplace approximation and slice sampling](statistics/laplace-and-slice-inference.md) — posterior mode, local Gaussian approximation and componentwise slice sampling.
 
+## Ellipsoidal geodesy
+
+- [Ellipsoidal geodesic operations](geodesy/ellipsoidal-geodesic-operations.md) — solve direct and inverse geodesics, polygon area/perimeter and sampled geodesic-radius buffers with an explicit ellipsoid.
+
 ## Network point-pattern analysis
 
 - [Network Ripley's K](statistics/network-ripley-k.md) — summarize event clustering by shortest-path distance on a finite linear network.
