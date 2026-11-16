@@ -378,3 +378,112 @@ def test_contour_stitching_nodes_unequal_shared_edge_subdivisions():
     result = stitch_filled_cells(cells)
     assert len(result.rings) == 1
     assert _signed_ring_area(result.rings[0]) == 4
+
+
+def _rect(x0, y0, x1, y1, ccw=True):
+    ring = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
+    return ring if ccw else list(reversed(ring))
+
+
+@pytest.mark.parametrize("operation,expected_area,expected_rings", [
+    ("intersection", 4, 1),
+    ("union", 4, 1),
+    ("difference", 0, 0),
+    ("xor", 0, 0),
+])
+def test_coincident_identical_rings_are_bundled(operation, expected_area,
+                                                 expected_rings):
+    from vatti_scanbeam import clip_rings
+    d = decompose_scanbeams([_rect(0, 0, 2, 2), _rect(0, 0, 2, 2)])
+    result = clip_rings(d, {0}, {1}, operation)
+    assert len(result.rings) == expected_rings
+    assert sum(_signed_ring_area(r) for r in result.rings) == expected_area
+
+
+@pytest.mark.parametrize("operation,expected_area,expected_rings", [
+    ("union", 8, 1),
+    ("intersection", 0, 0),
+    ("difference", 4, 1),
+    ("xor", 8, 1),
+])
+def test_shared_vertical_boundary_is_not_double_counted(operation, expected_area,
+                                                          expected_rings):
+    from vatti_scanbeam import clip_rings
+    d = decompose_scanbeams([_rect(0, 0, 2, 2), _rect(2, 0, 4, 2)])
+    result = clip_rings(d, {0}, {1}, operation)
+    assert len(result.rings) == expected_rings
+    assert sum(_signed_ring_area(r) for r in result.rings) == expected_area
+
+
+def test_partial_collinear_shared_boundary_and_horizontal_events():
+    from vatti_scanbeam import clip_rings
+    d = decompose_scanbeams([_rect(0, 0, 2, 4), _rect(2, 1, 4, 3)])
+    result = clip_rings(d, {0}, {1}, "union")
+    assert len(result.rings) == 1
+    assert sum(_signed_ring_area(r) for r in result.rings) == 12
+    assert any(event.kind == "overlap" and event.other_kind == "horizontal"
+               for level in sweep_boolean(d, {0}, {1}, "union").levels
+               for event in level.horizontal_events)
+
+
+def test_vertex_touching_components_remain_separate_shells():
+    from vatti_scanbeam import clip_rings
+    d = decompose_scanbeams([_rect(0, 0, 2, 2), _rect(2, 2, 4, 4)])
+    result = clip_rings(d, {0}, {1}, "union")
+    assert len(result.rings) == 2
+    assert sum(_signed_ring_area(r) for r in result.rings) == 8
+
+
+def test_opposite_orientation_coincident_ring_cancels_under_nonzero():
+    from vatti_scanbeam import clip_rings
+    d = decompose_scanbeams([_rect(0, 0, 2, 2), _rect(0, 0, 2, 2, ccw=False)])
+    result = clip_rings(d, {0}, {1}, "union", fill_rule="non_zero")
+    assert result.rings == ()
+
+
+def test_neighbour_event_sweep_orders_three_way_crossing_atomically():
+    from vatti_scanbeam import (
+        BoundEdge, bundle_active_edges, sweep_neighbour_ordered_bundles
+    )
+    edges = [
+        BoundEdge(0, 0, 0, (0, 0), (4, 4), 1),
+        BoundEdge(1, 0, 1, (2, 0), (2, 4), 1),
+        BoundEdge(2, 1, 0, (4, 0), (0, 4), 1),
+    ]
+    bundles = bundle_active_edges(edges, {0}, {1})
+    slices = sweep_neighbour_ordered_bundles(bundles, 0, 4)
+    assert len(slices) >= 2
+    assert slices[0].upper_y == 2
+    assert [b.representative.edge_id for b in slices[0].bundles] == [0, 1, 2]
+    assert [b.representative.edge_id for b in slices[1].bundles] == [2, 1, 0]
+
+
+def test_shapely_differential_boolean_oracle():
+    shapely = pytest.importorskip("shapely.geometry")
+    from shapely.ops import unary_union
+    from vatti_scanbeam import clip_rings
+    fixtures = [
+        (_rect(0, 0, 4, 4), _rect(2, -1, 6, 3)),
+        (_rect(0, 0, 2, 2), _rect(2, 0, 4, 2)),
+        (_rect(0, 0, 2, 4), _rect(2, 1, 4, 3)),
+        (_rect(0, 0, 2, 2), _rect(2, 2, 4, 4)),
+        (_rect(0, 0, 3, 3), _rect(1, 1, 4, 4)),
+    ]
+    operations = {
+        "intersection": lambda a, b: a.intersection(b),
+        "union": lambda a, b: a.union(b),
+        "difference": lambda a, b: a.difference(b),
+        "xor": lambda a, b: a.symmetric_difference(b),
+    }
+    for subject, clip in fixtures:
+        d = decompose_scanbeams([subject, clip])
+        a, b = shapely.Polygon(subject), shapely.Polygon(clip)
+        for operation, oracle in operations.items():
+            expected = oracle(a, b)
+            actual = clip_rings(d, {0}, {1}, operation)
+            assert abs(sum(_signed_ring_area(r) for r in actual.rings)
+                       - expected.area) < 1e-9
+            assert len(actual.rings) == (
+                len(expected.geoms) if hasattr(expected, "geoms")
+                else (0 if expected.is_empty else 1)
+            )
