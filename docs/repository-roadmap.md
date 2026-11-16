@@ -653,3 +653,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Add feasibility tests for endpoint range, inter-station gaps, routes needing no station, independent subset enumeration and invalid inputs.
 - [x] Document the distinction from FCLM and register the package in the Python CI matrix.
 - [ ] Execute the package and full CI suite. Scalable FRLM heuristics, network route generation, partial charging, queues, heterogeneous vehicles and trajectory-derived charging demand remain open.
+
+
+## Solar geometry continuation — 17 November 2026
+
+- [x] Implement NOAA fractional-year solar elevation, zenith, azimuth, equation of time and declination.
+- [x] Implement top-of-atmosphere normal and horizontal irradiance with Earth–Sun distance correction.
+- [x] Add timezone-equivalence, equinox, night/day bounds and invalid-input tests; document the distinction between extraterrestrial and ground-level radiation; register in Python CI.
+- [ ] Execute this package and the full CI suite. Atmospheric attenuation, diffuse radiation, terrain horizon obstruction, slope incidence and microclimate remain open.
