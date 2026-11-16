@@ -67,8 +67,11 @@ def _validate_noded_segments(segments):
             shared = set((a, b)) & set((c, d))
             if _orient(a, b, c) == 0 and _orient(a, b, d) == 0:
                 non_shared = (set((a, b)) | set((c, d))) - shared
-                if not shared or any(_on_segment(a, b, p) or _on_segment(c, d, p)
-                                     for p in non_shared):
+                if not shared or any(
+                    (p in (a, b) and _on_segment(c, d, p)) or
+                    (p in (c, d) and _on_segment(a, b, p))
+                    for p in non_shared
+                ):
                     raise ValueError("Input boundaries must not contain partial collinear overlaps")
                 continue
             if not shared:
