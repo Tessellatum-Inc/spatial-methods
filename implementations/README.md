@@ -13,7 +13,7 @@ Each implementation should state:
 - known limitations and what the example does not implement;
 - a step-by-step walkthrough that explains the code, decisions and validation.
 
-## Examples
+## Examples\n\n### Statistical surveillance\n\n- [Syndromic surveillance](python/syndromic-surveillance/README.md): two-sided tabular CUSUM and explicit EARS-style C1/C2/C3 count-series detectors, with lagged baselines, validation and reference tests.\n
 
 ### Forecast verification
 
