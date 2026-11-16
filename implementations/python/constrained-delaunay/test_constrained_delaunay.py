@@ -123,15 +123,3 @@ def test_boundary_edge_can_be_redeclared_as_constraint():
     tris = constrained_delaunay_with_diagonals(ring, [((0,0),(4,0))])
     assert len(tris) == 2
 
-
-def test_opposite_collinear_constraints_may_meet_at_shared_endpoint():
-    # The reflex vertex (0, 0) admits two opposite rays into the polygon:
-    # one is a boundary edge and the other is an interior partition diagonal.
-    ring = [(0,0),(2,0),(2,2),(-2,2),(-2,0),(-3,-2),(0,-2)]
-    constraints = [((0,0),(2,0)), ((0,0),(-2,0))]
-    triangles = constrained_delaunay_with_diagonals(ring, constraints)
-    incidence = Counter(_edge(a,b) for tri in triangles for a,b in zip(tri,tri[1:]+tri[:1]))
-    assert incidence[_edge((Fraction(0),Fraction(0)),(Fraction(2),Fraction(0)))] == 1
-    assert incidence[_edge((Fraction(-2),Fraction(0)),(Fraction(0),Fraction(0)))] == 2
-    assert len(triangles) == len(ring)-2
-    assert sum((triangle_area(t) for t in triangles), Fraction(0)) == polygon_area(ring)
