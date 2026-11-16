@@ -397,3 +397,143 @@ def fill_transitions(
             before_subject, subject, before_clip, clip, before, after
         ))
     return tuple(transitions)
+
+
+@dataclass(frozen=True)
+class ScanbeamLevel:
+    y: Fraction
+    starting_edges: tuple[BoundEdge, ...]
+    ending_edges: tuple[BoundEdge, ...]
+    horizontal_edges: tuple[HorizontalEdge, ...]
+    horizontal_events: tuple[HorizontalEvent, ...]
+    local_minima: tuple[LocalMinimum, ...]
+
+
+@dataclass(frozen=True)
+class FilledCell:
+    """One Boolean-filled trapezoid/triangle in a crossing-free sweep slice."""
+    lower_y: Fraction
+    upper_y: Fraction
+    left_edge_id: int
+    right_edge_id: int
+    vertices: tuple[tuple[Fraction, Fraction], ...]
+
+
+@dataclass(frozen=True)
+class BooleanSweep:
+    levels: tuple[ScanbeamLevel, ...]
+    cells: tuple[FilledCell, ...]
+    band_slice_count: int
+
+
+def _filled_spans(
+    edges: Sequence[BoundEdge],
+    subject_ring_ids: set[int],
+    clip_ring_ids: set[int],
+    operation: str,
+    fill_rule: str,
+) -> tuple[tuple[BoundEdge, BoundEdge], ...]:
+    transitions = fill_transitions(
+        edges, subject_ring_ids, clip_ring_ids, operation, fill_rule
+    )
+    by_id = {edge.edge_id: edge for edge in edges}
+    spans = []
+    left = None
+    for transition in transitions:
+        if not transition.result_before and transition.result_after:
+            if left is not None:
+                raise ValueError("Boolean fill entered twice without an exit")
+            left = by_id[transition.edge_id]
+        elif transition.result_before and not transition.result_after:
+            if left is None:
+                raise ValueError("Boolean fill exited without a matching entry")
+            spans.append((left, by_id[transition.edge_id]))
+            left = None
+    if left is not None:
+        raise ValueError("active edges leave an unbounded filled interval")
+    return tuple(spans)
+
+
+def sweep_boolean(
+    decomposition: ScanbeamDecomposition,
+    subject_ring_ids: set[int],
+    clip_ring_ids: set[int],
+    operation: str = "intersection",
+    fill_rule: str = "non_zero",
+) -> BooleanSweep:
+    """Sweep all scanbeam bands and decompose the Boolean result into cells.
+
+    Every band is subdivided at all pairwise edge crossings. Within each
+    crossing-free slice, edges are ordered at its rational midpoint, subject
+    and clip winding states are propagated, and each filled interval becomes
+    a trapezoid or triangle cell. Horizontal contacts and local minima are
+    attached to their scanbeam-level event records.
+
+    This is a complete reference decomposition pass for non-coincident
+    boundaries, not yet a contour clipper: cells are not stitched into rings,
+    and coincident/overlapping bound edges need a dedicated bundle policy.
+    """
+    if not subject_ring_ids or not clip_ring_ids:
+        raise ValueError("subject and clip ring sets must both be non-empty")
+    if subject_ring_ids & clip_ring_ids:
+        raise ValueError("subject and clip ring sets must be disjoint")
+    if operation not in {"intersection", "union", "difference", "xor"}:
+        raise ValueError(f"unsupported Boolean operation: {operation}")
+    # Validate operand ownership even for edges which are not active in a band.
+    if any(edge.ring_id not in subject_ring_ids | clip_ring_ids
+           for edge in decomposition.bounds):
+        raise ValueError("every bound edge must belong to subject or clip")
+
+    levels = []
+    cells = []
+    for y in decomposition.scanbeams:
+        qy = _q(y)
+        starts = tuple(sorted(
+            (edge for edge in decomposition.bounds if _q(edge.lower[1]) == qy),
+            key=lambda edge: (edge.lower[0], edge.edge_id)))
+        ends = tuple(sorted(
+            (edge for edge in decomposition.bounds if _q(edge.upper[1]) == qy),
+            key=lambda edge: (edge.upper[0], edge.edge_id)))
+        horizontal = tuple(edge for edge in decomposition.horizontals
+                           if _q(edge.a[1]) == qy)
+        minima = tuple(minimum for minimum in decomposition.minima
+                       if _q(minimum.y) == qy)
+        levels.append(ScanbeamLevel(
+            qy, starts, ends, horizontal,
+            horizontal_events_at(decomposition, y), minima
+        ))
+
+    for lower_y, upper_y in zip(decomposition.scanbeams,
+                                decomposition.scanbeams[1:]):
+        active = active_edges_for_band(decomposition, lower_y, upper_y)
+        slices = sweep_active_edge_slices(active, lower_y, upper_y)
+        for slice_ in slices:
+            spans = _filled_spans(
+                slice_.edges, subject_ring_ids, clip_ring_ids,
+                operation, fill_rule
+            )
+            for left, right in spans:
+                lo, hi = slice_.lower_y, slice_.upper_y
+                vertices = (
+                    (_x_at(left, lo), lo),
+                    (_x_at(right, lo), lo),
+                    (_x_at(right, hi), hi),
+                    (_x_at(left, hi), hi),
+                )
+                # A crossing can collapse a trapezoid to a triangle. Reject
+                # only truly zero-area cells, retaining exact rational area.
+                twice_area = sum(
+                    vertices[i][0] * vertices[(i + 1) % 4][1]
+                    - vertices[(i + 1) % 4][0] * vertices[i][1]
+                    for i in range(4)
+                )
+                if twice_area:
+                    cells.append(FilledCell(
+                        lo, hi, left.edge_id, right.edge_id, vertices
+                    ))
+    return BooleanSweep(tuple(levels), tuple(cells),
+                        sum(max(0, len(sweep_active_edge_slices(
+                            active_edges_for_band(decomposition, lo, hi), lo, hi
+                        ))) for lo, hi in zip(
+                            decomposition.scanbeams, decomposition.scanbeams[1:]
+                        )))
