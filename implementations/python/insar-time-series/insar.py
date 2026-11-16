@@ -92,7 +92,9 @@ def sbas_network_inversion(interferograms, pairs, *, n_dates,
     for pixel in range(flat.shape[1]):
         valid = np.isfinite(flat[:,pixel]) & (wf[:,pixel] > 0)
         count[pixel] = int(valid.sum())
-        if valid.sum() < n_dates-1:
+        if valid.any():
+            rank_out[pixel] = np.linalg.matrix_rank(design[valid])
+        if valid.sum() < n_dates-1 or rank_out[pixel] < n_dates-1:
             continue
         a = design[valid] * np.sqrt(wf[valid,pixel,None])
         b = flat[valid,pixel] * np.sqrt(wf[valid,pixel])

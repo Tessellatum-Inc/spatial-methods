@@ -19,7 +19,7 @@ def test_spatial_zoning_scale_effect_is_monotone_in_zone_count():
     x = np.array([[0.],[1.],[4.],[5.]])
     edges = np.array([[0,1],[1,2],[2,3]])
     result = zoning_scale_effect(x, edges, [4,3,2,1])
-    assert np.all(np.diff(result["within_zone_sse"]) <= 1e-12)
+    assert np.all(np.diff(result["within_zone_sse"]) >= -1e-12)
     assert result["within_zone_sse"][0] == pytest.approx(0.)
     assert result["within_zone_sse"][-1] == pytest.approx(17.)
 
