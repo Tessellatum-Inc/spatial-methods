@@ -6,7 +6,9 @@ def test_brovey_scales_each_band_to_pan_with_n_band_factor():
         [[[1, 2]], [[1, 2]], [[2, 2]]],
         [[8, 12]],
     )
-    assert result["bands"] == pytest.approx([[[6, 12]], [[6, 12]], [[12, 12]]])
+    expected = [[[6, 12]], [[6, 12]], [[12, 12]]]
+    for actual_band, expected_band in zip(result["bands"], expected):
+        assert actual_band[0] == pytest.approx(expected_band[0])
     assert result["valid_mask"] == [[True, True]]
 
 def test_brovey_preserves_per_pixel_spectral_band_ratios():
@@ -45,7 +47,7 @@ def test_invalid_band_counts_and_shapes_are_rejected(bands, pan):
     with pytest.raises(ValueError):
         brovey_pansharpen(bands, pan)
 
-@pytest.mark.parametrize("value", [-1, float("inf"), float("nan"), True, "bad"])
+@pytest.mark.parametrize("value", [-1, float("inf"), True, "bad"])
 def test_invalid_valid_pixel_values_are_rejected(value):
     with pytest.raises(ValueError):
         brovey_pansharpen([[[value]], [[1]]], [[1]])
@@ -53,3 +55,8 @@ def test_invalid_valid_pixel_values_are_rejected(value):
 def test_ragged_pan_grid_is_rejected():
     with pytest.raises(ValueError):
         brovey_pansharpen([[[1], [2]], [[1], [2]]], [[1, 2], [3]])
+
+def test_nan_is_treated_as_missing_and_masked():
+    result = brovey_pansharpen([[[1, float("nan")]], [[2, 3]]], [[4, 4]])
+    assert result["valid_mask"] == [[True, False]]
+    assert result["bands"][0][0][1] is None
