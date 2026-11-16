@@ -318,3 +318,6 @@ Records may have different evidence and implementation status. Check the status 
 - [Reservoir stage-storage curves](raster/reservoir-stage-storage.md) — derive DEM-based inundated area and storage over supplied water stages.
 
 - [SCS curve-number runoff](raster/scs-curve-number-runoff.md) — estimate event direct-runoff depth and convert AMC-II curve numbers to dry/wet antecedent conditions.
+
+- [Green-Ampt infiltration](raster/green-ampt-infiltration.md) — advance a homogeneous soil-column infiltration state through constant-intensity rainfall steps, including ponding onset.
+- [Unit-hydrograph convolution](raster/unit-hydrograph-convolution.md) — route rainfall-excess depth through supplied discrete unit-hydrograph ordinates.
