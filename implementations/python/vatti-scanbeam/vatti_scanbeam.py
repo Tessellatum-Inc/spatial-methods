@@ -507,14 +507,13 @@ def sweep_boolean(
     for lower_y, upper_y in zip(decomposition.scanbeams,
                                 decomposition.scanbeams[1:]):
         active = active_edges_for_band(decomposition, lower_y, upper_y)
-        slices = sweep_active_edge_slices(active, lower_y, upper_y)
+        bundles = bundle_active_edges(active, subject_ring_ids, clip_ring_ids)
+        slices = sweep_neighbour_ordered_bundles(bundles, lower_y, upper_y)
         slice_count += len(slices)
         for slice_ in slices:
-            spans = _filled_spans(
-                slice_.edges, subject_ring_ids, clip_ring_ids,
-                operation, fill_rule
-            )
-            for left, right in spans:
+            spans = _bundle_spans(slice_.bundles, operation, fill_rule)
+            for left_bundle, right_bundle in spans:
+                left, right = left_bundle.representative, right_bundle.representative
                 lo, hi = slice_.lower_y, slice_.upper_y
                 vertices = (
                     (_x_at(left, lo), lo),
@@ -533,6 +532,7 @@ def sweep_boolean(
                     cells.append(FilledCell(
                         lo, hi, left.edge_id, right.edge_id, vertices
                     ))
+    cells = list(_node_cells_at_horizontal_events(cells, levels))
     return BooleanSweep(tuple(levels), tuple(cells), slice_count)
 
 
@@ -723,3 +723,218 @@ def clip_rings(
         decomposition, subject_ring_ids, clip_ring_ids, operation, fill_rule
     )
     return stitch_filled_cells(sweep.cells)
+
+
+@dataclass(frozen=True)
+class ActiveEdgeBundle:
+    """Coincident active bounds with operand-specific aggregate winding."""
+    representative: BoundEdge
+    members: tuple[BoundEdge, ...]
+    subject_delta: int
+    clip_delta: int
+
+    @property
+    def slope(self):
+        return self.representative.dx_dy
+
+    def x_at(self, y):
+        return _x_at(self.representative, y)
+
+
+@dataclass(frozen=True)
+class BundleSlice:
+    lower_y: Fraction
+    upper_y: Fraction
+    bundles: tuple[ActiveEdgeBundle, ...]
+
+
+def bundle_active_edges(
+    edges: Sequence[BoundEdge],
+    subject_ring_ids: set[int],
+    clip_ring_ids: set[int],
+) -> tuple[ActiveEdgeBundle, ...]:
+    """Coalesce geometrically coincident bounds and sum winding per operand.
+
+    All active edges span the same open scanbeam band. Equal slope and equal
+    exact intercept therefore means they coincide throughout that band.
+    Oppositely directed copies cancel algebraically without losing provenance.
+    """
+    grouped = {}
+    for edge in edges:
+        slope = edge.dx_dy
+        intercept = _q(edge.lower[0]) - slope * _q(edge.lower[1])
+        grouped.setdefault((slope, intercept), []).append(edge)
+    bundles = []
+    for key, members in grouped.items():
+        members = tuple(sorted(members, key=lambda e: e.edge_id))
+        subject_delta = sum(e.winding_delta for e in members
+                            if e.ring_id in subject_ring_ids)
+        clip_delta = sum(e.winding_delta for e in members
+                         if e.ring_id in clip_ring_ids)
+        bundles.append(ActiveEdgeBundle(
+            members[0], members, subject_delta, clip_delta
+        ))
+    bundles.sort(key=lambda b: (
+        b.x_at((_q(b.representative.lower[1]) +
+                _q(b.representative.upper[1])) / 2),
+        b.slope, b.representative.edge_id
+    ))
+    return tuple(bundles)
+
+
+def _bundle_spans(
+    bundles: Sequence[ActiveEdgeBundle],
+    operation: str,
+    fill_rule: str,
+) -> tuple[tuple[ActiveEdgeBundle, ActiveEdgeBundle], ...]:
+    subject = clip = 0
+    left = None
+    spans = []
+    for bundle in bundles:
+        before = boolean_result(subject, clip, operation, fill_rule)
+        subject += bundle.subject_delta
+        clip += bundle.clip_delta
+        after = boolean_result(subject, clip, operation, fill_rule)
+        if not before and after:
+            if left is not None:
+                raise ValueError("coincident bundles create nested Boolean entries")
+            left = bundle
+        elif before and not after:
+            if left is None:
+                raise ValueError("Boolean bundle exits without an entry")
+            spans.append((left, bundle))
+            left = None
+    if left is not None:
+        raise ValueError("bundle list leaves an unbounded filled interval")
+    return tuple(spans)
+
+
+def _bundle_intersection_y(first, second):
+    if first.slope == second.slope:
+        return None
+    f = first.representative
+    g = second.representative
+    bf = _q(f.lower[0]) - first.slope * _q(f.lower[1])
+    bg = _q(g.lower[0]) - second.slope * _q(g.lower[1])
+    return (bg - bf) / (first.slope - second.slope)
+
+
+def sweep_neighbour_ordered_bundles(
+    bundles: Sequence[ActiveEdgeBundle],
+    lower_y: float,
+    upper_y: float,
+) -> tuple[BundleSlice, ...]:
+    """Schedule only adjacent bundle crossings with a rational event heap.
+
+    At a multiway event, all bundles meeting at the same (x,y) are reordered
+    together by slope. Only newly adjacent pairs are scheduled afterwards.
+    Equal-line bundles have already been coalesced, so coincident edges do not
+    create an infinite stream of zero-distance crossing events.
+    """
+    import heapq
+
+    lower, upper = _q(lower_y), _q(upper_y)
+    if not lower < upper:
+        raise ValueError("scanbeam band must have positive height")
+    ordered = list(sorted(bundles, key=lambda b: (
+        b.x_at(lower), b.slope, b.representative.edge_id
+    )))
+    if len(ordered) < 2:
+        return (BundleSlice(lower, upper, tuple(ordered)),) if ordered else ()
+
+    events = []
+    scheduled = set()
+    serial = 0
+
+    def schedule(index, current_y):
+        nonlocal serial
+        if index < 0 or index + 1 >= len(ordered):
+            return
+        first, second = ordered[index], ordered[index + 1]
+        y = _bundle_intersection_y(first, second)
+        if y is None or not current_y < y < upper:
+            return
+        pair = tuple(sorted((first.representative.edge_id,
+                             second.representative.edge_id)))
+        token = (pair, y)
+        if token in scheduled:
+            return
+        scheduled.add(token)
+        x = first.x_at(y)
+        heapq.heappush(events, (y, x, serial, index, pair))
+        serial += 1
+
+    for i in range(len(ordered)-1):
+        schedule(i, lower)
+
+    slices = []
+    current_y = lower
+    while events:
+        y, x, _, index, pair = heapq.heappop(events)
+        if y <= current_y:
+            continue
+        if y >= upper:
+            break
+        # A stale event is ignored unless its two bundles remain adjacent.
+        if index + 1 >= len(ordered):
+            continue
+        a, b = ordered[index], ordered[index+1]
+        if tuple(sorted((a.representative.edge_id,
+                         b.representative.edge_id))) != pair:
+            continue
+        if a.x_at(y) != x or b.x_at(y) != x:
+            continue
+        if y > current_y:
+            slices.append(BundleSlice(current_y, y, tuple(ordered)))
+        current_y = y
+
+        # Expand the event to every bundle incident at this same geometric
+        # vertex, handling multiway crossings as one atomic order change.
+        lo = index
+        while lo > 0 and ordered[lo-1].x_at(y) == x:
+            lo -= 1
+        hi = index + 1
+        while hi + 1 < len(ordered) and ordered[hi+1].x_at(y) == x:
+            hi += 1
+        ordered[lo:hi+1] = sorted(
+            ordered[lo:hi+1],
+            key=lambda bundle: (bundle.slope,
+                                bundle.representative.edge_id)
+        )
+        for j in range(max(0, lo-1), min(len(ordered)-1, hi+1)+1):
+            schedule(j, current_y)
+
+    if current_y < upper:
+        slices.append(BundleSlice(current_y, upper, tuple(ordered)))
+    return tuple(slices)
+
+
+def _node_cells_at_horizontal_events(cells, levels):
+    """Insert horizontal contact coordinates into cell edges before stitching."""
+    event_points = {}
+    for level in levels:
+        for event in level.horizontal_events:
+            event_points.setdefault(event.y, set()).update(
+                ((event.x_start, event.y), (event.x_end, event.y))
+            )
+    noded = []
+    for cell in cells:
+        points = list(cell.vertices)
+        expanded = []
+        for i, a in enumerate(points):
+            b = points[(i+1) % len(points)]
+            expanded.append(a)
+            if a[1] != b[1]:
+                continue
+            candidates = event_points.get(a[1], set())
+            interior = [p for p in candidates
+                        if p != a and p != b and
+                        min(a[0], b[0]) < p[0] < max(a[0], b[0])]
+            if b[0] < a[0]:
+                interior.reverse()
+            expanded.extend(interior)
+        noded.append(FilledCell(
+            cell.lower_y, cell.upper_y, cell.left_edge_id,
+            cell.right_edge_id, tuple(expanded)
+        ))
+    return tuple(noded)
