@@ -387,6 +387,9 @@ jobs:
           - example: raster-resampling
             directory: implementations/python/raster-resampling
             pythonpath: ""
+          - example: raster-map-algebra
+            directory: implementations/python/raster-map-algebra
+            pythonpath: ""
           - example: zonal-statistics
             directory: implementations/python/zonal-statistics
             pythonpath: ""
