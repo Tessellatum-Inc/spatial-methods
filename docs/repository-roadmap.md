@@ -541,16 +541,19 @@ The source-to-implementation ledger must track, per source entry and child metho
 
 ### Martinez–Rueda native overlay: coincident-edge increment
 
-- [x] Preserve exact-rational crossing predicates and add a multi-hit collinear intersection path that emits both endpoints of a positive-length overlap, so both source edges are split into matching atomic fragments.
+- [x] Preserve exact-rational crossing predicates and add an exact multi-hit collinear intersection path that emits both endpoints of every positive-length overlap, including overlaps smaller than epsilon; near misses below epsilon are not converted into false contacts.
 - [x] Replace midpoint-only boundary selection with exact rational left/right side probes. A fragment is retained only when the Boolean result changes across it, and it is directed with result interior on its left. This handles coincident edges without treating a boundary midpoint as simply outside.
 - [x] Deduplicate same-direction coincident output fragments before stitching.
-- [x] Replace epsilon-quantized stitch vertex keys with exact decimal-rational coordinate keys, avoiding accidental merging of distinct nearby vertices.
+- [x] Normalize input vertices and generated intersection nodes to exact `Fraction` coordinates; preserve large integers and rational crossing coordinates through noding and stitching.
+- [x] Replace epsilon-quantized stitch vertex keys with exact rational coordinate keys, avoiding accidental merging of distinct nearby vertices.
+- [x] Coalesce pairwise proper-crossing and endpoint/overlap contacts into exact-coordinate node events with all incident segment IDs.
 - [x] Add regression coverage for partial collinear overlap, identical/reversed coincident polygons and all four Boolean operations on polygons sharing an edge.
 - [ ] Run the Martinez–Rueda package suite and full repository CI on the resulting head; connector status lookup did not expose a run for these direct main-branch commits, so these changes are not yet marked CI-verified.
 - [x] Add independent Shapely differential suites for seeded rectangle overlays in Martinez–Rueda and Vatti, plus concave disconnected and hole-aware Vatti cases; compare symmetric-difference geometry, not area alone.
 - [ ] Execute both differential suites and resolve any oracle mismatches on the exact head commit.
-- [ ] Implement the full neighbour-ordered event scheduler; the current y-interval treap remains a broad-phase candidate filter, not the Martinez–Rueda sweep status.
+- [ ] Implement the full neighbour-ordered event scheduler; the current y-interval treap remains a broad-phase candidate filter, not the Martinez–Rueda sweep status. Vatti already has a separate neighbour-ordered bundle scheduler with atomic multiway crossing reordering; porting or independently validating a full x-sweep for Martinez remains open.
 - [ ] Complete Vatti multiway horizontal/boundary event semantics and differential coverage for the full source-listed fill-rule and contour lifecycle.
-- [ ] Resolve robust multiway vertex event grouping, near-coincident tolerance semantics and complete face-walk topology before claiming a general-purpose overlay kernel.
+- [x] Add exact-coordinate multiway node-event grouping for pairwise reports, including endpoint and collinear-bundle contacts.
+- [ ] Validate the multiway node grouping against adversarial multi-segment vertices and complete face-walk topology before claiming a general-purpose overlay kernel.
 
-The change is a meaningful extension, not completion of the polygon overlay work package. In particular, side-probe classification is exact for its chosen rational probe coordinates, but the finite probe offset still requires adversarial clearance tests; the implementation remains a staged teaching/native kernel with explicit limitations.
+The change is a meaningful extension, not completion of the polygon overlay work package. Exact source coordinates and intersection nodes are retained, and finite side probes are now clearance-bounded rather than epsilon-bounded. The remaining major algorithmic gap is the full Martinez neighbour-ordered event sweep; the y-interval treap is still a broad-phase candidate filter. The authored regression and differential suites still require execution on the exact resulting head before any Verified status is assigned.
