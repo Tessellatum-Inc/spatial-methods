@@ -75,6 +75,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Path-size logit](networks/path-size-logit.md) — overlap-corrected route-choice probabilities for alternatives sharing network edges.
 
+## Hyperspectral candidate extraction
+
+- [Pixel Purity Index (PPI)](remote-sensing/pixel-purity-index.md) — rank candidate endmembers by repeated random-projection extrema; scores are screening votes, not purity probabilities.
+
 ## Threshold-run event detection
 
 - [Run-theory drought events](remote-sensing/run-theory-drought-events.md) — threshold runs, gap bridging and event severity.
