@@ -491,8 +491,12 @@ def test_shapely_differential_boolean_oracle():
         for operation, oracle in operations.items():
             expected = oracle(a, b)
             actual = clip_rings(d, {0}, {1}, operation)
+            actual_geom = unary_union([
+                shapely.Polygon(ring[:-1]) for ring in actual.rings
+            ]) if actual.rings else shapely.GeometryCollection()
             assert abs(sum(_signed_ring_area(r) for r in actual.rings)
                        - expected.area) < 1e-9
+            assert actual_geom.symmetric_difference(expected).area < 1e-9
             if expected.geom_type == "Polygon":
                 expected_components = 0 if expected.is_empty else 1
             elif expected.geom_type == "MultiPolygon":
@@ -500,3 +504,21 @@ def test_shapely_differential_boolean_oracle():
             else:
                 expected_components = 0
             assert len(actual.rings) == expected_components
+
+
+def test_neighbour_scheduler_handles_distinct_crossings_at_same_y():
+    from vatti_scanbeam import (
+        BoundEdge, bundle_active_edges, sweep_neighbour_ordered_bundles
+    )
+    edges = [
+        BoundEdge(0, 0, 0, (0, 0), (2, 4), 1),
+        BoundEdge(1, 0, 1, (2, 0), (0, 4), 1),
+        BoundEdge(2, 1, 0, (10, 0), (12, 4), 1),
+        BoundEdge(3, 1, 1, (12, 0), (10, 4), 1),
+    ]
+    bundles = bundle_active_edges(edges, {0}, {1})
+    slices = sweep_neighbour_ordered_bundles(bundles, 0, 4)
+    assert len(slices) == 2
+    assert slices[0].upper_y == 2
+    assert [b.representative.edge_id for b in slices[0].bundles] == [0, 1, 2, 3]
+    assert [b.representative.edge_id for b in slices[1].bundles] == [1, 0, 3, 2]
