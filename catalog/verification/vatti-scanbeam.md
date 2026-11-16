@@ -18,6 +18,9 @@
 - Full scanbeam reference pass coordinating level events, crossing-split band slices and subject/clip winding transitions.
 - Exact-rational filled-cell decomposition for all four Boolean operations.
 - Exact-rational cell-edge noding at shared vertices, including unequal subdivisions.
+- Coincident active-edge bundling with independent subject/clip winding aggregation.
+- Adjacent-bundle event-heap intersection scheduling and atomic multiway crossing reorder.
+- Horizontal contact points inserted into cell-boundary noding before contour stitching.
 - Cancellation of internal cell seams and directed boundary face-walk.
 - Closed contour output with disconnected shells and clockwise holes.
 - Public reference API `clip_rings()` combining the sweep and contour assembly.
@@ -29,6 +32,10 @@
 - Contour outputs for intersection, union, difference and two-component XOR.
 - Nested-hole plus disconnected-shell preservation.
 - Empty contour result and unequal shared-edge subdivision.
+- Coincident and opposite-direction coincident rings.
+- Full/partial shared boundaries and vertex-touching components.
+- Three-way simultaneous crossing and neighbour-event order changes.
+- Shapely differential area and polygon-component comparisons across five fixtures and four operations.
 - Clockwise/counter-clockwise equivalence.
 - Non-horizontal minimum and horizontal bottom plateau.
 - Multiple local minima.
@@ -36,10 +43,10 @@
 - Invalid band, non-finite and repeated-vertex inputs.
 
 ## Not implemented
-- Efficient neighbour-only intersection scheduling and in-place active-edge updates.
-- Full horizontal-edge clipping transitions and their integration into active-edge updates.
-- Deriving the correct active-edge order from a complete sweep, including coincident-edge rules and horizontal-event integration.
-- Full Vatti intersection-list scheduling, coincident-edge bundles and horizontal transition integration.
+- Full Vatti scanbeam event-list/LMT/SEL maintenance and optimized in-place active-edge updates.
+- Full Vatti horizontal-edge processing rules for local minima, maxima and horizontal joins; current implementation records contacts and nodes output cell boundaries.
+- Complete Vatti topological output policies for all coincident/touching configurations, including multiway horizontal/bound intersections.
+- Production-grade Vatti intersection-list scheduling and complete horizontal edge transition semantics.
 
-Tests have been authored but must run in CI before this component is marked
+Shapely differential tests are optional locally when the dependency is absent; CI installs it through this package's requirements. Tests must run in CI before this component is marked
 verified.
