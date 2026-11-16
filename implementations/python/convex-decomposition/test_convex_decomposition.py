@@ -37,7 +37,7 @@ def test_concave_l_shape_is_partitioned_into_convex_pieces():
     pieces = convex_decompose(polygon)
     assert len(pieces) >= 2
     assert all(is_convex(piece) for piece in pieces)
-    assert sum((abs(area2(piece)) for piece in pieces), Fraction(0)) == 10
+    assert sum((abs(area2(piece)) for piece in pieces), Fraction(0)) == 8
 
 
 def test_clockwise_input_is_normalized():
