@@ -19,6 +19,10 @@ Each implementation should state:
 
 - [Binary-event forecast verification](python/forecast-verification/README.md): contingency-table counts and scores, Brier score/skill, reliability bins and tied-rank ROC AUC, with tests and an [intern walkthrough](python/forecast-verification/implementation-walkthrough.md). A separate [Fractions Skill Score module](python/forecast-verification/spatial_fss.py) adds regular-grid neighbourhood verification, with a [scale lab](../notebooks/forecast-fractions-skill-score-lab.ipynb); CRPS, ensemble rank histograms, SAL and MODE remain open.
 
+### Flow-based facility location
+
+- [Flow-refueling location model](python/flow-refueling-location/README.md): exact subset solver for finite-range route feasibility, distinct from FCLM.
+
 ### Geometry and computational geometry
 
 - [Curve construction](python/curves-smoothing/README.md): Chaikin corner cutting, Catmull–Rom interpolation and de Casteljau Bézier evaluation, with tests, an [intern walkthrough](python/curves-smoothing/implementation-walkthrough.md) and a [lab notebook](../notebooks/curves-smoothing-lab.ipynb). B-splines, NURBS, curve fitting and Kalman/RTS smoothing are separate open topics.
