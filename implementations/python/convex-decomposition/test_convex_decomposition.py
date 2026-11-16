@@ -107,4 +107,4 @@ def test_hertel_mehlhorn_pass_handles_generator_input():
     polygon = [(0, 0), (3, 0), (3, 2), (1, 2), (1, 4), (0, 4)]
     pieces = hertel_mehlhorn_decompose(iter(polygon))
     assert all(is_convex(piece) for piece in pieces)
-    assert sum((abs(area2(piece)) for piece in pieces), Fraction(0)) == 10
+    assert sum((abs(area2(piece)) for piece in pieces), Fraction(0)) == 8
