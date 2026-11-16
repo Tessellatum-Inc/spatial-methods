@@ -336,9 +336,10 @@ def partition_y_monotone(vertices: Iterable[Sequence[float | int]]) -> list[list
 
 def triangulate_general(vertices: Iterable[Sequence[float | int]]) -> list[Triangle]:
     """Triangulate a simple strict-y polygon by monotone partition + stack scan."""
-    pieces = partition_y_monotone(vertices)
+    values = list(vertices)
+    pieces = partition_y_monotone(values)
     triangles = [triangle for piece in pieces for triangle in triangulate(piece)]
-    ring = _clean(vertices)
+    ring = _clean(values)
     if len(triangles) != len(ring) - 2:
         raise RuntimeError("Partition triangulation did not produce n-2 triangles.")
     if sum((abs(orient(*t)) for t in triangles), Fraction(0)) != abs(_area2(ring)):
