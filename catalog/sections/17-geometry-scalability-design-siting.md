@@ -26,13 +26,13 @@ This section extends computational geometry and adds scalable statistics, fast d
 | Log-determinant approximation: Chebyshev, Monte Carlo trace estimators, Lanczos, Pace-Barry, sparse Cholesky | Numerical approximation / sparse matrix methods | 35 | Not checked — intake only |
 | Gaussian Markov random field sampling, conjugate gradient solvers, Kronecker-structured covariances, circulant embedding with FFT on regular grids | Spatial stochastic simulation / numerical solvers / covariance structures | 35 | Not checked — intake only |
 | Sparse GP methods: inducing points, SVGP, Nystrom, structured kernel interpolation (KISS-GP), random Fourier features, hierarchical matrices, fast multipole | Scalable Gaussian-process approximations | 35 | Not checked — intake only |
-| Variogram estimation: Matheron, Cressie-Hawkins and Genton robust estimators, REML, composite likelihood, cross-validation-based fitting | Variogram estimators / model-fitting methods | 35 | Not checked — intake only |
+| Variogram estimation: Matheron, Cressie-Hawkins and Genton robust estimators, REML, composite likelihood, cross-validation-based fitting | Variogram estimators / model-fitting methods | 35 | Partially implemented: Matheron and Cressie-Hawkins empirical estimators, directional bins and spherical/exponential/Gaussian nonlinear fitting are tested; Genton, REML, composite likelihood and CV fitting remain open |
 
 ## Fast density and sketching
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Fast KDE: binned KDE with FFT, dual-tree KDE, random Fourier feature KDE, quantized and grid-based DBSCAN | Scalable density estimation / clustering | 35 | Not checked — intake only |
+| Fast KDE: binned KDE with FFT, dual-tree KDE, random Fourier feature KDE, quantized and grid-based DBSCAN | Scalable density estimation / clustering | 35 | Partially implemented: weighted binned Gaussian KDE with FFT convolution and optional boundary correction is tested; dual-tree/RFF KDE and grid DBSCAN remain open |
 | Streaming sketches for grids and tiles: HyperLogLog for distinct counts, count-min sketch, Bloom filters for tile existence, reservoir sampling for spatial streams | Streaming summaries / probabilistic data structures / sampling | 35 | Implemented as four tested bounded-memory reference structures; spatial partitioning, distributed merge/workload evaluation and exact-record integration remain open |
 
 ## Optimal sampling and experimental design
@@ -55,7 +55,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Competitive facility location: Huff-based, Stackelberg and Nash formulations, Voronoi games | Competitive location models / game-theoretic formulations | 36 | Not checked — intake only |
+| Competitive facility location: Huff-based, Stackelberg and Nash formulations, Voronoi games | Competitive location models / game-theoretic formulations | 36 | Partially implemented: Huff attractiveness/impedance probabilities and demand aggregation are tested; Stackelberg/Nash competition and Voronoi games remain open |
 | Stable matching (Gale-Shapley), auction algorithms, school choice and spatial assignment with preferences | Matching and assignment algorithms / allocation problems | 36 | Not checked — intake only |
 
 ## EV charging and refueling siting

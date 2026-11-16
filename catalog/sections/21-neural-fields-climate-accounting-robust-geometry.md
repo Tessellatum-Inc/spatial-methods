@@ -28,7 +28,7 @@
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Intensity analysis (Aldwaik-Pontius), net versus swap change, gain-loss decomposition, transition matrices, trajectory analysis | Land-change accounting methods | 44 | Not checked — intake only |
+| Intensity analysis (Aldwaik-Pontius), net versus swap change, gain-loss decomposition, transition matrices, trajectory analysis | Land-change accounting methods | 44 | Partially implemented: two-date transition matrices, persistence, gains/losses/net/swap, quantity/allocation disagreement and annualized class intensities are tested; legend harmonization, multi-interval significance and trajectory analysis remain open |
 | Legend harmonization and crosswalks (LCCS-style), class hierarchy mapping, semantic harmonization across land cover products | Classification harmonisation / legend crosswalks | 44 | Not checked — intake only |
 | Map comparison metrics: Cramer's V, mean absolute error of areas, Pontius quantity and allocation measures | Map comparison and change-accounting metrics | 44 | Not checked — intake only |
 

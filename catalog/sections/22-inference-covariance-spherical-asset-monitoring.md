@@ -12,8 +12,8 @@
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Sampling: Gibbs and Metropolis-within-Gibbs for CAR and SAR models, slice sampling, sequential Monte Carlo, pseudo-marginal methods | Bayesian sampling algorithms | 45 | Not checked — intake only |
-| Approximation: Laplace approximation, expectation propagation, variational Bayes, EM for spatial mixtures | Approximate inference and optimisation methods | 45 | Not checked — intake only |
+| Sampling: Gibbs and Metropolis-within-Gibbs for CAR and SAR models, slice sampling, sequential Monte Carlo, pseudo-marginal methods | Bayesian sampling algorithms | 45 | Partially implemented: proper Gaussian CAR Gibbs sampling and componentwise stepping-out slice sampling are tested; SAR Metropolis-within-Gibbs, sequential Monte Carlo and pseudo-marginal methods remain open |
+| Approximation: Laplace approximation, expectation propagation, variational Bayes, EM for spatial mixtures | Approximate inference and optimisation methods | 45 | Partially implemented: numerical Laplace mode/covariance/evidence approximation is tested against a Gaussian reference; expectation propagation, variational Bayes and spatial-mixture EM remain open |
 | Optimizers: L-BFGS, Adam, natural gradient for GP hyperparameters | Numerical optimisation methods | 45 | Not checked — intake only |
 | Probabilistic programming: Stan, NIMBLE, PyMC, INLA-style nested approximations | Probabilistic programming systems / inference frameworks | 45 | Not checked — intake only |
 

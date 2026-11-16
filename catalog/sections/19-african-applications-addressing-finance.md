@@ -18,7 +18,7 @@
 | Disease mapping: malaria prevalence geostatistics (MAP-style), cholera and Rift Valley fever risk, health facility accessibility (AccessMod-style travel time models) | Disease mapping / risk modelling / accessibility workflows | 39 | Not checked — intake only |
 | Informal transit: paratransit route mapping from GPS (digital matatu style GTFS), mobile-money and mobile-network data for mobility and poverty proxies | Transit network reconstruction / mobility analysis / socioeconomic proxies | 39 | Not checked — intake only |
 | Water infrastructure: water point functionality prediction (WPDx-style data), borehole siting from geophysics and remote sensing | Infrastructure condition prediction / siting methods | 40 | Not checked — intake only |
-| Drought early warning: VCI, SPI, soil moisture anomalies, food security outlook integration | Drought indicators / monitoring and early-warning workflows | 40 | Not checked — intake only |
+| Drought early warning: VCI, SPI, soil moisture anomalies, food security outlook integration | Drought indicators / monitoring and early-warning workflows | 40 | Partially implemented: VCI, TCI, VHI and mixed-zero gamma SPI are tested, with run-theory threshold events; soil-moisture anomalies, seasonal calibration, food-security integration and insurance basis-risk analysis remain open |
 
 ## Addressing and location encoding
 

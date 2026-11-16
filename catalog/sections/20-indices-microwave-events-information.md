@@ -50,7 +50,7 @@
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Event definition: [marine heatwaves (Hobday)](../../methods/marine-heatwave-detection.md), heatwave and cold spell definitions, drought events via run theory, percentile thresholds | Event definitions / threshold and run-theory methods | 42 | Partial — related record exists; source-entry review pending |
+| Event definition: [marine heatwaves (Hobday)](../../methods/marine-heatwave-detection.md), heatwave and cold spell definitions, drought events via run theory, percentile thresholds | Event definitions / threshold and run-theory methods | 42 | Partially implemented: marine heatwave method plus tested run-theory threshold events with gap bridging and severity metrics; spatial event tracking and percentile-threshold calibration remain open |
 | Space-time tracking: 3D connected component labeling, storm and cyclone tracking (TempestExtremes-style), atmospheric river detection (IVT-based, ARTMIP), blocking and jet stream detection, monsoon onset indices | Spatiotemporal tracking / detection methods / climate indices | 42 | Not checked — intake only |
 | Ocean: mesoscale eddy tracking, upwelling indices, Lagrangian coherent structures (FTLE), geostrophic currents from sea surface height, Ekman and Stokes drift | Ocean feature tracking / dynamical and transport measures | 42 | Not checked — intake only |
 
@@ -58,7 +58,7 @@
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Entropy measures: Shannon, Renyi, Tsallis, sample entropy, permutation entropy, spatial entropy variants | Information-theoretic measures | 42 | Not checked — intake only |
+| Entropy measures: Shannon, Renyi, Tsallis, sample entropy, permutation entropy, spatial entropy variants | Information-theoretic measures | 42 | Partially implemented: Shannon, Renyi, Tsallis, categorical raster and permutation entropy are tested; sample entropy and spatially conditioned/information-flow variants remain open |
 | Dynamics: recurrence plots and recurrence quantification analysis, Lyapunov exponents | Nonlinear time-series analysis methods | 42 | Not checked — intake only |
 | Causality: Granger causality, transfer entropy, convergent cross mapping, causal networks from gridded fields (PCMCI-style), teleconnection graphs | Causal and information-flow methods | 42 | Not checked — intake only |
 
