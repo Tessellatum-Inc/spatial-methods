@@ -38,3 +38,32 @@ def test_affine_ransac_rejects_degenerate_or_invalid_matches():
         estimate_affine_ransac([[0,0],[1,1],[2,2]], [[0,0],[1,1],[2,2]])
     with pytest.raises(ValueError):
         estimate_affine_ransac([[0,0],[1,0],[0,1]], [[0,0],[1,0],[0,1]], residual_threshold=0)
+
+
+from image_registration import orb_feature_matches
+
+
+def test_orb_matches_translated_texture_and_affine_ransac_recovers_shift():
+    import cv2
+    rng = np.random.default_rng(13)
+    reference = (rng.random((256, 256)) * 255).astype(np.uint8)
+    reference = cv2.GaussianBlur(reference, (3, 3), 0.7)
+    transform = np.array([[1., 0., 7.], [0., 1., -5.]], dtype=np.float32)
+    moving = cv2.warpAffine(reference, transform, (256, 256),
+                            flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+    matches = orb_feature_matches(reference, moving, max_features=1500)
+    assert matches["match_count"] > 30
+    fit = estimate_affine_ransac(matches["source_points"], matches["target_points"],
+                                 residual_threshold=1.0, random_state=4)
+    assert fit["inlier_count"] > 25
+    np.testing.assert_allclose(fit["matrix"], np.eye(2), atol=0.02)
+    np.testing.assert_allclose(fit["offset"], [-7., 5.], atol=0.5)
+
+
+def test_orb_feature_matches_rejects_blank_and_nonfinite_images():
+    with pytest.raises(ValueError, match="too few features"):
+        orb_feature_matches(np.zeros((32, 32)), np.zeros((32, 32)))
+    bad = np.ones((32, 32))
+    bad[0, 0] = np.nan
+    with pytest.raises(ValueError, match="finite"):
+        orb_feature_matches(bad, np.ones((32, 32)))

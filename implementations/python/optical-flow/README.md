@@ -43,3 +43,8 @@ The pure-Python `lucas_kanade_dense_reference` function exposes the local normal
 ## Image co-registration
 
 The companion `image_registration.py` module provides FFT phase correlation for global row/column translation and RANSAC affine estimation from matched (x,y) point pairs. Phase correlation returns the shift to apply to the moving image; affine estimation returns a 2×2 matrix, offset and inlier diagnostics. These are transform estimators, not feature detectors or orthorectification. See [the canonical lesson](../../../algorithms/remote-sensing/image-coregistration.md) and `test_image_registration.py`.
+
+
+## ORB feature matching
+
+The image-registration module also exposes ORB binary feature detection and descriptor matching. It returns moving-image source coordinates and reference-image target coordinates after a Hamming-distance nearest-neighbour ratio test. Pass those arrays to the affine RANSAC estimator to obtain a robust moving-to-reference transform. Intensities are interpreted on a 0–255 scale; scale scientific imagery before use. ORB is a classical local feature baseline, not SIFT/AKAZE coverage or a cross-modal optical-SAR matcher. Repeated texture, weak texture, strong seasonal change and radiometric differences can produce incorrect matches.

@@ -105,3 +105,55 @@ def estimate_affine_ransac(source_points, target_points, *, residual_threshold=2
     residuals = np.linalg.norm(src @ matrix.T + offset - dst, axis=1)
     return {"matrix": matrix, "offset": offset, "inliers": inliers,
             "residuals": residuals, "inlier_count": int(inliers.sum())}
+
+
+def orb_feature_matches(reference, moving, *, max_features=2000,
+                        fast_threshold=7, ratio=0.75):
+    """Find ORB descriptor correspondences from moving-image to reference.
+
+    Returned source_points are (x,y) coordinates in moving; target_points are
+    corresponding (x,y) coordinates in reference. Pass them to
+    estimate_affine_ransac to estimate a robust global affine transform.
+    Inputs are finite single-channel arrays interpreted on an 8-bit 0..255
+    intensity scale. ORB is rotation/scale tolerant within its operating
+    range, but not invariant to arbitrary radiometry or cross-modal appearance.
+    """
+    import cv2
+
+    ref, mov = np.asarray(reference), np.asarray(moving)
+    if ref.ndim != 2 or mov.ndim != 2 or min(ref.shape) < 16 or min(mov.shape) < 16:
+        raise ValueError("reference and moving must be 2D images at least 16x16")
+    if not np.issubdtype(ref.dtype, np.number) or not np.issubdtype(mov.dtype, np.number):
+        raise ValueError("images must be numeric")
+    if np.any(~np.isfinite(ref)) or np.any(~np.isfinite(mov)):
+        raise ValueError("images must contain only finite values")
+    if isinstance(max_features, bool) or not isinstance(max_features, int) or max_features < 3:
+        raise ValueError("max_features must be an integer of at least 3")
+    if isinstance(fast_threshold, bool) or not isinstance(fast_threshold, int) or fast_threshold < 0:
+        raise ValueError("fast_threshold must be a non-negative integer")
+    try:
+        ratio = float(ratio)
+    except (TypeError, ValueError):
+        raise ValueError("ratio must be in (0, 1)") from None
+    if not np.isfinite(ratio) or not 0 < ratio < 1:
+        raise ValueError("ratio must be in (0, 1)")
+
+    ref8 = np.clip(ref, 0, 255).astype(np.uint8)
+    mov8 = np.clip(mov, 0, 255).astype(np.uint8)
+    detector = cv2.ORB_create(nfeatures=max_features, fastThreshold=fast_threshold)
+    key_m, desc_m = detector.detectAndCompute(mov8, None)
+    key_r, desc_r = detector.detectAndCompute(ref8, None)
+    if desc_m is None or desc_r is None:
+        raise ValueError("ORB found too few features in one or both images")
+    pairs = cv2.BFMatcher(cv2.NORM_HAMMING).knnMatch(desc_m, desc_r, k=2)
+    good = [pair[0] for pair in pairs if len(pair) == 2 and
+            pair[0].distance < ratio * pair[1].distance]
+    if len(good) < 3:
+        raise ValueError("fewer than three ORB matches passed the ratio test")
+    source = np.asarray([key_m[m.queryIdx].pt for m in good], dtype=float)
+    target = np.asarray([key_r[m.trainIdx].pt for m in good], dtype=float)
+    distances = np.asarray([m.distance for m in good], dtype=float)
+    return {"source_points": source, "target_points": target,
+            "descriptor_distances": distances, "match_count": len(good),
+            "source_keypoint_count": len(key_m),
+            "target_keypoint_count": len(key_r)}

@@ -4,7 +4,7 @@
 - **Source pages:** 31–33
 - **Source transcription:** [pages 31–35](../../source-inventory/pages-31-35.md)
 - **Review state:** intake extracted; names are explicitly described by the source as representative and from memory
-- **Current canonical records:** image co-registration (phase correlation and affine RANSAC) and point-cloud registration (point-to-point and point-to-plane ICP and geometric distance metrics); remaining source families are still intake-only
+- **Current canonical records:** image co-registration (ORB feature matching, phase correlation and affine RANSAC) and point-cloud registration (point-to-point and point-to-plane ICP and geometric distance metrics); remaining source families are still intake-only
 
 **Source caution:** the compendium says model and method names in this section are representative and from memory. Verify current names, papers, code, datasets and licences before citation.
 
@@ -39,7 +39,7 @@
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Classical features: SIFT, ORB, AKAZE; phase correlation, ECC, mutual information registration | Feature detection and image registration methods | 31 | Partial — phase correlation and affine RANSAC from matched points are implemented; feature detection, ECC and mutual information remain open |
+| Classical features: SIFT, ORB, AKAZE; phase correlation, ECC, mutual information registration | Feature detection and image registration methods | 31 | Partial — ORB binary feature matching, phase correlation and affine RANSAC from matched points are implemented; SIFT, AKAZE, ECC, mutual information and learned matching remain open |
 | Learned matching: SuperPoint with SuperGlue or LightGlue, LoFTR, DKM, RoMa, multimodal matchers (MINIMA) | Learned feature matching and registration architectures | 31 | Not checked — intake only |
 | Optical-SAR matching: RIFT, HOPC, CFOG, OS-SIFT, deep cross-modal descriptors | Cross-modal matching methods | 31 | Not checked — intake only |
 | Dense optical flow and sub-pixel displacement: COSI-Corr-style correlation, deep flow for glacier and landslide motion | Displacement estimation / optical flow workflows | 32 | Not checked — intake only |
