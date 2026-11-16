@@ -312,3 +312,7 @@ Records may have different evidence and implementation status. Check the status 
 ## Coastal processes
 
 - [Coastal empirical processes and shoreline change](coastal/coastal-processes.md) — Stockdon wave runup, scoped CERC transport, Bruun recession, Dean equilibrium profile, EPR/OLS/WLR rates, six-variable CVI aggregation, empirical satellite-derived bathymetry calibration and multibeam sounding gridding.
+
+
+- [Local terrain extrema](raster/local-terrain-extrema.md) — identify local raster peaks and pits with complete-neighbourhood and prominence rules.
+- [Reservoir stage-storage curves](raster/reservoir-stage-storage.md) — derive DEM-based inundated area and storage over supplied water stages.
