@@ -12,7 +12,7 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Marching squares](raster/marching-squares.md) — extract line-segment isolines from a rectilinear scalar grid with explicit saddle and NoData handling.
 
-## Interpolation and geostatistics
+## Sampling and experimental design\n\n- [Space-filling sampling designs](statistics/space-filling-sampling.md) — Latin hypercube, centered LHS, multi-start maximin selection and k-means coverage for bounded continuous domains.\n\n## Interpolation and geostatistics
 
 - [Sibson natural-neighbour interpolation](interpolation/natural-neighbour.md) — interpolate from Voronoi-cell areas stolen when a query is inserted; the reference implementation rejects extrapolation.
 - [Whittaker-Eilers smoothing](interpolation/whittaker-smoother.md) — smooth ordered sequences with a weighted finite-difference penalty and explicit missing-observation handling.
