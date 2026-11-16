@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from corrections import (dark_object_subtraction, c_correction, minnaert_correction,
                           histogram_match, pseudo_invariant_feature_normalization,
-                          fit_empirical_line, apply_empirical_line)
+                          fit_empirical_line, apply_empirical_line, scs_c_correction)
 
 
 def test_dark_object_subtraction_per_band_and_mask():
@@ -133,3 +133,32 @@ def test_empirical_line_rejects_invalid_samples_and_coefficients():
         apply_empirical_line(np.ones((2, 2, 3)), {"gain": [1, 2], "offset": [0, 0]})
     with pytest.raises(ValueError):
         apply_empirical_line(np.ones((2, 2)), {"gain": [1], "offset": [0]}, clip=(2, 1))
+
+
+
+def test_scs_c_fits_slope_adjusted_relation_and_applies_equation():
+    slope = np.array([[0.0, 0.2], [0.35, 0.5]])
+    ci = np.array([[0.2, 0.4], [0.6, 0.8]])
+    cz = np.full((2, 2), 0.7)
+    c, a = 0.25, 0.4
+    rho = np.cos(slope) * (a * ci + a * c)
+    out = scs_c_correction(rho, slope, ci, cz)
+    assert out["c_parameters"] == pytest.approx(c)
+    expected = rho * (np.cos(slope) * cz + c) / (ci + c)
+    np.testing.assert_allclose(out["corrected"], expected, atol=1e-12)
+
+
+def test_scs_c_multiband_mask_and_validation():
+    slope = np.full((2, 2), 0.2)
+    ci = np.array([[0.2, 0.4], [0.6, 0.8]])
+    cz = np.full((2, 2), 0.7)
+    rho = np.stack([ci + 0.2, 2 * (ci + 0.3)], axis=-1)
+    mask = np.array([[True, True], [True, False]])
+    out = scs_c_correction(rho, slope, ci, cz, valid_mask=mask)
+    assert out["corrected"].shape == rho.shape
+    assert np.isnan(out["corrected"][1, 1]).all()
+    with pytest.raises(ValueError):
+        scs_c_correction(np.ones((2, 2)), np.full((2, 2), np.pi / 2),
+                         ci, cz)
+    with pytest.raises(ValueError):
+        scs_c_correction(np.ones((2, 2)), slope, np.ones((2, 2)), cz)

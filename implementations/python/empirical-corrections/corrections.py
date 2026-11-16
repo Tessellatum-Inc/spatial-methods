@@ -267,3 +267,57 @@ def apply_empirical_line(image, calibration, *, clip=None):
             raise ValueError("clip must be a finite (minimum, maximum) pair")
         result = np.clip(result, bounds[0], bounds[1])
     return result[..., 0] if was_2d else result
+
+
+def scs_c_correction(reflectance, slope_radians, cos_incidence, cos_zenith, *,
+                     valid_mask=None, epsilon=1e-8):
+    """Fit and apply the SCS+C topographic illumination correction.
+
+    The per-band C parameter is the intercept/slope from OLS of
+    reflectance / cos(slope) against cos(incidence). slope_radians is
+    terrain slope in radians. Non-illuminated, near-vertical, or masked
+    pixels are returned as NaN. This empirical correction is not BRDF
+    normalization and assumes co-registered illumination geometry.
+    """
+    x, was_2d = _image(reflectance)
+    shape = x.shape[:2]
+    slope = np.asarray(slope_radians, dtype=float)
+    ci = np.asarray(cos_incidence, dtype=float)
+    cz = np.asarray(cos_zenith, dtype=float)
+    if any(a.shape != shape for a in (slope, ci, cz)):
+        raise ValueError("slope_radians, cos_incidence and cos_zenith must match image shape")
+    if not all(np.all(np.isfinite(a)) for a in (slope, ci, cz)):
+        raise ValueError("terrain and illumination arrays must be finite")
+    if np.any((slope < 0) | (slope >= np.pi / 2)):
+        raise ValueError("slope_radians must lie in [0, pi/2)")
+    if np.any((ci < 0) | (ci > 1) | (cz < 0) | (cz > 1)):
+        raise ValueError("illumination cosines must lie in [0, 1]")
+    if not np.isfinite(epsilon) or epsilon <= 0:
+        raise ValueError("epsilon must be positive and finite")
+    cos_slope = np.cos(slope)
+    valid = _valid_mask(valid_mask, shape) & (ci > epsilon) & (cos_slope > epsilon)
+    if valid.sum() < 2:
+        raise ValueError("at least two valid illuminated non-vertical pixels are required")
+    constants = np.empty(x.shape[-1], dtype=float)
+    corrected = np.full_like(x, np.nan)
+    for band in range(x.shape[-1]):
+        y = x[..., band][valid] / cos_slope[valid]
+        illumination = ci[valid]
+        centered = illumination - illumination.mean()
+        denominator = float(centered @ centered)
+        if denominator <= np.finfo(float).eps * max(1.0, float(illumination @ illumination)):
+            raise ValueError("incidence cosines must vary to estimate SCS+C")
+        slope_fit = float(centered @ (y - y.mean()) / denominator)
+        intercept = float(y.mean() - slope_fit * illumination.mean())
+        if not np.isfinite(slope_fit) or abs(slope_fit) <= epsilon:
+            raise ValueError("SCS+C regression slope is zero or unstable")
+        c = intercept / slope_fit
+        if not np.isfinite(c) or c < 0:
+            raise ValueError("estimated SCS+C parameter must be finite and non-negative")
+        constants[band] = c
+        denominator_image = ci + c
+        usable = valid & (denominator_image > epsilon)
+        factor = (cos_slope * cz + c) / denominator_image
+        corrected[..., band][usable] = x[..., band][usable] * factor[usable]
+    return {"corrected": corrected[..., 0] if was_2d else corrected,
+            "c_parameters": constants[0] if was_2d else constants}

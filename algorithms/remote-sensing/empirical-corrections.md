@@ -6,7 +6,7 @@ Dark-object subtraction estimates additive path radiance from a low percentile o
 
 ## Terrain illumination correction
 
-C-correction fits a per-band linear relation between reflectance and local illumination cosine, estimates C as intercept divided by slope, and applies rho_corrected = rho * (cos(solar zenith) + C) / (cos(incidence) + C). Minnaert correction applies rho_corrected = rho * (cos(solar zenith) / cos(incidence))^k, with k supplied by the caller. Both assume co-registration and a usable illumination model; neither is a BRDF solution.
+C-correction fits a per-band linear relation between reflectance and local illumination cosine, estimates C as intercept divided by slope, and applies rho_corrected = rho * (cos(solar zenith) + C) / (cos(incidence) + C). SCS+C estimates C per band by regressing reflectance divided by cosine of terrain slope against cosine of incidence, then applies rho_corrected = rho * (cos(slope) * cos(solar zenith) + C) / (cos(incidence) + C). It requires varying incidence cosines and non-vertical valid terrain. Minnaert correction applies rho_corrected = rho * (cos(solar zenith) / cos(incidence))^k, with k supplied by the caller. Both assume co-registration and a usable illumination model; neither is a BRDF solution.
 
 ## Histogram matching
 
