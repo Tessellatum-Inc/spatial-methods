@@ -19,7 +19,7 @@ and returns counter-clockwise triangles.
 - The sweep status is intentionally a Python list in this reference version,
   so partitioning is O(n^2) worst case; it is not the O(n log n) balanced-tree
   implementation described in computational-geometry textbooks.
-- Horizontal edges, equal-height events, holes and self-intersecting inputs are
+- Horizontal edges, equal-height events, consecutive collinear triples, holes and self-intersecting inputs are
   not supported. Constrained-Delaunay refinement is also out of scope.
 
 The stack method is O(n log n), dominated by sorting vertices; its stack scan
