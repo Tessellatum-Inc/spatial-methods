@@ -202,3 +202,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 16 biodiversity: added convex-hull extent of occurrence, aligned-grid area of occupancy, cellwise species richness and inverse-range-size weighted endemism with analytic and direct-matrix tests. These descriptive kernels require caller-supplied projected/equal-area coordinates and grid alignment; alpha hulls, fragmentation metrics, phylogenetic diversity, sampling-bias correction and formal KBA assessment remain open.
+
+
+Section 17 now includes a tested stochastic Lanczos quadrature log-determinant estimator for dense and sparse symmetric positive-definite matrices. It does not close the full scalable log-determinant family: Chebyshev, Pace–Barry and sparse Cholesky implementations remain open.

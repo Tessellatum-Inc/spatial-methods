@@ -23,7 +23,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Log-determinant approximation: Chebyshev, Monte Carlo trace estimators, Lanczos, Pace-Barry, sparse Cholesky | Numerical approximation / sparse matrix methods | 35 | Not checked — intake only |
+| Log-determinant approximation: Chebyshev, Monte Carlo trace estimators, Lanczos, Pace-Barry, sparse Cholesky | Numerical approximation / sparse matrix methods | 35 | Partial — stochastic Lanczos quadrature with Rademacher probes is implemented and tested for dense and sparse symmetric positive-definite matrices; Chebyshev, Pace–Barry and sparse Cholesky alternatives remain open |
 | Gaussian Markov random field sampling, conjugate gradient solvers, Kronecker-structured covariances, circulant embedding with FFT on regular grids | Spatial stochastic simulation / numerical solvers / covariance structures | 35 | Not checked — intake only |
 | Sparse GP methods: inducing points, SVGP, Nystrom, structured kernel interpolation (KISS-GP), random Fourier features, hierarchical matrices, fast multipole | Scalable Gaussian-process approximations | 35 | Not checked — intake only |
 | Variogram estimation: Matheron, Cressie-Hawkins and Genton robust estimators, REML, composite likelihood, cross-validation-based fitting | Variogram estimators / model-fitting methods | 35 | Partially implemented: Matheron and Cressie-Hawkins empirical estimators, directional bins and spherical/exponential/Gaussian nonlinear fitting are tested; Genton, REML, composite likelihood and CV fitting remain open |
@@ -112,3 +112,8 @@ The new package supplies HyperLogLog cardinality estimation, Count-Min frequency
 ### Fast KDE implementation update
 
 The FFT-grid KDE package adds weighted point binning, truncated Gaussian convolution, density scaling and optional discrete boundary correction. It is an approximate regular-grid estimator; dual-tree KDE, adaptive bandwidths and distributed implementations remain open.
+
+
+### Stochastic Lanczos log-determinant implementation update
+
+A stochastic Lanczos quadrature estimator now approximates log determinants using Rademacher trace probes and Lanczos tridiagonalisation. The implementation supports dense NumPy and SciPy sparse symmetric matrices, optional full reorthogonalisation, reproducible probes and a probe-based standard error. It remains a stochastic approximation; convergence, probe count and Krylov depth must be assessed for the matrix family and accuracy requirement.

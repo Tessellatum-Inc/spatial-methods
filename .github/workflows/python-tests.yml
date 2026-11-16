@@ -583,6 +583,9 @@ jobs:
           - example: biodiversity-metrics
             directory: implementations/python/biodiversity-metrics
             pythonpath: ""
+          - example: stochastic-logdet
+            directory: implementations/python/stochastic-logdet
+            pythonpath: ""
           - example: regional-dynamics
             directory: implementations/python/regional-dynamics
             pythonpath: ""
