@@ -260,7 +260,7 @@ def test_persistent_history_dag_matches_rebuilt_locator_on_seeded_queries():
     queries.extend((a[0], a[1]) for a, _b in locator.segments)
     queries.extend((b[0], b[1]) for _a, b in locator.segments)
     for x, y in queries:
-        expected = locator.locate(x, y)
+        expected = locator._locate_slab(x, y)
         actual = locator._locate_history(x, y)
         if expected == BOUNDARY or expected is None:
             assert actual == expected
@@ -289,7 +289,7 @@ def test_history_dag_handles_empty_single_and_horizontal_inputs(source):
         x0, x1 = segment[0][0], segment[1][0]
         queries.extend([(x0, 1.0), (x0, 9.0), (x1, 1.0), (x1, 9.0)])
     for x, y in queries:
-        expected = locator.locate(x, y)
+        expected = locator._locate_slab(x, y)
         actual = locator._locate_history(x, y)
         if expected == BOUNDARY or expected is None:
             assert actual == expected
@@ -311,7 +311,7 @@ def test_history_dag_differential_across_insertion_orders(seed):
     assert sorted(locator.insertion_order) == list(range(len(segments())))
     for _ in range(250):
         x, y = rng.uniform(-0.5, 10.5), rng.uniform(-0.5, 10.5)
-        expected = locator.locate(x, y)
+        expected = locator._locate_slab(x, y)
         actual = locator._locate_history(x, y)
         if expected == BOUNDARY or expected is None:
             assert actual == expected
@@ -323,4 +323,22 @@ def test_history_dag_differential_across_insertion_orders(seed):
             ) == (
                 expected.x_left, expected.x_right,
                 expected.bottom_segment, expected.top_segment
+            )
+
+
+def test_public_query_uses_the_persistent_history_dag():
+    locator = RandomizedTrapezoidalMap(segments(), (0, 0, 10, 10), seed=31)
+    for point in [(0.5, 0.5), (4.0, 2.5), (5.0, 5.5), (9.5, 9.5)]:
+        public = locator.locate(*point)
+        history = locator._locate_history(*point)
+        reference = locator._locate_slab(*point)
+        assert public == history
+        if reference == BOUNDARY or reference is None:
+            assert public == reference
+        else:
+            assert isinstance(public, Trapezoid)
+            assert (public.x_left, public.x_right,
+                    public.bottom_segment, public.top_segment) == (
+                reference.x_left, reference.x_right,
+                reference.bottom_segment, reference.top_segment
             )
