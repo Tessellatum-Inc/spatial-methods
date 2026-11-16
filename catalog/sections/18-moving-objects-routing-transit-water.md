@@ -86,7 +86,7 @@
 | Missing data: spatial multiple imputation, MICE, kNN imputation, missForest, GP imputation | Missing-data methods / spatial imputation | 39 | Not checked — intake only |
 | Spatial misalignment and change of support: downscaler fusion models (Berrocal-style), Berkson and classical measurement error, ecological fallacy diagnostics | Spatial data integration / measurement-error and support models | 39 | Not checked — intake only |
 | Preferential sampling (Diggle-style models), informative sampling, spatial selection bias correction | Sampling models / selection-bias correction | 39 | Not checked — intake only |
-| Compositional data: Aitchison geometry, log-ratio transforms, compositional kriging | Compositional data analysis / geostatistical methods | 39 | Not checked — intake only |
+| Compositional data: Aitchison geometry, log-ratio transforms, compositional kriging | Compositional data analysis / geostatistical methods | 39 | Partially implemented: closure, multiplicative zero replacement, centred log-ratio coordinates and Aitchison distance have tested baselines; zero-mechanism modelling and compositional kriging remain open |
 | Spatial graphical models: Gaussian graphical models, spatial Bayesian networks, causal discovery on spatial data | Graphical models / causal discovery | 39 | Not checked — intake only |
 
 ## Spatial humanities
