@@ -332,12 +332,13 @@ def test_cut_fill_rejects_shape_and_mask_mismatch():
 
 def test_multiscale_curvature_is_zero_for_a_planar_surface_at_all_scales():
     from terrain_derivatives import multiscale_terrain_curvature
-    dem = np.fromfunction(lambda r, c: 2.0*c - 3.0*r + 7.0, (21, 23), dtype=float)
+    dem = np.fromfunction(lambda r, c: 2.0*c - 3.0*r + 7.0, (61, 63), dtype=float)
     result = multiscale_terrain_curvature(dem, [1.0, 2.5, 5.0])
     assert set(result) == {1.0, 2.5, 5.0}
+    # Exclude the Gaussian support zone near the reflective raster boundary.
     for scale_result in result.values():
-        np.testing.assert_allclose(scale_result["profile_curvature"][1:-1, 1:-1], 0, atol=1e-11)
-        np.testing.assert_allclose(scale_result["plan_curvature"][1:-1, 1:-1], 0, atol=1e-11)
+        np.testing.assert_allclose(scale_result["profile_curvature"][20:-20, 20:-20], 0, atol=1e-11)
+        np.testing.assert_allclose(scale_result["plan_curvature"][20:-20, 20:-20], 0, atol=1e-11)
 
 
 def test_multiscale_curvature_suppresses_short_wavelength_noise():
