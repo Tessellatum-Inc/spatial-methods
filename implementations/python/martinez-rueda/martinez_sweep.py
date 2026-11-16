@@ -356,6 +356,61 @@ def sweep_split_segments(polygons, *, epsilon=1e-10):
             "intersection_events":tuple(crossings),"split_segments":tuple(fragments),
             "candidate_pairs_tested":candidate_pairs}
 
+def _point_segment_distance_squared(point, a, b):
+    """Exact squared distance from a rational point to a closed segment."""
+    px,py=point; ax,ay=_fraction_point(a); bx,by=_fraction_point(b)
+    dx,dy=bx-ax,by-ay
+    length2=dx*dx+dy*dy
+    if length2==0:
+        return (px-ax)**2+(py-ay)**2
+    dot=(px-ax)*dx+(py-ay)*dy
+    if dot<=0:
+        return (px-ax)**2+(py-ay)**2
+    if dot>=length2:
+        return (px-bx)**2+(py-by)**2
+    cross=dx*(py-ay)-dy*(px-ax)
+    return cross*cross/length2
+
+
+def _safe_side_probe_offset(midpoint, dx, dy, polygons):
+    """Choose an exact side-probe distance below every non-collinear boundary.
+
+    The midpoint is in the relative interior of an atomic fragment. Any
+    boundary through it must therefore be collinear with that fragment.
+    Those coincident bundle members are ignored; all other boundaries provide
+    a positive clearance. The returned offset is strictly smaller than one
+    quarter of that clearance and is independent of the user epsilon.
+    """
+    scale=max(abs(dx),abs(dy))
+    if scale==0:
+        return Fraction(0)
+    clearance2=None
+    for rings in polygons:
+        for ring in rings:
+            for i,a in enumerate(ring):
+                b=ring[(i+1)%len(ring)]
+                ax,ay=_fraction_point(a); bx,by=_fraction_point(b)
+                if (bx-ax)*dy-(by-ay)*dx==0:
+                    # Parallel edges need not be coincident; the distance
+                    # calculation below still protects against nearby ones.
+                    pass
+                distance2=_point_segment_distance_squared(midpoint,a,b)
+                if distance2==0:
+                    # A zero-distance non-collinear contact is an unresolved
+                    # event at the fragment interior, not a safe probe case.
+                    if (bx-ax)*dy-(by-ay)*dx!=0:
+                        raise ValueError("non-collinear boundary event remains inside an atomic fragment")
+                    continue
+                if clearance2 is None or distance2<clearance2:
+                    clearance2=distance2
+    # A finite rational fallback is used only when every boundary is collinear
+    # with the current fragment (e.g. identical coincident polygon edges).
+    offset=scale/Fraction(2**40)
+    if clearance2 is not None:
+        offset=min(offset,clearance2/(8*scale))
+    return offset
+
+
 def classify_boundary_fragments(polygons, *, operation='intersection', epsilon=1e-10):
     """Select directed fragments for two polygons, each with one shell and optional holes.
     Fragment stitching is performed by boolean_overlay_rings.
@@ -385,12 +440,13 @@ def classify_boundary_fragments(polygons, *, operation='intersection', epsilon=1
         dx,dy=bx-ax,by-ay
         scale=max(abs(dx),abs(dy))
         if scale==0: continue
-        # Exact infinitesimal-style side probes avoid classifying a coincident
-        # boundary midpoint as simply "outside". The offset is capped by the
-        # caller tolerance and is relative to the fragment length.
-        offset=min(Fraction(str(epsilon))/4,scale/Fraction(2**40))
-        nx,ny=-dy*offset/scale,dx*offset/scale
+        # The offset is bounded by the exact clearance to every
+        # non-collinear source boundary. Unlike an epsilon-only probe, this
+        # cannot jump across a narrow face merely because its width is below
+        # the public tolerance.
         midpoint=((ax+bx)/2,(ay+by)/2)
+        offset=_safe_side_probe_offset(midpoint,dx,dy,polygons)
+        nx,ny=-dy*offset/scale,dx*offset/scale
         left=(midpoint[0]+nx,midpoint[1]+ny)
         right=(midpoint[0]-nx,midpoint[1]-ny)
         left_filled=result_filled(left)
