@@ -1,0 +1,106 @@
+"""Directional empirical variograms and bounded theoretical model fitting."""
+from __future__ import annotations
+from math import atan2, cos, degrees, isfinite, radians, sin
+import numpy as np
+from scipy.optimize import least_squares
+
+_MODELS={"spherical","exponential","gaussian"}
+
+def variogram_model(lags,*,model="spherical",nugget=0.0,partial_sill=1.0,range_=1.0):
+    """Evaluate spherical, exponential or Gaussian semivariogram models."""
+    h=np.asarray(lags,dtype=float); n=float(nugget); s=float(partial_sill); a=float(range_)
+    if model not in _MODELS: raise ValueError("model must be spherical, exponential or gaussian")
+    if not np.isfinite(h).all() or np.any(h<0): raise ValueError("lags must be finite and non-negative")
+    if not np.isfinite((n,s,a)).all() or n<0 or s<0 or a<=0:
+        raise ValueError("nugget and partial_sill must be non-negative; range_ must be positive")
+    ratio=h/a
+    if model=="spherical":
+        shape=np.where(ratio<1,1.5*ratio-0.5*ratio**3,1.0)
+    elif model=="exponential":
+        shape=1-np.exp(-3*ratio)
+    else:
+        shape=1-np.exp(-3*ratio**2)
+    result=n+s*shape
+    return np.where(h==0.0,0.0,result)
+
+def directional_semivariogram(points,values,bin_edges,*,azimuth_deg=0.0,
+                               tolerance_deg=22.5,bandwidth=None,estimator="matheron"):
+    """Compute an undirected directional semivariogram.
+
+    Azimuth is clockwise from north; pair bearings are compared modulo 180°.
+    Cross-track bandwidth, when supplied, is in coordinate units.
+    """
+    xy=np.asarray(points,dtype=float); z=np.asarray(values,dtype=float); edges=np.asarray(bin_edges,dtype=float)
+    if xy.ndim!=2 or xy.shape[1]!=2 or len(xy)<2: raise ValueError("points must be an n-by-2 array with n>=2")
+    if z.shape!=(len(xy),) or not np.isfinite(z).all(): raise ValueError("values must be finite and match points")
+    if not np.isfinite(xy).all(): raise ValueError("coordinates must be finite")
+    if edges.ndim!=1 or len(edges)<2 or not np.isfinite(edges).all() or edges[0]<0 or np.any(np.diff(edges)<=0):
+        raise ValueError("bin_edges must be finite, non-negative and strictly increasing")
+    az=float(azimuth_deg)%180; tol=float(tolerance_deg)
+    if not isfinite(tol) or not 0<=tol<=90: raise ValueError("tolerance_deg must be in [0, 90]")
+    if bandwidth is not None and (not isfinite(float(bandwidth)) or float(bandwidth)<0):
+        raise ValueError("bandwidth must be finite and non-negative")
+    if estimator not in {"matheron","cressie"}: raise ValueError("estimator must be matheron or cressie")
+    sums=[[] for _ in range(len(edges)-1)]
+    theta=radians(az)
+    for i in range(len(xy)-1):
+        for j in range(i+1,len(xy)):
+            dx,dy=xy[j]-xy[i]; distance=float(np.hypot(dx,dy))
+            if distance==0 or distance<edges[0] or distance>edges[-1]: continue
+            bearing=degrees(atan2(dx,dy))%180
+            difference=abs((bearing-az+90)%180-90)
+            cross_track=abs(-cos(theta)*dx+sin(theta)*dy)
+            if difference>tol or (bandwidth is not None and cross_track>float(bandwidth)): continue
+            k=len(edges)-2 if distance==edges[-1] else int(np.searchsorted(edges,distance,side="right")-1)
+            if k<0: continue
+            sums[k].append(abs(float(z[i]-z[j])))
+    output=[]
+    for k,pairs in enumerate(sums):
+        count=len(pairs); gamma=None
+        if count:
+            if estimator=="matheron": gamma=0.5*float(np.mean(np.square(pairs)))
+            else:
+                mean_root=float(np.mean(np.sqrt(pairs)))
+                correction=0.457+0.494/count+0.045/(count*count)
+                gamma=0.5*(mean_root**4)/correction
+        output.append({"lag":float((edges[k]+edges[k+1])/2),"semivariance":gamma,"pairs":count})
+    return output
+
+def fit_variogram(lags,semivariances,*,pairs=None,model="spherical",fit_nugget=True,
+                  initial=None):
+    """Fit nugget, partial sill and range by pair-count weighted least squares."""
+    h=np.asarray(lags,dtype=float); g=np.asarray(semivariances,dtype=float)
+    if model not in _MODELS: raise ValueError("unsupported variogram model")
+    if h.ndim!=1 or g.shape!=h.shape or len(h)<3: raise ValueError("lags and semivariances need at least three aligned values")
+    mask=np.isfinite(h)&np.isfinite(g)&(h>0)&(g>=0)
+    h,g=h[mask],g[mask]
+    if len(h)<3: raise ValueError("at least three finite positive-lag bins are required")
+    if pairs is None: counts=np.ones(len(mask),dtype=float)[mask]
+    else:
+        p=np.asarray(pairs,dtype=float)
+        if p.shape!=np.asarray(lags).shape or not np.isfinite(p).all() or np.any(p<0):
+            raise ValueError("pairs must be finite non-negative counts matching lags")
+        counts=p[mask]
+    keep=counts>0; h,g,counts=h[keep],g[keep],counts[keep]
+    if len(h)<3: raise ValueError("at least three populated lag bins are required")
+    if not np.isfinite(h).all() or np.any(h<=0): raise ValueError("lags must be positive and finite")
+    if initial is None:
+        n0=max(0.0,float(np.min(g))*0.25); s0=max(float(np.max(g)-n0),1e-8); a0=float(np.median(h))
+    else:
+        n0,s0,a0=map(float,initial)
+    if not np.isfinite((n0,s0,a0)).all() or n0<0 or s0<=0 or a0<=0:
+        raise ValueError("initial parameters must be non-negative nugget and positive sill/range")
+    weights=np.sqrt(counts/np.max(counts))
+    if fit_nugget:
+        x0=np.array([n0,s0,a0]); lower=[0,1e-12,max(1e-12,float(np.min(h))*1e-6)]
+        upper=[np.inf,np.inf,max(float(np.max(h))*1e6,1.0)]
+        def residual(x): return (variogram_model(h,model=model,nugget=x[0],partial_sill=x[1],range_=x[2])-g)*weights
+        fit=least_squares(residual,x0,bounds=(lower,upper))
+        nugget,sill,range_=map(float,fit.x)
+    else:
+        def residual(x): return (variogram_model(h,model=model,nugget=n0,partial_sill=x[0],range_=x[1])-g)*weights
+        fit=least_squares(residual,[s0,a0],bounds=([1e-12,max(1e-12,float(np.min(h))*1e-6)],[np.inf,max(float(np.max(h))*1e6,1.0)]))
+        nugget=n0; sill,range_=map(float,fit.x)
+    return {"model":model,"nugget":nugget,"partial_sill":sill,"sill":nugget+sill,
+            "range":range_,"weighted_sse":float(np.sum(fit.fun**2)),
+            "success":bool(fit.success),"message":str(fit.message),"bins_used":int(len(h))}

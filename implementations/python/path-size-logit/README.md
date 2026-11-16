@@ -1,0 +1,3 @@
+# Path-size logit route choice
+
+Computes path-size factors for overlapping route alternatives and stable path-size logit probabilities. The factor is the route-length-weighted sum of inverse alternative counts per edge. Utilities receive an additive log(PS) correction before softmax. A zero overlap coefficient recovers multinomial logit. Edge IDs are caller-defined stable identifiers; paths must be simple edge sequences. This is a probability kernel, not a calibrated route-choice model: coefficient estimation, C-logit, stochastic user equilibrium, route generation and behavioural validation are not included.

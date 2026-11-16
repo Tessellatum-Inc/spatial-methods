@@ -1,0 +1,932 @@
+name: Python examples
+
+# Keep the package matrix and explicit notebook execution list in sync with the public learning catalogue.
+
+concurrency:
+  group: spatial-analysis-ci-${{ github.ref }}
+  cancel-in-progress: false
+
+on:
+  push:
+    paths:
+      - "implementations/python/**"
+      - "notebooks/**"
+      - "scripts/**"
+      - "**.md"
+      - ".github/workflows/python-tests.yml"
+  pull_request:
+    paths:
+      - "implementations/python/**"
+      - "notebooks/**"
+      - "scripts/**"
+      - "**.md"
+      - ".github/workflows/python-tests.yml"
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test ${{ matrix.example }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - example: rasterization
+            directory: implementations/python/rasterization
+            pythonpath: ""
+          - example: line-clipping
+            directory: implementations/python/line-clipping
+            pythonpath: ""
+          - example: hmm-viterbi
+            directory: implementations/python/hmm-viterbi
+            pythonpath: ""
+          - example: curves-smoothing
+            directory: implementations/python/curves-smoothing
+            pythonpath: ""
+          - example: forecast-verification
+            directory: implementations/python/forecast-verification
+            pythonpath: ""
+          - example: polygon-intersection
+            directory: implementations/python/polygon-intersection
+            pythonpath: ""
+          - example: point-in-polygon
+            directory: implementations/python/point-in-polygon
+            pythonpath: ""
+          - example: segment-intersection
+            directory: implementations/python/segment-intersection
+            pythonpath: ""
+          - example: bentley-ottmann
+            directory: implementations/python/bentley-ottmann
+            pythonpath: "../segment-intersection"
+          - example: global-morans-i
+            directory: implementations/python/global-morans-i
+            pythonpath: ""
+          - example: bivariate-morans-i
+            directory: implementations/python/bivariate-morans-i
+          - example: lees-l
+            directory: implementations/python/lees-l
+            pythonpath: ""
+          - example: mantel
+            directory: implementations/python/mantel
+            pythonpath: ""
+          - example: local-morans-i
+            directory: implementations/python/local-morans-i
+            pythonpath: ""
+          - example: geary-c
+            directory: implementations/python/geary-c
+            pythonpath: ""
+          - example: local-geary
+            directory: implementations/python/local-geary
+            pythonpath: ""
+          - example: getis-ord
+            directory: implementations/python/getis-ord
+            pythonpath: ""
+          - example: join-count
+            directory: implementations/python/join-count
+            pythonpath: ""
+          - example: st-dbscan
+            directory: implementations/python/st-dbscan
+            pythonpath: ""
+          - example: str-packed-rtree
+            directory: implementations/python/str-packed-rtree
+            pythonpath: ""
+          - example: rstar-tree
+            directory: implementations/python/rstar-tree
+            pythonpath: ""
+          - example: hilbert-rtree
+            directory: implementations/python/hilbert-rtree
+            pythonpath: ""
+          - example: spatial-join
+            directory: implementations/python/spatial-join
+            pythonpath: "../kd-tree"
+          - example: spatial-skyline
+            directory: implementations/python/spatial-skyline
+            pythonpath: ""
+          - example: spatial-streaming-sketches
+            directory: implementations/python/spatial-streaming-sketches
+            pythonpath: ""
+          - example: classification-breaks
+            directory: implementations/python/classification-breaks
+            pythonpath: ""
+          - example: approximate-inference
+            directory: implementations/python/approximate-inference
+            pythonpath: ""
+          - example: huff-model
+            directory: implementations/python/huff-model
+            pythonpath: ""
+          - example: car-gibbs-sampler
+            directory: implementations/python/car-gibbs-sampler
+            pythonpath: ""
+          - example: fft-grid-kde
+            directory: implementations/python/fft-grid-kde
+            pythonpath: ""
+          - example: spatial-information-theory
+            directory: implementations/python/spatial-information-theory
+            pythonpath: ""
+          - example: recurrence-analysis
+            directory: implementations/python/recurrence-analysis
+            pythonpath: ""
+          - example: path-size-logit
+            directory: implementations/python/path-size-logit
+            pythonpath: ""
+          - example: drought-indices
+            directory: implementations/python/drought-indices
+            pythonpath: ""
+          - example: land-change-accounting
+            directory: implementations/python/land-change-accounting
+            pythonpath: ""
+          - example: reverse-knn
+            directory: implementations/python/reverse-knn
+            pythonpath: "../kd-tree"
+          - example: kd-tree
+            directory: implementations/python/kd-tree
+            pythonpath: ""
+          - example: quadtree
+            directory: implementations/python/quadtree
+            pythonpath: ""
+          - example: octree
+            directory: implementations/python/octree
+            pythonpath: ""
+          - example: visibility-polygon
+            directory: implementations/python/visibility-polygon
+            pythonpath: ""
+          - example: vp-tree
+            directory: implementations/python/vp-tree
+            pythonpath: ""
+          - example: ball-tree
+            directory: implementations/python/ball-tree
+            pythonpath: ""
+          - example: polygon-validity
+            directory: implementations/python/polygon-validity
+            pythonpath: ""
+          - example: polygon-clipping
+            directory: implementations/python/polygon-clipping
+            pythonpath: ""
+          - example: polygon-overlay
+            directory: implementations/python/polygon-overlay
+            pythonpath: ""
+          - example: greiner-hormann
+            directory: implementations/python/greiner-hormann
+            pythonpath: ""
+          - example: vatti-clipping
+            directory: implementations/python/vatti-clipping
+            pythonpath: ""
+          - example: vatti-scanbeam
+            directory: implementations/python/vatti-scanbeam
+            pythonpath: ""
+          - example: martinez-rueda
+            directory: implementations/python/martinez-rueda
+            pythonpath: ""
+          - example: convex-hull
+            directory: implementations/python/convex-hull
+            pythonpath: ""
+          - example: alpha-shapes
+            directory: implementations/python/alpha-shapes
+            pythonpath: ""
+          - example: voronoi-delaunay
+            directory: implementations/python/voronoi-delaunay
+            pythonpath: ""
+          - example: line-simplification
+            directory: implementations/python/line-simplification
+            pythonpath: ""
+          - example: topology-preserving-simplification
+            directory: implementations/python/topology-preserving-simplification
+            pythonpath: ""
+          - example: dcel
+            directory: implementations/python/dcel
+            pythonpath: ""
+          - example: change-point-detection
+            directory: implementations/python/change-point-detection
+            pythonpath: ""
+          - example: potential-field
+            directory: implementations/python/potential-field
+            pythonpath: ""
+          - example: geophysical-gridding
+            directory: implementations/python/geophysical-gridding
+            pythonpath: ""
+          - example: optical-flow
+            directory: implementations/python/optical-flow
+            pythonpath: ""
+          - example: distribution-shift
+            directory: implementations/python/distribution-shift
+            pythonpath: ""
+          - example: population-diversity
+            directory: implementations/python/population-diversity
+            pythonpath: ""
+          - example: adaptive-sampling
+            directory: implementations/python/adaptive-sampling
+            pythonpath: ""
+          - example: polygon-offsetting
+            directory: implementations/python/polygon-offsetting
+            pythonpath: ""
+          - example: proximity-graphs
+            directory: implementations/python/proximity-graphs
+            pythonpath: ""
+          - example: shortest-paths
+            directory: implementations/python/shortest-paths
+            pythonpath: ""
+          - example: spatial-encodings
+            directory: implementations/python/spatial-encodings
+            pythonpath: ""
+          - example: network-centrality
+            directory: implementations/python/network-centrality
+            pythonpath: ""
+          - example: network-communities
+            directory: implementations/python/network-communities
+            pythonpath: ""
+          - example: network-flow
+            directory: implementations/python/network-flow
+            pythonpath: ""
+          - example: minimum-spanning-tree
+            directory: implementations/python/minimum-spanning-tree
+            pythonpath: ""
+          - example: steiner-tree
+            directory: implementations/python/steiner-tree
+            pythonpath: ""
+          - example: k-core
+            directory: implementations/python/k-core
+            pythonpath: ""
+          - example: kernighan-lin
+            directory: implementations/python/kernighan-lin
+            pythonpath: ""
+          - example: louvain
+            directory: implementations/python/louvain
+            pythonpath: ""
+          - example: spectral-partitioning
+            directory: implementations/python/spectral-partitioning
+            pythonpath: ""
+          - example: map-matching
+            directory: implementations/python/map-matching
+            pythonpath: ""
+          - example: raptor
+            directory: implementations/python/raptor
+            pythonpath: ""
+          - example: csa
+            directory: implementations/python/csa
+            pythonpath: ""
+          - example: point-location
+            directory: implementations/python/point-location
+            pythonpath: ""
+          - example: closest-pair
+            directory: implementations/python/closest-pair
+            pythonpath: ""
+          - example: coverage-simplification
+            directory: implementations/python/coverage-simplification
+            pythonpath: ""
+          - example: precision-grid
+            directory: implementations/python/precision-grid
+            pythonpath: ""
+          - example: road-routing
+            directory: implementations/python/road-routing
+            pythonpath: ""
+          - example: variogram-models
+            directory: implementations/python/variogram-models
+            pythonpath: ""
+          - example: geostatistics
+            directory: implementations/python/geostatistics
+            pythonpath: ""
+          - example: inverse-distance-weighting
+            directory: implementations/python/inverse-distance-weighting
+            pythonpath: ""
+          - example: raster-distance
+            directory: implementations/python/raster-distance
+            pythonpath: ""
+          - example: spectral-indices
+            directory: implementations/python/spectral-indices
+            pythonpath: ""
+          - example: p-median
+            directory: implementations/python/p-median
+            pythonpath: ""
+          - example: capacitated-p-median
+            directory: implementations/python/capacitated-p-median
+            pythonpath: ""
+          - example: accessibility-equity
+            directory: implementations/python/accessibility-equity
+            pythonpath: ""
+          - example: equity-covering
+            directory: implementations/python/equity-covering
+            pythonpath: ""
+          - example: p-center
+            directory: implementations/python/p-center
+            pythonpath: ""
+          - example: set-covering
+            directory: implementations/python/set-covering
+            pythonpath: ""
+          - example: maximal-covering
+            directory: implementations/python/maximal-covering
+            pythonpath: ""
+          - example: backup-coverage
+            directory: implementations/python/backup-coverage
+            pythonpath: ""
+          - example: mmc-queue
+            directory: implementations/python/mmc-queue
+            pythonpath: ""
+          - example: mexclp
+            directory: implementations/python/mexclp
+            pythonpath: ""
+          - example: dbscan
+            directory: implementations/python/dbscan
+            pythonpath: ""
+          - example: two-step-fca
+            directory: implementations/python/two-step-fca
+            pythonpath: ""
+          - example: weighted-overlay
+            directory: implementations/python/weighted-overlay
+            pythonpath: ""
+          - example: ahp-weights
+            directory: implementations/python/ahp-weights
+            pythonpath: ""
+          - example: fuzzy-overlay
+            directory: implementations/python/fuzzy-overlay
+            pythonpath: ""
+          - example: owa
+            directory: implementations/python/owa
+            pythonpath: ""
+          - example: topsis
+            directory: implementations/python/topsis
+            pythonpath: ""
+          - example: d8-flow-accumulation
+            directory: implementations/python/d8-flow-accumulation
+            pythonpath: ""
+          - example: watershed-delineation
+            directory: implementations/python/watershed-delineation
+            pythonpath: ""
+          - example: stream-order
+            directory: implementations/python/stream-order
+            pythonpath: ""
+          - example: priority-flood
+            directory: implementations/python/priority-flood
+            pythonpath: ""
+          - example: focal-statistics
+            directory: implementations/python/focal-statistics
+            pythonpath: ""
+          - example: point-pattern-kde
+            directory: implementations/python/point-pattern-kde
+            pythonpath: ""
+          - example: clark-evans
+            directory: implementations/python/clark-evans
+            pythonpath: ""
+          - example: ripley-k
+            directory: implementations/python/ripley-k
+            pythonpath: ""
+          - example: d8-flow
+            directory: implementations/python/d8-flow
+            pythonpath: ""
+          - example: terrain-derivatives
+            directory: implementations/python/terrain-derivatives
+            pythonpath: ""
+          - example: cost-distance
+            directory: implementations/python/cost-distance
+            pythonpath: ""
+          - example: raster-resampling
+            directory: implementations/python/raster-resampling
+            pythonpath: ""
+          - example: zonal-statistics
+            directory: implementations/python/zonal-statistics
+            pythonpath: ""
+          - example: raster-components
+            directory: implementations/python/raster-components
+            pythonpath: ""
+          - example: info-nce
+            directory: implementations/python/info-nce
+            pythonpath: ""
+          - example: spatial-cross-validation
+            directory: implementations/python/spatial-cross-validation
+            pythonpath: ""
+          - example: masked-autoencoding
+            directory: implementations/python/masked-autoencoding
+            pythonpath: ""
+          - example: helmert-7-parameter
+            directory: implementations/python/helmert-7-parameter
+            pythonpath: ""
+          - example: affine-georeferencing
+            directory: implementations/python/affine-georeferencing
+            pythonpath: ""
+          - example: ecef-enu
+            directory: implementations/python/ecef-enu
+            pythonpath: ""
+          - example: crs-transform
+            directory: implementations/python/crs-transform
+            pythonpath: ""
+          - example: triple-collocation
+            directory: implementations/python/triple-collocation
+            pythonpath: ""
+          - example: marine-heatwave-detection
+            directory: implementations/python/marine-heatwave-detection
+            pythonpath: ""
+          - example: exact-orientation
+            directory: implementations/python/exact-orientation
+            pythonpath: ""
+          - example: covariance-functions
+            directory: implementations/python/covariance-functions
+            pythonpath: ""
+          - example: spherical-covariance
+            directory: implementations/python/spherical-covariance
+            pythonpath: ""
+          - example: graph-spectral-covariance
+            directory: implementations/python/graph-spectral-covariance
+            pythonpath: ""
+          - example: nonseparable-space-time-covariance
+            directory: implementations/python/nonseparable-space-time-covariance
+            pythonpath: ""
+          - example: weights-of-evidence
+            directory: implementations/python/weights-of-evidence
+            pythonpath: ""
+          - example: electre-i
+            directory: implementations/python/electre-i
+            pythonpath: ""
+          - example: snap-rounding-noder
+            directory: implementations/python/snap-rounding-noder
+            pythonpath: ""
+          - example: ear-clipping
+            directory: implementations/python/ear-clipping
+            pythonpath: ""
+          - example: constrained-delaunay
+            directory: implementations/python/constrained-delaunay
+            pythonpath: "../ear-clipping"
+          - example: minkowski-convex
+            directory: implementations/python/minkowski-convex
+            pythonpath: ""
+          - example: convex-decomposition
+            directory: implementations/python/convex-decomposition
+            pythonpath: "../ear-clipping"
+          - example: monotone-triangulation
+            directory: implementations/python/monotone-triangulation
+            pythonpath: ""
+          - example: bsp-csg
+            directory: implementations/python/bsp-csg
+            pythonpath: ""
+
+          - example: ais-gap-detection
+            directory: implementations/python/ais-gap-detection
+            pythonpath: ""
+          - example: arima-forecasting
+            directory: implementations/python/arima-forecasting
+            pythonpath: ""
+          - example: compositional-data
+            directory: implementations/python/compositional-data
+            pythonpath: ""
+          - example: d8-flow-direction
+            directory: implementations/python/d8-flow-direction
+            pythonpath: ""
+          - example: hand
+            directory: implementations/python/hand
+            pythonpath: ""
+          - example: dasymetric-allocation
+            directory: implementations/python/dasymetric-allocation
+            pythonpath: ""
+          - example: dijkstra
+            directory: implementations/python/dijkstra
+            pythonpath: ""
+          - example: domain-classifier-shift
+            directory: implementations/python/domain-classifier-shift
+            pythonpath: ""
+          - example: empirical-semivariogram
+            directory: implementations/python/empirical-semivariogram
+            pythonpath: ""
+          - example: geometry-metrics
+            directory: implementations/python/geometry-metrics
+            pythonpath: ""
+          - example: graham-scan
+            directory: implementations/python/graham-scan
+            pythonpath: ""
+          - example: knndm
+            directory: implementations/python/knndm
+            pythonpath: ""
+          - example: mean-radiant-temperature
+            directory: implementations/python/mean-radiant-temperature
+            pythonpath: ""
+          - example: methane-emissions
+            directory: implementations/python/methane-emissions
+            pythonpath: ""
+          - example: nndm
+            directory: implementations/python/nndm
+            pythonpath: ""
+          - example: ordinary-kriging
+            directory: implementations/python/ordinary-kriging
+            pythonpath: ""
+          - example: point-process
+            directory: implementations/python/point-process
+            pythonpath: ""
+          - example: spatial-econometrics
+            directory: implementations/python/spatial-econometrics
+            pythonpath: ""
+          - example: spatial-microsimulation
+            directory: implementations/python/spatial-microsimulation
+            pythonpath: ""
+          - example: spatial-privacy
+            directory: implementations/python/spatial-privacy
+            pythonpath: ""
+          - example: spatiotemporal-validation
+            directory: implementations/python/spatiotemporal-validation
+            pythonpath: ""
+          - example: stl-decomposition
+            directory: implementations/python/stl-decomposition
+            pythonpath: ""
+          - example: theil-sen
+            directory: implementations/python/theil-sen
+            pythonpath: ""
+          - example: empirical-bayes-rates
+            directory: implementations/python/empirical-bayes-rates
+            pythonpath: ""
+          - example: gnss-ambiguity
+            directory: implementations/python/gnss-ambiguity
+            pythonpath: ""
+          - example: gnss-raim
+            directory: implementations/python/gnss-raim
+            pythonpath: ""
+          - example: head-banging
+            directory: implementations/python/head-banging
+            pythonpath: ""
+          - example: matrix-factorization
+            directory: implementations/python/matrix-factorization
+            pythonpath: ""
+          - example: median-polish
+            directory: implementations/python/median-polish
+            pythonpath: ""
+          - example: mesh-geodesics
+            directory: implementations/python/mesh-geodesics
+            pythonpath: ""
+          - example: moran-eigenvector-filtering
+            directory: implementations/python/moran-eigenvector-filtering
+            pythonpath: ""
+          - example: multiple-testing
+            directory: implementations/python/multiple-testing
+            pythonpath: ""
+          - example: network-resilience
+            directory: implementations/python/network-resilience
+            pythonpath: ""
+          - example: regional-dynamics
+            directory: implementations/python/regional-dynamics
+            pythonpath: ""
+          - example: spatial-distribution-summaries
+            directory: implementations/python/spatial-distribution-summaries
+            pythonpath: ""
+          - example: spatial-inequality
+            directory: implementations/python/spatial-inequality
+            pythonpath: ""
+          - example: spatial-intensity
+            directory: implementations/python/spatial-intensity
+            pythonpath: ""
+          - example: spatial-regression
+            directory: implementations/python/spatial-regression
+            pythonpath: ""
+          - example: spatial-smoothing
+            directory: implementations/python/spatial-smoothing
+            pythonpath: ""
+          - example: state-estimation
+            directory: implementations/python/state-estimation
+            pythonpath: ""
+          - example: temporal-models
+            directory: implementations/python/temporal-models
+            pythonpath: ""
+          - example: tensor-decomposition
+            directory: implementations/python/tensor-decomposition
+            pythonpath: ""
+          - example: voronoi-lloyd
+            directory: implementations/python/voronoi-lloyd
+            pythonpath: ""
+
+          - example: ace-detection
+            directory: implementations/python/ace-detection
+            pythonpath: ""
+          - example: adaptive-thresholding
+            directory: implementations/python/adaptive-thresholding
+            pythonpath: ""
+          - example: atgp-endmembers
+            directory: implementations/python/atgp-endmembers
+            pythonpath: ""
+          - example: cem-detection
+            directory: implementations/python/cem-detection
+            pythonpath: ""
+          - example: edge-detection
+            directory: implementations/python/edge-detection
+            pythonpath: ""
+          - example: fcls-unmixing
+            directory: implementations/python/fcls-unmixing
+            pythonpath: ""
+          - example: fourier-filtering
+            directory: implementations/python/fourier-filtering
+            pythonpath: ""
+          - example: gabor-filters
+            directory: implementations/python/gabor-filters
+            pythonpath: ""
+          - example: glcm-texture
+            directory: implementations/python/glcm-texture
+            pythonpath: ""
+          - example: haar-wavelet
+            directory: implementations/python/haar-wavelet
+            pythonpath: ""
+          - example: half-edge-mesh
+            directory: implementations/python/half-edge-mesh
+            pythonpath: ""
+          - example: hough-lines
+            directory: implementations/python/hough-lines
+            pythonpath: ""
+          - example: isotropic-remeshing
+            directory: implementations/python/isotropic-remeshing
+            pythonpath: ""
+          - example: max-flow-min-cut
+            directory: implementations/python/max-flow-min-cut
+            pythonpath: ""
+          - example: mesh-repair
+            directory: implementations/python/mesh-repair
+            pythonpath: ""
+          - example: mesh-smoothing
+            directory: implementations/python/mesh-smoothing
+            pythonpath: ""
+          - example: mnf-transform
+            directory: implementations/python/mnf-transform
+            pythonpath: ""
+          - example: morphology
+            directory: implementations/python/morphology
+            pythonpath: ""
+          - example: nfindr-endmembers
+            directory: implementations/python/nfindr-endmembers
+            pythonpath: ""
+          - example: otsu-thresholding
+            directory: implementations/python/otsu-thresholding
+            pythonpath: ""
+          - example: pca-transform
+            directory: implementations/python/pca-transform
+            pythonpath: ""
+          - example: quad-edge
+            directory: implementations/python/quad-edge
+            pythonpath: ""
+          - example: radon-transform
+            directory: implementations/python/radon-transform
+            pythonpath: ""
+          - example: rx-anomaly
+            directory: implementations/python/rx-anomaly
+            pythonpath: ""
+          - example: spectral-matched-filter
+            directory: implementations/python/spectral-matched-filter
+            pythonpath: ""
+          - example: spectral-similarity
+            directory: implementations/python/spectral-similarity
+            pythonpath: ""
+          - example: vca-endmembers
+            directory: implementations/python/vca-endmembers
+            pythonpath: ""
+          - example: weiler-atherton
+            directory: implementations/python/weiler-atherton
+            pythonpath: ""
+          - example: winged-edge
+            directory: implementations/python/winged-edge
+            pythonpath: ""
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.directory }}
+        run: |
+          python -m pip install pytest
+          if [ -f requirements.txt ]; then
+            python -m pip install -r requirements.txt
+          fi
+
+      - name: Run tests
+        working-directory: ${{ matrix.directory }}
+        env:
+          PYTHONPATH: ${{ matrix.pythonpath }}
+        run: python -m pytest -q
+
+  links:
+    name: Check internal links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Check local Markdown and notebook links
+        run: python scripts/check_internal_links.py
+
+  notebooks:
+    name: Execute learning notebooks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: notebooks/requirements.txt
+
+      - name: Check CI coverage
+        run: python scripts/check_ci_coverage.py
+
+      - name: Install notebook dependencies
+        run: |
+          python -m pip install -r notebooks/requirements.txt
+          python -m pip install ipykernel nbconvert
+
+      - name: Execute notebooks
+        run: |
+          python -m ipykernel install --user --name python3
+          mkdir -p /tmp/notebook-output
+          python scripts/execute_learning_notebooks.py
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          # Execute the remaining repository notebooks not listed above.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  clipper2:
+    name: Clipper2 C# offset checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Run Clipper2 offset checks
+        run: dotnet run --project implementations/clipper2-csharp/Clipper2Example.csproj --configuration Release
