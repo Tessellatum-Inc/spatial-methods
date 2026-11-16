@@ -2,12 +2,12 @@
 
 The bounded input contract is pairwise disjoint, non-vertical segments in
 general position. Insertions follow a seeded random permutation. A persistent
-trapezoid-cell graph and search-history DAG are updated by corridor replacement;
-a rebuilt slab decomposition remains the independent reference oracle and
-currently backs the public locate() method. The prototype recomputes neighbor
+trapezoid-cell graph and search-history DAG are updated by corridor replacement.
+Public queries traverse the persistent history DAG; a rebuilt slab decomposition
+is retained as an independent reference oracle. The prototype recomputes neighbor
 links globally and does not claim Seidel's expected construction bound.
 
-The internal _locate_history() query is differentially tested against locate().
+The public locate() query uses the persistent history DAG; the private _locate_slab() method remains the independently rebuilt differential oracle.
 Original segment boundaries return BOUNDARY; outside points return None.
 """
 from __future__ import annotations
@@ -140,9 +140,10 @@ class RandomizedTrapezoidalMap:
 
     The implementation maintains a corridor-replaced cell graph and a
     persistent history DAG, while rebuilding a static slab locator as a
-    differential reference. The public locate() method uses that reference;
-    _locate_history() exercises the persistent DAG. Neighbor maintenance is
-    global per insertion, so optimized expected-time claims are not made.
+    differential reference. Public locate() queries traverse the history DAG;
+    _locate_slab() is retained as the independent reference implementation.
+    Neighbor maintenance is global per insertion, so optimized expected-time
+    claims are not made.
     """
 
     def __init__(self, segments: Iterable[Sequence[Sequence[float]]],
@@ -602,7 +603,8 @@ class RandomizedTrapezoidalMap:
                       self._build_x_tree(lo, mid),
                       self._build_x_tree(mid, hi))
 
-    def locate(self, x: float, y: float):
+    def _locate_slab(self, x: float, y: float):
+        """Independent static-slab reference query."""
         x, y = float(x), float(y)
         if not (isfinite(x) and isfinite(y)):
             raise ValueError("query coordinates must be finite")
@@ -627,6 +629,10 @@ class RandomizedTrapezoidalMap:
                 return BOUNDARY
             node = node.left if y < edge_y else node.right
         return node
+
+    def locate(self, x: float, y: float):
+        """Locate a point by traversing the persistent randomized history DAG."""
+        return self._locate_history(x, y)
 
     @property
     def search_node_count(self) -> int:
