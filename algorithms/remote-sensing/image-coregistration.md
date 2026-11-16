@@ -21,3 +21,8 @@ The local-feature matcher supports ORB and AKAZE binary descriptors (Hamming dis
 ## Enhanced correlation coefficient registration
 
 ECC optimises a global parametric warp by maximising a photometrically normalised correlation objective. The reference implementation supports translation, Euclidean, affine and projective homography models through OpenCV. Its returned matrix follows OpenCV's inverse-map convention and is used with WARP_INVERSE_MAP when resampling the moving image. ECC is a local optimiser; use phase correlation or feature correspondences to initialise large shifts, and inspect overlap and independent checkpoints. It is not a substitute for sensor-model orthorectification or local deformation modelling.
+
+
+## Tiled local correlation for displacement fields
+
+The local phase-correlation field method runs the global phase-correlation estimator over a regular grid of image windows. Each window yields a subpixel translation, allowing spatial variation in apparent displacement to be inspected rather than forcing one global transform. Textureless windows are masked. This is a compact local correlation baseline, not the full COSI-Corr method; robust geophysical displacement analysis also needs stable feature content, uncertainty estimation, decorrelation screening, orthorectification and conversion from pixel displacement to ground coordinates.

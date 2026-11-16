@@ -123,3 +123,32 @@ def test_ecc_rejects_invalid_controls_and_shapes():
         ecc_register(np.ones((16, 16)), np.ones((16, 16)), motion_model="rigid3d")
     with pytest.raises(ValueError, match="positive odd"):
         ecc_register(np.ones((16, 16)), np.ones((16, 16)), gauss_filter_size=4)
+
+
+from image_registration import local_phase_correlation_field
+
+
+def test_local_phase_correlation_recovers_tiled_displacement_field():
+    import cv2
+    rng = np.random.default_rng(21)
+    reference = (rng.random((160, 160)) * 255).astype(np.float32)
+    reference = cv2.GaussianBlur(reference, (3, 3), 0.6)
+    moving = cv2.warpAffine(reference,
+        np.array([[1., 0., 3.], [0., 1., -2.]], dtype=np.float32),
+        (160, 160), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+    result = local_phase_correlation_field(reference, moving,
+        window_size=48, step=32, upsample_factor=10)
+    assert result["row_shift"].shape == (4, 4)
+    valid = np.isfinite(result["row_shift"])
+    assert valid.sum() >= 12
+    np.testing.assert_allclose(np.nanmedian(result["row_shift"]), 2.0, atol=0.25)
+    np.testing.assert_allclose(np.nanmedian(result["column_shift"]), -3.0, atol=0.25)
+
+
+def test_local_phase_correlation_masks_textureless_windows():
+    blank = np.zeros((96, 96))
+    result = local_phase_correlation_field(blank, blank, window_size=32, step=32)
+    assert np.isnan(result["row_shift"]).all()
+    assert np.isnan(result["column_shift"]).all()
+    with pytest.raises(ValueError, match="window_size"):
+        local_phase_correlation_field(blank, blank, window_size=128)

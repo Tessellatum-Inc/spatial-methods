@@ -236,3 +236,55 @@ def ecc_register(reference, moving, *, motion_model="affine",
         aligned = cv2.warpAffine(mov32, warp, (width, height), flags=flags)
     return {"warp_matrix": warp, "aligned": aligned,
             "correlation": float(correlation), "motion_model": model}
+
+
+def local_phase_correlation_field(reference, moving, *, window_size=64,
+                                   step=32, upsample_factor=10,
+                                   min_response=0.0, min_texture_std=1e-6):
+    """Estimate a tiled subpixel displacement field by local phase correlation.
+
+    Each square window is correlated independently. Returned shifts are the
+    row/column displacements to apply to moving to align it to reference;
+    invalid or weak-texture windows are NaN. This is a transparent local
+    correlation baseline, not a reproduction of COSI-Corr's full workflow.
+    """
+    a, b = np.asarray(reference, float), np.asarray(moving, float)
+    if a.ndim != 2 or a.shape != b.shape:
+        raise ValueError("reference and moving must be matching 2D arrays")
+    if min(a.shape) < 8 or np.any(~np.isfinite(a)) or np.any(~np.isfinite(b)):
+        raise ValueError("images must be finite and at least 8x8")
+    if isinstance(window_size, bool) or not isinstance(window_size, int) or window_size < 8:
+        raise ValueError("window_size must be an integer of at least 8")
+    if isinstance(step, bool) or not isinstance(step, int) or step < 1:
+        raise ValueError("step must be a positive integer")
+    if window_size > min(a.shape):
+        raise ValueError("window_size must fit inside both images")
+    try:
+        response_floor, texture_floor = float(min_response), float(min_texture_std)
+    except (TypeError, ValueError):
+        raise ValueError("response and texture thresholds must be numeric") from None
+    if not np.isfinite(response_floor) or response_floor < 0:
+        raise ValueError("min_response must be finite and non-negative")
+    if not np.isfinite(texture_floor) or texture_floor < 0:
+        raise ValueError("min_texture_std must be finite and non-negative")
+    rows = np.arange(0, a.shape[0] - window_size + 1, step, dtype=int)
+    cols = np.arange(0, a.shape[1] - window_size + 1, step, dtype=int)
+    shape = (len(rows), len(cols))
+    row_shift = np.full(shape, np.nan)
+    col_shift = np.full(shape, np.nan)
+    response = np.full(shape, np.nan)
+    for i, row in enumerate(rows):
+        for j, col in enumerate(cols):
+            ref_window = a[row:row + window_size, col:col + window_size]
+            mov_window = b[row:row + window_size, col:col + window_size]
+            if min(ref_window.std(), mov_window.std()) < texture_floor:
+                continue
+            result = phase_correlation(ref_window, mov_window,
+                                       upsample_factor=upsample_factor)
+            response[i, j] = result["response"]
+            if result["response"] >= response_floor:
+                row_shift[i, j], col_shift[i, j] = result["shift_to_apply"]
+    return {"row_centres": rows + (window_size - 1) / 2,
+            "column_centres": cols + (window_size - 1) / 2,
+            "row_shift": row_shift, "column_shift": col_shift,
+            "response": response}

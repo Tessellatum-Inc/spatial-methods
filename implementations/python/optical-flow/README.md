@@ -53,3 +53,8 @@ The image-registration module exposes ORB and AKAZE binary feature detection plu
 ## Enhanced-correlation coefficient (ECC) registration
 
 The ecc_register function estimates translation, Euclidean, affine or projective homography alignment by maximising the enhanced correlation coefficient. It returns an OpenCV inverse-map warp matrix, aligned moving image and correlation coefficient. The warp matrix is applied internally with WARP_INVERSE_MAP. ECC is a local optimiser and is sensitive to initial displacement, overlap and radiometric differences; initialise large offsets with phase correlation or feature-based matching. Inputs are interpreted on a 0–255 intensity scale and the aligned output is float32 in [0,1].
+
+
+## Tiled local phase-correlation displacement
+
+The local_phase_correlation_field function estimates a regular grid of subpixel row/column shifts by applying phase correlation independently to overlapping square windows. It returns window centres, shift-to-apply fields and correlation responses; textureless windows remain NaN. This can expose spatially varying displacement that a single global translation cannot represent. Window size, step, overlap and response filtering affect reliability. It is a transparent local-correlation baseline, not a full COSI-Corr reproduction, dense optical-flow solver or geodetic ground-motion estimate.
