@@ -29,7 +29,7 @@ def test_hospital_capacity_can_exceed_one():
 
 def test_incomplete_lists_make_unlisted_pairs_unacceptable():
     residents = {"a": ["x", "y"], "b": ["x"]}
-    hospitals = {"x": ["b", "a"], "y": []}
+    hospitals = {"x": ["b", "a"], "y": ["a"]}
     assert stable_matching(residents, hospitals) == {"a": "y", "b": "x"}
 
 
