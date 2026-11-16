@@ -54,6 +54,28 @@ class CorridorReplacement:
 
 
 @dataclass(frozen=True)
+class _HistoryLeaf:
+    cell: Trapezoid
+
+
+@dataclass(frozen=True)
+class _HistoryYNode:
+    segment_id: int
+    below: "_HistoryNode"
+    above: "_HistoryNode"
+
+
+@dataclass(frozen=True)
+class _HistoryXNode:
+    split_x: float
+    left: "_HistoryNode"
+    right: "_HistoryNode"
+
+
+_HistoryNode = _HistoryLeaf | _HistoryYNode | _HistoryXNode
+
+
+@dataclass(frozen=True)
 class _YNode:
     segment_id: int
     left: "_YNode | Trapezoid"
@@ -176,6 +198,8 @@ class RandomizedTrapezoidalMap:
         self._persistent_cells: dict[tuple[int, ...], Trapezoid] = {
             cell.id: cell for cell in self.trapezoids
         }
+        initial_cell = next(iter(self._persistent_cells.values()))
+        self._history_root: _HistoryNode = _HistoryLeaf(initial_cell)
         for insertion_index, sid in enumerate(order):
             self._build(tuple(inserted))
             traced = self._trace_segment_corridor(sid)
@@ -201,6 +225,7 @@ class RandomizedTrapezoidalMap:
                 insertion_index, sid, corridor
             )
             self.insertion_replacements.append(replacement)
+            self._update_history_dag(insertion_index, sid, corridor, replacement)
             self.replacement_graph_snapshots.append(
                 tuple(self._persistent_cells[key] for key in sorted(self._persistent_cells))
             )
@@ -342,6 +367,109 @@ class RandomizedTrapezoidalMap:
         return CorridorReplacement(
             segment_id, removed_ids, tuple(added), lower_chains, upper_chains
         )
+
+    def _update_history_dag(
+        self, insertion_index: int, segment_id: int,
+        corridor: list[Trapezoid], replacement: CorridorReplacement,
+    ) -> None:
+        """Replace old trapezoid leaves with endpoint and segment decisions."""
+        segment = self.segments[segment_id]
+        x0, x1 = segment[0][0], segment[1][0]
+        added = replacement.added_cells
+        substitutions = {}
+
+        for index, old_cell in enumerate(corridor):
+            left = max(old_cell.x_left, x0)
+            right = min(old_cell.x_right, x1)
+            lower = next((cell for cell in added
+                          if cell.bottom_segment == old_cell.bottom_segment
+                          and cell.top_segment == segment_id
+                          and cell.x_left <= left and cell.x_right >= right), None)
+            upper = next((cell for cell in added
+                          if cell.bottom_segment == segment_id
+                          and cell.top_segment == old_cell.top_segment
+                          and cell.x_left <= left and cell.x_right >= right), None)
+            if lower is None or upper is None:
+                raise ValueError("replacement graph is missing a lower or upper search leaf")
+            subtree: _HistoryNode = _HistoryYNode(
+                segment_id, _HistoryLeaf(lower), _HistoryLeaf(upper)
+            )
+            if index == 0:
+                cap = next((cell for cell in added
+                            if cell.x_left == old_cell.x_left and cell.x_right == x0
+                            and cell.bottom_segment == old_cell.bottom_segment
+                            and cell.top_segment == old_cell.top_segment), None)
+                if cap is None:
+                    raise ValueError("left endpoint cap is missing from replacement")
+                subtree = _HistoryXNode(x0, _HistoryLeaf(cap), subtree)
+            if index == len(corridor)-1:
+                cap = next((cell for cell in added
+                            if cell.x_left == x1 and cell.x_right == old_cell.x_right
+                            and cell.bottom_segment == old_cell.bottom_segment
+                            and cell.top_segment == old_cell.top_segment), None)
+                if cap is None:
+                    raise ValueError("right endpoint cap is missing from replacement")
+                subtree = _HistoryXNode(x1, subtree, _HistoryLeaf(cap))
+            substitutions[old_cell.id] = subtree
+
+        memo = {}
+        def replace(node: _HistoryNode) -> _HistoryNode:
+            key = id(node)
+            if key in memo:
+                return memo[key]
+            if isinstance(node, _HistoryLeaf):
+                result = substitutions.get(node.cell.id, node)
+            elif isinstance(node, _HistoryYNode):
+                below, above = replace(node.below), replace(node.above)
+                result = (node if below is node.below and above is node.above
+                          else _HistoryYNode(node.segment_id, below, above))
+            else:
+                left, right = replace(node.left), replace(node.right)
+                result = (node if left is node.left and right is node.right
+                          else _HistoryXNode(node.split_x, left, right))
+            memo[key] = result
+            return result
+        self._history_root = replace(self._history_root)
+
+    def _locate_history(self, x: float, y: float):
+        """Query the persistent insertion history DAG (right-side x convention)."""
+        x, y = float(x), float(y)
+        if not (isfinite(x) and isfinite(y)):
+            raise ValueError("query coordinates must be finite")
+        xmin, ymin, xmax, ymax = self.bounds
+        if x < xmin or x > xmax or y < ymin or y > ymax:
+            return None
+        event_pos = bisect_left(self.x_events, x)
+        point = (x, y)
+        for pos in (event_pos-1, event_pos):
+            if 0 <= pos < len(self.x_events) and abs(self.x_events[pos]-x) <= self.epsilon:
+                if any(_on_segment(point, *self.segments[sid], self.epsilon)
+                       for sid in self._endpoint_segments.get(self.x_events[pos], ())):
+                    return BOUNDARY
+        node = self._history_root
+        while not isinstance(node, _HistoryLeaf):
+            if isinstance(node, _HistoryXNode):
+                node = node.left if x < node.split_x else node.right
+            else:
+                edge_y = _y_at(self.segments[node.segment_id], x)
+                if abs(y-edge_y) <= self.epsilon:
+                    return BOUNDARY
+                node = node.below if y < edge_y else node.above
+        return node.cell
+
+    @property
+    def history_node_count(self) -> int:
+        seen = set()
+        def visit(node):
+            if id(node) in seen:
+                return 0
+            seen.add(id(node))
+            if isinstance(node, _HistoryLeaf):
+                return 1
+            if isinstance(node, _HistoryXNode):
+                return 1 + visit(node.left) + visit(node.right)
+            return 1 + visit(node.below) + visit(node.above)
+        return visit(self._history_root)
 
     def _assign_neighbor_links(self, cells: list[Trapezoid]) -> None:
         """Assign reciprocal links for a trapezoid graph snapshot."""
