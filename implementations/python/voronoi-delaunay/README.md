@@ -55,3 +55,8 @@ print(result.voronoi.vertices)
 ## Alpha-shape extension
 
 `build_alpha_shape(points, max_circumradius=...)` uses a length-valued maximum circumradius (not the reciprocal alpha convention used by some libraries). It filters Delaunay triangles by circumradius and extracts edges incident to exactly one retained triangle. It returns the boundary of the retained 2D triangle union, not isolated 1D/0D simplices of the full alpha complex.
+
+
+## Weighted Voronoi power diagrams
+
+`power_diagram` constructs the clipped power cell for each site using the squared-distance score `distance_squared - weight`. Each cell is the intersection of the clipping rectangle with pairwise linear half-planes. Tests cover the unweighted bisector, a hand-computed weighted shift, area partition, dominated empty cells and invalid inputs. This is an additive squared-distance power diagram, not an arbitrary multiplicatively weighted Voronoi diagram.
