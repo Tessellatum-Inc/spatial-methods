@@ -844,6 +844,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/raster-fractal-diagnostics",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/raster-map-algebra",
     "pythonpath": ""
   },
