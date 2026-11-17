@@ -5,7 +5,7 @@ import numpy as np
 
 def _points(points):
     p = np.asarray(points, dtype=float)
-    if p.ndim < 1 or p.shape[-1] != 2 or not np.all(np.isfinite(p)):
+    if p.ndim < 1 or p.shape[-1] != 2 or p.size == 0 or not np.all(np.isfinite(p)):
         raise ValueError("points must be finite with final dimension (x, y)")
     return p
 
