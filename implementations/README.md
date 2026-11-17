@@ -275,3 +275,5 @@ These are connected teaching materials, not interchangeable copies of the same e
 - [CHM watershed crowns](python/chm-watershed-crowns/README.md): deterministic local-maximum seeding and marker-controlled canopy watershed.
 
 - [Marching cubes](python/marching-cubes/README.md): scikit-image Lewiner integration with explicit voxel spacing and origin.
+
+- [Thermal hotspot screening](python/thermal-hotspot-detection/README.md): robust local-context anomaly screening with NaN-aware median/MAD diagnostics.
