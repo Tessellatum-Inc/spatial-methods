@@ -192,3 +192,71 @@ def zhang_suen_thinning(image, max_iterations=None):
         iterations += 1
         if not changed:
             return a
+
+def two_pass_connected_components(image, connectivity=8):
+    """Two-pass union-find connected-component labelling.
+
+    Neighbourhood is 4- or 8-connected. The first raster pass assigns
+    provisional labels and unions equivalent labels; the second pass
+    replaces each provisional label with its canonical root label. Final
+    labels are compact and ordered by first row-major occurrence.
+    """
+    a = _binary(image)
+    if connectivity not in (4, 8):
+        raise ValueError("connectivity must be 4 or 8")
+    h, w = a.shape
+    labels = np.zeros((h, w), dtype=np.int32)
+    parent = [0]
+
+    def make_set():
+        parent.append(len(parent))
+        return len(parent) - 1
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(x, y):
+        rx, ry = find(x), find(y)
+        if rx != ry:
+            parent[max(rx, ry)] = min(rx, ry)
+
+    previous = [(-1, 0), (0, -1)]
+    if connectivity == 8:
+        previous += [(-1, -1), (-1, 1)]
+    for y in range(h):
+        for x in range(w):
+            if not a[y, x]:
+                continue
+            neighbours = []
+            for dy, dx in previous:
+                ny, nx = y + dy, x + dx
+                if 0 <= ny < h and 0 <= nx < w and labels[ny, nx] > 0:
+                    neighbours.append(int(labels[ny, nx]))
+            if not neighbours:
+                labels[y, x] = make_set()
+            else:
+                smallest = min(neighbours)
+                labels[y, x] = smallest
+                for other in neighbours:
+                    union(smallest, other)
+
+    root_to_compact = {}
+    sizes = []
+    next_label = 0
+    for y in range(h):
+        for x in range(w):
+            provisional = int(labels[y, x])
+            if provisional == 0:
+                continue
+            root = find(provisional)
+            if root not in root_to_compact:
+                next_label += 1
+                root_to_compact[root] = next_label
+                sizes.append(0)
+            compact = root_to_compact[root]
+            labels[y, x] = compact
+            sizes[compact - 1] += 1
+    return labels, np.asarray(sizes, dtype=np.int64)

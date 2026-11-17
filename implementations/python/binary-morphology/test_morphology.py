@@ -105,3 +105,31 @@ def test_zhang_suen_preserves_one_pixel_line_and_rejects_iteration_limit():
         zhang_suen_thinning(block, max_iterations=1)
     with pytest.raises(ValueError):
         zhang_suen_thinning(block, max_iterations=-1)
+
+def test_two_pass_components_matches_independent_flood_fill_on_seeded_masks():
+    from morphology import two_pass_connected_components
+    rng = np.random.default_rng(2026)
+    for connectivity in (4, 8):
+        for _ in range(20):
+            image = rng.random((13, 17)) > .68
+            labels_a, sizes_a = connected_components(image, connectivity)
+            labels_b, sizes_b = two_pass_connected_components(image, connectivity)
+            assert sizes_b.tolist() == sizes_a.tolist()
+            assert np.array_equal(labels_b > 0, labels_a > 0)
+            # Compare component equivalence, not arbitrary numeric label IDs.
+            for y1, x1 in zip(*np.nonzero(image)):
+                for y2, x2 in zip(*np.nonzero(image)):
+                    assert (labels_a[y1, x1] == labels_a[y2, x2]) == (
+                        labels_b[y1, x1] == labels_b[y2, x2]
+                    )
+
+
+def test_two_pass_components_handles_empty_and_single_component_masks():
+    from morphology import two_pass_connected_components
+    labels, sizes = two_pass_connected_components(np.zeros((4, 5), bool))
+    assert labels.sum() == 0
+    assert sizes.size == 0
+    image = np.ones((4, 5), bool)
+    labels, sizes = two_pass_connected_components(image, 4)
+    assert np.unique(labels).tolist() == [1]
+    assert sizes.tolist() == [20]

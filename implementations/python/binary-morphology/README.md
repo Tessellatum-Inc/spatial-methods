@@ -8,7 +8,7 @@ A dependency-light NumPy reference package for finite 2-D binary rasters.
 - Opening and closing.
 - Hit-or-miss pattern detection.
 - Geodesic reconstruction by dilation under a mask.
-- 4- and 8-connected component labelling.\n- Zhang-Suen iterative binary thinning/skeletonisation.
+- 4- and 8-connected component labelling with flood-fill and two-pass union-find implementations.\n- Zhang-Suen iterative binary thinning/skeletonisation.
 
 All operators use a false/background value outside the raster. Structuring elements are centred at floor(shape/2), including even-sized elements. The implementation favours inspectability over speed and is not a production replacement for SciPy ndimage, OpenCV or specialised connected-component libraries.
 
