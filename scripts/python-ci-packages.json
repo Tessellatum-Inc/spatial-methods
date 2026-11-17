@@ -896,6 +896,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/road-network-strokes",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/road-routing",
     "pythonpath": ""
   },
