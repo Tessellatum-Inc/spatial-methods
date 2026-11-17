@@ -1096,6 +1096,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/street-address-interpolation",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/string-linkage",
     "pythonpath": ""
   },

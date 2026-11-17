@@ -26,7 +26,7 @@
 |---|---|---:|--- |
 | Open Location Code (plus codes), geohash, what3words-style grids, S2 and H3 cell addresses | Location encoding systems / spatial indexing schemes | 40 | Partial — tested WGS84 geohash and full Open Location Code encode/decode with cell bounds; short-code recovery, what3words, S2, H3 and source-entry review remain open |
 | Descriptive and landmark-based geocoding, building-based addressing, address-free geocoding for informal settlements | Geocoding approaches / addressing workflows | 40 | [Open Location Code](../../implementations/python/open-location-code/README.md) provides tested address-free coordinate encoding and decoding | Partial — full Plus Code encode/decode is implemented; short-code locality recovery, landmark geocoding and building-based address assignment remain open |
-| Address generation from street segments and building footprints, address quality scoring | Address assignment / data quality methods | 40 | Not checked — intake only |
+| Address generation from street segments and building footprints, address quality scoring | Address assignment / data quality methods | 40 | [Street address interpolation](../../implementations/python/street-address-interpolation/README.md) has a tested cumulative-distance range interpolation baseline with optional side offsets | Partial — address numbers can be interpolated along projected street polylines; building-footprint assignment, local parity rules, address verification and quality scoring remain open |
 
 ## Insurance, finance and risk transfer with geodata
 

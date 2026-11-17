@@ -66,13 +66,13 @@
 |---|---|---:|--- |
 | 3D scene graphs (Hydra-style), topological and hierarchical maps, semantic SLAM, open-vocabulary mapping (ConceptFusion, CLIP-Fields, VLMaps) | Scene representations / semantic mapping and SLAM | 44 | Not checked — intake only |
 | Visual positioning systems, geo-anchors, street-level localization for AR, digital twin synchronization | Visual localisation / AR and digital-twin workflows | 44 | Not checked — intake only |
-| Autonomous driving maps: lane-level HD maps, map change detection, crowdsourced mapping, lidar map matching with NDT, road marking extraction | HD mapping / map maintenance / point-cloud matching | 44 | Not checked — intake only |
+| Autonomous driving maps: lane-level HD maps, map change detection, crowdsourced mapping, lidar map matching with NDT, road marking extraction | HD mapping / map maintenance / point-cloud matching | 44 | [Point-cloud rigid registration and comparison](../../implementations/python/point-cloud-registration/README.md) provide tested point-to-point, point-to-plane and generalized ICP baselines | Partial — rigid point-cloud registration and distance/F-score comparison are implemented; NDT, lane-level HD map construction, change detection and road-marking extraction remain open |
 
 ## GNSS integrity and location verification
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Spoofing and jamming detection, signal authentication, anomaly detection in pseudorange and Doppler, integrity monitoring | GNSS signal integrity and anomaly detection | 45 | Not checked — intake only |
+| Spoofing and jamming detection, signal authentication, anomaly detection in pseudorange and Doppler, integrity monitoring | GNSS signal integrity and anomaly detection | 45 | [Residual-based GNSS RAIM/FDE](../../implementations/python/gnss-raim/README.md) has tested global consistency and single-measurement exclusion baselines | Partial — supplied-model residual integrity screening is implemented; spoofing/jamming detection, signal authentication and pseudorange/Doppler anomaly models remain open |
 | Crowdsourced and proof-of-location verification, mock-location detection, cross-sensor consistency checks | Location verification / sensor consistency and fraud detection | 45 | Not checked — intake only |
 
 ## Geology and geoscience machine learning

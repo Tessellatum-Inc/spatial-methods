@@ -77,7 +77,7 @@ The source explicitly frames these as methods from adjacent fields that spatial 
 |---|---|---:|--- |
 | Teleconnection indices, regime detection, pattern scaling, ensemble weighting of CMIP models | Climate indices / regime and ensemble analysis | 26 | Not checked — intake only |
 | Extreme event attribution, detection and attribution, return level estimation with covariates | Climate attribution / extreme-value analysis | 26 | Not checked — intake only |
-| Multivariate bias correction (MBCn), spatial coherence-preserving downscaling (Schaake shuffle, ECC) | Bias correction / spatial downscaling methods | 26 | Not checked — intake only |
+| Multivariate bias correction (MBCn), spatial coherence-preserving downscaling (Schaake shuffle, ECC) | Bias correction / spatial downscaling methods | 26 | [Statistical downscaling baselines](../../implementations/python/statistical-downscaling/README.md) provide tested empirical quantile mapping and delta-change correction | Partial — univariate quantile mapping and delta change are implemented; MBCn, Schaake shuffle, ECC and spatial dependence-preserving downscaling remain open |
 
 ## Terrain traversability and off-road mobility
 
