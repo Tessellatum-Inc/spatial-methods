@@ -68,3 +68,38 @@ def test_invalid_bounds_and_tolerance_nan_are_rejected():
         predictive_range_query({}, (0, 0, 1, 1), 0, uncertainty_radius=float("nan"))
     with pytest.raises(ValueError):
         dead_reckoning_update_required((0, 0), (0, 0), 0, (0, 0), tolerance=float("nan"))
+
+from prediction import continuous_range_query
+
+
+def test_continuous_query_finds_crossing_even_when_endpoint_is_outside():
+    result = continuous_range_query(
+        {"crossing": (-5, 5, 2, 0)}, (0, 0, 10, 10), 10
+    )
+    assert result == [("crossing", (0.0, 5.0), 2.5)]
+
+
+def test_continuous_query_reports_zero_time_for_initially_inside_object():
+    result = continuous_range_query(
+        {"inside": (5, 5, 1, 0)}, (0, 0, 10, 10), 5
+    )
+    assert result == [("inside", (5.0, 5.0), 0.0)]
+
+
+def test_continuous_query_includes_tangent_and_boundary_contact():
+    result = continuous_range_query(
+        {"tangent": (-1, 0, 1, 0), "boundary": (10, 5, 1, 0)},
+        (0, 0, 10, 10), 2,
+    )
+    assert [row[0] for row in result] == ["tangent", "boundary"]
+    assert result[0][1] == (0.0, 0.0)
+    assert result[1][2] == 0.0
+
+
+def test_continuous_query_rejects_invalid_and_overflowing_states():
+    with pytest.raises(ValueError):
+        continuous_range_query({}, (2, 0, 1, 1), 1)
+    with pytest.raises(ValueError):
+        continuous_range_query({"bad": (0, 0, 1)}, (0, 0, 1, 1), 1)
+    with pytest.raises(ValueError, match="overflow"):
+        continuous_range_query({"fast": (0, 0, 1e308, 0)}, (0, 0, 1, 1), 1e308)

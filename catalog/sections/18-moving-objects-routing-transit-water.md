@@ -13,7 +13,7 @@
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Spatiotemporal indexes: HR-tree, MV3R-tree, TPR-tree, 3D R-tree, SETI, PIST, STR-tree, TB-tree, grid-based trajectory indexes | Spatiotemporal index structures | 37 | Not checked — intake only |
-| Moving-object queries: future location and predictive range queries, dead-reckoning update policies, uncertainty regions for moving objects | Moving-object query types / update and uncertainty models | 37 | Partially implemented: [constant-velocity prediction, uncertainty-disk rectangle queries and displacement-error dead-reckoning](../../algorithms/networks/moving-object-prediction.md) have tested baselines and a numerical verification record; spatiotemporal indexes, covariance regions and continuous trajectory queries remain open |
+| Moving-object queries: future location and predictive range queries, dead-reckoning update policies, uncertainty regions for moving objects | Moving-object query types / update and uncertainty models | 37 | Partially implemented: [constant-velocity prediction, uncertainty-disk rectangle queries and displacement-error dead-reckoning](../../algorithms/networks/moving-object-prediction.md) have tested baselines and a numerical verification record; spatiotemporal indexes, covariance regions and curved/uncertainty-aware continuous trajectory queries remain open |
 | Spatiotemporal data models: snapshot, space-time composite, event-based, object-oriented; temporal GIS versioning | Spatiotemporal data models / versioning approaches | 37 | Not checked — intake only |
 
 ## Routing speedups and richer route choice

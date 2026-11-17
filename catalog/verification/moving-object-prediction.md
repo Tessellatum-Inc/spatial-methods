@@ -22,7 +22,7 @@ test uses distance less than or equal to radius.
 The independent package test module covers constant velocity, zero horizon,
 inclusive rectangle boundaries, uncertainty-disk intersection and tangency,
 mapping-order preservation, strict update thresholds, malformed states,
-invalid bounds, non-finite values and arithmetic overflow. The package is
+invalid bounds, non-finite values, arithmetic overflow, continuous path\ncrossings, initially-inside cases, boundary contact and invalid continuous-query states. The package is
 registered in the repository Python CI matrix.
 
 A passing CI run is required before claiming environment-level verification.
@@ -31,6 +31,6 @@ claimed.
 
 ## Remaining scope
 HR-tree, MV3R-tree, TPR-tree, SETI, PIST, STR-tree and TB-tree structures;
-continuous queries; acceleration and covariance models; road-network
+curved paths and uncertainty-aware continuous queries; acceleration and covariance models; road-network
 constraints; dead-reckoning policy optimization; and empirical trajectory
 validation remain unimplemented.

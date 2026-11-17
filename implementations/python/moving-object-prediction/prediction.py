@@ -67,6 +67,58 @@ def predictive_range_query(objects: Mapping, bounds: Sequence[float], horizon: f
     return results
 
 
+def continuous_range_query(objects: Mapping, bounds: Sequence[float], horizon: float):
+    """Find objects whose constant-velocity path enters a rectangle by horizon.
+
+    Returns (object_id, first_contact_position, contact_time) in mapping order.
+    This is an exact point/rectangle query for linear motion, without an
+    uncertainty envelope. A path already inside the rectangle contacts at 0.
+    """
+    if not isinstance(objects, Mapping):
+        raise ValueError("objects must be a mapping")
+    if isinstance(bounds, (str, bytes)) or not isinstance(bounds, Sequence) or len(bounds) != 4:
+        raise ValueError("bounds must be (xmin, ymin, xmax, ymax)")
+    xmin, ymin, xmax, ymax = (_number(v, "bounds") for v in bounds)
+    if xmin > xmax or ymin > ymax:
+        raise ValueError("rectangle bounds must be ordered")
+    dt = _number(horizon, "horizon")
+    if dt < 0:
+        raise ValueError("horizon must be non-negative")
+    results = []
+    for object_id, state in objects.items():
+        if isinstance(state, (str, bytes)) or not isinstance(state, Sequence) or len(state) != 4:
+            raise ValueError(f"state for {object_id!r} must be (x, y, vx, vy)")
+        x, y, vx, vy = (_number(v, f"state for {object_id!r}") for v in state)
+        end_x, end_y = _advance(x, y, vx, vy, dt)
+        dx, dy = end_x - x, end_y - y
+        # Liang-Barsky clipping: retain the earliest parameter on [0, 1]
+        # for which the segment lies inside the closed rectangle.
+        lower, upper = 0.0, 1.0
+        clipped = True
+        for p, q in ((-dx, x - xmin), (dx, xmax - x),
+                     (-dy, y - ymin), (dy, ymax - y)):
+            if p == 0:
+                if q < 0:
+                    clipped = False
+                    break
+                continue
+            ratio = q / p
+            if p < 0:
+                lower = max(lower, ratio)
+            else:
+                upper = min(upper, ratio)
+            if lower > upper:
+                clipped = False
+                break
+        if clipped and 0.0 <= lower <= 1.0:
+            contact_x = x + lower * dx
+            contact_y = y + lower * dy
+            contact_time = lower * dt
+            if not all(math.isfinite(v) for v in (contact_x, contact_y, contact_time)):
+                raise ValueError("continuous-query result overflowed finite numeric range")
+            results.append((object_id, (contact_x, contact_y), contact_time))
+    return results
+
 def dead_reckoning_update_required(reported_position, reported_velocity,
                                    elapsed_time, observed_position, *, tolerance):
     """Request a report when observed error exceeds the prediction tolerance."""

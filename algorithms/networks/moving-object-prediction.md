@@ -18,12 +18,12 @@ extrapolated position by more than a caller-supplied tolerance. The threshold
 is strict. Production systems may use anisotropic uncertainty, acceleration
 bounds, network constraints or communication cost.
 
-For n objects, a linear scan of one rectangle query costs O(n) time and
+For a continuous query over a finite horizon, constant velocity traces a line segment. Liang–Barsky clipping finds the earliest intersection of that segment with a closed axis-aligned rectangle, including a path that enters and exits before the horizon endpoint. This exact point-path query has no uncertainty envelope; it is distinct from the endpoint disk query.\n\nFor n objects, a linear scan of one rectangle query costs O(n) time and
 O(k) result storage for k matches. A TPR-tree or another spatiotemporal index
 is needed for repeated large-population queries.
 
 The [reference package](../../implementations/python/moving-object-prediction/README.md)
-is not a TPR-tree, HR-tree, trajectory database or probabilistic motion model.
+is not a TPR-tree, HR-tree, trajectory database or probabilistic motion model. It also does not model curved paths or continuous uncertainty regions.
 
 Reference: Saltenis, S., Jensen, C. S., Leutenegger, S. T., & Lopez, M. A.
 (2000). Indexing the Positions of Continuously Moving Objects. Proceedings
