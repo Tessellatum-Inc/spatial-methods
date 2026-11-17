@@ -279,3 +279,5 @@ These are connected teaching materials, not interchangeable copies of the same e
 - [Thermal hotspot screening](python/thermal-hotspot-detection/README.md): robust local-context anomaly screening with NaN-aware median/MAD diagnostics.
 
 - [Point-cloud voxelization](python/point-cloud-voxelization/README.md): sparse voxel keys, point mappings, counts, centroids and coordinate extrema.
+
+- [Vecchia GP approximation](python/vecchia-approximation/README.md): nearest-predecessor conditional likelihood with a squared-exponential covariance baseline.
