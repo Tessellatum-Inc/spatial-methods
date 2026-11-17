@@ -490,3 +490,6 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [Drought and vegetation-condition indicators](domain-modeling/drought-condition-indices.md) — distinguish SPI, VCI, TCI and VHI from SPEI, PDSI and growing degree days.
+
+
+- [Categorical landscape patch metrics](biodiversity/landscape-patch-metrics.md) — connected patches, largest-patch index, internal edge density and Shannon class diversity.
