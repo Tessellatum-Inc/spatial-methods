@@ -242,3 +242,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Cloud and shadow quality masks
 
 - [Landsat QA_PIXEL, Sentinel-2 SCL and cloud-probability masks](python/qa-cloud-masks/README.md): deterministic quality-layer interpretation with configurable clear-class handling, tests and an [implementation walkthrough](python/qa-cloud-masks/implementation-walkthrough.md).
+
+
+### Districting and territory design
+
+- [Polygon compactness metrics](python/districting-compactness/README.md): Polsby–Popper, Reock and Schwartzberg scores with a deterministic minimum enclosing circle, tests and an [implementation walkthrough](python/districting-compactness/implementation-walkthrough.md).

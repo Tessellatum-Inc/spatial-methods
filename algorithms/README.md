@@ -404,3 +404,6 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [QA-based cloud and shadow masks](remote-sensing/qa-cloud-masks.md) — Landsat QA_PIXEL, Sentinel-2 SCL and supplied cloud-probability thresholding.
+
+
+- [Districting compactness metrics](optimization/districting-compactness.md) — Polsby–Popper, Reock and Schwartzberg with a minimum enclosing circle.

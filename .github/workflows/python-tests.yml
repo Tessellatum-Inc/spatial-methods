@@ -799,6 +799,9 @@ jobs:
           - example: qa-cloud-masks
             directory: implementations/python/qa-cloud-masks
             pythonpath: ""
+          - example: districting-compactness
+            directory: implementations/python/districting-compactness
+            pythonpath: ""
 
     steps:
       - name: Check out repository

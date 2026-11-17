@@ -814,3 +814,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Add random-forest classification with vote fractions and feature importances.
 - [x] Add deterministic synthetic class fixtures, invalid-parameter tests and feature-dimension validation.
 - [ ] Add spatially blocked model selection, probability calibration, XGBoost/LightGBM and stacked generalization as separate methods.
+
+
+## Districting compactness metrics — 17 November 2026
+
+- [x] Implement Polsby–Popper, Reock and Schwartzberg metrics for simple planar polygon rings.
+- [x] Add a deterministic minimum enclosing circle and analytic square/circle/triangle fixtures.
+- [x] Add orientation, closure, degenerate geometry and collinear-point tests; register in Python CI.
+- [ ] Add districting algorithms (ReCom/MCMC/Flip), territory design and set-partitioning methods separately.
