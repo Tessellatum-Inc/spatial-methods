@@ -86,6 +86,10 @@ def geographically_weighted_scores(coordinates, values, radius):
     mean = (weights @ y) / sums
     variance = (weights @ ((y[None, :] - mean[:, None]) ** 2)) / sums
     scale = np.sqrt(variance)
+    # A perfectly constant neighbourhood has zero local variance. Fall back
+    # to the global population scale so a genuine local spike is not hidden.
+    fallback = float(y.std(ddof=0))
+    scale = np.where(scale > np.finfo(float).eps, scale, fallback)
     score = np.zeros_like(y)
     np.divide(y - mean, scale, out=score, where=scale > np.finfo(float).eps)
     return score
