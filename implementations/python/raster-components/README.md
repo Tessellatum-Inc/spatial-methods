@@ -36,3 +36,13 @@ connectivity and optional validity barriers. `run_length_encode` and
 for finite numeric 2-D arrays, preserving shape and NumPy dtype. This simple
 RLE format is a teaching representation, not a standardized interchange
 format or a substitute for compression tuned to arbitrary imagery.
+
+
+## Multiresolution box pyramid
+
+`build_box_pyramid` constructs a spatial pyramid for 2-D rasters or
+(row, column, band) arrays. Each level averages non-NoData values in each
+2x2 spatial block, including partial blocks at odd edges. NaNs are ignored;
+an all-NoData output block remains NaN. Levels include the original array and
+stop early at 1x1. This is a transparent box-reduction baseline, not a
+Gaussian/Laplacian pyramid or a scale-space implementation.

@@ -42,11 +42,21 @@ dtype metadata. Decoding validates the run total and restores the original
 shape and dtype. RLE is effective for long homogeneous runs, but can expand
 high-entropy imagery and is not a standardized file format.
 
+## Multiresolution box pyramid
+
+A simple raster pyramid can be built by repeatedly averaging 2x2 spatial
+blocks. The package's `build_box_pyramid` accepts one-band or
+(row, column, band) arrays, handles odd dimensions with partial edge blocks,
+and ignores NaN NoData values per output band. An all-NoData block remains
+NoData. This box-reduction pyramid is deliberately distinguished from
+Gaussian/Laplacian pyramids, which require a specified smoothing kernel and
+different reconstruction properties.
+
 ## Interpretation and limitations
 
 - Component IDs are arbitrary identifiers assigned by scan order, not class values or importance rankings.
 - 4- and 8-connectivity can produce different component counts and sizes.
-- This baseline does not polygonize components, compute shape descriptors or reconcile labels across distributed tiles. The RLE format is not bit-packed, entropy-coded, tiled or interoperable with external raster formats.
+- This baseline does not polygonize components, compute shape descriptors or reconcile labels across distributed tiles. The RLE format is not bit-packed, entropy-coded, tiled or interoperable with external raster formats. The box pyramid is not a Gaussian/Laplacian scale-space and does not preserve radiometric statistics beyond block means.
 - Production implementations may use run-length encoding, union-find or tiled algorithms to improve memory use and throughput.
 
 ## Exercises

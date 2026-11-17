@@ -123,3 +123,26 @@ def test_rle_single_run_and_invalid_streams():
     with pytest.raises(ValueError): run_length_encode(np.empty((0,2)))
     with pytest.raises(ValueError): run_length_decode({"shape":(2,2),"dtype":"<i8","runs":[(1,3)]})
     with pytest.raises(ValueError): run_length_decode({"shape":(1,1),"dtype":"<i8","runs":[(1,0)]})
+
+
+def test_box_pyramid_reduces_odd_edges_and_preserves_original():
+    from connected_components import build_box_pyramid
+    raster = np.array([[1,3,5],[7,9,11],[13,15,17]], dtype=np.int16)
+    levels = build_box_pyramid(raster, levels=3)
+    assert [x.shape for x in levels] == [(3,3),(2,2),(1,1)]
+    np.testing.assert_array_equal(levels[1], [[5,8],[14,17]])
+    assert levels[2][0,0] == pytest.approx(11)
+
+
+def test_box_pyramid_ignores_nodata_and_handles_bands():
+    from connected_components import build_box_pyramid
+    raster = np.array([[[1,10],[np.nan,20]],[[3,np.nan],[5,40]]], dtype=float)
+    reduced = build_box_pyramid(raster, levels=2)[1]
+    np.testing.assert_allclose(reduced[0,0], [3, 25])
+
+
+def test_box_pyramid_validates_levels_and_infinite_values():
+    from connected_components import build_box_pyramid
+    with pytest.raises(ValueError): build_box_pyramid([[1]], levels=0)
+    with pytest.raises(ValueError): build_box_pyramid([[float("inf")]], levels=1)
+    with pytest.raises(ValueError): build_box_pyramid([1,2], levels=1)

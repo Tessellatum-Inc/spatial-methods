@@ -233,3 +233,46 @@ def run_length_decode(encoded: dict) -> np.ndarray:
     if total != shape[0] * shape[1]:
         raise ValueError("run counts do not match encoded shape")
     return np.asarray(values, dtype=dtype).reshape(tuple(shape), order="C")
+
+
+def build_box_pyramid(
+    raster: Sequence[Sequence[object]] | np.ndarray,
+    *,
+    levels: int,
+) -> list[np.ndarray]:
+    """Build a spatial box-reduction pyramid; NaNs are ignored in each 2x2 mean.
+
+    Accepts a 2-D single-band array or 3-D (rows, columns, bands) array.
+    The original array is copied as float64; each next level has ceil-half
+    spatial dimensions. The number of returned levels includes the original.
+    """
+    data = np.asarray(raster, dtype=np.float64)
+    if data.ndim not in (2, 3) or data.size == 0:
+        raise ValueError("raster must be a non-empty 2D or 3D array")
+    if np.isinf(data).any():
+        raise ValueError("raster cannot contain infinite values")
+    if isinstance(levels, bool) or not isinstance(levels, int) or levels < 1:
+        raise ValueError("levels must be a positive integer")
+    pyramid = [data.copy()]
+    for _ in range(levels - 1):
+        current = pyramid[-1]
+        rows, cols = current.shape[:2]
+        out_shape = ((rows + 1)//2, (cols + 1)//2) + current.shape[2:]
+        reduced = np.full(out_shape, np.nan, dtype=np.float64)
+        for r in range(out_shape[0]):
+            for c in range(out_shape[1]):
+                block = current[2*r:min(2*r+2, rows), 2*c:min(2*c+2, cols)]
+                if current.ndim == 2:
+                    valid_values = block[np.isfinite(block)]
+                    if valid_values.size:
+                        reduced[r,c] = valid_values.mean()
+                else:
+                    for band in range(current.shape[2]):
+                        values = block[:,:,band]
+                        valid_values = values[np.isfinite(values)]
+                        if valid_values.size:
+                            reduced[r,c,band] = valid_values.mean()
+        pyramid.append(reduced)
+        if reduced.shape[:2] == (1,1):
+            break
+    return pyramid
