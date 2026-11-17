@@ -425,3 +425,5 @@ Records may have different evidence and implementation status. Check the status 
 ## Record linkage
 
 - [String similarity and probabilistic record linkage](statistics/string-linkage.md) — edit distance, Jaro-Winkler, character n-gram cosine, Soundex, candidate blocking and Fellegi-Sunter log weights.
+
+- [Numeric map classification](statistics/map-classification.md) — equal interval, quantile and Fisher-Jenks natural breaks with explicit interval assignment.

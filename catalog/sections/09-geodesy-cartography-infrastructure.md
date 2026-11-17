@@ -44,11 +44,15 @@ A first affine control-point lesson and tested least-squares implementation are 
 
 The [string similarity and record-linkage lesson](../../algorithms/statistics/string-linkage.md) and [tested Python package](../../implementations/python/string-linkage/README.md) provide field-level similarity, phonetic coding, candidate generation and Fellegi-Sunter scoring baselines. They are not a production POI matching pipeline.
 
+## First numeric map-classification implementation
+
+The [numeric map-classification lesson](../../algorithms/statistics/map-classification.md) and [tested Python package](../../implementations/python/map-classification/README.md) cover equal interval, quantile and Fisher-Jenks natural breaks. Bivariate classification and perceptual color design remain open.
+
 ## Cartography and geovisualization
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Classification: Jenks natural breaks, quantiles, equal interval, bivariate choropleth, perceptual color scales | Map classification methods / visual encoding | 19 | Not checked — intake only |
+| Classification: Jenks natural breaks, quantiles, equal interval, bivariate choropleth, perceptual color scales | Map classification methods / visual encoding | 19 | Partial — tested exact Fisher-Jenks one-dimensional dynamic programming, empirical quantile and equal-interval breaks with explicit class-boundary assignment; bivariate choropleths, perceptual color scales, optimal class-count selection and source-entry review remain open |
 | Generalization: smoothing (Bezier, Gaussian, PAEK), aggregation, displacement, exaggeration, building generalization | Cartographic generalisation methods | 19 | Not checked — intake only |
 | Labeling: label placement optimization, collision-free layouts, glyph placement | Label placement and layout optimisation | 19 | Not checked — intake only |
 | Special maps: dot density, cartograms (Dorling, Gastner-Newman), flow maps with edge bundling (FDEB), hexbin maps, schematic and metro layout | Thematic map forms / cartogram and flow-map algorithms | 19 | Not checked — intake only |
