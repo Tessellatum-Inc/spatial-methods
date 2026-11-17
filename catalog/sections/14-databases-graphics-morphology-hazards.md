@@ -93,3 +93,8 @@ This section combines spatial database internals, graphics algorithms, image mor
 3. Document accessibility assumptions, travel-time inputs and population denominators.
 4. Verify hazard model versions, calibration domains and intended operational use.
 5. Treat cartographic mathematics and visualisation as part of analytical validity, not as decorative output.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 14 atomic completion register](../../docs/section-14-atomic-completion-register.md). The register preserves the source's provisional naming and distinguishes algorithms from models, datasets, software, standards, workflows and evaluation protocols. It is traceability infrastructure, not a verification or completion claim.
