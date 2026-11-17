@@ -435,3 +435,7 @@ Records may have different evidence and implementation status. Check the status 
 - [Positional accuracy and uncertainty propagation](statistics/uncertainty-propagation.md) — coordinate RMSE, Monte Carlo propagation and first-/total-order Sobol indices.
 
 - [Geohash encoding](geodesy/geohash.md) — WGS84 geohash encode/decode and cell bounds.
+
+## Remote sensing time series
+
+- [Dynamic and time-weighted DTW](remote-sensing/time-series-dtw.md) — sequence alignment with optional temporal mismatch penalties.

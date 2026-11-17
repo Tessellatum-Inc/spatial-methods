@@ -803,6 +803,9 @@ jobs:
             directory: implementations/python/districting-compactness
             pythonpath: ""
 
+          - example: time-series-dtw
+            directory: implementations/python/time-series-dtw
+            pythonpath: ""
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
