@@ -133,3 +133,26 @@ def test_two_pass_components_handles_empty_and_single_component_masks():
     labels, sizes = two_pass_connected_components(image, 4)
     assert np.unique(labels).tolist() == [1]
     assert sizes.tolist() == [20]
+
+def test_binary_granulometry_is_monotone_and_conserves_pattern_spectrum():
+    from morphology import binary_granulometry
+    image = np.zeros((15, 15), bool)
+    image[3:12, 3:12] = True
+    image[6, 6] = False
+    structures = [np.ones((1, 1), bool), np.ones((3, 3), bool), np.ones((5, 5), bool)]
+    result = binary_granulometry(image, structures)
+    areas, spectrum = result["areas"], result["pattern_spectrum"]
+    assert areas[0] == int(image.sum())
+    assert np.all(np.diff(areas) <= 0)
+    assert np.all(spectrum >= 0)
+    assert int(spectrum.sum()) == int(areas[0] - areas[-1])
+    assert areas[-1] < areas[0]
+
+
+def test_binary_granulometry_rejects_empty_or_non_nested_scale_families():
+    from morphology import binary_granulometry
+    image = np.ones((7, 7), bool)
+    with pytest.raises(ValueError):
+        binary_granulometry(image, [])
+    with pytest.raises(ValueError):
+        binary_granulometry(image, [np.ones((3, 3), bool), np.eye(3, dtype=bool)])

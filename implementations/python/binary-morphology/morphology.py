@@ -260,3 +260,27 @@ def two_pass_connected_components(image, connectivity=8):
             labels[y, x] = compact
             sizes[compact - 1] += 1
     return labels, np.asarray(sizes, dtype=np.int64)
+
+def binary_granulometry(image, structures):
+    """Measure a binary opening granulometry over nested structuring elements.
+
+    Returns original-plus-opened foreground areas and the pattern spectrum
+    (area removed at each successive scale). Structures must form an
+    increasing family around their common floor-centred origin.
+    """
+    a = _binary(image)
+    family = list(structures)
+    if not family:
+        raise ValueError("at least one structuring element is required")
+    offsets = [_structure(s) for s in family]
+    for previous, current in zip(offsets, offsets[1:]):
+        if not set(previous).issubset(current):
+            raise ValueError("structuring elements must be nested in increasing order")
+    areas = [int(np.count_nonzero(a))]
+    for structure in family:
+        area = int(np.count_nonzero(opening(a, structure)))
+        if area > areas[-1]:
+            raise RuntimeError("opening area increased; check nesting and border convention")
+        areas.append(area)
+    area_array = np.asarray(areas, dtype=np.int64)
+    return {"areas": area_array, "pattern_spectrum": area_array[:-1] - area_array[1:]}

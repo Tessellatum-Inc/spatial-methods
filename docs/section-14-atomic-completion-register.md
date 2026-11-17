@@ -80,7 +80,7 @@ Apply the [verification protocol](../catalog/verification-protocol.md) and [comp
 | S14-MM-04 | Closing | Morphological operation | Partial | Existing implementation tested; verify dilation/erosion composition and idempotence. |
 | S14-MM-05 | Hit-or-miss transform | Morphological operation | Partial | Existing implementation tested; verify foreground/background structuring elements. |
 | S14-MM-06 | Geodesic reconstruction | Morphological operation | Partial | Existing implementation tested; verify marker/mask ordering and convergence. |
-| S14-MM-07 | Granulometry | Morphological scale analysis | Open | Define size distribution and structuring-element family; test monotonicity. |
+| S14-MM-07 | Granulometry | Morphological scale analysis | Partial | Added binary opening granulometry for an explicitly nested structuring-element family; reports foreground area by scale and the area-difference pattern spectrum, with monotonicity/conservation tests: [binary morphology package](../implementations/python/binary-morphology/README.md). Grayscale granulometry and calibrated shape families remain open. |
 | S14-MM-08 | Max-tree | Component-tree structure | Open | Define upper-level-set tree and canonical representation; test attribute filtering. |
 | S14-MM-09 | Min-tree | Component-tree structure | Open | Define lower-level-set dual and tree construction; test reconstruction. |
 | S14-MM-10 | Alpha-tree | Component-tree structure | Verify | Resolve exact alpha-tree definition and relation to connectivity hierarchy. |

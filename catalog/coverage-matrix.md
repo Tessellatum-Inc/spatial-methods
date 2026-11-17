@@ -221,3 +221,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 **Section 14 — kd-tree ray traversal:** added a spatial median-split triangle kd-tree with AABB-cell clipping, straddler duplication, bounded recursion, near-first nearest-hit traversal and per-query de-duplication. Seeded brute-force differential tests and split-plane-parallel ray cases are included. Production SAH construction and robust triangle clipping remain open.
+
+
+**Section 14 — binary granulometry:** extended the existing binary morphology package with an opening granulometry over explicitly nested structuring elements. It reports foreground area by scale and the successive area-difference pattern spectrum; tests cover monotonicity, non-negative spectrum and total-area conservation. Grayscale granulometry, alternate shape families and source-specific validation remain open.
