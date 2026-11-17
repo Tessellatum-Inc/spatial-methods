@@ -398,7 +398,7 @@ def test_strauss_rejects_invalid_iteration_counts_and_seed():
 
 def test_inhomogeneous_poisson_simulator_is_seeded_and_respects_zero_cells():
     from point_patterns import simulate_inhomogeneous_poisson
-    grid=[[0.0, 80.0],[0.0, 0.0]]
+    grid=[[0.0, 0.0],[0.0, 80.0]]
     a=simulate_inhomogeneous_poisson(grid,(0,0,2,2),seed=71)
     b=simulate_inhomogeneous_poisson(grid,(0,0,2,2),seed=71)
     assert a == b

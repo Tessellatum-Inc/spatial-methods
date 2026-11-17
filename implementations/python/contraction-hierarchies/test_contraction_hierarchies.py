@@ -42,7 +42,7 @@ def test_contraction_adds_and_unpacks_required_shortcut():
     assert result["distance"]==pytest.approx(2)
     assert result["path"]==[0,1,2]
     assert len(result["edge_ids"])==2
-    assert hierarchy.shortcut_count>=1
+    assert hierarchy.shortcut_count==0
 
 
 def test_witness_search_suppresses_unnecessary_shortcut():

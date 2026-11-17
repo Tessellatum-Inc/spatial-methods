@@ -20,7 +20,7 @@ def test_etas_is_seeded_and_parent_genealogy_is_valid():
 
 
 def test_zero_branching_produces_background_only_events():
-    a=simulate_etas((0,0,10,10),5,.1,0,.01,1,2,2.3,1,.5,2,seed=8)
+    a=simulate_etas((0,0,10,10),5,.1,0,.01,1.1,2,2.3,1,.5,2,seed=8)
     assert np.all(a["is_immigrant"]) and np.all(a["parent_index"]==-1)
 
 
@@ -37,7 +37,7 @@ def test_invalid_etas_parameters_are_rejected(args):
 
 def test_etas_event_cap_is_enforced():
     with pytest.raises(OverflowError):
-        simulate_etas((0,0,1,1),2,100,0,.01,1,2,2.3,1,.1,2,seed=1,max_events=1)
+        simulate_etas((0,0,1,1),2,100,0,.01,1.1,2,2.3,1,.1,2,seed=1,max_events=1)
 
 
 def test_branching_coefficient_matches_requested_expected_offspring():

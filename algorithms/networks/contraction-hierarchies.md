@@ -6,11 +6,11 @@ After preprocessing, a query runs bidirectional Dijkstra over upward edges: the 
 
 ## Implemented baseline
 
-The Python package accepts directed nonnegative weighted edges, a supplied contraction permutation or deterministic static-degree order, performs unrestricted witness searches, and answers exact static queries with shortcut unpacking. Seeded random directed graphs are checked against independent all-pairs Dijkstra distances.
+The Python package accepts directed nonnegative weighted edges, a supplied contraction permutation or deterministic static-degree order, deliberately retains all potentially shortest two-edge shortcuts without witness pruning, and answers exact static queries with shortcut unpacking. Seeded random directed graphs are checked against independent all-pairs Dijkstra distances.
 
 ## Limits
 
-This is a correctness-focused teaching implementation, not a high-performance road router. Witness searches are unrestricted, the default order is a static degree heuristic, and no priority updates, nested dissection, witness caps, stall-on-demand, turn costs, dynamic customization, time-dependent costs or multimodal transfers are implemented.
+This is a correctness-focused teaching implementation, not a high-performance road router. Witness pruning is disabled, which can produce many shortcuts; the default order is a static degree heuristic, and no priority updates, nested dissection, witness caps, stall-on-demand, turn costs, dynamic customization, time-dependent costs or multimodal transfers are implemented.
 
 ## Sources
 

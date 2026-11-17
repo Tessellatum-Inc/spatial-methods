@@ -1,6 +1,6 @@
 # Contraction hierarchies — static directed routing
 
-This NumPy-free Python teaching implementation preprocesses a directed graph by contracting vertices in a supplied order, adding shortcut edges when no witness path of equal or lower cost avoids the contracted vertex. Queries use bidirectional upward Dijkstra searches and recursively unpack shortcuts to original edges.
+This NumPy-free Python teaching implementation preprocesses a directed graph by contracting vertices in a supplied order, adding an unpruned set of shortcut edges for every potentially shortest two-edge path through each contracted vertex. Queries use bidirectional upward Dijkstra searches and recursively unpack shortcuts to original edges.
 
 ## API
 
@@ -12,8 +12,8 @@ This NumPy-free Python teaching implementation preprocesses a directed graph by 
 
 Run `python -m pytest -q` from this directory.
 
-Tests compare all-pairs queries against an independent Dijkstra implementation on seeded random directed graphs, verify shortcut creation and witness suppression, and check path unpacking, parallel edges, zero weights, disconnected nodes and invalid inputs.
+Tests compare all-pairs queries against an independent Dijkstra implementation on seeded random directed graphs, verify shortcut creation and direct-edge dominance, and check path unpacking, parallel edges, zero weights, disconnected nodes and invalid inputs.
 
 ## Limits
 
-This is a correctness-oriented static reference implementation. Witness searches are unrestricted Dijkstra runs and can be expensive; the static degree order is not an advanced contraction-order heuristic. It does not implement nested-dissection orders, witness-search limits, priority updates, stall-on-demand, customizable contraction hierarchies, dynamic edge-weight updates, turn costs, time-dependent weights or multimodal transfer edges. It is not intended for continental-scale road networks.
+This is a correctness-oriented static reference implementation. Witness-based shortcut pruning is deliberately disabled: shortcut growth can be large, so this exactness-oriented baseline is for small graphs only. The static degree order is not an advanced contraction-order heuristic. It does not implement nested-dissection orders, witness-search limits, priority updates, stall-on-demand, customizable contraction hierarchies, dynamic edge-weight updates, turn costs, time-dependent weights or multimodal transfer edges. It is not intended for continental-scale road networks.

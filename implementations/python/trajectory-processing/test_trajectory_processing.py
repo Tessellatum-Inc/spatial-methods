@@ -45,7 +45,7 @@ def test_douglas_peucker_retains_corner_when_deviation_exceeds_tolerance():
 def test_dtw_identity_and_known_alignment_cost():
     a = [(0, 0), (1, 0), (2, 0)]
     assert dtw_distance(a, a) == pytest.approx(0)
-    assert dtw_distance([(0, 0), (2, 0)], [(0, 0), (1, 0), (2, 0)]) == pytest.approx(0)
+    assert dtw_distance([(0, 0), (2, 0)], [(0, 0), (1, 0), (2, 0)]) == pytest.approx(1)
 
 
 def test_dtw_window_matches_unconstrained_when_window_is_wide():

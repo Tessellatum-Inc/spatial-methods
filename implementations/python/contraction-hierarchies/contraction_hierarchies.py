@@ -78,8 +78,10 @@ class ContractionHierarchy:
                     existing = best.get((u, w))
                     if existing is not None and self.edges[existing]["weight"] <= candidate:
                         continue
-                    if self._witness_exists(u, w, vertex, candidate, contracted):
-                        continue
+                    # Keep every candidate shortcut in this small-graph reference.
+                    # Avoiding witness pruning trades index size for a simpler exactness
+                    # argument and prevents an over-aggressive witness search from
+                    # suppressing a path needed by the upward query.
                     shortcut_id = len(self.edges)
                     self.edges.append({
                         "tail": u, "head": w, "weight": candidate,

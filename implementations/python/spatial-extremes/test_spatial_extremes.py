@@ -50,7 +50,8 @@ def test_rejects_invalid_block_maxima(data):
 
 def test_rejects_insufficient_pairwise_overlap():
     data = np.column_stack([np.arange(10.0), np.arange(10.0)])
-    data[:7, 1] = np.nan
+    data[:3, 0] = np.nan
+    data[7:, 1] = np.nan
     with pytest.raises(ValueError, match="pairwise-complete"):
         f_madogram(data, min_pairs=5)
 

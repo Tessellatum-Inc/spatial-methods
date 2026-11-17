@@ -270,4 +270,9 @@ def morans_i_correlogram(
             for index, z_score, _standardized in valid:
                 extreme = sum(value >= abs(z_score) for value in max_statistics)
                 output[index]["p_value_maxT"] = (extreme + 1) / (permutations + 1)
+        # One non-empty band is one test: max-T equals the unadjusted result,
+        # including the zero-variance randomisation case.
+        nonempty = [record for record in output if record["statistic"] is not None]
+        if len(nonempty) == 1:
+            nonempty[0]["p_value_maxT"] = nonempty[0]["p_value"]
     return output

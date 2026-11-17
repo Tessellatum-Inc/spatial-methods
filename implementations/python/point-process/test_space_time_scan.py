@@ -47,7 +47,7 @@ def test_space_time_monte_carlo_is_reproducible_and_plus_one_corrected():
 
 
 @pytest.mark.parametrize("cases,pop,kwargs",[
-    (np.ones((4,4)),np.ones((4,4)),{}),
+    (np.ones((4,4))*1.5,np.ones((4,4)),{}),
     (np.zeros((4,4)),np.ones((4,4)),{}),
     (np.ones((4,3)),np.ones((4,4)),{}),
     (np.ones((4,4)),np.zeros((4,4)),{}),

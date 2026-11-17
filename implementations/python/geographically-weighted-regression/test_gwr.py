@@ -12,7 +12,7 @@ def grid_data():
 def test_adaptive_gwr_recovers_exact_global_linear_surface():
     coords, x, y = grid_data()
     result = gwr_fit(coords, x, y, 20, adaptive=True, kernel="gaussian")
-    np.testing.assert_allclose(result["coefficients"], [2, 3, -4], atol=1e-10)
+    np.testing.assert_allclose(result["coefficients"], np.tile([2, 3, -4], (len(y), 1)), atol=1e-10)
     np.testing.assert_allclose(result["fitted"], y, atol=1e-10)
     np.testing.assert_allclose(result["residuals"], 0, atol=1e-10)
 
