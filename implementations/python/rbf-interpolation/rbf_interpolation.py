@@ -8,6 +8,20 @@ import numpy as np
 _SUPPORTED = {"thin_plate", "cubic", "gaussian"}
 
 
+def _finite_scalar(value, *, name):
+    if isinstance(value, (bool, np.bool_)) or not isinstance(
+        value, (int, float, np.integer, np.floating)
+    ):
+        raise ValueError(f"{name} must be a finite numeric scalar")
+    try:
+        result = float(value)
+    except (OverflowError, TypeError, ValueError) as exc:
+        raise ValueError(f"{name} must be a finite numeric scalar") from exc
+    if not math.isfinite(result):
+        raise ValueError(f"{name} must be a finite numeric scalar")
+    return result
+
+
 def _finite_array(values, *, name, ndim):
     try:
         array = np.asarray(values, dtype=float)
@@ -55,11 +69,13 @@ class RBFInterpolator2D:
             raise ValueError("points must have shape (n, 2)")
         if len(samples) < 3 or len(observations) != len(samples):
             raise ValueError("at least three points and one value per point are required")
-        if kernel not in _SUPPORTED:
+        if not isinstance(kernel, str) or kernel not in _SUPPORTED:
             raise ValueError(f"kernel must be one of {sorted(_SUPPORTED)}")
-        if isinstance(epsilon, (bool, np.bool_)) or not np.isscalar(epsilon) or not math.isfinite(float(epsilon)) or epsilon <= 0:
+        epsilon = _finite_scalar(epsilon, name="epsilon")
+        smoothing = _finite_scalar(smoothing, name="smoothing")
+        if epsilon <= 0:
             raise ValueError("epsilon must be finite and positive")
-        if isinstance(smoothing, (bool, np.bool_)) or not np.isscalar(smoothing) or not math.isfinite(float(smoothing)) or smoothing < 0:
+        if smoothing < 0:
             raise ValueError("smoothing must be finite and non-negative")
 
         self.center_ = samples.mean(axis=0)
