@@ -42,7 +42,8 @@ class TriangleCoverageTests(unittest.TestCase):
   got=triangle_coverage([(-1,0),(2,0),(0,2)],2,2,origin=(0,0),cell_size=(.5,1.0))
   self.assertTrue(got)
   self.assertTrue(all(0 < value <= 1 for value in got.values()))
-  self.assertLess(sum(got.values()),3.0)
+  self.assertAlmostEqual(sum(got.values()) * 0.5, 1.5, places=10)
+  self.assertLess(sum(got.values()) * 0.5, 3.0)
 
  def test_degenerate_triangle_and_invalid_grid_are_rejected(self):
   with self.assertRaises(ValueError):triangle_coverage([(0,0),(1,1),(2,2)],3,3)
