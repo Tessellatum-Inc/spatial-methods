@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from drought_indices import standardized_precipitation_index,temperature_condition_index,vegetation_condition_index,vegetation_health_index
+from drought_indices import growing_degree_days,standardized_precipitation_index,temperature_condition_index,vegetation_condition_index,vegetation_health_index
 
 def test_vci_tci_vhi():
     np.testing.assert_allclose(vegetation_condition_index([.2,.5,.8],[.1]*3,[.9]*3),[12.5,50,87.5])
@@ -22,3 +22,26 @@ def test_spi_spatial_axis():
 def test_spi_validation():
     with pytest.raises(ValueError): standardized_precipitation_index([-1]*40)
     assert np.isnan(standardized_precipitation_index([1,2,3,4],min_samples=10)).all()
+
+
+def test_growing_degree_days_mean_method_and_upper_cap():
+    np.testing.assert_allclose(
+        growing_degree_days([5, 10, 20], [15, 20, 30], base_temperature=10),
+        [0, 5, 15],
+    )
+    np.testing.assert_allclose(
+        growing_degree_days([10, 20], [30, 40], base_temperature=10,
+                            upper_temperature=30),
+        [10, 20],
+    )
+
+
+def test_growing_degree_days_preserves_missing_and_validates():
+    values = growing_degree_days([5, np.nan], [15, 20], base_temperature=10)
+    assert values[0] == pytest.approx(0)
+    assert np.isnan(values[1])
+    with pytest.raises(ValueError):
+        growing_degree_days([20], [10], base_temperature=5)
+    with pytest.raises(ValueError):
+        growing_degree_days([5], [10], base_temperature=12,
+                            upper_temperature=10)
