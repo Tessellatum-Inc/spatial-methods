@@ -19,7 +19,7 @@ def test_adaptive_gwr_recovers_exact_global_linear_surface():
 def test_fixed_gaussian_bandwidth_recovers_linear_surface():
     coords, x, y = grid_data()
     result = gwr_fit(coords, x, y, 3.0, kernel="gaussian")
-    np.testing.assert_allclose(result["coefficients"], [2, 3, -4], atol=1e-10)
+    np.testing.assert_allclose(result["coefficients"], np.tile([2, 3, -4], (len(y), 1)), atol=1e-10)
 
 def test_compact_kernel_local_fit_and_diagnostics():
     coords, x, y = grid_data()

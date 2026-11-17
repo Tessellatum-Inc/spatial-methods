@@ -130,9 +130,9 @@ class ContractionHierarchy:
             for edge_id in edge_ids:
                 edge = self.edges[edge_id]
                 neighbour = edge["tail"] if reverse else edge["head"]
-                upward = (self.rank[neighbour] < self.rank[node]) if reverse else (
-                    self.rank[node] < self.rank[neighbour]
-                )
+                # Forward search follows upward original edges; reverse search
+                # follows upward edges in the reversed graph (originally downward).
+                upward = self.rank[node] < self.rank[neighbour]
                 if not upward:
                     continue
                 candidate = distance + edge["weight"]

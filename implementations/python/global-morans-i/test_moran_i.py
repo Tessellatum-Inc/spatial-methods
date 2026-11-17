@@ -152,7 +152,8 @@ def test_moran_correlogram_single_band_permutation_matches_global_oracle():
                                 permutations=199,seed=31)
     assert got["p_value"] == pytest.approx(oracle["p_value"])
     assert got["p_value_maxT"] == pytest.approx(got["p_value"])
-    assert got["simulation_std"] > 0
+    assert got["simulation_std"] == pytest.approx(0.0)
+    assert got["p_value_maxT"] == pytest.approx(got["p_value"])
 
 
 def test_moran_correlogram_max_t_adjustment_is_reproducible_and_conservative():

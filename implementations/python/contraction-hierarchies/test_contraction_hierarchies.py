@@ -42,10 +42,10 @@ def test_contraction_adds_and_unpacks_required_shortcut():
     assert result["distance"]==pytest.approx(2)
     assert result["path"]==[0,1,2]
     assert len(result["edge_ids"])==2
-    assert hierarchy.shortcut_count==0
+    assert hierarchy.shortcut_count>=1
 
 
-def test_witness_search_suppresses_unnecessary_shortcut():
+def test_direct_shortest_edge_dominates_longer_contracted_path():
     edges=[(0,1,1),(1,2,1),(0,2,1)]
     hierarchy=ContractionHierarchy(3,edges,order=[1,0,2])
     assert hierarchy.query(0,2)["distance"]==pytest.approx(1)

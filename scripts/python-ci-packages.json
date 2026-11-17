@@ -824,6 +824,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/random-walker-segmentation",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/ransac-plane-fitting",
     "pythonpath": ""
   },
