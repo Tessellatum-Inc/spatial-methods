@@ -29,7 +29,7 @@ def _validate(routes):
             for a, d in zip(trip.arrivals, trip.departures):
                 if not isfinite(a) or not isfinite(d) or a > d:
                     raise ValueError("trip times must be finite and arrival <= departure")
-            if any(trip.arrivals[i] > trip.departures[i+1] for i in range(len(route.stops)-1)):
+            if any(trip.departures[i] > trip.arrivals[i+1] for i in range(len(route.stops)-1)):
                 raise ValueError("trip times must be nondecreasing along the route")
             if trip.departures[0] < previous_first:
                 raise ValueError("trips must be sorted by first-stop departure")
@@ -81,8 +81,11 @@ def raptor(routes: Sequence[Route], access_times: Mapping[Hashable, float], *,
                         labels[destination] = candidate
                         preds[destination] = (origin, "walk", float(duration), round_no)
                         changed = True
+    # Access walking must be available before the first vehicle boarding.
+    base_predecessors = {}
+    walk_closure(base, base_predecessors, 0)
     rounds = [dict(base)]
-    predecessors = [{}]
+    predecessors = [base_predecessors]
     for round_no in range(1, max_transfers + 2):
         previous = rounds[-1]
         current = dict(previous)
