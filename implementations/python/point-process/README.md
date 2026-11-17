@@ -61,3 +61,8 @@ This is an uncorrected finite-network descriptive estimator. It does not correct
 - Toroidal spatial Hawkes simulation with exponential triggering, subcritical branching ratio, wrapped Gaussian spatial offsets and parent/generation identifiers. This is a finite-horizon simulator without pre-window temporal history; it is not ETAS or an estimation routine.
 
 - Simplified marked ETAS branching simulation with exponential magnitude excesses, normalized Omori delays, a power-law spatial triggering kernel, magnitude-dependent productivity and toroidal spatial boundaries. This is a finite-horizon simulator without pre-window history, not a fitted seismicity model.
+
+
+## Discrete space-time Poisson scan
+
+The companion `space_time_scan.py` module scans cylinders formed by centroid-centred circles crossed with contiguous discrete time-bin intervals. Counts and population exposure are T-by-N arrays; the null expectation is proportional to the cylinder's share of total area-time exposure. Conditional multinomial simulations preserve the total number of cases and calibrate the maximum over all candidate cylinders. This is a bounded grid-time baseline, not a continuous-time SaTScan reproduction.

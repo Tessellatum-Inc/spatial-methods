@@ -65,3 +65,8 @@ The [point-process package](../implementations/python/point-process/README.md) c
 2. Compare a case-count hotspot with a high-rate cluster after population adjustment.
 3. What changes when the maximum population fraction is reduced from 0.5 to 0.1?
 4. Why must the Monte Carlo simulation recompute the maximum over all candidate circles?
+
+
+## Space-time cylindrical scan
+
+A companion [discrete space-time Poisson scan](statistics/space-time-scan-statistic.md) searches centroid-centred circular spatial zones crossed with contiguous time-bin intervals. It uses area-time population exposure as the Poisson offset and conditional multinomial simulations to calibrate the maximum cylinder likelihood ratio. It is a discrete-grid teaching baseline, not a full continuous-time SaTScan reproduction.
