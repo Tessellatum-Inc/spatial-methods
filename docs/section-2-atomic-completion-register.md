@@ -98,7 +98,7 @@ This register decomposes grouped labels into auditable child records. Use the [v
 | S02-CL-14 | BIRCH | Hierarchical clustering/index | Verify | Verify CF-tree structure, threshold and leaf clustering; test streaming order. |
 | S02-CL-15 | STING | Grid-based clustering | Verify | Verify hierarchical grid statistics and pruning; test resolution effects. |
 | S02-CL-16 | CLIQUE | Subspace clustering | Verify | Verify dense-unit generation and Apriori property; test high-dimensional data. |
-| S02-CL-17 | Ward hierarchical clustering | Hierarchical clustering | Partial | Define linkage objective and distance constraints; test reducibility. |
+| S02-CL-17 | Ward hierarchical clustering | Hierarchical clustering | Partial | Exact dense agglomerative Ward linkage for finite Euclidean observations minimises the increase in within-cluster SSE, reports heights as sqrt(2 × ΔSSE), resolves ties deterministically and supports flat-tree cuts. Tests cover hand-calculated merge heights, partitions, ties/duplicate observations, singleton cuts and invalid inputs. This is not a spatial-contiguity-constrained Ward method; nearest-neighbour-chain acceleration and large-scale variants remain open. |
 | S02-CL-18 | Mean shift | Mode-seeking clustering | Partial | Define kernel/bandwidth and convergence; test boundary and scale sensitivity. |
 | S02-CL-19 | Affinity propagation | Message-passing clustering | Verify | Verify responsibility/availability updates and damping; test preference sensitivity. |
 | S02-CL-20 | Spectral clustering | Graph clustering | Partial | Define affinity, Laplacian and discretisation; test disconnected graphs. |
@@ -276,3 +276,8 @@ The Partial status for S02-PP-08 reflects the `j_function` baseline in `implemen
 ## Implementation reconciliation — finite-network Ripley's K
 
 The Partial status for S02-PP-26 reflects `network_ripley_k` in `implementations/python/point-process/network_point_patterns.py`. Events are represented by edge index and offset along that edge; distances consider direct travel on a shared edge and shortest alternate routes through network nodes. The estimator counts ordered pairs within each distance threshold and scales by total network length. Tests exercise direct and alternate paths, cycles, disconnected pairs, parallel edges and the count/scale formula. No endpoint, junction or varying-intensity edge correction is implemented, and the current estimator is descriptive rather than a fully calibrated network point-process test.
+
+
+## Implementation reconciliation — Ward hierarchical clustering
+
+The Partial status for S02-CL-17 reflects `implementations/python/ward-clustering/ward_clustering.py`. The exact dense baseline chooses the pair with minimum Ward increase in within-cluster sum of squares, reports merge heights as the square root of twice that increase, and provides deterministic tie handling and tree cuts. Tests compare a three-point example with hand-computed heights, check expected partitions, identical-point ties, singleton behaviour and invalid inputs. It uses finite Euclidean feature vectors and does not impose geographic adjacency or spatial contiguity; the straightforward pair search is cubic and intended for small datasets.
