@@ -100,7 +100,7 @@ def test_dowd_estimator_matches_median_scale_formula_and_is_robust_to_sign():
 
 def test_dowd_directional_estimator_and_validation():
     out = directional_semivariogram(
-        [(0, 0), (1, 0), (2, 0)], [0, 1, 4],
+        [(0, 0), (1, 0), (2, 0)], [0, 1, 3],
         [0, 1.5, 2.5], azimuth_deg=90, tolerance_deg=1, estimator="dowd"
     )
     assert out[0]["pairs"] == 2

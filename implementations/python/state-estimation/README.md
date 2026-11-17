@@ -1,4 +1,4 @@
-# Nonlinear state-estimation baselines
+# State-estimation and data-assimilation baselines
 
 This package contains small NumPy implementations of the extended Kalman filter (EKF) and scaled unscented Kalman filter (UKF) for discrete-time additive-noise state-space models.
 
