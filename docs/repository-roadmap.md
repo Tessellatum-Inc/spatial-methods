@@ -122,7 +122,7 @@ The goal is not to fill folders or publish pages quickly. The goal is a collecti
 - [x] Tests and documented input contracts.
 - [x] Add a regression test for a ray passing through a concave vertex in point-in-polygon.
 - [x] A benchmark report with its workload and limitations stated.
-- [x] GitHub Actions workflow configured to test all 150 Python implementation packages and execute all 173 notebooks. The k-d tree, quadtree and polygon-validity suites are included in the matrix; the quadtree and point-location labs are included in notebook execution.
+- [x] GitHub Actions workflow covers all 284 Python implementation packages through a checked-in package manifest and 240 isolated test shards (some shards run two packages in separate virtual environments), plus all 179 notebooks, internal-link/catalogue checks and the Clipper2 smoke test. The package-coverage checker verifies exact package-directory and notebook-manifest reconciliation; sharding keeps the workflow below GitHub's 256-job run limit.
 - [x] Confirm successful full-head Actions run `43563534022` on commit `2a340035372f45eb43e16770e6f41f2d6b78f70d`: all 81 workflow jobs passed, including 150 Python package suites, 173 notebook executions, internal-link checks and Clipper2 checks.
 - [x] Add regression tests for polygon validity, clipping, overlay topology and precision-grid input contracts.
 - [ ] Add regression tests whenever a real edge case is discovered.
