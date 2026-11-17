@@ -104,3 +104,8 @@ Finally, add a turn restriction. Explain why the state may need to represent the
 - [OSRM routing algorithms overview](https://github.com/Project-OSRM/osrm-backend/wiki/Algorithms).
 
 **Scope:** Dijkstra, A*, Bellman–Ford and Floyd–Warshall have runnable baselines. Contraction hierarchies, hub labels and customizable route planning remain research/survey material, not implemented algorithms.
+
+
+## Hierarchical acceleration
+
+[Contraction hierarchies](contraction-hierarchies.md) provide a static shortcut-based preprocessing and bidirectional upward-query baseline. This implementation is a correctness reference; advanced order heuristics and dynamic customization are separate work.

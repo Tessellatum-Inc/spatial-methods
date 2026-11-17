@@ -144,6 +144,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/contraction-hierarchies",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/convex-decomposition",
     "pythonpath": "../ear-clipping"
   },
