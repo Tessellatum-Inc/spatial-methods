@@ -471,3 +471,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Point-cloud voxelization](photogrammetry/point-cloud-voxelization.md): sparse XYZ voxel indexing and per-cell summaries.
 
 - [Vecchia Gaussian-process approximation](geostatistics/vecchia-approximation.md): nearest-predecessor Gaussian likelihood factorisation with an exact all-neighbour check.
+
+- [Knox space-time interaction test](geostatistics/knox-space-time-test.md): pair-count statistic with a plus-one temporal-label permutation p-value.
