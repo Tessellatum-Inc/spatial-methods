@@ -32,6 +32,9 @@ jobs:
       max-parallel: 32
       matrix:
         include:
+          - example: spatial-simulation
+            directory: implementations/python/spatial-simulation
+            pythonpath: ""
           - example: raster-reclassification
             directory: implementations/python/raster-reclassification
             pythonpath: ""
