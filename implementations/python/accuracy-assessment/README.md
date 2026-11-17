@@ -1,4 +1,4 @@
-# Classification and segmentation accuracy assessment
+# Classification, regression, retrieval and calibration metrics
 
 Dependency-free reference functions for a reference-row/prediction-column
 confusion matrix; overall, producer and user accuracy; Cohen's kappa;
