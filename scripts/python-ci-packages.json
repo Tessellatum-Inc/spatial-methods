@@ -952,6 +952,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/spatial-extremes",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/spatial-image-filters",
     "pythonpath": ""
   },
