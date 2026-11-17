@@ -291,3 +291,65 @@ def test_alpha_tree_matches_independent_threshold_component_oracle(connectivity)
             if node["alpha"] == float(alpha)
         }
         assert actual == expected
+
+
+
+def _threshold_area_filter_oracle(image, min_area, polarity, connectivity):
+    """Independent threshold-set oracle; deliberately avoids component trees."""
+    fallback = image.min() if polarity == "max" else image.max()
+    result = np.full(image.shape, fallback, dtype=image.dtype)
+    for level in np.unique(image):
+        mask = image >= level if polarity == "max" else image <= level
+        labels, sizes = connected_components(mask, connectivity)
+        for label, size in enumerate(sizes, start=1):
+            if size >= min_area:
+                region = labels == label
+                if polarity == "max":
+                    result[region] = np.maximum(result[region], level)
+                else:
+                    result[region] = np.minimum(result[region], level)
+    return result
+
+
+@pytest.mark.parametrize("connectivity", [4, 8])
+@pytest.mark.parametrize("polarity", ["max", "min"])
+def test_grayscale_area_attribute_filter_matches_threshold_set_oracle(connectivity, polarity):
+    from morphology import grayscale_area_attribute_filter
+    rng = np.random.default_rng(8140 + connectivity)
+    for _ in range(12):
+        image = rng.integers(0, 8, size=(6, 7), dtype=np.int16)
+        for min_area in (1, 2, 4, 9, image.size + 1):
+            actual = grayscale_area_attribute_filter(image, min_area, polarity, connectivity)
+            expected = _threshold_area_filter_oracle(image, min_area, polarity, connectivity)
+            assert np.array_equal(actual, expected)
+
+
+def test_grayscale_area_opening_and_closing_have_expected_filter_properties():
+    from morphology import grayscale_area_attribute_filter
+    image = np.full((7, 9), 10, dtype=np.int16)
+    image[1, 1] = 30
+    image[3:5, 4:6] = 25
+    image[5, 7] = 0
+    opened = grayscale_area_attribute_filter(image, 2, "max", 4)
+    closed = grayscale_area_attribute_filter(image, 2, "min", 4)
+    assert np.all(opened <= image)
+    assert np.all(closed >= image)
+    assert opened[1, 1] == 10
+    assert np.all(opened[3:5, 4:6] == 25)
+    assert closed[5, 7] == 10
+    assert np.array_equal(grayscale_area_attribute_filter(image, 1, "max"), image)
+    assert np.array_equal(grayscale_area_attribute_filter(image, 1, "min"), image)
+    assert np.array_equal(grayscale_area_attribute_filter(opened, 2, "max", 4), opened)
+    assert np.array_equal(grayscale_area_attribute_filter(closed, 2, "min", 4), closed)
+
+
+def test_grayscale_area_filter_rejects_invalid_parameters():
+    from morphology import grayscale_area_attribute_filter
+    image = np.arange(9).reshape(3, 3)
+    for value in (0, -1, 1.5, True):
+        with pytest.raises(ValueError):
+            grayscale_area_attribute_filter(image, value)
+    with pytest.raises(ValueError):
+        grayscale_area_attribute_filter(image, 2, polarity="alpha")
+    with pytest.raises(ValueError):
+        grayscale_area_attribute_filter(image, 2, connectivity=6)

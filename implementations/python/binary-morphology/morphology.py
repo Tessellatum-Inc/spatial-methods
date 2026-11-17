@@ -450,3 +450,52 @@ def grayscale_alpha_tree(image, connectivity=4):
         previous = current
     return {"connectivity": connectivity, "shape": (h, w), "nodes": nodes,
             "roots": [node["id"] for node in nodes if node["parent"] is None]}
+
+
+
+def grayscale_area_attribute_filter(image, min_area, polarity="max", connectivity=4):
+    """Apply a grayscale area opening (max-tree) or area closing (min-tree).
+
+    min_area is the minimum connected-component pixel count to retain.
+    Bright upper-level components smaller than the threshold are lowered for
+    max-tree opening; dark lower-level components are raised for min-tree
+    closing. This explicit component-tree reference is for small teaching
+    rasters, not production-scale images.
+    """
+    a = np.asarray(image)
+    if a.ndim != 2 or a.size == 0 or not (
+        np.issubdtype(a.dtype, np.number) or np.issubdtype(a.dtype, np.bool_)
+    ):
+        raise ValueError("image must be a non-empty 2-D numeric array")
+    if not np.all(np.isfinite(a)):
+        raise ValueError("image must contain finite values")
+    if not isinstance(min_area, (int, np.integer)) or isinstance(min_area, (bool, np.bool_)) or min_area < 1:
+        raise ValueError("min_area must be a positive integer")
+    if polarity not in ("max", "min"):
+        raise ValueError("polarity must be 'max' or 'min'")
+
+    tree = grayscale_component_tree(a, polarity=polarity, connectivity=connectivity)
+    nodes = tree["nodes"]
+    h, w = a.shape
+    owner = np.full((h, w), -1, dtype=np.int64)
+    for node in nodes:
+        level = node["level"]
+        for y, x in node["pixels"]:
+            current = owner[y, x]
+            if current < 0:
+                owner[y, x] = node["id"]
+            else:
+                old_level = nodes[int(current)]["level"]
+                if (polarity == "max" and level > old_level) or (polarity == "min" and level < old_level):
+                    owner[y, x] = node["id"]
+
+    result = np.empty_like(a)
+    fallback = np.min(a) if polarity == "max" else np.max(a)
+    for y in range(h):
+        for x in range(w):
+            node_id = int(owner[y, x])
+            while node_id >= 0 and nodes[node_id]["area"] < int(min_area):
+                parent = nodes[node_id]["parent"]
+                node_id = -1 if parent is None else int(parent)
+            result[y, x] = fallback if node_id < 0 else nodes[node_id]["level"]
+    return result
