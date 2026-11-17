@@ -1064,6 +1064,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/tin-interpolation",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/topology-preserving-simplification",
     "pythonpath": ""
   },

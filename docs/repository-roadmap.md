@@ -725,7 +725,7 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Implement planar IDW with configurable power, radius and nearest-neighbour limits.
 - [x] Handle exact coordinate matches and duplicate observations deterministically; return None when a query has no supported neighbours.
 - [x] Add hand-calculated weighting, exact-point, radius, neighbour-selection and invalid-input tests; register in Python CI.
-- [ ] Execute full CI and evaluate anisotropy, barriers, network distances and uncertainty. Tested 2D thin-plate/cubic/Gaussian RBF interpolation and polynomial trend-surface baselines now exist; modified Shepard, non-RBF splines and TIN interpolation remain distinct open methods.
+- [ ] Execute full CI and evaluate anisotropy, barriers, network distances and uncertainty. Tested 2D thin-plate/cubic/Gaussian RBF, polynomial trend-surface and caller-triangulation TIN barycentric interpolation baselines now exist; modified Shepard and non-RBF splines remain open. The original Shepard inverse-distance formulation is covered by the IDW implementation.
 
 
 ## Mann-Kendall and Sen trend continuation — 17 November 2026
