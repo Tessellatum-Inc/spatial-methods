@@ -128,3 +128,8 @@ The repository includes a [validated SciPy/Qhull wrapper](../../implementations/
 - [Qhull documentation](http://www.qhull.org/), for the underlying convex-hull and tessellation library.
 
 **Evidence state:** Fortune's algorithm and complexity are grounded in the original paper; the family overview and Voronoi properties are supported by Aurenhammer's survey. The runnable implementation delegates to SciPy/Qhull and does not claim those papers' algorithms are implemented in this repository.
+
+
+## A runnable incremental construction: Bowyer–Watson
+
+The repository now also includes a dependency-free [Bowyer–Watson implementation](../../implementations/python/bowyer-watson/README.md). It inserts sites into a current triangulation, removes triangles whose circumcircles contain (or are numerically tied with) the new site, extracts the cavity boundary, and retriangulates that cavity. Its tests independently check counter-clockwise orientation, empty circumcircles, planar triangle counts and invalid inputs. This is a transparent teaching baseline: it scans all current triangles and uses floating-point predicates, so it is not a robust or output-sensitive production triangulator. The SciPy/Qhull wrapper remains useful as a separate library-backed comparison. Neither package implements Fortune's sweep-line Voronoi construction.
