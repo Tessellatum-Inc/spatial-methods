@@ -56,7 +56,7 @@ This register decomposes grouped labels into auditable child records. Use the [v
 | S02-PP-05 | Ripley's L | Variance-stabilising transform | Partial | Define transformation and reference line; test envelope calibration. |
 | S02-PP-06 | G function | Nearest-neighbour distribution | Partial | Define empirical estimator and censoring; compare with simulated point processes. |
 | S02-PP-07 | F function | Empty-space distribution | Partial | Define random-location sampling and edge correction; test CSR. |
-| S02-PP-08 | J function | Combined G/F statistic | Verify | Verify ratio definition and estimator; assess stability when 1-F approaches zero. |
+| S02-PP-08 | J function | Combined G/F statistic | Partial | Empirical nearest-neighbour G and Monte Carlo empty-space F are combined as J(r)=(1-G(r))/(1-F(r)); the implementation returns NaN where F reaches one. Tests check the ratio, seeded reproducibility, monotonicity of F and invalid controls. This teaching baseline lacks advanced edge correction and can be unstable in the upper tail as 1-F approaches zero. |
 | S02-PP-09 | Pair correlation function | Second-order point pattern statistic | Partial | Verify derivative/smoothing and edge correction; test known process patterns. |
 | S02-PP-10 | Homogeneous Poisson process | Point process model | Partial | Define intensity and CSR assumptions; test simulation and likelihood. |
 | S02-PP-11 | Cox process | Doubly stochastic point process family | Partial | Split log-Gaussian and other random intensity variants; test latent intensity. |
@@ -266,3 +266,8 @@ The Partial statuses for S02-PP-17, S02-PP-18, S02-PP-20 and S02-PP-21 are based
 ## Implementation reconciliation — Neyman–Scott and Gibbs point-process simulation
 
 S02-PP-12 is Partial because the point-process package implements seeded stationary Thomas (Gaussian offspring) and Matérn disc-cluster parent-offspring simulators with finite-window edge handling and parameter validation. S02-PP-13 and S02-PP-14 are Partial because it also implements a finite-window Strauss birth-death Metropolis–Hastings simulator with density proportional to βⁿγˢ, including Poisson (γ=1) and hard-core (γ=0) limits. Tests cover seeded reproducibility, window membership, limiting cases, minimum separation for hard-core sampling and invalid controls. These are bounded simulation baselines: they do not fit parameters, establish convergence of finite MCMC runs, or represent the entire Gibbs/Neyman–Scott families.
+
+
+## Implementation reconciliation — empirical J-function
+
+The Partial status for S02-PP-08 reflects the `j_function` baseline in `implementations/python/point-process/point_patterns.py`. It combines observed nearest-neighbour G with a seeded uniform-in-window Monte Carlo empty-space F estimate using J=(1-G)/(1-F), and explicitly returns NaN where the denominator reaches zero. Tests verify the combination, repeatability and invalid controls. The implementation is a rectangular-window teaching estimator without advanced edge correction; upper-tail instability and simulation uncertainty remain important, and it is not a general inhomogeneous/network J estimator.
