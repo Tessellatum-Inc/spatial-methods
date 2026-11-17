@@ -51,3 +51,31 @@ def test_invalid_radius_and_zone_definitions_are_rejected():
         enhanced_two_step_fca([[1]], [1], [1], [2, 1], [1, .5])
     with pytest.raises(ValueError):
         enhanced_two_step_fca([[1]], [1], [1], [2], [0])
+
+def test_gaussian_power_and_epanechnikov_decay_match_definitions():
+    from fca import gaussian_decay, power_decay, epanechnikov_decay
+    d = np.array([0., 1., 2.])
+    assert gaussian_decay(d, 2) == pytest.approx(np.exp(-.5 * (d/2)**2))
+    assert power_decay(d, 2, 2) == pytest.approx((1+d/2)**-2)
+    assert epanechnikov_decay(d, 2) == pytest.approx([1., .75, 0.])
+
+
+def test_decay_functions_are_monotone_and_kernel_has_compact_support():
+    from fca import gaussian_decay, power_decay, epanechnikov_decay
+    d = np.linspace(0, 20, 101)
+    for weights in (gaussian_decay(d, 3), power_decay(d, 3, 1.5), epanechnikov_decay(d, 3)):
+        assert np.all(np.diff(weights) <= 1e-14)
+        assert np.all((weights >= 0) & (weights <= 1))
+    assert epanechnikov_decay([3, 4], 3).tolist() == [0., 0.]
+
+
+@pytest.mark.parametrize("function,args", [
+    ("gaussian_decay", ([-1], 1)),
+    ("gaussian_decay", ([1], 0)),
+    ("power_decay", ([1], 1, 0)),
+    ("epanechnikov_decay", ([1], -1)),
+])
+def test_invalid_decay_inputs_are_rejected(function, args):
+    import fca
+    with pytest.raises(ValueError):
+        getattr(fca, function)(*args)

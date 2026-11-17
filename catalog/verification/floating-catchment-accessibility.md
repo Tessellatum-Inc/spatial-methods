@@ -7,3 +7,7 @@
 - Invalid dimensions, negative/non-finite data, invalid radius and malformed decay zones are rejected.
 
 Run `python -m pytest -q` in implementations/python/floating-catchment. CI must pass before release verification is complete.
+
+- Gaussian, regularised power and Epanechnikov kernels are checked against direct formula evaluations.
+- Seeded distance grids verify monotonicity, bounded weights and compact support for the Epanechnikov kernel.
+- Negative/non-finite distances and non-positive parameters are rejected.

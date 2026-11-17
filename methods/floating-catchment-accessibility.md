@@ -30,3 +30,13 @@ Run tests from `implementations/python/floating-catchment`.
 
 - Luo, W. & Wang, F. (2003). Measures of spatial accessibility to health care in a GIS environment: synthesis and a case study in the Chicago region. *Environment and Planning B*, 30(6), 865–884. https://doi.org/10.1068/b29120.
 - Luo, W. & Qi, Y. (2009). An enhanced two-step floating catchment area (E2SFCA) method for measuring spatial accessibility to primary care physicians. *Health & Place*, 15(4), 1100–1107. https://doi.org/10.1016/j.healthplace.2009.06.002.
+
+## Common travel-time decay functions
+
+Three reusable non-negative impedance kernels are implemented:
+
+- Gaussian: \(w(d)=\exp[-\tfrac12(d/\sigma)^2]\).
+- Regularised power: \(w(d)=(1+d/s)^{-\beta}\).
+- Epanechnikov compact-support kernel: \(w(d)=\max(0,1-(d/h)^2)\) for \(d<h\), and zero otherwise.
+
+All accept finite non-negative distances and strictly positive scale/bandwidth parameters. The regularised power form remains finite at zero distance. These functions provide weights only; parameter calibration, multimodal transfer impedance, mode choice and observed-utilisation validation are not inferred by the package.

@@ -29,3 +29,7 @@ The second step sums accessible facility ratios for each demand location:
 python -m pip install -r requirements.txt
 python -m pytest -q
 ~~~
+
+## Reusable distance-decay kernels
+
+The package also exposes Gaussian, regularised power-law and Epanechnikov compact-support weights. They return dimensionless weights in [0, 1] and can be supplied to downstream catchment or accessibility models. These functions do not select a scientifically appropriate bandwidth or calibrate a behavioural impedance function.

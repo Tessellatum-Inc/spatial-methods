@@ -72,3 +72,36 @@ def enhanced_two_step_fca(distance, demand, supply, distance_breaks, zone_weight
     access, ratios = _access(d, p, s, weights)
     return {"accessibility": access, "supply_demand_ratios": ratios,
             "catchment_weights": weights, "method": "E2SFCA"}
+
+def gaussian_decay(distance, scale):
+    """Gaussian travel-time decay exp(-0.5 * (distance / scale)^2)."""
+    d = np.asarray(distance, dtype=float)
+    s = float(scale)
+    if not np.all(np.isfinite(d)) or np.any(d < 0):
+        raise ValueError("distance must be finite and non-negative")
+    if not np.isfinite(s) or s <= 0:
+        raise ValueError("scale must be finite and positive")
+    return np.exp(-0.5 * (d / s) ** 2)
+
+
+def power_decay(distance, scale, exponent):
+    """Regularised power decay (1 + distance / scale)^(-exponent)."""
+    d = np.asarray(distance, dtype=float)
+    s, beta = float(scale), float(exponent)
+    if not np.all(np.isfinite(d)) or np.any(d < 0):
+        raise ValueError("distance must be finite and non-negative")
+    if not np.isfinite(s) or s <= 0 or not np.isfinite(beta) or beta <= 0:
+        raise ValueError("scale and exponent must be finite and positive")
+    return (1.0 + d / s) ** (-beta)
+
+
+def epanechnikov_decay(distance, bandwidth):
+    """Compact-support quadratic kernel max(0, 1 - (distance / h)^2)."""
+    d = np.asarray(distance, dtype=float)
+    h = float(bandwidth)
+    if not np.all(np.isfinite(d)) or np.any(d < 0):
+        raise ValueError("distance must be finite and non-negative")
+    if not np.isfinite(h) or h <= 0:
+        raise ValueError("bandwidth must be finite and positive")
+    u = d / h
+    return np.where(u < 1.0, 1.0 - u * u, 0.0)
