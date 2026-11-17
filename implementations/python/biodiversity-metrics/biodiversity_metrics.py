@@ -65,3 +65,100 @@ def weighted_endemism(presence):
     ranges = binary.sum(axis=0)
     weights = np.divide(1.0, ranges, out=np.zeros(ranges.shape, dtype=float), where=ranges > 0)
     return binary @ weights
+
+
+def landscape_patch_metrics(
+    classes,
+    *,
+    cell_size=1.0,
+    connectivity=4,
+    nodata=None,
+):
+    """Summarise class patches and internal edge density in a categorical raster.
+
+    Patches are 4- or 8-neighbour connected components within each class.
+    Edges count horizontal/vertical adjacencies between valid, different
+    classes; the outer raster boundary and NoData perimeter are excluded.
+    Area units are the square of cell_size; edge density is length per
+    hectare when cell_size is in metres.
+    """
+    from scipy import ndimage
+
+    raster = np.asarray(classes)
+    if raster.ndim != 2 or 0 in raster.shape:
+        raise ValueError("classes must be a non-empty 2D raster")
+    if not np.issubdtype(raster.dtype, np.number):
+        raise TypeError("classes must be numeric categorical values")
+    if np.issubdtype(raster.dtype, np.floating):
+        finite = np.isfinite(raster)
+        if nodata is None and not finite.all():
+            raise ValueError("non-finite cells require an explicit nodata value")
+    else:
+        finite = np.ones(raster.shape, dtype=bool)
+    if nodata is None:
+        valid = finite
+    else:
+        valid = finite & (raster != nodata)
+    if not valid.any():
+        raise ValueError("raster must contain at least one valid cell")
+    if not np.isfinite(cell_size) or cell_size <= 0:
+        raise ValueError("cell_size must be finite and positive")
+    if connectivity not in (4, 8):
+        raise ValueError("connectivity must be 4 or 8")
+
+    structure = ndimage.generate_binary_structure(2, 1 if connectivity == 4 else 2)
+    classes_present = np.unique(raster[valid])
+    cell_area = float(cell_size) ** 2
+    landscape_area = int(valid.sum()) * cell_area
+    records = {}
+    total_patches = 0
+    for cls in classes_present:
+        mask = valid & (raster == cls)
+        labels, count = ndimage.label(mask, structure=structure)
+        sizes = np.bincount(labels.ravel())[1:]
+        total_patches += int(count)
+        records[cls.item() if hasattr(cls, "item") else cls] = {
+            "patch_count": int(count),
+            "cell_count": int(sizes.sum()),
+            "area": float(sizes.sum() * cell_area),
+            "mean_patch_area": float(sizes.mean() * cell_area) if count else 0.0,
+            "largest_patch_index": float(sizes.max() * cell_area / landscape_area * 100.0)
+            if count else 0.0,
+            "patch_sizes_cells": sizes.astype(int),
+        }
+
+    horizontal = valid[:, :-1] & valid[:, 1:]
+    vertical = valid[:-1, :] & valid[1:, :]
+    edge_count = int(np.count_nonzero(horizontal & (raster[:, :-1] != raster[:, 1:])))
+    edge_count += int(np.count_nonzero(vertical & (raster[:-1, :] != raster[1:, :])))
+    edge_length = edge_count * float(cell_size)
+    landscape_area_ha = landscape_area / 10_000.0
+    return {
+        "classes": records,
+        "valid_cells": int(valid.sum()),
+        "landscape_area": float(landscape_area),
+        "total_patch_count": total_patches,
+        "edge_count": edge_count,
+        "edge_length": float(edge_length),
+        "edge_density_per_ha": float(edge_length / landscape_area_ha)
+        if landscape_area_ha > 0 else 0.0,
+        "connectivity": connectivity,
+    }
+
+
+def shannon_diversity(class_raster, *, nodata=None):
+    """Compute Shannon class diversity (natural logarithm) over valid cells."""
+    raster = np.asarray(class_raster)
+    if raster.ndim != 2 or raster.size == 0:
+        raise ValueError("class_raster must be a non-empty 2D array")
+    if np.issubdtype(raster.dtype, np.floating):
+        finite = np.isfinite(raster)
+    else:
+        finite = np.ones(raster.shape, dtype=bool)
+    valid = finite if nodata is None else finite & (raster != nodata)
+    values = raster[valid]
+    if values.size == 0:
+        raise ValueError("class_raster must contain at least one valid cell")
+    _, counts = np.unique(values, return_counts=True)
+    proportions = counts / counts.sum()
+    return float(-np.sum(proportions * np.log(proportions)))
