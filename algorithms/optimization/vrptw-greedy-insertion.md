@@ -34,3 +34,8 @@ For each appended customer, the baseline scans the remaining unserved customers 
 ## Validation
 
 Tests cover capacity, inclusive service windows, waiting, service durations, depot return feasibility, vehicle limits, deterministic route construction and explicit unserved-customer reporting. A production solver should additionally compare route feasibility and objective quality against an exact or trusted VRPTW benchmark on standard instance sets.
+
+
+## Verification record
+
+See the [implementation verification record](../../catalog/verification/vrptw-greedy-insertion.md) for tested scope and outstanding evidence.
