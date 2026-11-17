@@ -493,3 +493,6 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [Categorical landscape patch metrics](biodiversity/landscape-patch-metrics.md) — connected patches, largest-patch index, internal edge density and Shannon class diversity.
+
+
+- [Random-hyperplane locality-sensitive hashing](indexing/locality-sensitive-hashing.md) — multi-table approximate cosine search with exact candidate reranking.
