@@ -1266,5 +1266,9 @@
   {
     "directory": "implementations/python/zonal-statistics",
     "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/ray-triangle-intersection",
+    "pythonpath": ""
   }
 ]
