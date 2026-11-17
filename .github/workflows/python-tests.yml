@@ -424,9 +424,6 @@ jobs:
           - example: point-pattern-kde
             directory: implementations/python/point-pattern-kde
             pythonpath: ""
-          - example: k-medoids
-            directory: implementations/python/k-medoids
-            pythonpath: ""
           - example: clark-evans
             directory: implementations/python/clark-evans
             pythonpath: ""
@@ -827,6 +824,30 @@ jobs:
         working-directory: ${{ matrix.directory }}
         env:
           PYTHONPATH: ${{ matrix.pythonpath }}
+        run: python -m pytest -q
+
+  test-k-medoids:
+    name: Test k-medoids
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        working-directory: implementations/python/k-medoids
+        run: |
+          python -m pip install pytest
+          if [ -f requirements.txt ]; then
+            python -m pip install -r requirements.txt
+          fi
+
+      - name: Run tests
+        working-directory: implementations/python/k-medoids
         run: python -m pytest -q
 
   links:

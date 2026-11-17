@@ -23,6 +23,12 @@ matrix_dirs = re.findall(
     workflow,
     flags=re.MULTILINE,
 )
+standalone_dirs = sorted(set(re.findall(
+    r"^\s*working-directory:\s*(implementations/python/[^\s#]+)",
+    workflow,
+    flags=re.MULTILINE,
+)))
+ci_package_dirs = matrix_dirs + standalone_dirs
 
 notebook_files = {
     path.relative_to(ROOT).as_posix()
@@ -32,7 +38,7 @@ notebook_refs = ["notebooks/" + name for name, _timeout in notebook_manifest]
 
 errors = []
 for label, expected, actual in (
-    ("Python implementation directories", python_dirs, set(matrix_dirs)),
+    ("Python implementation directories", python_dirs, set(ci_package_dirs)),
     ("Learning notebooks", notebook_files, set(notebook_refs)),
 ):
     missing = sorted(expected - actual)
@@ -43,7 +49,7 @@ for label, expected, actual in (
         errors.append(f"{label} referenced but not present: " + ", ".join(stale))
 
 for label, values in (
-    ("Python matrix directories", matrix_dirs),
+    ("Python CI package references", ci_package_dirs),
     ("Notebook references", notebook_refs),
 ):
     duplicates = sorted(value for value, count in Counter(values).items() if count > 1)
