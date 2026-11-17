@@ -155,3 +155,63 @@ def test_binary_granulometry_rejects_empty_duplicate_or_invalid_radii():
     for radii in ([], [1, 1], [2, 1], [-1], [1.5], [True]):
         with pytest.raises(ValueError):
             binary_granulometry(image, radii)
+
+
+def test_max_tree_builds_nested_upper_level_components_and_root():
+    from morphology import grayscale_component_tree
+    image = np.array([[0, 0, 0], [0, 5, 0], [0, 0, 4]], dtype=float)
+    tree = grayscale_component_tree(image, polarity="max", connectivity=4)
+    nodes = tree["nodes"]
+    assert len(tree["roots"]) == 1
+    root = nodes[tree["roots"][0]]
+    assert root["level"] == 0
+    assert root["area"] == image.size
+    leaves = [node for node in nodes if node["parent"] == root["id"]]
+    assert sorted(node["level"] for node in leaves) == [4.0, 5.0]
+    for node in nodes:
+        if node["parent"] is not None:
+            parent = nodes[node["parent"]]
+            assert set(node["pixels"]).issubset(set(parent["pixels"]))
+            assert parent["level"] < node["level"]
+
+
+def test_min_tree_builds_nested_lower_level_components_and_root():
+    from morphology import grayscale_component_tree
+    image = np.array([[5, 5, 5], [5, 0, 5], [5, 5, 1]], dtype=float)
+    tree = grayscale_component_tree(image, polarity="min", connectivity=4)
+    nodes = tree["nodes"]
+    assert len(tree["roots"]) == 1
+    root = nodes[tree["roots"][0]]
+    assert root["level"] == 5
+    assert root["area"] == image.size
+    leaves = [node for node in nodes if node["parent"] == root["id"]]
+    assert sorted(node["level"] for node in leaves) == [0.0, 1.0]
+    for node in nodes:
+        if node["parent"] is not None:
+            parent = nodes[node["parent"]]
+            assert set(node["pixels"]).issubset(set(parent["pixels"]))
+            assert parent["level"] > node["level"]
+
+
+def test_component_trees_handle_plateaus_and_constant_images():
+    from morphology import grayscale_component_tree
+    plateau = np.array([[0, 0, 0, 0], [0, 3, 3, 0], [0, 3, 3, 0], [0, 0, 0, 0]])
+    tree4 = grayscale_component_tree(plateau, "max", 4)
+    tree8 = grayscale_component_tree(plateau, "max", 8)
+    assert len(tree4["nodes"]) == 2
+    assert len(tree8["nodes"]) == 2
+    constant = grayscale_component_tree(np.full((3, 5), 7), "min", 8)
+    assert len(constant["nodes"]) == 1
+    assert constant["nodes"][0]["area"] == 15
+    assert constant["roots"] == [0]
+
+
+def test_component_tree_rejects_invalid_inputs():
+    from morphology import grayscale_component_tree
+    for bad in ([], np.ones(3), np.ones((2, 2, 2)), np.array([[np.nan]])):
+        with pytest.raises(ValueError):
+            grayscale_component_tree(bad)
+    with pytest.raises(ValueError):
+        grayscale_component_tree(np.ones((2, 2)), "alpha")
+    with pytest.raises(ValueError):
+        grayscale_component_tree(np.ones((2, 2)), connectivity=6)

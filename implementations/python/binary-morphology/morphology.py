@@ -290,3 +290,98 @@ def binary_granulometry(image, radii):
         "areas": area_array,
         "pattern_spectrum": area_array[:-1] - area_array[1:],
     }
+
+
+def _grayscale_components(mask, connectivity):
+    """Return row-major connected components as sorted flat-index tuples."""
+    h, w = mask.shape
+    seen = np.zeros((h, w), dtype=bool)
+    neighbours = [(-1, 0), (0, -1), (0, 1), (1, 0)]
+    if connectivity == 8:
+        neighbours += [(-1, -1), (-1, 1), (1, -1), (1, 1)]
+    components = []
+    for y in range(h):
+        for x in range(w):
+            if not mask[y, x] or seen[y, x]:
+                continue
+            seen[y, x] = True
+            stack = [(y, x)]
+            pixels = []
+            while stack:
+                cy, cx = stack.pop()
+                pixels.append(cy * w + cx)
+                for dy, dx in neighbours:
+                    ny, nx = cy + dy, cx + dx
+                    if 0 <= ny < h and 0 <= nx < w and mask[ny, nx] and not seen[ny, nx]:
+                        seen[ny, nx] = True
+                        stack.append((ny, nx))
+            components.append(tuple(sorted(pixels)))
+    return components
+
+
+def grayscale_component_tree(image, polarity="max", connectivity=4):
+    """Build an explicit max-tree or min-tree for a finite 2-D grayscale raster.
+
+    The implementation repeatedly labels connected upper-level sets (max-tree)
+    or lower-level sets (min-tree), then links components as thresholds expand.
+    It is an inspectable reference, not a memory-efficient production algorithm:
+    pixel membership is stored per node and threshold components are recomputed.
+
+    Returns a dictionary with nodes and roots. Each node has a stable row-major
+    id, its birth level, sorted pixels as (row, column) pairs, area and a parent
+    node id (or None for a root). For a max-tree, parent levels are lower than
+    child levels; for a min-tree they are higher.
+    """
+    a = np.asarray(image)
+    if a.ndim != 2 or a.size == 0 or not (
+        np.issubdtype(a.dtype, np.number) or np.issubdtype(a.dtype, np.bool_)
+    ):
+        raise ValueError("image must be a non-empty 2-D numeric array")
+    if not np.all(np.isfinite(a)):
+        raise ValueError("image must contain finite values")
+    if polarity not in ("max", "min"):
+        raise ValueError("polarity must be 'max' or 'min'")
+    if connectivity not in (4, 8) or isinstance(connectivity, (bool, np.bool_)):
+        raise ValueError("connectivity must be 4 or 8")
+
+    levels = np.unique(a)
+    levels = levels[::-1] if polarity == "max" else levels
+    nodes = []
+    previous = []
+    h, w = a.shape
+
+    for level in levels:
+        mask = a >= level if polarity == "max" else a <= level
+        components = _grayscale_components(mask, connectivity)
+        current = []
+        previous_by_pixels = {pixels: node_id for pixels, node_id in previous}
+        for pixels in components:
+            exact = previous_by_pixels.get(pixels)
+            if exact is not None:
+                current.append((pixels, exact))
+                continue
+
+            node_id = len(nodes)
+            coordinates = tuple((index // w, index % w) for index in pixels)
+            nodes.append({
+                "id": node_id,
+                "level": level.item() if isinstance(level, np.generic) else level,
+                "pixels": coordinates,
+                "area": len(pixels),
+                "parent": None,
+            })
+            pixel_set = set(pixels)
+            for old_pixels, old_id in previous:
+                if set(old_pixels).issubset(pixel_set):
+                    nodes[old_id]["parent"] = node_id
+            current.append((pixels, node_id))
+        previous = current
+
+    roots = [node["id"] for node in nodes if node["parent"] is None]
+    return {
+        "polarity": polarity,
+        "connectivity": connectivity,
+        "shape": tuple(int(v) for v in a.shape),
+        "nodes": nodes,
+        "roots": roots,
+    }

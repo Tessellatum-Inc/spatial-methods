@@ -224,3 +224,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 **Section 14 — binary granulometry:** extended the existing binary morphology package with an opening granulometry over explicitly nested structuring elements. It reports foreground area by scale and the successive area-difference pattern spectrum; tests cover monotonicity, non-negative spectrum and total-area conservation. Grayscale granulometry, alternate shape families and source-specific validation remain open.
+
+
+**Section 14 — grayscale component trees:** added explicit max-tree and min-tree hierarchies to the binary morphology package. The reference builds connected upper- or lower-level components at each distinct gray level, links nested components, and records node levels, pixel membership, area and parent. Tests cover max/min nesting, parent containment, level ordering, plateaus, constant rasters and invalid inputs. This is an inspectable repeated-threshold baseline; scalable union-find construction, alpha trees and attribute-filter pruning remain open.

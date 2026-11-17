@@ -17,7 +17,7 @@ All operators use a false/background value outside the raster. Structuring eleme
 
 Inputs must be non-empty finite 2-D arrays and are interpreted as boolean masks. A structure must be a non-empty 2-D array with at least one active cell. Reconstruction requires marker subset mask and terminates at a fixed point; an optional iteration cap raises rather than returning an incomplete result. Component labels are deterministic in row-major seed order.
 
-Granulometry accepts strictly increasing non-negative integer radii and constructs full centred square structuring elements of side 2r+1; its pattern spectrum is the area removed between successive openings. The implementation does not include grayscale morphology, distance transforms, max/min component trees, alpha trees, contour tracing, random-walker or GrabCut segmentation, or MSPA. These are distinct methods and remain separate work.
+Granulometry accepts strictly increasing non-negative integer radii and constructs full centred square structuring elements of side 2r+1; its pattern spectrum is the area removed between successive openings. The component-tree reference recomputes connected components at every distinct gray level and stores pixel membership per node. It is intended for small teaching rasters; memory use can grow substantially with raster size and number of gray levels. Alpha trees, contour tracing, random-walker or GrabCut segmentation, and MSPA remain separate work.
 
 ## Reproduce
 
