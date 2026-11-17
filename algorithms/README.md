@@ -2,7 +2,17 @@
 
 Each record explains one method or operation, its assumptions, where it is useful, and what can go wrong. The collection is growing from the supplied [source inventory](../source-inventory/README.md); an entry is not treated as verified merely because it appears in that inventory.
 
-## Compositional statistics\n\n- [Compositional data geometry](statistics/compositional-data-geometry.md) — closure, centred log-ratio coordinates, multiplicative zero replacement and Aitchison distance.\n\n## Statistical surveillance\n\n- [Syndromic surveillance](statistics/syndromic-surveillance.md) — two-sided CUSUM and explicit EARS-style C1/C2/C3 aberration scores for count series.\n\n## Networks and mobility\n\n- [Flow-capturing location](networks/flow-capturing-location.md) — select a cardinality-constrained set of sites to maximize unique weighted path coverage.
+## Compositional statistics
+
+- [Compositional data geometry](statistics/compositional-data-geometry.md) — closure, centred log-ratio coordinates, multiplicative zero replacement and Aitchison distance.
+
+## Statistical surveillance
+
+- [Syndromic surveillance](statistics/syndromic-surveillance.md) — two-sided CUSUM and explicit EARS-style C1/C2/C3 aberration scores for count series.
+
+## Networks and mobility
+
+- [Flow-capturing location](networks/flow-capturing-location.md) — select a cardinality-constrained set of sites to maximize unique weighted path coverage.
 
 - [Network algorithms index](networks/README.md) — graph search, shortest paths, transit routing, network structure, optimisation and stable matching.
 
@@ -26,7 +36,11 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [Marching squares](raster/marching-squares.md) — extract line-segment isolines from a rectilinear scalar grid with explicit saddle and NoData handling.
 
-## Sampling and experimental design\n\n- [Space-filling sampling designs](statistics/space-filling-sampling.md) — Latin hypercube, centered LHS, multi-start maximin selection and k-means coverage for bounded continuous domains.\n\n## Interpolation and geostatistics
+## Sampling and experimental design
+
+- [Space-filling sampling designs](statistics/space-filling-sampling.md) — Latin hypercube, centered LHS, multi-start maximin selection and k-means coverage for bounded continuous domains.
+
+## Interpolation and geostatistics
 
 - [Mann-Kendall and Sen trend methods](statistics/mann-kendall-sen.md) — non-parametric monotonic trend test and median pairwise slope estimator.
 - [Fay-Herriot area-level model](statistics/fay-herriot.md) — REML area-level small-area estimation with empirical BLUP prediction.
@@ -43,7 +57,8 @@ Each record explains one method or operation, its assumptions, where it is usefu
 - [Polygon intersection](geometry/polygon-intersection.md) — construct the geometry shared by two inputs.
 - [Convex hull](geometry/convex-hull.md) — find the smallest convex set containing a finite planar point set, with Graham scan, Jarvis march (gift wrapping) and Quickhull implementations.
 - [Voronoi and Delaunay](geometry/voronoi-delaunay.md) — nearest-site regions and their Delaunay dual.
-- [Laplacian and Taubin mesh smoothing](geometry/mesh-smoothing.md) — smooth triangular surface meshes with uniform one-ring Laplacian and shrinkage-compensating Taubin passes.\n- [Alpha shapes](geometry/alpha-shapes.md) — parameterise a non-convex point-set envelope using Delaunay triangle circumradii.
+- [Laplacian and Taubin mesh smoothing](geometry/mesh-smoothing.md) — smooth triangular surface meshes with uniform one-ring Laplacian and shrinkage-compensating Taubin passes.
+- [Alpha shapes](geometry/alpha-shapes.md) — parameterise a non-convex point-set envelope using Delaunay triangle circumradii.
 - [Segment intersection](geometry/segment-intersection.md) — determine whether two line segments cross, touch or overlap.
 - [Bentley–Ottmann](geometry/bentley-ottmann.md) — find intersecting pairs across a set of segments using a plane sweep.
 - [Polygon validity](geometry/polygon-validity.md) — check whether rings, shells, holes and multi-part geometries satisfy the chosen geometry model; includes a tested Shapely inspection and explicit-repair workflow.
@@ -164,9 +179,13 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Remote sensing
 
-- [N-FINDR](remote-sensing/nfindr-endmembers.md) — iteratively maximise simplex volume to identify candidate hyperspectral endmembers.\n- [Automatic Target Generation Process (ATGP)](remote-sensing/atgp-endmembers.md) — select candidate spectra by iterative orthogonal residual-energy projection.\n- [Vertex Component Analysis (VCA)](remote-sensing/vca-endmembers.md) — extract candidate hyperspectral endmembers under a pure-pixel linear-mixture assumption.
+- [N-FINDR](remote-sensing/nfindr-endmembers.md) — iteratively maximise simplex volume to identify candidate hyperspectral endmembers.
+- [Automatic Target Generation Process (ATGP)](remote-sensing/atgp-endmembers.md) — select candidate spectra by iterative orthogonal residual-energy projection.
+- [Vertex Component Analysis (VCA)](remote-sensing/vca-endmembers.md) — extract candidate hyperspectral endmembers under a pure-pixel linear-mixture assumption.
 - [Fully Constrained Least Squares (FCLS)](remote-sensing/fcls-unmixing.md) — estimate nonnegative per-pixel abundance fractions constrained to sum to one.
-- [Constrained Energy Minimisation (CEM)](remote-sensing/cem-detection.md) — construct a unit-target-response filter that minimises output energy.\n- [Adaptive Coherence Estimator (ACE)](remote-sensing/ace-detection.md) — score target similarity in a background-whitened spectral space.\n- [Spectral matched filter](remote-sensing/spectral-matched-filter.md) — detect a known target signature against a global covariance model of background spectra.
+- [Constrained Energy Minimisation (CEM)](remote-sensing/cem-detection.md) — construct a unit-target-response filter that minimises output energy.
+- [Adaptive Coherence Estimator (ACE)](remote-sensing/ace-detection.md) — score target similarity in a background-whitened spectral space.
+- [Spectral matched filter](remote-sensing/spectral-matched-filter.md) — detect a known target signature against a global covariance model of background spectra.
 - [Spectral Angle Mapper and Spectral Information Divergence](remote-sensing/spectral-similarity.md) — compare pixel spectra with reference signatures using angular and information-theoretic distances.
 - [Reed–Xiaoli anomaly detection](remote-sensing/rx-anomaly.md) — score spectrally unusual pixels using global background Mahalanobis distance.
 - [Minimum Noise Fraction (MNF)](remote-sensing/mnf-transform.md) — whiten estimated noise covariance before ordering spectral components by signal-to-noise.
@@ -256,7 +275,8 @@ Not every spatial method is a standalone algorithm. See the [methods collection]
 - [Local Moran's I conditional permutation inference](statistics/local-morans-i-permutation.md) — identify local clusters and spatial outliers with conditional randomization and FDR-adjusted p-values.
 - [Heteroskedasticity diagnostics](statistics/heteroskedasticity-diagnostics.md) — run Koenker studentized Breusch–Pagan and White auxiliary-regression tests after OLS.
 - [Ramsey RESET](statistics/ramsey-reset.md) — test whether powers of fitted values improve an OLS specification using a nested partial F test.
-- [SAR/SEM/SDM profile-likelihood intervals](statistics/spatial-mle-profile-intervals.md) — invert a concentrated Gaussian likelihood-ratio test to quantify uncertainty in the spatial lag or error parameter, including the SDM.\n- [Spatial-lag Anderson–Rubin confidence sets](statistics/spatial-lag-ar-confidence-set.md) — invert candidate-value AR tests over a grid, preserving empty, disconnected and grid-limited sets.
+- [SAR/SEM/SDM profile-likelihood intervals](statistics/spatial-mle-profile-intervals.md) — invert a concentrated Gaussian likelihood-ratio test to quantify uncertainty in the spatial lag or error parameter, including the SDM.
+- [Spatial-lag Anderson–Rubin confidence sets](statistics/spatial-lag-ar-confidence-set.md) — invert candidate-value AR tests over a grid, preserving empty, disconnected and grid-limited sets.
 - [Geary's C](statistics/gearys-c.md) — measure global spatial autocorrelation through squared differences between neighbouring values.
 - [Spatial LM diagnostics](statistics/spatial-lm-diagnostics.md) — test classic and Bera-Yoon robust spatial lag and spatial error alternatives after an OLS null model.
 - [Spatial impacts](statistics/spatial-impacts.md) — decompose SAR/SDM marginal effects into average direct, indirect and total impacts.
