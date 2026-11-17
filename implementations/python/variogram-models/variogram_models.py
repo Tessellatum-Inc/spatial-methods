@@ -152,8 +152,11 @@ def fit_variogram_reml(points, values, *, model="exponential", initial=None):
     if initial is None:
         start = np.array([variance * 0.1, variance * 0.9, np.median(positive)])
     else:
-        if len(initial) != 3:
-            raise ValueError("initial must be (nugget, partial_sill, range)")
+        try:
+            if len(initial) != 3:
+                raise ValueError("initial must be (nugget, partial_sill, range)")
+        except TypeError as exc:
+            raise ValueError("initial must be (nugget, partial_sill, range)") from exc
         start = np.asarray(initial, dtype=float)
         if not np.isfinite(start).all() or np.any(start <= 0):
             raise ValueError("initial parameters must be finite and positive")
