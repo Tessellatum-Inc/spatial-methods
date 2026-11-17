@@ -72,6 +72,10 @@ def pam(
     distances = _validate_dissimilarity(dissimilarity)
     n = len(distances)
     k, max_iter, tol = _validate_controls(n, k, max_iter, tol)
+    if k == n:
+        medoids = np.arange(n, dtype=int)
+        return {"medoids": medoids, "labels": np.arange(n, dtype=int),
+                "cost": 0.0, "iterations": 0, "converged": True}
 
     first = int(np.argmin(distances.sum(axis=0)))
     medoids = [first]
