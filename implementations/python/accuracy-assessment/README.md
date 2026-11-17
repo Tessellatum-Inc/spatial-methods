@@ -4,7 +4,7 @@ Dependency-free reference functions for a reference-row/prediction-column
 confusion matrix; overall, producer and user accuracy; Cohen's kappa;
 quantity and allocation disagreement; per-class F1, intersection-over-union
 (IoU) and Dice; macro-F1 and mean IoU; binary change-detection Figure of Merit
-(FoM); and tolerance-aware binary boundary F1 for 2D masks.
+(FoM); tolerance-aware binary boundary F1 for 2D masks; regression MAE, RMSE and weighted R-squared; and top-label expected calibration error (ECE) with equal-width bins and optional sample weights.
 
 Run python -m pip install -r requirements.txt && python -m pytest -q.
 
@@ -21,3 +21,4 @@ quality, multi-date error propagation, probabilistic calibration metrics,
 regression/forecast metrics (including CRPS, NSE and KGE), or full sampling
 design. Do not interpret these pixel-count metrics as area-adjusted estimates
 when the validation sample design requires area weighting.
+\n\nRegression metrics use finite paired observations and optional non-negative sample weights. R-squared returns 1 for a perfect constant target and 0 for an imperfect constant target. ECE is top-label confidence calibration with equal-width bins; it is sensitive to bin count and sample size and is not a classwise or adaptive calibration estimator.\n
