@@ -33,10 +33,10 @@ def triangulate(points: Iterable[Sequence[float]]) -> tuple[Triangle, ...]:
 
     Returns CCW triangles indexing the input order. This transparent teaching
     implementation uses a super-triangle and scans every current triangle for
-    each insertion: O(n^2) typical bookkeeping, O(n^2) worst-case storage/time
-    behaviour is not promised. Predicates use float arithmetic, so nearly
-    degenerate inputs may be numerically ambiguous. Exactly cocircular choices
-    are resolved by insertion order (strictly-inside cavity test).
+    each insertion, giving O(n^2) time and O(n) working storage for ordinary
+    planar inputs. Predicates use float arithmetic and a scale-relative
+    tolerance, so nearly degenerate inputs may remain numerically ambiguous.
+    Cocircular choices are resolved deterministically by the insertion order.
     """
     raw = list(points)
     if len(raw) < 3:
@@ -57,7 +57,6 @@ def triangulate(points: Iterable[Sequence[float]]) -> tuple[Triangle, ...]:
     if span == 0 or not any(abs(_orient(pts[0], pts[1], p)) > 0 for p in pts[2:]):
         raise ValueError("points must span a non-collinear 2D area")
     cx, cy = (minx+maxx)/2, (miny+maxy)/2
-    # Large enclosing triangle; scaled relative to the input extent.
     super_ids = (len(pts), len(pts)+1, len(pts)+2)
     work = pts + [(cx-32*span, cy-16*span),
                   (cx+32*span, cy-16*span), (cx, cy+32*span)]
@@ -67,8 +66,14 @@ def triangulate(points: Iterable[Sequence[float]]) -> tuple[Triangle, ...]:
         for tri in triangles:
             a, b, c = (work[k] for k in tri)
             det = _incircle(a, b, c, point)
-            scale = max(1.0, *(abs(v) for q in (a,b,c,point) for v in q))
-            if det >= -1e-14 * scale**4:
+            # Incircle determinant has coordinate-units^4. Scale from
+            # point-relative differences, not absolute world coordinates:
+            # translating a dataset must not change the tolerance.
+            local_scale = max(abs(a[0]-point[0]), abs(a[1]-point[1]),
+                              abs(b[0]-point[0]), abs(b[1]-point[1]),
+                              abs(c[0]-point[0]), abs(c[1]-point[1]))
+            tolerance = 1e-14 * local_scale**4
+            if det >= -tolerance:
                 bad.append(tri)
         if not bad:
             raise ArithmeticError("point insertion found no circumcircle cavity")
