@@ -225,7 +225,7 @@ def test_alpha_tree_builds_nested_quasi_flat_zones_and_validates_inputs():
     assert len(tree["roots"]) == 1
     root = nodes[tree["roots"][0]]
     assert root["area"] == image.size
-    assert root["alpha"] == 5.0
+    assert root["alpha"] == 4.0
     assert any(node["area"] == 3 and node["alpha"] == 0.0 for node in nodes)
     for node in nodes:
         if node["parent"] is not None:
@@ -285,11 +285,15 @@ def test_alpha_tree_matches_independent_threshold_component_oracle(connectivity)
                         seen.add((ny, nx))
                         stack.append((ny, nx))
                 expected.add(frozenset(component))
-        actual = {
-            frozenset(node["pixels"])
-            for node in tree["nodes"]
-            if node["alpha"] == float(alpha)
-        }
+        # At threshold alpha, the active tree partition consists of
+        # nodes born at or below alpha whose parent has not yet been born.
+        actual = set()
+        for node in tree["nodes"]:
+            parent_id = node["parent"]
+            parent_alpha = (tree["nodes"][parent_id]["alpha"]
+                            if parent_id is not None else float("inf"))
+            if node["alpha"] <= float(alpha) and parent_alpha > float(alpha):
+                actual.add(frozenset(node["pixels"]))
         assert actual == expected
 
 

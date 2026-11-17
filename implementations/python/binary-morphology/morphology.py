@@ -560,6 +560,9 @@ def moore_neighbor_contours(image, connectivity=8):
         else:
             raise RuntimeError("Moore contour did not close within the safety bound")
 
-        # A component with no 8-neighbour has a one-pixel contour.
+        # The walk closes by revisiting the start; return each boundary
+        # coordinate once, with closure implicit between the final and first.
+        if len(contour) > 1 and contour[-1] == start:
+            contour.pop()
         contours.append(np.asarray(contour, dtype=np.int64))
     return contours

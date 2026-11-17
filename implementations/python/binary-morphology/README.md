@@ -43,3 +43,10 @@ the Moore 8-neighbourhood. This bounded teaching implementation does not
 extract hole boundaries, infer polygon topology, or produce subpixel
 coordinates. Do not use its output as a substitute for a topology-aware
 vectorisation pipeline.
+
+
+The alpha-tree differential test reconstructs the active quasi-flat-zone
+partition at each edge threshold from the hierarchy: a node is active when
+its birth threshold has been reached and its parent has not yet appeared.
+This distinguishes a hierarchy's node birth level from the threshold at
+which a component remains active.
