@@ -51,7 +51,7 @@ Apply the [verification protocol](../catalog/verification-protocol.md) and [comp
 
 | ID | Atomic item | Kind | Status | Required completion work |
 |---|---|---|---|---|
-| S14-GR-01 | Möller–Trumbore ray-triangle intersection | Geometry algorithm | Open | Verify determinant/barycentric formulation; test parallel, edge and degenerate cases. |
+| S14-GR-01 | Möller–Trumbore ray-triangle intersection | Geometry algorithm | Partial | Tested dependency-free reference, analytic edge/vertex/parallel/degenerate/culling/interval tests and implementation walkthrough: [lesson](../algorithms/geometry/ray-triangle-intersection.md), [package](../implementations/python/ray-triangle-intersection/README.md). Robust predicates and exact source-entry review remain open. |
 | S14-GR-02 | BVH construction | Acceleration structure | Open | Define split heuristic and leaf policy; test bounds and traversal correctness. |
 | S14-GR-03 | Surface area heuristic (SAH) | BVH cost heuristic | Open | Define traversal/intersection cost model; compare predicted and measured traversal. |
 | S14-GR-04 | kd-tree ray traversal | Acceleration structure/traversal | Open | Define split planes and traversal ordering; test rays on split boundaries. |
