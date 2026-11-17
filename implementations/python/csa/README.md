@@ -1,8 +1,10 @@
 # Connection Scan Algorithm baseline
 
 This dependency-free CSA reference scans a departure-sorted list of timetable
-connections once. It maintains earliest known stop-arrival labels and a set of
-trips the passenger has boarded. A connection is usable if its departure is
+connections once. It maintains separate initial-access and transit-arrival labels, plus a set of
+trips the passenger has boarded. This separation ensures interchange penalties
+apply only to a vehicle-to-vehicle transfer and never invalidate an independent
+access path. A connection is usable if its departure is
 reachable after the stop's minimum transfer time, or if it continues a trip
 already boarded. This supports same-vehicle continuation even when the
 interchange penalty at the stop is positive.
