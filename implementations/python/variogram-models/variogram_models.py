@@ -38,8 +38,41 @@ def genton_semivariance(increments):
     return result
 
 
+def dowd_semivariance(increments):
+    """Dowd's median-based robust semivariance (Gaussian scale factor 1.099)."""
+    values = np.asarray(increments, dtype=float)
+    if values.ndim != 1 or len(values) < 1 or not np.isfinite(values).all():
+        raise ValueError("increments must be a finite 1D array with at least one value")
+    median = float(np.median(np.abs(values)))
+    result = 1.099 * median * median
+    if not isfinite(result):
+        raise ValueError("Dowd estimate overflowed")
+    return result
+
+
+def anisotropic_distance(dx, dy, *, azimuth_deg=0.0, ratio=1.0):
+    """Geometric-anisotropy distance; azimuth is clockwise from north.
+
+    ratio is minor/major range in (0, 1]. The major axis retains unit scale.
+    """
+    angle = radians(float(azimuth_deg) % 180.0)
+    ratio = float(ratio)
+    if not isfinite(ratio) or not 0.0 < ratio <= 1.0:
+        raise ValueError("anisotropy ratio must be finite and in (0, 1]")
+    dx, dy = float(dx), float(dy)
+    if not isfinite(dx) or not isfinite(dy):
+        raise ValueError("coordinate offsets must be finite")
+    along = dx * sin(angle) + dy * cos(angle)
+    across = dx * cos(angle) - dy * sin(angle)
+    distance = float(np.hypot(along, across / ratio))
+    if not isfinite(distance):
+        raise ValueError("anisotropic distance overflowed")
+    return distance
+
+
 def directional_semivariogram(points,values,bin_edges,*,azimuth_deg=0.0,
-                               tolerance_deg=22.5,bandwidth=None,estimator="matheron"):
+                               tolerance_deg=22.5,bandwidth=None,estimator="matheron",
+                               anisotropy_azimuth_deg=0.0,anisotropy_ratio=1.0):
     """Compute an undirected directional semivariogram.
 
     Azimuth is clockwise from north; pair bearings are compared modulo 180°.
@@ -55,18 +88,21 @@ def directional_semivariogram(points,values,bin_edges,*,azimuth_deg=0.0,
     if not isfinite(tol) or not 0<=tol<=90: raise ValueError("tolerance_deg must be in [0, 90]")
     if bandwidth is not None and (not isfinite(float(bandwidth)) or float(bandwidth)<0):
         raise ValueError("bandwidth must be finite and non-negative")
-    if estimator not in {"matheron","cressie","genton"}: raise ValueError("estimator must be matheron, cressie or genton")
+    if estimator not in {"matheron","cressie","genton","dowd"}: raise ValueError("estimator must be matheron, cressie, genton or dowd")
+    anisotropy_ratio=float(anisotropy_ratio)
+    if not isfinite(anisotropy_ratio) or not 0.0 < anisotropy_ratio <= 1.0:
+        raise ValueError("anisotropy_ratio must be finite and in (0, 1]")
     sums=[[] for _ in range(len(edges)-1)]
     theta=radians(az)
     for i in range(len(xy)-1):
         for j in range(i+1,len(xy)):
-            dx,dy=xy[j]-xy[i]; distance=float(np.hypot(dx,dy))
-            if distance==0 or distance<edges[0] or distance>edges[-1]: continue
+            dx,dy=xy[j]-xy[i]; distance=float(np.hypot(dx,dy)); bin_distance=anisotropic_distance(dx,dy,azimuth_deg=anisotropy_azimuth_deg,ratio=anisotropy_ratio)
+            if distance==0 or bin_distance<edges[0] or bin_distance>edges[-1]: continue
             bearing=degrees(atan2(dx,dy))%180
             difference=abs((bearing-az+90)%180-90)
             cross_track=abs(-cos(theta)*dx+sin(theta)*dy)
             if difference>tol or (bandwidth is not None and cross_track>float(bandwidth)): continue
-            k=len(edges)-2 if distance==edges[-1] else int(np.searchsorted(edges,distance,side="right")-1)
+            k=len(edges)-2 if bin_distance==edges[-1] else int(np.searchsorted(edges,bin_distance,side="right")-1)
             if k<0: continue
             sums[k].append(float(z[i]-z[j]) if estimator=="genton" else abs(float(z[i]-z[j])))
     output=[]
@@ -74,6 +110,7 @@ def directional_semivariogram(points,values,bin_edges,*,azimuth_deg=0.0,
         count=len(pairs); gamma=None
         if count:
             if estimator=="genton": gamma=genton_semivariance(pairs)
+            elif estimator=="dowd": gamma=dowd_semivariance(pairs)
             elif estimator=="matheron": gamma=0.5*float(np.mean(np.square(pairs)))
             else:
                 mean_root=float(np.mean(np.sqrt(pairs)))
@@ -123,7 +160,7 @@ def fit_variogram(lags,semivariances,*,pairs=None,model="spherical",fit_nugget=T
 
 
 
-def fit_variogram_reml(points, values, *, model="exponential", initial=None):
+def fit_variogram_reml(points, values, *, model="exponential", initial=None, anisotropy_azimuth_deg=0.0, anisotropy_ratio=1.0):
     """Fit an isotropic covariance model by restricted maximum likelihood.
 
     Uses a constant unknown mean and a dense Gaussian covariance matrix.
@@ -143,8 +180,17 @@ def fit_variogram_reml(points, values, *, model="exponential", initial=None):
     variance = float(np.var(z))
     if not isfinite(variance) or variance <= 0:
         raise ValueError("values must have positive finite variance")
+    anisotropy_ratio=float(anisotropy_ratio)
+    if not isfinite(anisotropy_ratio) or not 0.0 < anisotropy_ratio <= 1.0:
+        raise ValueError("anisotropy_ratio must be finite and in (0, 1]")
+    azimuth=float(anisotropy_azimuth_deg)
+    if not isfinite(azimuth):
+        raise ValueError("anisotropy_azimuth_deg must be finite")
     delta = xy[:, None, :] - xy[None, :, :]
-    distances = np.sqrt(np.sum(delta * delta, axis=2))
+    angle=radians(azimuth % 180.0)
+    along=delta[:,:,0]*sin(angle)+delta[:,:,1]*cos(angle)
+    across=delta[:,:,0]*cos(angle)-delta[:,:,1]*sin(angle)
+    distances=np.hypot(along,across/anisotropy_ratio)
     positive = distances[distances > 0]
     dmin, dmax = float(np.min(positive)), float(np.max(positive))
     lower_range, upper_range = dmin * 1e-3, dmax * 1e3
@@ -214,7 +260,7 @@ def fit_variogram_reml(points, values, *, model="exponential", initial=None):
     inv_z = np.linalg.solve(chol.T, np.linalg.solve(chol, z))
     fitted_mean = float(ones @ inv_z) / float(ones @ inv_one)
     return {
-        "model": model, "nugget": float(nugget),
+        "model": model, "anisotropy_azimuth_deg": azimuth % 180.0, "anisotropy_ratio": anisotropy_ratio, "nugget": float(nugget),
         "partial_sill": float(sill), "sill": float(nugget + sill),
         "range": float(range_), "reml_objective": float(result.fun),
         "success": bool(result.success), "message": str(result.message),

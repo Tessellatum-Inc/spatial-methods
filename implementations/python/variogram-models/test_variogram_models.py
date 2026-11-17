@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from variogram_models import variogram_model,directional_semivariogram,fit_variogram,genton_semivariance,fit_variogram_reml
+from variogram_models import variogram_model,directional_semivariogram,fit_variogram,genton_semivariance,dowd_semivariance,anisotropic_distance,fit_variogram_reml
 
 @pytest.mark.parametrize("model",["spherical","exponential","gaussian"])
 def test_models_are_zero_at_origin_and_approach_sill(model):
@@ -88,3 +88,56 @@ def test_reml_rejects_degenerate_inputs():
         fit_variogram_reml([(0, 0), (1, 0), (0, 1), (0, 0)], [1, 2, 3, 4])
     with pytest.raises(ValueError):
         fit_variogram_reml([(0, 0), (1, 0), (0, 1), (1, 1)], [2, 2, 2, 2])
+
+
+
+def test_dowd_estimator_matches_median_scale_formula_and_is_robust_to_sign():
+    expected = 1.099 * 1.5 ** 2
+    assert dowd_semivariance([0, 1, 2, 3]) == pytest.approx(expected)
+    assert dowd_semivariance([0, -1, -2, -3]) == pytest.approx(expected)
+    assert dowd_semivariance([0, 1, 2, 3, 1e9]) == pytest.approx(1.099 * 2 ** 2)
+
+
+def test_dowd_directional_estimator_and_validation():
+    out = directional_semivariogram(
+        [(0, 0), (1, 0), (2, 0)], [0, 1, 4],
+        [0, 1.5, 2.5], azimuth_deg=90, tolerance_deg=1, estimator="dowd"
+    )
+    assert out[0]["pairs"] == 2
+    assert out[0]["semivariance"] == pytest.approx(1.099 * 1.5 ** 2)
+    with pytest.raises(ValueError):
+        dowd_semivariance([float("nan")])
+    with pytest.raises(ValueError):
+        directional_semivariogram([(0, 0), (1, 0)], [0, 1], [0, 2], estimator="bad")
+
+
+def test_geometric_anisotropy_scales_minor_axis_only():
+    # Azimuth 90 degrees is east-west: the north-south range is halved.
+    assert anisotropic_distance(4, 0, azimuth_deg=90, ratio=0.5) == pytest.approx(4)
+    assert anisotropic_distance(0, 4, azimuth_deg=90, ratio=0.5) == pytest.approx(8)
+    assert anisotropic_distance(0, 4, azimuth_deg=90, ratio=1.0) == pytest.approx(4)
+    with pytest.raises(ValueError):
+        anisotropic_distance(1, 1, ratio=0)
+    with pytest.raises(ValueError):
+        anisotropic_distance(1, 1, ratio=1.1)
+
+
+def test_directional_semivariogram_accepts_fixed_geometric_anisotropy():
+    points=[(0, 0), (1, 0), (0, 1)]
+    values=[0, 1, 2]
+    isotropic=directional_semivariogram(points,values,[0,1.5,2.5],azimuth_deg=90,tolerance_deg=90)
+    stretched=directional_semivariogram(points,values,[0,1.5,2.5],azimuth_deg=90,tolerance_deg=90,
+                                        anisotropy_azimuth_deg=90,anisotropy_ratio=0.5)
+    assert sum(x["pairs"] for x in isotropic) == 3
+    assert sum(x["pairs"] for x in stretched) == 2
+
+
+def test_reml_accepts_fixed_geometric_anisotropy():
+    rng=np.random.default_rng(43)
+    points=np.array([(x,y) for x in range(4) for y in range(4)],dtype=float)
+    values=rng.normal(size=len(points))
+    fit=fit_variogram_reml(points,values,anisotropy_azimuth_deg=90,anisotropy_ratio=0.6)
+    assert fit["anisotropy_azimuth_deg"] == pytest.approx(90)
+    assert fit["anisotropy_ratio"] == pytest.approx(0.6)
+    with pytest.raises(ValueError):
+        fit_variogram_reml(points,values,anisotropy_ratio=0)
