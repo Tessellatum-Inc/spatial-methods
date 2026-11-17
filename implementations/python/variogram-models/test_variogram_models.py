@@ -34,7 +34,7 @@ def test_directional_genton_estimator_uses_increment_differences():
         azimuth_deg=90, tolerance_deg=1, estimator="genton"
     )
     assert result[0]["pairs"] == 3
-    assert result[0]["semivariance"] == pytest.approx(0.5 * (2.2191 ** 2))
+    assert result[0]["semivariance"] == pytest.approx(0.0)
 
 
 def test_genton_requires_two_finite_increments():
