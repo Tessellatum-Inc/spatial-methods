@@ -449,3 +449,5 @@ Records may have different evidence and implementation status. Check the status 
 - [OBIA object features](remote-sensing/obia-object-features.md) — object geometry, spectral summaries and region adjacency from supplied segmentation labels.
 
 - [SAR CA-CFAR and OS-CFAR](remote-sensing/sar-cfar.md) — local clutter thresholding with cell-averaging and ordered-statistics reference detectors.
+
+- [Lee local-statistics speckle filter](remote-sensing/lee-speckle-filter.md) — adaptive local-mean shrinkage under an explicit noise-variance model, with a tested NumPy baseline.
