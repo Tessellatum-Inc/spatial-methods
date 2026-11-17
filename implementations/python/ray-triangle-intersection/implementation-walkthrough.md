@@ -32,3 +32,10 @@ The builder computes triangle centroids, sorts them on each axis and evaluates e
 The best split is used only when it improves on the leaf cost. This exact-centroid scan is a teaching implementation; production renderers commonly use binned SAH to reduce build time.
 
 Traversal tests child bounds, visits the nearer child first, and tightens the current maximum ray parameter after a triangle hit. The tests compare the BVH result with a brute-force scan over seeded fixtures. The tree indexes the exact input triangle sequence and must not be reused with reordered geometry.
+
+
+## Frustum culling
+
+The frustum test accepts inward-facing planes in the form (nx, ny, nz, offset), with points inside satisfying n dot x + offset >= 0. For each plane it selects the AABB vertex that maximises the plane expression. If even that positive vertex is outside, the entire box is outside and can be rejected. Otherwise the test is conservative: the box may intersect the frustum or lie inside it.
+
+This routine does not extract planes from a view-projection matrix, test occlusion, or choose level of detail. Plane orientation and coordinate frame must match the caller's camera convention.
