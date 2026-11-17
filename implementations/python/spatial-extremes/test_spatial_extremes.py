@@ -23,7 +23,7 @@ def test_pairwise_complete_missingness_and_counts():
     a[[1, 4]] = np.nan
     b[[2, 4, 7]] = np.nan
     result = f_madogram(np.column_stack([a, b, c]), min_pairs=10)
-    assert result["pair_counts"][0, 1] == 17
+    assert result["pair_counts"][0, 1] == 16
     assert result["pair_counts"][0, 2] == 18
     assert result["pair_counts"][1, 2] == 17
     assert np.allclose(result["f_madogram"], result["f_madogram"].T)
