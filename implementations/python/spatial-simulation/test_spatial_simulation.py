@@ -105,3 +105,84 @@ def test_invalid_schelling_controls():
         simulate_schelling(grid, max_iterations=-1)
     with pytest.raises(ValueError):
         schelling_step(np.array([[1, -1], [0, 2]]))
+
+
+from spatial_simulation import forest_fire_step, percolates, sample_site_percolation
+
+
+def test_site_percolation_probability_endpoints_and_seed():
+    assert sample_site_percolation((4, 5), 0.0, seed=1).sum() == 0
+    assert sample_site_percolation((4, 5), 1.0, seed=1).all()
+    a = sample_site_percolation((20, 20), 0.45, seed=7)
+    b = sample_site_percolation((20, 20), 0.45, seed=7)
+    assert np.array_equal(a, b)
+
+
+def test_percolation_requires_top_to_bottom_occupied_path():
+    connected = np.array([
+        [1, 0, 0],
+        [1, 1, 0],
+        [0, 1, 0],
+    ], dtype=bool)
+    disconnected = np.array([
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1],
+    ], dtype=bool)
+    assert percolates(connected)
+    assert not percolates(disconnected)
+    assert percolates(disconnected, neighborhood="moore")
+
+
+def test_percolation_validates_grid_and_neighborhood():
+    with pytest.raises(ValueError):
+        percolates(np.array([[0, 2]]))
+    with pytest.raises(ValueError):
+        percolates(np.ones((2, 2)), neighborhood="hexagonal")
+    with pytest.raises(ValueError):
+        sample_site_percolation((0, 2), 0.5)
+
+
+def test_forest_fire_burning_tree_empty_transition_rules():
+    grid = np.array([
+        [0, 1, 0],
+        [0, 2, 0],
+        [0, 0, 0],
+    ], dtype=np.uint8)
+    result = forest_fire_step(
+        grid, growth_probability=0.0, lightning_probability=0.0,
+        neighborhood="von_neumann", seed=2,
+    )
+    assert result[1, 1] == 0
+    assert result[0, 1] == 2
+    assert result[2, 1] == 2
+    assert result[0, 0] == 0
+
+
+def test_forest_fire_lightning_and_growth_probability_endpoints():
+    trees = np.ones((3, 3), dtype=np.uint8)
+    lightning = forest_fire_step(
+        trees, growth_probability=0.0, lightning_probability=1.0, seed=3
+    )
+    assert np.all(lightning == 2)
+    empty = np.zeros((3, 3), dtype=np.uint8)
+    growth = forest_fire_step(
+        empty, growth_probability=1.0, lightning_probability=0.0, seed=3
+    )
+    assert np.all(growth == 1)
+
+
+def test_forest_fire_is_seeded_and_validates_parameters():
+    grid = np.array([[0, 1, 2], [1, 0, 1]], dtype=np.uint8)
+    a = forest_fire_step(
+        grid, growth_probability=0.2, lightning_probability=0.1, seed=42
+    )
+    b = forest_fire_step(
+        grid, growth_probability=0.2, lightning_probability=0.1, seed=42
+    )
+    assert np.array_equal(a, b)
+    with pytest.raises(ValueError):
+        forest_fire_step(grid, growth_probability=1.1, lightning_probability=0.1)
+    with pytest.raises(ValueError):
+        forest_fire_step(np.array([[3]]), growth_probability=0.1,
+                         lightning_probability=0.1)
