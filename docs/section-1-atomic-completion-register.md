@@ -28,7 +28,7 @@ This register separates source groupings into child records. It is not a claim t
 | S01-GE-05 | Difference | Overlay operation | Partial | Test holes, shared boundaries and precision robustness. |
 | S01-GE-06 | Dissolve | Aggregation/overlay operation | Partial | Define grouping and topology semantics; test multipart and invalid inputs. |
 | S01-GE-07 | Centroid | Geometric metric | Partial | Distinguish centroid by dimension and centroid-of-mass; test degenerate geometries. |
-| S01-GE-08 | Minimum bounding geometry | Geometry operation family | Open | Split envelope, oriented rectangle, circle and convex hull outputs; define objective. |
+| S01-GE-08 | Minimum bounding geometry | Geometry operation family | Partial | Tested planar baselines cover convex hull, minimum-area oriented rectangle (including a rotating-calipers sweep) and smallest enclosing circle; the broader family still needs distinct envelope/output contracts, robust degeneracy handling and source-level verification. |
 | S01-GE-09 | Graham scan convex hull | Hull algorithm | Partial | Test collinear points, duplicates, orientation and complexity. |
 | S01-GE-10 | Jarvis march convex hull | Hull algorithm | Partial | Test collinear/extreme-point ties and output orientation. |
 | S01-GE-11 | Quickhull | Hull algorithm | Partial | Verify 2D/3D variants, degeneracies and worst-case behaviour. |
@@ -41,8 +41,8 @@ This register separates source groupings into child records. It is not a claim t
 | S01-GE-18 | Ruppert refinement | Mesh refinement algorithm | Partial | Verify termination/quality assumptions and encroachment rules; test minimum angles. |
 | S01-GE-19 | Ray-casting point-in-polygon | Point location predicate | Partial | Test boundary convention, horizontal edges, holes and floating-point robustness. |
 | S01-GE-20 | Winding-number point-in-polygon | Point location predicate | Partial | Test ring orientation, self-intersections and boundary semantics. |
-| S01-GE-21 | Slab-method point location | Point location data structure/algorithm | Open | Define planar subdivision and query model; compare with brute-force containment. |
-| S01-GE-22 | Trapezoidal map point location | Point location structure | Open | Verify randomized construction, history DAG and expected complexity. |
+| S01-GE-21 | Slab-method point location | Point location data structure/algorithm | Partial | Static x-slab locator for valid pairwise interior-disjoint polygon faces, explicit boundary/outside results and seeded differential tests; worst-case quadratic storage/construction and event-line fallback remain documented limitations. |
+| S01-GE-22 | Trapezoidal map point location | Point location structure | Partial | Bounded randomized prototype for pairwise-disjoint non-vertical segments in general position, with corridor replacement, persistent history-DAG queries and differential slab-oracle tests; it does not claim Seidel's expected construction bound or fully local neighbour maintenance. |
 | S01-GE-23 | Bentley–Ottmann segment intersection | Sweep-line algorithm | Partial | Test vertical/overlapping/collinear segments and event tie ordering. |
 | S01-GE-24 | Sutherland–Hodgman clipping | Polygon clipping algorithm | Partial | State convex clip-window assumption; test concavity and boundary cases. |
 | S01-GE-25 | Weiler–Atherton clipping | Polygon clipping algorithm | Verify | Verify entry/exit traversal and holes; test concave/multipart cases. |
@@ -66,13 +66,13 @@ This register separates source groupings into child records. It is not a claim t
 | S01-GE-43 | Fréchet distance | Curve similarity metric | Partial | Separate continuous/discrete variants; test parameterisation and monotonicity. |
 | S01-GE-44 | Rotating calipers | Computational geometry technique | Partial | Identify supported outputs (diameter, width, rectangle); test convexity assumptions. |
 | S01-GE-45 | Welzl smallest enclosing circle | Enclosing-circle algorithm | Partial | Verify randomized incremental algorithm, degeneracies and deterministic seeding. |
-| S01-GE-46 | Largest empty circle | Geometric optimisation problem | Open | Define domain/obstacles and boundary constraints; distinguish Voronoi-based variants. |
+| S01-GE-46 | Largest empty circle | Geometric optimisation problem | Partial | Tested additive-tolerance branch-and-bound baseline maximises nearest-site clearance with centre constrained to the sites' convex hull; exact Voronoi candidates, arbitrary domains, obstacles and geodesic/weighted variants remain open. |
 | S01-GE-47 | Pole of inaccessibility (polylabel) | Geometric optimisation algorithm | Partial | Verify priority queue bounds and tolerance; test holes and concavity. |
 | S01-GE-48 | Oriented minimum bounding rectangle | Geometry metric/algorithm | Partial | Define minimum-area rectangle and tie handling; test degenerate hulls. |
 | S01-GE-49 | Gabriel graph | Proximity graph | Partial | Test diameter-circle emptiness and duplicates; compare with Delaunay subgraph. |
 | S01-GE-50 | Relative neighborhood graph | Proximity graph | Partial | Verify lune definition and tie handling; compare with MST inclusion. |
-| S01-GE-51 | Beta-skeleton | Proximity graph family | Open | Define beta parameter and lune variant; test Gabriel/RNG limiting relationships. |
-| S01-GE-52 | Yao graph | Proximity graph | Open | Define cone partition and outgoing-edge rule; test orientation and ties. |
+| S01-GE-51 | Beta-skeleton | Proximity graph family | Partial | Tested open-lune beta-skeleton for beta in [1,2], explicitly linking beta=1 to the Gabriel graph and beta=2 to the relative-neighbourhood graph under the package's convention; circle-based variants and broader beta conventions remain open. |
+| S01-GE-52 | Yao graph | Proximity graph | Partial | Tested planar equal-angle cone partition, nearest selection, deterministic tie-breaking and undirected union; cone orientation variants and scalable/robust constructions remain open. |
 | S01-GE-53 | Euclidean minimum spanning tree | Graph optimisation | Partial | Verify exact edge selection and degeneracy handling; test connectivity and cycle absence. |
 | S01-GE-54 | Visibility polygon | Visibility algorithm | Partial | Define simple polygon/obstacle assumptions; test vertex degeneracies and holes. |
 | S01-GE-55 | Funnel algorithm | Shortest path in simple polygonal domain | Partial | Define corridor/portal input; test shortest path against visibility graph oracle. |
@@ -110,7 +110,7 @@ This register separates source groupings into child records. It is not a claim t
 | S01-ID-22 | k-nearest-neighbour query | Spatial query algorithm | Partial | Define metric/ties and exactness; compare with brute-force oracle. |
 | S01-ID-23 | Reverse kNN query | Spatial query algorithm | Partial | Exact planar 2D Euclidean baseline with inclusive kth-distance ties, one static k-d tree, strict closer-point counting and seeded differential tests against a quadratic oracle; geographic/network metrics, dynamic updates and a specialised subquadratic index remain open. |
 | S01-ID-24 | Closest-pair query | Computational geometry query | Partial | Define duplicates and metric; compare with quadratic oracle. |
-| S01-ID-25 | Spatial skyline | Spatial preference query | Open | Define dominance and preference directions; test duplicates and ties. |
+| S01-ID-25 | Spatial skyline | Spatial preference query | Partial | Exact block-nested-loop baseline combines squared planar Euclidean distance with explicitly minimised/maximised numeric attributes; identical criterion vectors are retained as ties and seeded tests compare with an independent exhaustive oracle. Indexed/large-scale, network-distance and textual variants remain open. |
 | S01-ID-26 | Top-k spatial keyword query | Spatial/text query | Open | Define text relevance, distance aggregation and pruning; compare with exhaustive ranking. |
 | S01-ID-27 | Geofencing | Spatial event/query workflow | Partial | Define geometry, boundary, temporal sampling and event debounce; test entry/exit transitions. |
 | S01-ID-28 | Filter-and-refine spatial join | Spatial join algorithm | Partial | Verify candidate filter and exact refinement; compare with nested-loop oracle. |
@@ -139,7 +139,7 @@ This register separates source groupings into child records. It is not a claim t
 | S01-PR-04 | Spatial joins | Spatial query family | Partial | Split predicates and join strategies; test exact predicate semantics. |
 | S01-PR-05 | DE-9IM | Topological relation model | Partial | Verify matrix semantics and dimension labels; test canonical geometry pairs. |
 | S01-PR-06 | RCC-8 | Qualitative spatial relation calculus | Verify | Verify eight relations and domain assumptions; test composition constraints. |
-| S01-PR-07 | Cardinal direction relations | Qualitative spatial relation model | Open | Define reference frame and region semantics; test inverse/composition relations. |
+| S01-PR-07 | Cardinal direction relations | Qualitative spatial relation model | Partial | Tested bounded 9-region cardinal-direction baseline using axis-aligned minimum bounding rectangles, with inverse-direction fixtures; this is not a full projection-based/centroid calculus, and composition, 3D and geographic semantics remain open. |
 | S01-PR-08 | Contiguity spatial weights | Spatial weights construction | Partial | Separate rook/queen and order-k; define islands and row standardisation. |
 | S01-PR-09 | Distance-band spatial weights | Spatial weights construction | Partial | Define threshold, units, CRS and symmetry; test disconnected units. |
 | S01-PR-10 | kNN spatial weights | Spatial weights construction | Partial | Define ties, directed/symmetrised graph and standardisation; test islands/duplicates. |
@@ -179,7 +179,7 @@ This register separates source groupings into child records. It is not a claim t
 | S01-NT-29 | Maximum flow | Network optimisation | Partial | Define capacity and residual graph; compare with min-cut oracle. |
 | S01-NT-30 | Minimum cut | Network optimisation | Partial | Define s-t/global cut and capacity semantics; test exhaustive small graphs. |
 | S01-NT-31 | Minimum spanning tree | Graph optimisation | Partial | Verify Kruskal/Prim variants, ties and disconnected input. |
-| S01-NT-32 | Steiner tree | Network optimisation problem | Open | Define terminal set and approximation/exact variant; state NP-hardness and bounds. |
+| S01-NT-32 | Steiner tree | Network optimisation problem | Partial | Exact Dreyfus–Wagner subset dynamic program with shortest-path closure for undirected weighted graphs and small terminal sets (default cap 12); exponential terminal dependence, directed/approximation variants and geometric Steiner trees remain open. |
 | S01-NT-33 | k-core decomposition | Graph structure algorithm | Partial | Define core number and directed variants; test iterative peeling. |
 | S01-NT-34 | HMM map matching | Probabilistic map matching | Partial | Define emission/transition models and candidate generation; test sparse/noisy traces. |
 | S01-NT-35 | ST-Matching | Map matching algorithm | Verify | Verify exact algorithm and temporal constraints; compare with HMM baseline. |
@@ -230,3 +230,19 @@ This register separates source groupings into child records. It is not a claim t
 ## Implementation reconciliation — reverse k-nearest-neighbour query
 
 The Section 1 reverse-kNN entry now links to an exact planar 2D Euclidean implementation. Its tie rule includes every data point for which the query has fewer than k strictly closer competitors. It builds a static k-d tree once, uses radius queries only to generate candidate competitors, and checks strict squared distances for membership. The package includes a separate quadratic oracle and seeded differential tests, including duplicates, ties, empty inputs and k greater than the data count. The source row moves from Open to Partial; geographic/network metrics, dynamic updates, a specialised subquadratic index and source/bibliography/rights verification remain outstanding.
+
+
+## Implementation reconciliation — additional Section 1 methods
+
+A cross-check of the Section 1 atomic register against its implementation-linked catalogue records identified nine existing, tested baselines that had remained incorrectly labelled Open at the atomic level. Their records now move to Partial, with explicit scope and limits:
+
+- Minimum bounding geometry: convex hull, minimum-area oriented rectangle and smallest enclosing circle baselines.
+- Slab point location: static locator for pairwise interior-disjoint polygon faces.
+- Trapezoidal map: bounded general-position prototype with corridor replacement, persistent history-DAG queries and slab-oracle differential tests; no classic expected-bound claim.
+- Largest empty circle: additive-tolerance branch-and-bound within the sites' convex hull.
+- Beta-skeleton and Yao graph: specified lune-based beta convention and equal-angle cone baseline.
+- Spatial skyline: exact block-nested-loop planar distance plus numeric-attribute Pareto frontier.
+- Cardinal directions: bounded MBR 9-region relation.
+- Steiner tree: exact Dreyfus–Wagner subset DP for small undirected terminal sets.
+
+These are status reconciliations, not claims that the full grouped source families are complete. Source identity, primary bibliography, claim-by-claim review, broader variants and publication-rights checks remain outstanding.
