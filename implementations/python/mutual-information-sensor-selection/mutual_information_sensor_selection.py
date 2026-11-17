@@ -65,7 +65,7 @@ def gaussian_sensor_mutual_information(
     target_points,
     candidate_points,
     *,
-    max_sensors,
+    max_sensors=1,
     length_scale=1.0,
     noise_variance=0.1,
     kernel="gaussian",
@@ -143,7 +143,7 @@ def gaussian_sensor_mutual_information(
     }
 
 def greedy_kriging_variance_design(
-    target_points, candidate_points, *, max_sensors,
+    target_points, candidate_points, *, max_sensors=1,
     length_scale=1.0, noise_variance=0.1, kernel="gaussian",
 ):
     """Greedily minimize trace of target posterior covariance (A-optimal design)."""
