@@ -53,9 +53,16 @@ Use the [source-entry verification protocol](../verification-protocol.md) to rec
 
 ## Atomic completion registers
 
-These companion registers decompose grouped source rows into auditable child items. They are backlog and traceability aids—not independent verification or completion claims.
+These companion registers decompose grouped source rows into auditable child items. They are backlog and traceability aids—not independent verification or completion claims. Sections 1–11 are not yet represented in this atomic-register series.
 
+- [Section 12 — signal processing, GNSS, regional science and resilience](../../docs/section-12-atomic-completion-register.md)
+- [Section 13 — GeoFM workflows, urban and mobility foundation models, geo-LLMs](../../docs/section-13-atomic-completion-register.md)
+- [Section 14 — databases, graphics, morphology, hazards and cartographic mathematics](../../docs/section-14-atomic-completion-register.md)
 - [Section 15 — vision, registration, extraction and hydrology ML](../../docs/section-15-atomic-completion-register.md)
 - [Section 16 — flows, regions, deformation, marine and applied methods](../../docs/section-16-atomic-completion-register.md)
 - [Section 17 — geometry, scalable computation, design and siting](../../docs/section-17-atomic-completion-register.md)
+- [Section 18 — moving objects, routing, transit, water/ice and emissions](../../docs/section-18-atomic-completion-register.md)
+- [Section 19 — African applications, addressing, finance and seismology](../../docs/section-19-atomic-completion-register.md)
+- [Section 20 — spectral indices, microwave retrieval, events and information theory](../../docs/section-20-atomic-completion-register.md)
+- [Section 21 — neural fields, climate ML, accounting and robust geometry](../../docs/section-21-atomic-completion-register.md)
 - [Section 22 — inference, covariance, spherical statistics and asset monitoring](../../docs/section-22-atomic-completion-register.md)
