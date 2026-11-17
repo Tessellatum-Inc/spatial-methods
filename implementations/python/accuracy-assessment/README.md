@@ -46,3 +46,17 @@ Reference: Pontius, R. G. (2000). Quantification error versus location error
 in comparison of categorical maps. *Photogrammetric Engineering & Remote
 Sensing*, 66(8), 1011–1016. Cramér, H. (1946). *Mathematical Methods of
 Statistics*. Princeton University Press.
+
+
+The package also exposes the multiclass Matthews correlation coefficient
+(MCC) for reference-row/prediction-column confusion matrices. MCC ranges
+from -1 (complete inverse association) through 0 (no better than chance
+association under the marginals) to +1 (perfect prediction); a zero
+denominator returns None. It is a global summary and should be reported
+alongside class-specific measures and leakage-safe geographic evaluation.
+
+References: Matthews, B. W. (1975). Comparison of the predicted and observed
+secondary structure of T4 phage lysozyme. *Biochimica et Biophysica Acta*,
+405(2), 442–451. Gorodkin, J. (2004). Comparing two K-category assignments
+by a K-category correlation coefficient. *Computational Biology and
+Chemistry*, 28(5–6), 367–374. https://doi.org/10.1016/j.compbiolchem.2004.09.006

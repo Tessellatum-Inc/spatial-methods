@@ -364,3 +364,29 @@ def mean_absolute_class_area_error(reference_areas, estimated_areas, class_weigh
         if sum(weights) <= 0:
             raise ValueError("class_weights must have a positive sum")
     return sum(error * weight for error, weight in zip(errors, weights)) / sum(weights)
+
+
+
+def matthews_correlation_coefficient(matrix):
+    """Multiclass Matthews correlation coefficient for a confusion matrix.
+
+    Rows are reference classes and columns are predicted classes. Returns
+    None when the denominator is zero (for example, a single-class table
+    with no variation in either marginal). This is a global association
+    statistic; it does not replace per-class metrics or spatial validation.
+    """
+    metrics = accuracy_metrics(matrix)  # validates a non-empty square count matrix
+    rows = [list(row) for row in matrix]
+    row_totals = [sum(row) for row in rows]
+    col_totals = [sum(rows[i][j] for i in range(len(rows))) for j in range(len(rows))]
+    total = metrics["n"]
+    correct = sum(rows[i][i] for i in range(len(rows)))
+    numerator = total * correct - sum(
+        actual * predicted for actual, predicted in zip(row_totals, col_totals)
+    )
+    row_factor = total * total - sum(value * value for value in row_totals)
+    col_factor = total * total - sum(value * value for value in col_totals)
+    denominator_squared = row_factor * col_factor
+    if denominator_squared <= 0:
+        return None
+    return numerator / sqrt(denominator_squared)

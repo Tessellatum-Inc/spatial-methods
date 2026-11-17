@@ -228,3 +228,21 @@ def test_mean_absolute_class_area_error_rejects_invalid_inputs():
         mean_absolute_class_area_error([1, 2], [1, 2], [0, 0])
     with pytest.raises(ValueError):
         mean_absolute_class_area_error([1, 2], [1, 2], [1])
+
+
+
+def test_multiclass_matthews_correlation_coefficient_analytic_fixtures():
+    from accuracy_assessment import matthews_correlation_coefficient
+    assert matthews_correlation_coefficient([[5, 0], [0, 7]]) == pytest.approx(1.0)
+    assert matthews_correlation_coefficient([[0, 5], [5, 0]]) == pytest.approx(-1.0)
+    assert matthews_correlation_coefficient(
+        [[5, 2, 0], [1, 4, 1], [0, 2, 6]]
+    ) == pytest.approx(169 / 292)
+
+
+def test_multiclass_matthews_correlation_coefficient_degenerate_and_invalid():
+    from accuracy_assessment import matthews_correlation_coefficient
+    assert matthews_correlation_coefficient([[4, 0], [0, 0]]) is None
+    for bad in ([], [[1, 2], [3]], [[1, -1], [0, 1]], [[1.0, 0], [0, 1]]):
+        with pytest.raises(ValueError):
+            matthews_correlation_coefficient(bad)
