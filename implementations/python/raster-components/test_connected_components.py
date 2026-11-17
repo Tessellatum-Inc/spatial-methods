@@ -138,7 +138,7 @@ def test_box_pyramid_ignores_nodata_and_handles_bands():
     from connected_components import build_box_pyramid
     raster = np.array([[[1,10],[np.nan,20]],[[3,np.nan],[5,40]]], dtype=float)
     reduced = build_box_pyramid(raster, levels=2)[1]
-    np.testing.assert_allclose(reduced[0,0], [3, 25])
+    np.testing.assert_allclose(reduced[0,0], [3, 70/3])
 
 
 def test_box_pyramid_validates_levels_and_infinite_values():

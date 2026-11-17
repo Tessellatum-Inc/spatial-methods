@@ -24,8 +24,10 @@ def test_exact_likelihood_is_invariant_to_order():
     x = rng.uniform(size=(10, 2))
     y = rng.normal(size=10)
     order = rng.permutation(10)
-    a = vecchia_loglikelihood(y, x, n_neighbors=9, order=np.arange(10))
-    b = vecchia_loglikelihood(y, x, n_neighbors=9, order=order)
+    a = vecchia_loglikelihood(y, x, variance=1.0, length_scale=0.3, nugget=0.1,
+                              n_neighbors=9, order=np.arange(10))
+    b = vecchia_loglikelihood(y, x, variance=1.0, length_scale=0.3, nugget=0.1,
+                              n_neighbors=9, order=order)
     assert a["loglikelihood"] == pytest.approx(b["loglikelihood"], abs=1e-8)
 
 
@@ -78,5 +80,6 @@ def test_local_vecchia_prediction_uses_bounded_neighbour_sets():
 ])
 def test_vecchia_predict_rejects_invalid_inputs(kwargs):
     from vecchia import vecchia_predict
+    prediction_coordinates = kwargs.pop("prediction_coordinates", [[.5]])
     with pytest.raises(ValueError):
-        vecchia_predict([0.,1.,2.],[[0.],[1.],[2.]],[[.5]],**kwargs)
+        vecchia_predict([0.,1.,2.],[[0.],[1.],[2.]],prediction_coordinates,**kwargs)

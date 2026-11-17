@@ -19,7 +19,7 @@ def test_two_objects_adjacency_and_multiband_means():
     labels = np.array([[1, 1, 2], [1, 2, 2]])
     result = summarize_objects(image, labels)
     assert [x["label"] for x in result["objects"]] == [1, 2]
-    assert result["adjacency"] == [{"labels": (1, 2), "shared_edges": 2}]
+    assert result["adjacency"] == [{"labels": (1, 2), "shared_edges": 3}]
     assert result["objects"][0]["band_mean"] == (1., 5.)
 
 

@@ -1132,6 +1132,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/trajectory-processing",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/transit-headway",
     "pythonpath": ""
   },

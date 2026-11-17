@@ -66,8 +66,8 @@ The [MEXCLP lesson](../../algorithms/optimization/mexclp.md) adds an availabilit
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Trajectory processing: stop and stay-point detection, compression (SQUISH, STTrace, opening window, TD-TR), imputation, route recovery | Trajectory processing algorithms | 11 | Not checked — intake only |
-| Similarity and clustering: dynamic time warping, LCSS, Fréchet, TRACLUS, T-DBSCAN, trajectory similarity search | Similarity measures / clustering algorithms / query methods | 11 | Not checked — intake only |
+| Trajectory processing: stop and stay-point detection, compression (SQUISH, STTrace, opening window, TD-TR), imputation, route recovery | Trajectory processing algorithms | 11 | Partial — tested start-anchored stay-point detection and spatial Douglas–Peucker simplification are implemented; SQUISH, STTrace, opening-window and TD-TR compression, trajectory imputation and route recovery remain open |
+| Similarity and clustering: dynamic time warping, LCSS, Fréchet, TRACLUS, T-DBSCAN, trajectory similarity search | Similarity measures / clustering algorithms / query methods | 11 | Partial — tested Euclidean DTW with an optional Sakoe–Chiba window and index-windowed LCSS similarity are implemented; TRACLUS, T-DBSCAN, trajectory Fréchet variants and indexed similarity search remain open |
 | Patterns: flock, convoy, swarm; transport mode detection; activity inference | Moving-object patterns / classification and inference methods | 11 | Not checked — intake only |
 | Mobility models: exploration and preferential return, Lévy flights, continuous-time random walks; metrics (radius of gyration, entropy, predictability) | Mobility models / movement metrics | 11 | Not checked — intake only |
 | Next-location prediction: Markov, DeepMove, LSTPM, GETNext, STAN, Flashback; POI recommendation | Sequential prediction models / recommendation systems | 11 | Not checked — intake only |

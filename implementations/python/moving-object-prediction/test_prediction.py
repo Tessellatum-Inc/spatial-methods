@@ -61,7 +61,7 @@ def test_dead_reckoning_rejects_negative_tolerance_and_overflow():
     with pytest.raises(ValueError):
         dead_reckoning_update_required((0, 0), (1, 0), 1, (1, 0), tolerance=-1)
     with pytest.raises(ValueError, match="overflow"):
-        dead_reckoning_update_required((0, 0), (1e308, 0), 1, (0, 0), tolerance=1)
+        dead_reckoning_update_required((0, 0), (-1e308, 0), 1, (1e308, 0), tolerance=1)
 
 
 def test_invalid_bounds_and_tolerance_nan_are_rejected():
