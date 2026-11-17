@@ -10,7 +10,10 @@ reference implementation supports three radial kernels:
 An affine polynomial tail is included in the augmented saddle-point system,
 so affine fields are reproduced when the system is nonsingular. Coordinates
 are centered and scaled before fitting. A non-negative diagonal smoothing
-parameter trades exact interpolation for regularization.
+parameter trades exact interpolation for regularization. The helper
+select_rbf_smoothing chooses among caller-supplied positive smoothing values
+using exact leave-one-out PRESS computed from the linear smoother's hat
+diagonal, without fitting n separate models.
 
 ## Use
 
@@ -38,7 +41,7 @@ This is a dense global 2D teaching baseline. Fitting requires a dense solve
 and scales cubically in the number of observations; prediction costs
 O(mn) for m queries and n samples. It is not a local RBF, a geostatistical
 kriging estimator, or a complete spline toolbox. It does not estimate
-hyperparameters, select smoothing by cross-validation, model anisotropy,
+kernel shape or epsilon, search a continuous smoothing range, model anisotropy,
 barriers, measurement uncertainty or spatially varying trends, or provide
 prediction intervals. The Gaussian shape parameter is user supplied.
 Collinear points and duplicate coordinates are rejected. Use projected

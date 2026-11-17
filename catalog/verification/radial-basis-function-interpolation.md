@@ -22,7 +22,7 @@ scalable local method.
 - Translation and uniform coordinate scaling preserve affine predictions.
 - Empty queries and invalid controls/data are covered.
 
-These are algebraic and synthetic checks, not a comparison against an
+The PRESS oracle independently refits the model with each observation held out, providing a separate computational check of the hat-diagonal shortcut. These are algebraic and synthetic checks, not a comparison against an
 independent RBF library or a geospatial field dataset. Such comparisons and
 source-entry verification remain outstanding.
 

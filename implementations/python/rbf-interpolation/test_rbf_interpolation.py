@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from rbf_interpolation import RBFInterpolator2D, rbf_interpolate
+from rbf_interpolation import RBFInterpolator2D, rbf_interpolate, select_rbf_smoothing
 
 
 POINTS = np.array([[0., 0.], [1., 0.], [0., 1.], [1., 1.], [.3, .7]])
@@ -82,3 +82,43 @@ def test_bool_parameters_are_rejected():
         RBFInterpolator2D(POINTS, AFFINE, epsilon=True)
     with pytest.raises(ValueError):
         RBFInterpolator2D(POINTS, AFFINE, smoothing=True)
+
+
+def test_press_smoothing_scores_match_independent_leave_one_out_refits():
+    points = np.array([
+        [0., 0.], [1., 0.], [0., 1.], [1., 1.], [.3, .7], [.8, .25]
+    ])
+    values = 2 + 3 * points[:, 0] - 4 * points[:, 1]
+    values[2] += 3.5
+    candidates = [0.03, 0.2, 1.0, 5.0]
+    selected = select_rbf_smoothing(points, values, candidates)
+    independent = {}
+    for smoothing in candidates:
+        errors = []
+        for held_out in range(len(points)):
+            keep = np.arange(len(points)) != held_out
+            prediction = rbf_interpolate(
+                points[keep], values[keep], [points[held_out]],
+                smoothing=smoothing
+            )[0]
+            errors.append((values[held_out] - prediction) ** 2)
+        independent[smoothing] = float(np.mean(errors))
+    for smoothing in candidates:
+        assert selected["scores"][smoothing] == pytest.approx(
+            independent[smoothing], rel=1e-7, abs=1e-9
+        )
+    assert selected["smoothing"] in candidates
+    assert selected["method"] == "exact leave-one-out PRESS"
+
+
+@pytest.mark.parametrize("candidates", [[], [0], [-1, 1], [1, 1], [float("nan")]])
+def test_press_smoothing_rejects_invalid_candidates(candidates):
+    with pytest.raises(ValueError):
+        select_rbf_smoothing(POINTS, AFFINE, candidates)
+
+
+def test_press_smoothing_rejects_bad_epsilon_and_kernel():
+    with pytest.raises(ValueError):
+        select_rbf_smoothing(POINTS, AFFINE, [0.1, 1.0], epsilon=0)
+    with pytest.raises(ValueError):
+        select_rbf_smoothing(POINTS, AFFINE, [0.1, 1.0], kernel="unknown")
