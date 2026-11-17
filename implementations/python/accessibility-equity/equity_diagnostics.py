@@ -100,3 +100,48 @@ def group_mean_gap(group_summaries):
     lo, hi = means[low], means[high]
     return {"lowest_mean_group": low, "highest_mean_group": high,
             "absolute_gap": hi-lo, "lowest_to_highest_ratio": 1.0 if hi == 0 else lo/hi}
+
+
+
+def weighted_atkinson(values, inequality_aversion=1.0, weights=None):
+    """Return the Atkinson index for non-negative values and population weights.
+
+    inequality_aversion is epsilon >= 0. Epsilon=1 uses the weighted
+    geometric mean; epsilon=0 is the equality-neutral limit (index 0).
+    A positive-weight zero observation makes the equally distributed
+    equivalent zero when epsilon >= 1, or when all values are zero.
+    """
+    x, w = _validated(values, weights)
+    epsilon = float(inequality_aversion)
+    if not math.isfinite(epsilon) or epsilon < 0:
+        raise ValueError("inequality_aversion must be finite and non-negative")
+    total = math.fsum(w)
+    mean = math.fsum(a*b for a, b in zip(x, w)) / total
+    if mean == 0 or epsilon == 0:
+        return 0.0
+    if epsilon == 1:
+        positive = [(a, b) for a, b in zip(x, w) if b > 0]
+        if any(a == 0 for a, _ in positive):
+            return 1.0
+        ede = math.exp(math.fsum(b * math.log(a) for a, b in positive) / total)
+    else:
+        power = 1.0 - epsilon
+        positive = [(a, b) for a, b in zip(x, w) if b > 0]
+        if power < 0 and any(a == 0 for a, _ in positive):
+            return 1.0
+        moment = math.fsum(b * (a ** power) for a, b in positive) / total
+        ede = moment ** (1.0 / power)
+    return min(1.0, max(0.0, 1.0 - ede / mean))
+
+
+def weighted_theil_t(values, weights=None):
+    """Return the population-weighted Theil T index (generalised entropy 1)."""
+    x, w = _validated(values, weights)
+    total = math.fsum(w)
+    mean = math.fsum(a*b for a, b in zip(x, w)) / total
+    if mean == 0:
+        return 0.0
+    return math.fsum(
+        b * (a / mean) * math.log(a / mean)
+        for a, b in zip(x, w) if b > 0 and a > 0
+    ) / total

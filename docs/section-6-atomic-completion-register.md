@@ -152,7 +152,7 @@ This register separates optimisation problems, exact algorithms, heuristics, beh
 | S06-AS-17 | PDFormer | Traffic forecasting architecture | Verify | Verify propagation-delay-aware attention; document input graph. |
 | S06-AS-18 | STID | Traffic forecasting architecture | Verify | Verify spatial-temporal identity embeddings and exact version; compare baselines. |
 
-## Completion gates
+### Supplementary descriptive inequality diagnostics\n\nThe existing Section 6 entries S06-AC-16 (Accessibility Gini) and S06-AC-17 (Accessibility Lorenz curve) remain **Partial**: adding more indices does not complete their source-specific verification or decomposition requirements. The shared [accessibility-equity implementation](../implementations/python/accessibility-equity/README.md) now also includes population-weighted Atkinson and Theil T diagnostics as complementary measures. Their parameter/zero-value conventions are documented and tested; these additions do not change the source-entry status.\n\n## Completion gates
 
 1. Every optimisation formulation must define decision variables, objective, constraints, units and feasibility conditions.
 2. Exact methods require optimality certificates or small-instance exhaustive oracles; heuristics require seeds, stopping rules, gaps and sensitivity.

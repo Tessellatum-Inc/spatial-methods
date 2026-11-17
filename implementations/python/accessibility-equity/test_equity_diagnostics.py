@@ -78,3 +78,43 @@ def test_zero_weight_group_omitted_and_zero_ratio():
 def test_empty_group_gap_rejected():
     with pytest.raises(ValueError):
         group_mean_gap({})
+
+
+
+def test_atkinson_known_values_and_aversion():
+    from equity_diagnostics import weighted_atkinson
+    assert weighted_atkinson([2, 2, 2], 1) == pytest.approx(0)
+    assert weighted_atkinson([1, 3], 1) == pytest.approx(1 - math.sqrt(3)/2)
+    assert weighted_atkinson([1, 3], 2) == pytest.approx(.25)
+    assert weighted_atkinson([1, 3], .5) == pytest.approx(
+        1 - (((1 + math.sqrt(3))/2) ** 2) / 2
+    )
+
+
+def test_atkinson_zero_values_and_weight_replication():
+    from equity_diagnostics import weighted_atkinson
+    assert weighted_atkinson([0, 10], .5, [2, 1]) == pytest.approx(2/3)
+    assert weighted_atkinson([0, 10], 1, [2, 1]) == pytest.approx(1)
+    assert weighted_atkinson([0, 10], 2, [2, 1]) == pytest.approx(1)
+    assert weighted_atkinson([0, 10], 1, [2, 1]) == pytest.approx(
+        weighted_atkinson([0, 0, 10], 1)
+    )
+
+
+def test_theil_t_known_values_scale_and_weights():
+    from equity_diagnostics import weighted_theil_t
+    assert weighted_theil_t([4, 4, 4]) == pytest.approx(0)
+    assert weighted_theil_t([0, 10], [2, 1]) == pytest.approx(math.log(3))
+    assert weighted_theil_t([0, 10], [2, 1]) == pytest.approx(
+        weighted_theil_t([0, 0, 10])
+    )
+    assert weighted_theil_t([0, 100], [2, 1]) == pytest.approx(math.log(3))
+
+
+def test_theil_all_zero_and_atkinson_invalid_aversion():
+    from equity_diagnostics import weighted_atkinson, weighted_theil_t
+    assert weighted_theil_t([0, 0, 0]) == 0
+    assert weighted_atkinson([0, 0, 0], 2) == 0
+    for epsilon in [-1, math.inf, math.nan]:
+        with pytest.raises(ValueError):
+            weighted_atkinson([1, 2], epsilon)
