@@ -141,3 +141,46 @@ def test_normalized_mutual_information_validates_inputs():
         normalized_mutual_information([], [])
     with pytest.raises(ValueError):
         normalized_mutual_information(["a"], ["x", "y"])
+
+
+from accuracy_assessment import (
+    ensemble_crps, kling_gupta_efficiency, nash_sutcliffe_efficiency,
+)
+
+
+def test_nash_sutcliffe_efficiency_matches_analytic_values():
+    assert nash_sutcliffe_efficiency([1, 2, 3], [1, 2, 2]) == pytest.approx(.5)
+    assert nash_sutcliffe_efficiency([1, 2, 3], [1, 2, 3]) == pytest.approx(1)
+    assert nash_sutcliffe_efficiency([2, 2], [2, 3]) == 0
+
+
+def test_kling_gupta_efficiency_2009_components():
+    assert kling_gupta_efficiency([1, 2, 3], [1, 2, 3]) == pytest.approx(1)
+    assert kling_gupta_efficiency([1, 2, 3], [2, 4, 6]) == pytest.approx(1-2**.5)
+    assert kling_gupta_efficiency([0, 0, 0], [1, 2, 3]) is None
+    assert kling_gupta_efficiency([1, 2, 3], [2, 2, 2]) is None
+
+
+def test_kge_supports_sample_weights():
+    assert kling_gupta_efficiency([1, 2, 3], [1, 2, 3], [1, 2, 1]) == pytest.approx(1)
+
+
+def test_ensemble_crps_matches_single_and_two_member_oracles():
+    assert ensemble_crps([1], [[3]]) == pytest.approx(2)
+    assert ensemble_crps([1], [[0, 2]]) == pytest.approx(.5)
+    assert ensemble_crps([1], [[0, 1, 2]]) == pytest.approx(2/9)
+
+
+def test_ensemble_crps_supports_case_weights():
+    assert ensemble_crps([0, 0], [[0], [2]], [3, 1]) == pytest.approx(.5)
+
+
+def test_ensemble_crps_rejects_invalid_inputs():
+    with pytest.raises(ValueError):
+        ensemble_crps([], [])
+    with pytest.raises(ValueError):
+        ensemble_crps([1], [[]])
+    with pytest.raises(ValueError):
+        ensemble_crps([1], [[float("nan")]])
+    with pytest.raises(ValueError):
+        ensemble_crps([1, 2], [[1]], [1, 1])
