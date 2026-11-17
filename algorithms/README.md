@@ -477,4 +477,4 @@ Records may have different evidence and implementation status. Check the status 
 
 ## Domain modeling
 
-- [Spatial cellular automata](domain-modeling/cellular-automata.md) — synchronous B/S rules, neighborhood and boundary contracts, and a bounded Schelling-style relocation example.
+- [Spatial cellular automata](domain-modeling/cellular-automata.md) — synchronous B/S rules, site-percolation crossing, a stochastic forest-fire automaton and a bounded Schelling-style relocation example.
