@@ -1,4 +1,3 @@
-import math
 import pytest
 from bowyer_watson import triangulate, edges, _incircle
 
@@ -27,7 +26,6 @@ def test_empty_circumcircle_property_for_general_position_fixture():
     pts = [(0,0),(5,0),(4,4),(0,3),(1.2,1.1),(2.8,2.1),(3.4,.7)]
     for tri in triangulate(pts):
         a,b,c = (pts[i] for i in tri)
-        # Independent circumcentre calculation.
         d = 2*(a[0]*(b[1]-c[1])+b[0]*(c[1]-a[1])+c[0]*(a[1]-b[1]))
         ux = ((a[0]**2+a[1]**2)*(b[1]-c[1])+(b[0]**2+b[1]**2)*(c[1]-a[1])+(c[0]**2+c[1]**2)*(a[1]-b[1]))/d
         uy = ((a[0]**2+a[1]**2)*(c[0]-b[0])+(b[0]**2+b[1]**2)*(a[0]-c[0])+(c[0]**2+c[1]**2)*(b[0]-a[0]))/d
@@ -42,7 +40,6 @@ def test_seeded_random_cloud_has_planar_triangle_count():
     rng = random.Random(7)
     pts = [(rng.random(),rng.random()) for _ in range(30)]
     tris = triangulate(pts)
-    # For a triangulation of n points with h hull vertices: T=2n-2-h.
     hull = _hull_count(pts)
     assert len(tris) == 2*len(pts)-2-hull
 
@@ -74,3 +71,16 @@ def test_invalid_inputs_are_rejected(bad):
 def test_incircle_sign_for_ccw_triangle():
     assert _incircle((0,0),(2,0),(0,2),(.5,.5)) > 0
     assert _incircle((0,0),(2,0),(0,2),(3,3)) < 0
+
+
+def test_triangulation_is_translation_invariant():
+    points = [(0,0),(5,0),(4,4),(0,3),(1.2,1.1),(2.8,2.1),(3.4,.7)]
+    shifted = [(x+1e9,y-1e9) for x,y in points]
+    assert triangulate(points) == triangulate(shifted)
+
+
+def test_small_coordinate_scale_is_not_swallowed_by_absolute_tolerance():
+    points = [(0,0),(5e-8,0),(4e-8,4e-8),(0,3e-8),
+              (1.2e-8,1.1e-8),(2.8e-8,2.1e-8),(3.4e-8,.7e-8)]
+    assert len(triangulate(points)) == len(triangulate(
+        [(x*1e8,y*1e8) for x,y in points]))
