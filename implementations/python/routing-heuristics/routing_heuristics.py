@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from math import hypot, isfinite
+from dataclasses import dataclass
 from typing import Iterable, Sequence
 
 Point = tuple[float, float]
@@ -124,3 +125,184 @@ def validate_cvrp_routes(routes: Sequence[Sequence[int]], demands: Sequence[floa
         return sorted(seen)==[i for i in range(n) if i!=depot]
     except (TypeError,ValueError,IndexError):
         return False
+
+
+@dataclass(frozen=True)
+class VRPTWStop:
+    """Arrival, service-start and departure times for one route stop."""
+
+    node: int
+    arrival: float
+    service_start: float
+    departure: float
+
+
+@dataclass(frozen=True)
+class VRPTWRoute:
+    """One depot-closed vehicle route and its feasible schedule."""
+
+    nodes: tuple[int, ...]
+    stops: tuple[VRPTWStop, ...]
+    load: float
+    distance: float
+
+
+@dataclass(frozen=True)
+class VRPTWResult:
+    """Constructed routes plus customers that the heuristic could not serve."""
+
+    routes: tuple[VRPTWRoute, ...]
+    unserved: tuple[int, ...]
+
+
+def greedy_vrptw(
+    points: Iterable[Sequence[float]],
+    demands: Sequence[float],
+    time_windows: Sequence[Sequence[float]],
+    capacity: float,
+    service_times: Sequence[float] | None = None,
+    *,
+    depot: int = 0,
+    vehicle_limit: int | None = None,
+    start_time: float | None = None,
+) -> VRPTWResult:
+    """Build feasible Euclidean VRPTW routes by deterministic greedy insertion.
+
+    At each stop, choose the feasible unserved customer with the smallest
+    incremental closed-route distance. Waiting is allowed. A candidate is
+    feasible only if capacity, its service-start window and return to the
+    depot by the depot's closing time are all satisfied.
+
+    This is a constructive heuristic, not an exact VRPTW solver. It can leave
+    customers unserved even when a different ordering could serve them.
+    """
+    pts = _points(points)
+    n = len(pts)
+    if n == 0:
+        raise ValueError("at least a depot point is required")
+    if isinstance(depot, bool) or not isinstance(depot, int) or not 0 <= depot < n:
+        raise ValueError("depot must be a valid point index")
+    if len(demands) != n or len(time_windows) != n:
+        raise ValueError("demands and time_windows must have one value per point")
+
+    ds = []
+    for demand in demands:
+        try:
+            value = float(demand)
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError("demands must be finite and non-negative") from exc
+        if not isfinite(value) or value < 0:
+            raise ValueError("demands must be finite and non-negative")
+        ds.append(value)
+
+    try:
+        cap = float(capacity)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError("capacity must be positive and finite") from exc
+    if not isfinite(cap) or cap <= 0:
+        raise ValueError("capacity must be positive and finite")
+    if ds[depot] != 0:
+        raise ValueError("depot demand must be zero")
+    if any(ds[i] > cap for i in range(n) if i != depot):
+        raise ValueError("a customer demand exceeds vehicle capacity")
+
+    windows = []
+    for window in time_windows:
+        try:
+            pair = tuple(float(value) for value in window)
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError("each time window must contain two finite values") from exc
+        if len(pair) != 2 or not all(isfinite(value) for value in pair) or pair[0] > pair[1]:
+            raise ValueError("each time window must be finite and ordered")
+        windows.append((pair[0], pair[1]))
+
+    if service_times is None:
+        services = [0.0] * n
+    else:
+        if len(service_times) != n:
+            raise ValueError("service_times must have one value per point")
+        services = []
+        for duration in service_times:
+            try:
+                value = float(duration)
+            except (TypeError, ValueError, OverflowError) as exc:
+                raise ValueError("service times must be finite and non-negative") from exc
+            if not isfinite(value) or value < 0:
+                raise ValueError("service times must be finite and non-negative")
+            services.append(value)
+
+    if vehicle_limit is not None and (
+        isinstance(vehicle_limit, bool)
+        or not isinstance(vehicle_limit, int)
+        or vehicle_limit < 1
+    ):
+        raise ValueError("vehicle_limit must be a positive integer or None")
+    if start_time is None:
+        dispatch = windows[depot][0]
+    else:
+        try:
+            dispatch = float(start_time)
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError("start_time must be finite") from exc
+        if not isfinite(dispatch):
+            raise ValueError("start_time must be finite")
+        dispatch = max(dispatch, windows[depot][0])
+    if dispatch > windows[depot][1]:
+        raise ValueError("start_time is after the depot closing time")
+
+    def distance(a: int, b: int) -> float:
+        return hypot(pts[a][0] - pts[b][0], pts[a][1] - pts[b][1])
+
+    unserved = set(i for i in range(n) if i != depot)
+    routes = []
+    while unserved and (vehicle_limit is None or len(routes) < vehicle_limit):
+        current = depot
+        departure = dispatch
+        load = 0.0
+        route_nodes = [depot]
+        stops = [VRPTWStop(depot, dispatch, dispatch, dispatch)]
+        route_distance = 0.0
+
+        while True:
+            feasible = []
+            for customer in sorted(unserved):
+                if load + ds[customer] > cap + 1e-12:
+                    continue
+                leg = distance(current, customer)
+                arrival = departure + leg
+                service_start = max(arrival, windows[customer][0])
+                if service_start > windows[customer][1]:
+                    continue
+                next_departure = service_start + services[customer]
+                return_time = next_departure + distance(customer, depot)
+                if return_time > windows[depot][1]:
+                    continue
+                detour = leg + distance(customer, depot) - distance(current, depot)
+                feasible.append((detour, customer, arrival, service_start, next_departure, leg))
+
+            if not feasible:
+                break
+            _, chosen, arrival, service_start, next_departure, leg = min(
+                feasible, key=lambda item: (item[0], item[1])
+            )
+            route_distance += leg
+            route_nodes.append(chosen)
+            stops.append(VRPTWStop(chosen, arrival, service_start, next_departure))
+            load += ds[chosen]
+            departure = next_departure
+            current = chosen
+            unserved.remove(chosen)
+
+        if len(route_nodes) == 1:
+            break
+
+        return_leg = distance(current, depot)
+        return_time = departure + return_leg
+        route_distance += return_leg
+        route_nodes.append(depot)
+        stops.append(VRPTWStop(depot, return_time, return_time, return_time))
+        routes.append(
+            VRPTWRoute(tuple(route_nodes), tuple(stops), load, route_distance)
+        )
+
+    return VRPTWResult(tuple(routes), tuple(sorted(unserved)))
