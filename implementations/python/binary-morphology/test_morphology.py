@@ -10,8 +10,10 @@ from morphology import (
 def test_erosion_and_dilation_use_false_outside_boundary():
     image = np.ones((3, 3), dtype=bool)
     cross = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], dtype=bool)
-    assert erosion(image, cross).sum() == 5
-    assert dilation(np.array([[1]], dtype=bool), cross).sum() == 5
+    assert erosion(image, cross).sum() == 1
+    point = np.zeros((5, 5), dtype=bool)
+    point[2, 2] = True
+    assert dilation(point, cross).sum() == 5
 
 
 def test_opening_and_closing_are_idempotent():
