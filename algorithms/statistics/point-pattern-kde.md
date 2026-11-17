@@ -33,8 +33,8 @@ bandwidths. The implementation excludes each event from its own pilot estimate
 and clips local bandwidth factors to a configurable positive interval.
 
 The companion [implementation](../../implementations/python/point-pattern-kde/README.md)
-provides fixed KDE, adaptive sample-point KDE and weighted LOO candidate
-selection. It uses direct planar evaluation and applies no edge correction,
+provides fixed KDE, adaptive sample-point KDE, Silverman's bivariate
+normal-reference bandwidth and weighted LOO candidate selection. It uses direct planar evaluation and applies no edge correction,
 so kernels extending beyond the observation window can bias estimates down.
 Adaptive evaluation costs O(n^2 + nm), and LOO selection O(n^2 c) for c
 candidate bandwidths. These are transparent reference methods, not indexed

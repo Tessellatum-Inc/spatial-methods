@@ -822,3 +822,13 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Add a deterministic minimum enclosing circle and analytic square/circle/triangle fixtures.
 - [x] Add orientation, closure, degenerate geometry and collinear-point tests; register in Python CI.
 - [ ] Add districting algorithms (ReCom/MCMC/Flip), territory design and set-partitioning methods separately.
+
+
+## Partitioning clustering — 17 November 2026
+
+- [x] Add a symmetric-dissimilarity contract and Euclidean distance helper.
+- [x] Implement deterministic PAM BUILD/SWAP with strict-improvement stopping.
+- [x] Implement CLARA sampling and full-dataset candidate scoring.
+- [x] Add independent objective, brute-force, determinism, invalid-input and sampling tests.
+- [x] Add a learning notebook, source-verification record and CI package registration.
+- [ ] Add CLARANS, constrained/equal-size clustering and spatially contiguous regionalisation as separate methods.

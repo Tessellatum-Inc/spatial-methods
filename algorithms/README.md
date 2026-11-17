@@ -407,3 +407,6 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [Districting compactness metrics](optimization/districting-compactness.md) — Polsby–Popper, Reock and Schwartzberg with a minimum enclosing circle.
+
+
+- [K-medoids and CLARA](statistics/k-medoids.md) — deterministic PAM BUILD/SWAP and sample-based CLARA for symmetric dissimilarities.

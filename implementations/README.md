@@ -247,3 +247,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Districting and territory design
 
 - [Polygon compactness metrics](python/districting-compactness/README.md): Polsby–Popper, Reock and Schwartzberg scores with a deterministic minimum enclosing circle, tests and an [implementation walkthrough](python/districting-compactness/implementation-walkthrough.md).
+
+
+### Partitioning clustering
+
+- [PAM k-medoids and CLARA](python/k-medoids/README.md): deterministic BUILD/SWAP medoid search and sample-based CLARA with full-data scoring, independent tests and an [implementation walkthrough](python/k-medoids/implementation-walkthrough.md).

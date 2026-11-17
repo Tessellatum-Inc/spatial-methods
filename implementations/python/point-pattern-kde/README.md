@@ -1,7 +1,8 @@
 # Planar Gaussian kernel density estimation for point patterns
 
 This package provides fixed-bandwidth and sample-point adaptive Gaussian KDE,
-plus leave-one-out likelihood bandwidth selection for modest planar samples.
+Silverman's bivariate normal-reference bandwidth, and leave-one-out
+likelihood bandwidth selection for modest planar samples.
 
 ## Run
 ~~~bash
