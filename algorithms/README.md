@@ -457,3 +457,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Fractional-cover regression tree](remote-sensing/fractional-cover-regression-tree.md): deterministic CART baseline for field-labelled fractional-cover estimation.
 
 - [Brown-Conrady lens distortion](photogrammetry/brown-conrady-distortion.md): radial/tangential camera-plane distortion and Newton inverse.
+
+- [Progressive morphological ground filtering](photogrammetry/progressive-morphological-ground-filter.md): rasterised progressive opening and height-threshold baseline for XYZ point clouds.
