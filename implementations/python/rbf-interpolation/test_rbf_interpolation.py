@@ -48,9 +48,9 @@ def test_empty_query_array_returns_empty_predictions():
 
 @pytest.mark.parametrize("kwargs", [
     {"kernel": "unknown"}, {"kernel": []}, {"epsilon": 0}, {"epsilon": float("nan")},
-    {"epsilon": "1"}, {"epsilon": 10**10000},
+    {"epsilon": "1"}, pytest.param({"epsilon": 10**10000}, id="epsilon-huge-int"),
     {"smoothing": -1}, {"smoothing": float("inf")},
-    {"smoothing": "0"}, {"smoothing": 10**10000},
+    {"smoothing": "0"}, pytest.param({"smoothing": 10**10000}, id="smoothing-huge-int"),
 ])
 def test_invalid_controls_are_rejected(kwargs):
     with pytest.raises(ValueError):
