@@ -68,7 +68,7 @@ def triangulate(points: Iterable[Sequence[float]]) -> tuple[Triangle, ...]:
             a, b, c = (work[k] for k in tri)
             det = _incircle(a, b, c, point)
             scale = max(1.0, *(abs(v) for q in (a,b,c,point) for v in q))
-            if det > 1e-14 * scale**4:
+            if det >= -1e-14 * scale**4:
                 bad.append(tri)
         if not bad:
             raise ArithmeticError("point insertion found no circumcircle cavity")
