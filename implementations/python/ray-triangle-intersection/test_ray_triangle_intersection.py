@@ -46,3 +46,62 @@ def test_invalid_tolerance_and_interval_raise():
         intersect_ray_triangle((0, 0, 1), (0, 0, -1), TRIANGLE, t_min=-1)
     with pytest.raises(ValueError):
         intersect_ray_triangle((0, 0, 1), (0, 0, -1), TRIANGLE, t_min=2, t_max=1)
+
+
+def test_aabb_slab_intersection_handles_parallel_axes():
+    from ray_triangle_intersection import AABB
+    box = AABB((0, 0, 0), (1, 1, 1))
+    assert box.intersect_ray((.5, .5, 2), (0, 0, -1)) == pytest.approx((1, 2))
+    assert box.intersect_ray((2, .5, 2), (0, 0, -1)) is None
+
+
+def test_empty_bvh_and_invalid_leaf_size():
+    from ray_triangle_intersection import build_bvh, intersect_bvh
+    assert build_bvh([]) is None
+    with pytest.raises(ValueError):
+        build_bvh([TRIANGLE], leaf_size=0)
+    assert intersect_bvh(None, [], (0, 0, 0), (1, 0, 0)) is None
+
+
+def test_bvh_returns_nearest_hit_and_original_triangle_index():
+    from ray_triangle_intersection import build_bvh, intersect_bvh
+    triangles = [
+        ((-1, -1, 0), (1, -1, 0), (0, 1, 0)),
+        ((-1, -1, 2), (1, -1, 2), (0, 1, 2)),
+    ]
+    tree = build_bvh(triangles, leaf_size=1)
+    result = intersect_bvh(tree, triangles, (0, 0, 5), (0, 0, -1))
+    assert result is not None
+    index, hit = result
+    assert index == 1
+    assert hit.t == pytest.approx(3)
+    assert hit.point == pytest.approx((0, 0, 2))
+
+
+def test_bvh_matches_brute_force_for_seeded_vertical_rays():
+    import random
+    from ray_triangle_intersection import build_bvh, intersect_bvh
+    rng = random.Random(20261118)
+    triangles = []
+    for _ in range(80):
+        x, y, z = rng.uniform(-8, 8), rng.uniform(-8, 8), rng.uniform(-4, 4)
+        width, height = rng.uniform(.2, 1.5), rng.uniform(.2, 1.5)
+        triangles.append(((x, y, z), (x+width, y, z), (x, y+height, z)))
+    tree = build_bvh(triangles, leaf_size=3)
+    for _ in range(100):
+        origin = (rng.uniform(-9, 9), rng.uniform(-9, 9), 8.0)
+        direction = (0.0, 0.0, -1.0)
+        candidates = [
+            (hit.t, index)
+            for index, triangle in enumerate(triangles)
+            if (hit := intersect_ray_triangle(origin, direction, triangle)) is not None
+        ]
+        expected = min(candidates, default=None)
+        actual = intersect_bvh(tree, triangles, origin, direction)
+        if expected is None:
+            assert actual is None
+        else:
+            assert actual is not None
+            index, hit = actual
+            assert hit.t == pytest.approx(expected[0])
+            assert index == expected[1]
