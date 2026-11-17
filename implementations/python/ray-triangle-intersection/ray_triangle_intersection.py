@@ -85,3 +85,184 @@ def intersect_ray_triangle(
     if t < t_min or t > t_max:
         return None
     return RayTriangleHit(t, u, v, 1.0-u-v, _add(o, _scale(d, t)))
+
+
+@dataclass(frozen=True)
+class AABB:
+    """Axis-aligned bounds in the same Cartesian frame as the mesh."""
+    minimum: Vec3
+    maximum: Vec3
+
+    @classmethod
+    def from_triangle(cls, triangle: tuple[Vec3, Vec3, Vec3]) -> "AABB":
+        return cls(
+            tuple(min(v[a] for v in triangle) for a in range(3)),  # type: ignore[arg-type]
+            tuple(max(v[a] for v in triangle) for a in range(3)),  # type: ignore[arg-type]
+        )
+
+    @classmethod
+    def union(cls, boxes: Sequence["AABB"]) -> "AABB":
+        if not boxes:
+            raise ValueError("at least one box is required")
+        return cls(
+            tuple(min(b.minimum[a] for b in boxes) for a in range(3)),  # type: ignore[arg-type]
+            tuple(max(b.maximum[a] for b in boxes) for a in range(3)),  # type: ignore[arg-type]
+        )
+
+    @property
+    def centroid(self) -> Vec3:
+        return tuple((self.minimum[a] + self.maximum[a]) / 2 for a in range(3))  # type: ignore[return-value]
+
+    @property
+    def surface_area(self) -> float:
+        x, y, z = (max(0.0, self.maximum[a] - self.minimum[a]) for a in range(3))
+        return 2.0 * (x*y + y*z + z*x)
+
+    def intersect_ray(
+        self, origin: Vec3, direction: Vec3,
+        t_min: float = 0.0, t_max: float = inf,
+    ) -> tuple[float, float] | None:
+        """Return the ray-parameter interval clipped to this box."""
+        near, far = t_min, t_max
+        for axis in range(3):
+            o, d = origin[axis], direction[axis]
+            low, high = self.minimum[axis], self.maximum[axis]
+            if d == 0.0:
+                if o < low or o > high:
+                    return None
+                continue
+            t0, t1 = (low-o)/d, (high-o)/d
+            if t0 > t1:
+                t0, t1 = t1, t0
+            near, far = max(near, t0), min(far, t1)
+            if near > far:
+                return None
+        return near, far
+
+
+@dataclass(frozen=True)
+class BVHNode:
+    bounds: AABB
+    left: "BVHNode | None" = None
+    right: "BVHNode | None" = None
+    triangle_indices: tuple[int, ...] = ()
+
+    @property
+    def is_leaf(self) -> bool:
+        return self.left is None and self.right is None
+
+
+def _as_triangle(value: Sequence[Sequence[float]]) -> tuple[Vec3, Vec3, Vec3]:
+    if len(value) != 3:
+        raise ValueError("each triangle must contain exactly three vertices")
+    return tuple(_vec3(vertex, "triangle vertex") for vertex in value)  # type: ignore[return-value]
+
+
+def build_bvh(
+    triangles: Sequence[Sequence[Sequence[float]]], *, leaf_size: int = 4,
+) -> BVHNode | None:
+    """Build a deterministic binary BVH with exact-centroid SAH split scans.
+
+    Every centroid split on each axis is evaluated. This transparent builder
+    favours reproducibility and inspectability over production build speed;
+    binned SAH is preferable for large meshes.
+    """
+    if leaf_size < 1:
+        raise ValueError("leaf_size must be at least one")
+    tris = tuple(_as_triangle(t) for t in triangles)
+    if not tris:
+        return None
+    boxes = tuple(AABB.from_triangle(t) for t in tris)
+    centres = tuple(box.centroid for box in boxes)
+
+    def build(indices: tuple[int, ...]) -> BVHNode:
+        bounds = AABB.union([boxes[i] for i in indices])
+        if len(indices) <= leaf_size:
+            return BVHNode(bounds=bounds, triangle_indices=indices)
+        leaf_cost = bounds.surface_area * len(indices)
+        best_cost = inf
+        best_split: tuple[tuple[int, ...], tuple[int, ...]] | None = None
+        for axis in range(3):
+            ordered = tuple(sorted(indices, key=lambda i: (centres[i][axis], i)))
+            prefix: list[AABB] = []
+            running: list[AABB] = []
+            for index in ordered:
+                running.append(boxes[index])
+                prefix.append(AABB.union(running))
+            suffix: list[AABB | None] = [None] * len(ordered)
+            running = []
+            for pos in range(len(ordered)-1, -1, -1):
+                running.append(boxes[ordered[pos]])
+                suffix[pos] = AABB.union(running)
+            for split in range(1, len(ordered)):
+                left, right = ordered[:split], ordered[split:]
+                right_bounds = suffix[split]
+                assert right_bounds is not None
+                cost = prefix[split-1].surface_area*len(left) + right_bounds.surface_area*len(right)
+                if cost < best_cost:
+                    best_cost, best_split = cost, (left, right)
+        if best_split is None or best_cost >= leaf_cost:
+            return BVHNode(bounds=bounds, triangle_indices=indices)
+        return BVHNode(bounds=bounds, left=build(best_split[0]), right=build(best_split[1]))
+
+    return build(tuple(range(len(tris))))
+
+
+def intersect_bvh(
+    root: BVHNode | None,
+    triangles: Sequence[Sequence[Sequence[float]]],
+    origin: Sequence[float],
+    direction: Sequence[float],
+    *,
+    t_min: float = 1e-9,
+    t_max: float = inf,
+    cull_backface: bool = False,
+) -> tuple[int, RayTriangleHit] | None:
+    """Return (input triangle index, nearest hit) using near-first traversal."""
+    if root is None:
+        return None
+    o, d = _vec3(origin, "origin"), _vec3(direction, "direction")
+    tris = tuple(_as_triangle(t) for t in triangles)
+    if not tris:
+        return None
+    if any(i < 0 or i >= len(tris) for i in _leaf_triangle_indices(root)):
+        raise ValueError("BVH contains an index outside the supplied triangle sequence")
+    interval = root.bounds.intersect_ray(o, d, t_min, t_max)
+    if interval is None:
+        return None
+    best_t = t_max
+    best: tuple[int, RayTriangleHit] | None = None
+    stack: list[tuple[float, BVHNode]] = [(interval[0], root)]
+    while stack:
+        entry, node = stack.pop()
+        if entry > best_t:
+            continue
+        if node.is_leaf:
+            for index in node.triangle_indices:
+                hit = intersect_ray_triangle(
+                    o, d, tris[index], t_min=t_min, t_max=best_t,
+                    cull_backface=cull_backface,
+                )
+                if hit is not None and hit.t < best_t:
+                    best_t, best = hit.t, (index, hit)
+            continue
+        children: list[tuple[float, BVHNode]] = []
+        for child in (node.left, node.right):
+            if child is not None:
+                child_interval = child.bounds.intersect_ray(o, d, t_min, best_t)
+                if child_interval is not None:
+                    children.append((child_interval[0], child))
+        children.sort(key=lambda item: item[0], reverse=True)
+        stack.extend(children)
+    return best
+
+
+def _leaf_triangle_indices(node: BVHNode) -> tuple[int, ...]:
+    if node.is_leaf:
+        return node.triangle_indices
+    indices: list[int] = []
+    if node.left is not None:
+        indices.extend(_leaf_triangle_indices(node.left))
+    if node.right is not None:
+        indices.extend(_leaf_triangle_indices(node.right))
+    return tuple(indices)
