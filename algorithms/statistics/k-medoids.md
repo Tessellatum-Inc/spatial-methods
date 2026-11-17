@@ -3,9 +3,9 @@
 K-medoids partitions observations into k groups represented by observed
 objects. Given a symmetric dissimilarity matrix D, the objective is
 
-\\[
+\[
 \\min_{M: |M|=k} \\sum_i \\min_{m\\in M} D_{im}.
-\\]
+\]
 
 Unlike k-means, this objective accepts arbitrary dissimilarities and each
 representative is an actual observation. PAM (Partitioning Around Medoids)

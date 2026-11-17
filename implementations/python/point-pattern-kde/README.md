@@ -22,6 +22,7 @@ density, xs, ys = gaussian_kde(
 ## Adaptive KDE and bandwidth selection
 ~~~python
 from point_pattern_kde import adaptive_gaussian_kde, select_bandwidth_loo, silverman_bandwidth
+points = [(2, 3), (2.2, 3.1), (7, 8), (7.2, 8.1)]
 surface, xs, ys, local_h = adaptive_gaussian_kde(
     points, bounds=(0, 10, 0, 10), bandwidth=0.8,
 )
