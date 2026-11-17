@@ -70,3 +70,8 @@ The [point-process package](../implementations/python/point-process/README.md) c
 ## Space-time cylindrical scan
 
 A companion [discrete space-time Poisson scan](statistics/space-time-scan-statistic.md) searches centroid-centred circular spatial zones crossed with contiguous time-bin intervals. It uses area-time population exposure as the Poisson offset and conditional multinomial simulations to calibrate the maximum cylinder likelihood ratio. It is a discrete-grid teaching baseline, not a full continuous-time SaTScan reproduction.
+
+
+## Space-time K-function
+
+A separate estimator computes K(r, τ) from ordered event pairs with spatial separation at most r and absolute temporal lag at most τ. It applies rectangular spatial translation correction and temporal overlap correction. This second-order summary statistic is distinct from the space-time cylindrical scan likelihood.
