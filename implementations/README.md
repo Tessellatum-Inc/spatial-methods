@@ -261,3 +261,6 @@ These are connected teaching materials, not interchangeable copies of the same e
 
 ### Geodesy and location encoding
 - [Open Location Code (Plus Codes)](python/open-location-code/README.md): full-code encoding and decoding with cell bounds, parameter validation and a known-coordinate fixture; short-code recovery is intentionally excluded.
+
+### Remote sensing and fractional cover
+- [Fractional-cover regression tree](python/fractional-cover/README.md): deterministic CART regression for field-labelled fractions, with independent tests and explicit spatial-validation limitations.
