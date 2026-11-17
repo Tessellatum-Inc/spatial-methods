@@ -451,3 +451,5 @@ Records may have different evidence and implementation status. Check the status 
 - [SAR CA-CFAR and OS-CFAR](remote-sensing/sar-cfar.md) — local clutter thresholding with cell-averaging and ordered-statistics reference detectors.
 
 - [Lee local-statistics speckle filter](remote-sensing/lee-speckle-filter.md) — adaptive local-mean shrinkage under an explicit noise-variance model, with a tested NumPy baseline.
+
+- [Open Location Code (Plus Codes)](geodesy/open-location-code.md): full-code WGS84 encoding/decoding and decoded cell bounds; short-code recovery and geocoding remain out of scope.
