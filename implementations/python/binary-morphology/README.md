@@ -32,3 +32,14 @@ python -m pytest -q
 
 - Vincent, L. (1993). Grayscale area openings and closings, their efficient implementation and applications. *Proceedings of the EURASIP Workshop on Mathematical Morphology and Its Applications to Signal Processing*, Barcelona, 22–27. This package uses an inspectable threshold-set/component-tree reference, not Vincent's efficient implementation.
 - Breen, E. J., & Jones, R. (1996). Attribute openings, thinnings, and granulometries. *Computer Vision and Image Understanding*, 64(3), 377–389. https://doi.org/10.1006/cviu.1996.0066
+
+
+### Moore-neighbour contour tracing
+
+`moore_neighbor_contours(image, connectivity=8)` returns one ordered outer
+boundary per foreground component as row/column integer coordinates. The
+component separation connectivity is explicit; boundary walking itself uses
+the Moore 8-neighbourhood. This bounded teaching implementation does not
+extract hole boundaries, infer polygon topology, or produce subpixel
+coordinates. Do not use its output as a substitute for a topology-aware
+vectorisation pipeline.

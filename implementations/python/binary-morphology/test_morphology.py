@@ -353,3 +353,45 @@ def test_grayscale_area_filter_rejects_invalid_parameters():
         grayscale_area_attribute_filter(image, 2, polarity="alpha")
     with pytest.raises(ValueError):
         grayscale_area_attribute_filter(image, 2, connectivity=6)
+
+
+def test_moore_contours_trace_single_pixel_and_rectangular_component():
+    from morphology import moore_neighbor_contours
+    single = np.zeros((4, 5), bool)
+    single[2, 3] = True
+    contours = moore_neighbor_contours(single)
+    assert len(contours) == 1
+    assert contours[0].tolist() == [[2, 3]]
+
+    rectangle = np.zeros((8, 9), bool)
+    rectangle[2:6, 3:7] = True
+    contour, = moore_neighbor_contours(rectangle)
+    assert tuple(contour[0]) == (2, 3)
+    assert len({tuple(point) for point in contour}) == len(contour)
+    assert len(contour) == 12
+    assert all(rectangle[y, x] for y, x in contour)
+    assert all(
+        max(abs(int(a[0])-int(b[0])), abs(int(a[1])-int(b[1]))) == 1
+        for a, b in zip(contour, np.roll(contour, -1, axis=0))
+    )
+
+
+def test_moore_contours_separate_components_and_respect_connectivity():
+    from morphology import moore_neighbor_contours
+    image = np.zeros((6, 6), bool)
+    image[0, 0] = True
+    image[2:4, 2:4] = True
+    image[5, 5] = True
+    assert len(moore_neighbor_contours(image, 8)) == 3
+    diagonal = np.eye(3, dtype=bool)
+    assert len(moore_neighbor_contours(diagonal, 4)) == 3
+    assert len(moore_neighbor_contours(diagonal, 8)) == 1
+
+
+def test_moore_contours_validate_connectivity_and_empty_input():
+    from morphology import moore_neighbor_contours
+    assert moore_neighbor_contours(np.zeros((3, 4), bool)) == []
+    with pytest.raises(ValueError):
+        moore_neighbor_contours(np.ones((2, 2)), 6)
+    with pytest.raises(ValueError):
+        moore_neighbor_contours(np.ones((2, 2)), True)
