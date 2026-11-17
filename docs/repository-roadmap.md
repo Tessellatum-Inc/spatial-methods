@@ -832,6 +832,15 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [ ] Add within-edge event positions, continuous edge integration, edge correction, network K and SANET methods.
 
 
+## Lloyd k-means — 17 November 2026
+
+- [x] Implement k-means++ initialization and Lloyd nearest-centroid updates.
+- [x] Add multiple starts, deterministic empty-cluster repair and recomputed inertia.
+- [x] Add independent objective, separated-cluster, duplicate-data, determinism and invalid-input tests.
+- [x] Add algorithm record, verification notes, source-index update and dedicated CI job.
+- [ ] Add constrained/equal-size and spatially contiguous partitioning as separate algorithms.
+
+
 ## Partitioning clustering — 17 November 2026
 
 - [x] Add a symmetric-dissimilarity contract and Euclidean distance helper.
