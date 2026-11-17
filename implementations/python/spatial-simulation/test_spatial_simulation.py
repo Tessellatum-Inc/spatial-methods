@@ -155,7 +155,7 @@ def test_forest_fire_burning_tree_empty_transition_rules():
     grid = np.array([
         [0, 1, 0],
         [0, 2, 0],
-        [0, 0, 0],
+        [0, 1, 0],
     ], dtype=np.uint8)
     result = forest_fire_step(
         grid, growth_probability=0.0, lightning_probability=0.0,
