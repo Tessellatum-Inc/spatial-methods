@@ -24,16 +24,16 @@ The Euclidean foundation covers five stationary covariance examples and finite-m
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Stationary kernels: [stationary covariance functions](../../methods/stationary-covariance-functions.md), Matern, exponential, spherical, Gaussian, Cauchy, powered exponential, Wendland compact support | Covariance and kernel functions | 45 | Partial — related record exists; source-entry review pending |
-| Non-Euclidean validity: valid covariances on spheres (Gneiting), on networks (Anderes), graph kernels; why geodesic-distance Gaussian kernels can fail | Covariance validity theory / spherical and network kernels | 45 | Not checked — intake only |
+| Non-Euclidean validity: valid covariances on spheres (Gneiting), on networks (Anderes), graph kernels; why geodesic-distance Gaussian kernels can fail | Covariance validity theory / spherical and network kernels | 45 | [Spherical covariance](../../implementations/python/spherical-covariance/README.md) and [graph-spectral covariance](../../implementations/python/graph-spectral-covariance/README.md) provide tested positive-semidefinite constructions | Partial — Schoenberg/Legendre spherical kernels and graph-Laplacian spectral covariances are implemented; generalised-network covariance constructions and the full validity theory remain open |
 | Space-time covariances: [Gneiting nonseparable class](../../methods/nonseparable-space-time-covariance.md), Cressie-Huang, product-sum and metric models ([selected bibliography check](../selected-verification-notes.md)) | Spatiotemporal covariance models | 45 | Partial — related record exists; source-entry review pending |
-| Bases: thin plate, B-splines and tensor products, wavelets, Slepian functions, Zernike, radial bases, multiresolution Haar, FRK bases, Moran basis | Basis functions / low-rank representations | 46 | Not checked — intake only |
+| Bases: thin plate, B-splines and tensor products, wavelets, Slepian functions, Zernike, radial bases, multiresolution Haar, FRK bases, Moran basis | Basis functions / low-rank representations | 46 | [Thin-plate spline bases](../../implementations/python/spatial-smoothing/README.md), [B-spline curves](../../implementations/python/curves-smoothing/README.md) and [Moran eigenvector filtering](../../implementations/python/moran-eigenvector-filtering/README.md) have tested components | Partial — thin-plate, B-spline and Moran eigenvector bases are implemented; tensor-product, wavelet, Slepian, Zernike, Haar and FRK bases remain open |
 
 ## Spherical and Riemannian statistics for location data
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Frechet mean on the sphere, spherical k-means, von Mises-Fisher mixtures, spherical kernel density estimation | Spherical statistics / clustering and density estimation | 46 | Partially implemented: tested intrinsic Fréchet/Karcher mean, spherical k-means, 3-D vMF density, finite vMF-mixture EM and weighted vMF KDE baselines; directional regression, mixture diagnostics/model selection and global optimality remain outside scope |
-| Spherical splines, geodesic regression, spherical Gaussian processes | Spherical interpolation and regression models | 46 | Not checked — intake only |
+| Spherical splines, geodesic regression, spherical Gaussian processes | Spherical interpolation and regression models | 46 | [Spherical covariance kernels](../../implementations/python/spherical-covariance/README.md) provide a tested valid covariance construction on S² | Partial — isotropic spherical covariance construction is implemented; spherical spline interpolation, geodesic regression and full spherical GP conditioning remain open |
 | Geodesic operations on the ellipsoid: Karney polygon area, geodesic buffers, azimuthal equidistant buffers, antipodal and dateline handling | Ellipsoidal geodesic algorithms / geometry operations | 46 | Partially implemented: tested PROJ/Karney direct and inverse geodesics, signed/unsigned polygon area and sampled geodesic point buffers with dateline handling; azimuthal-equidistant buffer construction and geodesic polygon topology operations remain open |
 
 ## Sensor artifact and geometry correction
@@ -66,7 +66,7 @@ The Euclidean foundation covers five stationary covariance examples and finite-m
 |---|---|---:|--- |
 | Stockpile volume, earthwork cut and fill, construction progress monitoring, as-built versus design comparison | Engineering survey and construction monitoring workflows | 46 | Not checked — intake only |
 | Deformation monitoring: total station network adjustment, tunnel convergence, bridge and dam deformation, settlement monitoring from InSAR and GNSS | Geodetic adjustment / structural deformation monitoring | 46 | Not checked — intake only |
-| Terrestrial laser scanning registration, change detection on dense point clouds (M3C2) | Point-cloud registration and change-detection methods | 46 | Not checked — intake only |
+| Terrestrial laser scanning registration, change detection on dense point clouds (M3C2) | Point-cloud registration and change-detection methods | 46 | [Point-cloud registration and distance metrics](../../implementations/python/point-cloud-registration/README.md) provide tested rigid ICP, Chamfer and Hausdorff baselines | Partial — point-cloud registration and symmetric distance metrics are implemented; M3C2 change detection and TLS-specific calibration remain open |
 
 ## Citizen science and presence-only modeling
 
