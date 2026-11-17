@@ -1,5 +1,5 @@
 import unittest
-from rasterization import bresenham_line, dda_line, scanline_polygon_fill, supercover_line, wu_line
+from rasterization import bresenham_line, dda_line, scanline_polygon_fill, supercover_line, wu_line, triangle_coverage
 
 class RasterizationTests(unittest.TestCase):
  def test_bresenham_octants(self):
@@ -35,7 +35,8 @@ class TriangleCoverageTests(unittest.TestCase):
   b=triangle_coverage(list(reversed(tri)),4,4)
   self.assertEqual(set(a),set(b))
   for key in a:self.assertAlmostEqual(a[key],b[key],places=12)
-  self.assertAlmostEqual(sum(a.values()),_polygon_area([tuple(p) for p in tri]),places=10)
+  expected_area=abs(sum(tri[i][0]*tri[(i+1)%3][1]-tri[(i+1)%3][0]*tri[i][1] for i in range(3)))/2
+  self.assertAlmostEqual(sum(a.values()),expected_area,places=10)
 
  def test_non_square_cells_and_partial_raster_overlap(self):
   got=triangle_coverage([(-1,0),(2,0),(0,2)],2,2,origin=(0,0),cell_size=(.5,1.0))
