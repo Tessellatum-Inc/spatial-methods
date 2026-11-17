@@ -75,3 +75,10 @@ The package also provides two seeded graph generators:
 - `watts_strogatz_graph` constructs a ring lattice and rewires clockwise edges with probability `beta`, preserving the edge count and avoiding self-loops/duplicate edges.
 
 Both return dense Boolean adjacency matrices. The spatial generator assumes finite coordinates in one consistent Euclidean coordinate system; the small-world generator does not guarantee connectivity after rewiring. These are small-instance reference generators, not large-network engines or empirical network fits.
+
+
+## Network SIR
+
+`sir_step` and `simulate_sir` implement a discrete-time SIR process on a static undirected contact graph. States are 0=susceptible, 1=infected and 2=recovered. A susceptible with (k) infected neighbors becomes infected with probability (1-(1-\beta)^k); infected nodes recover with probability (\gamma). The simulator returns S/I/R counts at the initial state and after each step.
+
+The update is synchronous: newly infected nodes transmit only in the following step. The model assumes homogeneous probabilities and a fixed contact graph; it is not a spatial diffusion or mobility-driven epidemic model and is not calibrated for forecasting.
