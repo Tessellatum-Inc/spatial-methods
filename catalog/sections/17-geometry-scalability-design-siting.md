@@ -24,7 +24,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Log-determinant approximation: Chebyshev, Monte Carlo trace estimators, Lanczos, Pace-Barry, sparse Cholesky | Numerical approximation / sparse matrix methods | 35 | Not checked — intake only |
-| Gaussian Markov random field sampling, conjugate gradient solvers, Kronecker-structured covariances, circulant embedding with FFT on regular grids | Spatial stochastic simulation / numerical solvers / covariance structures | 35 | Not checked — intake only |
+| Gaussian Markov random field sampling, conjugate gradient solvers, Kronecker-structured covariances, circulant embedding with FFT on regular grids | Spatial stochastic simulation / numerical solvers / covariance structures | 35 | [Proper-CAR Gibbs sampling](../../implementations/python/car-gibbs-sampler/README.md) and constrained ICAR field simulation in [spatial econometrics](../../implementations/python/spatial-econometrics/README.md) have tested small-graph baselines | Partial — proper-CAR Gibbs and constrained ICAR simulation are implemented; conjugate-gradient solvers, Kronecker covariance operators and FFT circulant embedding remain open |
 | Sparse GP methods: inducing points, SVGP, Nystrom, structured kernel interpolation (KISS-GP), random Fourier features, hierarchical matrices, fast multipole | Scalable Gaussian-process approximations | 35 | Not checked — intake only |
 | Variogram estimation: Matheron, Cressie-Hawkins and Genton robust estimators, REML, composite likelihood, cross-validation-based fitting | Variogram estimators / model-fitting methods | 35 | Partially implemented: Matheron, Cressie-Hawkins, Dowd and Genton Q_n empirical estimators, directional bins, spherical/exponential/Gaussian/Matérn covariance models, bounded weighted nonlinear least-squares fitting, dense constant-mean REML, fixed geometric anisotropy and bounded joint anisotropy estimation are tested; composite likelihood, cross-validation-based fitting, nested structures, Matérn smoothness estimation, prediction uncertainty and source-entry verification remain open |
 
@@ -41,7 +41,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 |---|---|---:|--- |
 | Space-filling designs: maximin, coffee-house, spatial coverage design (k-means based), Latin hypercube | Spatial sampling and experimental design | 35 | Partially implemented: Latin hypercube, centered LHS, multi-start normalized maximin LHS and deterministic k-means coverage have code and tests; coffee-house design remains unresolved because the source gives no reproducible definition |
 | Model-based design: kriging variance minimization, Bayesian optimal design, sequential and adaptive designs, mutual information sensor selection (submodular greedy) | Model-based and adaptive experimental design | 36 | Partially implemented: tested Gaussian-process mutual-information (log-determinant) and greedy kriging-variance (trace-reduction) sensor selectors support target/candidate covariance and independent observation noise; Bayesian optimal design and broader adaptive path planning remain open |
-| Robotic sampling: adaptive sampling with AUVs and drones, informative path planning | Mobile sensing / robotic path planning | 36 | Not checked — intake only |
+| Robotic sampling: adaptive sampling with AUVs and drones, informative path planning | Mobile sensing / robotic path planning | 36 | [Adaptive spatial sampling](../../implementations/python/adaptive-sampling/README.md) and [mutual-information sensor selection](../../implementations/python/mutual-information-sensor-selection/README.md) provide tested candidate-site selection methods | Partial — GP-UCB, network adaptive cluster sampling, uncertainty-based spatial selection and greedy Gaussian-process information gain are implemented; AUV/drone route planning and path-constrained sensing remain open |
 
 ## 3D formats and level-of-detail
 
@@ -70,7 +70,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Syndromic surveillance: CUSUM, EARS, Farrington, spatial and space-time variants | Surveillance and outbreak detection methods | 36 | Partially implemented: two-sided tabular CUSUM and an explicitly specified EARS-style C1/C2/C3 count-series detector have tests; Farrington, seasonality/covariates, spatial and space-time variants remain outstanding |
-| Event detection from sensor networks, graph-based anomaly detection, spatial scan on counts with covariates | Event and anomaly detection methods | 36 | Not checked — intake only |
+| Event detection from sensor networks, graph-based anomaly detection, spatial scan on counts with covariates | Event and anomaly detection methods | 36 | [Spatial Poisson scan statistics](../../implementations/python/point-process/README.md) and the [RX anomaly detector](../../implementations/python/rx-anomaly/README.md) have tested baselines | Partial — areal count scans and global Gaussian-background raster anomaly scores are implemented; graph-based sensor anomalies and covariate-adjusted scan models remain open |
 
 ## Infrastructure and land-use mapping from imagery
 
