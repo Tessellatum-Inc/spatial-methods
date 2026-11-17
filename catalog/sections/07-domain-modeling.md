@@ -12,7 +12,7 @@ The source organises methods by application field. The same statistical, geometr
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Cellular automata (SLEUTH, ANN-CA, logistic-CA, Markov-CA), CLUE-S, FLUS, PLUS, Dinamica EGO, Land Change Modeler | Land-use and land-cover change models / software | 12 | Not checked — intake only |
+| Cellular automata (SLEUTH, ANN-CA, logistic-CA, Markov-CA), CLUE-S, FLUS, PLUS, Dinamica EGO, Land Change Modeler | Land-use and land-cover change models / software | 12 | Partial — generic synchronous B/S cellular automata and a Schelling-style lattice relocation baseline are implemented and tested; SLEUTH, ANN-CA, logistic/Markov CA, CLUE-S, FLUS, PLUS, Dinamica EGO and Land Change Modeler remain open |
 | Agent-based models, Markov chain land-use change, Monte Carlo spatial simulation | Simulation approaches / stochastic models | 12 | Not checked — intake only |
 | Schelling segregation, Sugarscape, percolation, diffusion-limited aggregation, sandpile and forest fire models, spatial game theory | Spatial simulation models / complex systems | 12 | Not checked — intake only |
 | Spatial random graphs, preferential attachment with distance decay, small-world and scale-free networks | Spatial graph models | 12 | Not checked — intake only |
