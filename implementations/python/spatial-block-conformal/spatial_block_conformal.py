@@ -77,7 +77,7 @@ def calibrate_spatial_blocks(
             hash(label)
         except TypeError as exc:
             raise ValueError("block_ids must contain hashable scalar labels") from exc
-        if label is None:
+        if label is None or (isinstance(label, (float, np.floating)) and np.isnan(label)):
             raise ValueError("block_ids must not contain missing labels")
         grouped.setdefault(label, []).append(float(score))
 
