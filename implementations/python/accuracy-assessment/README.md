@@ -22,3 +22,4 @@ regression/forecast metrics (including CRPS, NSE and KGE), or full sampling
 design. Do not interpret these pixel-count metrics as area-adjusted estimates
 when the validation sample design requires area weighting.
 \n\nRegression metrics use finite paired observations and optional non-negative sample weights. R-squared returns 1 for a perfect constant target and 0 for an imperfect constant target. ECE is top-label confidence calibration with equal-width bins; it is sensitive to bin count and sample size and is not a classwise or adaptive calibration estimator.\n
+Retrieval/evaluation helpers include macro query-level recall@k (queries without relevant items are skipped; all-empty relevance returns None) and arithmetic-normalised mutual information (NMI) for arbitrary cluster labels. These are descriptive metrics; geographic stratification and benchmark-specific relevance protocols remain caller responsibilities.
