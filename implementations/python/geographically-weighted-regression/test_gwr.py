@@ -64,4 +64,4 @@ def test_rejects_local_rank_deficiency():
     x = np.column_stack([np.ones(6), np.arange(6.0), np.arange(6.0)])
     y = np.arange(6.0)
     with pytest.raises(ValueError, match="rank-deficient"):
-        gwr_fit(coords, x, y, 1.0, kernel="bisquare")
+        gwr_fit(coords, x, y, 1.0, kernel="gaussian")
