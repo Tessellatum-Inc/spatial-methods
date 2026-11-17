@@ -51,6 +51,9 @@ def test_empty_and_non_region_inputs_rejected():
     (OUTER, Polygon([(2, 20), (4, 20), (4, 22), (2, 22)]), "N"),
     (OUTER, Polygon([(-2, 2), (0, 2), (0, 4), (-2, 4)]), "W"),
     (OUTER, Polygon([(2, -2), (4, -2), (4, 0), (2, 0)]), "S"),
+    (OUTER, Polygon([(20, -2), (22, -2), (22, 0), (20, 0)]), "SE"),
+    (OUTER, Polygon([(-2, -2), (0, -2), (0, 0), (-2, 0)]), "SW"),
+    (OUTER, Polygon([(-2, 20), (0, 20), (0, 22), (-2, 22)]), "NW"),
     (OUTER, Polygon([(2, 2), (4, 2), (4, 4), (2, 4)]), "OVERLAPPING"),
 ])
 def test_bounding_box_cardinal_directions(a, b, expected):
