@@ -420,3 +420,8 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [Principal component analysis](statistics/pca.md) — covariance/correlation PCA fitting and component projection for multiband observations.
+
+
+## Record linkage
+
+- [String similarity and probabilistic record linkage](statistics/string-linkage.md) — edit distance, Jaro-Winkler, character n-gram cosine, Soundex, candidate blocking and Fellegi-Sunter log weights.

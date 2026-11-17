@@ -37,8 +37,12 @@ A first affine control-point lesson and tested least-squares implementation are 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Geocoding, reverse geocoding, rooftop and parcel geocoding, address interpolation, address parsing (libpostal-style CRFs, transformers) | Geocoding operations / address-parsing models | 19 | Not checked — intake only |
-| String similarity: Levenshtein, Jaro-Winkler, n-gram, Soundex, Metaphone; Fellegi-Sunter, blocking, canopy clustering | String similarity / record-linkage algorithms | 19 | Not checked — intake only |
+| String similarity: Levenshtein, Jaro-Winkler, n-gram, Soundex, Metaphone; Fellegi-Sunter, blocking, canopy clustering | String similarity / record-linkage algorithms | 19 | Partial — tested Levenshtein, Jaro-Winkler, character n-gram cosine, Soundex, exact-prefix blocking, a small-data canopy candidate generator and supplied-parameter Fellegi-Sunter scoring; Metaphone, m/u estimation, scalable blocking and source-entry bibliography/identity review remain open |
 | POI deduplication, gazetteer fusion, entity resolution at scale, embedding-based place matching | Entity resolution / gazetteer and place-matching workflows | 19 | Not checked — intake only |
+
+## First record-linkage implementation
+
+The [string similarity and record-linkage lesson](../../algorithms/statistics/string-linkage.md) and [tested Python package](../../implementations/python/string-linkage/README.md) provide field-level similarity, phonetic coding, candidate generation and Fellegi-Sunter scoring baselines. They are not a production POI matching pipeline.
 
 ## Cartography and geovisualization
 
