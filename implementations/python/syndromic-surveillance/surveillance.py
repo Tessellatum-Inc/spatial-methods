@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import math
+from statistics import NormalDist
 from collections.abc import Sequence
 
 
@@ -112,4 +113,107 @@ def ears(
         "c1_alarm": [score is not None and score >= threshold for score in c1],
         "c2_alarm": [score is not None and score >= threshold for score in c2],
         "c3_alarm": [score is not None and score >= threshold for score in c3],
+    }
+
+
+def _solve_two_parameter_wls(x, y, weights):
+    """Solve weighted least squares for columns [1, x] without dependencies."""
+    s0 = math.fsum(weights)
+    s1 = math.fsum(w * value for w, value in zip(weights, x))
+    s2 = math.fsum(w * value * value for w, value in zip(weights, x))
+    t0 = math.fsum(w * value for w, value in zip(weights, y))
+    t1 = math.fsum(w * xv * value for w, xv, value in zip(weights, x, y))
+    determinant = s0 * s2 - s1 * s1
+    if not math.isfinite(determinant) or determinant <= 1e-12 * max(1.0, s0 * s2):
+        raise ValueError("baseline design is singular")
+    return ((t0 * s2 - t1 * s1) / determinant,
+            (s0 * t1 - s1 * t0) / determinant,
+            (s2 / determinant, -s1 / determinant, s0 / determinant))
+
+
+def farrington_exceedance(
+    counts: Sequence[int],
+    *,
+    period: int = 52,
+    window: int = 3,
+    years_back: int = 5,
+    alpha: float = 0.01,
+    reweight: bool = True,
+    reweight_threshold: float = 2.58,
+) -> dict:
+    """Compute a bounded Farrington-style quasi-Poisson exceedance for the last week.
+
+    Reference observations come from the same seasonal period (plus/minus
+    window) in each preceding cycle. A log-linear trend is fitted by Poisson
+    IRLS; optional residual reweighting limits historical aberrations. A
+    Pearson dispersion estimate and cube-root normal prediction approximation
+    produce the upper bound. This is not a bit-for-bit Farrington or Noufaily
+    implementation.
+    """
+    values = _count_series(counts)
+    for name, value, minimum in (("period", period, 2), ("window", window, 0),
+                                 ("years_back", years_back, 2)):
+        if isinstance(value, bool) or not isinstance(value, int) or value < minimum:
+            raise ValueError(f"{name} must be an integer >= {minimum}")
+    if window * 2 + 1 > period:
+        raise ValueError("window must not span more than one seasonal period")
+    alpha = _finite_number(alpha, "alpha")
+    cutoff = _finite_number(reweight_threshold, "reweight_threshold")
+    if not 0 < alpha < 0.5 or cutoff <= 0:
+        raise ValueError("alpha must be in (0, 0.5) and reweight_threshold positive")
+    if not isinstance(reweight, bool):
+        raise ValueError("reweight must be boolean")
+    current = len(values) - 1
+    reference_indices = []
+    for year in range(1, years_back + 1):
+        anchor = current - year * period
+        for offset in range(-window, window + 1):
+            index = anchor + offset
+            if 0 <= index < current:
+                reference_indices.append(index)
+    reference_indices = sorted(set(reference_indices))
+    if len(reference_indices) < 6:
+        raise ValueError("insufficient seasonal history; at least six reference observations are required")
+    x = [(index - current) / period for index in reference_indices]
+    y = [float(values[index]) for index in reference_indices]
+    robust = [1.0] * len(y)
+    beta0, beta1 = math.log(max(math.fsum(y) / len(y), 0.1)), 0.0
+    inverse = (0.0, 0.0, 0.0)
+    for _ in range(60):
+        mu = [math.exp(max(-30.0, min(30.0, beta0 + beta1 * xv))) for xv in x]
+        working = [math.log(max(m, 1e-12)) + (obs - m) / max(m, 1e-12)
+                   for obs, m in zip(y, mu)]
+        weights = [r * m for r, m in zip(robust, mu)]
+        next0, next1, inverse = _solve_two_parameter_wls(x, working, weights)
+        change = max(abs(next0 - beta0), abs(next1 - beta1))
+        beta0, beta1 = next0, next1
+        mu = [math.exp(max(-30.0, min(30.0, beta0 + beta1 * xv))) for xv in x]
+        if reweight:
+            residuals = [(obs - m) / math.sqrt(max(m, 1e-12))
+                         for obs, m in zip(y, mu)]
+            robust = [min(1.0, cutoff / abs(residual)) if residual else 1.0
+                      for residual in residuals]
+        if change < 1e-8:
+            break
+    fitted = [math.exp(max(-30.0, min(30.0, beta0 + beta1 * xv))) for xv in x]
+    df = max(1, len(y) - 2)
+    dispersion = max(1.0, math.fsum(
+        weight * (obs - mean) ** 2 / max(mean, 1e-12)
+        for weight, obs, mean in zip(robust, y, fitted)
+    ) / df)
+    expected = math.exp(max(-30.0, min(30.0, beta0)))
+    leverage = max(0.0, inverse[0])
+    z_value = NormalDist().inv_cdf(1.0 - alpha)
+    transformed_sd = math.sqrt(dispersion * (1.0 + leverage) / 9.0)
+    upper = max(0.0, (expected ** (1.0 / 3.0) + z_value * transformed_sd) ** 3)
+    observed = values[-1]
+    return {
+        "observed": observed, "expected": expected, "upper_bound": upper,
+        "exceedance": max(0.0, observed - expected),
+        "exceedance_score": ((observed - expected) / (upper - expected)
+                             if upper > expected else float("inf") if observed > expected else 0.0),
+        "alarm": observed > upper, "dispersion": dispersion,
+        "trend_per_year": beta1, "reference_indices": tuple(reference_indices),
+        "n_reference": len(reference_indices), "alpha": alpha,
+        "reweighted": reweight,
     }

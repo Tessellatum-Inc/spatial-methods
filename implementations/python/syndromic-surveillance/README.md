@@ -39,3 +39,6 @@ must be handled by the analyst.
 
 Only the Python standard library is required at runtime; pytest is the test
 runner.
+
+
+The Farrington-style routine samples the same seasonal window from prior cycles, fits a log-linear trend by IRLS, optionally downweights large historical residuals, estimates Pearson overdispersion and computes a cube-root normal upper prediction approximation. It is intentionally not represented as an exact reproduction of Farrington (1996) or Noufaily et al. (2013); see the algorithm record for assumptions and limitations.

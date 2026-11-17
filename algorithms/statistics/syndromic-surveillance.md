@@ -46,8 +46,7 @@ detector is a separate method and is not claimed here.
 
 Spatial and space-time surveillance requires a defined neighbourhood or
 interaction graph, population-at-risk denominators, a null model and a
-multiple-testing or sequential calibration strategy. The univariate functions
-here do not implement spatial scan statistics.
+multiple-testing or sequential calibration strategy. Spatial scan statistics are implemented separately in the point-process package; the univariate functions here do not replace spatial or space-time scan analysis.
 
 ## Implementation and tests
 
@@ -63,3 +62,8 @@ for the recursions, score definitions, edge cases and tests.
 - Hutwagner, L. et al. (2003). The Bioterrorism Preparedness and Response
   Early Aberration Reporting System (EARS). *Journal of Urban Health*, 80,
   i89–i96. https://doi.org/10.1093/jurban/jtg041
+
+
+## Farrington-style seasonal exceedance
+
+For a weekly series, the implementation builds a reference set from the same week and neighbouring weeks in each of the preceding seasonal cycles. It fits a log-linear mean with a linear time trend using Poisson IRLS, estimates quasi-Poisson dispersion from weighted Pearson residuals, and optionally downweights large historical residuals. The one-sided upper prediction approximation uses a cube-root transform and a normal quantile. This is a small, dependency-free teaching baseline; it does not reproduce the full Farrington GLIM algorithm or the improved Noufaily flexible implementation.

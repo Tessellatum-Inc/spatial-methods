@@ -63,3 +63,44 @@ def test_ears_constant_baseline_does_not_divide_by_zero():
     result = ears([0] * 7 + [10], baseline_window=7)
     assert result["c1"][7] == 10.0
     assert result["c1_alarm"][7]
+
+
+def test_farrington_style_detector_uses_prior_seasonal_windows_and_flags_spike():
+    import random
+    from surveillance import farrington_exceedance
+    rng = random.Random(17)
+    counts = [max(0, round(8 + rng.gauss(0, 2))) for _ in range(52 * 5 + 1)]
+    counts[-1] = 45
+    result = farrington_exceedance(counts, period=52, window=2, years_back=5)
+    assert result["n_reference"] == 25
+    assert result["reference_indices"] == tuple(sorted(result["reference_indices"]))
+    assert result["expected"] > 0
+    assert result["upper_bound"] >= result["expected"]
+    assert result["alarm"] is True
+
+
+def test_farrington_detector_does_not_use_current_or_recent_year_data():
+    from surveillance import farrington_exceedance
+    counts = [5] * (52 * 5 + 1)
+    result = farrington_exceedance(counts, period=52, window=2, years_back=5)
+    assert result["n_reference"] == 25
+    assert max(result["reference_indices"]) < len(counts) - 1
+    assert result["alarm"] is False
+    assert result["dispersion"] == pytest.approx(1.0)
+
+
+@pytest.mark.parametrize("kwargs", [
+    {"period": 1}, {"window": -1}, {"years_back": 1},
+    {"alpha": 0.5}, {"reweight_threshold": 0},
+    {"reweight": 1}, {"period": 52, "window": 27},
+])
+def test_farrington_detector_rejects_invalid_controls(kwargs):
+    from surveillance import farrington_exceedance
+    with pytest.raises(ValueError):
+        farrington_exceedance([1] * 261, **kwargs)
+
+
+def test_farrington_detector_rejects_insufficient_history():
+    from surveillance import farrington_exceedance
+    with pytest.raises(ValueError):
+        farrington_exceedance([1] * 20, period=52, years_back=5)
