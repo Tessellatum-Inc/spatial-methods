@@ -80,6 +80,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/c-logit-route-choice",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/capacitated-p-median",
     "pythonpath": ""
   },
