@@ -20,7 +20,7 @@ A reproducible spatial ABM should define:
 
 A cellular automaton updates cell states through local transition rules. An ABM gives individual agents explicit state and behaviour. The categories overlap: a lattice model can place one agent per cell, while a CA can encode aggregate land-cover states without representing individual decision-makers.
 
-The [cellular automata lesson](../algorithms/domain-modeling/cellular-automata.md) and its [reference package](../implementations/python/spatial-simulation/README.md) provide two small examples: a synchronous binary B/S automaton and a Schelling-style relocation process. The latter is agent-like but remains a tightly constrained lattice model.
+The [cellular automata lesson](../algorithms/domain-modeling/cellular-automata.md) and its [reference package](../implementations/python/spatial-simulation/README.md) provide several small examples: a synchronous binary B/S automaton, a finite-lattice site-percolation crossing test, a stochastic forest-fire automaton and a Schelling-style relocation process. The latter is agent-like but remains a tightly constrained lattice model.
 
 ## Design and validation cautions
 
