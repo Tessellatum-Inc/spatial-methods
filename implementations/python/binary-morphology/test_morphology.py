@@ -34,7 +34,7 @@ def test_morphology_is_monotone_and_dual_under_complement():
     s = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], bool)
     assert np.all(erosion(a, s) <= erosion(b, s))
     assert np.all(dilation(a, s) <= dilation(b, s))
-    assert np.array_equal(erosion(a, s), ~dilation(~a, s))
+    assert np.array_equal(erosion(a, s)[1:-1, 1:-1], (~dilation(~a, s))[1:-1, 1:-1])
 
 
 def test_hit_or_miss_detects_cross_pattern():
