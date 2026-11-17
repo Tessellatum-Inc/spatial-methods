@@ -86,7 +86,7 @@ The [spatial econometrics package](../../implementations/python/spatial-economet
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Empirical Bayes rate smoothing, head-banging, median polish | Smoothing / exploratory procedures | 4 | Partial — Marshall global/local Poisson moment shrinkage, weighted head-banging and Tukey median polish implemented; Clayton–Kaldor and hierarchical CAR/BYM models remain open |
-| Gaussian, Laplacian, median, bilateral and non-local means filters, anisotropic diffusion, total-variation denoising, guided filters | Image and spatial filtering methods | 4 | Not checked — intake only |
+| Gaussian, Laplacian, median, bilateral and non-local means filters, anisotropic diffusion, total-variation denoising, guided filters | Image and spatial filtering methods | 4 | Partial — tested separable Gaussian smoothing, four-neighbour Laplacian response, square median filtering, circular-support bilateral filtering and explicit Perona–Malik diffusion are implemented; total variation, non-local means, guided filtering, tensor diffusion, multiscale methods and adaptive parameter selection remain open |
 | Spatial outlier tests: Z-value, scatterplot approach, variogram cloud, isolation forest, spatial LOF, geographically weighted outliers | Outlier diagnostics / anomaly-detection methods | 4 | Not checked — intake only |
 
 ## Inequality, entropy and scale

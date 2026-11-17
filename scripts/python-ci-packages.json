@@ -944,6 +944,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/spatial-image-filters",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/spatial-inequality",
     "pythonpath": ""
   },
