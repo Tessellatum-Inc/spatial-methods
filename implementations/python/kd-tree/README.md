@@ -32,7 +32,7 @@ All inputs must contain finite 2D coordinates. The tree uses deterministic media
 
 ## Complexity and limitations
 
-Construction is balanced by median selection, although this straightforward implementation repeatedly sorts recursive partitions and allocates slices. Nearest and k-nearest queries use split-plane branch-and-bound; range queries recurse only into half-spaces intersecting the query interval. Query work is data-dependent and can approach a full scan in unfavourable distributions. The implementation is static, 2D and Euclidean; it is not a dynamic index or a geodesic index.
+Construction is balanced by median selection, although this straightforward implementation repeatedly sorts recursive partitions and allocates slices. Nearest and k-nearest queries use split-plane branch-and-bound; range queries recurse only into half-spaces intersecting the query interval. Query work is data-dependent and can approach a full scan in unfavourable distributions. Both trees are planar 2D Euclidean indexes. The original KDTree2D is static; DynamicKDTree2D supports insert/delete with subtree rebuilding, but does not provide worst-case logarithmic update guarantees or geodesic distance.
 
 ## Verification
 

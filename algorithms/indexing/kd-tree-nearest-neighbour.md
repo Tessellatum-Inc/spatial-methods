@@ -153,3 +153,6 @@ The [Python k-d tree implementation](../../implementations/python/kd-tree/README
 ## Radius queries
 
 The 2D k-d tree also supports an inclusive Euclidean radius query. At each node it explores the near side first and visits the far side only when the squared split-plane distance is no greater than the squared radius. This is an exact branch-and-bound query; results are returned in original input order. It complements kNN: kNN fixes the result count, while radius search fixes the maximum distance and may return any number of points.
+
+
+A separate [scapegoat-style dynamic k-d tree](dynamic-kd-tree.md) supports insertion, lazy deletion, subtree rebuilding, and exact nearest/range queries under the same planar Euclidean metric.
