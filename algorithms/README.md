@@ -481,3 +481,6 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [Spatial random graphs](domain-modeling/spatial-random-graphs.md) — degree- and distance-weighted preferential attachment plus Watts–Strogatz small-world rewiring.
+
+
+- [Network SIR simulation](domain-modeling/network-sir.md) — discrete-time transmission and recovery on a static undirected contact graph, with explicit synchronous update semantics.
