@@ -30,10 +30,12 @@ class RandomHyperplaneLSH:
             raise ValueError(f"{name} must be a 2D array with at least one feature")
         if not np.isfinite(values).all():
             raise ValueError(f"{name} must contain only finite values")
-        norms = np.linalg.norm(values, axis=1)
-        if np.any(norms == 0):
+        scales = np.max(np.abs(values), axis=1)
+        if np.any(scales == 0):
             raise ValueError(f"{name} must not contain zero-length vectors")
-        return values / norms[:, None]
+        scaled = values / scales[:, None]
+        norms = np.linalg.norm(scaled, axis=1)
+        return scaled / norms[:, None]
 
     def fit(self, vectors):
         normalised = self._normalise(vectors, "vectors")
@@ -63,7 +65,10 @@ class RandomHyperplaneLSH:
     def _query_vector(self, vector):
         if self._vectors is None or self._planes is None:
             raise RuntimeError("fit must be called before query")
-        query = self._normalise(np.asarray(vector, dtype=float).reshape(1, -1), "query")[0]
+        raw_query = np.asarray(vector, dtype=float)
+        if raw_query.ndim != 1:
+            raise ValueError("query must be a one-dimensional vector")
+        query = self._normalise(raw_query.reshape(1, -1), "query")[0]
         if query.shape[0] != self._vectors.shape[1]:
             raise ValueError("query feature count does not match fitted vectors")
         return query
