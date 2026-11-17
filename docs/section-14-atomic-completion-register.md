@@ -88,7 +88,7 @@ Apply the [verification protocol](../catalog/verification-protocol.md) and [comp
 | S14-MM-12 | Area opening | Connected morphological filter | Partial | Existing grayscale area opening is tested; verify connectivity and threshold semantics. |
 | S14-MM-13 | Shape opening | Connected morphological filter | Open | Define shape attribute and pruning; test rotation/scale dependence. |
 | S14-MM-14 | Zhang–Suen thinning | Skeletonisation algorithm | Partial | Existing implementation tested; verify simultaneous sub-iteration deletion and topology preservation. |
-| S14-MM-15 | Moore-neighbour contour tracing | Contour tracing | Open | Define stop criterion and connectivity; test holes, diagonal contacts and border loops. |
+| S14-MM-15 | Moore-neighbour contour tracing | Contour tracing | Partial | Added deterministic outer-boundary tracing per foreground component with explicit 4/8 component connectivity, row-major start, isolated-pixel and rectangular-boundary tests; hole contours, topology-aware vectorisation and stronger degeneracy fixtures remain open. |
 | S14-MM-16 | Suzuki border following | Contour extraction | Open | Verify hierarchy/label conventions; test nested holes and connected components. |
 | S14-MM-17 | Two-pass connected components | Labelling algorithm | Partial | Existing union-find implementation tested; verify 4/8-connectivity and label equivalence. |
 | S14-MM-18 | GrabCut | Interactive segmentation | Open | Verify graph-cut energy and GMM updates; test seed constraints and convergence. |
