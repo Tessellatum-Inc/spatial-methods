@@ -216,3 +216,5 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 8 representation evaluation: added macro query-level recall@k and arithmetic-normalised mutual information (NMI), with explicit empty-relevance/constant-partition policies and tests. Linear probing, k-NN embedding evaluation and benchmark-specific geographic stratification remain open.
+
+- Section 8 evaluation metrics: added weighted NSE, KGE 2009 and empirical ensemble CRPS with analytic fixtures and explicit undefined-case/variant policies. Modified KGE, parametric continuous CRPS, forecast calibration and design-based accuracy remain open.
