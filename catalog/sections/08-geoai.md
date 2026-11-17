@@ -126,3 +126,8 @@ A first masked-autoencoding lesson now explains the encoder-visible/decoder-mask
 4. Compare foundation models with transparent baselines and task-specific models.
 5. Record sensor, spatial resolution, temporal coverage, training data provenance and inference constraints.
 6. Keep the source warning visible: this is a representative intake list, not a verified ranking or exhaustive catalogue.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 8 atomic completion register](../../docs/section-8-atomic-completion-register.md). The register preserves the source's representative/unverified warning and separates architectures, objectives, checkpoints, datasets, tasks, metrics, adaptation and deployment workflows. It is not a verified model catalogue or completion claim.
