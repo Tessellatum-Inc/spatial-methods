@@ -257,3 +257,7 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Remote sensing
 
 - [Lee local-statistics speckle filter](python/lee-speckle-filter/README.md): a NumPy-only adaptive local-mean estimator with explicit noise variance, NaN handling, tests and scope limitations.
+
+
+### Geodesy and location encoding
+- [Open Location Code (Plus Codes)](python/open-location-code/README.md): full-code encoding and decoding with cell bounds, parameter validation and a known-coordinate fixture; short-code recovery is intentionally excluded.
