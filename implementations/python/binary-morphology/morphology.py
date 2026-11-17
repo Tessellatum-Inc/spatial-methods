@@ -147,3 +147,48 @@ def connected_components(image, connectivity=4):
                         stack.append((ny, nx))
             sizes.append(size)
     return labels, np.asarray(sizes, dtype=np.int64)
+
+def zhang_suen_thinning(image, max_iterations=None):
+    """Return a 1-pixel skeleton using the two-subiteration Zhang-Suen rule.
+
+    The raster is zero-padded outside its extent. Each complete iteration
+    applies the two deletion substeps until neither removes a pixel. A
+    finite iteration cap raises RuntimeError rather than returning a partial
+    skeleton.
+    """
+    a = _binary(image).copy()
+    if max_iterations is not None and (not isinstance(max_iterations, int) or max_iterations < 0):
+        raise ValueError("max_iterations must be a non-negative integer or None")
+    h, w = a.shape
+    iterations = 0
+    while True:
+        if max_iterations is not None and iterations >= max_iterations:
+            raise RuntimeError("thinning did not converge within max_iterations")
+        changed = False
+        for step in (0, 1):
+            p = np.pad(a, 1, constant_values=False)
+            p2 = p[:-2, 1:-1]
+            p3 = p[:-2, 2:]
+            p4 = p[1:-1, 2:]
+            p5 = p[2:, 2:]
+            p6 = p[2:, 1:-1]
+            p7 = p[2:, :-2]
+            p8 = p[1:-1, :-2]
+            p9 = p[:-2, :-2]
+            neighbours = [p2, p3, p4, p5, p6, p7, p8, p9]
+            count = sum(n.astype(np.uint8) for n in neighbours)
+            transitions = sum(
+                ((~neighbours[i]) & neighbours[(i + 1) % 8]).astype(np.uint8)
+                for i in range(8)
+            )
+            common = a & (count >= 2) & (count <= 6) & (transitions == 1)
+            if step == 0:
+                remove = common & ~(p2 & p4 & p6) & ~(p4 & p6 & p8)
+            else:
+                remove = common & ~(p2 & p4 & p8) & ~(p2 & p6 & p8)
+            if np.any(remove):
+                a[remove] = False
+                changed = True
+        iterations += 1
+        if not changed:
+            return a

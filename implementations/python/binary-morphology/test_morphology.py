@@ -83,3 +83,25 @@ def test_rejects_invalid_structures_and_connectivity():
         dilation(np.ones((3, 3)), np.zeros((3, 3)))
     with pytest.raises(ValueError):
         connected_components(np.ones((2, 2)), 6)
+
+def test_zhang_suen_thinning_reduces_solid_region_and_is_idempotent():
+    from morphology import zhang_suen_thinning
+    image = np.zeros((11, 11), bool)
+    image[2:9, 2:9] = True
+    skeleton = zhang_suen_thinning(image)
+    assert skeleton.sum() < image.sum()
+    assert np.all(skeleton <= image)
+    assert np.array_equal(zhang_suen_thinning(skeleton), skeleton)
+    assert connected_components(skeleton, 8)[1].tolist() == [int(skeleton.sum())]
+
+
+def test_zhang_suen_preserves_one_pixel_line_and_rejects_iteration_limit():
+    from morphology import zhang_suen_thinning
+    line = np.zeros((5, 9), bool)
+    line[2, 1:8] = True
+    assert np.array_equal(zhang_suen_thinning(line), line)
+    block = np.ones((7, 7), bool)
+    with pytest.raises(RuntimeError):
+        zhang_suen_thinning(block, max_iterations=1)
+    with pytest.raises(ValueError):
+        zhang_suen_thinning(block, max_iterations=-1)

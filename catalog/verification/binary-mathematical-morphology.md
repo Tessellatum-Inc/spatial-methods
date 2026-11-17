@@ -20,3 +20,5 @@ python -m pytest -q
 ~~~
 
 These are source-level test claims; CI execution must pass before this record can be treated as release verification. No external source code or imagery is reproduced.
+
+- Zhang-Suen thinning is checked for foreground-subset preservation, reduction of a solid region, idempotence on the converged skeleton, preservation of a one-pixel line, 8-connected component count and explicit iteration-limit failure.

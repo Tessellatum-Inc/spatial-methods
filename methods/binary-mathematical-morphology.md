@@ -27,3 +27,9 @@ Run `python -m pytest -q` in `implementations/python/binary-morphology`. Tests c
 - Serra, J. (1982). *Image Analysis and Mathematical Morphology*. Academic Press.
 - Soille, P. (2003). *Morphological Image Analysis: Principles and Applications*, 2nd ed. Springer.
 - Vincent, L. (1993). Morphological grayscale reconstruction in image analysis: applications and efficient algorithms. *IEEE Transactions on Image Processing*, 2(2), 176–201. https://doi.org/10.1109/83.217222.
+
+## Zhang-Suen thinning
+
+The package also includes the two-subiteration Zhang-Suen parallel thinning rule. For each foreground pixel, it counts its eight neighbours and the 0-to-1 transitions around the ring. A pixel is a deletion candidate when it has two to six foreground neighbours and exactly one circular transition. Two different triplet constraints are applied in alternating subiterations to avoid deleting pixels that would break the local skeleton structure. Iteration stops when a full pair of subiterations removes no pixels.
+
+This is a binary topology-preserving thinning baseline for suitable raster masks, not a medial-axis transform: it does not compute maximal inscribed discs or metric distance-to-boundary information. Pixel connectivity and raster boundary conventions matter. The implementation zero-pads outside the raster and uses 8-neighbour foreground connectivity.
