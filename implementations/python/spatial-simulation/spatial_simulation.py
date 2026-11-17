@@ -110,6 +110,8 @@ def same_group_share(
     therefore not classified as unhappy by a positive tolerance.
     """
     arr = _validate_grid(grid)
+    if np.any(arr < 0):
+        raise ValueError("Schelling group labels must be non-negative")
     if not (0 <= row < arr.shape[0] and 0 <= col < arr.shape[1]):
         raise IndexError("cell coordinates are outside the grid")
     group = arr[row, col]
@@ -147,6 +149,8 @@ def schelling_step(
     relocation rule, not a claim to reproduce every Schelling variant.
     """
     arr = _validate_grid(grid)
+    if np.any(arr < 0):
+        raise ValueError("Schelling group labels must be non-negative")
     if not 0.0 <= tolerance <= 1.0:
         raise ValueError("tolerance must be between 0 and 1")
     if max_moves is not None and (
@@ -200,6 +204,10 @@ def simulate_schelling(
     if not isinstance(max_iterations, (int, np.integer)) or max_iterations < 0:
         raise ValueError("max_iterations must be a non-negative integer")
     state = _validate_grid(grid).copy()
+    if np.any(state < 0):
+        raise ValueError("Schelling group labels must be non-negative")
+    if not 0.0 <= tolerance <= 1.0:
+        raise ValueError("tolerance must be between 0 and 1")
     rng = np.random.default_rng(seed)
     history: list[int] = []
     for _ in range(max_iterations):
