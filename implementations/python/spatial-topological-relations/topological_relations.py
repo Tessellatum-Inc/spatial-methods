@@ -48,3 +48,36 @@ def rcc8(a: BaseGeometry, b: BaseGeometry) -> RCC8:
     if a.overlaps(b):
         return "PO"
     raise ValueError("relation is outside the supported RCC-8 region cases")
+
+
+CARDINAL_DIRECTIONS = {
+    ("W", "S"): "SW", ("O", "S"): "S", ("E", "S"): "SE",
+    ("W", "O"): "W",  ("O", "O"): "OVERLAPPING", ("E", "O"): "E",
+    ("W", "N"): "NW", ("O", "N"): "N", ("E", "N"): "NE",
+}
+
+
+def cardinal_direction(a: BaseGeometry, b: BaseGeometry) -> str:
+    """Return B's 9-region MBR direction relative to A.
+
+    The relation compares axis-aligned minimum bounding rectangles. Touching
+    interval endpoints count as directional separation. This is a qualitative
+    bounding-box model, not a centroid bearing or a full directional calculus.
+    """
+    _validate(a, "a", regions_only=False)
+    _validate(b, "b", regions_only=False)
+    ax0, ay0, ax1, ay1 = a.bounds
+    bx0, by0, bx1, by1 = b.bounds
+    if bx0 >= ax1:
+        x_relation = "E"
+    elif bx1 <= ax0:
+        x_relation = "W"
+    else:
+        x_relation = "O"
+    if by0 >= ay1:
+        y_relation = "N"
+    elif by1 <= ay0:
+        y_relation = "S"
+    else:
+        y_relation = "O"
+    return CARDINAL_DIRECTIONS[(x_relation, y_relation)]

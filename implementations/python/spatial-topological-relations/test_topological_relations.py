@@ -43,3 +43,29 @@ def test_empty_and_non_region_inputs_rejected():
         rcc8(Polygon(), OUTER)
     with pytest.raises(TypeError, match="Polygon or MultiPolygon"):
         rcc8(LineString([(0, 0), (1, 1)]), OUTER)
+
+
+@pytest.mark.parametrize(("a", "b", "expected"), [
+    (OUTER, Polygon([(20, 20), (22, 20), (22, 22), (20, 22)]), "NE"),
+    (OUTER, Polygon([(20, 2), (22, 2), (22, 4), (20, 4)]), "E"),
+    (OUTER, Polygon([(2, 20), (4, 20), (4, 22), (2, 22)]), "N"),
+    (OUTER, Polygon([(-2, 2), (0, 2), (0, 4), (-2, 4)]), "W"),
+    (OUTER, Polygon([(2, -2), (4, -2), (4, 0), (2, 0)]), "S"),
+    (OUTER, Polygon([(2, 2), (4, 2), (4, 4), (2, 4)]), "OVERLAPPING"),
+])
+def test_bounding_box_cardinal_directions(a, b, expected):
+    from topological_relations import cardinal_direction
+    assert cardinal_direction(a, b) == expected
+
+
+def test_cardinal_direction_inverse_pairs():
+    from topological_relations import cardinal_direction
+    east = Polygon([(20, 2), (22, 2), (22, 4), (20, 4)])
+    assert cardinal_direction(OUTER, east) == "E"
+    assert cardinal_direction(east, OUTER) == "W"
+
+
+def test_cardinal_direction_rejects_empty_geometry():
+    from topological_relations import cardinal_direction
+    with pytest.raises(ValueError, match="empty"):
+        cardinal_direction(Polygon(), OUTER)

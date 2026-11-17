@@ -9,3 +9,8 @@
 7. Reject unsupported or ambiguous cases rather than silently guessing.
 
 The package wraps Shapely/GEOS predicates; it does not implement the topology engine.
+
+
+## Cardinal direction extension
+
+The optional `cardinal_direction(a, b)` method compares the axis-aligned minimum bounding rectangles. It returns the direction of B relative to A among N, NE, E, SE, S, SW, W, NW and OVERLAPPING. If interval endpoints touch, they count as separated in that axis, so adjacent objects can have an east/west or north/south relation. This convention is explicit and should not be confused with centroid bearings or a full directional calculus.

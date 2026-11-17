@@ -33,9 +33,9 @@ RCC-8 is a region calculus. The implementation therefore restricts this classifi
 
 The [spatial-topological-relations package](../../implementations/python/spatial-topological-relations/README.md) exposes Shapely/GEOS DE-9IM strings and classifies RCC-8 relations using polygon predicates and boundary intersection. The geometry engine supplies the underlying topology operations; this is a tested wrapper, not an independent computational-geometry kernel.
 
-## Cardinal directions are separate
+## Cardinal direction relations
 
-North/south/east/west and qualitative direction calculi require an explicit reference frame and relation model, often based on minimum bounding rectangles or projection-based partitions. They are not implied by DE-9IM or RCC-8 and are not implemented by this package.
+DE-9IM and RCC-8 do not encode north/south/east/west. The package also provides a deliberately bounded 9-region relation based on axis-aligned minimum bounding rectangles. It reports the direction of B relative to A as N, NE, E, SE, S, SW, W, NW or OVERLAPPING. Bounding-box interval endpoints that touch are treated as directional separation. This is not a centroid-bearing model, a projection-based directional calculus or a complete qualitative spatial reasoning system.
 
 ## References
 
