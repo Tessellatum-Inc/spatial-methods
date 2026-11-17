@@ -24,3 +24,8 @@ See [the Python implementation](../../implementations/python/vecchia-approximati
 This is a likelihood baseline, not a production scalable GP framework;
 ordering, neighbour count, kernel assumptions and numerical conditioning
 matter.
+
+
+## Local prediction
+
+The companion `vecchia_predict` function applies the same local Gaussian conditioning to new prediction sites. For each prediction location it selects the nearest observed training locations and evaluates the conditional Gaussian mean and variance. Selecting all training sites reproduces the exact dense GP conditional predictor (up to numerical jitter). Prediction sites are handled independently conditional on the training data, so this is not a joint predictive covariance construction or full Bayesian NNGP model.

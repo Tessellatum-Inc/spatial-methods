@@ -45,3 +45,38 @@ def test_sparse_neighbour_approximation_returns_finite_conditionals():
 def test_invalid_parameters_raise(kwargs):
     with pytest.raises(ValueError):
         vecchia_loglikelihood([0., 1., 2.], [[0.], [1.], [2.]], **kwargs)
+
+
+def test_all_training_neighbours_match_exact_dense_gp_prediction():
+    from vecchia import vecchia_predict
+    rng=np.random.default_rng(29)
+    x=rng.uniform(-1,1,size=(18,2)); y=np.sin(x[:,0])+0.3*x[:,1]
+    xp=rng.uniform(-.8,.8,size=(5,2))
+    variance,length_scale,nugget=1.4,.65,.07
+    got=vecchia_predict(y,x,xp,variance=variance,length_scale=length_scale,
+                        nugget=nugget,n_neighbors=len(y),jitter=0)
+    k=squared_exponential_covariance(x,variance=variance,length_scale=length_scale,nugget=nugget)
+    cross=variance*np.exp(-.5*np.sum((xp[:,None,:]-x[None,:,:])**2,axis=2)/length_scale**2)
+    exact_mean=cross@np.linalg.solve(k,y)
+    exact_var=variance+nugget-np.sum(cross*np.linalg.solve(k,cross.T).T,axis=1)
+    np.testing.assert_allclose(got["predictive_mean"],exact_mean,atol=1e-9)
+    np.testing.assert_allclose(got["predictive_variance"],exact_var,atol=1e-9)
+
+
+def test_local_vecchia_prediction_uses_bounded_neighbour_sets():
+    from vecchia import vecchia_predict
+    x=np.linspace(0,5,40)[:,None];y=np.sin(x[:,0])
+    result=vecchia_predict(y,x,[[.2],[2.3],[4.7]],n_neighbors=5)
+    assert np.isfinite(result["predictive_mean"]).all()
+    assert np.all(result["predictive_variance"]>0)
+    assert all(len(ids)==5 for ids in result["neighbour_indices"])
+
+
+@pytest.mark.parametrize("kwargs",[
+    {"n_neighbors":0},{"variance":0},{"length_scale":-1},{"nugget":-1},
+    {"jitter":-1},{"prediction_coordinates":[[float("nan")]]},
+])
+def test_vecchia_predict_rejects_invalid_inputs(kwargs):
+    from vecchia import vecchia_predict
+    with pytest.raises(ValueError):
+        vecchia_predict([0.,1.,2.],[[0.],[1.],[2.]],[[.5]],**kwargs)

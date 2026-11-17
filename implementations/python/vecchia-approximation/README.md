@@ -27,3 +27,8 @@ tapering, fixed-rank methods, lattice kriging, multi-resolution approximation
 or a general nearest-neighbour GP software stack. Ordering and neighbour count
 affect approximation quality; compare likelihood and prediction diagnostics
 against exact GP calculations on manageable subsets.
+
+
+## Local prediction at new locations
+
+`vecchia_predict` conditions each prediction site on its nearest observed training locations and returns a conditional mean, predictive variance and selected neighbour indexes. With all training observations selected, the result matches dense Gaussian-process conditioning. Prediction sites are treated independently conditional on the training data; the routine does not return their joint posterior covariance or implement the complete hierarchical NNGP inference framework.
