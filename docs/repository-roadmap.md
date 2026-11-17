@@ -875,4 +875,4 @@ The change is a meaningful extension, not completion of the polygon overlay work
 
 - [x] Link the existing tested PCA fitting/projection implementation to the Section 2 source entry.
 - [x] Add a canonical method record and scoped verification note; distinguish covariance PCA from standardized correlation PCA.
-- [ ] Implement and verify factor analysis and OAC-style geodemographic classification separately.
+- [ ] Implement and validate OAC-style geodemographic classification as a complete workflow, including indicator selection, geographic units, scaling, clustering, stability and external validation. A principal-axis factor-analysis teaching baseline with optional varimax rotation is now implemented; maximum-likelihood and confirmatory factor models remain open.

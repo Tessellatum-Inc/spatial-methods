@@ -21,9 +21,7 @@ separate caller-supplied Tasseled Cap linear transform; that is not PCA.
 ## Scope and limitations
 
 PCA is sensitive to feature scaling and can be influenced by outliers.
-Eigenvector signs are arbitrary. This package does not implement factor
-analysis, MNF/noise whitening, robust PCA, OAC-style geodemographic
-classification or spatially constrained component analysis.
+Eigenvector signs are arbitrary. A separate [principal-axis factor-analysis baseline](factor-analysis.md) models common variance and optional varimax rotation; it is not PCA and does not implement maximum-likelihood or confirmatory factor analysis. MNF/noise whitening, robust PCA, OAC-style geodemographic classification and spatially constrained component analysis remain separate topics.
 
 See the [tested implementation](../../implementations/python/pca-transform/README.md)
 and [tests](../../implementations/python/pca-transform/test_pca_transform.py).

@@ -256,6 +256,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/factor-analysis",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/fay-herriot",
     "pythonpath": ""
   },
