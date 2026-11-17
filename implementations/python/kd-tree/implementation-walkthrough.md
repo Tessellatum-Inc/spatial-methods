@@ -99,3 +99,19 @@ python -m pytest -q
 ~~~
 
 Then compare the implementation with the conceptual [k-d tree lesson](../../../algorithms/indexing/kd-tree-nearest-neighbour.md).
+
+
+
+## Dynamic k-d tree
+
+The dynamic companion assigns a stable integer ID to every inserted point.
+Insertion follows the current split planes and updates subtree counts. If a
+child exceeds the alpha balance threshold, that subtree is rebuilt by a
+median partition on its widest axis. Deletion marks the node inactive and
+rebuilds when tombstones exceed the permitted fraction. Queries skip inactive
+nodes and retain the original deterministic distance/ID ordering.
+
+The test suite drives seeded insert/delete sequences and compares nearest,
+k-nearest, radius and range queries against a brute-force oracle after every
+mutation. This verifies exact query results, not an asymptotic worst-case
+update bound.

@@ -217,3 +217,61 @@ def test_radius_query_matches_independent_brute_force_on_seeded_clouds():
 def test_radius_query_rejects_invalid_radius(radius):
     with pytest.raises(ValueError):
         KDTree2D([(0, 0)]).radius_query((0, 0), radius)
+
+
+
+def test_dynamic_kd_tree_insert_delete_and_queries_match_brute_force():
+    from kd_tree import DynamicKDTree2D
+    rng=random.Random(20261117)
+    tree=DynamicKDTree2D(alpha=0.65)
+    active={}
+    for step in range(180):
+        if not active or rng.random()<0.68:
+            point=(rng.randint(-20,20),rng.randint(-20,20))
+            index=tree.insert(point)
+            active[index]=point
+        else:
+            index=rng.choice(list(active))
+            assert tree.delete(index)
+            del active[index]
+        assert len(tree)==len(active)
+        points=list(active.items())
+        query=(rng.uniform(-25,25),rng.uniform(-25,25))
+        expected=min(((x-query[0])**2+(y-query[1])**2,i)
+                     for i,(x,y) in points) if points else None
+        got=tree.nearest(query)
+        assert got is None if expected is None else got[0]==expected[1] and got[1]==pytest.approx(expected[0])
+        k=min(5,len(points))
+        expected_k=sorted((((x-query[0])**2+(y-query[1])**2,i) for i,(x,y) in points))[:k]
+        got_k=tree.k_nearest(query,k)
+        assert [i for i,_ in got_k]==[i for _,i in expected_k]
+        low=(-10,-10); high=(10,10)
+        expected_range=sorted(i for i,(x,y) in points if -10<=x<=10 and -10<=y<=10)
+        assert tree.range_query(low,high)==expected_range
+        radius=7.5
+        expected_radius=sorted(i for i,(x,y) in points if (x-query[0])**2+(y-query[1])**2<=radius**2)
+        assert tree.radius_query(query,radius)==expected_radius
+
+
+def test_dynamic_kd_tree_duplicate_points_use_stable_id_ties_and_deletion():
+    from kd_tree import DynamicKDTree2D
+    tree=DynamicKDTree2D([(1,1),(1,1),(2,2)])
+    assert tree.nearest((1,1))==(0,0.0)
+    assert tree.delete(0)
+    assert tree.nearest((1,1))==(1,0.0)
+    assert tree.delete(1)
+    assert tree.nearest((1,1))==(2,2.0)
+    assert not tree.delete(1)
+    assert len(tree)==1
+
+
+def test_dynamic_kd_tree_rejects_invalid_alpha_and_ids():
+    from kd_tree import DynamicKDTree2D
+    for alpha in (0.5,1.0,float("nan"),True):
+        with pytest.raises(ValueError):
+            DynamicKDTree2D(alpha=alpha)
+    tree=DynamicKDTree2D([(0,0)])
+    with pytest.raises(ValueError):
+        tree.delete(True)
+    with pytest.raises(ValueError):
+        tree.insert((0,float("inf")))
