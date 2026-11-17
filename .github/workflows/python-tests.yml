@@ -343,6 +343,9 @@ jobs:
           - example: geostatistics
             directory: implementations/python/geostatistics
             pythonpath: ""
+          - example: lee-speckle-filter
+            directory: implementations/python/lee-speckle-filter
+            pythonpath: ""
           - example: mann-kendall-sen
             directory: implementations/python/mann-kendall-sen
             pythonpath: ""
