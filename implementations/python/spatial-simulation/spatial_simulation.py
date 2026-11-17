@@ -1,0 +1,215 @@
+"""Small, explicit spatial cellular-automata and Schelling model baselines."""
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Iterable
+
+import numpy as np
+from numpy.typing import NDArray
+
+
+def _validate_grid(grid: NDArray, *, binary: bool = False) -> NDArray:
+    arr = np.asarray(grid)
+    if arr.ndim != 2 or min(arr.shape, default=0) < 1:
+        raise ValueError("grid must be a non-empty two-dimensional array")
+    if not np.issubdtype(arr.dtype, np.integer):
+        raise TypeError("grid values must be integers")
+    if binary and not np.isin(arr, [0, 1]).all():
+        raise ValueError("binary cellular automaton grid must contain only 0 and 1")
+    return arr
+
+
+def _offsets(neighborhood: str) -> tuple[tuple[int, int], ...]:
+    if neighborhood == "moore":
+        return tuple((dr, dc) for dr in (-1, 0, 1)
+                     for dc in (-1, 0, 1) if (dr, dc) != (0, 0))
+    if neighborhood == "von_neumann":
+        return ((-1, 0), (1, 0), (0, -1), (0, 1))
+    raise ValueError("neighborhood must be 'moore' or 'von_neumann'")
+
+
+def _shift(arr: NDArray, dr: int, dc: int, periodic: bool) -> NDArray:
+    if periodic:
+        return np.roll(arr, shift=(-dr, -dc), axis=(0, 1))
+    out = np.zeros_like(arr)
+    rows, cols = arr.shape
+    src_r0, src_r1 = max(0, -dr), min(rows, rows - dr)
+    src_c0, src_c1 = max(0, -dc), min(cols, cols - dc)
+    dst_r0, dst_r1 = max(0, dr), min(rows, rows + dr)
+    dst_c0, dst_c1 = max(0, dc), min(cols, cols + dc)
+    out[dst_r0:dst_r1, dst_c0:dst_c1] = arr[src_r0:src_r1, src_c0:src_c1]
+    return out
+
+
+def live_neighbor_count(
+    grid: NDArray, *, neighborhood: str = "moore", periodic: bool = False
+) -> NDArray[np.int64]:
+    """Count live (value 1) neighbors for each cell; the center is excluded."""
+    arr = _validate_grid(grid, binary=True)
+    count = np.zeros(arr.shape, dtype=np.int64)
+    for dr, dc in _offsets(neighborhood):
+        count += _shift(arr, dr, dc, periodic)
+    return count
+
+
+def life_like_step(
+    grid: NDArray,
+    *,
+    birth: Iterable[int] = (3,),
+    survive: Iterable[int] = (2, 3),
+    neighborhood: str = "moore",
+    periodic: bool = False,
+) -> NDArray[np.uint8]:
+    """Apply a synchronous binary B/S cellular-automaton update."""
+    arr = _validate_grid(grid, binary=True)
+    birth_set, survive_set = set(birth), set(survive)
+    degree = len(_offsets(neighborhood))
+    if any(not isinstance(x, (int, np.integer)) or x < 0 or x > degree
+           for x in birth_set | survive_set):
+        raise ValueError(f"neighbor counts must be integers from 0 to {degree}")
+    neighbors = live_neighbor_count(
+        arr, neighborhood=neighborhood, periodic=periodic
+    )
+    born = (arr == 0) & np.isin(neighbors, tuple(birth_set))
+    lives = (arr == 1) & np.isin(neighbors, tuple(survive_set))
+    return (born | lives).astype(np.uint8)
+
+
+def simulate_life_like(
+    grid: NDArray,
+    steps: int,
+    *,
+    birth: Iterable[int] = (3,),
+    survive: Iterable[int] = (2, 3),
+    neighborhood: str = "moore",
+    periodic: bool = False,
+) -> NDArray[np.uint8]:
+    """Run a B/S cellular automaton for a fixed number of synchronous steps."""
+    if not isinstance(steps, (int, np.integer)) or steps < 0:
+        raise ValueError("steps must be a non-negative integer")
+    state = _validate_grid(grid, binary=True).astype(np.uint8, copy=True)
+    for _ in range(steps):
+        state = life_like_step(
+            state, birth=birth, survive=survive,
+            neighborhood=neighborhood, periodic=periodic,
+        )
+    return state
+
+
+def same_group_share(
+    grid: NDArray,
+    row: int,
+    col: int,
+    *,
+    neighborhood: str = "moore",
+    periodic: bool = False,
+) -> float:
+    """Return same-group share among occupied neighboring cells.
+
+    A cell with no occupied neighbors has share 1.0 by convention and is
+    therefore not classified as unhappy by a positive tolerance.
+    """
+    arr = _validate_grid(grid)
+    if not (0 <= row < arr.shape[0] and 0 <= col < arr.shape[1]):
+        raise IndexError("cell coordinates are outside the grid")
+    group = arr[row, col]
+    if group == 0:
+        raise ValueError("share is undefined for an empty cell")
+    values = []
+    for dr, dc in _offsets(neighborhood):
+        rr, cc = row + dr, col + dc
+        if periodic:
+            rr %= arr.shape[0]
+            cc %= arr.shape[1]
+        elif not (0 <= rr < arr.shape[0] and 0 <= cc < arr.shape[1]):
+            continue
+        value = arr[rr, cc]
+        if value != 0:
+            values.append(value)
+    if not values:
+        return 1.0
+    return float(np.count_nonzero(np.asarray(values) == group) / len(values))
+
+
+def schelling_step(
+    grid: NDArray,
+    *,
+    tolerance: float = 0.5,
+    neighborhood: str = "moore",
+    periodic: bool = False,
+    seed: int | None = None,
+    max_moves: int | None = None,
+) -> tuple[NDArray, int]:
+    """Move unhappy agents to distinct cells that were empty at step start.
+
+    Unhappiness is evaluated against the initial state; relocation is then
+    processed in a seeded random order. This is a transparent one-pass
+    relocation rule, not a claim to reproduce every Schelling variant.
+    """
+    arr = _validate_grid(grid)
+    if not 0.0 <= tolerance <= 1.0:
+        raise ValueError("tolerance must be between 0 and 1")
+    if max_moves is not None and (
+        not isinstance(max_moves, (int, np.integer)) or max_moves < 0
+    ):
+        raise ValueError("max_moves must be a non-negative integer or None")
+    _offsets(neighborhood)  # validate topology before doing any work
+    rng = np.random.default_rng(seed)
+    unhappy = [
+        (r, c) for r in range(arr.shape[0]) for c in range(arr.shape[1])
+        if arr[r, c] != 0 and same_group_share(
+            arr, r, c, neighborhood=neighborhood, periodic=periodic
+        ) < tolerance
+    ]
+    if not unhappy or max_moves == 0:
+        return arr.copy(), 0
+    order = rng.permutation(len(unhappy))
+    empty = np.argwhere(arr == 0)
+    if empty.size == 0:
+        return arr.copy(), 0
+    empty_order = rng.permutation(len(empty))
+    state = arr.copy()
+    moves = 0
+    limit = len(empty) if max_moves is None else min(max_moves, len(empty))
+    for idx, empty_idx in zip(order[:limit], empty_order[:limit]):
+        source = unhappy[int(idx)]
+        target = tuple(int(x) for x in empty[int(empty_idx)])
+        state[target] = state[source]
+        state[source] = 0
+        moves += 1
+    return state, moves
+
+
+@dataclass(frozen=True)
+class SchellingResult:
+    grid: NDArray
+    moves_per_step: tuple[int, ...]
+    converged: bool
+
+
+def simulate_schelling(
+    grid: NDArray,
+    *,
+    tolerance: float = 0.5,
+    max_iterations: int = 100,
+    neighborhood: str = "moore",
+    periodic: bool = False,
+    seed: int | None = None,
+) -> SchellingResult:
+    """Iterate seeded Schelling relocations until stable or iteration limit."""
+    if not isinstance(max_iterations, (int, np.integer)) or max_iterations < 0:
+        raise ValueError("max_iterations must be a non-negative integer")
+    state = _validate_grid(grid).copy()
+    rng = np.random.default_rng(seed)
+    history: list[int] = []
+    for _ in range(max_iterations):
+        # Draw a fresh deterministic child seed from the caller's generator.
+        child_seed = int(rng.integers(0, np.iinfo(np.int32).max))
+        state, moves = schelling_step(
+            state, tolerance=tolerance, neighborhood=neighborhood,
+            periodic=periodic, seed=child_seed,
+        )
+        history.append(moves)
+        if moves == 0:
+            return SchellingResult(state, tuple(history), True)
+    return SchellingResult(state, tuple(history), False)
