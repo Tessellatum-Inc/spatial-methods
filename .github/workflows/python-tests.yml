@@ -193,6 +193,9 @@ jobs:
           - example: voronoi-delaunay
             directory: implementations/python/voronoi-delaunay
             pythonpath: ""
+          - example: bowyer-watson
+            directory: implementations/python/bowyer-watson
+            pythonpath: ""
           - example: line-simplification
             directory: implementations/python/line-simplification
             pythonpath: ""
