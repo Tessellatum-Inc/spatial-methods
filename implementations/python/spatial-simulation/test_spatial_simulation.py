@@ -2,9 +2,12 @@ import numpy as np
 import pytest
 
 from spatial_simulation import (
+    forest_fire_step,
     life_like_step,
     live_neighbor_count,
+    percolates,
     same_group_share,
+    sample_site_percolation,
     schelling_step,
     simulate_life_like,
     simulate_schelling,
@@ -105,9 +108,6 @@ def test_invalid_schelling_controls():
         simulate_schelling(grid, max_iterations=-1)
     with pytest.raises(ValueError):
         schelling_step(np.array([[1, -1], [0, 2]]))
-
-
-from spatial_simulation import forest_fire_step, percolates, sample_site_percolation
 
 
 def test_site_percolation_probability_endpoints_and_seed():
