@@ -19,7 +19,7 @@ The source groups many specialist methods and named software systems. This regis
 
 | ID | Atomic item | Kind | Status | Required completion work |
 |---|---|---|---|---|
-| S07-LC-01 | Cellular automata (CA) | Spatial simulation framework | Partial | Define neighbourhood, transition rule and synchronous/asynchronous update. |
+| S07-LC-01 | Cellular automata (CA) | Spatial simulation framework | Partial | Existing `spatial-simulation` package supplies synchronous binary B/S automata with Moore/von Neumann neighborhoods and fixed-dead/toroidal boundaries, with oscillator, neighborhood-count and validation tests. This is a generic life-like lattice baseline, not a land-change CA or calibrated spatial transition model; update semantics and source-specific rules remain open. |
 | S07-LC-02 | SLEUTH | Urban growth CA model | Verify | Pin version and calibration procedure; document slope/exclusion/urban inputs. |
 | S07-LC-03 | ANN-CA | Neural cellular automata model | Verify | Resolve exact formulation; document training, neighbourhood and transition probabilities. |
 | S07-LC-04 | Logistic-CA | Statistical CA model | Verify | Define logistic transition model and sampling; test calibration and spatial dependence. |
@@ -32,16 +32,16 @@ The source groups many specialist methods and named software systems. This regis
 | S07-LC-11 | Agent-based models | Simulation family | Open | Define agents, state, behaviour and interaction; test calibration and emergent behaviour. |
 | S07-LC-12 | Markov-chain land-use change | Stochastic transition model | Partial | Define states, transition interval and stationarity; test matrix powers and uncertainty. |
 | S07-LC-13 | Monte Carlo spatial simulation | Stochastic simulation family | Partial | Specify stochastic process, spatial dependence and seed; test distributional recovery. |
-| S07-LC-14 | Schelling segregation model | Agent-based model | Verify | Verify neighbourhood preference and update rules; reproduce phase transitions. |
+| S07-LC-14 | Schelling segregation model | Agent-based model | Partial | Existing `spatial-simulation` package provides a seeded categorical-agent relocation baseline: occupied-neighbour same-group share, unhappy-agent evaluation against the pre-move state, and relocation to distinct cells vacant at iteration start. Tests check group/vacancy conservation, reproducibility and stopping. Heterogeneous preferences, alternative sequential/asynchronous variants, calibration and phase-transition reproduction remain open. |
 | S07-LC-15 | Sugarscape | Agent-based artificial society model | Verify | Identify canonical ruleset/variant; document resource, movement and reproduction assumptions. |
-| S07-LC-16 | Percolation models | Spatial stochastic process | Partial | Define site/bond and lattice; test critical behaviour and finite-size effects. |
+| S07-LC-16 | Percolation models | Spatial stochastic process | Partial | Existing `spatial-simulation` package implements seeded independent Bernoulli site-percolation sampling and top-to-bottom occupied-path detection under four- or eight-neighbour connectivity. Tests cover probability endpoints, seed reproducibility and connected/disconnected fixtures. Bond percolation, periodic lattice topology, critical-threshold estimation and finite-size scaling remain open. |
 | S07-LC-17 | Diffusion-limited aggregation | Stochastic growth model | Verify | Verify random walk/attachment rules; test fractal scaling. |
 | S07-LC-18 | Sandpile models | Self-organised criticality model | Verify | Specify deterministic/stochastic toppling and boundary; test avalanche distributions. |
-| S07-LC-19 | Forest-fire models | Cellular stochastic model | Verify | Define ignition, growth and suppression rules; test scaling and boundary conditions. |
+| S07-LC-19 | Forest-fire models | Cellular stochastic model | Partial | Existing `spatial-simulation` package implements a synchronous three-state forest-fire automaton (empty/tree/burning), neighbour ignition, independent lightning and probabilistic regrowth with explicit neighborhood, boundary and seed controls. Tests cover transition rules, probability endpoints, reproducibility and invalid states. Wind, fuel moisture, topography, spotting, suppression, physical spread calibration and scaling studies remain open. |
 | S07-LC-20 | Spatial game theory | Model family | Open | Define strategy, payoff, neighbourhood and update rule; separate replicator/agent models. |
 | S07-LC-21 | Spatial random graphs | Graph model family | Open | Define vertex process, spatial connection kernel and degree distribution. |
-| S07-LC-22 | Distance-decay preferential attachment | Spatial network growth | Verify | Define attachment kernel and spatial constraints; test degree/length distributions. |
-| S07-LC-23 | Small-world networks | Graph model family | Verify | Identify lattice rewiring variant; test clustering/path length. |
+| S07-LC-22 | Distance-decay preferential attachment | Spatial network growth | Partial | Existing `spatial-simulation` package builds a seeded undirected graph from finite Euclidean coordinates: each new node selects m earlier nodes with probability proportional to degree^exponent × exp(-distance/distance_scale), after an initial clique. Tests check symmetry, no self-loops, minimum degree and reproducibility. Alternative kernels, statistical degree/edge-length validation and large-graph scalability remain open. |
+| S07-LC-23 | Small-world networks | Graph model family | Partial | Existing `spatial-simulation` package implements a seeded Watts–Strogatz ring-lattice rewiring baseline. Tests check ring/rewired edge-count invariance, symmetry, no self-loops and deterministic beta=0 behaviour. Connectivity, clustering/path-length distributions, alternative rewiring conventions and source-specific validation remain open. |
 | S07-LC-24 | Scale-free networks | Graph model family | Verify | Define generative process and power-law evidence; avoid visual/finite-sample overclaim. |
 
 ### Multi-criteria and decision support — page 12
