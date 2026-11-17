@@ -13,6 +13,9 @@ on:
       - "notebooks/**"
       - "scripts/**"
       - "**.md"
+      - "catalog/**"
+      - "source-inventory/**"
+      - "docs/**"
       - ".github/workflows/python-tests.yml"
   pull_request:
     paths:
