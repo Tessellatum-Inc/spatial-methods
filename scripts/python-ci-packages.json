@@ -1,0 +1,1138 @@
+[
+  {
+    "directory": "implementations/python/accessibility-equity",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/accuracy-assessment",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/ace-detection",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/adaptive-sampling",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/adaptive-thresholding",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/affine-georeferencing",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/ahp-weights",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/ais-gap-detection",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/alpha-shapes",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/approximate-inference",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/arima-forecasting",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/atgp-endmembers",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/backup-coverage",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/ball-tree",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/bentley-ottmann",
+    "pythonpath": "../segment-intersection"
+  },
+  {
+    "directory": "implementations/python/biodiversity-metrics",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/bivariate-morans-i",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/brovey-pansharpening",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/brown-conrady",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/bsp-csg",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/capacitated-p-median",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/car-gibbs-sampler",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/cem-detection",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/change-point-detection",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/chm-watershed-crowns",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/clark-evans",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/classification-breaks",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/climate-velocity",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/closest-pair",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/coastal-optical-retrieval",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/coastal-processes",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/collision-broadphase",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/compositional-data",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/constrained-delaunay",
+    "pythonpath": "../ear-clipping"
+  },
+  {
+    "directory": "implementations/python/continuum-removal",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/convex-decomposition",
+    "pythonpath": "../ear-clipping"
+  },
+  {
+    "directory": "implementations/python/convex-hull",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/cost-distance",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/covariance-functions",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/coverage-simplification",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/crs-transform",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/csa",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/curves-smoothing",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/d8-flow",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/d8-flow-accumulation",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/d8-flow-direction",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/dasymetric-allocation",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/dbscan",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/dcel",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/dem-void-fill",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/dijkstra",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/distribution-shift",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/districting-compactness",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/domain-classifier-shift",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/drought-indices",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/ear-clipping",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/ecef-enu",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/edge-detection",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/electre-i",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/empirical-bayes-rates",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/empirical-corrections",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/empirical-semivariogram",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/equity-covering",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/exact-orientation",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/fay-herriot",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/fcls-unmixing",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/fft-grid-kde",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/flow-capturing-location",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/flow-refueling-location",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/focal-statistics",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/forecast-verification",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/fourier-filtering",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/fractional-cover",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/fuzzy-overlay",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/gabor-filters",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/geary-c",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/geohash",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/geometry-metrics",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/geophysical-gridding",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/geostatistics",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/getis-ord",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/glcm-texture",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/global-morans-i",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/gnss-ambiguity",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/gnss-raim",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/graham-scan",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/graph-spectral-covariance",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/greiner-hormann",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/haar-wavelet",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/half-edge-mesh",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/hand",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/hants-time-series",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/head-banging",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/helmert-7-parameter",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/hilbert-rtree",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/hmm-viterbi",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/hough-lines",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/huff-model",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/info-nce",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/inverse-distance-weighting",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/ir-mad",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/isotropic-remeshing",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/join-count",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/k-core",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/k-means",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/k-medoids",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/kd-tree",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/kernighan-lin",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/knndm",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/knox-test",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/land-change-accounting",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/lee-speckle-filter",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/lees-l",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/line-clipping",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/line-simplification",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/local-geary",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/local-morans-i",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/louvain",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/mann-kendall-sen",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/manning-open-channel",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/mantel",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/map-classification",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/map-matching",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/marching-cubes",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/marching-squares",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/marine-heatwave-detection",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/martinez-rueda",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/masked-autoencoding",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/matrix-completion",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/matrix-factorization",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/max-flow-min-cut",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/maximal-covering",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/mean-radiant-temperature",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/median-polish",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/mesh-geodesics",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/mesh-repair",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/mesh-smoothing",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/methane-emissions",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/mexclp",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/minimum-spanning-tree",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/minkowski-convex",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/mmc-queue",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/mnf-transform",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/mogi-source",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/monotone-triangulation",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/moran-eigenvector-filtering",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/morphology",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/moving-object-prediction",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/multiple-testing",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/muskingum-routing",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/natural-neighbour",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/network-centrality",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/network-communities",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/network-flow",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/network-kde",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/network-resilience",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/nfindr-endmembers",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/nndm",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/nonseparable-space-time-covariance",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/obia-object-features",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/octree",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/open-location-code",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/optical-flow",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/ordinary-kriging",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/otsu-thresholding",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/owa",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/p-center",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/p-median",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/path-size-logit",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/pca-transform",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/photogrammetric-flight-design",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/point-cloud-registration",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/point-cloud-voxelization",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/point-in-polygon",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/point-location",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/point-pattern-kde",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/point-process",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/polygon-clipping",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/polygon-intersection",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/polygon-offsetting",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/polygon-overlay",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/polygon-validity",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/population-diversity",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/potential-field",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/ppi-endmembers",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/precision-grid",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/priority-flood",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/progressive-morphological-filter",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/proximity-graphs",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/qa-cloud-masks",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/quad-edge",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/quadtree",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/radon-transform",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/random-hyperplane-lsh",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/ransac-plane-fitting",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/raptor",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/raster-components",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/raster-distance",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/raster-map-algebra",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/raster-object-tracking",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/raster-reclassification",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/raster-resampling",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/rasterization",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/recurrence-analysis",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/regional-dynamics",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/remote-classification",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/remote-sensing-change",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/reverse-knn",
+    "pythonpath": "../kd-tree"
+  },
+  {
+    "directory": "implementations/python/ripley-k",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/road-routing",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/ross-li-brdf",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/routing-heuristics",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/rstar-tree",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/rx-anomaly",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/sar-cfar",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/segment-intersection",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/set-covering",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/shortest-paths",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/skater",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/slic-superpixels",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/snap-rounding-noder",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/solar-geometry",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatial-cross-validation",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatial-distribution-summaries",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatial-econometrics",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatial-encodings",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatial-inequality",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatial-information-theory",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatial-intensity",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatial-join",
+    "pythonpath": "../kd-tree"
+  },
+  {
+    "directory": "implementations/python/spatial-microsimulation",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatial-privacy",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatial-regression",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatial-sampling-design",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatial-simulation",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatial-skyline",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatial-smoothing",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatial-streaming-sketches",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spatiotemporal-validation",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spectral-indices",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spectral-matched-filter",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spectral-partitioning",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spectral-similarity",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/spherical-covariance",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/st-dbscan",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/stable-matching",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/state-estimation",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/statistical-downscaling",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/steiner-tree",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/stl-decomposition",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/str-packed-rtree",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/stream-order",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/string-linkage",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/syndromic-surveillance",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/temporal-compositing",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/temporal-models",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/tensor-decomposition",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/terrain-derivatives",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/theil-sen",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/thermal-hotspot-detection",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/thermal-lst",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/time-series-dtw",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/topology-preserving-simplification",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/topsis",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/triple-collocation",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/two-step-fca",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/uncertainty-propagation",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/variogram-models",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/vatti-clipping",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/vatti-scanbeam",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/vca-endmembers",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/vecchia-approximation",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/visibility-polygon",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/voronoi-delaunay",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/voronoi-lloyd",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/vp-tree",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/ward-clustering",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/watershed-delineation",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/weighted-overlay",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/weights-of-evidence",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/weiler-atherton",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/whittaker-smoother",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/winged-edge",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/zonal-statistics",
+    "pythonpath": ""
+  }
+]
