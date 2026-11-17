@@ -1012,6 +1012,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/spatial-spectral-analysis",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/spatial-streaming-sketches",
     "pythonpath": ""
   },

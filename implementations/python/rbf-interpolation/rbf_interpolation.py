@@ -137,16 +137,18 @@ def rbf_interpolate(points, values, queries, *, kernel="thin_plate",
 def select_rbf_smoothing(
     points, values, candidates, *, kernel="thin_plate", epsilon=1.0
 ):
-    """Select positive diagonal smoothing by exact leave-one-out PRESS.
+    """Select smoothing by exact leave-one-out refits on the supplied samples.
 
-    The diagonal of the augmented RBF linear smoother is obtained by solving
-    against the identity matrix. PRESS residuals are e_i/(1-H_ii), avoiding
-    n separate refits. Candidates are evaluated in the same normalized
-    coordinate system used by RBFInterpolator2D.
+    Each held-out point is predicted by a model refitted on the remaining
+    observations. This deliberately preserves the estimator's own
+    per-training-set coordinate normalization, making the score identical
+    to an independently repeated leave-one-out experiment.
     """
     samples = _finite_array(points, name="points", ndim=2)
     observations = _finite_array(values, name="values", ndim=1)
     choices = _finite_array(candidates, name="candidates", ndim=1)
+    if len(samples) != len(observations):
+        raise ValueError("values must match points")
     if choices.size == 0 or np.any(choices <= 0):
         raise ValueError("candidates must be a non-empty array of positive smoothing values")
     if len(np.unique(choices)) != len(choices):
@@ -154,47 +156,28 @@ def select_rbf_smoothing(
     epsilon = _finite_scalar(epsilon, name="epsilon")
     if epsilon <= 0:
         raise ValueError("epsilon must be positive")
+    if len(samples) <= 3:
+        raise ValueError("at least four samples are required for leave-one-out refits")
+
     scores = {}
     for smoothing in choices:
-        model = RBFInterpolator2D(
-            samples, observations, kernel=kernel, epsilon=epsilon,
-            smoothing=float(smoothing)
-        )
-        n = len(samples)
-        polynomial = _polynomial(model.points_)
-        kernel_matrix = _kernel(
-            _distances(model.points_, model.points_), model.kernel_, model.epsilon_
-        )
-        system_radial = kernel_matrix.copy()
-        system_radial.flat[::n + 1] += model.smoothing_
-        system = np.block([
-            [system_radial, polynomial],
-            [polynomial.T, np.zeros((polynomial.shape[1], polynomial.shape[1]))],
-        ])
-        rhs = np.vstack([np.eye(n), np.zeros((polynomial.shape[1], n))])
-        try:
-            influence_solution = np.linalg.solve(system, rhs)
-        except np.linalg.LinAlgError as exc:
-            raise ValueError("RBF smoother system is singular during PRESS evaluation") from exc
-        smoother = kernel_matrix @ influence_solution[:n] + polynomial @ influence_solution[n:]
-        denominator = 1.0 - np.diag(smoother)
-        if np.any(np.abs(denominator) < 1e-10):
-            score = float("inf")
-        else:
-            residual = observations - smoother @ observations
-            loo_residual = residual / denominator
-            score = float(np.mean(loo_residual ** 2))
-        scores[float(smoothing)] = score
-    finite = [(score, smoothing) for smoothing, score in scores.items()
-              if math.isfinite(score)]
-    if not finite:
-        raise ValueError("all smoothing candidates produced undefined PRESS scores")
-    best_score, best_smoothing = min(finite)
+        errors = []
+        for held_out in range(len(samples)):
+            keep = np.arange(len(samples)) != held_out
+            model = RBFInterpolator2D(
+                samples[keep], observations[keep], kernel=kernel,
+                epsilon=epsilon, smoothing=float(smoothing)
+            )
+            prediction = model.predict(samples[held_out:held_out + 1])[0]
+            errors.append((observations[held_out] - prediction) ** 2)
+        scores[float(smoothing)] = float(np.mean(errors))
+
+    best_smoothing = min(scores, key=lambda value: (scores[value], value))
     return {
         "smoothing": best_smoothing,
-        "press_score": best_score,
+        "press_score": scores[best_smoothing],
         "scores": scores,
         "kernel": kernel,
         "epsilon": epsilon,
-        "method": "exact leave-one-out PRESS",
+        "method": "exact leave-one-out refits",
     }

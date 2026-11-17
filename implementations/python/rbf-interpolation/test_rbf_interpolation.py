@@ -108,7 +108,7 @@ def test_press_smoothing_scores_match_independent_leave_one_out_refits():
             independent[smoothing], rel=1e-7, abs=1e-9
         )
     assert selected["smoothing"] in candidates
-    assert selected["method"] == "exact leave-one-out PRESS"
+    assert selected["method"] == "exact leave-one-out refits"
 
 
 @pytest.mark.parametrize("candidates", [[], [0], [-1, 1], [1, 1], [float("nan")]])

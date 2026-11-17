@@ -12,8 +12,7 @@ so affine fields are reproduced when the system is nonsingular. Coordinates
 are centered and scaled before fitting. A non-negative diagonal smoothing
 parameter trades exact interpolation for regularization. The helper
 select_rbf_smoothing chooses among caller-supplied positive smoothing values
-using exact leave-one-out PRESS computed from the linear smoother's hat
-diagonal, without fitting n separate models.
+using exact leave-one-out refits, with one held-out observation per fit.
 
 ## Use
 

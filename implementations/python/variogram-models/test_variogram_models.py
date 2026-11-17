@@ -22,6 +22,7 @@ def test_matern_covariance_matches_closed_form_special_cases(nu):
         q = np.sqrt(5.0) * r
         correlation = (1.0 + q + q*q/3.0) * np.exp(-q)
     expected = 0.2 + 1.7 * (1.0 - correlation)
+    expected[0] = 0.0  # The semivariogram is zero at zero lag, including a nugget model.
     assert variogram_model(h, model="matern", nugget=0.2,
                            partial_sill=1.7, range_=2.0, nu=nu) == pytest.approx(expected)
 
