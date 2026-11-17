@@ -397,3 +397,83 @@ def watts_strogatz_graph(
             adjacency[node, old] = adjacency[old, node] = False
             adjacency[node, new] = adjacency[new, node] = True
     return adjacency
+
+
+@dataclass(frozen=True)
+class SIRResult:
+    states: NDArray[np.uint8]
+    counts: tuple[tuple[int, int, int], ...]
+
+
+def sir_step(
+    states: NDArray,
+    adjacency: NDArray,
+    *,
+    infection_probability: float,
+    recovery_probability: float,
+    seed: int | None = None,
+) -> NDArray[np.uint8]:
+    """Advance a discrete-time network SIR model synchronously.
+
+    State codes are 0=susceptible, 1=infected and 2=recovered. Each susceptible
+    with k infected neighbors is infected with probability 1-(1-beta)**k.
+    Each currently infected node independently recovers with probability gamma.
+    """
+    state = np.asarray(states)
+    graph = np.asarray(adjacency)
+    if state.ndim != 1 or state.size < 1 or not np.issubdtype(state.dtype, np.integer):
+        raise ValueError("states must be a non-empty one-dimensional integer array")
+    if not np.isin(state, [0, 1, 2]).all():
+        raise ValueError("SIR states must be 0, 1 or 2")
+    if graph.shape != (state.size, state.size) or graph.ndim != 2:
+        raise ValueError("adjacency must be a square matrix matching states")
+    if not np.isin(graph, [False, True, 0, 1]).all():
+        raise ValueError("adjacency must be binary")
+    graph = graph.astype(bool, copy=False)
+    if np.diag(graph).any() or not np.array_equal(graph, graph.T):
+        raise ValueError("adjacency must be symmetric and have no self-loops")
+    if not 0.0 <= infection_probability <= 1.0:
+        raise ValueError("infection_probability must be between 0 and 1")
+    if not 0.0 <= recovery_probability <= 1.0:
+        raise ValueError("recovery_probability must be between 0 and 1")
+    infected_neighbors = graph @ (state == 1).astype(np.int64)
+    infection_risk = 1.0 - np.power(1.0 - infection_probability, infected_neighbors)
+    rng = np.random.default_rng(seed)
+    draws = rng.random(state.size)
+    next_state = state.astype(np.uint8, copy=True)
+    susceptible = state == 0
+    infected = state == 1
+    next_state[susceptible & (draws < infection_risk)] = 1
+    next_state[infected & (draws < recovery_probability)] = 2
+    return next_state
+
+
+def simulate_sir(
+    states: NDArray,
+    adjacency: NDArray,
+    *,
+    infection_probability: float,
+    recovery_probability: float,
+    steps: int,
+    seed: int | None = None,
+) -> SIRResult:
+    """Run network SIR and return final states plus S/I/R counts per step."""
+    if not isinstance(steps, (int, np.integer)) or isinstance(steps, bool) or steps < 0:
+        raise ValueError("steps must be a non-negative integer")
+    state = np.asarray(states).copy()
+    history = [(int(np.count_nonzero(state == 0)),
+                int(np.count_nonzero(state == 1)),
+                int(np.count_nonzero(state == 2)))]
+    rng = np.random.default_rng(seed)
+    for _ in range(steps):
+        child_seed = int(rng.integers(0, np.iinfo(np.int32).max))
+        state = sir_step(
+            state, adjacency,
+            infection_probability=infection_probability,
+            recovery_probability=recovery_probability,
+            seed=child_seed,
+        )
+        history.append((int(np.count_nonzero(state == 0)),
+                        int(np.count_nonzero(state == 1)),
+                        int(np.count_nonzero(state == 2))))
+    return SIRResult(state.astype(np.uint8), tuple(history))
