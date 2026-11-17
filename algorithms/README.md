@@ -445,3 +445,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Adaptive Lee speckle filter](remote-sensing/lee-speckle-filter.md) — local adaptive filtering of single-channel SAR intensity.
 
 - [Cell-averaging CFAR](remote-sensing/ca-cfar.md) — square-window 2D detection under an exponential intensity model.
+
+- [OBIA object features](remote-sensing/obia-object-features.md) — object geometry, spectral summaries and region adjacency from supplied segmentation labels.

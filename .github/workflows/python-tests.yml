@@ -812,6 +812,9 @@ jobs:
           - example: ca-cfar
             directory: implementations/python/ca-cfar
             pythonpath: ""
+          - example: obia-object-features
+            directory: implementations/python/obia-object-features
+            pythonpath: ""
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
