@@ -385,3 +385,68 @@ def grayscale_component_tree(image, polarity="max", connectivity=4):
         "nodes": nodes,
         "roots": roots,
     }
+
+
+def grayscale_alpha_tree(image, connectivity=4):
+    """Build an alpha hierarchy from adjacent-pixel absolute differences.
+
+    At threshold alpha, quasi-flat zones are components of the grid graph
+    retaining edges with abs(I[p]-I[q]) <= alpha. This transparent reference
+    stores each node's pixels and recomputes components at each edge weight;
+    it is intended for small rasters, not production-scale images. The
+    definition is explicit because alpha-tree conventions vary in the literature.
+    """
+    a = np.asarray(image)
+    if a.ndim != 2 or a.size == 0 or not np.issubdtype(a.dtype, np.number):
+        raise ValueError("image must be a non-empty 2-D numeric array")
+    if not np.all(np.isfinite(a)):
+        raise ValueError("image must contain finite values")
+    if connectivity not in (4, 8) or isinstance(connectivity, (bool, np.bool_)):
+        raise ValueError("connectivity must be 4 or 8")
+    h, w = a.shape
+    directions = [(0, 1), (1, 0)] + ([(1, 1), (1, -1)] if connectivity == 8 else [])
+    edges = []
+    for y in range(h):
+        for x in range(w):
+            for dy, dx in directions:
+                ny, nx = y + dy, x + dx
+                if 0 <= ny < h and 0 <= nx < w:
+                    weight = float(abs(float(a[y, x]) - float(a[ny, nx])))
+                    edges.append((weight, y*w+x, ny*w+nx))
+    levels = sorted({edge[0] for edge in edges}) or [0.0]
+    nodes, previous = [], []
+    for alpha in levels:
+        parent = list(range(h*w))
+        def find(x):
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+        for weight, u, v in edges:
+            if weight <= alpha:
+                ru, rv = find(u), find(v)
+                if ru != rv:
+                    parent[max(ru, rv)] = min(ru, rv)
+        groups = {}
+        for index in range(h*w):
+            groups.setdefault(find(index), []).append(index)
+        current = []
+        previous_by_pixels = {pixels: node_id for pixels, node_id in previous}
+        for indices in sorted(groups.values(), key=lambda xs: xs[0]):
+            pixels = tuple(indices)
+            existing = previous_by_pixels.get(pixels)
+            if existing is not None:
+                current.append((pixels, existing))
+                continue
+            node_id = len(nodes)
+            nodes.append({"id": node_id, "alpha": float(alpha),
+                          "pixels": tuple((i // w, i % w) for i in pixels),
+                          "area": len(pixels), "parent": None})
+            pixel_set = set(pixels)
+            for old_pixels, old_id in previous:
+                if set(old_pixels).issubset(pixel_set):
+                    nodes[old_id]["parent"] = node_id
+            current.append((pixels, node_id))
+        previous = current
+    return {"connectivity": connectivity, "shape": (h, w), "nodes": nodes,
+            "roots": [node["id"] for node in nodes if node["parent"] is None]}

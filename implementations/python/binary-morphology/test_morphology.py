@@ -215,3 +215,35 @@ def test_component_tree_rejects_invalid_inputs():
         grayscale_component_tree(np.ones((2, 2)), "alpha")
     with pytest.raises(ValueError):
         grayscale_component_tree(np.ones((2, 2)), connectivity=6)
+
+
+def test_alpha_tree_builds_nested_quasi_flat_zones_and_validates_inputs():
+    from morphology import grayscale_alpha_tree
+    image = np.array([[0, 0, 5], [0, 4, 5]], dtype=float)
+    tree = grayscale_alpha_tree(image, connectivity=4)
+    nodes = tree["nodes"]
+    assert len(tree["roots"]) == 1
+    root = nodes[tree["roots"][0]]
+    assert root["area"] == image.size
+    assert root["alpha"] == 5.0
+    assert any(node["area"] == 3 and node["alpha"] == 0.0 for node in nodes)
+    for node in nodes:
+        if node["parent"] is not None:
+            parent = nodes[node["parent"]]
+            assert set(node["pixels"]).issubset(set(parent["pixels"]))
+            assert parent["alpha"] > node["alpha"]
+    for bad in ([], np.ones(3), np.array([[np.inf]])):
+        with pytest.raises(ValueError):
+            grayscale_alpha_tree(bad)
+    with pytest.raises(ValueError):
+        grayscale_alpha_tree(image, connectivity=6)
+
+
+def test_alpha_tree_constant_and_single_pixel_rasters():
+    from morphology import grayscale_alpha_tree
+    constant = grayscale_alpha_tree(np.full((2, 3), 7.0))
+    assert len(constant["nodes"]) == 1
+    assert constant["nodes"][0]["alpha"] == 0.0
+    assert constant["roots"] == [0]
+    single = grayscale_alpha_tree(np.array([[2.0]]))
+    assert single["nodes"][0]["pixels"] == ((0, 0),)
