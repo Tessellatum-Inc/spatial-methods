@@ -22,7 +22,7 @@ def test_arbitrary_leading_dimensions_are_preserved():
     assert undistort(p).shape == p.shape
 
 
-@pytest.mark.parametrize("points", [np.array([1., 2., 3.]), np.array([[1., np.nan]])])
+@pytest.mark.parametrize("points", [np.array([1., 2., 3.]), np.array([[1., np.nan]]), np.empty((0, 2))])
 def test_invalid_points_are_rejected(points):
     with pytest.raises(ValueError):
         distort(points)
