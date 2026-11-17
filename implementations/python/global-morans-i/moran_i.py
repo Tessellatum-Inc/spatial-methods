@@ -247,7 +247,7 @@ def morans_i_correlogram(
         max_statistics = ([max(abs(valid[j][2][rep]) for j in range(len(valid)))
                            for rep in range(permutations)] if valid else [])
         if max_statistics:
-            rank = int(math.floor((permutations + 1) * (1.0 - float(confidence_level)))) + 1
+            rank = int(math.floor((permutations + 1) * float(confidence_level))) + 1
             critical = (sorted(max_statistics)[rank - 1]
                         if rank <= permutations else math.inf)
         else:
