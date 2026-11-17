@@ -62,7 +62,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Flow-capturing location model (FCLM), flow-refueling location model (FRLM), charging demand estimation from trajectories | Flow-based facility location / demand estimation | 36 | Partially implemented: exact and greedy FCLM plus an exact small-instance FRLM range-feasibility solver are tested against deterministic and seeded randomized subset oracles; trajectory-derived charging demand and scalable FRLM heuristics remain outstanding |
+| Flow-capturing location model (FCLM), flow-refueling location model (FRLM), charging demand estimation from trajectories | Flow-based facility location / demand estimation | 36 | Partially implemented: exact and greedy FCLM plus an exact small-instance [FRLM range-feasibility solver](../../implementations/python/flow-refueling-location/README.md) are tested against deterministic and seeded randomized subset oracles; see the [FRLM source-verification record](../verification/flow-refueling-location.md). Trajectory-derived charging demand and scalable FRLM heuristics remain outstanding |
 | Charging coverage with queuing, grid-capacity-aware siting, hydrogen station siting, V2G scheduling | Infrastructure siting / queueing and energy scheduling | 36 | Not checked — intake only |
 
 ## Surveillance and anomaly detection
