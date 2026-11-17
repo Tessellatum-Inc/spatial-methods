@@ -7,3 +7,8 @@
 5. **Supercover.** Advance to the next grid boundary. At exact corner crossings include both side cells and the diagonal cell under the closed-cell convention.
 6. **Scanline fill.** Intersect each row-centre with non-horizontal edges. A half-open vertical test avoids double-counting vertices; sorted crossings are paired under the even-odd rule.
 7. **Validate.** Run `python -m unittest -v`. Extend with independent geometric oracles, affine-grid tests, holes and fractional coverage as separately named operations.
+
+
+## Fractional-area triangle coverage
+
+The triangle-coverage routine clips a convex triangle to each candidate pixel rectangle using four half-plane passes, then applies the shoelace formula to the clipped polygon. The result is intersection area divided by cell area, so fractions sum to the triangle's area in cell units when the triangle lies fully inside the raster. It supports non-square cells and partial overlap with the raster extent. It is deliberately restricted to a single triangle; arbitrary concave polygon coverage and holes need a multi-component overlay implementation.

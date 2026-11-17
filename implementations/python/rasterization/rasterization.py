@@ -90,3 +90,100 @@ def scanline_polygon_fill(vertices: Iterable[Sequence[float]]) -> set[Cell]:
                 cx=col+0.5
                 if left<cx<right: filled.add((col,row))
     return filled
+
+
+def _clip_polygon_to_cell(poly, axis, bound, keep_greater):
+    """Clip a convex polygon against one axis-aligned half-plane."""
+    if not poly:
+        return []
+    def inside(point):
+        return point[axis] >= bound if keep_greater else point[axis] <= bound
+    def intersection(a, b):
+        other = 1 - axis
+        denominator = b[axis] - a[axis]
+        if denominator == 0:
+            return a
+        t = (bound - a[axis]) / denominator
+        result = [0.0, 0.0]
+        result[axis] = bound
+        result[other] = a[other] + t * (b[other] - a[other])
+        return tuple(result)
+    output = []
+    previous = poly[-1]
+    previous_inside = inside(previous)
+    for current in poly:
+        current_inside = inside(current)
+        if previous_inside and current_inside:
+            output.append(current)
+        elif previous_inside and not current_inside:
+            output.append(intersection(previous, current))
+        elif not previous_inside and current_inside:
+            output.extend((intersection(previous, current), current))
+        previous, previous_inside = current, current_inside
+    return output
+
+
+def _polygon_area(vertices):
+    if len(vertices) < 3:
+        return 0.0
+    twice = sum(
+        vertices[i][0] * vertices[(i + 1) % len(vertices)][1]
+        - vertices[(i + 1) % len(vertices)][0] * vertices[i][1]
+        for i in range(len(vertices))
+    )
+    return abs(twice) * 0.5
+
+
+def triangle_coverage(vertices, rows, cols, *, origin=(0.0, 0.0),
+                      cell_size=(1.0, 1.0)):
+    """Return exact-area fractions for cells intersected by a triangle.
+
+    Coordinates are Cartesian grid coordinates. origin is the lower-left
+    outer corner of cell (column=0,row=0); cell_size is (width,height).
+    The returned dict maps (column,row) to area(triangle intersect cell) /
+    cell area. A convex triangle is required; zero-area boundary touches are
+    omitted. This is fractional area coverage, not centre sampling or Wu
+    display intensity.
+    """
+    from numbers import Integral
+    if isinstance(rows, bool) or not isinstance(rows, Integral) or rows < 1:
+        raise ValueError("rows must be a positive integer")
+    if isinstance(cols, bool) or not isinstance(cols, Integral) or cols < 1:
+        raise ValueError("cols must be a positive integer")
+    if len(vertices) != 3:
+        raise ValueError("triangle requires exactly three vertices")
+    points = [_point(p) for p in vertices]
+    if len(set(points)) != 3:
+        raise ValueError("triangle vertices must be distinct")
+    if len(origin) != 2 or len(cell_size) != 2:
+        raise ValueError("origin and cell_size must each contain two values")
+    ox, oy = map(float, origin)
+    dx, dy = map(float, cell_size)
+    if not all(isfinite(v) for v in (ox, oy, dx, dy)) or dx <= 0 or dy <= 0:
+        raise ValueError("origin must be finite and cell dimensions positive")
+    triangle_area = _polygon_area(points)
+    if triangle_area <= 0 or not isfinite(triangle_area):
+        raise ValueError("triangle must have positive finite area")
+    min_x, max_x = min(p[0] for p in points), max(p[0] for p in points)
+    min_y, max_y = min(p[1] for p in points), max(p[1] for p in points)
+    c0 = max(0, floor((min_x - ox) / dx))
+    c1 = min(int(cols) - 1, ceil((max_x - ox) / dx) - 1)
+    r0 = max(0, floor((min_y - oy) / dy))
+    r1 = min(int(rows) - 1, ceil((max_y - oy) / dy) - 1)
+    coverage = {}
+    cell_area = dx * dy
+    for row in range(r0, r1 + 1):
+        for col in range(c0, c1 + 1):
+            x0, y0 = ox + col * dx, oy + row * dy
+            clipped = points
+            for axis, bound, keep_greater in (
+                (0, x0, True), (0, x0 + dx, False),
+                (1, y0, True), (1, y0 + dy, False),
+            ):
+                clipped = _clip_polygon_to_cell(clipped, axis, bound, keep_greater)
+                if not clipped:
+                    break
+            fraction = _polygon_area(clipped) / cell_area
+            if fraction > 1e-12:
+                coverage[(col, row)] = min(1.0, fraction)
+    return coverage
