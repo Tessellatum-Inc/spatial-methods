@@ -93,3 +93,8 @@ The source explicitly frames these as methods from adjacent fields that spatial 
 3. Verify abbreviations and named procedures before assigning stable records.
 4. Keep resilience, regional economics and geodetic adjustment distinct despite their shared mathematical tools.
 5. Connect these methods to the relevant foundations in sections 1–9.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 12 atomic completion register](../../docs/section-12-atomic-completion-register.md). The register preserves the original domain assumptions and distinguishes estimators, model families, workflows and integrity systems. It is a traceability backlog, not a verification or completion claim.
