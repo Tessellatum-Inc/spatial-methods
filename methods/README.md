@@ -39,3 +39,6 @@ This directory holds those foundational methods separately from individual algor
 ## How to use these records
 
 Each record should explain the question the method helps answer, its assumptions, its mathematical form, the choices that affect results, a reproducible example and its limitations. Where a method is a modelling choice rather than a single algorithm, say so explicitly.
+
+
+- [Spatial agent-based modeling](spatial-agent-based-modeling.md) — specify agents, space, behaviour, interactions, time, stochasticity and validation; includes a bounded Schelling-style example.
