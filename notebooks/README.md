@@ -13,6 +13,7 @@ Notebooks are used when changing values, inspecting intermediate calculations or
 
 - [Geometry foundations lab](geometry-foundations-lab.ipynb): move a point, adjust a segment and change two rectangles to inspect point location, segment intersection and polygon overlay.
 - [Polygon overlay lab](polygon-overlay-lab.ipynb): visualise intersection, union, difference and symmetric difference; inspect lower-dimensional contacts, holes, multipart output and precision-grid effects.
+- [Cascaded union lab](cascaded-union-lab.ipynb): compare collection-level union with sequential binary union, and inspect holes, disjoint components and the limits of a GEOS-backed wrapper.
 - [Convex hull lab](convex-hull-lab.ipynb): see Graham scan build a hull, inspect orientation and collinear policies, and experiment with degenerate point sets.
 - [Graham scan interactive trace](graham-scan-lab.ipynb): step through polar ordering, stack updates and removed points, then compare the final stack with the tested implementation.
 - [Voronoi and Delaunay lab](voronoi-delaunay-lab.ipynb): compare nearest-site regions with their Delaunay dual, inspect equidistant Voronoi vertices and check empty circumcircles.
