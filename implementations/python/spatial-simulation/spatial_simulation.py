@@ -485,3 +485,74 @@ def simulate_sir(
                         int(np.count_nonzero(state == 1)),
                         int(np.count_nonzero(state == 2))))
     return SIRResult(state.astype(np.uint8), tuple(history))
+
+
+def estimate_markov_transition(
+    previous: NDArray,
+    current: NDArray,
+    *,
+    n_classes: int | None = None,
+    pseudocount: float = 0.0,
+) -> NDArray[np.float64]:
+    """Estimate row-stochastic class transitions from aligned categorical rasters.
+
+    Rows represent the previous class and columns the current class. Classes
+    with no observed outgoing transitions are treated as absorbing states.
+    """
+    before, after = np.asarray(previous), np.asarray(current)
+    if before.ndim != 2 or after.shape != before.shape:
+        raise ValueError("previous and current must be aligned 2D arrays")
+    if (not np.issubdtype(before.dtype, np.integer)
+            or not np.issubdtype(after.dtype, np.integer)):
+        raise TypeError("land-cover classes must be integers")
+    if before.size == 0 or np.any(before < 0) or np.any(after < 0):
+        raise ValueError("class rasters must be non-empty and non-negative")
+    observed_max = int(max(before.max(), after.max()))
+    if n_classes is None:
+        n_classes = observed_max + 1
+    if (not isinstance(n_classes, (int, np.integer)) or isinstance(n_classes, bool)
+            or n_classes < observed_max + 1):
+        raise ValueError("n_classes must include every observed class")
+    if not np.isfinite(pseudocount) or pseudocount < 0:
+        raise ValueError("pseudocount must be finite and non-negative")
+    counts = np.full((n_classes, n_classes), float(pseudocount))
+    np.add.at(counts, (before.ravel(), after.ravel()), 1.0)
+    totals = counts.sum(axis=1)
+    for cls in np.flatnonzero(totals == 0):
+        counts[cls, cls] = 1.0
+        totals[cls] = 1.0
+    return counts / totals[:, None]
+
+
+def simulate_markov_land_change(
+    initial: NDArray,
+    transition: NDArray,
+    *,
+    steps: int,
+    seed: int | None = None,
+) -> NDArray[np.int64]:
+    """Simulate independent per-cell categorical transitions on a raster grid."""
+    state = np.asarray(initial)
+    matrix = np.asarray(transition, dtype=float)
+    if state.ndim != 2 or state.size == 0 or not np.issubdtype(state.dtype, np.integer):
+        raise ValueError("initial must be a non-empty 2D integer raster")
+    if np.any(state < 0):
+        raise ValueError("initial classes must be non-negative")
+    if not isinstance(steps, (int, np.integer)) or isinstance(steps, bool) or steps < 0:
+        raise ValueError("steps must be a non-negative integer")
+    if (matrix.ndim != 2 or matrix.shape[0] != matrix.shape[1]
+            or matrix.shape[0] < 1 or not np.isfinite(matrix).all()
+            or np.any(matrix < 0)):
+        raise ValueError("transition must be a finite non-negative square matrix")
+    if not np.allclose(matrix.sum(axis=1), 1.0, rtol=1e-10, atol=1e-12):
+        raise ValueError("each transition row must sum to 1")
+    if int(state.max()) >= matrix.shape[0]:
+        raise ValueError("transition matrix does not include every initial class")
+    result = state.astype(np.int64, copy=True)
+    rng = np.random.default_rng(seed)
+    for _ in range(steps):
+        cumulative = np.cumsum(matrix[result], axis=-1)
+        cumulative[..., -1] = 1.0
+        draws = rng.random(result.shape)[..., None]
+        result = np.sum(draws > cumulative, axis=-1).astype(np.int64)
+    return result
