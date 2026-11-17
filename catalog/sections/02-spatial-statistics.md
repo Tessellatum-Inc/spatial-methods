@@ -87,7 +87,7 @@ The [spatial econometrics package](../../implementations/python/spatial-economet
 |---|---|---:|--- |
 | Empirical Bayes rate smoothing, head-banging, median polish | Smoothing / exploratory procedures | 4 | Partial — Marshall global/local Poisson moment shrinkage, weighted head-banging and Tukey median polish implemented; Clayton–Kaldor and hierarchical CAR/BYM models remain open |
 | Gaussian, Laplacian, median, bilateral and non-local means filters, anisotropic diffusion, total-variation denoising, guided filters | Image and spatial filtering methods | 4 | Partial — tested separable Gaussian smoothing, four-neighbour Laplacian response, square median filtering, circular-support bilateral filtering and explicit Perona–Malik diffusion are implemented; total variation, non-local means, guided filtering, tensor diffusion, multiscale methods and adaptive parameter selection remain open |
-| Spatial outlier tests: Z-value, scatterplot approach, variogram cloud, isolation forest, spatial LOF, geographically weighted outliers | Outlier diagnostics / anomaly-detection methods | 4 | Not checked — intake only |
+| Spatial outlier tests: Z-value, scatterplot approach, variogram cloud, isolation forest, spatial LOF, geographically weighted outliers | Outlier diagnostics / anomaly-detection methods | 4 | Partial — tested global Z scores, spatial scatterplot diagnostics, empirical variogram clouds, brute-force spatial LOF and distance-weighted local outlier scores are implemented; isolation forest, formal variogram-cloud inference, adaptive neighbourhood selection and geographically weighted model residual diagnostics remain open |
 
 ## Inequality, entropy and scale
 
@@ -96,6 +96,8 @@ The [spatial econometrics package](../../implementations/python/spatial-economet
 | Spatial Gini, Theil, spatial entropy, segregation indices (dissimilarity, isolation) | Inequality and segregation measures | 4 | Partial — weighted area-level Gini, Theil T/L, Shannon area entropy, two-group dissimilarity and isolation/interaction implemented; distance-weighted Gini and spatial clustering/concentration measures remain open |
 | Fractal dimension, lacunarity, Hurst exponent, multifractal analysis, scale-space theory, MAUP analysis | Scale measures / spatial analysis concepts | 4 | Not checked — intake only |
 | Spatial spectral analysis: 2D periodogram, EOF, SSA and MSSA, canonical correlation, maximum covariance analysis, cross-spectral coherence, wavelet coherence, Hilbert-Huang transform | Spectral and multivariate analysis methods | 4 | Not checked — intake only |
+
+An initial [spatial outlier diagnostics package](../../implementations/python/spatial-outliers/README.md) provides reproducible, small-data baselines for global standardised scores, spatial scatterplot data, empirical variogram clouds, k-nearest-neighbour local outlier factor (LOF), and distance-weighted local scores. These are exploratory diagnostics, not interchangeable hypothesis tests. LOF operates on projected coordinates or user-supplied feature vectors with Euclidean distance; local scores use an explicit radius and Gaussian distance weights. No automatic CRS conversion or significance calibration is performed. Isolation forest and model-based geographically weighted residual diagnostics remain open.
 
 ## Decisions for the next pass
 

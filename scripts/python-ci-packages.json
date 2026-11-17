@@ -968,6 +968,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/spatial-outliers",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/spatial-privacy",
     "pythonpath": ""
   },
