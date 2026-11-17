@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 693 | Rows with a source-entry review status in the section indexes |
-| Partial | 206 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 487 | The source wording is preserved, but no independent review is recorded |
+| Partial | 207 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 486 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -23,7 +23,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 2 — Spatial statistics | 28 | 20 | 8 |
 | 3 — Geostatistics | 26 | 12 | 14 |
 | 4 — Raster, terrain and hydrology | 26 | 24 | 2 |
-| 5 — Remote sensing | 36 | 28 | 8 |
+| 5 — Remote sensing | 36 | 29 | 7 |
 | 6 — Optimization, mobility and transport | 31 | 5 | 26 |
 | 7 — Domain modeling | 48 | 1 | 47 |
 | 8 — GeoAI | 54 | 2 | 52 |
@@ -43,7 +43,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 6 | 22 |
 | **Total** | **693** | **199** | **494** |
 
-The current by-section subtotals now reconcile exactly with the aggregate: **693 source-entry rows, 206 partial, 487 intake-only and zero fully verified**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Historical snapshots below are retained as audit history; the current table above is authoritative.
+The current by-section subtotals now reconcile exactly with the aggregate: **693 source-entry rows, 207 partial, 486 intake-only and zero fully verified**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Historical snapshots below are retained as audit history; the current table above is authoritative.
 
 ## How to interpret this
 
@@ -176,3 +176,8 @@ Section 5's tree-segmentation source entry now links to a canopy-height-model wo
 ## Implementation reconciliation — marching-cubes isosurface extraction
 
 Section 5's grouped surface-reconstruction entry now links to a validated integration of scikit-image's Lewiner marching-cubes implementation, with explicit voxel spacing, origin and coordinate-axis contract. Tests cover a synthetic sphere, anisotropic voxel spacing, invalid volumes and invalid controls; local geometry checks confirmed the sphere radius and voxel-centre offset. This is a maintained-library wrapper, not a from-scratch lookup-table implementation. The grouped entry remains partial because Poisson reconstruction, mesh simplification, NeRF and 3D Gaussian splatting remain open. Section 5 now has 28 partial and eight intake-only rows; aggregate review state is 206 partial, 487 intake-only and zero fully verified.
+
+
+## Implementation reconciliation — contextual thermal-hotspot screening
+
+Section 5's thermal/fire entry now links to a generic local-context thermal anomaly baseline combining an absolute temperature threshold with a local median and MAD-derived robust scale. Tests cover isolated hotspot detection, absolute-threshold rejection, NaN exclusion, uniform scenes and invalid controls; local checks confirmed the synthetic hotspot and NoData cases. This is not a reproduction of MODIS active-fire, volcanic retrieval or MCD64A1 burned-area products. The source row remains partial because sensor-specific spectral/contextual algorithms, cloud/smoke screening and burned-area mapping remain open. Section 5 now has 29 partial and seven intake-only entries; aggregate review state is 207 partial, 486 intake-only and zero fully verified.
