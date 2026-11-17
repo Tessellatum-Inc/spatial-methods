@@ -26,3 +26,8 @@ Code and tests: [road-routing package](../../implementations/python/road-routing
 Orda, A., & Rom, R. (1990). Shortest-path and minimum-delay algorithms in
 networks with time-dependent edge-length. *Journal of the ACM*, 37(3),
 607–625. https://doi.org/10.1145/79147.214078.
+
+
+## Restricted waiting
+
+The same implementation accepts an optional maximum consecutive wait per node visit. The expanded state becomes (node, tick, waited-at-current-node); a travel transition resets the wait counter. This covers integer-tick bounded waiting, including the no-wait case, while preserving exactness for the supplied profiles and finite horizon. It does not model waiting costs, node-specific waiting permissions or continuous-time restrictions.

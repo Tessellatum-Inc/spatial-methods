@@ -15,3 +15,10 @@ Tests force a later faster departure on a non-FIFO edge, verify waiting at an in
 ## Limits
 
 No continuous-time profile functions, forbidden/limited waiting, waiting costs, time-dependent edge capacities, multi-criteria objectives or large-network acceleration. Exactness is relative to the discrete input profiles and finite horizon.
+
+
+## Restricted-waiting extension
+- Optional per-visit consecutive waiting cap, including max_wait=0 (no waiting).
+- State-expanded search includes the local wait counter; travel resets it.
+- Tests compare unrestricted, no-wait and one-tick-wait outcomes and verify counter reset at intermediate nodes.
+- Limits: integer ticks and scalar global wait cap; no continuous-time or node-specific waiting rules.

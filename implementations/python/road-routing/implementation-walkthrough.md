@@ -34,3 +34,8 @@ validate its profiles or use an algorithm that supports non-FIFO behaviour.
 Add explicit piecewise travel-time profiles with exact FIFO validation,
 turn-expanded state benchmarks, waiting and transfer choices, service
 calendars, transit routing, and multimodal path reconstruction.
+
+
+## Part C — Restricted waiting in a non-FIFO network
+
+The time-expanded state includes the node, tick and consecutive waiting count at the current visit. A wait transition increments that counter; a travel transition resets it to zero. The optional `max_wait` parameter therefore limits waiting per visit, not total waiting across the whole route. With `max_wait=None`, the earlier unrestricted-waiting state space is recovered.

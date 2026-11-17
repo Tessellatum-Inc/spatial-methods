@@ -40,3 +40,6 @@ These are small teaching baselines. They do not parse GTFS, model waiting
 choices or service calendars, support multimodal transfers, infer turn
 restrictions from source data, or provide production-grade network snapping
 and route geometry.
+
+
+Restricted waiting is supported by passing `max_wait` to `non_fifo_earliest_arrival`. The limit is the maximum number of consecutive one-tick waits during a single visit to a node; taking an edge resets the counter. `max_wait=0` means no waiting, while `None` preserves unrestricted waiting. This remains a finite integer-time, finite-horizon solver.

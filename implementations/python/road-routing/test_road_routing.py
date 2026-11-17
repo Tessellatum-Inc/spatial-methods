@@ -149,3 +149,33 @@ def test_non_fifo_search_rejects_invalid_profiles_and_horizon():
         non_fifo_earliest_arrival(graph,{"st":{0:-1}},"S","T",0,3)
     with pytest.raises(ValueError,match="unknown edge"):
         non_fifo_earliest_arrival(graph,{"other":{0:1}},"S","T",0,3)
+
+
+def test_non_fifo_restricted_waiting_caps_consecutive_wait_at_each_visit():
+    from road_routing import non_fifo_earliest_arrival
+    graph={"S":[("T","st")],"T":[]}
+    profile={"st":{0:10,1:8,2:1}}
+    unrestricted=non_fifo_earliest_arrival(graph,profile,"S","T",0,10)
+    no_wait=non_fifo_earliest_arrival(graph,profile,"S","T",0,10,max_wait=0)
+    one_tick=non_fifo_earliest_arrival(graph,profile,"S","T",0,10,max_wait=1)
+    assert unrestricted["arrival_time"]==3
+    assert no_wait["arrival_time"]==10 and no_wait["waits"]==[]
+    assert one_tick["arrival_time"]==9
+    assert one_tick["waits"]==[{"node":"S","start":0,"end":1}]
+
+
+def test_non_fifo_wait_limit_resets_after_traversing_an_edge():
+    from road_routing import non_fifo_earliest_arrival
+    graph={"S":[("A","sa")],"A":[("T","at")],"T":[]}
+    profiles={"sa":{0:1},"at":{1:9,2:1}}
+    result=non_fifo_earliest_arrival(graph,profiles,"S","T",0,10,max_wait=1)
+    assert result["arrival_time"]==3
+    assert result["waits"]==[{"node":"A","start":1,"end":2}]
+
+
+@pytest.mark.parametrize("max_wait",[-1,1.5,True])
+def test_non_fifo_rejects_invalid_wait_limit(max_wait):
+    from road_routing import non_fifo_earliest_arrival
+    with pytest.raises(ValueError,match="max_wait"):
+        non_fifo_earliest_arrival({"S":[("T","st")]},{"st":{0:1}},
+                                  "S","T",0,3,max_wait=max_wait)
