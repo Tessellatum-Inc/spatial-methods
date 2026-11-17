@@ -253,11 +253,12 @@ def fit_variogram_reml(points, values, *, model="exponential", initial=None, ani
     bounds = [(np.log(lower_var), np.log(upper_var)),
               (np.log(lower_var), np.log(upper_var)),
               (np.log(lower_range), np.log(upper_range))]
-    x0 = list(np.log(start))
+    fixed_result = minimize(objective, np.log(start), method="L-BFGS-B", bounds=bounds)
+    result = fixed_result
     if fit_anisotropy:
         bounds.extend([(0.0, 180.0), (np.log(0.1), 0.0)])
-        x0.extend([azimuth % 180.0, np.log(anisotropy_ratio)])
-    result = minimize(objective, np.asarray(x0), method="L-BFGS-B", bounds=bounds)
+        x0 = np.concatenate([fixed_result.x, [azimuth % 180.0, np.log(anisotropy_ratio)]])
+        result = minimize(objective, x0, method="L-BFGS-B", bounds=bounds)
     nugget, sill, range_ = np.exp(result.x[:3])
     if fit_anisotropy:
         azimuth = float(result.x[3] % 180.0)
