@@ -936,6 +936,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/spatial-block-conformal",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/spatial-cross-validation",
     "pythonpath": ""
   },
