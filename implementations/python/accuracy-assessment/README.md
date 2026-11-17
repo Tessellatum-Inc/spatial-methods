@@ -4,7 +4,7 @@ Dependency-free reference functions for a reference-row/prediction-column
 confusion matrix; overall, producer and user accuracy; Cohen's kappa;
 quantity and allocation disagreement; per-class F1, intersection-over-union
 (IoU) and Dice; macro-F1 and mean IoU; binary change-detection Figure of Merit
-(FoM); tolerance-aware binary boundary F1 for 2D masks; regression MAE, RMSE and weighted R-squared; and top-label expected calibration error (ECE) with equal-width bins and optional sample weights.
+(FoM); tolerance-aware binary boundary F1 for 2D masks; regression MAE, RMSE and weighted R-squared; top-label expected calibration error (ECE) with equal-width bins and optional sample weights; Nash–Sutcliffe efficiency (NSE), KGE 2009, and empirical ensemble CRPS.
 
 Run python -m pip install -r requirements.txt && python -m pytest -q.
 
@@ -18,7 +18,7 @@ implementation is O(B_ref * B_pred).
 Not implemented here: design-based area-adjusted accuracy, sampling variance,
 confidence intervals, fuzzy kappa, detection mAP, rotated-box IoU, panoptic
 quality, multi-date error propagation, adaptive/classwise calibration metrics,
-forecast metrics (including CRPS, NSE and KGE), or full sampling
+modified KGE variants and distributional/continuous CRPS estimators, or full sampling
 design. Do not interpret these pixel-count metrics as area-adjusted estimates
 when the validation sample design requires area weighting.
 
@@ -26,3 +26,6 @@ when the validation sample design requires area weighting.
 Regression metrics use finite paired observations and optional non-negative sample weights. R-squared returns 1 for a perfect constant target and 0 for an imperfect constant target. ECE is top-label confidence calibration with equal-width bins; it is sensitive to bin count and sample size and is not a classwise or adaptive calibration estimator.
 
 Retrieval/evaluation helpers include macro query-level recall@k (queries without relevant items are skipped; all-empty relevance returns None) and arithmetic-normalised mutual information (NMI) for arbitrary cluster labels. These are descriptive metrics; geographic stratification and benchmark-specific relevance protocols remain caller responsibilities.
+
+
+NSE uses the weighted observed mean and the same finite constant-target policy as R-squared. KGE is the 2009 three-component form (Pearson correlation, standard-deviation ratio and mean ratio); it returns None when a required component is undefined. Ensemble CRPS is the empirical finite-ensemble score and supports case weights; it is not a continuous parametric-distribution CRPS estimator.
