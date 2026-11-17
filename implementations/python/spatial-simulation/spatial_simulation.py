@@ -221,3 +221,89 @@ def simulate_schelling(
         if moves == 0:
             return SchellingResult(state, tuple(history), True)
     return SchellingResult(state, tuple(history), False)
+
+
+def sample_site_percolation(
+    shape: tuple[int, int], probability: float, *, seed: int | None = None
+) -> NDArray[np.bool_]:
+    """Sample independent occupied sites on a 2D lattice."""
+    if (len(shape) != 2 or any(not isinstance(n, (int, np.integer)) or n < 1
+                               for n in shape)):
+        raise ValueError("shape must contain two positive integers")
+    if not 0.0 <= probability <= 1.0:
+        raise ValueError("probability must be between 0 and 1")
+    return np.random.default_rng(seed).random(shape) < probability
+
+
+def percolates(
+    occupied: NDArray,
+    *,
+    neighborhood: str = "von_neumann",
+) -> bool:
+    """Return whether occupied sites connect the top and bottom grid edges."""
+    grid = np.asarray(occupied)
+    if grid.ndim != 2 or min(grid.shape, default=0) < 1:
+        raise ValueError("occupied must be a non-empty two-dimensional array")
+    if not np.isin(grid, [False, True, 0, 1]).all():
+        raise ValueError("occupied grid must be boolean or binary")
+    offsets = _offsets(neighborhood)
+    rows, cols = grid.shape
+    seen = np.zeros(grid.shape, dtype=bool)
+    stack = [(0, c) for c in range(cols) if bool(grid[0, c])]
+    for cell in stack:
+        seen[cell] = True
+    while stack:
+        r, c = stack.pop()
+        if r == rows - 1:
+            return True
+        for dr, dc in offsets:
+            rr, cc = r + dr, c + dc
+            if (0 <= rr < rows and 0 <= cc < cols
+                    and bool(grid[rr, cc]) and not seen[rr, cc]):
+                seen[rr, cc] = True
+                stack.append((rr, cc))
+    return False
+
+
+def forest_fire_step(
+    grid: NDArray,
+    *,
+    growth_probability: float,
+    lightning_probability: float,
+    neighborhood: str = "von_neumann",
+    periodic: bool = False,
+    seed: int | None = None,
+) -> NDArray[np.uint8]:
+    """Advance a stochastic forest-fire cellular automaton synchronously.
+
+    States are 0=empty, 1=tree and 2=burning. Burning cells become empty;
+    trees ignite from a burning neighbor or lightning; empty cells grow trees.
+    """
+    arr = np.asarray(grid)
+    if arr.ndim != 2 or min(arr.shape, default=0) < 1:
+        raise ValueError("grid must be a non-empty two-dimensional array")
+    if not np.issubdtype(arr.dtype, np.integer):
+        raise TypeError("forest-fire states must be integers")
+    if not np.isin(arr, [0, 1, 2]).all():
+        raise ValueError("forest-fire states must be 0, 1 or 2")
+    if not 0.0 <= growth_probability <= 1.0:
+        raise ValueError("growth_probability must be between 0 and 1")
+    if not 0.0 <= lightning_probability <= 1.0:
+        raise ValueError("lightning_probability must be between 0 and 1")
+    offsets = _offsets(neighborhood)
+    burning_neighbors = np.zeros(arr.shape, dtype=np.int64)
+    burning = (arr == 2).astype(np.uint8)
+    for dr, dc in offsets:
+        burning_neighbors += _shift(burning, dr, dc, periodic)
+    rng = np.random.default_rng(seed)
+    random_values = rng.random(arr.shape)
+    result = arr.astype(np.uint8, copy=True)
+    result[arr == 2] = 0
+    trees = arr == 1
+    ignited = trees & (
+        (burning_neighbors > 0) | (random_values < lightning_probability)
+    )
+    result[ignited] = 2
+    empty = arr == 0
+    result[empty & (random_values < growth_probability)] = 1
+    return result
