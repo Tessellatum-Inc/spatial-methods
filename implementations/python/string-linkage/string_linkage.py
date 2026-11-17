@@ -83,6 +83,8 @@ def soundex(value):
     first, result = letters[0], []
     previous = codes.get(letters[0], "")
     for ch in letters[1:]:
+        if ch in "HW":
+            continue
         code = codes.get(ch, "")
         if code and code != previous:
             result.append(code)
