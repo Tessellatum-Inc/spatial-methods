@@ -27,13 +27,8 @@ def test_greedy_step_matches_independent_exhaustive_marginal_oracle():
     previous = 0.0
     for selected, gain in zip(result["selected_indices"], result["marginal_gains"]):
         alternatives = []
-        for candidate in range(len(CANDIDATES)):
-            if candidate in chosen:
-                continue
-            trial = gaussian_sensor_mutual_information(
-                TARGETS, CANDIDATES, max_sensors=len(chosen) + 1,
-                length_scale=1.3, noise_variance=[.1, .2, .3, .4]
-            )
+        remaining = [candidate for candidate in range(len(CANDIDATES)) if candidate not in chosen]
+        for candidate in remaining:
             # Independent subset objective computed directly from Gaussian blocks.
             subset = chosen + [candidate]
             kt = np.exp(-.5 * (np.linalg.norm(TARGETS[:, None]-TARGETS[None, :], axis=2)/1.3)**2)
@@ -45,8 +40,9 @@ def test_greedy_step_matches_independent_exhaustive_marginal_oracle():
             assert sign > 0
             sign0, logdet0 = np.linalg.slogdet(kt)
             alternatives.append(.5*(logdet0-logdet)-previous)
+        best_position = int(np.argmax(alternatives))
         assert gain == pytest.approx(max(alternatives), abs=1e-10)
-        assert selected == min(i for i, value in enumerate(alternatives) if value == max(alternatives)) if False else selected
+        assert selected == remaining[best_position]
         chosen.append(selected)
         previous += gain
 
