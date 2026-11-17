@@ -64,7 +64,7 @@ This register decomposes grouped labels into auditable child records. Use the [v
 | S02-PP-13 | Gibbs process | Interacting point process family | Verify | Specify energy/potential and normalising constant; distinguish Strauss and hard-core models. |
 | S02-PP-14 | Strauss process | Gibbs point process | Verify | Verify interaction radius/parameter and stability constraints; test simulation. |
 | S02-PP-15 | Log-Gaussian Cox process | Cox point process model | Partial | Define latent Gaussian field and quadrature/inference; test marginal moments. |
-| S02-PP-16 | Marked point patterns | Point process data model | Open | Define mark types/dependence and marked summaries; test mark randomisation. |
+| S02-PP-16 | Marked point patterns | Point process data model | Partial | Implements two-type cross-pattern summaries: source-to-target nearest-neighbour CDF, translation-corrected cross-K, finite-difference cross pair correlation and seeded Monte Carlo cross-J. Tests include hand calculations, seeded repeatability and invalid/missing mark-group cases. General multitype mark correlation, mark randomisation, marked simulation and broader dependence models remain open: [package](../implementations/python/point-process/README.md). |
 | S02-PP-17 | Besag–Newell cluster test | Spatial cluster test | Verify | Verify nearest-neighbour case-count definition and null; test irregular population. |
 | S02-PP-18 | Tango cluster test | Spatial cluster test | Verify | Verify statistic/weighting and null calibration; test alternatives. |
 | S02-PP-19 | SaTScan scan statistics | Spatial/space-time scan framework | Verify | Pin version and model (Poisson/Bernoulli/space-time); document window and multiple testing. |
@@ -224,3 +224,8 @@ This register decomposes grouped labels into auditable child records. Use the [v
 6. Reconcile canonical lessons, implementations, independent tests, notebooks and coverage records after evidence changes.
 
 **Current conclusion:** Section 2 is decomposed into atomic review items. It remains open; no grouped family is declared fully verified by this register.
+
+
+## Implementation reconciliation — two-type marked point-pattern summaries
+
+The Partial status for S02-PP-16 reflects a bounded two-mark cross-pattern implementation and its hand-calculation/seeded tests. It does not establish a general marked point-process model or close mark-dependence and randomisation methods.
