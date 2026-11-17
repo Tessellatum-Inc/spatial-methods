@@ -27,7 +27,8 @@ def test_requested_numbers_and_side_offsets_are_supported():
     left = interpolate_street_addresses([(0, 0), (10, 0)], 10, 20,
                                          requested_numbers=[12, 18], side="left", offset_distance=2)
     assert [r["number"] for r in left] == [12, 18]
-    assert [r["y"] for r in left] == pytest.approx([2, 8])
+    assert [r["x"] for r in left] == pytest.approx([2, 8])
+    assert [r["y"] for r in left] == pytest.approx([2, 2])
     right = interpolate_street_addresses([(0, 0), (10, 0)], 10, 20,
                                           requested_numbers=[15], side="right", offset_distance=1)
     assert right[0]["y"] == pytest.approx(-1)
