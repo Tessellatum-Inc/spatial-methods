@@ -202,6 +202,45 @@ def expected_calibration_error(probabilities, y_true, *, n_bins=15, sample_weigh
     return error
 
 
+
+def classwise_expected_calibration_error(probabilities, y_true, *, n_bins=15,
+                                          sample_weight=None):
+    """Macro one-vs-rest ECE across classes using equal-width probability bins.
+
+    Unlike top-label ECE, every class probability is evaluated against its
+    binary class-membership outcome. The returned macro average can conceal
+    class-specific differences; inspect per-class reliability diagrams for
+    diagnosis. Bins are equal-width, not adaptive.
+    """
+    rows = [[float(value) for value in row] for row in probabilities]
+    labels = list(y_true)
+    # Reuse the top-label implementation's strict shape, range, and weight checks.
+    expected_calibration_error(rows, labels, n_bins=n_bins,
+                               sample_weight=sample_weight)
+    n_classes = len(rows[0])
+    weights = ([1.0] * len(rows) if sample_weight is None
+               else [float(value) for value in sample_weight])
+    total_weight = sum(weights)
+    class_errors = []
+    for class_index in range(n_classes):
+        bins = [[] for _ in range(n_bins)]
+        for row, label, weight in zip(rows, labels, weights):
+            probability = row[class_index]
+            bin_index = min(int(probability * n_bins), n_bins - 1)
+            bins[bin_index].append(
+                (probability, float(label == class_index), weight)
+            )
+        error = 0.0
+        for bucket in bins:
+            bucket_weight = sum(item[2] for item in bucket)
+            if bucket_weight == 0:
+                continue
+            mean_probability = sum(p * w for p, _, w in bucket) / bucket_weight
+            mean_frequency = sum(y * w for _, y, w in bucket) / bucket_weight
+            error += bucket_weight / total_weight * abs(mean_frequency - mean_probability)
+        class_errors.append(error)
+    return sum(class_errors) / n_classes
+
 def recall_at_k(relevant_items, ranked_items, k):
     """Macro query-level recall@k; queries with no relevant items are skipped.
 

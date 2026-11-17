@@ -263,3 +263,26 @@ def test_macro_classification_metrics_skip_unsupported_classes():
     assert metrics["macro_recall"] == pytest.approx((1 + 1/2) / 2)
     assert metrics["balanced_accuracy"] == metrics["macro_recall"]
     assert metrics["weighted_f1"] == pytest.approx((4*(8/9) + 4*(2/3)) / 8)
+
+
+
+def test_classwise_ece_matches_one_vs_rest_analytic_fixture():
+    from accuracy_assessment import classwise_expected_calibration_error
+    probabilities = [[.9, .1], [.8, .2], [.2, .8], [.1, .9]]
+    assert classwise_expected_calibration_error(
+        probabilities, [0, 1, 1, 1], n_bins=2
+    ) == pytest.approx(.25)
+
+
+def test_classwise_ece_supports_weights_and_validates_inputs():
+    from accuracy_assessment import classwise_expected_calibration_error
+    probabilities = [[.9, .1], [.8, .2], [.2, .8], [.1, .9]]
+    value = classwise_expected_calibration_error(
+        probabilities, [0, 1, 1, 1], n_bins=2,
+        sample_weight=[1, 1, 1, 1]
+    )
+    assert value == pytest.approx(.25)
+    with pytest.raises(ValueError):
+        classwise_expected_calibration_error([[.8, .3]], [0])
+    with pytest.raises(ValueError):
+        classwise_expected_calibration_error([[.5, .5]], [0], n_bins=0)

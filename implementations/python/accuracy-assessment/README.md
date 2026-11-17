@@ -68,3 +68,10 @@ and support-weighted F1. Undefined classes with zero reference or predicted
 support are excluded from the corresponding macro mean; weighted F1 is
 weighted by reference support. These summaries complement, rather than
 replace, class-level scores and spatially independent validation.
+
+
+The calibration helpers also include macro classwise one-vs-rest ECE with
+equal-width probability bins. Each class probability is compared with its
+binary membership outcome, and class errors are averaged equally. This is
+not adaptive ECE; report per-class reliability diagrams and bin counts when
+class imbalance or small validation samples make the macro summary unstable.
