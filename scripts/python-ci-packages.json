@@ -616,6 +616,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/mobility-metrics",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/modified-shepard",
     "pythonpath": ""
   },
