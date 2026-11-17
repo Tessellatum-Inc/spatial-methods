@@ -74,7 +74,7 @@ This register decomposes grouped labels into auditable child records. Use the [v
 | S02-PP-23 | Variable-bandwidth KDE | Point intensity estimator | Partial | Define sample-point vs evaluation-point bandwidth; test bias/variance. |
 | S02-PP-24 | Silverman bandwidth selection | Bandwidth selection rule | Verify | Identify exact rule and assumptions; distinguish univariate rule from spatial adaptation. |
 | S02-PP-25 | Cross-validated bandwidth selection | Bandwidth optimisation | Partial | Define likelihood/least-squares CV and spatial blocking; test held-out log score. |
-| S02-PP-26 | Network K-function | Network point pattern statistic | Verify | Verify network distance and edge correction; compare with simulation on known networks. |
+| S02-PP-26 | Network K-function | Network point pattern statistic | Partial | Finite undirected weighted linear-network event distances use direct same-edge travel and shortest paths through graph nodes; network K counts ordered event pairs within each network-distance threshold and scales by total network length. Tests cover alternate routes, cycles, disconnected components, parallel edges and hand-computed scaling. This is an uncorrected finite-network descriptive estimator; endpoint/junction bias, network intensity and simulation-based inference remain open. |
 | S02-PP-27 | Network KDE (NKDE) | Network intensity estimator | Partial | Define kernel along network distance and junction correction; test conservation. |
 | S02-PP-28 | SANET methods | Network spatial analysis software/method family | Verify | Identify exact SANET version and individual methods; do not treat suite as one algorithm. |
 
@@ -271,3 +271,8 @@ S02-PP-12 is Partial because the point-process package implements seeded station
 ## Implementation reconciliation — empirical J-function
 
 The Partial status for S02-PP-08 reflects the `j_function` baseline in `implementations/python/point-process/point_patterns.py`. It combines observed nearest-neighbour G with a seeded uniform-in-window Monte Carlo empty-space F estimate using J=(1-G)/(1-F), and explicitly returns NaN where the denominator reaches zero. Tests verify the combination, repeatability and invalid controls. The implementation is a rectangular-window teaching estimator without advanced edge correction; upper-tail instability and simulation uncertainty remain important, and it is not a general inhomogeneous/network J estimator.
+
+
+## Implementation reconciliation — finite-network Ripley's K
+
+The Partial status for S02-PP-26 reflects `network_ripley_k` in `implementations/python/point-process/network_point_patterns.py`. Events are represented by edge index and offset along that edge; distances consider direct travel on a shared edge and shortest alternate routes through network nodes. The estimator counts ordered pairs within each distance threshold and scales by total network length. Tests exercise direct and alternate paths, cycles, disconnected pairs, parallel edges and the count/scale formula. No endpoint, junction or varying-intensity edge correction is implemented, and the current estimator is descriptive rather than a fully calibrated network point-process test.
