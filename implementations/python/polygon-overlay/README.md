@@ -1,6 +1,6 @@
 # Polygon overlay operations with Shapely
 
-This package demonstrates four Boolean operations on valid polygonal inputs. Shapely delegates geometric construction to GEOS; this package is not a from-scratch overlay engine.
+This package demonstrates four Boolean operations and collection-level cascaded union on valid polygonal inputs. Shapely delegates geometric construction to GEOS; this package is not a from-scratch overlay engine.
 
 ## Run
 
@@ -14,7 +14,7 @@ python overlay_demo.py
 
 - Inputs must be non-empty, valid Polygon or MultiPolygon geometries.
 - Both geometries must use the same planar coordinate space and compatible units.
-- Operations: intersection, union, difference (A minus B), and symmetric difference.
+- Operations: intersection, union, difference (A minus B), and symmetric difference.\n- `cascaded_union` validates a non-empty collection of valid polygonal inputs and delegates collection union to Shapely 2.1.2 / GEOS `union_all`.
 - Output type and dimension are inspected, not guessed. An intersection may be a polygon, line, point, geometry collection or empty depending on topology and engine semantics.
 - Holes and multipart polygon inputs are supported by Shapely/GEOS.
 - Invalid input is rejected, not silently repaired.
@@ -38,7 +38,7 @@ Expected areas: intersection 4, union 17, difference 8, symmetric difference 13 
 
 ## What the tests teach
 
-The suite checks area identities, disjoint multipart union, empty intersection, containment creating a hole, edge-only and point-only contact, polygon holes, MultiPolygon input, invalid-input rejection, unsupported geometry rejection, invalid precision grids and result reporting.
+The suite checks cascaded union on overlapping and disjoint inputs, hole preservation and input validation, as well as area identities, disjoint multipart union, empty intersection, containment creating a hole, edge-only and point-only contact, polygon holes, MultiPolygon input, invalid-input rejection, unsupported geometry rejection, invalid precision grids and result reporting.
 
 ## Read next
 

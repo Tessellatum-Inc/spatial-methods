@@ -182,3 +182,43 @@ def test_seeded_overlay_metamorphic_symmetry_and_area_conservation():
         assert b_minus_a.area + ab_intersection.area == pytest.approx(b.area, rel=1e-9, abs=1e-8)
         assert xor.area == pytest.approx(a_minus_b.area + b_minus_a.area, rel=1e-9, abs=1e-8)
 
+
+
+
+def test_cascaded_union_matches_union_of_overlapping_polygons():
+    from polygon_overlay import cascaded_union
+    polygons = [
+        Polygon([(0, 0), (3, 0), (3, 2), (0, 2)]),
+        Polygon([(2, 0), (5, 0), (5, 2), (2, 2)]),
+        Polygon([(4, 0), (7, 0), (7, 2), (4, 2)]),
+    ]
+    result = cascaded_union(polygons)
+    assert result.is_valid
+    assert result.area == pytest.approx(14.0)
+    assert result.equals(overlay(overlay(polygons[0], polygons[1], "union"),
+                                 polygons[2], "union"))
+
+
+def test_cascaded_union_keeps_disjoint_components_and_holes():
+    from polygon_overlay import cascaded_union
+    outer = Polygon([(0, 0), (6, 0), (6, 6), (0, 6)])
+    inner = Polygon([(2, 2), (4, 2), (4, 4), (2, 4)])
+    distant = Polygon([(10, 0), (11, 0), (11, 1), (10, 1)])
+    result = cascaded_union([outer.difference(inner), distant])
+    assert result.is_valid
+    assert result.area == pytest.approx(33.0)
+    assert result.geom_type == "MultiPolygon"
+
+
+def test_cascaded_union_rejects_empty_or_invalid_inputs():
+    from polygon_overlay import cascaded_union
+    with pytest.raises(ValueError, match="at least one"):
+        cascaded_union([])
+    with pytest.raises(ValueError, match="invalid"):
+        cascaded_union([Polygon([(0, 0), (2, 2), (0, 2), (2, 0)])])
+
+
+def test_cascaded_union_rejects_invalid_grid():
+    from polygon_overlay import cascaded_union
+    with pytest.raises(ValueError, match="finite non-negative"):
+        cascaded_union([A, B], grid_size=-1)

@@ -2,6 +2,7 @@
 from __future__ import annotations
 from math import isfinite
 from typing import Literal
+from shapely import union_all
 from shapely.geometry import MultiPolygon, Polygon
 from shapely.geometry.base import BaseGeometry
 
@@ -46,3 +47,20 @@ def describe_result(geometry: BaseGeometry) -> dict[str, object]:
         "component_count": len(geometry.geoms) if hasattr(geometry, "geoms") else 1,
         "has_z": geometry.has_z,
     }
+
+
+
+def cascaded_union(geometries, *, grid_size: float | None = None) -> BaseGeometry:
+    """Union a collection of valid polygons through Shapely/GEOS union_all.
+
+    GEOS owns the cascaded union strategy and topology construction; this
+    wrapper validates the polygonal input contract and exposes precision.
+    """
+    items = list(geometries)
+    if not items:
+        raise ValueError("geometries must contain at least one polygon")
+    for index, geometry in enumerate(items):
+        _validate_polygonal(geometry, f"geometries[{index}]")
+    if grid_size is not None and (not isfinite(grid_size) or grid_size < 0):
+        raise ValueError("grid_size must be a finite non-negative number or None")
+    return union_all(items, grid_size=grid_size)

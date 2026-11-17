@@ -44,7 +44,7 @@ An overlay result is not guaranteed to be one polygon.
 
 Do not infer output type from the input type alone. Inspect the actual result and state whether lower-dimensional components are retained.
 
-## How overlay engines construct results
+## Collection union and cascaded union\n\nFor more than two polygonal inputs, repeatedly unioning an arbitrary pair is not necessarily an efficient strategy. Cascaded union organizes polygon components into a spatially informed hierarchy and unions smaller groups before combining their results. This can reduce intermediate complexity for many overlapping polygons. Exact tree construction, robustness and topology are implementation-specific. The repository's [collection-union wrapper](../../implementations/python/polygon-overlay/README.md) delegates to Shapely 2.1.2 / GEOS `union_all`; it does not reimplement GEOS's internal cascaded-union algorithm.\n\n## How overlay engines construct results
 
 A common conceptual strategy is:
 

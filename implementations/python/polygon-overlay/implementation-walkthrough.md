@@ -77,3 +77,8 @@ Change one relationship at a time: overlap, containment, disjointness, edge touc
 It does not implement noding, planar arrangements, edge labelling or ring construction. Those are geometry-engine internals. It teaches responsible use of a maintained engine, an explicit input contract, output inspection and useful invariants.
 
 For implementation internals, follow the GEOS OverlayNG and JTS OverlayNG references in the algorithm lesson. Record the Shapely and GEOS versions in reproducible work.
+
+
+## Cascaded union extension
+
+The package's `cascaded_union` accepts a non-empty sequence of valid Polygon or MultiPolygon inputs and delegates the collection operation to Shapely's `union_all` (GEOS). This exposes the collection-level API and validates the input contract; it is not an independent implementation of the cascaded-union tree or GEOS topology engine. Tests compare its result with repeated binary union on a small overlapping case and check disjoint components, holes and invalid inputs.
