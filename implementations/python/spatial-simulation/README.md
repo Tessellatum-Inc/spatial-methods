@@ -65,3 +65,13 @@ This is a finite-lattice connectivity experiment, not a fitted model of a partic
 `forest_fire_step` uses 0=empty, 1=tree and 2=burning. At each synchronous step, burning cells become empty; trees ignite if adjacent to fire or struck by lightning; empty cells grow trees with the supplied probability. Growth and lightning are independently parameterized and the random seed is explicit.
 
 The model is a compact stochastic cellular automaton, not a calibrated wildfire spread model. It omits wind, fuel moisture, topography, spotting, fire suppression and physical spread rates.
+
+
+## Spatial random graphs
+
+The package also provides two seeded graph generators:
+
+- `distance_decay_preferential_attachment` starts with an `m+1` clique and attaches each later node to `m` predecessors using degree preference multiplied by exponential Euclidean distance decay.
+- `watts_strogatz_graph` constructs a ring lattice and rewires clockwise edges with probability `beta`, preserving the edge count and avoiding self-loops/duplicate edges.
+
+Both return dense Boolean adjacency matrices. The spatial generator assumes finite coordinates in one consistent Euclidean coordinate system; the small-world generator does not guarantee connectivity after rewiring. These are small-instance reference generators, not large-network engines or empirical network fits.
