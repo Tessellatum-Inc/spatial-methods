@@ -9,12 +9,7 @@ from decimal import Decimal
 ALPHABET = "23456789CFGHJMPQRVWX"
 SEPARATOR = "+"
 SEPARATOR_POSITION = 8
-PAIR_RESOLUTIONS = (20.0, 1.0, 0.05, 0.0025, 0.000125)
 MAX_CODE_LENGTH = 15
-
-
-def _normalise_longitude(longitude):
-    return (longitude + 180.0) % 360.0 - 180.0
 
 
 def _validate_coordinate(latitude, longitude):
