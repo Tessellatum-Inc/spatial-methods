@@ -27,8 +27,8 @@ Apply the [verification protocol](../catalog/verification-protocol.md) and [comp
 | S14-DB-02 | Quadratic R-tree split | Index algorithm | Open | Verify quadratic waste heuristic and tie handling; compare with linear split. |
 | S14-DB-03 | R*-tree split/reinsertion | Index algorithm | Partial | Existing mutable R*-tree is bounded; verify forced reinsertion/split heuristics and invariants. |
 | S14-DB-04 | Nearest-X bulk loading | Index construction | Open | Identify exact ordering and packing method; compare tree quality and build cost. |
-| S14-DB-05 | Hilbert packing | Index construction | Open | Define Hilbert key and packing; test locality and query performance. |
-| S14-DB-06 | STR bulk loading | Index construction | Open | Verify sort-tile-recursive construction; test packing and query behaviour. |
+| S14-DB-05 | Hilbert packing | Index construction | Partial | Static Hilbert-ordered packed R-tree baseline quantises rectangle centres, computes Hilbert keys with deterministic input-index ties, and supports envelope range queries. Tests cover the 2×2 traversal, degenerate/duplicate centres, invalid controls and 750 seeded brute-force range-query comparisons across five capacities. Dynamic Hilbert R-tree variants, packing-quality benchmarks and source-variant verification remain open: [package](../implementations/python/hilbert-rtree/README.md).
+| S14-DB-06 | STR bulk loading | Index construction | Partial | Immutable Sort-Tile-Recursive packed R-tree over 2D axis-aligned bounds, with x-sorted slices, y-sorted tile packing, envelope range queries and best-first nearest-box search. Tests compare range and nearest results with brute-force oracles over seeded datasets and multiple capacities. Dynamic updates, geometry-exact predicates and production benchmarking remain open: [package](../implementations/python/str-packed-rtree/README.md).
 | S14-DB-07 | OMT bulk loading | Index construction | Verify | Resolve exact acronym/algorithm; document partitioning and source. |
 | S14-DB-08 | Buffer trees | External-memory data structure | Verify | Identify exact buffer-tree variant; state I/O model and operation bounds. |
 | S14-DB-09 | LSM-based spatial indexes | Storage/index architecture | Open | Define spatial keying, compaction and tombstones; benchmark write/read amplification. |
@@ -230,3 +230,8 @@ Apply the [verification protocol](../catalog/verification-protocol.md) and [comp
 7. Reconcile section index, implementation index, tests, notebooks, coverage matrix and dashboard only when evidence changes.
 
 **Current conclusion:** Section 14 is decomposed into atomic review items. It remains open; no claim is made that the named software systems, hazard models or political methods have been independently verified.
+
+
+## Implementation reconciliation — static R-tree bulk loaders
+
+The Section 14 database-index entries for Hilbert packing and Sort-Tile-Recursive (STR) bulk loading are now Partial because the repository contains bounded, tested implementations for both. These statuses describe the implemented static packed-tree variants only; they do not certify dynamic Hilbert R-trees, production performance, or all implementations grouped under the source labels.
