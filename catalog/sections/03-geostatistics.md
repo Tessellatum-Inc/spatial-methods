@@ -43,7 +43,7 @@ This section combines surface estimation, stochastic spatial models, simulation,
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Optimal interpolation, 3D-Var, 4D-Var, ensemble Kalman filter, LETKF, particle filters | Data assimilation algorithms | 5 | Partial — tested stochastic perturbed-observation EnKF and deterministic ETKF analysis, plus EKF/UKF and particle filter/smoother baselines; optimal interpolation, 3D/4D-Var, LETKF, forecast cycling and full model-coupled assimilation remain open |
-| Variational and Bayesian inversion, adjoint methods, emulators and surrogate models | Inverse methods / optimisation / approximation models | 5 | Not checked — intake only |
+| Variational and Bayesian inversion, adjoint methods, emulators and surrogate models | Inverse methods / optimisation / approximation models | 5 | [Gaussian linear inverse problem](../../implementations/python/gaussian-linear-inverse/README.md) provides exact conjugate posterior conditioning and marginal likelihood for a linear-Gaussian model | Partial — nonlinear/PDE-constrained inversion, adjoints, variational optimisation and emulators/surrogates remain open |
 | Radiative transfer inversion (PROSAIL, look-up tables) | Physical retrieval / inversion workflow | 5 | Not checked — intake only |
 
 ## Uncertainty, accuracy and sensitivity

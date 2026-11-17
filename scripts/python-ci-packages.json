@@ -328,6 +328,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/gaussian-linear-inverse",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/geary-c",
     "pythonpath": ""
   },
