@@ -308,3 +308,92 @@ def forest_fire_step(
     empty = arr == 0
     result[empty & (random_values < growth_probability)] = 1
     return result
+
+
+def distance_decay_preferential_attachment(
+    coordinates: NDArray,
+    *,
+    m: int,
+    distance_scale: float,
+    degree_exponent: float = 1.0,
+    seed: int | None = None,
+) -> NDArray[np.bool_]:
+    """Generate an undirected spatial preferential-attachment graph.
+
+    The first m+1 vertices form a clique. Each later vertex selects m distinct
+    earlier vertices with probability proportional to
+    degree**degree_exponent * exp(-distance / distance_scale).
+    """
+    points = np.asarray(coordinates, dtype=float)
+    if points.ndim != 2 or points.shape[1] < 1 or points.shape[0] < 2:
+        raise ValueError("coordinates must be an n-by-d array with n >= 2")
+    if not np.isfinite(points).all():
+        raise ValueError("coordinates must be finite")
+    n = points.shape[0]
+    if not isinstance(m, (int, np.integer)) or isinstance(m, bool) or m < 1 or n < m + 1:
+        raise ValueError("m must be a positive integer and n must be at least m+1")
+    if not np.isfinite(distance_scale) or distance_scale <= 0:
+        raise ValueError("distance_scale must be finite and positive")
+    if not np.isfinite(degree_exponent):
+        raise ValueError("degree_exponent must be finite")
+    rng = np.random.default_rng(seed)
+    adjacency = np.zeros((n, n), dtype=bool)
+    for i in range(m + 1):
+        for j in range(i):
+            adjacency[i, j] = adjacency[j, i] = True
+    degrees = adjacency.sum(axis=0).astype(float)
+    for node in range(m + 1, n):
+        distances = np.linalg.norm(points[:node] - points[node], axis=1)
+        log_weights = (
+            degree_exponent * np.log(np.maximum(degrees[:node], 1.0))
+            - distances / distance_scale
+        )
+        log_weights -= np.max(log_weights)
+        weights = np.exp(log_weights)
+        total = weights.sum()
+        if not np.isfinite(total) or total <= 0:
+            raise FloatingPointError("spatial attachment weights are not normalisable")
+        probabilities = weights / total
+        targets = rng.choice(node, size=m, replace=False, p=probabilities)
+        adjacency[node, targets] = True
+        adjacency[targets, node] = True
+        degrees[node] = m
+        degrees[targets] += 1
+    return adjacency
+
+
+def watts_strogatz_graph(
+    n: int,
+    *,
+    k: int,
+    beta: float,
+    seed: int | None = None,
+) -> NDArray[np.bool_]:
+    """Generate a Watts-Strogatz small-world graph from a ring lattice."""
+    if not isinstance(n, (int, np.integer)) or isinstance(n, bool) or n < 3:
+        raise ValueError("n must be an integer of at least 3")
+    if not isinstance(k, (int, np.integer)) or isinstance(k, bool) or k < 2 or k >= n or k % 2:
+        raise ValueError("k must be an even integer with 2 <= k < n")
+    if not 0.0 <= beta <= 1.0:
+        raise ValueError("beta must be between 0 and 1")
+    rng = np.random.default_rng(seed)
+    adjacency = np.zeros((n, n), dtype=bool)
+    half = k // 2
+    for node in range(n):
+        for distance in range(1, half + 1):
+            other = (node + distance) % n
+            adjacency[node, other] = adjacency[other, node] = True
+    for node in range(n):
+        for distance in range(1, half + 1):
+            old = (node + distance) % n
+            if not adjacency[node, old] or rng.random() >= beta:
+                continue
+            candidates = np.flatnonzero(~adjacency[node])
+            candidates = candidates[candidates != node]
+            candidates = candidates[candidates != old]
+            if candidates.size == 0:
+                continue
+            new = int(rng.choice(candidates))
+            adjacency[node, old] = adjacency[old, node] = False
+            adjacency[node, new] = adjacency[new, node] = True
+    return adjacency
