@@ -4,7 +4,7 @@
 - **Source pages:** 39–41
 - **Source transcription:** [pages 36–40](../../source-inventory/pages-36-40.md) and [pages 41–47](../../source-inventory/pages-41-47.md)
 - **Review state:** intake extracted; source says names and tools are from memory and require verification
-- **Current canonical records:** none yet
+- **Current canonical records:** [Geohash encoding](../../algorithms/geodesy/geohash.md); none yet
 
 **Source caution:** the compendium labels these names and tools as memory-based. Treat the regional applications as useful prompts for research, not verified descriptions of current African systems or a representative list of the continent.
 
@@ -24,7 +24,7 @@
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Open Location Code (plus codes), geohash, what3words-style grids, S2 and H3 cell addresses | Location encoding systems / spatial indexing schemes | 40 | Not checked — intake only |
+| Open Location Code (plus codes), geohash, what3words-style grids, S2 and H3 cell addresses | Location encoding systems / spatial indexing schemes | 40 | Partial — tested WGS84 geohash encode/decode with cell bounds and centre; Open Location Code, what3words, S2, H3 and source-entry review remain open |
 | Descriptive and landmark-based geocoding, building-based addressing, address-free geocoding for informal settlements | Geocoding approaches / addressing workflows | 40 | Not checked — intake only |
 | Address generation from street segments and building footprints, address quality scoring | Address assignment / data quality methods | 40 | Not checked — intake only |
 
