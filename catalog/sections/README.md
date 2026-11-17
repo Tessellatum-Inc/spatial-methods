@@ -49,3 +49,13 @@ Use the [source-entry verification protocol](../verification-protocol.md) to rec
 4. Confirm a primary kind and decide which items deserve individual canonical records.
 5. Assign stable IDs only when scope is clear.
 6. Add prerequisites, examples, tests and learning-path links.
+
+
+## Atomic completion registers
+
+These companion registers decompose grouped source rows into auditable child items. They are backlog and traceability aids—not independent verification or completion claims.
+
+- [Section 15 — vision, registration, extraction and hydrology ML](../../docs/section-15-atomic-completion-register.md)
+- [Section 16 — flows, regions, deformation, marine and applied methods](../../docs/section-16-atomic-completion-register.md)
+- [Section 17 — geometry, scalable computation, design and siting](../../docs/section-17-atomic-completion-register.md)
+- [Section 22 — inference, covariance, spherical statistics and asset monitoring](../../docs/section-22-atomic-completion-register.md)
