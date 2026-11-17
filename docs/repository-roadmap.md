@@ -67,9 +67,9 @@ The goal is not to fill folders or publish pages quickly. The goal is a collecti
 - [x] Add a dedicated exact-arithmetic hot-pixel snap-rounding teaching noder, tests, walkthrough, exercise and visual lab. Its pairwise discovery and hot-pixel scan are intentionally not output-sensitive.
 - [ ] Implement specialised efficient Delaunay-based Yao/beta-skeleton constructions with independent topology oracles, and establish the classic expected construction bound plus fully local neighbour maintenance for the randomized trapezoidal-map prototype.
 - [x] Add tested edge-based turn-aware and FIFO time-dependent earliest-arrival baselines.
-- [ ] Extend network routing with contraction hierarchies, non-FIFO routing, transit algorithms and multimodal transfers.
-- [ ] Extend spatial indexing into dynamic trees and space-filling-curve indexes. Static bucket octree, ball-tree and VP-tree teaching baselines now exist; dynamic update contracts, workload benchmarks and remaining index families are still open.
-- [ ] Extend spatial statistics with spatial correlograms, point-pattern analysis and spatial regression.
+- [ ] Extend network routing with contraction hierarchies, non-FIFO routing and multimodal transfers. RAPTOR and CSA timetable-based transit baselines now exist; advanced transfer, reliability and multimodal models remain open.
+- [ ] Extend spatial indexing into dynamic trees and scalable space-filling-curve indexes. Static bucket octree, ball-tree and VP-tree teaching baselines exist, as do Morton, Hilbert and Geohash encoders; dynamic update contracts, H3/S2/HEALPix systems and workload benchmarks remain open.
+- [ ] Extend spatial statistics with spatial correlograms, additional inhomogeneous/Cox/Gibbs point-process models and remaining spatial-regression estimators. Point-pattern baselines, several spatial-econometric estimators and graph-fused regression are already present; edge corrections, model breadth and independent empirical validation remain open.
 - [x] Add a spatial cross-validation lesson and tested grid-block/buffered-fold baseline with an intern walkthrough; keep block-size selection and deployment-specific design as explicit research decisions.
 - [x] Add a line-clipping lesson and tested Python implementations of Cohen–Sutherland, Liang–Barsky and Cyrus–Beck, with tests, walkthrough and executable notebook; Nicholl–Lee–Nicholl remains unimplemented.
 - [x] Add a rasterisation lesson and tested Python implementations of DDA, Bresenham, Wu, scanline fill and supercover traversal, with tests, walkthrough and executable notebook; exact fractional-area coverage remains open.
@@ -94,7 +94,7 @@ The goal is not to fill folders or publish pages quickly. The goal is a collecti
 - [x] Add a fixed-bandwidth planar Gaussian KDE point-pattern lesson with explicit intensity units and edge-effect limits, tests, intern walkthrough and interactive notebook.
 - [x] Add a descriptive Clark–Evans nearest-neighbour index with a homogeneous Poisson reference, explicit edge-effect limits, tests, intern walkthrough and interactive notebook.
 - [x] Add uncorrected and rectangular-window translation-corrected Ripley's K/L summaries, then extend them with conditional-CSR simulation envelopes and a global studentised maximum-deviation test, tests, intern walkthrough, exercise and interactive notebook.
-- [ ] Continue the source-derived coverage in sections 2–6: point patterns, variogram fitting and uncertainty, terrain/hydrology, sensor processing, location models and transport analysis.
+- [ ] Close the remaining source-derived gaps in Sections 2–6: inhomogeneous and Gibbs point processes, variogram fitting/uncertainty, advanced terrain and hydrology, sensor-specific retrieval, robust location models, and advanced/non-FIFO transport analysis.
 - [ ] Add domain paths only when their methods and examples are ready.
 
 ## 4. Every lesson uses the right teaching tools
@@ -159,7 +159,7 @@ We will keep working through those gaps before designing the membership tiers, a
 - [x] Extend Ripley's K/L from pair-count summaries to rectangular-window translation correction and conditional homogeneous-CSR simulation. Add pointwise quantile bands and a separate global studentised maximum-deviation Monte Carlo test, with caveats, tests, walkthrough, exercise and updated notebook.
 - [x] Add the new Python package and notebook to CI rather than leaving them as unexecuted examples.
 - [x] Review full-head Actions run `43563534022` on commit `2a340035372f45eb43e16770e6f41f2d6b78f70d`; the Section 2 citation corrections and contributor-guide update passed in this full-head validation; the Section 3 source and scope corrections passed in this full-head validation; the README and walkthrough formatting correction passed in this full-head validation; the Section 4–5 D8, stream-order and NDVI corrections passed in this full-head validation; the selected SAVI, EVI, NDWI and MNDWI references passed in this full-head validation; source-index linkage for Sections 2–6 passed in this full-head validation; further linkage in Sections 7–10 and 20–22 requires its own run.
-- [ ] Continue the source verification and implementation passes across the remaining entries in Sections 1–22. In particular, randomized trapezoidal-map construction, efficient Yao/beta-skeleton methods, inhomogeneous point-process models, advanced routing, dynamic geodetic reference frames, and the majority of domain-specific Section 7–22 methods remain open.
+- [ ] Continue the source verification and implementation passes across the remaining entries in Sections 1–22. In particular, asymptotically efficient randomized trapezoidal-map construction and Delaunay Yao/beta-skeleton methods, advanced inhomogeneous point-process models, contraction-hierarchy/non-FIFO routing, dynamic geodetic reference frames, and the majority of domain-specific Section 7–22 methods remain open.
 - [ ] Complete a full rendered-content review, licence decision and contributor workflow review before declaring the compendium ready for public membership distribution.
 
 
@@ -758,7 +758,7 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Implement the area-level normal-normal model with REML variance-component estimation and GLS fixed effects.
 - [x] Return empirical BLUP predictions, shrinkage factors and a qualified plug-in MSE approximation.
 - [x] Add boundary, covariate, shrinkage and invalid-design tests; register the package in Python CI.
-- [ ] Implement unit-level small-area models, Horvitz-Thompson, model-assisted estimation and MRP as separate methods.
+- [ ] Implement unit-level small-area models, model-assisted estimation and MRP as separate methods. A design-based Horvitz–Thompson total/mean and pairwise-inclusion variance baseline is already present.
 
 
 ## Horvitz-Thompson survey estimation — 17 November 2026
