@@ -30,7 +30,7 @@ This register decomposes the source's grouped EO, SAR, LiDAR and photogrammetry 
 | S05-PR-09 | Minnaert correction | Topographic correction | Verify | Verify exponent estimation and band dependence; test terrain illumination. |
 | S05-PR-10 | Ross–Li BRDF model | BRDF kernel model | Verify | Verify Ross-thick/Li-sparse/dense kernels and parameter retrieval. |
 | S05-PR-11 | BRDF normalisation | Reflectance normalisation workflow | Partial | Define target geometry and kernel model; test cross-date consistency. |
-| S05-PR-12 | IR-MAD | Relative radiometric normalisation | Verify | Verify iteratively reweighted MAD procedure and invariance; test pseudo-invariant pixels. |
+| S05-PR-12 | IR-MAD | Relative radiometric normalisation | Partial | Existing `ir-mad` package implements global iteratively reweighted MAD: weighted covariance whitening, canonical correlation/SVD, MAD variates, chi-square scores and no-change probability weights with mask/ridge/convergence controls. Tests cover identical imagery, affine band response, changed patches, masks and differing band counts. Co-registration, representative no-change population, sensor-specific operational processing and source-specific variants remain open. |
 | S05-PR-13 | Pseudo-invariant feature normalisation | Relative calibration workflow | Partial | Define PIF selection and regression; test land-cover change contamination. |
 | S05-PR-14 | Histogram matching | Radiometric normalisation | Partial | Define reference histogram and transfer; test scene content bias. |
 | S05-PR-15 | Empirical line calibration | Radiometric calibration | Partial | Define targets, regression and uncertainty; test extrapolation. |
@@ -127,7 +127,7 @@ This register decomposes the source's grouped EO, SAR, LiDAR and photogrammetry 
 | S05-CL-26 | Image differencing | Change detection method | Partial | Define radiometric normalisation and threshold; test noise/phenology. |
 | S05-CL-27 | Change Vector Analysis (CVA) | Multivariate change detection | Partial | Define feature space and magnitude/direction; test sensor harmonisation. |
 | S05-CL-28 | Post-classification comparison | Change detection workflow | Partial | Define independent classifiers and transition matrix; quantify compounded errors. |
-| S05-CL-29 | IR-MAD change detection | Multivariate change detection | Verify | Verify iterative MAD invariance and stopping; test pseudo-invariant areas. |
+| S05-CL-29 | IR-MAD change detection | Multivariate change detection | Partial | Cross-linked to the tested `ir-mad` package: global iteratively reweighted canonical variates, chi-square change scores and no-change weights, with synthetic unchanged/affine-response/changed-patch tests. This is not a calibrated change probability or a spatially regularised detector; threshold selection, independent reference validation and source-specific stopping conventions remain open. |
 | S05-CL-30 | Siamese change detection networks | Learned change detection | Open | Split architecture/loss and temporal ordering; test geographic/seasonal transfer. |
 | S05-CL-31 | ChangeFormer | Transformer change detection model | Verify | Verify exact model/checkpoint and benchmark; document input registration. |
 | S05-CL-32 | Spectral mixture analysis | Sub-pixel unmixing family | Partial | Define linear/nonlinear mixing and endmember assumptions; test abundance constraints. |
@@ -138,8 +138,8 @@ This register decomposes the source's grouped EO, SAR, LiDAR and photogrammetry 
 
 | ID | Atomic item | Kind | Status | Required completion work |
 |---|---|---|---|---|
-| S05-HS-01 | N-FINDR endmember extraction | Hyperspectral algorithm | Verify | Verify simplex-volume maximisation and initialisation; test synthetic mixtures. |
-| S05-HS-02 | Pixel Purity Index (PPI) | Endmember extraction algorithm | Verify | Verify random projection/extreme pixel selection; test seed stability. |
+| S05-HS-01 | N-FINDR endmember extraction | Hyperspectral algorithm | Partial | Existing `nfindr-endmembers` package projects spectra into a leading signal subspace and iteratively replaces observed pixel candidates when the augmented simplex determinant increases. Tests use synthetic pure-pixel mixtures and verify mask exclusion. This is a computationally expensive direct reference baseline; initialization sensitivity, noise-aware variants and source-specific subspace/volume conventions remain open. |
+| S05-HS-02 | Pixel Purity Index (PPI) | Endmember extraction algorithm | Partial | Existing `ppi-endmembers` package mean-centres spectra, projects them along seeded random unit directions, votes for projection extrema and ranks candidate pixels by accumulated votes. Tests cover deterministic scores/ranking, mask exclusion, ties and invalid controls. Projection count, scaling/noise sensitivity and field/spectral validation remain open. |
 | S05-HS-03 | Vertex Component Analysis (VCA) | Endmember extraction algorithm | Verify | Verify affine/linear mixing assumptions and projection; test noise/abundance constraints. |
 | S05-HS-04 | Fully Constrained Least Squares (FCLS) | Spectral unmixing algorithm | Partial | Verify nonnegativity/sum-to-one constraints; test known mixtures and solver tolerances. |
 | S05-HS-05 | Sparse unmixing | Unmixing family | Open | Define dictionary and sparsity penalty; test correlated endmembers. |
@@ -148,8 +148,8 @@ This register decomposes the source's grouped EO, SAR, LiDAR and photogrammetry 
 | S05-HS-08 | RX anomaly detector | Hyperspectral anomaly statistic | Partial | Define global/local covariance and masking; test Gaussian background and target injection. |
 | S05-HS-09 | Kernel RX | Kernel anomaly detector | Verify | Verify kernel feature-space covariance and regularisation; test bandwidth sensitivity. |
 | S05-HS-10 | Matched filter | Target detection algorithm | Partial | Define target/background covariance and constrained response; test false alarms. |
-| S05-HS-11 | Constrained Energy Minimisation (CEM) | Target detection algorithm | Verify | Verify distortionless constraint and covariance estimate; compare with matched filter. |
-| S05-HS-12 | Adaptive Coherence Estimator (ACE) | Target detection statistic | Verify | Verify whitened subspace statistic and scale invariance; test background models. |
+| S05-HS-11 | Constrained Energy Minimisation (CEM) | Target detection algorithm | Partial | Existing `cem-detection` package estimates or accepts an uncentred spectral second-moment matrix, applies eigenvalue regularisation and constructs the unit-target-response minimum-energy filter. Tests check the distortionless response, target-pixel ranking and rejection of an indefinite matrix. Background representativeness, regularisation sensitivity and sensor-specific false-alarm calibration remain open. |
+| S05-HS-12 | Adaptive Coherence Estimator (ACE) | Target detection statistic | Partial | Existing `ace-detection` package computes the squared covariance-whitened cosine similarity between background-mean-centred pixels and a target contrast vector. Tests check [0,1] bounds, target response and degenerate-target rejection. The global covariance assumes representative background and known calibrated target spectra; threshold/false-alarm calibration and local/subspace variants remain open. |
 | S05-HS-13 | Subspace target detection | Detection family | Open | Split subspace projection/residual methods; define target/background spaces. |
 | S05-HS-14 | Spectral Angle Mapper (SAM) | Spectral similarity metric/classifier | Partial | Define spectral angle and zero-vector handling; test illumination scaling. |
 | S05-HS-15 | Spectral Information Divergence (SID) | Spectral similarity metric | Verify | Verify probability normalisation and divergence symmetrisation; test zero bands. |
