@@ -14,3 +14,8 @@ A hit satisfies u>=0, v>=0, u+v<=1 and the requested ray-parameter interval. The
 The test takes constant time per triangle; a brute-force mesh query is O(n). The accompanying package also includes AABB slab tests and a binary BVH with exact-centroid SAH split scans. Its near-first traversal tightens the closest-hit bound and is tested against seeded brute-force queries. Exact split scans are transparent but slower to build than binned SAH. kd-tree ray traversal remains a separate method. Floating-point tolerances are not exact predicates. The ray direction need not be normalised, so t is not a physical distance unless it is.
 
 For geospatial use, work in a consistent Cartesian 3D coordinate frame. Raw longitude/latitude are not suitable Euclidean coordinates. See the [tested Python implementation](../../implementations/python/ray-triangle-intersection/README.md), [walkthrough](../../implementations/python/ray-triangle-intersection/implementation-walkthrough.md), and Möller and Trumbore (1997), “Fast, Minimum Storage Ray-Triangle Intersection,” DOI: 10.1080/10867651.1997.10487468.
+
+
+## Frustum/AABB culling
+
+For an inward-facing plane n dot x + d >= 0, the AABB support vertex in the direction of n maximises the plane expression. If that vertex is still negative (outside tolerance), the entire box is outside that plane and can be culled. Testing all six frustum planes is constant time per box. This is conservative plane culling only; occlusion queries, hierarchical-Z, matrix-to-plane extraction and level-of-detail selection are separate methods.
