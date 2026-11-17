@@ -1,11 +1,35 @@
 import unittest
 
-from check_catalogue_dashboard import cells, dashboard_rows
+from check_catalogue_dashboard import cells, dashboard_rows, source_entry_counts
 
 
 class CatalogueDashboardTests(unittest.TestCase):
-    def test_cells(self):
-        self.assertEqual(cells("| A | B |"), ["A", "B"])
+    def test_cells_respects_escaped_pipes(self):
+        self.assertEqual(cells(r"| A | B\|C |"), ["A", "B|C"])
+
+    def test_source_entry_counts_classifies_all_non_intake_rows_as_partial(self):
+        markdown = """| Source entry | Kind | Page | Verification status |
+|---|---|---:|---|
+| A | Algorithm | 1 | Partial — record exists |
+| B | Model | 2 | Not checked — intake only |
+| C | Method | 3 | Tested implementation linked |
+| D | Model | 4 | Fully verified |
+| E | Model | 5 | [Canonical record](record.md) |
+| Other inventory | Kind | Page | Not counted |
+"""
+        self.assertEqual(source_entry_counts(markdown), (5, 3, 1, 1))
+
+    def test_missing_source_table_rejected(self):
+        with self.assertRaises(ValueError):
+            source_entry_counts("| Name | Status |\n|---|---|")
+
+    def test_empty_status_rejected(self):
+        markdown = """| Source entry | Kind | Page | Verification status |
+|---|---|---:|---|
+| A | Algorithm | 1 | |
+"""
+        with self.assertRaises(ValueError):
+            source_entry_counts(markdown)
 
     def test_dashboard_rows(self):
         markdown = """| Section | Source entries | Partial | Intake only |

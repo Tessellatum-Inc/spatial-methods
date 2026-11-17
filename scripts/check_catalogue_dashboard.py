@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-"""Validate the source catalogue's 22-index inventory and dashboard arithmetic.
+"""Recount source-entry review states from all 22 section indexes.
 
-The section indexes contain both original source-entry tables and later
-supplementary/implementation tables. Their labels are not all expressed using
-one controlled vocabulary, so this checker deliberately does not infer a new
-source-entry total from every Markdown table. It verifies the published
-section-level ledger is internally consistent and that all 22 indexed files
-remain present and contain a source-entry/status table.
+Only tables whose first header is "Source entry" are counted. Intake-only
+labels are classified as not checked; explicit fully-verified labels are
+counted separately; every other non-empty status is partial. This deliberately
+treats implementation-linked rows as partial even when their prose does not
+literally contain the word "partial".
 """
 from __future__ import annotations
 
@@ -21,31 +20,78 @@ DASHBOARD = ROOT / "catalog" / "review-dashboard.md"
 
 
 def cells(line: str) -> list[str]:
-    return [part.strip() for part in line.strip().strip("|").split("|")]
+    """Split a Markdown table row, respecting escaped literal pipes."""
+    value = line.strip()
+    if value.startswith("|"):
+        value = value[1:]
+    if value.endswith("|"):
+        value = value[:-1]
+    return [part.replace(r"\|", "|").strip()
+            for part in re.split(r"(?<!\\)\|", value)]
 
 
 def discover_indexes() -> list[Path]:
     if not INDEX.is_file():
         raise FileNotFoundError(INDEX)
-    names = re.findall(r"\]\((\d{2}-[^)]+\.md)\)", INDEX.read_text(encoding="utf-8"))
+    names = re.findall(
+        r"\]\((\d{2}-[^)]+\.md)\)",
+        INDEX.read_text(encoding="utf-8"),
+    )
     paths = [SECTIONS / name for name in names]
     if len(paths) != 22 or len(set(paths)) != 22:
         raise ValueError(f"Expected 22 unique section indexes; found {len(paths)}")
     missing = [str(path.relative_to(ROOT)) for path in paths if not path.is_file()]
     if missing:
         raise FileNotFoundError("Missing section indexes: " + ", ".join(missing))
-    for path in paths:
-        content = path.read_text(encoding="utf-8").casefold()
-        if "source entry" not in content or "status" not in content:
-            raise ValueError(f"{path}: source-entry/status table is missing")
     return paths
+
+
+def source_entry_counts(markdown: str, source: str = "<memory>") -> tuple[int, int, int, int]:
+    """Return (entries, partial, intake_only, fully_verified) for source tables."""
+    active = False
+    found_table = False
+    entries = partial = intake = verified = 0
+
+    for line_number, line in enumerate(markdown.splitlines(), start=1):
+        if not line.lstrip().startswith("|"):
+            active = False
+            continue
+        values = cells(line)
+        if values and values[0].casefold() == "source entry":
+            active = True
+            found_table = True
+            if len(values) < 4:
+                raise ValueError(f"{source}:{line_number}: malformed source-entry header")
+            continue
+        if not active:
+            continue
+        if not values or all(re.fullmatch(r":?-{3,}:?", cell.replace(" ", "")) for cell in values):
+            continue
+        if len(values) < 4:
+            raise ValueError(f"{source}:{line_number}: malformed source-entry row")
+        status = values[-1].casefold()
+        if not status:
+            raise ValueError(f"{source}:{line_number}: source-entry status is empty")
+        entries += 1
+        if "fully verified" in status:
+            verified += 1
+        elif "not checked" in status or "intake only" in status:
+            intake += 1
+        else:
+            partial += 1
+
+    if not found_table:
+        raise ValueError(f"{source}: source-entry/status table is missing")
+    return entries, partial, intake, verified
 
 
 def dashboard_rows(markdown: str) -> dict[int, tuple[int, int, int]]:
     lines = markdown.splitlines()
     try:
-        start = next(i for i, line in enumerate(lines)
-                     if line.strip() == "| Section | Source entries | Partial | Intake only |")
+        start = next(
+            i for i, line in enumerate(lines)
+            if line.strip() == "| Section | Source entries | Partial | Intake only |"
+        )
     except StopIteration as exc:
         raise ValueError("Dashboard is missing its by-section table header") from exc
     result: dict[int, tuple[int, int, int]] = {}
@@ -70,34 +116,55 @@ def dashboard_rows(markdown: str) -> dict[int, tuple[int, int, int]]:
 def main() -> int:
     errors: list[str] = []
     indexes = discover_indexes()
-    dashboard = DASHBOARD.read_text(encoding="utf-8")
-    rows = dashboard_rows(dashboard)
-    if set(rows) != set(range(1, 23)):
-        errors.append(f"Dashboard must contain sections 1–22; found {sorted(rows)}")
+    actual: dict[int, tuple[int, int, int, int]] = {}
+    for number, path in enumerate(indexes, start=1):
+        try:
+            actual[number] = source_entry_counts(
+                path.read_text(encoding="utf-8"),
+                str(path.relative_to(ROOT)),
+            )
+        except (OSError, ValueError) as exc:
+            errors.append(str(exc))
 
-    totals = tuple(sum(row[i] for row in rows.values()) for i in range(3))
-    entries, partial, intake = totals
-    if entries != partial + intake:
+    dashboard = DASHBOARD.read_text(encoding="utf-8")
+    published = dashboard_rows(dashboard)
+    if set(published) != set(range(1, 23)):
+        errors.append(f"Dashboard must contain sections 1–22; found {sorted(published)}")
+
+    for number, counts in actual.items():
+        entries, partial, intake, _verified = counts
+        expected = (entries, partial, intake)
+        if published.get(number) != expected:
+            errors.append(
+                f"Section {number} dashboard row is {published.get(number)}, "
+                f"but source index recount is {expected}"
+            )
+
+    totals = tuple(sum(row[i] for row in actual.values()) for i in range(4))
+    entries, partial, intake, verified = totals
+    if entries != partial + intake + verified:
         errors.append(
-            f"By-section ledger does not reconcile: {entries} entries != "
-            f"{partial} partial + {intake} intake-only"
+            f"Source-entry recount does not reconcile: {entries} != "
+            f"{partial} partial + {intake} intake-only + {verified} fully verified"
         )
-    expected = (
+    expected_lines = (
         f"| Source-entry rows counted | {entries} |",
         f"| Partial | {partial} |",
         f"| Not checked — intake only | {intake} |",
+        f"| Fully verified | {verified} |",
         f"| **Total** | **{entries}** | **{partial}** | **{intake}** |",
     )
-    for line in expected:
+    for line in expected_lines:
         if line not in dashboard:
-            errors.append(f"Dashboard aggregate does not match by-section ledger: {line}")
+            errors.append(f"Dashboard aggregate does not match source indexes: {line}")
 
     if errors:
         print("\n".join(f"ERROR: {error}" for error in errors), file=sys.stderr)
         return 1
     print(
-        f"Catalogue dashboard arithmetic reconciled: {entries} entries; "
-        f"{partial} partial; {intake} intake-only; {len(indexes)} section indexes."
+        f"Source catalogue reconciled from {len(indexes)} indexes: "
+        f"{entries} entries; {partial} partial; {intake} intake-only; "
+        f"{verified} fully verified."
     )
     return 0
 

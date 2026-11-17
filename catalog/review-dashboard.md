@@ -8,9 +8,9 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 
 | Measure | Entries | Meaning |
 |---|---:|---|
-| Source-entry rows counted | 693 | Rows with a source-entry review status in the section indexes |
+| Source-entry rows counted | 695 | Rows with a source-entry review status in the section indexes |
 | Partial | 219 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 474 | The source wording is preserved, but no independent review is recorded |
+| Not checked — intake only | 476 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -20,10 +20,10 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | Section | Source entries | Partial | Intake only |
 |---:|---:|---:|---:|
 | 1 — Core GIS | 33 | 27 | 6 |
-| 2 — Spatial statistics | 28 | 20 | 8 |
-| 3 — Geostatistics | 26 | 14 | 12 |
-| 4 — Raster, terrain and hydrology | 26 | 24 | 2 |
-| 5 — Remote sensing | 36 | 30 | 6 |
+| 2 — Spatial statistics | 27 | 19 | 8 |
+| 3 — Geostatistics | 26 | 13 | 13 |
+| 4 — Raster, terrain and hydrology | 27 | 23 | 4 |
+| 5 — Remote sensing | 36 | 29 | 7 |
 | 6 — Optimization, mobility and transport | 31 | 5 | 26 |
 | 7 — Domain modeling | 48 | 10 | 38 |
 | 8 — GeoAI | 54 | 2 | 52 |
@@ -35,15 +35,15 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 14 — Databases, graphics, morphology and hazards | 33 | 1 | 32 |
 | 15 — Vision, registration and vector extraction | 33 | 3 | 30 |
 | 16 — Flows, regions, deformation and marine | 25 | 9 | 16 |
-| 17 — Geometry, scalability, design and siting | 26 | 11 | 15 |
+| 17 — Geometry, scalability, design and siting | 27 | 12 | 15 |
 | 18 — Moving objects, routing, transit and water | 32 | 7 | 25 |
-| 19 — African applications, addressing and finance | 32 | 1 | 31 |
-| 20 — Indices, microwave, events and information | 24 | 7 | 17 |
+| 19 — African applications, addressing and finance | 32 | 2 | 30 |
+| 20 — Indices, microwave, events and information | 25 | 8 | 17 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 3 | 23 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 6 | 22 |
-| **Total** | **693** | **219** | **474** |
+| **Total** | **695** | **219** | **476** |
 
-The current by-section subtotals reconcile exactly with the aggregate: **693 source-entry rows, 219 partial, 474 intake-only and zero fully verified**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Historical snapshots below are retained as audit history; the current table above is authoritative.
+The current by-section subtotals reconcile exactly with the aggregate: **695 source-entry rows, 219 partial, 476 intake-only and zero fully verified**. Counts are derived directly from the current source-entry tables in all 22 section indexes. Intake-only rows are classified as not checked; explicit fully verified rows are counted separately; all other non-empty statuses—including implementation-linked records—remain partial. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Historical snapshots below are retained as audit history; the current table above is authoritative.
 
 ## How to interpret this
 
@@ -63,7 +63,7 @@ The current by-section subtotals reconcile exactly with the aggregate: **693 sou
 
 ## Scope of this snapshot
 
-The counts were recalculated from the row-level labels present in all 22 section indexes on 15 November 2026, after reconciling all 22 current source-entry tables. They are a dated snapshot and must be recalculated when source-entry labels are revised. They do not count canonical lesson pages, implementation inventories, software lists or supplementary methods as additional source entries.
+The counts were recalculated from the status column in every source-entry table in all 22 section indexes on 17 November 2026. The checker now performs this recount directly rather than merely checking arithmetic in a manually maintained ledger. They are a dated snapshot and must be recalculated when source-entry labels are revised. They do not count canonical lesson pages, implementation inventories, software lists or supplementary methods as additional source entries.
 ## Implementation reconciliation — 15 November 2026
 
 The `compendium/section-01-geometry-continuation` branch head (`97d508fb767b9e395cfef4d7885d5d33411ce3ed`) is now a direct parent of `main` merge commit `f7038ac9cc48ba4341b642eb967e6122f4d268d2`; it is ancestral to current `main`, not a divergent history to merge wholesale. The merge added 281 branch-only paths, retained `main` versions for 76 overlapping file paths, and preserved both parent histories. A follow-up semantic audit found that several retained `main` source indexes had lost implementation-linked status detail even though their target materials existed. A focused review of high-value same-path implementation differences also found three useful older-branch methods that were not present in the retained `main` files: the first-principles Felzenszwalb–Huttenlocher raster EDT, a variable-sized block-kernel MMD permutation test, and a pure-Python Lucas–Kanade reference. These have now been added as complementary implementations rather than replacing the more comprehensive `main` versions. Section 12's 14 partial rows and 14 intake-only rows have now been restored from the richer indexed record; Section 2 now records nine partial and 18 intake-only rows, including the point-process implementation; Section 10 now includes additional cross-cutting method and package references. The 22-section review counts were 85 partial, 609 intake-only and zero fully verified at that snapshot; the current 17 November reconciliation below now records 86 partial, 608 intake-only and zero fully verified. This remains an inventory measure, not proof of complete source-entry verification. Section 1's grouped distance/extent row links to sampled-point Hausdorff, discrete and continuous Fréchet (Alt–Godau free-space decision with bisection approximation), randomized Welzl minimum circle, rotating-calipers convex diameter, Polylabel for polygons with holes, a transparent O(h²) minimum-area oriented rectangle baseline plus a four-support O(h) rotating-calipers sweep after hull construction, and an additive-tolerance largest-empty-circle search constrained to the sites' convex hull. The geometry-metrics suite's earlier 22-test local baseline has since been extended with continuous Fréchet, largest-empty-circle and O(h) rectangle-calipers tests; the expanded suite is awaiting the latest CI run. CI now includes a test-matrix entry for all 137 Python implementation directories and executes all 126 notebooks; the latest full workflow run is queued, so repository-wide CI success is not yet established.
