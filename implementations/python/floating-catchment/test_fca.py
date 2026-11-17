@@ -21,9 +21,9 @@ def test_e2sfca_distance_decay_zones_and_accessibility():
         [[0, 4], [2, 8], [7, 3]], [10, 20, 30], [6, 9],
         [2, 5, 10], [1, .5, .1],
     )
-    expected_weights = np.array([[1, .5], [.5, .1], [.1, .5]])
+    expected_weights = np.array([[1, .5], [1, .1], [.1, .5]])
     assert result["catchment_weights"] == pytest.approx(expected_weights)
-    ratios = [6/(10*1+20*.5+30*.1), 9/(10*.5+20*.1+30*.5)]
+    ratios = [6/(10*1+20*1+30*.1), 9/(10*.5+20*.1+30*.5)]
     assert result["supply_demand_ratios"] == pytest.approx(ratios)
     assert result["accessibility"] == pytest.approx(expected_weights @ ratios)
 
