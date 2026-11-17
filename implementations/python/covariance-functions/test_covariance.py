@@ -99,7 +99,7 @@ def test_random_fourier_gp_is_reproducible_and_returns_latent_variance():
 def test_random_fourier_gp_large_noise_returns_prior_mean_and_variance():
     from covariance import fit_random_fourier_gp,predict_random_fourier_gp
     model=fit_random_fourier_gp([(0,0)],[100],mean=3,noise_variance=1e12,
-                                signal_variance=2,feature_count=2000,seed=8)
+                                signal_variance=2,feature_count=512,seed=8)
     result=predict_random_fourier_gp(model,[(0.2,0.4),(3,4)])
     np.testing.assert_allclose(result["mean"],[3,3],atol=0.02)
     np.testing.assert_allclose(result["variance"],[2,2],atol=0.08)
