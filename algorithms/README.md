@@ -429,3 +429,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Numeric map classification](statistics/map-classification.md) — equal interval, quantile and Fisher-Jenks natural breaks with explicit interval assignment.
 
 - [Broad-phase collision detection](statistics/collision-broadphase.md) — sweep-and-prune, uniform spatial hashing and a static AABB BVH.
+
+- [Classification accuracy assessment](statistics/accuracy-assessment.md) — confusion matrices, producer/user accuracy, kappa and disagreement measures.
