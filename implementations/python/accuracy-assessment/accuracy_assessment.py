@@ -189,3 +189,48 @@ def expected_calibration_error(probabilities, y_true, *, n_bins=15, sample_weigh
         mean_accuracy = sum(a*w for _, a, w in bucket) / bucket_weight
         error += bucket_weight / total_weight * abs(mean_accuracy - mean_confidence)
     return error
+
+
+def recall_at_k(relevant_items, ranked_items, k):
+    """Macro query-level recall@k; queries with no relevant items are skipped.
+
+    Returns None when no query has a non-empty relevance set. Duplicate
+    retrieved IDs count once, matching set-based retrieval evaluation.
+    """
+    relevant, ranked = list(relevant_items), list(ranked_items)
+    if not relevant or len(relevant) != len(ranked):
+        raise ValueError("relevance and ranking collections must have equal non-zero lengths")
+    if isinstance(k, bool) or not isinstance(k, int) or k < 1:
+        raise ValueError("k must be a positive integer")
+    scores = []
+    for truth, prediction in zip(relevant, ranked):
+        truth_set = set(truth)
+        if not truth_set:
+            continue
+        retrieved = set(list(prediction)[:k])
+        scores.append(len(truth_set & retrieved) / len(truth_set))
+    return sum(scores) / len(scores) if scores else None
+
+
+def normalized_mutual_information(labels_true, labels_pred):
+    """Arithmetic-normalised mutual information for two cluster labelings.
+
+    NMI = 2 * mutual_information / (H(true) + H(predicted)). Label names are
+    arbitrary hashable identifiers. Two constant partitions have NMI=1.
+    """
+    from math import log
+    truth, predicted = list(labels_true), list(labels_pred)
+    if not truth or len(truth) != len(predicted):
+        raise ValueError("cluster labelings must have equal non-zero lengths")
+    true_counts, pred_counts = Counter(truth), Counter(predicted)
+    joint_counts = Counter(zip(truth, predicted))
+    n = len(truth)
+    h_true = -sum((count/n) * log(count/n) for count in true_counts.values())
+    h_pred = -sum((count/n) * log(count/n) for count in pred_counts.values())
+    if h_true + h_pred == 0:
+        return 1.0
+    mutual = 0.0
+    for (a, b), count in joint_counts.items():
+        p_ab = count / n
+        mutual += p_ab * log((count*n) / (true_counts[a]*pred_counts[b]))
+    return max(0.0, 2.0 * mutual / (h_true + h_pred))
