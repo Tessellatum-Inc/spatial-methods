@@ -461,6 +461,14 @@ def simulate_sir(
     if not isinstance(steps, (int, np.integer)) or isinstance(steps, bool) or steps < 0:
         raise ValueError("steps must be a non-negative integer")
     state = np.asarray(states).copy()
+    if steps == 0:
+        # Validate state, graph and probabilities even when no transition runs.
+        sir_step(
+            state, adjacency,
+            infection_probability=infection_probability,
+            recovery_probability=recovery_probability,
+            seed=seed,
+        )
     history = [(int(np.count_nonzero(state == 0)),
                 int(np.count_nonzero(state == 1)),
                 int(np.count_nonzero(state == 2)))]
