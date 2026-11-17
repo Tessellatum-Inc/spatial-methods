@@ -57,7 +57,7 @@ The canonical records now cover the spectral-index family, global Otsu threshold
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Speckle filtering, polarimetric decomposition (H/A/alpha, Freeman-Durden, Yamaguchi), CFAR detection, SAR-to-optical translation | Filtering / decomposition methods / detection / translation models | 8 | Partial — tested adaptive Lee intensity filtering and square-window CA-CFAR for exponential intensity backgrounds; refined/polarimetric filters, H/A/alpha and Freeman-Durden/Yamaguchi decompositions, OS/GO/SO-CFAR and SAR-to-optical translation remain open |
+| Speckle filtering, polarimetric decomposition (H/A/alpha, Freeman-Durden, Yamaguchi), CFAR detection, SAR-to-optical translation | Filtering / decomposition methods / detection / translation models | 8 | Partial — tested adaptive Lee intensity filtering and square-window CA-CFAR for exponential intensity backgrounds; a tested square-window OS-CFAR order-statistics baseline now covers bright-interferer resistance under the independent exponential model; refined/polarimetric filters, H/A/alpha and Freeman-Durden/Yamaguchi decompositions, GO/SO-CFAR and SAR-to-optical translation remain open |
 | InSAR: PS-InSAR, SBAS, SqueeSAR, distributed scatterers, phase unwrapping (SNAPHU, minimum cost flow), coherence change detection, offset tracking, tomographic SAR, autofocus | Interferometric processing workflows / algorithms / software | 9 | Not checked — intake only |
 
 ## LiDAR and point clouds

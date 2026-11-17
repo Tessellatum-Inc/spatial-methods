@@ -447,3 +447,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Cell-averaging CFAR](remote-sensing/ca-cfar.md) — square-window 2D detection under an exponential intensity model.
 
 - [OBIA object features](remote-sensing/obia-object-features.md) — object geometry, spectral summaries and region adjacency from supplied segmentation labels.
+
+- [SAR CA-CFAR and OS-CFAR](remote-sensing/sar-cfar.md) — local clutter thresholding with cell-averaging and ordered-statistics reference detectors.
