@@ -59,3 +59,5 @@ This is an uncorrected finite-network descriptive estimator. It does not correct
 
 
 The package also includes a bounded spatiotemporal Hawkes cluster simulator using a constant Poisson background, exponential temporal triggering and Gaussian spatial offspring displacement. It uses periodic spatial boundaries and is documented separately; it is not an ETAS estimator.
+
+- Toroidal spatial Hawkes simulation with exponential triggering, subcritical branching ratio, wrapped Gaussian spatial offsets and parent/generation identifiers. This is a finite-horizon simulator without pre-window temporal history; it is not ETAS or an estimation routine.

@@ -1,4 +1,5 @@
 import math
+import numpy as np
 import pytest
 from point_patterns import nearest_neighbor_distances, nearest_neighbor_cdf, ripley_k_translation, pair_correlation_from_k
 
@@ -432,3 +433,45 @@ def test_inhomogeneous_poisson_rejects_invalid_window_and_seed():
         simulate_inhomogeneous_poisson([[1]],(0,0,0,1),seed=1)
     with pytest.raises(ValueError,match="seed"):
         simulate_inhomogeneous_poisson([[1]],(0,0,1,1),seed=True)
+
+
+def test_spatial_hawkes_simulation_is_seeded_and_genealogy_is_consistent():
+    from point_patterns import simulate_spatial_hawkes
+    a=simulate_spatial_hawkes((0,0,10,8),20,.08,.65,1.2,.7,seed=91)
+    b=simulate_spatial_hawkes((0,0,10,8),20,.08,.65,1.2,.7,seed=91)
+    for key in ("time","x","y","parent_index","generation","is_immigrant"):
+        np.testing.assert_array_equal(a[key],b[key])
+    assert np.all(np.diff(a["time"])>=0)
+    assert np.all((a["x"]>=0)&(a["x"]<10)) and np.all((a["y"]>=0)&(a["y"]<8))
+    for i,parent in enumerate(a["parent_index"]):
+        if parent<0:
+            assert a["is_immigrant"][i] and a["generation"][i]==0
+        else:
+            assert parent<i and a["generation"][i]==a["generation"][parent]+1
+            assert a["time"][parent]<a["time"][i] and not a["is_immigrant"][i]
+
+
+def test_spatial_hawkes_zero_baseline_and_zero_branching():
+    from point_patterns import simulate_spatial_hawkes
+    empty=simulate_spatial_hawkes((0,0,1,1),10,0,.8,1,.2,seed=2)
+    assert empty["time"].size==0
+    immigrant_only=simulate_spatial_hawkes((0,0,5,5),3,.5,0,2,1,seed=5)
+    assert np.all(immigrant_only["is_immigrant"])
+    assert np.all(immigrant_only["parent_index"]==-1)
+    assert np.all(immigrant_only["generation"]==0)
+
+
+@pytest.mark.parametrize("args,kwargs",[
+    (((0,0,1,1),1,1,1,1,1),{}),(((0,0,1,1),1,1,.5,0,1),{}),
+    (((0,0,1,1),1,1,.5,1,-1),{}),(((0,0,1,1),1,1,.5,1,1),{"max_events":0}),
+    (((0,0,1,1),1,1,.5,1,1),{"seed":True}),
+])
+def test_spatial_hawkes_rejects_invalid_parameters(args,kwargs):
+    from point_patterns import simulate_spatial_hawkes
+    with pytest.raises(ValueError): simulate_spatial_hawkes(*args,**kwargs)
+
+
+def test_spatial_hawkes_event_cap_is_enforced():
+    from point_patterns import simulate_spatial_hawkes
+    with pytest.raises(OverflowError):
+        simulate_spatial_hawkes((0,0,1,1),2,100,0,1,0,seed=1,max_events=1)

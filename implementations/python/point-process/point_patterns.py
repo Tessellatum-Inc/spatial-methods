@@ -593,3 +593,58 @@ def simulate_inhomogeneous_poisson(intensity_grid, window, *, seed=None):
     except (ValueError, OverflowError) as exc:
         raise ValueError("intensity scale is too large to simulate safely") from exc
     return points
+
+
+def simulate_spatial_hawkes(window, horizon, baseline_intensity, branching_ratio,
+                            decay_rate, spatial_scale, *, seed=None, max_events=1_000_000):
+    """Finite-horizon Hawkes immigration-birth simulation on a spatial torus."""
+    from numbers import Integral
+    if len(window)!=4: raise ValueError("window must be (xmin, ymin, xmax, ymax)")
+    xmin,ymin,xmax,ymax=map(float,window)
+    if not all(isfinite(v) for v in (xmin,ymin,xmax,ymax)) or xmax<=xmin or ymax<=ymin:
+        raise ValueError("window must have finite positive width and height")
+    horizon=float(horizon); baseline_intensity=float(baseline_intensity)
+    branching_ratio=float(branching_ratio); decay_rate=float(decay_rate); spatial_scale=float(spatial_scale)
+    if not isfinite(horizon) or horizon<=0: raise ValueError("horizon must be positive")
+    if not isfinite(baseline_intensity) or baseline_intensity<0: raise ValueError("baseline intensity must be nonnegative")
+    if not isfinite(branching_ratio) or not 0<=branching_ratio<1: raise ValueError("branching ratio must lie in [0,1)")
+    if not isfinite(decay_rate) or decay_rate<=0: raise ValueError("decay rate must be positive")
+    if not isfinite(spatial_scale) or spatial_scale<0: raise ValueError("spatial scale must be nonnegative")
+    if isinstance(max_events,bool) or not isinstance(max_events,Integral) or max_events<1:
+        raise ValueError("max_events must be a positive integer")
+    if seed is not None and (isinstance(seed,bool) or not isinstance(seed,Integral)):
+        raise ValueError("seed must be an integer or None")
+    rng=np.random.default_rng(None if seed is None else int(seed))
+    width,height=xmax-xmin,ymax-ymin
+    count=int(rng.poisson(baseline_intensity*width*height*horizon))
+    if count>max_events: raise OverflowError("immigrant count exceeds max_events")
+    # time, x, y, parent index, generation, immigrant flag
+    events=[(float(rng.uniform(0,horizon)),float(rng.uniform(xmin,xmax)),
+             float(rng.uniform(ymin,ymax)),-1,0,True) for _ in range(count)]
+    cursor=0
+    while cursor<len(events):
+        pt,px,py,_,generation,_=events[cursor]
+        for _ in range(int(rng.poisson(branching_ratio))):
+            ct=pt+float(rng.exponential(1.0/decay_rate))
+            if ct>=horizon: continue
+            dx,dy=rng.normal(0.0,spatial_scale,size=2)
+            cx=xmin+((px-xmin+float(dx))%width)
+            cy=ymin+((py-ymin+float(dy))%height)
+            if len(events)>=max_events: raise OverflowError("simulated event count exceeds max_events")
+            events.append((ct,cx,cy,cursor,generation+1,False))
+        cursor+=1
+    order=sorted(range(len(events)),key=lambda i:(events[i][0],i))
+    remap={old:new for new,old in enumerate(order)}
+    ordered=[events[i] for i in order]
+    return {
+        "time":np.asarray([e[0] for e in ordered]),
+        "x":np.asarray([e[1] for e in ordered]),
+        "y":np.asarray([e[2] for e in ordered]),
+        "parent_index":np.asarray([-1 if e[3]<0 else remap[e[3]] for e in ordered],dtype=int),
+        "generation":np.asarray([e[4] for e in ordered],dtype=int),
+        "is_immigrant":np.asarray([e[5] for e in ordered],dtype=bool),
+        "parameters":{"baseline_intensity":baseline_intensity,"branching_ratio":branching_ratio,
+                      "decay_rate":decay_rate,"spatial_scale":spatial_scale,"horizon":horizon,
+                      "window":(xmin,ymin,xmax,ymax),"spatial_boundary":"toroidal",
+                      "temporal_initialization":"no pre-window history"},
+    }
