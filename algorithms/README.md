@@ -459,3 +459,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Brown-Conrady lens distortion](photogrammetry/brown-conrady-distortion.md): radial/tangential camera-plane distortion and Newton inverse.
 
 - [Progressive morphological ground filtering](photogrammetry/progressive-morphological-ground-filter.md): rasterised progressive opening and height-threshold baseline for XYZ point clouds.
+
+- [RANSAC plane fitting](photogrammetry/ransac-plane-fitting.md): robust single-plane estimation with SVD consensus refinement.
