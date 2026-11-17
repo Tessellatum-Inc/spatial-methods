@@ -306,3 +306,7 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Domain modeling
 
 - [Spatial cellular automata and Schelling simulation](python/spatial-simulation/README.md): synchronous binary B/S rules, seeded Schelling relocation, site percolation, stochastic forest-fire dynamics, spatial preferential attachment, Watts–Strogatz small-world graphs a discrete-time network SIR model and a first-order categorical Markov land-change baseline, with independent tests and a [walkthrough](python/spatial-simulation/implementation-walkthrough.md).
+
+### 3D geometry
+
+- [Möller–Trumbore ray/triangle intersection](python/ray-triangle-intersection/README.md): dependency-free reference implementation, independent edge/degeneracy/culling tests and a walkthrough.
