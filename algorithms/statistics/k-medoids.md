@@ -1,4 +1,4 @@
-# K-medoids and CLARA
+# K-medoids, CLARA and CLARANS
 
 K-medoids partitions observations into k groups represented by observed
 objects. Given a symmetric dissimilarity matrix D, the objective is

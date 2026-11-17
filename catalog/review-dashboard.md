@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 693 | Rows with a source-entry review status in the section indexes |
-| Partial | 184 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 509 | The source wording is preserved, but no independent review is recorded |
+| Partial | 185 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 508 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.

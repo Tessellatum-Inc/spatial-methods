@@ -1,4 +1,4 @@
-# PAM k-medoids and CLARA
+# PAM k-medoids, CLARA and CLARANS
 
 Dependency-light reference implementations for partitioning from a symmetric
 precomputed dissimilarity matrix.

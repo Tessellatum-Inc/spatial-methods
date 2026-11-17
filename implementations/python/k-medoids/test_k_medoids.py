@@ -128,6 +128,7 @@ def test_clarans_finds_separated_clusters_and_handles_k_equal_n():
     all_medoids = clarans(distances, len(distances))
     assert all_medoids["cost"] == pytest.approx(0)
     assert set(all_medoids["medoids"]) == set(range(len(distances)))
+    np.testing.assert_array_equal(all_medoids["labels"], np.arange(len(distances)))
 
 
 def test_clarans_rejects_invalid_search_controls():

@@ -1,4 +1,4 @@
-# Source verification — k-medoids and CLARA
+# Source verification — k-medoids, CLARA and CLARANS
 
 ## Identity
 
