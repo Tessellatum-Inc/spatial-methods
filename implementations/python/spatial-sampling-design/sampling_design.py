@@ -117,6 +117,43 @@ def maximin_latin_hypercube(
     return best
 
 
+def spatial_thin_indices(
+    points: Sequence[Sequence[float]],
+    min_distance: float,
+    *,
+    seed: int | None = None,
+) -> list[int]:
+    """Greedy randomized spatial thinning; return retained original row indices.
+
+    Candidates are visited in seeded random order and retained only when they
+    are at least min_distance from every previously retained point. The
+    O(n*m*d) reference method is intentionally simple; m is the retained
+    count. It is not an exact maximum-cardinality independent-set solver.
+    """
+    if (isinstance(min_distance, bool) or not isinstance(min_distance, (int, float))
+            or not math.isfinite(min_distance) or min_distance < 0):
+        raise ValueError("min_distance must be finite and non-negative")
+    if isinstance(points, (str, bytes)):
+        raise ValueError("points must be a sequence of coordinate sequences")
+    if not points:
+        return []
+    dimension = len(points[0])
+    if dimension < 1 or any(len(point) != dimension for point in points):
+        raise ValueError("points must have one consistent positive dimension")
+    data = [tuple(float(x) for x in point) for point in points]
+    if any(not math.isfinite(x) for point in data for x in point):
+        raise ValueError("point coordinates must be finite")
+    order = list(range(len(data)))
+    random.Random(seed).shuffle(order)
+    threshold2 = float(min_distance) ** 2
+    accepted: list[int] = []
+    for index in order:
+        if all(_distance2(data[index], data[chosen]) >= threshold2
+               for chosen in accepted):
+            accepted.append(index)
+    return sorted(accepted)
+
+
 def kmeans_coverage(
     points: Sequence[Sequence[float]],
     k: int,

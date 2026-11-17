@@ -109,3 +109,30 @@ def test_kmeans_rejects_invalid_input():
         kmeans_coverage([(0, 0), (1, 1)], 0)
     with pytest.raises(ValueError):
         kmeans_coverage([(0, float("inf")), (1, 1)], 1)
+
+
+
+def test_spatial_thinning_is_seeded_and_respects_minimum_distance():
+    from sampling_design import spatial_thin_indices
+    points = [(0,0), (0.1,0), (1,0), (1.1,0), (3,0)]
+    selected = spatial_thin_indices(points, 0.5, seed=19)
+    assert selected == spatial_thin_indices(points, 0.5, seed=19)
+    for pos, i in enumerate(selected):
+        for j in selected[pos+1:]:
+            assert math.dist(points[i], points[j]) >= 0.5
+
+
+def test_spatial_thinning_zero_distance_and_empty_input():
+    from sampling_design import spatial_thin_indices
+    assert spatial_thin_indices([(0,0), (0,0)], 0, seed=1) == [0,1]
+    assert spatial_thin_indices([], 1, seed=1) == []
+
+
+def test_spatial_thinning_rejects_invalid_inputs():
+    from sampling_design import spatial_thin_indices
+    with pytest.raises(ValueError):
+        spatial_thin_indices([(0,0)], -1)
+    with pytest.raises(ValueError):
+        spatial_thin_indices([(0,0), (1,)], 1)
+    with pytest.raises(ValueError):
+        spatial_thin_indices([(0,float("nan"))], 1)

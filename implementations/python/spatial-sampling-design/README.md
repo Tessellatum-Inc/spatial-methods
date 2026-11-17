@@ -12,6 +12,7 @@ sampling and point-cloud coverage summaries.
 - **Maximin LHS:** generates multiple randomized LHS candidates and retains the
   design maximizing minimum pairwise Euclidean distance after range
   normalization. It is a multi-start heuristic, not a global optimum proof.
+- **Spatial thinning:** seeded randomized greedy minimum-distance thinning that returns original row indices and guarantees retained pairs meet the supplied Euclidean separation.
 - **K-means coverage:** deterministic farthest-first initialization followed
   by Lloyd centroid updates for a supplied point set. It is a local clustering
   heuristic, not an exact facility-location solver.
@@ -28,7 +29,7 @@ geographic coordinates.
 
 The source's "coffee-house" design label is not implemented because the source
 does not define its construction or objective sufficiently to identify one
-reproducible algorithm. Spatially constrained designs, unequal inclusion
+reproducible algorithm. Spatial thinning is a greedy O(n*m*d) reference procedure and is not a maximum-cardinality solution. GRTS, BAS, cLHS, spatially constrained designs, unequal inclusion
 probabilities, optimal-design criteria and uncertainty estimation are outside
 this package.
 

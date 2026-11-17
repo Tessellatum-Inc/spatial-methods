@@ -33,6 +33,16 @@ minimum Euclidean distance after scaling each dimension to [0,1]. This is a
 transparent multi-start heuristic: the returned candidate is best among the
 generated set, not necessarily globally optimal.
 
+## Spatial thinning
+
+Spatial thinning removes nearby candidate locations until every retained pair
+is separated by at least a chosen Euclidean distance. The implementation uses
+a seeded randomized sequential-inhibition baseline: shuffle candidate indices,
+then retain a point only when it is at least the requested distance from every
+already retained point. It returns original row indices so associated
+attributes can be kept aligned. The reference implementation is O(n*m*d),
+where m is the retained count, and is not a maximum-cardinality solution.
+
 ## K-means coverage
 
 Given a finite set of candidate locations, k-means partitions observations
@@ -64,8 +74,7 @@ centroid updates O(n d); at most I iterations give O(I n k d).
 ## Implementation and tests
 
 The [reference package](../../implementations/python/spatial-sampling-design/README.md)
-implements LHS, centered LHS, multi-start maximin LHS, a pairwise-distance
-score and deterministic k-means coverage. Tests check marginal strata,
+implements LHS, centered LHS, multi-start maximin LHS, spatial thinning, a pairwise-distance score and deterministic k-means coverage. Tests check marginal strata,
 reproducibility, candidate selection, clustering behaviour and validation.
 
 ## References

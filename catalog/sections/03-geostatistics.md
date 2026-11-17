@@ -4,7 +4,7 @@
 - **Source pages:** 4–6 (the small-area and survey estimation subsection continues onto page 6)
 - **Source transcription:** [pages 1–5](../../source-inventory/pages-01-05.md) and [pages 6–10](../../source-inventory/pages-06-10.md)
 - **Review state:** source entries extracted into this index; not every entry independently verified
-- **Current canonical records:** [Network Ripley's K](../../algorithms/statistics/network-ripley-k.md), an adjacent extension with a tested shortest-path estimator for finite linear networks; [Inverse distance weighting](../../algorithms/interpolation/inverse-distance-weighting.md); [Empirical semivariogram](../../methods/empirical-semivariogram.md); [Spatial interpolation: IDW and ordinary kriging](../../algorithms/geostatistics/interpolation.md) (tested implementations, walkthroughs and an interactive notebook are available; variogram fitting and the wider kriging family remain open)
+- **Current canonical records:** [Space-filling sampling designs](../../algorithms/statistics/space-filling-sampling.md); [Network Ripley's K](../../algorithms/statistics/network-ripley-k.md), an adjacent extension with a tested shortest-path estimator for finite linear networks; [Inverse distance weighting](../../algorithms/interpolation/inverse-distance-weighting.md); [Empirical semivariogram](../../methods/empirical-semivariogram.md); [Spatial interpolation: IDW and ordinary kriging](../../algorithms/geostatistics/interpolation.md) (tested implementations, walkthroughs and an interactive notebook are available; variogram fitting and the wider kriging family remain open)
 
 This section combines surface estimation, stochastic spatial models, simulation, time-dependent analysis, data assimilation, uncertainty measures and small-area estimation. Some entries are model families, some are computational procedures and some are evaluation measures.
 
@@ -24,7 +24,7 @@ This section combines surface estimation, stochastic spatial models, simulation,
 | Large-data Gaussian processes: Vecchia, NNGP, covariance tapering, fixed rank kriging, predictive processes, lattice kriging, multi-resolution approximation | Gaussian-process approximations / scalable spatial models | 4 | Not checked — intake only |
 | Simulation: sequential Gaussian, indicator simulation, multiple-point statistics (SNESIM, direct sampling), object-based, p-field | Spatial simulation methods | 5 | Not checked — intake only |
 | Extremes and dependence: max-stable processes (Brown-Resnick), spatial copulas, GEV and Gumbel fits | Extreme-value and dependence models | 5 | Not checked — intake only |
-| Sampling design: spatially balanced (GRTS, BAS), cLHS, stratified, spatial thinning | Sampling designs / sampling procedures | 5 | Not checked — intake only |
+| Sampling design: spatially balanced (GRTS, BAS), cLHS, stratified, spatial thinning | Sampling designs / sampling procedures | 5 | Partial — tested Latin hypercube/centered LHS, multi-start maximin LHS and seeded greedy minimum-distance spatial thinning; GRTS, BAS, cLHS-specific balancing, design weights/inclusion probabilities and source-entry review remain open |
 | Digital soil mapping: SCORPAN, pedotransfer functions, equal-area splines, SoilGrids-style stacking | Domain modelling frameworks / estimation methods / product-style workflow | 5 | Not checked — intake only |
 
 ## Spatiotemporal statistics
