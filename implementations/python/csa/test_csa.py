@@ -59,3 +59,26 @@ def test_transfer_minimum_applies_after_a_ride():
         {"A": 0}, minimum_transfer={"B": 3}
     )
     assert allowed["arrival_times"]["C"] == 20
+
+
+def test_access_label_remains_boardable_after_earlier_transit_arrival():
+    connections = [
+        Connection("T1", "A", "B", 1, 2),
+        Connection("T2", "B", "C", 6, 7),
+    ]
+    result = earliest_arrival(
+        connections, {"A": 0, "B": 5}, minimum_transfer={"B": 5}
+    )
+    # Access at B is ready at 5; the later transfer penalty must not apply.
+    assert result["arrival_times"]["C"] == 7
+
+
+def test_transit_transfer_penalty_still_applies_without_access_path():
+    connections = [
+        Connection("T1", "A", "B", 1, 2),
+        Connection("T2", "B", "C", 6, 7),
+    ]
+    result = earliest_arrival(
+        connections, {"A": 0}, minimum_transfer={"B": 5}
+    )
+    assert "C" not in result["arrival_times"]
