@@ -50,14 +50,13 @@ Both functions use a fixed integer seed for reproducibility. They are simulation
 
 ## Implementation scope
 
-The point-process package implements:
-- homogeneous Poisson simulation in a rectangular planar window;
-- stationary Thomas process simulation with a Poisson parent process and Poisson offspring counts;
-- Gaussian isotropic offspring displacement;
-- finite-buffer parent simulation and clipping to the target window;
-- seeded reproducibility and input validation.
+This page documents the homogeneous Poisson and Thomas simulators. The same dependency-free point-process package also provides separate, explicitly bounded simulators documented in their own canonical records:
 
-It does not implement inhomogeneous Poisson processes, log-Gaussian Cox processes, Gibbs/ Strauss interaction models, Matérn cluster processes, parameter estimation, likelihood inference or formal goodness-of-fit envelopes for the Thomas model.
+- [Matérn disc-cluster process](matern-cluster-process.md): exact finite parent-buffer construction for its compact-support disc offspring kernel.
+- [Log-Gaussian Cox process](log-gaussian-cox-process.md): a small-grid, piecewise-constant approximation using a dense exponential-covariance Cholesky factorisation.
+- [Strauss interaction process](strauss-point-process.md): finite-window birth-death Metropolis–Hastings simulation for a repulsive Gibbs model.
+
+These are generative teaching baselines, not fitted models. The LGCP grid approximation is not an exact continuous-field simulation; the Strauss chain is a finite-run approximate MCMC draw whose convergence is not diagnosed. General Gibbs potentials, broader inhomogeneous point-process models, parameter estimation, likelihood inference and formal goodness-of-fit procedures remain outside this implementation scope. See the package [README](../../implementations/python/point-process/README.md) for the complete module inventory and limitations.
 
 ## References
 
