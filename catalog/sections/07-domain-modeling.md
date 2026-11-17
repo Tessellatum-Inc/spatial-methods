@@ -22,7 +22,7 @@ The source organises methods by application field. The same statistical, geometr
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | [Weighted and Boolean overlay](../../methods/boolean-and-fuzzy-overlay.md), [AHP](../../methods/analytic-hierarchy-process.md), fuzzy overlay, [TOPSIS](../../methods/topsis.md), [ELECTRE](../../methods/electre-outranking.md), [ordered weighted averaging](../../methods/ordered-weighted-averaging.md), [weights of evidence](../../methods/weights-of-evidence.md), [weighted linear combination](../../methods/weighted-linear-combination.md) | Multi-criteria decision methods / evidence combination | 12 | Partial — related record exists; source-entry review pending |
-| Spatial decision support, participatory GIS, scenario analysis, InVEST ecosystem services | Decision-support workflows / software and models | 12 | Not checked — intake only |
+| Spatial decision support, participatory GIS, scenario analysis, InVEST ecosystem services | Decision-support workflows / software and models | 12 | [AHP weights](../../implementations/python/ahp-weights/README.md), [ELECTRE I outranking](../../implementations/python/electre-i/README.md) and [fuzzy overlay](../../implementations/python/fuzzy-overlay/README.md) have tested computational baselines | Partial — AHP priority weights, ELECTRE I pairwise outranking and fuzzy raster combination are implemented; participatory workflows, scenario management and InVEST ecosystem-service models remain open |
 | Indices: social vulnerability (SoVI), multi-hazard and compound-risk, environmental justice, landscape connectivity (IIC, PC) | Composite indices / risk measures / connectivity metrics | 12 | Not checked — intake only |
 
 ## Ecology and conservation
