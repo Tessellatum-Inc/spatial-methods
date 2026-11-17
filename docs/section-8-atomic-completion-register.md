@@ -399,8 +399,8 @@ Use the [source-entry verification protocol](../catalog/verification-protocol.md
 | S08-ME-16 | Expected Calibration Error (ECE) | Calibration metric | Partial | Tested top-label ECE with equal-width confidence bins and optional sample weights: [accuracy-assessment package](../implementations/python/accuracy-assessment/README.md). Adaptive/classwise estimators and bin/sample-size bias analysis remain open. |
 | S08-EV-01 | Linear probing | Representation evaluation | Partial | Define frozen encoder and geographic split. |
 | S08-EV-02 | kNN probing | Representation evaluation | Partial | Define embedding normalisation and k; compare with linear probe. |
-| S08-EV-03 | Recall@k retrieval | Retrieval metric | Open | Define relevance and candidate universe; report geographic strata. |
-| S08-EV-04 | Normalised Mutual Information (NMI) | Clustering metric | Open | Define label alignment and normalisation. |
+| S08-EV-03 | Recall@k retrieval | Retrieval metric | Partial | Tested macro query-level recall@k with deterministic duplicate handling and explicit empty-relevance policy: [accuracy-assessment package](../implementations/python/accuracy-assessment/README.md). Benchmark relevance definitions and geographic strata remain open. |
+| S08-EV-04 | Normalised Mutual Information (NMI) | Clustering metric | Partial | Tested arithmetic-normalised mutual information with permutation-invariant cluster labels and constant-partition handling: [accuracy-assessment package](../implementations/python/accuracy-assessment/README.md). Benchmark-specific clustering protocols remain open. |
 | S08-EV-05 | Spatial block cross-validation | Spatial validation design | Partial | Existing block splitter is bounded; select block scale scientifically. |
 | S08-EV-06 | Leave-location-out validation | Spatial validation design | Partial | Define location grouping and buffer; test transfer. |
 | S08-EV-07 | Autocorrelation-aware sampling/loss | Validation/training method | Open | Define dependence model and sampling design; test calibration. |
