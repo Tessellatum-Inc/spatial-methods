@@ -518,3 +518,7 @@ Records may have different evidence and implementation status. Check the status 
 - [Random-hyperplane locality-sensitive hashing](indexing/locality-sensitive-hashing.md) — multi-table approximate cosine search with exact candidate reranking.
 
 - [Greedy VRPTW insertion](optimization/vrptw-greedy-insertion.md) — construct capacity-feasible depot routes with service windows, waiting and explicit unserved customers.
+
+### 3D geometry
+
+- [Möller–Trumbore ray/triangle intersection](geometry/ray-triangle-intersection.md) — barycentric ray hit testing with explicit tolerance, interval and back-face policies.
