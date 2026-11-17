@@ -58,7 +58,7 @@ def solve_mexclp(
         if len(site_busy) != len(matrix[0]):
             raise ValueError("site-specific busy_fraction must match candidate sites")
     if any(not isfinite(value) or not 0 <= value < 1 for value in site_busy):
-        raise ValueError("each busy fraction must be finite and in [0, 1)")
+        raise ValueError("busy_fraction values must be finite and in [0, 1)")
     n, m = len(matrix), len(matrix[0])
     if demand_weights is None:
         weights = [1.0] * n
