@@ -2,68 +2,33 @@
 
 - **Kind:** transit service metric
 - **Domain:** public transport operations and accessibility
-- **Status:** tested deterministic departure-schedule baseline
-- **Version:** 0.1
+- **Status:** deterministic timetable baseline with optional piecewise-constant passenger arrival rates
+- **Version:** 0.2
 
 ## Headway summaries
 
-Given ordered departure times (t_1,ldots,t_n), consecutive headways are
-(h_i=t_{i+1}-t_i). Report mean and median headway and the population
-coefficient of variation (standard deviation divided by mean) when at least
-two headways are available. These describe the observed timetable and do not
-by themselves measure passenger waiting time.
+For ordered departure times, consecutive headways are differences between adjacent departures. Report mean, median and population coefficient of variation when at least two headways are available. These describe the timetable, not passenger waiting time.
 
-## Expected wait for random passenger arrivals
+## Expected wait
 
-For passengers arriving uniformly over a service window of duration (T),
-with deterministic departures and no capacity constraints, the expected wait
-is the time integral of time-to-next-departure divided by (T). If the
-successive intervals between the window boundaries and departures are
-(g_1,ldots,g_m), each interval contributes a triangular wait-time area
-(g_j^2/2), giving
+For uniformly arriving passengers over a service window, let g_j be the positive intervals between the window boundaries and departures. Integrating the linearly decreasing time-to-next-departure over each interval gives:
 
-[
-E[W]=\frac{\sum_{j=1}^{m}g_j^2}{2T}.
-]
+\[
+E[W]=\frac{\sum_j g_j^2}{2T}.
+\]
 
-This is the exact expected wait under the stated uniform-arrival and
-deterministic-service assumptions. For perfectly regular headways (h), it
-reduces to (h/2). Uneven service increases expected wait relative to a
-regular schedule with the same mean interval because the squared gaps give
-long intervals disproportionate influence.
+Boundary intervals are included. For equal intervals h, this reduces to h/2.
 
-The implementation includes the partial intervals from service-window start
-to first departure and from last departure to service-window end. With no
-departures, it returns an explicit no-service result rather than a numeric
-wait estimate.
+## Piecewise-constant arrival rates
 
-## Implementation
+When passenger arrival intensity differs across the window, assign a non-negative relative rate r_j to each positive interval g_j. Assuming a constant rate within each interval:
 
-The Python reference implementation accepts numeric times in a consistent
-unit, sorts departures, validates uniqueness and service-window membership,
-and reports departure count, consecutive headways, mean/median headway,
-headway coefficient of variation, boundary-inclusive wait intervals and
-expected wait. Extended service-day times above 24:00 are valid numeric
-values.
+\[
+E[W]=\frac{\sum_j r_j g_j^2/2}{\sum_j r_j g_j}.
+\]
 
-## Limitations
+Rates need not sum to one. Scaling every rate by the same positive constant leaves the result unchanged. Zero-rate intervals contribute no passengers. If all rates are zero, expected wait is undefined and the implementation returns None. This is a coarse demand profile, not an estimate of arrival rates from observed passengers.
 
-This is not a GTFS parser or a complete frequency-based accessibility model.
-It does not combine routes, stops, transfers, walking, in-vehicle time,
-capacity, passenger demand profiles, reliability or real-time delay data.
-The uniform-arrival assumption is inappropriate when passenger arrivals are
-timetable-coordinated or demand varies materially within the service window.
+## Scope and limitations
 
-## References and derivation
-
-The expected-wait expression is derived directly by integrating the linear
-time-to-next-departure function over each interval. Headway and service
-frequency are standard public-transport service descriptors; see the Transit
-Capacity and Quality of Service Manual, TCRP Report 165 (Transportation
-Research Board, 2013), for the broader service-quality context.
-
-## Reproducibility
-
-Run `python -m pytest -q` in the package directory. Tests cover regular and
-irregular headways, boundary intervals, extended service-day times, one-trip
-and no-service windows, and invalid schedule inputs.
+The Python implementation accepts numeric times, supports extended service-day values, validates unique departures and service-window membership, and reports headways, boundary-inclusive intervals and expected wait. It does not parse GTFS, combine routes/stops/transfers, model capacity, estimate passenger arrival profiles, or represent stochastic delays and real-time operations. State the arrival assumptions with every reported estimate.
