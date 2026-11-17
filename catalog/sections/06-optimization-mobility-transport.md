@@ -114,3 +114,8 @@ The following foundational citation metadata has been checked against publisher 
 - **2SFCA and E2SFCA:** Radke and Mu (2000), *Geographic Information Sciences*, 6(2), 105–112, [10.1080/10824000009480538](https://doi.org/10.1080/10824000009480538); Luo and Wang (2003), *Environment and Planning B: Planning and Design*, 30(6), 865–884, [10.1068/b29120](https://doi.org/10.1068/b29120); Luo and Qi (2009), *Health & Place*, 15(4), 1100–1107, [10.1016/j.healthplace.2009.06.002](https://doi.org/10.1016/j.healthplace.2009.06.002), with its [2011 erratum](https://doi.org/10.1016/j.healthplace.2010.10.006).
 
 This pass checks bibliographic identity and metadata for these cited foundations. It does not verify every technical claim, every model variant or every grouped source entry in Section 6.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 6 atomic completion register](../../docs/section-6-atomic-completion-register.md). The register preserves the source grouping and distinguishes algorithms from models, metrics, software and workflows. It is traceability infrastructure, not a verification or completion claim.
