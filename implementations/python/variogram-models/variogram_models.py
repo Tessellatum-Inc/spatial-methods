@@ -197,10 +197,23 @@ def fit_variogram_reml(points, values, *, model="exponential", initial=None):
     nugget, sill, range_ = np.exp(result.x)
     if not np.isfinite(result.x).all() or not isfinite(float(result.fun)):
         raise ValueError("REML optimization failed to find a finite covariance model")
+    ratio = distances / range_
+    if model == "spherical":
+        shape = np.where(ratio < 1.0, 1.5 * ratio - 0.5 * ratio**3, 1.0)
+    elif model == "exponential":
+        shape = 1.0 - np.exp(-3.0 * ratio)
+    else:
+        shape = 1.0 - np.exp(-3.0 * ratio**2)
+    covariance = sill * (1.0 - shape)
+    covariance.flat[::len(z) + 1] += nugget
+    chol = np.linalg.cholesky(covariance)
+    inv_one = np.linalg.solve(chol.T, np.linalg.solve(chol, ones))
+    inv_z = np.linalg.solve(chol.T, np.linalg.solve(chol, z))
+    fitted_mean = float(ones @ inv_z) / float(ones @ inv_one)
     return {
         "model": model, "nugget": float(nugget),
         "partial_sill": float(sill), "sill": float(nugget + sill),
         "range": float(range_), "reml_objective": float(result.fun),
         "success": bool(result.success), "message": str(result.message),
-        "observations": int(len(z)), "mean": float(np.mean(z))
+        "observations": int(len(z)), "mean": fitted_mean
     }
