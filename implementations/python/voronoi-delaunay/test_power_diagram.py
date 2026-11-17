@@ -43,3 +43,11 @@ def test_cells_partition_rectangle_for_multiple_sites():
 def test_invalid_power_diagram_inputs(sites,weights,bounds):
     with pytest.raises(ValueError):
         power_diagram(sites,weights=weights,bounds=bounds)
+
+
+def test_adding_a_common_constant_to_all_weights_preserves_the_diagram():
+    sites=[[2,5],[8,5],[4,8]]
+    a=power_diagram(sites,weights=[0,24,5],bounds=(0,0,10,10))
+    b=power_diagram(sites,weights=[1e12,1e12+24,1e12+5],bounds=(0,0,10,10))
+    for left,right in zip(a,b):
+        assert polygon_area(left)==pytest.approx(polygon_area(right),abs=1e-8)

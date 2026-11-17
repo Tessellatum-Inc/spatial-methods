@@ -59,7 +59,7 @@ def power_diagram(sites, *, weights=None, bounds):
         raise ValueError("bounds must be a finite positive-area rectangle")
     xmin,ymin,xmax,ymax=map(float,b)
     rectangle=[(xmin,ymin),(xmax,ymin),(xmax,ymax),(xmin,ymax)]
-    scale=max(1.0,float(np.max(np.abs(xy))),float(np.max(np.abs(b))),float(np.max(np.abs(w))))
+    scale=max(1.0,float(np.max(np.abs(xy))),float(np.max(np.abs(b))))
     cells=[]
     for i,site in enumerate(xy):
         cell=list(rectangle)
