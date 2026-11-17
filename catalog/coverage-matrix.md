@@ -205,3 +205,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 **Section 19 — location encoding:** the geodesy examples now include full-code Open Location Code (Plus Code) encode/decode and WGS84 cell bounds alongside geohash. This does not close the grouped addressing entry: short-code recovery, what3words-style systems, S2 and H3 remain separate open child methods.
+
+
+- Section 14 3D graphics: added Möller–Trumbore ray/triangle intersection, AABB slab tests and a deterministic binary BVH using exact-centroid surface-area-heuristic split scans. Near-first traversal returns the nearest hit and is checked against seeded brute-force ray queries. Production binned SAH, spatial splits, robust exact predicates and kd-tree ray traversal remain open.
