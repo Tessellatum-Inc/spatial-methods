@@ -110,3 +110,34 @@ def test_expected_calibration_error_rejects_invalid_probabilities_and_labels():
         expected_calibration_error([[.5, .5]], [2])
     with pytest.raises(ValueError):
         expected_calibration_error([[.5, .5]], [0], n_bins=0)
+
+
+from accuracy_assessment import normalized_mutual_information, recall_at_k
+
+
+def test_recall_at_k_macro_query_recall_and_empty_queries():
+    assert recall_at_k([{"a", "b"}, {"c"}], [["x", "b", "a"], ["d", "c"]], 2) == pytest.approx(.75)
+    assert recall_at_k([set(), {"a"}], [[], ["a"]], 1) == pytest.approx(1.0)
+    assert recall_at_k([set()], [[]], 3) is None
+
+
+def test_recall_at_k_validates_query_counts_and_k():
+    with pytest.raises(ValueError):
+        recall_at_k([], [], 1)
+    with pytest.raises(ValueError):
+        recall_at_k([{"a"}], [], 1)
+    with pytest.raises(ValueError):
+        recall_at_k([{"a"}], [["a"]], 0)
+
+
+def test_normalized_mutual_information_is_permutation_invariant():
+    assert normalized_mutual_information(["a", "a", "b", "b"], [1, 1, 0, 0]) == pytest.approx(1.0)
+    assert normalized_mutual_information(["a", "a", "b", "b"], [0, 1, 0, 1]) == pytest.approx(0.0)
+    assert normalized_mutual_information(["a", "a"], ["x", "x"]) == pytest.approx(1.0)
+
+
+def test_normalized_mutual_information_validates_inputs():
+    with pytest.raises(ValueError):
+        normalized_mutual_information([], [])
+    with pytest.raises(ValueError):
+        normalized_mutual_information(["a"], ["x", "y"])
