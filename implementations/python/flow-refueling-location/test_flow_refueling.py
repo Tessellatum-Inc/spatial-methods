@@ -72,11 +72,20 @@ def test_empty_candidate_set_cannot_serve_a_route_beyond_range():
     assert result == {"sites": (), "objective": 0.0, "feasible_paths": ()}
 
 
-def test_station_at_origin_or_destination_is_a_valid_refuel_option():
-    paths = {"origin": {"length": 18, "sites": {"a": 0}}, "destination": {"length": 18, "sites": {"b": 18}}}
-    result = flow_refueling_exact(paths, {"origin": 2, "destination": 3}, ["a", "b"], 1, 10)
-    assert result["objective"] == 3.0
-    assert result["feasible_paths"] == ("destination",)
+def test_endpoint_stations_can_participate_in_a_feasible_stop_sequence():
+    paths = {"route": {"length": 25, "sites": {"origin": 0, "middle_a": 10, "middle_b": 20, "destination": 25}}}
+    result = flow_refueling_exact(
+        paths,
+        {"route": 7},
+        ["origin", "middle_a", "middle_b", "destination"],
+        3,
+        10,
+    )
+    assert result == {
+        "sites": ("origin", "middle_a", "middle_b"),
+        "objective": 7.0,
+        "feasible_paths": ("route",),
+    }
 
 
 @pytest.mark.parametrize("value", [True, float("inf"), float("-inf"), float("nan"), 10**10000])
