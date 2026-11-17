@@ -267,3 +267,5 @@ These are connected teaching materials, not interchangeable copies of the same e
 
 ### Photogrammetry
 - [Brown-Conrady lens model](python/brown-conrady/README.md): normalized-coordinate radial/tangential distortion and checked Newton inversion; calibration estimation remains out of scope.
+
+- [Progressive morphological ground filter](python/progressive-morphological-filter/README.md): rasterised point-cloud ground classification with progressive window and threshold schedule.
