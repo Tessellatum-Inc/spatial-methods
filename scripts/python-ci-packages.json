@@ -328,6 +328,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/geographically-weighted-regression",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/geohash",
     "pythonpath": ""
   },
