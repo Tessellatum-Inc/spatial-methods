@@ -798,3 +798,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Clamp observed values exactly, handle all-observed matrices, and report convergence diagnostics.
 - [x] Add synthetic low-rank, observed-cell preservation, rank-cap and invalid-input tests; register in Python CI.
 - [ ] Add tensor completion, spatial regularization, uncertainty and scalable sparse solvers as separate methods.
+
+
+## Sensor QA cloud-mask baselines — 17 November 2026
+
+- [x] Implement Landsat Collection 2 QA_PIXEL bit interpretation with configurable snow, cirrus and dilated-cloud flags.
+- [x] Implement Sentinel-2 SCL clear-class selection and thresholding of supplied cloud-probability layers.
+- [x] Add bit/class fixtures, option tests and invalid-input checks; register the package in Python CI.
+- [ ] Implement reflectance-derived Fmask/s2cloudless detection, cloud-shadow projection, CloudSEN12 model workflows and HLS harmonisation separately.

@@ -796,6 +796,9 @@ jobs:
           - example: matrix-completion
             directory: implementations/python/matrix-completion
             pythonpath: ""
+          - example: qa-cloud-masks
+            directory: implementations/python/qa-cloud-masks
+            pythonpath: ""
 
     steps:
       - name: Check out repository

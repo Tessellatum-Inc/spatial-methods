@@ -401,3 +401,6 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [Soft-Impute matrix completion](statistics/soft-impute-matrix-completion.md) — low-rank matrix completion by iterative singular-value thresholding.
+
+
+- [QA-based cloud and shadow masks](remote-sensing/qa-cloud-masks.md) — Landsat QA_PIXEL, Sentinel-2 SCL and supplied cloud-probability thresholding.
