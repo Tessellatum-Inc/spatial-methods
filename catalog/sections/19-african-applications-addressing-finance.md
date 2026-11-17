@@ -25,7 +25,7 @@
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Open Location Code (plus codes), geohash, what3words-style grids, S2 and H3 cell addresses | Location encoding systems / spatial indexing schemes | 40 | Partial — tested WGS84 geohash and full Open Location Code encode/decode with cell bounds; short-code recovery, what3words, S2, H3 and source-entry review remain open |
-| Descriptive and landmark-based geocoding, building-based addressing, address-free geocoding for informal settlements | Geocoding approaches / addressing workflows | 40 | Not checked — intake only |
+| Descriptive and landmark-based geocoding, building-based addressing, address-free geocoding for informal settlements | Geocoding approaches / addressing workflows | 40 | [Open Location Code](../../implementations/python/open-location-code/README.md) provides tested address-free coordinate encoding and decoding | Partial — full Plus Code encode/decode is implemented; short-code locality recovery, landmark geocoding and building-based address assignment remain open |
 | Address generation from street segments and building footprints, address quality scoring | Address assignment / data quality methods | 40 | Not checked — intake only |
 
 ## Insurance, finance and risk transfer with geodata
@@ -74,11 +74,11 @@
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Data leakage through spatial autocorrelation, tile overlap and neighboring patches in random train-test splits | Validation failure modes / leakage diagnostics | 41 | Not checked — intake only |
+| Data leakage through spatial autocorrelation, tile overlap and neighboring patches in random train-test splits | Validation failure modes / leakage diagnostics | 41 | [Spatial block cross-validation](../../implementations/python/spatial-cross-validation/README.md) and [group-aware domain classification](../../implementations/python/domain-classifier-shift/README.md) have tested split and leakage-control components | Partial — block-based spatial folds and group-aware domain validation are implemented; tile-overlap audits and patch-neighbour leakage diagnostics remain open |
 | MAUP and ecological fallacy checks, edge and boundary effects, tile-boundary artifacts in segmentation | Spatial inference and image-boundary diagnostics | 41 | Not checked — intake only |
-| Extrapolation outside covariate space, label shift between regions, temporal drift and sensor changes | Generalisation and distribution-shift diagnostics | 41 | Not checked — intake only |
-| Confounding by spatial structure, residual autocorrelation checks, calibration across regions | Model diagnostics / spatial confounding and calibration | 41 | Not checked — intake only |
-| Reporting practices: report spatial CV scheme, area of applicability, uncertainty maps, per-region metrics and class-wise area estimates | Reporting and evaluation standards | 41 | Not checked — intake only |
+| Extrapolation outside covariate space, label shift between regions, temporal drift and sensor changes | Generalisation and distribution-shift diagnostics | 41 | [Spatial distribution-shift statistics](../../implementations/python/distribution-shift/README.md) and [domain-classifier diagnostics](../../implementations/python/domain-classifier-shift/README.md) provide tested MMD, energy-distance, applicability-envelope and source/target distinguishability baselines | Partial — feature-space applicability and selected distribution-shift diagnostics are implemented; label-shift correction, temporal drift detection and sensor harmonisation remain open |
+| Confounding by spatial structure, residual autocorrelation checks, calibration across regions | Model diagnostics / spatial confounding and calibration | 41 | [Moran residual diagnostics](../../implementations/python/global-morans-i/README.md) and [spatial econometric diagnostics](../../implementations/python/spatial-econometrics/README.md) provide tested residual-dependence checks | Partial — global Moran residual dependence and spatial LM diagnostics are implemented; spatial confounding decomposition and cross-region calibration remain open |
+| Reporting practices: report spatial CV scheme, area of applicability, uncertainty maps, per-region metrics and class-wise area estimates | Reporting and evaluation standards | 41 | [Spatial CV](../../implementations/python/spatial-cross-validation/README.md), [applicability envelopes](../../implementations/python/distribution-shift/README.md) and [classification/segmentation metrics](../../implementations/python/accuracy-assessment/README.md) provide tested building blocks | Partial — spatial split design, feature-space applicability and class-wise confusion metrics are available; uncertainty-map standards, per-region reporting and design-based area estimates remain open |
 
 ## Decisions for the next pass
 
