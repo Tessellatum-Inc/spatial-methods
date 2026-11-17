@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from spatial_simulation import (
+    distance_decay_preferential_attachment,
     forest_fire_step,
     life_like_step,
     live_neighbor_count,
@@ -11,6 +12,7 @@ from spatial_simulation import (
     schelling_step,
     simulate_life_like,
     simulate_schelling,
+    watts_strogatz_graph,
 )
 
 
@@ -188,3 +190,48 @@ def test_forest_fire_is_seeded_and_validates_parameters():
     with pytest.raises(ValueError):
         forest_fire_step(np.array([[3]]), growth_probability=0.1,
                          lightning_probability=0.1)
+
+
+def test_spatial_preferential_attachment_is_symmetric_and_seeded():
+    coordinates = np.column_stack((np.arange(12, dtype=float), np.zeros(12)))
+    a = distance_decay_preferential_attachment(
+        coordinates, m=2, distance_scale=3.0, seed=9
+    )
+    b = distance_decay_preferential_attachment(
+        coordinates, m=2, distance_scale=3.0, seed=9
+    )
+    assert np.array_equal(a, b)
+    assert np.array_equal(a, a.T)
+    assert not np.diag(a).any()
+    assert np.all(a.sum(axis=1) >= 2)
+    assert np.all(a.sum(axis=0) == a.sum(axis=1))
+
+
+def test_spatial_preferential_attachment_validates_inputs():
+    with pytest.raises(ValueError):
+        distance_decay_preferential_attachment(np.zeros((3, 2)), m=3,
+                                               distance_scale=1.0)
+    with pytest.raises(ValueError):
+        distance_decay_preferential_attachment(np.array([[0.0], [np.inf]]), m=1,
+                                               distance_scale=1.0)
+    with pytest.raises(ValueError):
+        distance_decay_preferential_attachment(np.zeros((3, 2)), m=1,
+                                               distance_scale=0.0)
+
+
+def test_watts_strogatz_ring_and_rewiring_invariants():
+    ring = watts_strogatz_graph(12, k=4, beta=0.0, seed=2)
+    rewired = watts_strogatz_graph(12, k=4, beta=1.0, seed=2)
+    assert ring.sum() // 2 == 24
+    assert rewired.sum() // 2 == 24
+    assert np.array_equal(rewired, rewired.T)
+    assert not np.diag(rewired).any()
+    assert np.array_equal(ring, watts_strogatz_graph(12, k=4, beta=0.0, seed=99))
+    assert not np.array_equal(ring, rewired)
+
+
+def test_watts_strogatz_validates_parameters():
+    with pytest.raises(ValueError):
+        watts_strogatz_graph(10, k=3, beta=0.2)
+    with pytest.raises(ValueError):
+        watts_strogatz_graph(10, k=4, beta=1.2)
