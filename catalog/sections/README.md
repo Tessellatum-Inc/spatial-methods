@@ -55,6 +55,7 @@ Use the [source-entry verification protocol](../verification-protocol.md) to rec
 
 These companion registers decompose grouped source rows into auditable child items. They are backlog and traceability aids—not independent verification or completion claims. Sections 1–11 are not yet represented in this atomic-register series.
 
+- [Section 11 — GeoAI, GeoFMs and computer vision](../../docs/section-11-atomic-completion-register.md)
 - [Section 12 — signal processing, GNSS, regional science and resilience](../../docs/section-12-atomic-completion-register.md)
 - [Section 13 — GeoFM workflows, urban and mobility foundation models, geo-LLMs](../../docs/section-13-atomic-completion-register.md)
 - [Section 14 — databases, graphics, morphology, hazards and cartographic mathematics](../../docs/section-14-atomic-completion-register.md)
