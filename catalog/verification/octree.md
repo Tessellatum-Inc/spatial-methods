@@ -19,7 +19,7 @@ The package is registered in `scripts/python-ci-packages.json`. Test files and C
 
 ## Complexity and limitations
 
-For well-distributed points, traversal can prune large portions of the tree. Pathological clustering and coincident points can degrade to linear scans. The implementation is a static-root teaching index with incremental insertion, not a disk-backed or dynamically rebalanced database index, loose octree, adaptive volumetric mesh, or moving-object index. Exact kNN remains O(n) in the worst case.
+For well-distributed points, traversal can prune large portions of the tree. Pathological clustering and coincident points can degrade to linear scans. The implementation is a fixed-root dynamic teaching index with lazy deletion and periodic global rebuilding, not a disk-backed or locally rebalanced database index, loose octree, adaptive volumetric mesh or moving-object index. Exact kNN remains O(n) in the worst case.
 
 ## Reproduction
 
