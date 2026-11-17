@@ -89,6 +89,7 @@ def kmeans(observations: np.ndarray, k: int, *, max_iter: int = 300,
             previous_labels = labels.copy()
         labels, residual = _assign(x, centers)
         labels = _repair_empty(labels, residual.copy(), k)
+        centers = np.vstack([x[labels == j].mean(axis=0) for j in range(k)])
         inertia = float(np.sum((x - centers[labels]) ** 2))
         if inertia < best_inertia:
             best_inertia = inertia

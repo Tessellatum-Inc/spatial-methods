@@ -18,7 +18,7 @@ def test_separated_clusters_and_independent_inertia_recomputation():
     independent = sum(np.sum((x[labels == j] - x[labels == j].mean(axis=0)) ** 2)
                       for j in range(2))
     assert fit["inertia"] == pytest.approx(independent)
-    assert fit["inertia"] == pytest.approx(4.0)
+    assert fit["inertia"] == pytest.approx(8.0 / 3.0)
 
 
 def test_seeded_runs_are_identical():
