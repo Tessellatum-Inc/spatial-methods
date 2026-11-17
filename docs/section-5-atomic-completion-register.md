@@ -65,11 +65,11 @@ This register decomposes the source's grouped EO, SAR, LiDAR and photogrammetry 
 | S05-IN-03 | SAVI | Spectral index | Partial | Define soil adjustment factor and range; test bare soil. |
 | S05-IN-04 | NDRE | Spectral index | Partial | Define red-edge band choice; document sensor dependence. |
 | S05-IN-05 | NDMI | Spectral index | Partial | Resolve band convention (NIR/SWIR); document water/vegetation interpretation. |
-| S05-IN-06 | LSWI | Spectral index | Verify | Verify exact band convention and interpretation; distinguish related water indices. |
+| S05-IN-06 | LSWI | Spectral index | Partial | Existing `spectral-indices` package implements the common NIR/SWIR1 land-surface water index with explicit valid-mask, NoData and zero-denominator handling. Tests cover formula behaviour and invalid ratios. LSWI overlaps NDMI in common formulations; sensor-specific wavelength mapping, alternative definitions and field validation remain open. |
 | S05-IN-07 | Tasseled Cap (Kauth–Thomas) | Spectral transform | Verify | Identify sensor-specific coefficients and components; test reflectance scaling. |
-| S05-IN-08 | NDWI | Spectral index | Verify | Distinguish McFeeters and Gao definitions; use explicit alias per formula. |
+| S05-IN-08 | NDWI | Spectral index | Partial | Existing `spectral-indices` package explicitly labels and implements McFeeters green/NIR NDWI, distinct from Gao's NIR/SWIR vegetation-water formulation. Tests cover formula and undefined denominators. Sensor response, threshold transfer and water-reference validation remain open. |
 | S05-IN-09 | MNDWI | Spectral index | Partial | Define green/SWIR bands and sensor; test built-up confusion. |
-| S05-IN-10 | AWEI | Spectral index family | Verify | Split shadow/no-shadow variants and coefficients; test dark surfaces. |
+| S05-IN-10 | AWEI | Spectral index family | Partial | Existing `spectral-indices` package implements both AWEI_sh and AWEI_nsh formula variants with common validity handling. Formula tests and index-family documentation are present. Sensor band mapping, coefficient conventions, threshold calibration and dark-surface validation remain open. |
 | S05-IN-11 | NBR | Spectral index | Partial | Define NIR/SWIR bands and fire context; test sensor harmonisation. |
 | S05-IN-12 | dNBR | Change index | Partial | Define pre/post ordering and scaling; test phenology and severity thresholds. |
 | S05-IN-13 | NDSI | Spectral index | Partial | Define green/SWIR band convention; test cloud/bright soil confusion. |
@@ -223,7 +223,7 @@ This register decomposes the source's grouped EO, SAR, LiDAR and photogrammetry 
 | S05-PH-13 | DSM derivation | Surface modelling workflow | Partial | Define interpolation, filtering and datum; test completeness and vertical accuracy. |
 | S05-PH-14 | DTM derivation | Terrain modelling workflow | Partial | Define ground classification and interpolation; validate terrain breaks. |
 | S05-PH-15 | nDSM derivation | Normalised surface metric | Partial | Define DSM-DTM alignment and height sign; test vegetation/building artifacts. |
-| S05-PH-16 | Brown–Conrady lens calibration | Camera calibration model | Verify | Verify radial/tangential parameter conventions; test reprojection residuals. |
+| S05-PH-16 | Brown–Conrady lens calibration | Camera calibration model | Partial | Existing `brown-conrady` package implements forward radial (k1–k3) and tangential (p1,p2) distortion in normalised camera-plane coordinates and Newton inversion with analytic Jacobian. Tests cover zero-coefficient identity, radial/tangential round trips, shape preservation and invalid controls. It does not estimate intrinsics or coefficients and is not a calibration optimiser; pixel/intrinsic conventions and independent reprojection validation remain open. |
 | S05-PH-17 | Boresight calibration | Sensor calibration workflow | Verify | Define angular/lever-arm alignment and estimation; validate independent trajectories. |
 | S05-PH-18 | Orthomosaic generation | Photogrammetric workflow | Partial | Define seamlines, blending and radiometric balance; test geometric seams. |
 | S05-PH-19 | Mesh texturing | 3D reconstruction workflow | Open | Define visibility/UV assignment and blending; assess occlusion and colour seams. |
