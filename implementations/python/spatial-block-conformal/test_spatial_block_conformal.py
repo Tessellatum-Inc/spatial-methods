@@ -43,7 +43,7 @@ def test_equal_residuals_within_one_block_count_as_one_unit():
 
 def test_scale_normalised_calibration_and_intervals():
     result = calibrate_spatial_blocks(
-        [2, 4, 9, 12],
+        [2, 4, 8.5, 12],
         [0, 0, 5, 5],
         ["a", "a", "b", "b"],
         alpha=0.5,
