@@ -288,3 +288,6 @@ def test_network_sir_rejects_invalid_state_graph_and_probabilities():
     with pytest.raises(ValueError):
         simulate_sir(np.array([1, 0]), graph, infection_probability=0.1,
                      recovery_probability=0.1, steps=-1)
+    with pytest.raises(ValueError):
+        simulate_sir(np.array([3, 0]), graph, infection_probability=0.1,
+                     recovery_probability=0.1, steps=0)
