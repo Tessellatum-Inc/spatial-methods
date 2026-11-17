@@ -732,6 +732,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/polynomial-trend-surface",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/population-diversity",
     "pythonpath": ""
   },
