@@ -141,6 +141,8 @@ def test_percolation_validates_grid_and_neighborhood():
         percolates(np.ones((2, 2)), neighborhood="hexagonal")
     with pytest.raises(ValueError):
         sample_site_percolation((0, 2), 0.5)
+    with pytest.raises(ValueError):
+        sample_site_percolation(5, 0.5)
 
 
 def test_forest_fire_burning_tree_empty_transition_rules():
