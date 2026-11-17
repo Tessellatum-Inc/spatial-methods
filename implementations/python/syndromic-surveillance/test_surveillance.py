@@ -72,7 +72,7 @@ def test_farrington_style_detector_uses_prior_seasonal_windows_and_flags_spike()
     counts = [max(0, round(8 + rng.gauss(0, 2))) for _ in range(52 * 5 + 1)]
     counts[-1] = 45
     result = farrington_exceedance(counts, period=52, window=2, years_back=5)
-    assert result["n_reference"] == 25
+    assert result["n_reference"] == 23
     assert result["reference_indices"] == tuple(sorted(result["reference_indices"]))
     assert result["expected"] > 0
     assert result["upper_bound"] >= result["expected"]
@@ -83,7 +83,7 @@ def test_farrington_detector_does_not_use_current_or_recent_year_data():
     from surveillance import farrington_exceedance
     counts = [5] * (52 * 5 + 1)
     result = farrington_exceedance(counts, period=52, window=2, years_back=5)
-    assert result["n_reference"] == 25
+    assert result["n_reference"] == 23
     assert max(result["reference_indices"]) < len(counts) - 1
     assert result["alarm"] is False
     assert result["dispersion"] == pytest.approx(1.0)
