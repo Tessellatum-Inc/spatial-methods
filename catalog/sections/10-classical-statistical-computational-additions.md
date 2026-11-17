@@ -93,3 +93,8 @@ A first reproducible point-data baseline is now available: [spatial cross-valida
 ### Potential-field processing update
 
 The [potential-field package](../../implementations/python/potential-field/README.md) now includes a bounded [Werner single-thin-dike deconvolution](../../implementations/python/potential-field/werner-deconvolution-walkthrough.md), with tests and a synthetic [lab notebook](../../notebooks/werner-deconvolution-lab.ipynb). It is deliberately narrower than the complete later Werner/Ku–Sharp workflow; see the method guide for assumptions and remaining variants.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 10 atomic completion register](../../docs/section-10-atomic-completion-register.md). The register preserves cross-links to Sections 1–9 and distinguishes algorithms, metrics, models, software and workflows. It is a traceability backlog, not a completion claim.
