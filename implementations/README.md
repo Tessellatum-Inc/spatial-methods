@@ -281,3 +281,5 @@ These are connected teaching materials, not interchangeable copies of the same e
 - [Point-cloud voxelization](python/point-cloud-voxelization/README.md): sparse voxel keys, point mappings, counts, centroids and coordinate extrema.
 
 - [Vecchia GP approximation](python/vecchia-approximation/README.md): nearest-predecessor conditional likelihood with a squared-exponential covariance baseline.
+
+- [Knox space-time test](python/knox-test/README.md): reproducible permutation inference for close-in-space/close-in-time event pairs.
