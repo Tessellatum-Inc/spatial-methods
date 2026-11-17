@@ -8,7 +8,7 @@ def test_path_graph_matches_independent_gaussian_oracle():
                          bandwidth=2, target_nodes=["a", "b", "c"])
     scale = math.sqrt(2 * math.pi) * 2
     expected = [(1 + math.exp(-0.5 * (3 / 2) ** 2)) / scale,
-                (1 + math.exp(-0.5 * (1 / 2) ** 2)) / scale,
+                (math.exp(-0.5 * (1 / 2) ** 2) + math.exp(-0.5 * (2 / 2) ** 2)) / scale,
                 (1 + math.exp(-0.5 * (3 / 2) ** 2)) / scale]
     assert result["density"] == pytest.approx(expected)
 

@@ -824,11 +824,20 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [ ] Add districting algorithms (ReCom/MCMC/Flip), territory design and set-partitioning methods separately.
 
 
-## Network kernel density estimation — 17 November 2026\n\n- [x] Implement vertex-sampled Gaussian KDE over undirected network shortest-path distance.\n- [x] Support event weights, target vertex subsets, disconnected components and shortest parallel edges.\n- [x] Add hand-computed distance/kernel tests, documentation and a dedicated CI job.\n- [ ] Add within-edge event positions, continuous edge integration, edge correction, network K and SANET methods.\n\n\n## Partitioning clustering — 17 November 2026
+## Network kernel density estimation — 17 November 2026
+
+- [x] Implement vertex-sampled Gaussian KDE over undirected network shortest-path distance.
+- [x] Support event weights, target vertex subsets, disconnected components and shortest parallel edges.
+- [x] Add hand-computed distance/kernel tests, documentation and a dedicated CI job.
+- [ ] Add within-edge event positions, continuous edge integration, edge correction, network K and SANET methods.
+
+
+## Partitioning clustering — 17 November 2026
 
 - [x] Add a symmetric-dissimilarity contract and Euclidean distance helper.
 - [x] Implement deterministic PAM BUILD/SWAP with strict-improvement stopping.
 - [x] Implement CLARA sampling and full-dataset candidate scoring.
 - [x] Add independent objective, brute-force, determinism, invalid-input and sampling tests.
 - [x] Add a learning notebook, source-verification record and CI package registration.
-- [x] Add randomized CLARANS medoid-neighbour search with seeded repeatability tests.\n- [ ] Add constrained/equal-size clustering and spatially contiguous regionalisation as separate methods.
+- [x] Add randomized CLARANS medoid-neighbour search with seeded repeatability tests.
+- [ ] Add constrained/equal-size clustering and spatially contiguous regionalisation as separate methods.
