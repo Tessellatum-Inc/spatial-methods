@@ -390,13 +390,13 @@ Use the [source-entry verification protocol](../catalog/verification-protocol.md
 | S08-ME-07 | Mean average precision (mAP) | Detection metric | Open | Define IoU thresholds, class averaging and confidence interpolation. |
 | S08-ME-08 | Boundary F-score | Segmentation boundary metric | Partial | Existing tolerance-aware binary boundary F1 is bounded; define tolerance/geometry. |
 | S08-ME-09 | Panoptic Quality | Panoptic segmentation metric | Open | Verify matching threshold and SQ/RQ decomposition. |
-| S08-ME-10 | RMSE | Regression metric | Open | Define weighting/units and sample support. |
-| S08-ME-11 | MAE | Regression metric | Open | Define aggregation and missing-data handling. |
-| S08-ME-12 | R-squared | Regression metric | Open | Define out-of-sample variant and constant-target handling. |
+| S08-ME-10 | RMSE | Regression metric | Partial | Tested finite paired-observation implementation with optional non-negative sample weights and analytic tests: [accuracy-assessment package](../implementations/python/accuracy-assessment/README.md). Forecast aggregation and spatial support remain open. |
+| S08-ME-11 | MAE | Regression metric | Partial | Tested weighted/unweighted mean absolute error with input validation: [accuracy-assessment package](../implementations/python/accuracy-assessment/README.md). Design-based aggregation and missing-data policies remain study-specific. |
+| S08-ME-12 | R-squared | Regression metric | Partial | Tested weighted coefficient of determination with explicit finite constant-target convention: [accuracy-assessment package](../implementations/python/accuracy-assessment/README.md). Out-of-sample spatial evaluation protocol remains open. |
 | S08-ME-13 | Nash–Sutcliffe efficiency (NSE) | Hydrology metric | Verify | Verify denominator/reference convention and missing data. |
 | S08-ME-14 | Kling–Gupta efficiency (KGE) | Hydrology metric | Verify | Identify KGE variant and components; test limiting cases. |
 | S08-ME-15 | CRPS | Probabilistic forecast metric | Verify | Verify empirical/distributional definition and units. |
-| S08-ME-16 | Expected Calibration Error (ECE) | Calibration metric | Open | Define binning/adaptive estimator; test sample-size bias. |
+| S08-ME-16 | Expected Calibration Error (ECE) | Calibration metric | Partial | Tested top-label ECE with equal-width confidence bins and optional sample weights: [accuracy-assessment package](../implementations/python/accuracy-assessment/README.md). Adaptive/classwise estimators and bin/sample-size bias analysis remain open. |
 | S08-EV-01 | Linear probing | Representation evaluation | Partial | Define frozen encoder and geographic split. |
 | S08-EV-02 | kNN probing | Representation evaluation | Partial | Define embedding normalisation and k; compare with linear probe. |
 | S08-EV-03 | Recall@k retrieval | Retrieval metric | Open | Define relevance and candidate universe; report geographic strata. |
