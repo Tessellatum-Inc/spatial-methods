@@ -252,3 +252,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Partitioning clustering
 
 - [PAM k-medoids and CLARA](python/k-medoids/README.md): deterministic BUILD/SWAP medoid search and sample-based CLARA with full-data scoring, independent tests and an [implementation walkthrough](python/k-medoids/implementation-walkthrough.md).
+
+
+### Remote sensing
+
+- [Lee local-statistics speckle filter](python/lee-speckle-filter/README.md): a NumPy-only adaptive local-mean estimator with explicit noise variance, NaN handling, tests and scope limitations.
