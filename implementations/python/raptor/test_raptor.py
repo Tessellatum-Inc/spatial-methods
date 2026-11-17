@@ -46,3 +46,27 @@ def test_overtaking_trip_order_is_rejected():
     r = route(("A", "B"), [((0, 20), (0, 20)), ((5, 12), (5, 12))])
     with pytest.raises(ValueError, match="overtaking"):
         raptor([r], {"A": 0})
+
+
+def test_access_footpath_is_available_before_first_boarding():
+    first = route(("B", "C"), [((5, 15), (5, 15))])
+    result = raptor([first], {"A": 0}, max_transfers=0,
+                    footpaths={"A": [("B", 4)]})
+    assert result["rounds"][0]["B"] == 4
+    assert result["rounds"][1]["C"] == 15
+
+
+def test_rejects_trip_that_arrives_before_departing_previous_stop():
+    invalid = Route(
+        ("A", "B", "C"),
+        (Trip((0, 10, 20), (0, 100, 20)),)
+    )
+    with pytest.raises(ValueError, match="nondecreasing"):
+        raptor([invalid], {"A": 0})
+
+
+def test_zero_duration_access_footpath_and_cycle_terminate():
+    first = route(("B", "C"), [((0, 2), (0, 2))])
+    result = raptor([first], {"A": 0}, max_transfers=0,
+                    footpaths={"A": [("B", 0)], "B": [("A", 0)]})
+    assert result["rounds"][1]["C"] == 2
