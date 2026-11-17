@@ -52,3 +52,16 @@ Agents compare their group with occupied neighbors. Agents below the tolerance r
 - Schelling's share is defined over occupied neighbors; no occupied neighbors means share 1.
 - The model does not include heterogeneous preferences, household units, transport costs, land markets, vacancy search, or empirical calibration.
 - Complexity is proportional to grid cells times neighborhood size per automaton step. The transparent Schelling baseline currently evaluates local neighborhoods directly and is intended for small/medium teaching grids.
+
+
+## Site percolation
+
+`sample_site_percolation(shape, probability, seed=...)` draws independent occupied sites with the requested Bernoulli probability. `percolates(grid)` checks whether occupied cells form a top-to-bottom path using four-neighbor connectivity by default; pass `neighborhood="moore"` to allow diagonal links.
+
+This is a finite-lattice connectivity experiment, not a fitted model of a particular material or landscape. The finite grid, boundary definition and connectivity convention affect the result.
+
+## Forest-fire automaton
+
+`forest_fire_step` uses 0=empty, 1=tree and 2=burning. At each synchronous step, burning cells become empty; trees ignite if adjacent to fire or struck by lightning; empty cells grow trees with the supplied probability. Growth and lightning are independently parameterized and the random seed is explicit.
+
+The model is a compact stochastic cellular automaton, not a calibrated wildfire spread model. It omits wind, fuel moisture, topography, spotting, fire suppression and physical spread rates.
