@@ -4,6 +4,7 @@
 
 - Spherical, exponential and Gaussian semivariogram structures.
 - Nugget, partial sill and range fitted with bounded nonlinear least squares.
+- Dense Gaussian REML fitting under a constant-mean, isotropic covariance model.
 - Pair-count weighted residuals and optional fixed nugget.
 - Directional pair filtering by azimuth and cross-track bandwidth.
 - Matheron and Cressie-Hawkins empirical estimators.
@@ -11,9 +12,9 @@
 
 ## Tests
 
-Tests cover zero lag, model sill behaviour, directional filtering, robust estimator non-negativity, hand-computed Genton order-statistic values, sign/translation invariance, directional Genton pair grouping, synthetic spherical parameter recovery, fixed-nugget fitting and invalid inputs. CI status is tied to the commit containing the tests.
+Tests cover zero lag, model sill behaviour, directional filtering, robust estimator non-negativity, hand-computed Genton order-statistic values, sign/translation invariance, directional Genton pair grouping, synthetic spherical parameter recovery, fixed-nugget fitting, seeded synthetic REML fitting, and invalid/degenerate inputs. CI status is tied to the commit containing the tests.
 
-## Bibliography
+REML uses the restricted likelihood with the generalized least-squares estimate of the constant mean. The dense Cholesky implementation is O(n³) in time and O(n²) in memory; it is not a scalable GP method.\n\n## Bibliography
 
 - Genton, M. G. (1998). Highly robust variogram estimation. *Mathematical Geology*, 30(2), 213–221. https://marcgenton.github.io/1998.G.MG.1.pdf
 

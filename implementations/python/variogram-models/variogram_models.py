@@ -2,7 +2,7 @@
 from __future__ import annotations
 from math import atan2, comb, cos, degrees, isfinite, radians, sin
 import numpy as np
-from scipy.optimize import least_squares
+from scipy.optimize import least_squares, minimize
 
 _MODELS={"spherical","exponential","gaussian"}
 
@@ -120,3 +120,87 @@ def fit_variogram(lags,semivariances,*,pairs=None,model="spherical",fit_nugget=T
     return {"model":model,"nugget":nugget,"partial_sill":sill,"sill":nugget+sill,
             "range":range_,"weighted_sse":float(np.sum(fit.fun**2)),
             "success":bool(fit.success),"message":str(fit.message),"bins_used":int(len(h))}
+
+
+
+def fit_variogram_reml(points, values, *, model="exponential", initial=None):
+    """Fit an isotropic covariance model by restricted maximum likelihood.
+
+    Uses a constant unknown mean and a dense Gaussian covariance matrix.
+    Nugget is independent measurement/microscale variance; partial_sill is
+    the structured variance. This is a small-data reference implementation.
+    """
+    xy = np.asarray(points, dtype=float)
+    z = np.asarray(values, dtype=float)
+    if xy.ndim != 2 or xy.shape[1] != 2 or len(xy) < 4:
+        raise ValueError("points must be an n-by-2 array with n>=4")
+    if z.shape != (len(xy),) or not np.isfinite(z).all():
+        raise ValueError("values must be finite and match points")
+    if not np.isfinite(xy).all() or len(np.unique(xy, axis=0)) != len(xy):
+        raise ValueError("points must be finite and unique")
+    if model not in _MODELS:
+        raise ValueError("model must be spherical, exponential or gaussian")
+    variance = float(np.var(z))
+    if not isfinite(variance) or variance <= 0:
+        raise ValueError("values must have positive finite variance")
+    delta = xy[:, None, :] - xy[None, :, :]
+    distances = np.sqrt(np.sum(delta * delta, axis=2))
+    positive = distances[distances > 0]
+    dmin, dmax = float(np.min(positive)), float(np.max(positive))
+    lower_range, upper_range = dmin * 1e-3, dmax * 1e3
+    lower_var, upper_var = variance * 1e-8, variance * 100.0
+    if initial is None:
+        start = np.array([variance * 0.1, variance * 0.9, np.median(positive)])
+    else:
+        if len(initial) != 3:
+            raise ValueError("initial must be (nugget, partial_sill, range)")
+        start = np.asarray(initial, dtype=float)
+        if not np.isfinite(start).all() or np.any(start <= 0):
+            raise ValueError("initial parameters must be finite and positive")
+    start = np.clip(start, [lower_var, lower_var, lower_range],
+                    [upper_var, upper_var, upper_range])
+    ones = np.ones(len(z))
+    constant = (len(z) - 1) * np.log(2.0 * np.pi)
+
+    def objective(log_parameters):
+        nugget, sill, range_ = np.exp(log_parameters)
+        ratio = distances / range_
+        if model == "spherical":
+            shape = np.where(ratio < 1.0, 1.5 * ratio - 0.5 * ratio**3, 1.0)
+        elif model == "exponential":
+            shape = 1.0 - np.exp(-3.0 * ratio)
+        else:
+            shape = 1.0 - np.exp(-3.0 * ratio**2)
+        covariance = sill * (1.0 - shape)
+        covariance.flat[::len(z) + 1] += nugget + sill * 0.0
+        try:
+            chol = np.linalg.cholesky(covariance)
+            logdet = 2.0 * np.log(np.diag(chol)).sum()
+            inv_one = np.linalg.solve(chol.T, np.linalg.solve(chol, ones))
+            inv_z = np.linalg.solve(chol.T, np.linalg.solve(chol, z))
+            denominator = float(ones @ inv_one)
+            if not isfinite(denominator) or denominator <= 0:
+                return np.inf
+            mean = float(ones @ inv_z) / denominator
+            residual = z - mean
+            inv_residual = np.linalg.solve(chol.T, np.linalg.solve(chol, residual))
+            logdet_mean = np.log(denominator)
+            value = 0.5 * (logdet + logdet_mean + float(residual @ inv_residual) + constant)
+            return float(value) if isfinite(value) else np.inf
+        except (np.linalg.LinAlgError, FloatingPointError, ValueError):
+            return np.inf
+
+    bounds = [(np.log(lower_var), np.log(upper_var)),
+              (np.log(lower_var), np.log(upper_var)),
+              (np.log(lower_range), np.log(upper_range))]
+    result = minimize(objective, np.log(start), method="L-BFGS-B", bounds=bounds)
+    nugget, sill, range_ = np.exp(result.x)
+    if not np.isfinite(result.x).all() or not isfinite(float(result.fun)):
+        raise ValueError("REML optimization failed to find a finite covariance model")
+    return {
+        "model": model, "nugget": float(nugget),
+        "partial_sill": float(sill), "sill": float(nugget + sill),
+        "range": float(range_), "reml_objective": float(result.fun),
+        "success": bool(result.success), "message": str(result.message),
+        "observations": int(len(z)), "mean": float(np.mean(z))
+    }

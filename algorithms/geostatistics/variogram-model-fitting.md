@@ -3,7 +3,8 @@
 An empirical semivariogram is a noisy, binned estimate; kriging requires a
 valid covariance/variogram model. This lesson implements spherical,
 exponential and Gaussian structures with nugget and partial sill, plus
-pair-count weighted nonlinear least-squares fitting.
+pair-count weighted nonlinear least-squares fitting and dense Gaussian
+restricted maximum-likelihood (REML) estimation with a constant unknown mean.
 
 Directional analysis filters point pairs by an undirected azimuth and optional
 cross-track bandwidth. The Cressie-Hawkins and Genton estimators are included as robust alternatives

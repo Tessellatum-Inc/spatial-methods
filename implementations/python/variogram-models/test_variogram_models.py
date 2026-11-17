@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from variogram_models import variogram_model,directional_semivariogram,fit_variogram,genton_semivariance
+from variogram_models import variogram_model,directional_semivariogram,fit_variogram,genton_semivariance,fit_variogram_reml
 
 @pytest.mark.parametrize("model",["spherical","exponential","gaussian"])
 def test_models_are_zero_at_origin_and_approach_sill(model):
@@ -62,3 +62,29 @@ def test_invalid_inputs_are_rejected():
     with pytest.raises(ValueError): variogram_model([-1])
     with pytest.raises(ValueError): directional_semivariogram([(0,0),(1,1)],[1,2],[0,2],estimator="bad")
     with pytest.raises(ValueError): fit_variogram([1,2],[1,2])
+
+
+
+def test_reml_fits_finite_bounded_covariance_parameters():
+    rng = np.random.default_rng(41)
+    points = np.array([(x, y) for x in range(5) for y in range(4)], dtype=float)
+    distances = np.linalg.norm(points[:, None, :] - points[None, :, :], axis=2)
+    covariance = 0.15 * np.exp(-distances / 1.8)
+    covariance.flat[::len(points) + 1] += 0.85
+    values = rng.multivariate_normal(np.full(len(points), 7.0), covariance)
+    fit = fit_variogram_reml(points, values, model="exponential")
+    assert fit["model"] == "exponential"
+    assert fit["nugget"] > 0
+    assert fit["partial_sill"] > 0
+    assert fit["range"] > 0
+    assert np.isfinite(fit["reml_objective"])
+    assert fit["observations"] == len(points)
+
+
+def test_reml_rejects_degenerate_inputs():
+    with pytest.raises(ValueError):
+        fit_variogram_reml([(0, 0), (1, 0), (2, 0)], [1, 2, 3])
+    with pytest.raises(ValueError):
+        fit_variogram_reml([(0, 0), (1, 0), (0, 1), (0, 0)], [1, 2, 3, 4])
+    with pytest.raises(ValueError):
+        fit_variogram_reml([(0, 0), (1, 0), (0, 1), (1, 1)], [2, 2, 2, 2])
