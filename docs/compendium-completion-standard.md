@@ -121,14 +121,13 @@ The first public edition can be curated from completed material before every res
 
 ## 9. Current baseline
 
-The repository currently preserves the 47-page source transcription and indexes all 22 sections. The 17 November 2026 [source review dashboard](../catalog/review-dashboard.md) records 693 grouped source-entry rows: 210 partial, 483 intake-only and zero fully verified across all review dimensions. These are review-state counts, not a measure of implementation completion. Grouped source rows can contain multiple child methods, and an implementation link does not complete identity, bibliography, technical-claim or rights review.
+The repository preserves the 47-page source transcription and indexes all 22 sections. The current [source review dashboard](../catalog/review-dashboard.md), recounted from the 22 section indexes on 17 November 2026, contains **695 grouped source-entry rows: 219 partial, 476 intake-only and zero fully verified**. These are review-state counts, not a measure of implementation completion. A grouped row may contain multiple distinct methods; an implementation link does not complete identity, bibliography, technical-claim or rights review. The 695 rows are therefore a minimum source-entry workload, not a guaranteed count of all child records required.
 
-At the current `main` tree snapshot, the repository contains 321 algorithm lesson files, 83 method guides, 400 Python source files, 369 Python test files, 283 Python implementation packages and 179 notebooks. These are inventory counts only; they do not establish that every source entry is covered or that every test/notebook passes at the current head. CI package/notebook coverage is separately enforced by `scripts/check_ci_coverage.py`; the source-dashboard ledger is checked by `scripts/check_catalogue_dashboard.py` and its unit tests in the GitHub Actions workflow.
+The latest recursive-tree inventory audit of `main` found 285 Python implementation packages, 773 Python files under the implementation tree, 377 Python test files, 179 notebooks, 325 algorithm Markdown files, 154 verification records and 151 walkthroughs. The roadmap audit found 282 of 356 checklist items checked and 74 open. These are inventory and task-list measurements only: they are not a project-completion percentage and do not establish that every test, notebook, method or source entry is complete.
 
-Use the [coverage matrix](../catalog/coverage-matrix.md) for the section-level narrative and the [repository roadmap](repository-roadmap.md) for the next work queue. Recalculate all counts from the actual tree and review records before making a release claim.
+The latest observed GitHub Actions run is [run 44020327246](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44020327246), for `main` at commit `ca9669338bb538768a0fcc54555659b078d6441a`. It contains 51 jobs and all 51 were queued at the time of the audit; **no passing CI result is claimed**. The workflow covers 48 isolated Python package shards, catalogue/link checks, notebook execution and Clipper2 C# checks. A queued workflow is not evidence that any of these checks passed.
 
-
-
+Use the [coverage matrix](../catalog/coverage-matrix.md) for the section-level narrative, the [source-entry verification protocol](../catalog/verification-protocol.md) for independent evidence requirements, and the [repository roadmap](repository-roadmap.md) for the open work queue. Recount the actual tree and review records, inspect the exact-head workflow result, and complete the release gates before making a release or completion claim.
 
 ## Implementation reconciliation — random-hyperplane LSH
 
