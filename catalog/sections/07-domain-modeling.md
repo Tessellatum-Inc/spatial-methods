@@ -127,3 +127,8 @@ Weighted linear combination has a canonical method record, tested numerical aggr
 3. Verify product and software names separately from the methods they implement.
 4. Prefer published case studies and reproducible datasets over generic claims about a domain.
 5. Avoid implying that one region, city, ecosystem or population represents all others.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 7 atomic completion register](../../docs/section-7-atomic-completion-register.md). The register preserves the source grouping and distinguishes algorithms from models, metrics, software and workflows. It is traceability infrastructure, not a verification or completion claim.
