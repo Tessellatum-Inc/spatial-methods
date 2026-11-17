@@ -59,7 +59,7 @@ def test_pope_tau_flags_the_injected_gross_error_with_unknown_variance_factor():
     assert result["largest_absolute_tau_index"]==6
     assert 6 in result["flagged_indices"]
     assert result["degrees_of_freedom"]==7
-    assert 0 < result["critical_tau"] < 1
+    assert 0 < result["critical_tau"] < np.sqrt(result["degrees_of_freedom"])
 
 
 def test_pope_tau_critical_value_is_student_t_transform():
