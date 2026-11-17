@@ -1,1 +1,2 @@
-shapely==2.1.2\npytest==9.0.2\n
+shapely==2.1.2
+pytest==9.0.2

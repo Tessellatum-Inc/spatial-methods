@@ -14,7 +14,8 @@ python overlay_demo.py
 
 - Inputs must be non-empty, valid Polygon or MultiPolygon geometries.
 - Both geometries must use the same planar coordinate space and compatible units.
-- Operations: intersection, union, difference (A minus B), and symmetric difference.\n- `cascaded_union` validates a non-empty collection of valid polygonal inputs and delegates collection union to Shapely 2.1.2 / GEOS `union_all`.
+- Operations: intersection, union, difference (A minus B), and symmetric difference.
+- `cascaded_union` validates a non-empty collection of valid polygonal inputs and delegates collection union to Shapely 2.1.2 / GEOS `union_all`.
 - Output type and dimension are inspected, not guessed. An intersection may be a polygon, line, point, geometry collection or empty depending on topology and engine semantics.
 - Holes and multipart polygon inputs are supported by Shapely/GEOS.
 - Invalid input is rejected, not silently repaired.
