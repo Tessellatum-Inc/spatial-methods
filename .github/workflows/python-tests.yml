@@ -809,6 +809,9 @@ jobs:
           - example: lee-speckle-filter
             directory: implementations/python/lee-speckle-filter
             pythonpath: ""
+          - example: ca-cfar
+            directory: implementations/python/ca-cfar
+            pythonpath: ""
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
