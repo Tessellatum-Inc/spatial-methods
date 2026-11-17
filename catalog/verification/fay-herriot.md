@@ -14,3 +14,10 @@
 
 ## Limits and rights
 The reported plug-in MSE omits variance-component estimation uncertainty. This is the area-level model only; unit-level, spatially structured and spatiotemporal extensions are not included. Original code and explanatory text; bibliographic metadata only.
+
+
+## Parametric-bootstrap MSE extension
+- Seeded simulation of latent area effects and sampling errors from the fitted normal-normal model.
+- REML refit in each replicate; squared prediction errors against simulated latent area means estimate area-specific MSE.
+- Reports Monte Carlo standard errors and retains the original plug-in MSE for comparison.
+- Limits: conditional on the fitted parametric model; finite bootstrap replicates; no design-based or model-misspecification correction.

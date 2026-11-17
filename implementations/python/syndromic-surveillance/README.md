@@ -21,8 +21,7 @@ baseline exists.
 
 This is a transparent educational EARS-style variant. Operational EARS
 implementations differ in details and should be checked against the selected
-surveillance protocol. The package does not implement Farrington,
-seasonality/day-of-week adjustment, population offsets, covariate adjustment,
+surveillance protocol. The package includes a bounded Farrington-style seasonal quasi-Poisson exceedance baseline, but does not implement the full original GLIM or improved Noufaily variants. Weekday/seasonality adjustment, population offsets, covariate adjustment,
 spatial scan statistics or space-time cluster detection.
 
 ## CUSUM calibration

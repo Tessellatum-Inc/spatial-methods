@@ -45,3 +45,26 @@ def test_fay_herriot_rejects_singular_or_misaligned_covariates():
         fay_herriot([1, 2, 3, 4], [1]*4, [[1, 1]]*4)
     with pytest.raises(ValueError):
         fay_herriot([1, 2, 3, 4], [1]*4, [[1], [2]])
+
+
+def test_fay_herriot_parametric_bootstrap_mse_is_seeded_and_finite():
+    from fay_herriot import fay_herriot_bootstrap_mse
+    y=[10.,12.,8.,15.,9.,13.,7.,16.]
+    d=[.4,.5,.6,.3,.7,.4,.5,.6]
+    a=fay_herriot_bootstrap_mse(y,d,replicates=30,seed=27)
+    b=fay_herriot_bootstrap_mse(y,d,replicates=30,seed=27)
+    assert a==b
+    assert np.isfinite(a["bootstrap_mse"]).all()
+    assert np.isfinite(a["bootstrap_mse_mc_se"]).all()
+    assert np.all(np.asarray(a["bootstrap_mse"])>=0)
+    assert np.all(np.asarray(a["bootstrap_mse_mc_se"])>=0)
+    assert a["replicates"]==30
+
+
+@pytest.mark.parametrize("kwargs",[
+    {"replicates":1},{"replicates":2.5},{"replicates":True},{"seed":True}
+])
+def test_fay_herriot_bootstrap_rejects_invalid_controls(kwargs):
+    from fay_herriot import fay_herriot_bootstrap_mse
+    with pytest.raises(ValueError):
+        fay_herriot_bootstrap_mse([1,2,3,4],[1,1,1,1],**kwargs)

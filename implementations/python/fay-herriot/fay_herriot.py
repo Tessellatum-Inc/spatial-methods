@@ -68,3 +68,42 @@ def fay_herriot(direct_estimates, sampling_variances, covariates=None, *,
         "reml_objective": float(objective(A)), "converged": bool(opt.success),
         "iterations": int(opt.nfev), "area_count": int(n), "coefficient_count": int(p),
     }
+
+
+def fay_herriot_bootstrap_mse(direct_estimates, sampling_variances, covariates=None,
+                              *, replicates=200, seed=None, **fit_kwargs):
+    """Estimate EBLUP MSE by parametric bootstrap under the fitted FH model.
+
+    Each replicate simulates area effects and sampling errors from the fitted
+    normal-normal model, refits REML, and compares the replicate EBLUP with
+    its simulated latent area mean. This includes variance-component
+    re-estimation uncertainty under the fitted parametric generating model.
+    """
+    if isinstance(replicates,bool) or not isinstance(replicates,int) or replicates<2:
+        raise ValueError("replicates must be an integer >= 2")
+    if seed is not None and (isinstance(seed,bool) or not isinstance(seed,int)):
+        raise ValueError("seed must be an integer or None")
+    base=fay_herriot(direct_estimates,sampling_variances,covariates,**fit_kwargs)
+    y=np.asarray(direct_estimates,dtype=float)
+    d=np.asarray(sampling_variances,dtype=float)
+    if covariates is None:
+        X=np.ones((len(y),1))
+    else:
+        X=np.asarray(covariates,dtype=float)
+        if X.ndim==1: X=X.reshape(-1,1)
+    beta=np.asarray(base["beta"],dtype=float)
+    fixed=X@beta
+    A=base["random_effect_variance"]
+    rng=np.random.default_rng(seed)
+    squared_errors=np.empty((replicates,len(y)),dtype=float)
+    for b in range(replicates):
+        latent=fixed+rng.normal(0.0,math.sqrt(A),size=len(y))
+        simulated=latent+rng.normal(0.0,np.sqrt(d),size=len(y))
+        fitted=fay_herriot(simulated,d,X,**fit_kwargs)
+        error=np.asarray(fitted["predictions"],dtype=float)-latent
+        squared_errors[b]=error*error
+    mse=np.mean(squared_errors,axis=0)
+    mc_se=np.std(squared_errors,axis=0,ddof=1)/math.sqrt(replicates)
+    return {"bootstrap_mse":mse.tolist(),"bootstrap_mse_mc_se":mc_se.tolist(),
+            "plug_in_mse":base["mse_plugin"],"replicates":replicates,
+            "generating_random_effect_variance":A,"seed":seed}

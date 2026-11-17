@@ -20,3 +20,8 @@ Horvitz-Thompson estimation and multilevel regression with poststratification.
 
 ## Source
 - Fay, R. E., & Herriot, R. A. (1979). Estimates of income for small places: An application of James-Stein procedures to census data. *Journal of the American Statistical Association*, 74(366a), 269–277. https://doi.org/10.1080/01621459.1979.10482505.
+
+
+## Parametric-bootstrap MSE
+
+A companion routine estimates EBLUP mean squared error by parametric bootstrap under the fitted Fay–Herriot model. It simulates latent area effects and sampling errors, re-estimates the between-area variance by REML in each replicate, and compares replicate predictions with simulated latent area means. This captures variance-component re-estimation uncertainty under the fitted normal-normal generating model, but remains conditional on that model and Monte Carlo sample size.

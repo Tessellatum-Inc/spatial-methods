@@ -54,3 +54,8 @@ signed variance and leaves the standard error undefined.
 
 
 The same module also implements the Hansen–Hurwitz estimator for independent draws with replacement. It averages the draw-level values divided by their draw probabilities and estimates variance from the sample variance of those weighted draws. A single draw has no internal variance estimate; the function returns `None` for variance and standard error in that case.
+
+
+## Parametric-bootstrap MSE
+
+`fay_herriot_bootstrap_mse` simulates latent area effects and sampling errors from the fitted normal-normal model, refits the REML variance component in each replicate, and compares each replicate EBLUP with its simulated latent area mean. It reports bootstrap MSE and Monte Carlo standard error alongside the existing plug-in MSE. This is conditional on the fitted parametric generating model and finite replicate count; it is not a design-based MSE estimator.
