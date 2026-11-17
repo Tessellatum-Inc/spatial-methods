@@ -467,3 +467,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Marching cubes](geometry/marching-cubes.md): validated Lewiner isosurface extraction from a 3-D scalar field.
 
 - [Contextual thermal-hotspot screening](remote-sensing/contextual-thermal-hotspot.md): local-median/MAD anomaly baseline with an absolute temperature threshold.
+
+- [Point-cloud voxelization](photogrammetry/point-cloud-voxelization.md): sparse XYZ voxel indexing and per-cell summaries.
