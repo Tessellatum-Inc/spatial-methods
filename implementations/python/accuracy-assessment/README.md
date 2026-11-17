@@ -29,3 +29,20 @@ Retrieval/evaluation helpers include macro query-level recall@k (queries without
 
 
 NSE uses the weighted observed mean and the same finite constant-target policy as R-squared. KGE is the 2009 three-component form (Pearson correlation, standard-deviation ratio and mean ratio); it returns None when a required component is undefined. Ensemble CRPS is the empirical finite-ensemble score and supports case weights; it is not a continuous parametric-distribution CRPS estimator.
+
+
+## Land-change and map-association measures
+
+The package exposes named Pontius quantity and allocation disagreement
+functions using a reference-row/prediction-column confusion matrix. Their
+sum is the total disagreement (1 - overall accuracy) under this count-based
+definition. It also includes uncorrected Cramer's V for a contingency table
+and mean absolute class-area error with optional explicit class weights.
+Cramer's V is an effect size, not a p-value. Class-area MAE is a descriptive
+error in the caller's area units; it is not a design-based area-adjusted
+accuracy estimate and does not include sampling uncertainty.
+
+Reference: Pontius, R. G. (2000). Quantification error versus location error
+in comparison of categorical maps. *Photogrammetric Engineering & Remote
+Sensing*, 66(8), 1011–1016. Cramér, H. (1946). *Mathematical Methods of
+Statistics*. Princeton University Press.

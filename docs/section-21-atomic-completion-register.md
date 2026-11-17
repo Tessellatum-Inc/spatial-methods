@@ -64,10 +64,10 @@ Use the source-entry verification protocol in `catalog/verification-protocol.md`
 | S21-LC-06 | Legend harmonisation / LCCS-style crosswalks | Classification ontology / crosswalk | Open | Verify framework and version; represent one-to-many mappings and uncertainty without silently collapsing classes. |
 | S21-LC-07 | Class-hierarchy mapping | Semantic classification mapping | Open | Define hierarchy and aggregation rules; test non-bijective mappings and conservation of mapped area. |
 | S21-LC-08 | Semantic harmonisation across land-cover products | Data harmonisation workflow | Open | Document source legends, temporal/sensor differences and provenance; provide an auditable crosswalk workflow. |
-| S21-LC-09 | Cramér's V for map association | Association statistic | Open | Define contingency table and degrees of freedom; test independence and degenerate margins. |
-| S21-LC-10 | Mean absolute error of class areas | Area comparison metric | Open | Define reference/estimated area basis and weighting; test classwise and aggregate errors. |
-| S21-LC-11 | Pontius quantity disagreement | Map comparison metric | Partial | Verify exact decomposition and relation to confusion matrix; independent numerical fixtures. |
-| S21-LC-12 | Pontius allocation disagreement | Map comparison metric | Partial | Verify exact decomposition and complementary relation to quantity disagreement; independent fixtures. |
+| S21-LC-09 | Cramér's V for map association | Association statistic | Partial | Added uncorrected Cramér's V for rectangular non-negative integer contingency tables, zero-margin handling, independence/perfect-association fixtures and explicit effect-size caveat; inferential uncertainty remains outside this function. |
+| S21-LC-10 | Mean absolute error of class areas | Area comparison metric | Partial | Added class-area MAE with explicit class ordering/units and optional non-negative class weights; tests cover analytic, zero and invalid cases. Sampling-design uncertainty and area-adjusted estimators remain open. |
+| S21-LC-11 | Pontius quantity disagreement | Map comparison metric | Partial | Added a named public function and independent analytic fixtures; defined against reference-row/prediction-column confusion counts. Primary-source and sampling-design interpretation review remain open. |
+| S21-LC-12 | Pontius allocation disagreement | Map comparison metric | Partial | Added a named public function and identity tests showing quantity plus allocation disagreement equals 1 minus overall accuracy for the stated count convention; primary-source review remains open. |
 
 ### Ecosystem accounting — page 44
 

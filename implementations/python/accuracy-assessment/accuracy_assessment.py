@@ -297,3 +297,70 @@ def ensemble_crps(observed, ensemble_members, sample_weight=None):
         pairwise = sum(abs(a-b) for a in row for b in row) / (2.0*m*m)
         scores.append(first-pairwise)
     return sum(w*score for w, score in zip(weights, scores)) / sum(weights)
+
+
+def quantity_disagreement(matrix):
+    """Pontius quantity disagreement for reference-row/prediction-column counts."""
+    return accuracy_metrics(matrix)["quantity_disagreement"]
+
+
+def allocation_disagreement(matrix):
+    """Pontius allocation disagreement for reference-row/prediction-column counts."""
+    return accuracy_metrics(matrix)["allocation_disagreement"]
+
+
+def cramers_v(contingency):
+    """Uncorrected Cramer's V for a non-negative integer contingency table.
+
+    Zero-margin rows and columns are excluded. Returns None when fewer than
+    two non-empty rows or columns remain. This is an association effect size,
+    not a significance test; use a separately justified inferential procedure
+    when uncertainty or p-values are required.
+    """
+    rows = [list(row) for row in contingency]
+    if not rows or any(len(row) != len(rows[0]) for row in rows) or len(rows[0]) == 0:
+        raise ValueError("contingency table must be non-empty and rectangular")
+    if any(isinstance(value, bool) or not isinstance(value, int) or value < 0
+           for row in rows for value in row):
+        raise ValueError("contingency counts must be non-negative integers")
+    row_totals = [sum(row) for row in rows]
+    col_totals = [sum(rows[i][j] for i in range(len(rows))) for j in range(len(rows[0]))]
+    active_rows = [i for i, total in enumerate(row_totals) if total > 0]
+    active_cols = [j for j, total in enumerate(col_totals) if total > 0]
+    if len(active_rows) < 2 or len(active_cols) < 2:
+        return None
+    n = sum(row_totals)
+    chi_squared = 0.0
+    for i in active_rows:
+        for j in active_cols:
+            expected = row_totals[i] * col_totals[j] / n
+            observed = rows[i][j]
+            chi_squared += (observed - expected) ** 2 / expected
+    denominator = n * min(len(active_rows) - 1, len(active_cols) - 1)
+    return sqrt(max(0.0, chi_squared / denominator))
+
+
+def mean_absolute_class_area_error(reference_areas, estimated_areas, class_weights=None):
+    """Mean absolute class-area error in the supplied area units.
+
+    Arrays must use the same class order and area units. By default this is
+    the unweighted macro-average across classes; optional non-negative class
+    weights define an explicit weighted average. This is not an area-adjusted
+    accuracy estimator and does not account for sampling variance.
+    """
+    reference = [float(value) for value in reference_areas]
+    estimated = [float(value) for value in estimated_areas]
+    if not reference or len(reference) != len(estimated):
+        raise ValueError("reference and estimated class areas must have equal non-zero lengths")
+    if any(not isfinite(value) or value < 0 for value in reference + estimated):
+        raise ValueError("class areas must be finite and non-negative")
+    errors = [abs(a - b) for a, b in zip(reference, estimated)]
+    if class_weights is None:
+        weights = [1.0] * len(errors)
+    else:
+        weights = [float(value) for value in class_weights]
+        if len(weights) != len(errors) or any(not isfinite(w) or w < 0 for w in weights):
+            raise ValueError("class_weights must be finite, non-negative and match classes")
+        if sum(weights) <= 0:
+            raise ValueError("class_weights must have a positive sum")
+    return sum(error * weight for error, weight in zip(errors, weights)) / sum(weights)

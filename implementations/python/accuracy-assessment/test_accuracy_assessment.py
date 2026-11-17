@@ -184,3 +184,47 @@ def test_ensemble_crps_rejects_invalid_inputs():
         ensemble_crps([1], [[float("nan")]])
     with pytest.raises(ValueError):
         ensemble_crps([1, 2], [[1]], [1, 1])
+
+
+def test_pontius_quantity_and_allocation_disagreement_named_functions():
+    from accuracy_assessment import quantity_disagreement, allocation_disagreement
+    matrix = [[2, 0], [1, 1]]
+    assert quantity_disagreement(matrix) == pytest.approx(.25)
+    assert allocation_disagreement(matrix) == pytest.approx(0)
+    assert quantity_disagreement(matrix) + allocation_disagreement(matrix) == pytest.approx(
+        1 - accuracy_metrics(matrix)["overall_accuracy"]
+    )
+
+
+def test_cramers_v_matches_independence_and_perfect_association_fixtures():
+    from accuracy_assessment import cramers_v
+    assert cramers_v([[10, 10], [10, 10]]) == pytest.approx(0)
+    assert cramers_v([[20, 0], [0, 20]]) == pytest.approx(1)
+    assert cramers_v([[20, 0, 0], [0, 20, 0]]) == pytest.approx(1)
+    assert cramers_v([[10, 0], [0, 0], [0, 10]]) == pytest.approx(1)
+    assert cramers_v([[10, 0], [0, 0]]) is None
+
+
+def test_cramers_v_rejects_invalid_contingency_tables():
+    from accuracy_assessment import cramers_v
+    for bad in ([], [[1, 2], [3]], [[1, -1], [0, 1]], [[1.0, 0], [0, 1]]):
+        with pytest.raises(ValueError):
+            cramers_v(bad)
+
+
+def test_mean_absolute_class_area_error_uses_explicit_class_weights():
+    from accuracy_assessment import mean_absolute_class_area_error
+    assert mean_absolute_class_area_error([100, 200, 300], [110, 180, 330]) == pytest.approx(20)
+    assert mean_absolute_class_area_error([100, 200], [110, 180], [3, 1]) == pytest.approx(12.5)
+    assert mean_absolute_class_area_error([0, 0], [0, 0]) == 0
+
+
+def test_mean_absolute_class_area_error_rejects_invalid_inputs():
+    from accuracy_assessment import mean_absolute_class_area_error
+    for args in (([], []), ([1], [1, 2]), ([1, -1], [1, 1]), ([1], [float("nan")])):
+        with pytest.raises(ValueError):
+            mean_absolute_class_area_error(*args)
+    with pytest.raises(ValueError):
+        mean_absolute_class_area_error([1, 2], [1, 2], [0, 0])
+    with pytest.raises(ValueError):
+        mean_absolute_class_area_error([1, 2], [1, 2], [1])
