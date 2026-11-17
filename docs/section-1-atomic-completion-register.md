@@ -108,7 +108,7 @@ This register separates source groupings into child records. It is not a claim t
 | S01-ID-20 | HEALPix | Equal-area spherical pixelisation | Verify | Verify official scheme and indexing; test equal-area and neighbour properties. |
 | S01-ID-21 | Range query | Spatial query operation | Partial | Define exact predicates and inclusive boundaries; test index-vs-scan equivalence. |
 | S01-ID-22 | k-nearest-neighbour query | Spatial query algorithm | Partial | Define metric/ties and exactness; compare with brute-force oracle. |
-| S01-ID-23 | Reverse kNN query | Spatial query algorithm | Open | Define reverse-neighbour semantics and query pruning; test brute-force sets. |
+| S01-ID-23 | Reverse kNN query | Spatial query algorithm | Partial | Exact planar 2D Euclidean baseline with inclusive kth-distance ties, one static k-d tree, strict closer-point counting and seeded differential tests against a quadratic oracle; geographic/network metrics, dynamic updates and a specialised subquadratic index remain open. |
 | S01-ID-24 | Closest-pair query | Computational geometry query | Partial | Define duplicates and metric; compare with quadratic oracle. |
 | S01-ID-25 | Spatial skyline | Spatial preference query | Open | Define dominance and preference directions; test duplicates and ties. |
 | S01-ID-26 | Top-k spatial keyword query | Spatial/text query | Open | Define text relevance, distance aggregation and pruning; compare with exhaustive ranking. |
@@ -225,3 +225,8 @@ This register separates source groupings into child records. It is not a claim t
 7. Reconcile lessons, implementation contracts, tests, notebooks, verification records and catalogue only when evidence changes.
 
 **Current conclusion:** Section 1 is atomised into child records. It remains open; the status labels are conservative triage, not a claim of completed verification.
+
+
+## Implementation reconciliation — reverse k-nearest-neighbour query
+
+The Section 1 reverse-kNN entry now links to an exact planar 2D Euclidean implementation. Its tie rule includes every data point for which the query has fewer than k strictly closer competitors. It builds a static k-d tree once, uses radius queries only to generate candidate competitors, and checks strict squared distances for membership. The package includes a separate quadratic oracle and seeded differential tests, including duplicates, ties, empty inputs and k greater than the data count. The source row moves from Open to Partial; geographic/network metrics, dynamic updates, a specialised subquadratic index and source/bibliography/rights verification remain outstanding.
