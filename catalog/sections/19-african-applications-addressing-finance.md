@@ -24,7 +24,7 @@
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Open Location Code (plus codes), geohash, what3words-style grids, S2 and H3 cell addresses | Location encoding systems / spatial indexing schemes | 40 | Partial — tested WGS84 geohash encode/decode with cell bounds and centre; Open Location Code, what3words, S2, H3 and source-entry review remain open |
+| Open Location Code (plus codes), geohash, what3words-style grids, S2 and H3 cell addresses | Location encoding systems / spatial indexing schemes | 40 | Partial — tested WGS84 geohash and full Open Location Code encode/decode with cell bounds; short-code recovery, what3words, S2, H3 and source-entry review remain open |
 | Descriptive and landmark-based geocoding, building-based addressing, address-free geocoding for informal settlements | Geocoding approaches / addressing workflows | 40 | Not checked — intake only |
 | Address generation from street segments and building footprints, address quality scoring | Address assignment / data quality methods | 40 | Not checked — intake only |
 
