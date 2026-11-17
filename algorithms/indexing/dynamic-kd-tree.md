@@ -13,10 +13,17 @@ axis with greatest coordinate spread and partitions by deterministic median.
 
 The implementation is a reference design, not a worst-case logarithmic
 dynamic index. Rebuilding sorts each subtree, so a rebuild of m active points
-costs O(m log m), and adversarial updates can trigger repeated rebuilds.
+costs O(m log² m), and adversarial updates can trigger repeated rebuilds.
 Queries remain distribution-dependent and the index is limited to planar
 Euclidean coordinates.
 
 ## Runnable implementation
 
 [Dynamic and static k-d tree package](../../implementations/python/kd-tree/README.md).
+
+
+## Reference
+
+The balancing approach is inspired by partial-rebuilding and scapegoat-tree methods; this implementation is a k-d-tree adaptation and does not claim the original binary-search-tree amortized bounds.
+
+- Galperin, I., & Rivest, R. L. (1993). Scapegoat Trees. *Proceedings of the Fourth Annual ACM-SIAM Symposium on Discrete Algorithms*, 165–174.

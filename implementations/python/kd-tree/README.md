@@ -51,7 +51,7 @@ becomes too large. The alpha parameter must lie strictly between 0.5 and 1.
 All query methods ignore deleted records and preserve stable-ID tie-breaking.
 
 This is a small dynamic reference implementation, not a disk-backed R-tree
-or a worst-case logarithmic update guarantee. A rebuild costs O(m log m)
+or a worst-case logarithmic update guarantee. A rebuild costs O(m log² m)
 for a subtree of m active points in this implementation; adversarial update
 sequences can trigger repeated rebuilds. Query performance remains
 distribution-dependent.

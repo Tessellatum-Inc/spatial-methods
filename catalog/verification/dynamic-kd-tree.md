@@ -16,8 +16,12 @@ brute-force oracles after each mutation. Additional tests cover duplicate
 coordinates, stable IDs, deletion of unknown IDs, empty trees and invalid
 alpha/ID/coordinate inputs.
 
+## Reference
+
+The subtree-rebuilding idea is related to Galperin and Rivest's scapegoat trees (SODA 1993). The present k-d-tree adaptation uses a direct local balance/tombstone threshold and has no inherited complexity proof.
+
 ## Limits
 
-Subtree rebuilds sort active points and can be O(m log m). The implementation
+Subtree rebuilds sort active points and can be O(m log² m). The implementation
 does not claim worst-case logarithmic updates, persistence, concurrency,
 disk-backed storage, high-dimensional efficiency or geodesic distance.
