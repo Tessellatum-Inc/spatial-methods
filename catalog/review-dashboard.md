@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 693 | Rows with a source-entry review status in the section indexes |
-| Partial | 195 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 498 | The source wording is preserved, but no independent review is recorded |
+| Partial | 196 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 497 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -37,13 +37,13 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 16 — Flows, regions, deformation and marine | 25 | 9 | 16 |
 | 17 — Geometry, scalability, design and siting | 26 | 11 | 15 |
 | 18 — Moving objects, routing, transit and water | 32 | 7 | 25 |
-| 19 — African applications, addressing and finance | 32 | 0 | 32 |
+| 19 — African applications, addressing and finance | 32 | 1 | 31 |
 | 20 — Indices, microwave, events and information | 24 | 7 | 17 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 3 | 23 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 6 | 22 |
 | **Total** | **693** | **185** | **508** |
 
-The previous by-section subtotal table summed to **185 partial** and **508 intake-only**, while the aggregate count at the start of this implementation pass was **189 partial** and **504 intake-only**; those views differed by four rows. Three Section 9 source rows and three Section 3 source rows have since moved from intake-only to partial following implementation and test additions, giving a provisional aggregate of **195 partial** and **498 intake-only** across **693 rows**, with zero fully verified. The by-section subtotals in this dashboard still have a four-row discrepancy against the aggregate labels and must be regenerated from the live indexes before being treated as authoritative. The row count is recalculated from the 22 current indexes; three rows previously included in the dashboard total were not present in the current source-entry tables. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Some section indexes have changed row counts since the prior snapshot, so the table below supersedes all historical totals in the reconciliation notes.
+The previous by-section subtotal table summed to **185 partial** and **508 intake-only**, while the aggregate count at the start of this implementation pass was **189 partial** and **504 intake-only**; those views differed by four rows. Three Section 9 source rows and three Section 3 source rows have since moved from intake-only to partial following implementation and test additions, giving a provisional aggregate of **196 partial** and **497 intake-only** across **693 rows**, with zero fully verified. The by-section subtotals in this dashboard still have a four-row discrepancy against the aggregate labels and must be regenerated from the live indexes before being treated as authoritative. The row count is recalculated from the 22 current indexes; three rows previously included in the dashboard total were not present in the current source-entry tables. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Some section indexes have changed row counts since the prior snapshot, so the table below supersedes all historical totals in the reconciliation notes.
 
 ## How to interpret this
 
