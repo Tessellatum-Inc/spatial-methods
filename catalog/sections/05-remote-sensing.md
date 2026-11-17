@@ -64,7 +64,7 @@ The canonical records now cover the spectral-index family, global Otsu threshold
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Ground filtering: CSF, progressive morphological; ICP registration; RANSAC shape fitting | Point-cloud filtering / registration / model fitting | 9 | Partial — tested rasterised progressive morphological ground filtering and point-to-point/point-to-plane/GICP/NDT registration baselines exist; CSF and RANSAC geometric fitting remain open |
+| Ground filtering: CSF, progressive morphological; ICP registration; RANSAC shape fitting | Point-cloud filtering / registration / model fitting | 9 | Partial — tested rasterised progressive morphological ground filtering, point-to-point/point-to-plane/GICP/NDT registration and single-plane RANSAC fitting exist; CSF and multi-primitive RANSAC remain open |
 | Tree segmentation (local maxima, watershed, Dalponte), canopy height models, crown delineation | Segmentation methods / derived surface models | 9 | Not checked — intake only |
 | Classification, voxelization, strip adjustment, GEDI waveform processing, ICESat-2 ground photon classification | Point-cloud processing / sensor-specific workflows | 9 | Not checked — intake only |
 | Deep point networks: PointNet, PointNet++, KPConv, Point Transformer, RandLA-Net, MinkowskiNet | Neural network architectures for point clouds | 9 | Not checked — intake only |
