@@ -29,10 +29,12 @@ anisotropy, barriers, network distances or prediction uncertainty.
 
 - Shepard, D. (1968). A two-dimensional interpolation function for
   irregularly-spaced data. *Proceedings of the 23rd ACM National Conference*,
-  517–523. https://doi.org/10.1145/800186.806877.
+  517–523. https://doi.org/10.1145/800186.810616.
 - Franke, R., & Nielson, G. (1980). Smooth interpolation of large sets of
   scattered data. *International Journal for Numerical Methods in
   Engineering*, 15, 1691–1704. https://doi.org/10.1002/nme.1620151110.
 - Renka, R. J. (1988). Multivariate interpolation of large sets of scattered
   data. *ACM Transactions on Mathematical Software*, 14, 139–148.
   https://doi.org/10.1145/42288.42291.
+- NAG Library, `nag_2d_shep_interp (e01sgc)`, documentation for the local-quadratic
+  modified Shepard method: https://d2mvzyuse3lwjc.cloudfront.net/pdfs/NAG26/Manual/html/e01/e01sgc.html.
