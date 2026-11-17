@@ -47,10 +47,14 @@ The source groups raster operations, terrain analysis, hydrological modelling, g
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Chi analysis, slope-area analysis, knickpoint detection, drainage basin morphometry | Geomorphic analysis methods / morphometric measures | 7 | Partially implemented: channel chi integration, log slope-area OLS and moving-window chord-residual knickpoint screening have tested reference methods; drainage-basin morphometry and automated channel extraction/segmentation remain open |
+| Chi analysis, slope-area analysis, knickpoint detection, drainage basin morphometry | Geomorphic analysis methods / morphometric measures | 7 | Partially implemented: channel chi integration, log slope-area OLS, moving-window chord-residual knickpoint screening and formula-tested basin morphometric measures (form factor, elongation, circularity, drainage density, stream frequency, bifurcation, relief ratio and ruggedness) are implemented; automated channel extraction/segmentation, basin-boundary derivation and source-entry review remain open |
 | Landslide susceptibility (frequency ratio, logistic regression), SHALSTAB, weights of evidence | Susceptibility models / statistical methods | 7 | Partially implemented: categorical frequency-ratio mapping and ridge-regularized binary logistic regression have tested baselines; SHALSTAB, weights of evidence and spatial validation workflows remain open |
 | Glacier mass balance, snow models, avalanche runout | Cryosphere models / hazard modelling | 7 | Not checked — intake only |
 | Erosion: USLE, RUSLE, hydraulic and thermal erosion simulation | Empirical models / physical simulation | 7 | Partially implemented: a tested R×K×LS×C×P factor product and conventional slope-length/steepness factor are available; regional factor derivation, flow-accumulation-aware LS, sediment delivery and hydraulic/thermal erosion simulation remain open |
+
+### Drainage-basin morphometry
+
+The [drainage-basin morphometry package](../../implementations/python/drainage-basin-morphometry/README.md) computes shape, relief and network measures from caller-supplied basin area, perimeter, basin length, relief, channel lengths and stream counts by order. It does not derive a basin boundary, extract channels or infer stream order from a DEM.
 
 ## Coastal
 

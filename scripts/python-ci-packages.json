@@ -228,6 +228,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/drainage-basin-morphometry",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/drought-indices",
     "pythonpath": ""
   },
