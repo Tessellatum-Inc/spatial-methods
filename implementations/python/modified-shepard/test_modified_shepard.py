@@ -38,7 +38,7 @@ def test_linear_fallback_handles_locally_collinear_neighbourhoods():
                        [0.,1.],[1.,1.],[2.,1.],[3.,1.],[4.,1.]])
     values = 2 + points[:,0] - 3*points[:,1]
     model = ModifiedShepard2D(points, values, nw=5, nq=5)
-    assert model.predict([[1.5, .5]]) == pytest.approx([.5], abs=1e-9)
+    assert model.predict([[1.5, .5]]) == pytest.approx([2.0], abs=1e-9)
 
 
 @pytest.mark.parametrize("nw,nq", [(1, 5), (2, 4), (20, 5), (5, 20), (True, 5), (5, 5.5)])

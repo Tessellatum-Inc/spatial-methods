@@ -142,7 +142,7 @@ class ModifiedShepard2D:
                 offset = query - self.points_[index]
                 basis = _local_basis(offset.reshape(1, 2), self.fit_radii_[index],
                                      quadratic=self._quadratic_flags[index])
-                value = self.values_[index] + float(basis @ self._coefficients[index][:basis.shape[1]])
+                value = self.values_[index] + float((basis @ self._coefficients[index][:basis.shape[1]])[0])
                 node_predictions.append(value)
             denominator = float(weights.sum())
             estimate = float(np.dot(weights, np.asarray(node_predictions)) / denominator)
