@@ -469,3 +469,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Contextual thermal-hotspot screening](remote-sensing/contextual-thermal-hotspot.md): local-median/MAD anomaly baseline with an absolute temperature threshold.
 
 - [Point-cloud voxelization](photogrammetry/point-cloud-voxelization.md): sparse XYZ voxel indexing and per-cell summaries.
+
+- [Vecchia Gaussian-process approximation](geostatistics/vecchia-approximation.md): nearest-predecessor Gaussian likelihood factorisation with an exact all-neighbour check.
