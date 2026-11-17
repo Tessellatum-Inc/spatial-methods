@@ -3,7 +3,6 @@ from collections import Counter
 import ast
 import json
 from pathlib import Path
-import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,7 +20,6 @@ python_dirs = {
 }
 manifest_path = ROOT / "scripts" / "python-ci-packages.json"
 package_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-manifest_dirs = [entry["directory"] for entry in package_manifest]
 if not isinstance(package_manifest, list) or any(
     not isinstance(entry, dict)
     or set(entry) != {"directory", "pythonpath"}
@@ -30,6 +28,7 @@ if not isinstance(package_manifest, list) or any(
     for entry in package_manifest
 ):
     raise SystemExit("Python CI package manifest has an invalid entry schema")
+manifest_dirs = [entry["directory"] for entry in package_manifest]
 if "scripts/run_python_package_tests.py" not in workflow:
     raise SystemExit("Workflow does not invoke the sharded Python package runner")
 
