@@ -43,5 +43,7 @@ def test_growing_degree_days_preserves_missing_and_validates():
     with pytest.raises(ValueError):
         growing_degree_days([20], [10], base_temperature=5)
     with pytest.raises(ValueError):
+        growing_degree_days([np.inf], [20], base_temperature=5)
+    with pytest.raises(ValueError):
         growing_degree_days([5], [10], base_temperature=12,
                             upper_temperature=10)
