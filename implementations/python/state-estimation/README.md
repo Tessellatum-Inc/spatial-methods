@@ -38,3 +38,6 @@ updates each member. This differs from ETKF: the stochastic EnKF uses
 perturbed observations, while ETKF uses a deterministic ensemble-space
 square-root transform. Both are analysis steps only; neither includes model
 forecast propagation, localization or inflation.
+
+
+See the separate [stochastic perturbed-observation EnKF method](../../../methods/stochastic-ensemble-kalman-filter.md) and [verification record](../../../catalog/verification/stochastic-ensemble-kalman-filter.md).
