@@ -25,3 +25,6 @@ print(sites, expected, contributions)
 The returned site tuple contains one candidate index per deployed unit; repeated indices mean co-location. The expected value is the sum of demand weight multiplied by the probability that at least one eligible unit is available.
 
 See the [canonical lesson](../../../algorithms/optimization/mexclp.md) and [intern walkthrough](implementation-walkthrough.md). This is not a hypercube queueing model or a production-scale optimiser.
+
+
+The solver also accepts a candidate-site busy-fraction vector. Under the same independent-availability assumption, the probability that all selected units covering demand i are busy is the product of their site-specific busy probabilities. This relaxes the equal-busy-probability assumption only; it is not the adjusted MEXCLP dependence correction or a hypercube queueing model.

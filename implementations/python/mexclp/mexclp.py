@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from itertools import combinations_with_replacement
-from math import isfinite
+from math import isfinite, prod
 from numbers import Real
 from typing import Sequence
 
@@ -11,7 +11,7 @@ def solve_mexclp(
     costs: Sequence[Sequence[float]],
     p: int,
     service_threshold: float,
-    busy_fraction: float,
+    busy_fraction: float | Sequence[float],
     *,
     demand_weights: Sequence[float] | None = None,
 ) -> tuple[tuple[int, ...], float, tuple[float, ...]]:
@@ -39,14 +39,26 @@ def solve_mexclp(
         raise ValueError("service_threshold must be finite and non-negative") from exc
     if not isfinite(threshold) or threshold < 0:
         raise ValueError("service_threshold must be finite and non-negative")
-    if not isinstance(busy_fraction, Real) or isinstance(busy_fraction, bool):
-        raise ValueError("busy_fraction must be a real numeric value")
-    try:
-        q = float(busy_fraction)
-    except (TypeError, ValueError, OverflowError) as exc:
-        raise ValueError("busy_fraction must be in [0, 1)") from exc
-    if not isfinite(q) or not 0 <= q < 1:
-        raise ValueError("busy_fraction must be in [0, 1)")
+    if isinstance(busy_fraction, Real) and not isinstance(busy_fraction, bool):
+        try:
+            q = float(busy_fraction)
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError("busy_fraction must be in [0, 1) or one value per site") from exc
+        site_busy = [q] * len(matrix[0])
+    else:
+        if isinstance(busy_fraction, (str, bytes)):
+            raise ValueError("busy_fraction must be numeric or a sequence of site values")
+        try:
+            raw_busy = list(busy_fraction)
+            if any(isinstance(value, bool) for value in raw_busy):
+                raise ValueError
+            site_busy = [float(value) for value in raw_busy]
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError("busy_fraction must be numeric or a sequence of site values") from exc
+        if len(site_busy) != len(matrix[0]):
+            raise ValueError("site-specific busy_fraction must match candidate sites")
+    if any(not isfinite(value) or not 0 <= value < 1 for value in site_busy):
+        raise ValueError("each busy fraction must be finite and in [0, 1)")
     n, m = len(matrix), len(matrix[0])
     if demand_weights is None:
         weights = [1.0] * n
@@ -65,7 +77,7 @@ def solve_mexclp(
     for sites in combinations_with_replacement(range(m), p):
         counts = [sum(1 for site in sites if eligible[i][site]) for i in range(n)]
         contributions = tuple(
-            weights[i] * (1.0 - q ** counts[i]) for i in range(n)
+            weights[i] * (1.0 - prod(site_busy[site] for site in sites if eligible[i][site])) for i in range(n)
         )
         value = sum(contributions)
         if value > best_value or (value == best_value and (best_sites is None or sites < best_sites)):

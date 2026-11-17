@@ -46,11 +46,11 @@ $$
 \binom{m+p-1}{p}
 $$
 
-for p greater than zero. This is an exact small-instance reference, not a metropolitan-scale optimisation method. The solver maximises expected covered demand and uses lexicographic candidate-index order to break ties.
+for p greater than zero. This is an exact small-instance reference, not a metropolitan-scale optimisation method. The solver maximises expected covered demand and uses lexicographic candidate-index order to break ties. It accepts either one common busy fraction or one independent busy fraction per candidate site; for the latter, the unavailable probability is the product of the busy fractions for the covering units.
 
 ## Assumptions and limits
 
-- Every unit has the same busy probability q.
+- The scalar form assumes every unit has the same busy probability q. The site-vector extension allows different probabilities by candidate site but retains independence.
 - Unit busy states are treated as independent.
 - Busy probability does not vary by location, time of day, unit or demand area.
 - The input cost matrix and threshold determine which units can reach each demand location.
@@ -76,4 +76,4 @@ MEXCLP is not a queueing model. An M/M/c queue estimates waiting in a shared ser
 - Batta, R., Dolan, J. M. and Krishnamurthy, N. (1989), “The maximal expected covering location problem: Revisited,” Transportation Science, 23(4), 277–287. https://doi.org/10.1287/trsc.23.4.277
 - Daskin, M. S. (2013), Network and Discrete Location: Models, Algorithms, and Applications, 2nd ed., Wiley.
 
-**Scope:** exact enumeration for small finite candidate sets, fixed p, one common service threshold, one common busy fraction and independent unit availability. It is a transparent MEXCLP teaching baseline, not a reproduction of the adjusted MEXCLP or hypercube queueing models.
+**Scope:** exact enumeration for small finite candidate sets, fixed p, one common service threshold and independent unit availability, with either a common busy fraction or site-specific busy fractions. It does not implement the adjusted MEXCLP dependence correction. It is a transparent MEXCLP teaching baseline, not a reproduction of the adjusted MEXCLP or hypercube queueing models.

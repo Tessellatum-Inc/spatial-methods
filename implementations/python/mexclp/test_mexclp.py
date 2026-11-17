@@ -77,3 +77,27 @@ def test_non_numeric_busy_fraction_raises_value_error(busy):
 def test_non_numeric_threshold_raises_value_error(threshold):
     with pytest.raises(ValueError, match="service_threshold"):
         solve_mexclp([[1]], 1, threshold, 0.2)
+
+
+def test_heterogeneous_site_busy_fractions_change_expected_coverage():
+    costs = [[1, 9], [9, 1]]
+    sites, value, contributions = solve_mexclp(
+        costs, 2, 2, [0.2, 0.6], demand_weights=[100, 100]
+    )
+    assert sites == (0, 1)
+    assert contributions == pytest.approx((80, 40))
+    assert value == pytest.approx(120)
+
+
+def test_equal_site_busy_vector_matches_scalar_mexclp():
+    costs = [[1, 1], [1, 9], [9, 1]]
+    scalar = solve_mexclp(costs, 3, 2, 0.3, demand_weights=[10, 20, 30])
+    vector = solve_mexclp(costs, 3, 2, [0.3, 0.3], demand_weights=[10, 20, 30])
+    assert vector == scalar
+
+
+@pytest.mark.parametrize("busy", [[0.2], [0.2, 1.0], [0.2, -0.1],
+                                  [0.2, float("nan")], [True, 0.2], "0.2"])
+def test_invalid_site_specific_busy_fractions_are_rejected(busy):
+    with pytest.raises(ValueError, match="busy_fraction"):
+        solve_mexclp([[1, 2]], 1, 2, busy)

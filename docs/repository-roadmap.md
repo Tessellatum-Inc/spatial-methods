@@ -168,7 +168,7 @@ We will keep working through those gaps before designing the membership tiers, a
 - [x] Add maximal covering location as a distinct model from p-median and 2SFCA, with an at-most-p budget, explicit service threshold, weighted coverage objective, deterministic tie-breaking, exact small-instance enumeration, tests, intern walkthrough, exercise and visual lab.
 - [x] Add the new package and notebook to the Python CI matrix and execution list.
 - [x] Add capacitated p-median with a separate capacity-load input, deterministic exact tiny-instance enumeration, infeasibility handling, tests, intern walkthrough, exercise and visual lab.
-- [ ] Extend location science with stochastic/robust capacity, adjusted MEXCLP variants and hypercube queueing; distinguish these from the current deterministic and equal-busy-probability teaching baselines.
+- [ ] Extend location science with stochastic/robust capacity, the adjusted MEXCLP dependence correction and hypercube queueing. A tested independent site-specific busy-probability extension now complements the equal-busy baseline; it is not the adjusted MEXCLP.
 
 
 - [x] Add discrete p-center as a distinct minimax facility-location model, with exact small-instance enumeration, assignment output, tests, intern walkthrough, exercise and visual lab.
