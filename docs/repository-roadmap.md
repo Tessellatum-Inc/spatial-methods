@@ -25,7 +25,7 @@ The goal is not to fill folders or publish pages quickly. The goal is a collecti
 - [x] Publish a coverage matrix that distinguishes captured material from researched material.
 - [x] Define the [compendium completion standard](compendium-completion-standard.md), including record-kind-specific deliverables, implementation tiers, notebook criteria and release gates.
 - [x] Extract and classify the source entries across all 22 sections; preserve original groupings and labels.
-- [ ] Verify names, variants and claims against authoritative sources.
+- [ ] Verify names, variants and claims against authoritative sources. DE-9IM and RCC-8 now have a bounded tested Shapely-backed record; cardinal-direction calculus and independent primary-source verification remain open.
 - [x] Record source-page provenance in the item-level section indexes.
 - [ ] Map duplicates, variants and cross-domain relationships across the full catalogue.
 - [x] Define a primary record-type taxonomy and classification rules.

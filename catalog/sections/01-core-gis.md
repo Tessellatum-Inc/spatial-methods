@@ -44,7 +44,7 @@ This is the first item-level catalogue pass. The catalogue distinguishes a broad
 | Source entry | Provisional kind | Source page | Current record | Verification status |
 |---|---|---:|---|--- |
 | Nearest neighbor, distance matrices (Euclidean, geodesic), spatial joins | Spatial queries / distance operations | 2 | [Filter-and-refine spatial join](../../algorithms/query-processing/filter-refine-spatial-join.md) covers indexed spatial joins; [k-d tree nearest-neighbour search](../../algorithms/indexing/kd-tree-nearest-neighbour.md) is a foundational point-search draft; distance matrices and geodesic nearest-neighbour methods remain unverified | Partial — related record exists; source-entry review pending |
-| DE-9IM topological relations, RCC-8, cardinal direction relations | Formal relation models / qualitative spatial relations | 2 | Not yet catalogued | Not checked — intake only |
+| DE-9IM topological relations, RCC-8, cardinal direction relations | Formal relation models / qualitative spatial relations | 2 | [DE-9IM and RCC-8 topological relations](../../algorithms/geometry/topological-relations.md) now exposes the nine-intersection matrix and all eight RCC-8 relations for valid polygonal regions; cardinal-direction calculus remains open | Partial — DE-9IM/RCC-8 wrapper and relation tests added; cardinal-direction models and source-entry review remain open |
 | Spatial weights: contiguity, distance band, kNN | Weight-matrix construction methods | 2 | [Spatial weights matrix](../../methods/spatial-weights-matrix.md) covers Rook, Queen, distance-band and kNN definitions, transformations and isolates | Partial — related record exists; source-entry review pending |
 
 ## Network analysis
