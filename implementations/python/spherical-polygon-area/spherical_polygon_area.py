@@ -66,6 +66,6 @@ def spherical_polygon_area(exterior, *, holes=None, radius=6371008.8):
     if holes is not None:
         for index, ring in enumerate(holes):
             hole_area += abs(_signed_unit_sphere_area(_ring_vectors(ring, f"hole {index}")))
-    if hole_area > outer + 1e-10:
+    if hole_area >= outer - 1e-10:
         raise ValueError("total hole area cannot exceed exterior area")
     return max(0.0, outer - hole_area) * r * r

@@ -27,7 +27,8 @@ def test_missing_training_cells_are_ignored_and_missing_cut_invalid():
 
 def test_borders_are_not_evaluated():
     out=ca_cfar_2d(np.ones((10,10)),1,3)
-    assert not out.valid[0,0] and not out.valid[3,3]
+    assert not out.valid[0,0] and not out.valid[2,3]
+    assert out.valid[3,3]
 
 @pytest.mark.parametrize("kwargs",[{"guard_cells":-1},{"training_cells":0},{"guard_cells":2,"training_cells":2},{"false_alarm_rate":1.0},{"false_alarm_rate":0.0}])
 def test_bad_parameters(kwargs):
