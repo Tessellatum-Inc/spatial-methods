@@ -4,7 +4,7 @@ K-medoids partitions observations into k groups represented by observed
 objects. Given a symmetric dissimilarity matrix D, the objective is
 
 \[
-\\min_{M: |M|=k} \\sum_i \\min_{m\\in M} D_{im}.
+\min_{M: |M|=k} \sum_i \min_{m\in M} D_{im}.
 \]
 
 Unlike k-means, this objective accepts arbitrary dissimilarities and each
@@ -13,7 +13,12 @@ uses a greedy BUILD phase followed by SWAP improvements. The implementation
 uses deterministic input-order tie breaking and stops when no single
 medoid/non-medoid exchange improves the objective.
 
-CLARANS (Clustering Large Applications based upon RANdomized Search) samples\nmedoid/non-medoid swap neighbours and accepts improving moves until a\nconfigured run of unsuccessful samples identifies a local minimum. Repeated\nlocal searches retain the best candidate found.\n\nCLARA (Clustering LARge Applications) runs PAM on repeated samples and
+CLARANS (Clustering Large Applications based upon RANdomized Search) samples
+medoid/non-medoid swap neighbours and accepts improving moves until a
+configured run of unsuccessful samples identifies a local minimum. Repeated
+local searches retain the best candidate found.
+
+CLARA (Clustering LARge Applications) runs PAM on repeated samples and
 evaluates each resulting medoid set against all observations. Sampling can
 reduce the expensive search, but the dense teaching implementation still
 stores the full dissimilarity matrix.
@@ -25,8 +30,8 @@ See the [tested Python implementation](../../implementations/python/k-medoids/RE
 
 ## Scope and limitations
 
-This package covers PAM k-medoids and sample-based CLARA only. It does not
-implement CLARANS, constrained or equal-size k-means, spatially contiguous
+This package covers PAM k-medoids, sample-based CLARA and randomized CLARANS.
+It does not implement constrained or equal-size k-means, spatially contiguous
 regionalisation, automatic cluster-count selection or fuzzy memberships.
 The matrix is dense and requires O(n²) storage. PAM's repeated candidate
 swaps are intended for modest datasets, not very large data without further

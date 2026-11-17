@@ -44,6 +44,7 @@ def test_pam_is_deterministic_and_handles_k_equal_n():
     all_medoids = pam(distances, len(distances))
     assert all_medoids["cost"] == pytest.approx(0)
     assert set(all_medoids["medoids"]) == set(range(len(distances)))
+    np.testing.assert_array_equal(all_medoids["labels"], np.arange(len(distances)))
 
 
 def test_pam_rejects_invalid_dissimilarity_matrices():

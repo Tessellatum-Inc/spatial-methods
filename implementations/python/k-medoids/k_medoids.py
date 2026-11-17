@@ -208,7 +208,7 @@ def clarans(
         medoids = np.arange(n, dtype=int)
         return {
             "medoids": medoids,
-            "labels": np.zeros(n, dtype=int),
+            "labels": np.arange(n, dtype=int),
             "cost": 0.0,
             "local_minima": 1,
             "neighbor_evaluations": 0,
