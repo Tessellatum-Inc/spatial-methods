@@ -16,3 +16,7 @@ The linked implementation returns predictions and a plug-in MSE
 approximation. Its MSE omits variance-component estimation uncertainty.
 This area-level model is distinct from unit-level mixed models, direct
 Horvitz-Thompson estimation and multilevel regression with poststratification.
+
+
+## Source
+- Fay, R. E., & Herriot, R. A. (1979). Estimates of income for small places: An application of James-Stein procedures to census data. *Journal of the American Statistical Association*, 74(366a), 269–277. https://doi.org/10.1080/01621459.1979.10482505.

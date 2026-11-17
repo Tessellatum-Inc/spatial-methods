@@ -17,3 +17,7 @@ probabilities are required to estimate the variance from the observed
 sample. A population mean is returned when population size is supplied.
 This estimator is design-based and distinct from Fay-Herriot model-based
 shrinkage and model-assisted estimators.
+
+
+## Source
+- Horvitz, D. G., & Thompson, D. J. (1952). A generalization of sampling without replacement from a finite universe. *Journal of the American Statistical Association*, 47(260), 663–685. https://doi.org/10.1080/01621459.1952.10483446.
