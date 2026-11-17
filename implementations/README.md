@@ -277,3 +277,5 @@ These are connected teaching materials, not interchangeable copies of the same e
 - [Marching cubes](python/marching-cubes/README.md): scikit-image Lewiner integration with explicit voxel spacing and origin.
 
 - [Thermal hotspot screening](python/thermal-hotspot-detection/README.md): robust local-context anomaly screening with NaN-aware median/MAD diagnostics.
+
+- [Point-cloud voxelization](python/point-cloud-voxelization/README.md): sparse voxel keys, point mappings, counts, centroids and coordinate extrema.
