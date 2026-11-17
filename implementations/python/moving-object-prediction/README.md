@@ -1,7 +1,8 @@
 # Moving-object prediction baseline
 
-Pure-Python constant-velocity prediction, uncertainty-disk rectangle queries
-a continuous linear-motion rectangle query, and a displacement-error dead-reckoning update policy.
+Pure-Python constant-velocity prediction, uncertainty-disk rectangle queries,
+continuous linear-motion rectangle queries, and a displacement-error
+dead-reckoning update policy.
 
 ## State and units
 
@@ -16,7 +17,9 @@ around the predicted point intersects an axis-aligned rectangle. The radius
 is a deterministic bounded-error envelope, not a probabilistic confidence
 region. Rectangle and disk boundaries are inclusive.
 
-The continuous query uses Liang–Barsky segment clipping to find the first contact of a constant-velocity point path with a closed rectangle during the requested horizon. It detects crossings even when both endpoints are outside. It does not include an uncertainty radius; use the separate endpoint query for deterministic disk envelopes.\n\nThe dead-reckoning policy compares the observed point with the constant-
+The continuous query uses Liang–Barsky segment clipping to find the first contact of a constant-velocity point path with a closed rectangle during the requested horizon. It detects crossings even when both endpoints are outside. It does not include an uncertainty radius; use the separate endpoint query for deterministic disk envelopes.
+
+The dead-reckoning policy compares the observed point with the constant-
 velocity prediction and requests an update when Euclidean error exceeds the
 tolerance. The comparison is strict.
 

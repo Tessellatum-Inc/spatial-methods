@@ -103,3 +103,7 @@ def test_continuous_query_rejects_invalid_and_overflowing_states():
         continuous_range_query({"bad": (0, 0, 1)}, (0, 0, 1, 1), 1)
     with pytest.raises(ValueError, match="overflow"):
         continuous_range_query({"fast": (0, 0, 1e308, 0)}, (0, 0, 1, 1), 1e308)
+
+def test_extremely_large_integer_is_rejected_cleanly():
+    with pytest.raises(ValueError, match="finite float"):
+        predict_position((10**1000, 0), (0, 0), 1)

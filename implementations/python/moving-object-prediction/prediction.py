@@ -5,9 +5,12 @@ from collections.abc import Mapping, Sequence
 
 
 def _number(value, name):
-    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise ValueError(f"{name} must be a finite number")
-    result = float(value)
+    try:
+        result = float(value)
+    except (OverflowError, ValueError) as exc:
+        raise ValueError(f"{name} must be representable as a finite float") from exc
     if not math.isfinite(result):
         raise ValueError(f"{name} must be representable as a finite float")
     return result
