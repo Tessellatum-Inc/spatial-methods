@@ -1,6 +1,6 @@
 """Directional empirical variograms and bounded theoretical model fitting."""
 from __future__ import annotations
-from math import atan2, cos, degrees, isfinite, radians, sin
+from math import atan2, comb, cos, degrees, isfinite, radians, sin
 import numpy as np
 from scipy.optimize import least_squares
 
@@ -23,6 +23,21 @@ def variogram_model(lags,*,model="spherical",nugget=0.0,partial_sill=1.0,range_=
     result=n+s*shape
     return np.where(h==0.0,0.0,result)
 
+def genton_semivariance(increments):
+    """Genton (1998) Q_n-based robust semivariance for one lag class."""
+    values = np.asarray(increments, dtype=float)
+    if values.ndim != 1 or len(values) < 2 or not np.isfinite(values).all():
+        raise ValueError("increments must be a finite 1D array with at least two values")
+    differences = np.abs(values[:, None] - values[None, :])
+    upper = differences[np.triu_indices(len(values), k=1)]
+    k = comb(len(values) // 2 + 1, 2)  # one-based order statistic
+    q_n = 2.2191 * float(np.partition(upper, k - 1)[k - 1])
+    result = 0.5 * q_n * q_n
+    if not isfinite(result):
+        raise ValueError("Genton estimate overflowed")
+    return result
+
+
 def directional_semivariogram(points,values,bin_edges,*,azimuth_deg=0.0,
                                tolerance_deg=22.5,bandwidth=None,estimator="matheron"):
     """Compute an undirected directional semivariogram.
@@ -40,7 +55,7 @@ def directional_semivariogram(points,values,bin_edges,*,azimuth_deg=0.0,
     if not isfinite(tol) or not 0<=tol<=90: raise ValueError("tolerance_deg must be in [0, 90]")
     if bandwidth is not None and (not isfinite(float(bandwidth)) or float(bandwidth)<0):
         raise ValueError("bandwidth must be finite and non-negative")
-    if estimator not in {"matheron","cressie"}: raise ValueError("estimator must be matheron or cressie")
+    if estimator not in {"matheron","cressie","genton"}: raise ValueError("estimator must be matheron, cressie or genton")
     sums=[[] for _ in range(len(edges)-1)]
     theta=radians(az)
     for i in range(len(xy)-1):
@@ -53,12 +68,13 @@ def directional_semivariogram(points,values,bin_edges,*,azimuth_deg=0.0,
             if difference>tol or (bandwidth is not None and cross_track>float(bandwidth)): continue
             k=len(edges)-2 if distance==edges[-1] else int(np.searchsorted(edges,distance,side="right")-1)
             if k<0: continue
-            sums[k].append(abs(float(z[i]-z[j])))
+            sums[k].append(float(z[i]-z[j]) if estimator=="genton" else abs(float(z[i]-z[j])))
     output=[]
     for k,pairs in enumerate(sums):
         count=len(pairs); gamma=None
         if count:
-            if estimator=="matheron": gamma=0.5*float(np.mean(np.square(pairs)))
+            if estimator=="genton": gamma=genton_semivariance(pairs)
+            elif estimator=="matheron": gamma=0.5*float(np.mean(np.square(pairs)))
             else:
                 mean_root=float(np.mean(np.sqrt(pairs)))
                 correction=0.457+0.494/count+0.045/(count*count)

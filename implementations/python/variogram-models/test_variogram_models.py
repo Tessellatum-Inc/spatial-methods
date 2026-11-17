@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from variogram_models import variogram_model,directional_semivariogram,fit_variogram
+from variogram_models import variogram_model,directional_semivariogram,fit_variogram,genton_semivariance
 
 @pytest.mark.parametrize("model",["spherical","exponential","gaussian"])
 def test_models_are_zero_at_origin_and_approach_sill(model):
@@ -20,6 +20,28 @@ def test_directional_filter_selects_east_west_pairs():
 def test_cressie_estimator_is_finite_and_nonnegative():
     result=directional_semivariogram([(0,0),(1,0),(2,0)],[0,1,4],[0,1.5,2.5],azimuth_deg=90,estimator="cressie")
     assert all(x["semivariance"] is None or x["semivariance"]>=0 for x in result)
+
+def test_genton_qn_estimator_matches_hand_computed_order_statistic():
+    expected = 0.5 * (2.2191 ** 2)
+    assert genton_semivariance([0, 1, 2, 3]) == pytest.approx(expected)
+    assert genton_semivariance([13, 12, 11, 10]) == pytest.approx(expected)
+
+
+def test_directional_genton_estimator_uses_increment_differences():
+    result = directional_semivariogram(
+        [(0, 0), (1, 0), (2, 0), (3, 0)],
+        [0, 1, 2, 3], [0, 1.5, 3.5],
+        azimuth_deg=90, tolerance_deg=1, estimator="genton"
+    )
+    assert result[0]["pairs"] == 3
+    assert result[0]["semivariance"] == pytest.approx(0.5 * (2.2191 ** 2))
+
+
+def test_genton_requires_two_finite_increments():
+    for values in ([1], [1, float("nan")], [[1, 2]]):
+        with pytest.raises(ValueError):
+            genton_semivariance(values)
+
 
 def test_fit_recovers_spherical_parameters():
     h=np.linspace(1,20,20)
