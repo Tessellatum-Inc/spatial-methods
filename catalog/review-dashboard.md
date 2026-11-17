@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 693 | Rows with a source-entry review status in the section indexes |
-| Partial | 202 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 491 | The source wording is preserved, but no independent review is recorded |
+| Partial | 203 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 490 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -23,7 +23,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 2 — Spatial statistics | 28 | 20 | 8 |
 | 3 — Geostatistics | 26 | 12 | 14 |
 | 4 — Raster, terrain and hydrology | 26 | 24 | 2 |
-| 5 — Remote sensing | 36 | 24 | 12 |
+| 5 — Remote sensing | 36 | 25 | 11 |
 | 6 — Optimization, mobility and transport | 31 | 5 | 26 |
 | 7 — Domain modeling | 48 | 1 | 47 |
 | 8 — GeoAI | 54 | 2 | 52 |
@@ -43,7 +43,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 6 | 22 |
 | **Total** | **693** | **199** | **494** |
 
-The current by-section subtotals now reconcile exactly with the aggregate: **693 source-entry rows, 202 partial, 491 intake-only and zero fully verified**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Historical snapshots below are retained as audit history; the current table above is authoritative.
+The current by-section subtotals now reconcile exactly with the aggregate: **693 source-entry rows, 203 partial, 490 intake-only and zero fully verified**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Historical snapshots below are retained as audit history; the current table above is authoritative.
 
 ## How to interpret this
 
@@ -156,3 +156,8 @@ Section 5's fractional-cover source row now links to a deterministic CART regres
 ## Implementation reconciliation — Brown-Conrady lens distortion
 
 Section 5's grouped lens-calibration/workflow row now links to a tested Brown-Conrady radial/tangential forward model and Newton inverse in normalized camera-plane coordinates. Independent tests cover identity, radial-plus-tangential round trips, array dimensions and invalid controls; a local numerical smoke check recovered coordinates to floating-point precision. The new package is registered as a standalone CI job. The source row remains partial: estimating camera intrinsics/distortion coefficients, boresight calibration, orthomosaic generation and mesh texturing remain open. Section 5 now has 24 partial and 12 intake-only rows; the dashboard aggregate is 202 partial, 491 intake-only and zero fully verified.
+
+
+## Implementation reconciliation — progressive morphological ground filtering
+
+Section 5's point-cloud filtering/registration entry now links to a rasterised progressive morphological filter baseline for projected XYZ data. The method progressively opens a minimum-elevation grid, applies a slope-scaled height threshold and returns a point-aligned ground mask. Tests cover flat-ground/object separation, sloped terrain, input-order invariance and invalid/grid-size controls; local checks passed these fixtures. Existing point-cloud registration records already cover point-to-point, point-to-plane, GICP and NDT baselines. The grouped source row remains partial because Cloth Simulation Filtering (CSF) and RANSAC shape fitting are not included in this addition. Section 5 now has 25 partial and 11 intake-only rows; aggregate review state is 203 partial, 490 intake-only and zero fully verified.
