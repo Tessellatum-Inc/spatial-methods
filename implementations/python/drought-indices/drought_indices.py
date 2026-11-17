@@ -62,6 +62,8 @@ def growing_degree_days(tmin, tmax, *, base_temperature, upper_temperature=None)
     growing period. Missing daily temperatures remain NaN.
     """
     lo, hi = _same_shape(tmin, tmax)
+    if np.isinf(lo).any() or np.isinf(hi).any():
+        raise ValueError("temperatures must be finite or NaN")
     if np.any(np.isfinite(lo) & np.isfinite(hi) & (hi < lo)):
         raise ValueError("tmax must not be below tmin")
     if not np.isfinite(base_temperature):
