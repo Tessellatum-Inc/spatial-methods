@@ -41,7 +41,7 @@ The source organises methods by application field. The same statistical, geometr
 | Crop models: DSSAT, APSIM, WOFOST, AquaCrop; yield estimation (SCYM, regression, deep learning) | Crop simulation models / yield-estimation methods | 12 | Not checked — intake only |
 | Crop calendar, phenology extraction (TIMESAT, Savitzky-Golay), field boundary delineation, irrigation detection, crop rotation mapping | Remote-sensing and agricultural analysis workflows | 12 | Not checked — intake only |
 | Forest disturbance, biomass estimation, allometric equations, species classification from hyperspectral and LiDAR | Forest monitoring / biomass models / classification | 12 | Not checked — intake only |
-| Growing degree days, drought indices (SPI, SPEI, VCI, PDSI), crop stress detection | Agroclimatic measures / indices / detection methods | 12 | Partial — tested SPI, VCI, TCI and VHI implementations are documented in the [drought-indices package](../../implementations/python/drought-indices/README.md) and [indicator lesson](../../algorithms/domain-modeling/drought-condition-indices.md); SPEI, PDSI, growing degree days and validated crop-stress detection remain open |
+| Growing degree days, drought indices (SPI, SPEI, VCI, PDSI), crop stress detection | Agroclimatic measures / indices / detection methods | 12 | Partial — tested SPI, VCI, TCI and VHI implementations are documented in the [drought-indices package](../../implementations/python/drought-indices/README.md) and [indicator lesson](../../algorithms/domain-modeling/drought-condition-indices.md); SPEI, PDSI and validated crop-stress detection remain open; the package's daily mean-method GDD implementation is not a crop-specific calibration |
 
 ## Weather, climate, air quality
 
