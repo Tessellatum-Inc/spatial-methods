@@ -465,3 +465,5 @@ Records may have different evidence and implementation status. Check the status 
 - [CHM watershed crown segmentation](photogrammetry/chm-watershed-crown-segmentation.md): local-maximum markers and watershed segmentation on a canopy height model.
 
 - [Marching cubes](geometry/marching-cubes.md): validated Lewiner isosurface extraction from a 3-D scalar field.
+
+- [Contextual thermal-hotspot screening](remote-sensing/contextual-thermal-hotspot.md): local-median/MAD anomaly baseline with an absolute temperature threshold.
