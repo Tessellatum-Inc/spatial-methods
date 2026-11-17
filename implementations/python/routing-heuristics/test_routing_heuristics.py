@@ -46,3 +46,90 @@ def test_clarke_wright_custom_depot_and_determinism():
 @pytest.mark.parametrize("demands,capacity", [([0,3],2),([0,-1],2),([1,1],2)])
 def test_cvrp_invalid_inputs(demands,capacity):
     with pytest.raises(ValueError): clarke_wright_cvrp([(0,0),(1,0)],demands,capacity)
+
+
+from routing_heuristics import greedy_vrptw
+
+
+def test_greedy_vrptw_respects_capacity_windows_and_returns():
+    points = [(0, 0), (1, 0), (2, 0), (0, 2)]
+    result = greedy_vrptw(
+        points,
+        [0, 1, 1, 1],
+        [(0, 10), (0, 3), (0, 10), (0, 2.5)],
+        capacity=2,
+    )
+    assert result.unserved == ()
+    assert [route.nodes for route in result.routes] == [(0, 1, 2, 0), (0, 3, 0)]
+    for route in result.routes:
+        assert route.load <= 2
+        assert route.stops[0].node == route.stops[-1].node == 0
+        assert route.stops[-1].arrival <= 10
+
+
+def test_greedy_vrptw_waits_and_accounts_for_service_time():
+    result = greedy_vrptw(
+        [(0, 0), (1, 0)],
+        [0, 1],
+        [(0, 20), (5, 6)],
+        capacity=1,
+        service_times=[0, 2],
+    )
+    route = result.routes[0]
+    assert route.stops[1].arrival == pytest.approx(1)
+    assert route.stops[1].service_start == pytest.approx(5)
+    assert route.stops[1].departure == pytest.approx(7)
+    assert route.stops[-1].arrival == pytest.approx(8)
+
+
+def test_greedy_vrptw_reports_unserviceable_customers_and_vehicle_limit():
+    result = greedy_vrptw(
+        [(0, 0), (1, 0), (2, 0), (3, 0)],
+        [0, 1, 1, 1],
+        [(0, 20), (0, 20), (0, 20), (0, 20)],
+        capacity=1,
+        vehicle_limit=2,
+    )
+    assert len(result.routes) == 2
+    assert result.unserved == (3,)
+
+
+def test_greedy_vrptw_reports_window_infeasibility():
+    result = greedy_vrptw(
+        [(0, 0), (1, 0)],
+        [0, 1],
+        [(0, 20), (0, 0.5)],
+        capacity=1,
+    )
+    assert result.routes == ()
+    assert result.unserved == (1,)
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"capacity": 0},
+        {"capacity": 1, "time_windows": [(0, 1)]},
+        {"capacity": 1, "vehicle_limit": 0},
+        {"capacity": 1, "start_time": float("nan")},
+    ],
+)
+def test_greedy_vrptw_rejects_invalid_controls(kwargs):
+    base = {
+        "points": [(0, 0), (1, 0)],
+        "demands": [0, 1],
+        "time_windows": [(0, 10), (0, 10)],
+        "capacity": 1,
+    }
+    base.update(kwargs)
+    with pytest.raises(ValueError):
+        greedy_vrptw(**base)
+
+
+def test_greedy_vrptw_rejects_invalid_demands_windows_and_service():
+    with pytest.raises(ValueError):
+        greedy_vrptw([(0, 0), (1, 0)], [1, 1], [(0, 10), (0, 10)], 2)
+    with pytest.raises(ValueError):
+        greedy_vrptw([(0, 0), (1, 0)], [0, 1], [(0, 10), (2, 1)], 1)
+    with pytest.raises(ValueError):
+        greedy_vrptw([(0, 0), (1, 0)], [0, 1], [(0, 10), (0, 10)], 1, [0, -1])
