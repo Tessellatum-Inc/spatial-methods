@@ -35,3 +35,8 @@ This is not a complete GAM/GAMM. It does not implement smoothing-parameter selec
 - [mgcv thin-plate regression spline construction notes](https://stat.ethz.ch/R-manual/R-devel/library/mgcv/help/tprs.html) — describes the optimal truncation of the full thin-plate basis and its unchanged penalty.
 
 No source figures, code or datasets are reproduced.
+
+
+## Related non-RBF spatial spline
+
+A separate [tensor-product B-spline P-surface](../algorithms/interpolation/tensor-product-p-spline-surface.md) uses local tensor-product basis functions and discrete directional coefficient penalties. It is a different model family from the radial thin-plate spline described above.

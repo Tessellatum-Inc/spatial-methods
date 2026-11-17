@@ -19,3 +19,10 @@ This is the transparent dense eigen-decomposition construction. It reduces the f
 This is an exact-knot 2-D thin-plate smoothing spline teaching baseline, not a complete generalized additive model. It uses every training location as a knot and a dense linear solve, with cubic-order computational scaling and quadratic memory. It does not implement smoothing-parameter selection, generalized responses, multiple additive smooth terms, random effects/GAMM, Duchon splines, soap-film boundary conditions, Bayesian P-splines or uncertainty bands.
 
 Coordinates must be projected into a suitable planar metric coordinate system. Longitude/latitude in degrees are not Euclidean distances, and the global radial kernel does not respect coastlines, holes or barriers. Use boundary-aware smoothers where domain geometry matters.
+
+
+## Tensor-product B-spline P-surface
+
+`TensorProductPSpline2D` fits a scalar surface with an open-uniform tensor-product B-spline basis and separate second divided-difference penalties along the two coordinate axes. The basis is evaluated with Cox–de Boor recursion; coefficients are estimated by a dense penalized least-squares solve. A scalar smoothing value applies equally in both directions, or a pair supplies axis-specific penalties. The Greville-abscissa penalty preserves the bilinear polynomial null space.
+
+This is a P-spline regression/smoothing surface, not a thin-plate radial-basis spline or a classical minimum-curvature smoothing spline. Coordinates are normalized to the training bounding box; prediction is restricted to that box. The implementation is NumPy-only and dense, with no automatic smoothing selection, uncertainty estimates, sparse solver, missing-data handling or boundary extrapolation.
