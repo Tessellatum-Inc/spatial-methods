@@ -2,7 +2,7 @@
 
 ETAS models earthquake occurrence as a background process plus triggered descendants. In a branching representation, event magnitudes affect offspring productivity, offspring delays follow an Omori-type temporal kernel, and spatial offsets follow a heavy-tailed kernel.
 
-This bounded simulator uses homogeneous Poisson background events, exponential magnitude excesses above a threshold, a normalized Omori density with parameters c and p, and an isotropic radial power-law spatial kernel with exponent q>1. Magnitude-dependent productivity is calibrated so the expected offspring count under the magnitude distribution equals the supplied branching ratio n<1.
+This bounded simulator uses homogeneous Poisson background events, exponential magnitude excesses above a threshold, a normalized infinite-horizon Omori density with parameters c and p>1, and an isotropic radial power-law spatial kernel with exponent q>1. Magnitude-dependent productivity is calibrated so the expected offspring count under the magnitude distribution equals the supplied branching ratio n<1.
 
 The implementation returns time, planar coordinates, magnitude, parent index, generation and immigrant flag. It uses a toroidal spatial window, finite horizon, seeded NumPy generator and maximum-event guard.
 

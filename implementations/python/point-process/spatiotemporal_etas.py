@@ -29,7 +29,7 @@ def simulate_etas(window, horizon, baseline_intensity, branching_ratio,
      spatial_magnitude_exponent)=map(float,values)
     if horizon<=0 or baseline_intensity<0: raise ValueError("horizon must be positive and background intensity nonnegative")
     if not 0<=branching_ratio<1: raise ValueError("branching_ratio must lie in [0,1)")
-    if omori_c<=0 or omori_p<=0: raise ValueError("Omori c and p must be positive")
+    if omori_c<=0 or omori_p<=1: raise ValueError("Omori c must be positive and p must exceed one for a normalized infinite-horizon kernel")
     if magnitude_beta<=0 or not 0<=productivity_alpha<magnitude_beta:
         raise ValueError("magnitude_beta must exceed nonnegative productivity_alpha")
     if spatial_scale<0 or spatial_power<=1 or spatial_magnitude_exponent<0:

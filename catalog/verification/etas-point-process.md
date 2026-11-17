@@ -7,7 +7,7 @@
 ## Technical claims
 - The implementation is a marked immigration-birth/branching simulator.
 - Magnitudes are exponentially distributed above a threshold; productivity is calibrated so expected offspring under this mark distribution equals the supplied branching ratio.
-- Temporal delays use a normalized Omori density; spatial displacements use an isotropic power-law radial kernel.
+- Temporal delays use a normalized infinite-horizon Omori density (p>1); spatial displacements use an isotropic power-law radial kernel.
 - Toroidal wrapping and no pre-window history are explicit simplifying assumptions.
 
 ## Implementation and tests
