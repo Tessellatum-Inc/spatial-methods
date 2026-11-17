@@ -121,8 +121,8 @@ The first public edition can be curated from completed material before every res
 
 ## 9. Current baseline
 
-The repository currently preserves the 47-page source transcription and indexes all 22 sections. The dated source dashboard records 694 grouped source-entry rows, of which 52 are marked partial and 642 intake-only; zero are fully verified across all review dimensions. Those counts are not a direct percentage of implementation work: grouped rows contain multiple child methods, and substantial existing lessons, code and notebooks are not yet reflected as complete source-entry reviews.
+The repository currently preserves the 47-page source transcription and indexes all 22 sections. The 17 November 2026 [source review dashboard](../catalog/review-dashboard.md) records 693 grouped source-entry rows: 199 partial, 494 intake-only and zero fully verified across all review dimensions. These are review-state counts, not a measure of implementation completion. Grouped source rows can contain multiple child methods, and an implementation link does not complete identity, bibliography, technical-claim or rights review.
 
-The repository tree currently contains 77 algorithm lesson files, 32 method guides, 187 Python source files, 93 Python test files and 73 notebooks. File counts indicate substantial work already exists; they do not establish that every source entry is covered or that every test/notebook passes at the current head.
+At the current `main` tree snapshot, the repository contains 304 algorithm lesson files, 82 method guides, 387 Python source files, 356 Python test files and 179 notebooks. These are inventory counts only; they do not establish that every source entry is covered or that every test/notebook passes at the current head. CI package/notebook coverage is separately enforced by `scripts/check_ci_coverage.py` and the GitHub Actions workflow.
 
 Use the [coverage matrix](../catalog/coverage-matrix.md) for the section-level narrative and the [repository roadmap](repository-roadmap.md) for the next work queue. Recalculate all counts from the actual tree and review records before making a release claim.
