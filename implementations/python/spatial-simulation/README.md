@@ -82,3 +82,10 @@ Both return dense Boolean adjacency matrices. The spatial generator assumes fini
 `sir_step` and `simulate_sir` implement a discrete-time SIR process on a static undirected contact graph. States are 0=susceptible, 1=infected and 2=recovered. A susceptible with (k) infected neighbors becomes infected with probability (1-(1-\beta)^k); infected nodes recover with probability (\gamma). The simulator returns S/I/R counts at the initial state and after each step.
 
 The update is synchronous: newly infected nodes transmit only in the following step. The model assumes homogeneous probabilities and a fixed contact graph; it is not a spatial diffusion or mobility-driven epidemic model and is not calibrated for forecasting.
+
+
+## Markov land-change baseline
+
+`estimate_markov_transition(previous, current)` estimates a row-stochastic categorical transition matrix from aligned integer rasters. Classes with no observed outgoing transitions are explicitly treated as absorbing. `simulate_markov_land_change(initial, transition, steps, seed=...)` applies independent per-cell transitions.
+
+This is a first-order, time-homogeneous baseline without neighborhood effects or spatial allocation. It is not a substitute for CLUE-S, FLUS, PLUS, SLEUTH or other spatially explicit land-change systems.
