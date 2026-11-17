@@ -21,7 +21,7 @@
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Emissivity: temperature-emissivity separation (TES), NDVI-threshold emissivity | Emissivity estimation methods | 42 | Not checked — intake only |
-| LST algorithms: mono-window, single-channel, split-window; surface urban heat island intensity metrics | Land-surface temperature retrieval / urban heat measures | 42 | Not checked — intake only |
+| LST algorithms: mono-window, single-channel, split-window; surface urban heat island intensity metrics | Land-surface temperature retrieval / urban heat measures | 42 | [Thermal land-surface temperature retrieval](../../algorithms/remote-sensing/thermal-land-surface-temperature.md) has tested single-channel radiative-transfer inversion and generalized split-window correction | Partial — single-channel and split-window baselines are implemented; mono-window, emissivity retrieval and surface-urban-heat-island metrics remain open |
 | Thermal sharpening and downscaling: DisTrad, TsHARP, regression-based and deep learning LST downscaling | Thermal image sharpening / spatial downscaling methods | 42 | Not checked — intake only |
 
 ## Microwave and radar retrieval models
