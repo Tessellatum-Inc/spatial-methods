@@ -18,3 +18,17 @@ Tests cover interior, edge and vertex hits, parallel misses, points outside the 
 ## Geospatial caution
 
 The algorithm is Euclidean. Use a suitable local Cartesian 3D frame with consistent units. Geographic longitude/latitude coordinates require transformation before applying this test.
+
+
+## BVH construction and traversal
+
+Each triangle is enclosed by an axis-aligned bounding box (AABB). A ray-box slab test clips the valid ray-parameter interval against the x, y and z slabs; a zero direction component is handled by checking whether the origin is already inside that slab.
+
+The builder computes triangle centroids, sorts them on each axis and evaluates every possible split. For a candidate split:
+
+    cost = surface_area(left_bounds) * left_count
+         + surface_area(right_bounds) * right_count
+
+The best split is used only when it improves on the leaf cost. This exact-centroid scan is a teaching implementation; production renderers commonly use binned SAH to reduce build time.
+
+Traversal tests child bounds, visits the nearer child first, and tightens the current maximum ray parameter after a triangle hit. The tests compare the BVH result with a brute-force scan over seeded fixtures. The tree indexes the exact input triangle sequence and must not be reused with reordered geometry.
