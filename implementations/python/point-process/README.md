@@ -58,6 +58,4 @@ The companion `network_point_patterns.py` module handles events on a finite undi
 This is an uncorrected finite-network descriptive estimator. It does not correct for endpoint effects, network junction bias, varying network intensity or disconnected network components. See [network Ripley's K](../../../algorithms/statistics/network-ripley-k.md) and `test_network_point_patterns.py`.
 
 
-The package also includes a bounded spatiotemporal Hawkes cluster simulator using a constant Poisson background, exponential temporal triggering and Gaussian spatial offspring displacement. It uses periodic spatial boundaries and is documented separately; it is not an ETAS estimator.
-
 - Toroidal spatial Hawkes simulation with exponential triggering, subcritical branching ratio, wrapped Gaussian spatial offsets and parent/generation identifiers. This is a finite-horizon simulator without pre-window temporal history; it is not ETAS or an estimation routine.
