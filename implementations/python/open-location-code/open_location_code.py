@@ -4,6 +4,7 @@ Implements encoding and decoding of full codes. Short-code recovery requires
 local context and is intentionally outside this module's contract.
 """
 import math
+from decimal import Decimal
 
 ALPHABET = "23456789CFGHJMPQRVWX"
 SEPARATOR = "+"
@@ -29,21 +30,22 @@ def encode(latitude, longitude, code_length=10):
     _validate_coordinate(latitude, longitude)
     if not isinstance(code_length, int) or isinstance(code_length, bool) or not 10 <= code_length <= MAX_CODE_LENGTH:
         raise ValueError("code_length must be an integer from 10 to 15")
-    latitude = min(latitude, 90.0 - 1e-12)
-    longitude = _normalise_longitude(longitude)
-    lat_value, lon_value = latitude + 90.0, longitude + 180.0
+    latitude = min(Decimal(str(latitude)), Decimal("90") - Decimal("1e-12"))
+    longitude = (Decimal(str(longitude)) + Decimal(180)) % Decimal(360) - Decimal(180)
+    resolutions = tuple(map(Decimal, ("20", "1", "0.05", "0.0025", "0.000125")))
+    lat_value, lon_value = latitude + Decimal(90), longitude + Decimal(180)
     digits = []
-    for resolution in PAIR_RESOLUTIONS:
+    for resolution in resolutions:
         lat_digit = min(int(lat_value / resolution), 19)
         lon_digit = min(int(lon_value / resolution), 19)
         digits.extend((ALPHABET[lat_digit], ALPHABET[lon_digit]))
         lat_value -= lat_digit * resolution
         lon_value -= lon_digit * resolution
     if code_length > 10:
-        lat_resolution = lon_resolution = PAIR_RESOLUTIONS[-1]
+        lat_resolution = lon_resolution = resolutions[-1]
         for _ in range(code_length - 10):
-            lat_resolution /= 5.0
-            lon_resolution /= 4.0
+            lat_resolution /= 5
+            lon_resolution /= 4
             row = min(int(lat_value / lat_resolution), 4)
             col = min(int(lon_value / lon_resolution), 3)
             digits.append(ALPHABET[row * 4 + col])
@@ -63,18 +65,19 @@ def decode(code):
     raw = code.replace(SEPARATOR, "")
     if not 10 <= len(raw) <= MAX_CODE_LENGTH or any(ch not in ALPHABET for ch in raw):
         raise ValueError("code must contain 10 to 15 valid alphabet characters")
-    south, west = -90.0, -180.0
-    lat_resolution = lon_resolution = PAIR_RESOLUTIONS[0]
+    resolutions = tuple(map(Decimal, ("20", "1", "0.05", "0.0025", "0.000125")))
+    south, west = Decimal(-90), Decimal(-180)
+    lat_resolution = lon_resolution = resolutions[0]
     for pair_index in range(5):
         south += ALPHABET.index(raw[2 * pair_index]) * lat_resolution
         west += ALPHABET.index(raw[2 * pair_index + 1]) * lon_resolution
-        lat_resolution = lon_resolution = PAIR_RESOLUTIONS[min(pair_index + 1, 4)]
+        lat_resolution = lon_resolution = resolutions[min(pair_index + 1, 4)]
     north, east = south + lat_resolution, west + lon_resolution
     for ch in raw[10:]:
-        lat_resolution /= 5.0
-        lon_resolution /= 4.0
+        lat_resolution /= 5
+        lon_resolution /= 4
         row, col = divmod(ALPHABET.index(ch), 4)
         south += row * lat_resolution
         west += col * lon_resolution
         north, east = south + lat_resolution, west + lon_resolution
-    return south, west, north, east
+    return tuple(map(float, (south, west, north, east)))
