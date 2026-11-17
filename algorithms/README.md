@@ -411,3 +411,6 @@ Records may have different evidence and implementation status. Check the status 
 
 - [K-means](statistics/k-means.md) — Lloyd assignment/update with k-means++ seeding, multiple starts and empty-cluster repair.
 - [K-medoids and CLARA](statistics/k-medoids.md) — deterministic PAM BUILD/SWAP and sample-based CLARA for symmetric dissimilarities.
+
+
+- [Ward hierarchical clustering](statistics/ward-clustering.md) — exact dense Ward merge objective, deterministic linkage and flat-tree cutting.

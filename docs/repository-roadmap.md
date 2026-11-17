@@ -832,6 +832,15 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [ ] Add within-edge event positions, continuous edge integration, edge correction, network K and SANET methods.
 
 
+## Ward hierarchical clustering — 17 November 2026
+
+- [x] Implement the exact Ward increase-in-SSE merge criterion and linkage heights.
+- [x] Add deterministic tie breaking and flat k-cluster tree cutting.
+- [x] Add hand-calculated linkage, partition, tie, singleton and invalid-input tests.
+- [x] Add canonical documentation, verification record, source-index update and dedicated CI job.
+- [ ] Add scalable nearest-neighbour-chain acceleration and other hierarchical linkage criteria.
+
+
 ## Lloyd k-means — 17 November 2026
 
 - [x] Implement k-means++ initialization and Lloyd nearest-centroid updates.

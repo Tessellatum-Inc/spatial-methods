@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 693 | Rows with a source-entry review status in the section indexes |
-| Partial | 186 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 507 | The source wording is preserved, but no independent review is recorded |
+| Partial | 187 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 506 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -20,7 +20,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | Section | Source entries | Partial | Intake only |
 |---:|---:|---:|---:|
 | 1 — Core GIS | 33 | 26 | 7 |
-| 2 — Spatial statistics | 28 | 17 | 11 |
+| 2 — Spatial statistics | 28 | 18 | 10 |
 | 3 — Geostatistics | 26 | 8 | 18 |
 | 4 — Raster, terrain and hydrology | 26 | 24 | 2 |
 | 5 — Remote sensing | 36 | 19 | 17 |
@@ -132,3 +132,6 @@ A Mogi point-source elastic half-space displacement implementation has since mov
 
 
 The Section 2 source-entry recount also identifies an implementation-linked Ripley's K/L entry whose status description is more detailed than the standard “Partial” label. It is counted as partial rather than intake-only. Section 16's intervening-opportunities entry is now also implementation-linked. The current row totals are 696 source entries, 163 partial and 533 intake-only.
+
+
+**Reconciliation note (17 November 2026):** the historical narrative below contains earlier 695/696-row snapshots. The authoritative current count is the 22-row section table above: 693 source-entry rows, 187 partial, 506 intake-only and zero fully verified.
