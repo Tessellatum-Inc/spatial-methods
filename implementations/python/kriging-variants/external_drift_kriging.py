@@ -18,7 +18,7 @@ def external_drift_kriging_predict(points, values, targets, training_covariates,
     if ext.ndim!=2 or ext.shape[0]!=len(xy) or ext.shape[1]<1:
         raise ValueError("training_covariates must be an n-by-p matrix")
     if ext_target.shape!=(len(target),ext.shape[1]):
-        raise ValueError("target_covariates must be an m-by-p matrix")
+        raise ValueError("target_covariates shape must be (m, p)")
     if not np.isfinite(ext).all() or not np.isfinite(ext_target).all():
         raise ValueError("external covariates must be finite")
     if model not in _MODELS: raise ValueError("unsupported covariance model")
