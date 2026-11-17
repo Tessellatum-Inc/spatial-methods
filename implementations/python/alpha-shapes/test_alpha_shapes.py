@@ -1,6 +1,7 @@
 import math
+import numpy as np
 import pytest
-from alpha_shapes import alpha_shape
+from alpha_shapes import alpha_shape, alpha_shape_3d
 
 def area(ring):
     return 0.5 * sum(ring[i][0] * ring[(i+1)%len(ring)][1]
