@@ -1,5 +1,8 @@
 import pytest
-from prediction import predict_position, predictive_range_query, dead_reckoning_update_required
+from prediction import (
+    predict_position, predictive_range_query, dead_reckoning_update_required,
+    continuous_range_query, continuous_acceleration_range_query,
+)
 
 
 def test_constant_velocity_prediction():
@@ -69,20 +72,14 @@ def test_invalid_bounds_and_tolerance_nan_are_rejected():
     with pytest.raises(ValueError):
         dead_reckoning_update_required((0, 0), (0, 0), 0, (0, 0), tolerance=float("nan"))
 
-from prediction import continuous_range_query
-
 
 def test_continuous_query_finds_crossing_even_when_endpoint_is_outside():
-    result = continuous_range_query(
-        {"crossing": (-5, 5, 2, 0)}, (0, 0, 10, 10), 10
-    )
+    result = continuous_range_query({"crossing": (-5, 5, 2, 0)}, (0, 0, 10, 10), 10)
     assert result == [("crossing", (0.0, 5.0), 2.5)]
 
 
 def test_continuous_query_reports_zero_time_for_initially_inside_object():
-    result = continuous_range_query(
-        {"inside": (5, 5, 1, 0)}, (0, 0, 10, 10), 5
-    )
+    result = continuous_range_query({"inside": (5, 5, 1, 0)}, (0, 0, 10, 10), 5)
     assert result == [("inside", (5.0, 5.0), 0.0)]
 
 
@@ -104,6 +101,60 @@ def test_continuous_query_rejects_invalid_and_overflowing_states():
     with pytest.raises(ValueError, match="overflow"):
         continuous_range_query({"fast": (0, 0, 1e308, 0)}, (0, 0, 1, 1), 1e308)
 
+
 def test_extremely_large_integer_is_rejected_cleanly():
     with pytest.raises(ValueError, match="finite float"):
         predict_position((10**1000, 0), (0, 0), 1)
+
+
+def test_accelerated_curve_enters_rectangle_with_both_endpoints_outside():
+    # x(t) = -1 + 8t - 8t²: it enters [0.5, 0.9], then exits again.
+    result = continuous_acceleration_range_query(
+        {"arc": (-1, 5, 8, 0, -16, 0)}, (0.5, 0, 0.9, 10), 1
+    )
+    assert [row[0] for row in result] == ["arc"]
+    assert result[0][1][0] == pytest.approx(0.5)
+    assert result[0][2] == pytest.approx((8 - (64 - 48) ** 0.5) / 16)
+
+
+def test_accelerated_query_detects_isolated_tangent_contact():
+    # x(t) = -1 + 8t - 8t² touches x=1 only at t=0.5.
+    result = continuous_acceleration_range_query(
+        {"touch": (-1, 5, 8, 0, -16, 0)}, (1, 0, 2, 10), 1
+    )
+    assert result == [("touch", (1.0, 5.0), pytest.approx(0.5))]
+
+
+def test_accelerated_query_handles_linear_and_initially_inside_paths():
+    result = continuous_acceleration_range_query(
+        {"linear": (-2, 5, 1, 0, 0, 0), "inside": (5, 5, 3, 0, 2, 0)},
+        (0, 0, 10, 10), 5,
+    )
+    assert result[0] == ("linear", (0.0, 5.0), 2.0)
+    assert result[1] == ("inside", (5.0, 5.0), 0.0)
+
+
+def test_accelerated_query_excludes_nonintersecting_path():
+    assert continuous_acceleration_range_query(
+        {"miss": (-1, 20, 8, 0, -16, 0)}, (0, 0, 2, 10), 1
+    ) == []
+
+
+@pytest.mark.parametrize("state", [
+    (0, 0, 1, 1), (0, 0, 1, 1, 1, float("nan")),
+    (0, 0, 1, 1, 1, float("inf")),
+])
+def test_accelerated_query_rejects_malformed_or_nonfinite_state(state):
+    with pytest.raises(ValueError):
+        continuous_acceleration_range_query({"bad": state}, (0, 0, 1, 1), 1)
+
+
+def test_accelerated_query_rejects_invalid_bounds_horizon_and_overflow():
+    with pytest.raises(ValueError):
+        continuous_acceleration_range_query({}, (2, 0, 1, 1), 1)
+    with pytest.raises(ValueError):
+        continuous_acceleration_range_query({}, (0, 0, 1, 1), -1)
+    with pytest.raises(ValueError, match="overflow"):
+        continuous_acceleration_range_query(
+            {"fast": (0, 0, 1, 0, 1e308, 0)}, (0, 0, 1, 1), 1e308
+        )
