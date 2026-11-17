@@ -42,3 +42,18 @@ This lesson and package do **not** implement or reproduce SLEUTH, ANN-CA, logist
 ## Tests
 
 The independent tests cover Moore and von Neumann counts, fixed and periodic boundaries, a Life blinker oscillator, zero-step copying, input validation, occupied-neighbor share, group-count preservation, seeded reproducibility and stopping behaviour.
+
+
+## Site percolation
+
+In site percolation, each lattice site is independently occupied with probability (p). A finite-grid crossing test asks whether occupied sites connect one designated boundary to another under a specified adjacency rule. The reference package samples Bernoulli occupancy and uses graph traversal to test a top-to-bottom crossing. Four-neighbor and eight-neighbor connectivity are different models and can produce different thresholds and finite-size outcomes.
+
+## Stochastic forest-fire automaton
+
+The forest-fire teaching model uses three states: empty, tree and burning. In one synchronous update, burning cells become empty, trees ignite through neighboring fire or a lightning event, and empty cells may grow trees. Growth and lightning probabilities are explicit inputs; a seed makes a run reproducible.
+
+This is a stochastic cellular automaton, not a physical fire-behaviour model. It omits wind, fuel moisture, topography, spotting, suppression and calibrated spread rates.
+
+## Remaining source family
+
+The source entry also names Sugarscape, diffusion-limited aggregation, sandpile dynamics and spatial game theory. They are separate model families and are not implemented by this package. The source row remains partial rather than complete.
