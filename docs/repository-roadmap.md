@@ -806,3 +806,11 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Implement Sentinel-2 SCL clear-class selection and thresholding of supplied cloud-probability layers.
 - [x] Add bit/class fixtures, option tests and invalid-input checks; register the package in Python CI.
 - [ ] Implement reflectance-derived Fmask/s2cloudless detection, cloud-shadow projection, CloudSEN12 model workflows and HLS harmonisation separately.
+
+
+## Supervised remote-sensing classifiers — 17 November 2026
+
+- [x] Add linear, polynomial, RBF and sigmoid SVM classification with decision-margin output.
+- [x] Add random-forest classification with vote fractions and feature importances.
+- [x] Add deterministic synthetic class fixtures, invalid-parameter tests and feature-dimension validation.
+- [ ] Add spatially blocked model selection, probability calibration, XGBoost/LightGBM and stacked generalization as separate methods.

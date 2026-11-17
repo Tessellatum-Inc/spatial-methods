@@ -256,3 +256,108 @@ def isodata(samples, initial_clusters, *, min_clusters=1, max_clusters=None,
     return {"labels": labels, "centroids": centers, "inertia": inertia,
             "iterations": iteration, "converged": converged,
             "cluster_sizes": np.bincount(labels, minlength=len(centers))}
+
+
+
+def _validated_labels(labels, sample_count):
+    y = np.asarray(labels)
+    if y.ndim != 1 or y.shape[0] != sample_count or y.dtype.kind not in "biufUS":
+        raise ValueError("labels must be a one-dimensional numeric or string array matching samples")
+    if y.dtype.kind in "fiu" and not np.all(np.isfinite(y)):
+        raise ValueError("numeric class labels must be finite")
+    classes, counts = np.unique(y, return_counts=True)
+    if classes.size < 2 or np.any(counts < 2):
+        raise ValueError("at least two classes with two or more samples each are required")
+    return y, classes
+
+
+def fit_svm_classifier(samples, labels, *, kernel="rbf", C=1.0, gamma="scale",
+                       degree=3, class_weight=None, random_state=0):
+    """Fit a support-vector classifier for pixel/object feature vectors.
+
+    SVC decision scores are margins, not calibrated class probabilities.
+    Scale continuous features using a training-only pipeline where appropriate.
+    """
+    from sklearn.svm import SVC
+
+    x = _features(samples, "samples")
+    y, classes = _validated_labels(labels, x.shape[0])
+    if kernel not in {"linear", "poly", "rbf", "sigmoid"}:
+        raise ValueError("kernel must be linear, poly, rbf or sigmoid")
+    if isinstance(C, bool) or not np.isfinite(C) or C <= 0:
+        raise ValueError("C must be finite and positive")
+    if isinstance(gamma, str):
+        if gamma not in {"scale", "auto"}:
+            raise ValueError("string gamma must be scale or auto")
+    elif isinstance(gamma, bool) or not np.isfinite(gamma) or gamma <= 0:
+        raise ValueError("numeric gamma must be finite and positive")
+    if isinstance(degree, bool) or not isinstance(degree, int) or degree < 1:
+        raise ValueError("degree must be a positive integer")
+    if class_weight not in (None, "balanced") and not isinstance(class_weight, dict):
+        raise ValueError("class_weight must be None, balanced or a class-weight mapping")
+    if random_state is not None and (isinstance(random_state, bool) or not isinstance(random_state, int)):
+        raise ValueError("random_state must be an integer or None")
+    estimator = SVC(kernel=kernel, C=float(C), gamma=gamma, degree=degree,
+                    class_weight=class_weight, random_state=random_state)
+    estimator.fit(x, y)
+    return {"estimator": estimator, "classes": classes,
+            "feature_count": int(x.shape[1]), "kernel": kernel}
+
+
+def predict_svm_classifier(model, samples, *, return_scores=False):
+    """Predict SVM classes; optionally return uncalibrated decision margins."""
+    x = _features(samples, "samples")
+    if not isinstance(model, dict) or "estimator" not in model or "feature_count" not in model:
+        raise ValueError("model must be returned by fit_svm_classifier")
+    if x.shape[1] != model["feature_count"]:
+        raise ValueError("sample feature count does not match fitted SVM")
+    labels = model["estimator"].predict(x)
+    if return_scores:
+        return {"labels": labels, "decision_scores": model["estimator"].decision_function(x)}
+    return labels
+
+
+def fit_random_forest_classifier(samples, labels, *, n_estimators=200,
+                                 max_depth=None, min_samples_leaf=1,
+                                 max_features="sqrt", class_weight=None,
+                                 random_state=0, n_jobs=1):
+    """Fit a random-forest classifier for multispectral feature vectors."""
+    from sklearn.ensemble import RandomForestClassifier
+
+    x = _features(samples, "samples")
+    y, classes = _validated_labels(labels, x.shape[0])
+    if isinstance(n_estimators, bool) or not isinstance(n_estimators, int) or n_estimators < 1:
+        raise ValueError("n_estimators must be a positive integer")
+    if max_depth is not None and (isinstance(max_depth, bool) or not isinstance(max_depth, int) or max_depth < 1):
+        raise ValueError("max_depth must be a positive integer or None")
+    if isinstance(min_samples_leaf, bool) or not isinstance(min_samples_leaf, int) or min_samples_leaf < 1:
+        raise ValueError("min_samples_leaf must be a positive integer")
+    if class_weight not in (None, "balanced", "balanced_subsample") and not isinstance(class_weight, dict):
+        raise ValueError("invalid random-forest class_weight")
+    if random_state is not None and (isinstance(random_state, bool) or not isinstance(random_state, int)):
+        raise ValueError("random_state must be an integer or None")
+    if isinstance(n_jobs, bool) or not isinstance(n_jobs, int) or n_jobs == 0:
+        raise ValueError("n_jobs must be a non-zero integer")
+    estimator = RandomForestClassifier(
+        n_estimators=n_estimators, max_depth=max_depth,
+        min_samples_leaf=min_samples_leaf, max_features=max_features,
+        class_weight=class_weight, random_state=random_state, n_jobs=n_jobs,
+    )
+    estimator.fit(x, y)
+    return {"estimator": estimator, "classes": classes,
+            "feature_count": int(x.shape[1]),
+            "feature_importances": estimator.feature_importances_.copy()}
+
+
+def predict_random_forest_classifier(model, samples, *, return_probabilities=False):
+    """Predict forest classes; optionally return vote-fraction probabilities."""
+    x = _features(samples, "samples")
+    if not isinstance(model, dict) or "estimator" not in model or "feature_count" not in model:
+        raise ValueError("model must be returned by fit_random_forest_classifier")
+    if x.shape[1] != model["feature_count"]:
+        raise ValueError("sample feature count does not match fitted forest")
+    labels = model["estimator"].predict(x)
+    if return_probabilities:
+        return {"labels": labels, "classes": model["classes"],
+                "probabilities": model["estimator"].predict_proba(x)}
+    return labels

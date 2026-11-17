@@ -96,3 +96,53 @@ def test_isodata_rejects_invalid_cluster_bounds():
     x = np.arange(20.).reshape(10, 2)
     with pytest.raises(ValueError):
         isodata(x, 3, min_clusters=4, max_clusters=3)
+
+
+
+def test_svm_linear_classifier_predicts_separated_spectral_classes():
+    from classification import fit_svm_classifier, predict_svm_classifier
+    x = np.array([[-2., -1], [-1.8, -.9], [-2.2, -.8],
+                  [2., 1], [1.8, .9], [2.2, .8]])
+    y = np.array(["water"] * 3 + ["vegetation"] * 3)
+    model = fit_svm_classifier(x, y, kernel="linear", C=2)
+    result = predict_svm_classifier(model, x, return_scores=True)
+    assert np.mean(result["labels"] == y) == pytest.approx(1)
+    assert result["decision_scores"].shape == (6,)
+
+
+def test_svm_rbf_handles_nonlinear_xor_fixture():
+    from classification import fit_svm_classifier, predict_svm_classifier
+    x = np.array([[-1., -1], [-1., 1], [1., -1], [1., 1]] * 3)
+    y = np.array([1, 0, 0, 1] * 3)
+    model = fit_svm_classifier(x, y, kernel="rbf", C=10, gamma=1)
+    assert np.mean(predict_svm_classifier(model, x) == y) == pytest.approx(1)
+
+
+def test_random_forest_returns_class_probabilities_and_importance():
+    from classification import fit_random_forest_classifier, predict_random_forest_classifier
+    x = np.array([[0., 0], [.1, 0], [-.1, 0], [10., 10], [10.1, 10], [9.9, 10]])
+    y = np.array([0, 0, 0, 1, 1, 1])
+    model = fit_random_forest_classifier(x, y, n_estimators=40, random_state=4)
+    result = predict_random_forest_classifier(model, x, return_probabilities=True)
+    assert np.mean(result["labels"] == y) == pytest.approx(1)
+    assert result["probabilities"].shape == (6, 2)
+    assert result["feature_importances"].sum() == pytest.approx(1)
+
+
+def test_svm_and_random_forest_reject_invalid_parameters_and_feature_counts():
+    from classification import (fit_svm_classifier, predict_svm_classifier,
+                                 fit_random_forest_classifier, predict_random_forest_classifier)
+    x = np.array([[0., 0], [.1, 0], [10., 10], [10.1, 10]])
+    y = np.array([0, 0, 1, 1])
+    with pytest.raises(ValueError):
+        fit_svm_classifier(x, y, C=0)
+    with pytest.raises(ValueError):
+        fit_svm_classifier(x, y, kernel="unknown")
+    with pytest.raises(ValueError):
+        fit_random_forest_classifier(x, y, n_estimators=0)
+    svm = fit_svm_classifier(x, y)
+    forest = fit_random_forest_classifier(x, y, n_estimators=5)
+    with pytest.raises(ValueError):
+        predict_svm_classifier(svm, np.ones((2, 3)))
+    with pytest.raises(ValueError):
+        predict_random_forest_classifier(forest, np.ones((2, 3)))

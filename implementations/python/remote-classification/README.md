@@ -37,3 +37,14 @@ Its thresholds are expressed in feature units and need scale-aware inputs.
 Neither clustering method performs image segmentation or spatial
 regularization; the classifier does not provide cross-validation, probability
 calibration or accuracy assessment.
+
+
+## Additional supervised classifiers
+
+The package now also includes an SVM classifier (linear, polynomial, RBF and
+sigmoid kernels) and a random-forest classifier. Both use the supplied
+training labels and expose prediction helpers. SVM decision margins are not
+calibrated probabilities; random-forest vote fractions are also not
+guaranteed to be calibrated. Feature scaling, spatial sampling design,
+class imbalance, independent validation and probability calibration remain
+important parts of a production classification workflow.
