@@ -102,3 +102,8 @@
 ## Implemented classical registration baselines
 
 The image-registration package includes FFT phase correlation for global translation and RANSAC affine fitting from caller-supplied correspondences. A separate point-cloud package now includes point-to-point, point-to-plane, generalized ICP and a hard-voxel Gaussian NDT baseline, plus symmetric Chamfer/Hausdorff and threshold F-score metrics. These are scoped classical baselines: NDT, colored ICP, FPFH/RANSAC, TEASER++ and learned registration remain unimplemented. See [the point-cloud registration lesson](../../algorithms/geometry/point-cloud-registration.md).
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 15 atomic completion register](../../docs/section-15-atomic-completion-register.md). The register distinguishes architectures, trained checkpoints, benchmark datasets, metrics, algorithms, software and workflows. Source names are explicitly provisional; the register is traceability infrastructure, not model verification or a completion claim.
