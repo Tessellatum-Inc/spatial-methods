@@ -48,6 +48,10 @@ The [string similarity and record-linkage lesson](../../algorithms/statistics/st
 
 The [numeric map-classification lesson](../../algorithms/statistics/map-classification.md) and [tested Python package](../../implementations/python/map-classification/README.md) cover equal interval, quantile and Fisher-Jenks natural breaks. Bivariate classification and perceptual color design remain open.
 
+## First broad-phase collision implementation
+
+The [AABB broad-phase lesson](../../algorithms/statistics/collision-broadphase.md) and [tested Python package](../../implementations/python/collision-broadphase/README.md) implement sweep-and-prune, spatial hashing and a static BVH. They do not implement dynamic or continuous collision detection.
+
 ## Cartography and geovisualization
 
 | Source entry | Provisional kind | Source page | Verification status |
@@ -68,7 +72,7 @@ A first format-selection guide now separates authoritative storage, analytical l
 | Distributed and GPU computing: Sedona, GeoMesa, Dask, Spark, cuSpatial, GPU raster algebra, parallel viewshed and flow accumulation, out-of-core and streaming raster algorithms | Distributed systems / GPU libraries / scalable algorithms | 19 | Not checked — intake only |
 | Pipelines: openEO, xarray, Rasterio, Snakemake, Airflow; process graphs, lineage tracking, data versioning | Software tools / workflow orchestration / provenance systems | 19 | Not checked — intake only |
 | Numerical methods: finite difference, finite volume, finite element, spectral, semi-Lagrangian, multigrid, conjugate gradient, FFT solvers, lattice Boltzmann, level set | Numerical discretisation and solver methods | 19 | Not checked — intake only |
-| Collision detection: sweep and prune, BVH, spatial hash grids | Collision detection algorithms / spatial data structures | 19 | Not checked — intake only |
+| Collision detection: sweep and prune, BVH, spatial hash grids | Collision detection algorithms / spatial data structures | 19 | Partial — tested 2-D AABB sweep-and-prune, uniform spatial hashing and median-split static BVH with brute-force pair oracle; dynamic updates, 3-D, continuous collision and polygon/mesh narrow phase remain open |
 | Procedural terrain: Perlin and simplex noise, fractional Brownian motion, diamond-square, Poisson disk sampling, wave function collapse, L-systems, synthetic city generation | Procedural generation / stochastic sampling / synthetic data workflows | 20 | Not checked — intake only |
 
 ## Quality assurance and validation
