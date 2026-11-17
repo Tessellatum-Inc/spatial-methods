@@ -47,13 +47,17 @@ def sweep_and_prune(boxes):
 
 def spatial_hash_pairs(boxes, cell_size):
     """Return exact pairs using a uniform grid broad phase and AABB narrow phase."""
-    if not isfinite(float(cell_size)) or cell_size <= 0:
+    try:
+        size = float(cell_size)
+    except (TypeError, ValueError):
+        raise ValueError("cell_size must be finite and positive") from None
+    if not isfinite(size) or size <= 0:
         raise ValueError("cell_size must be finite and positive")
     data = _boxes(boxes)
     buckets = {}
     for idx, (xmin, ymin, xmax, ymax) in enumerate(data):
-        ix0, iy0 = floor(xmin/cell_size), floor(ymin/cell_size)
-        ix1, iy1 = floor(xmax/cell_size), floor(ymax/cell_size)
+        ix0, iy0 = floor(xmin/size), floor(ymin/size)
+        ix1, iy1 = floor(xmax/size), floor(ymax/size)
         for ix in range(ix0, ix1+1):
             for iy in range(iy0, iy1+1):
                 buckets.setdefault((ix, iy), []).append(idx)
@@ -81,8 +85,8 @@ def _union(data, indices):
 def build_bvh(boxes, leaf_size=4):
     """Build a median-split static AABB BVH; returns an immutable node tree."""
     data = _boxes(boxes)
-    if leaf_size < 1:
-        raise ValueError("leaf_size must be positive")
+    if not isinstance(leaf_size, int) or isinstance(leaf_size, bool) or leaf_size < 1:
+        raise ValueError("leaf_size must be a positive integer")
     def build(indices):
         bounds = _union(data, indices)
         if len(indices) <= leaf_size:
@@ -95,10 +99,18 @@ def build_bvh(boxes, leaf_size=4):
 
 
 def bvh_query(tree, data, query_box):
-    """Return original indices whose AABBs overlap query_box."""
-    if tree is None:
-        return []
+    """Return original indices whose AABBs overlap query_box.
+
+    Validate the query even for an empty tree so malformed geometry never
+    passes silently because the index happens to contain no nodes.
+    """
     query = _box(query_box)
+    if tree is None:
+        if data:
+            raise ValueError("tree is empty but data is not")
+        return []
+    if not isinstance(data, (list, tuple)):
+        raise ValueError("data must be a sequence of boxes")
     found, stack = [], [tree]
     while stack:
         node = stack.pop()
