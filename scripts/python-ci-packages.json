@@ -1152,6 +1152,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/tissot-distortion",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/topology-preserving-simplification",
     "pythonpath": ""
   },

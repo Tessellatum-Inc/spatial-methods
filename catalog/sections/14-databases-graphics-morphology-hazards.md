@@ -66,7 +66,7 @@ This section combines spatial database internals, graphics algorithms, image mor
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Projection families: Robinson, Winkel Tripel, Equal Earth, Natural Earth, Goode homolosine, Dymaxion, azimuthal and conic equidistant | Projection families | 30 | Not checked — intake only |
-| Distortion analysis: Tissot indicatrix computation, areal and angular distortion indices, projection selection algorithms | Projection distortion measures / selection methods | 30 | Not checked — intake only |
+| Distortion analysis: Tissot indicatrix computation, areal and angular distortion indices, projection selection algorithms | Projection distortion measures / selection methods | 30 | [Tissot indicatrix diagnostics](../../implementations/python/tissot-distortion/README.md) provides tested local principal-scale, area-scale and angular-distortion calculations from a projection callable | Partial — projection-family selection, global distortion optimisation and ellipsoidal/seam-aware analysis remain open |
 | Contiguous cartograms by rubber sheet and diffusion, tile grid maps via Hungarian assignment, Voronoi treemaps, hexagon maps | Cartogram and map-layout algorithms | 30 | Not checked — intake only |
 | Perceptual color: CIELAB and CIECAM interpolation, ColorBrewer rules, viridis-style perceptual uniformity, color-blind safe palette generation | Colour-space methods / perceptual design rules | 30 | Not checked — intake only |
 
