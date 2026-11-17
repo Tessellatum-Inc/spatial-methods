@@ -9,8 +9,6 @@ def _validated(values, k):
         raise ValueError("values must be a non-empty finite sequence")
     if not isinstance(k, int) or isinstance(k, bool) or k < 1:
         raise ValueError("k must be a positive integer")
-    if k > len(data):
-        raise ValueError("k cannot exceed the number of observations")
     return sorted(data)
 
 
