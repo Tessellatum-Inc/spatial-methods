@@ -287,4 +287,4 @@ These are connected teaching materials, not interchangeable copies of the same e
 
 ### Domain modeling
 
-- [Spatial cellular automata and Schelling simulation](python/spatial-simulation/README.md): synchronous binary B/S rules and a seeded multi-group relocation baseline, with independent tests and a [walkthrough](python/spatial-simulation/implementation-walkthrough.md).
+- [Spatial cellular automata and Schelling simulation](python/spatial-simulation/README.md): synchronous binary B/S rules, seeded Schelling relocation, site percolation and a stochastic forest-fire baseline, with independent tests and a [walkthrough](python/spatial-simulation/implementation-walkthrough.md).
