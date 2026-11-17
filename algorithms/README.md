@@ -431,3 +431,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Broad-phase collision detection](statistics/collision-broadphase.md) — sweep-and-prune, uniform spatial hashing and a static AABB BVH.
 
 - [Classification accuracy assessment](statistics/accuracy-assessment.md) — confusion matrices, producer/user accuracy, kappa and disagreement measures.
+
+- [Positional accuracy and uncertainty propagation](statistics/uncertainty-propagation.md) — coordinate RMSE, Monte Carlo propagation and first-/total-order Sobol indices.
