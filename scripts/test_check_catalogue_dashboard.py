@@ -15,6 +15,7 @@ class CatalogueDashboardTests(unittest.TestCase):
 | C | Method | 3 | Tested implementation linked |
 | D | Model | 4 | Fully verified |
 | E | Model | 5 | [Canonical record](record.md) |
+
 | Other inventory | Kind | Page | Not counted |
 """
         self.assertEqual(source_entry_counts(markdown), (5, 3, 1, 1))
