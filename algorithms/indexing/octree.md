@@ -24,3 +24,8 @@ coincident points and extreme floating-point coordinates.
 The accompanying implementation is an in-memory 3D point index, not an
 adaptive volumetric mesh or a production database index. Its kNN operation
 uses Euclidean distance and deterministic insertion-order tie-breaking.
+
+
+## Dynamic updates
+
+The implementation supports lazy deletion by stable insertion ID and periodic whole-tree rebuilding when tombstones exceed the configured threshold. Manual rebuilding is available; insertion IDs remain stable and are not reused. This is a bounded dynamic-update baseline, not a locally rebalanced or disk-backed octree.

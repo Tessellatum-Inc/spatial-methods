@@ -81,3 +81,41 @@ def test_validation():
         PointRegionOctree((0, 0, 0, 1, 1, 1)).query((0, 0, 0, 2, 1))
     with pytest.raises(ValueError):
         PointRegionOctree((0, 0, 0, 1, 1, 1)).k_nearest((0, 0, 0), 0)
+
+
+def test_lazy_delete_preserves_stable_ids_and_removes_points_from_queries():
+    tree=PointRegionOctree((0,0,0,10,10,10),[(1,1,1),(2,2,2),(3,3,3)],capacity=8)
+    assert len(tree)==3
+    assert tree.delete(1) is True
+    assert tree.delete(1) is False
+    assert len(tree)==2
+    assert tree.query(tree.extent)==[0,2]
+    assert [item[0] for item in tree.k_nearest((2,2,2),5)]==[0,2]
+    assert tree.insert((4,4,4))==3
+
+
+def test_tombstone_threshold_rebuilds_without_reusing_ids():
+    points=[(i,i,i) for i in range(6)]
+    tree=PointRegionOctree((0,0,0,8,8,8),points,capacity=1)
+    assert tree.delete(0)
+    assert tree.delete(1)
+    assert tree._tombstones==0
+    assert tree.query(tree.extent)==[2,3,4,5]
+    tree.rebuild()
+    assert tree.query(tree.extent)==[2,3,4,5]
+    assert tree.insert((7,7,7))==6
+
+
+@pytest.mark.parametrize("point_id",[-1,3,1.5,True])
+def test_delete_rejects_invalid_ids(point_id):
+    tree=PointRegionOctree((0,0,0,2,2,2),[(1,1,1)])
+    with pytest.raises(ValueError):
+        tree.delete(point_id)
+
+
+def test_delete_all_points_leaves_empty_queries():
+    tree=PointRegionOctree((0,0,0,2,2,2),[(0,0,0),(1,1,1)])
+    assert tree.delete(0) and tree.delete(1)
+    assert len(tree)==0
+    assert tree.query(tree.extent)==[]
+    assert tree.k_nearest((0,0,0),1)==[]

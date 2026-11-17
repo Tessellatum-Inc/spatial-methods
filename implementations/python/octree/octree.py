@@ -58,11 +58,14 @@ class PointRegionOctree:
         self.capacity, self.max_depth = capacity, max_depth
         self._root = _Node(self.extent, 0)
         self._points: list[Point3] = []
+        self._active: list[bool] = []
+        self._active_count = 0
+        self._tombstones = 0
         for p in points:
             self.insert(p)
 
     def __len__(self) -> int:
-        return len(self._points)
+        return self._active_count
 
     def insert(self, value: Iterable[float]) -> int:
         p = _point(value)
@@ -70,8 +73,32 @@ class PointRegionOctree:
             raise ValueError("point lies outside the root extent")
         idx = len(self._points)
         self._points.append(p)
+        self._active.append(True)
+        self._active_count += 1
         self._insert(self._root, (idx, p))
         return idx
+
+    def delete(self, point_id: int) -> bool:
+        """Lazily delete an insertion ID; periodically rebuild to purge tombstones."""
+        if not isinstance(point_id, int) or isinstance(point_id, bool) or not 0 <= point_id < len(self._points):
+            raise ValueError("point_id must be a valid insertion ID")
+        if not self._active[point_id]:
+            return False
+        self._active[point_id] = False
+        self._active_count -= 1
+        self._tombstones += 1
+        if (self._tombstones >= self.capacity
+                and self._tombstones / len(self._points) >= 0.3):
+            self.rebuild()
+        return True
+
+    def rebuild(self) -> None:
+        """Rebuild the tree from active entries without changing stable IDs."""
+        self._root = _Node(self.extent, 0)
+        for idx, point in enumerate(self._points):
+            if self._active[idx]:
+                self._insert(self._root, (idx, point))
+        self._tombstones = 0
 
     def query(self, window: Iterable[float]) -> list[int]:
         """Return IDs in insertion order for points inside an inclusive box."""
@@ -89,7 +116,7 @@ class PointRegionOctree:
         q = _point(query, "query")
         if not isinstance(k, int) or isinstance(k, bool) or k < 1:
             raise ValueError("k must be a positive integer")
-        if not self._points:
+        if self._active_count == 0:
             return []
         # Min-heap of unexplored nodes, ordered by a lower bound on distance.
         serial = count()
@@ -102,6 +129,8 @@ class PointRegionOctree:
                 break
             if node.children is None:
                 for idx, p in node.entries:
+                    if not self._active[idx]:
+                        continue
                     d = dist(q, p)
                     item = (-d, -idx, idx)
                     if len(best) < k:
@@ -179,7 +208,7 @@ class PointRegionOctree:
         if not self._intersects(node.bounds, window):
             return
         if node.children is None:
-            found.extend(i for i, p in node.entries if self._contains(window, p))
+            found.extend(i for i, p in node.entries if self._active[i] and self._contains(window, p))
         else:
             for child in node.children:
                 self._query(child, window, found)

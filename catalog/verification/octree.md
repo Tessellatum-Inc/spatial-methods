@@ -29,3 +29,10 @@ From the package directory:
 python -m pip install -r requirements.txt
 python -m pytest -q
 ```
+
+
+## Dynamic deletion extension
+- Stable-ID lazy deletion; inactive entries are excluded from range and kNN results.
+- Automatic whole-tree rebuild after at least `capacity` tombstones and a 30% tombstone ratio, plus explicit `rebuild()`.
+- Tests cover repeated deletion, ID stability, query exclusion, automatic/manual rebuilding and invalid IDs.
+- Limits: global rebuild, no local subtree rebalancing, disk persistence or moving-object update policy.

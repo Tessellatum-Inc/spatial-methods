@@ -23,3 +23,8 @@ The exact kNN traversal prunes cells using the Euclidean lower bound from the
 query to each cell's bounding box; worst-case query cost remains O(n).
 
 Run tests with `python -m pytest -q` from this directory.
+
+
+## Dynamic deletion and rebuilding
+
+`delete(point_id)` lazily removes an insertion ID while preserving all later IDs. Range and kNN queries ignore inactive records. When tombstones reach both the configured capacity and 30% of all inserted records, the tree is rebuilt from active points; `rebuild()` is also available explicitly. IDs are never reused. This is a global rebuild policy, not local subtree balancing or a disk-page update strategy.
