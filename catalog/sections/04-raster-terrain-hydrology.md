@@ -106,3 +106,8 @@ The erosion source entry now includes a tested USLE/RUSLE factor-product impleme
 
 
 The DRASTIC source entry now has a seven-layer weighted rating-index implementation. The landslide-susceptibility entry now has categorical frequency-ratio and ridge-regularized logistic-regression baselines. These consume preclassified inputs and do not provide MODFLOW/transport simulation, recharge estimation, SHALSTAB, weights of evidence, inventory validation or spatially blocked model assessment.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 4 atomic completion register](../../docs/section-4-atomic-completion-register.md). The register preserves the source grouping and distinguishes algorithms from models, metrics, software and workflows. It is traceability infrastructure, not a verification or completion claim.
