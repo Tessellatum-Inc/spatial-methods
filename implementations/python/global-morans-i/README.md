@@ -79,3 +79,6 @@ The final band includes its upper edge; earlier bands are half-open. Empty
 bands return a null statistic. Optional row standardisation leaves isolates
 as zero rows. This is descriptive, not a multiple-testing procedure or a
 formal correlogram significance envelope.
+
+
+With permutations enabled, `morans_i_correlogram` now also returns a single-step max-statistic simultaneous envelope. The critical value is the finite-sample upper order statistic of the replicate-wise maximum absolute standardized departure across non-empty bands. The envelope is centred on the randomisation expectation; empty bands remain null. The confidence level is configurable (default 0.95). This is a global maxT envelope, not a step-down procedure.

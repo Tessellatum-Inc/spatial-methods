@@ -178,3 +178,37 @@ def test_moran_correlogram_permutation_rejects_invalid_controls_and_constant_dat
         morans_i_correlogram(points,[1,2,3],[0,2],permutations=9,seed=True)
     with pytest.raises(ValueError,match="constant"):
         morans_i_correlogram(points,[2,2,2],[0,2],permutations=9)
+
+
+def test_correlogram_returns_simultaneous_max_t_envelope():
+    from moran_i import morans_i_correlogram
+    points=[(0,0),(1,0),(2,0),(3,0),(4,0)]
+    values=[1,2,3,7,9]
+    rows=morans_i_correlogram(points,values,[0,1.1,2.1,5],
+                              permutations=199,seed=71,confidence_level=.95)
+    for row in rows:
+        if row["statistic"] is None:
+            assert row["simultaneous_lower"] is None
+            assert row["simultaneous_upper"] is None
+        else:
+            assert row["simultaneous_lower"] <= row["simultaneous_upper"]
+            assert row["confidence_level"] == pytest.approx(.95)
+            assert row["maxT_critical_value"] >= 0
+
+
+def test_single_band_simultaneous_envelope_uses_single_band_max_t():
+    from moran_i import morans_i_correlogram
+    points=[(0,0),(1,0),(2,0),(3,0)]
+    row=morans_i_correlogram(points,[1,2,4,8],[0,4],
+                             permutations=199,seed=31)[0]
+    assert row["p_value_maxT"] == pytest.approx(row["p_value"])
+    half=row["maxT_critical_value"]*row["simulation_std"]
+    assert row["simultaneous_lower"] == pytest.approx(row["expected"]-half)
+    assert row["simultaneous_upper"] == pytest.approx(row["expected"]+half)
+
+
+def test_correlogram_rejects_invalid_confidence_level():
+    from moran_i import morans_i_correlogram
+    points=[(0,0),(1,0),(2,0)]
+    with pytest.raises(ValueError,match="confidence_level"):
+        morans_i_correlogram(points,[1,2,3],[0,2],permutations=19,confidence_level=1.0)

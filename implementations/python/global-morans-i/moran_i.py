@@ -157,6 +157,7 @@ def morans_i_correlogram(
     row_standardize_weights: bool = False,
     permutations: int = 0,
     seed: int | None = 0,
+    confidence_level: float = 0.95,
 ) -> list[dict]:
     """Compute global Moran statistics over non-overlapping distance bands."""
     import math
@@ -181,6 +182,8 @@ def morans_i_correlogram(
         raise ValueError("permutations must be a non-negative integer")
     if permutations and seed is not None and (isinstance(seed, bool) or not isinstance(seed, int)):
         raise ValueError("seed must be an integer or None")
+    if isinstance(confidence_level, bool) or not isfinite(float(confidence_level)) or not 0 < float(confidence_level) < 1:
+        raise ValueError("confidence_level must lie strictly between zero and one")
     if permutations and sum((v - sum(x) / n) ** 2 for v in x) == 0:
         raise ValueError("Moran correlogram is undefined for a constant variable")
     pairs = []
@@ -207,7 +210,9 @@ def morans_i_correlogram(
         statistic = morans_i(x, weights) if selected else None
         band_weights.append(weights if selected else None)
         output.append({"lower": lower, "upper": upper, "pairs": selected,
-                       "statistic": statistic, "expected": -1.0 / (n - 1)})
+                       "statistic": statistic, "expected": -1.0 / (n - 1),
+                       "simultaneous_lower": None, "simultaneous_upper": None,
+                       "confidence_level": None, "maxT_critical_value": None})
     if permutations:
         rng = random.Random(seed)
         simulated = [[] for _ in output]
@@ -239,9 +244,29 @@ def morans_i_correlogram(
             if sim_std > 0:
                 valid.append((index, z_score,
                               [(value - expected) / sim_std for value in values_sim]))
-        if valid:
-            max_statistics = [max(abs(valid[j][2][rep]) for j in range(len(valid)))
-                              for rep in range(permutations)]
+        max_statistics = ([max(abs(valid[j][2][rep]) for j in range(len(valid)))
+                           for rep in range(permutations)] if valid else [])
+        if max_statistics:
+            rank = int(math.floor((permutations + 1) * (1.0 - float(confidence_level)))) + 1
+            critical = (sorted(max_statistics)[rank - 1]
+                        if rank <= permutations else math.inf)
+        else:
+            critical = 0.0
+        for record in output:
+            record["confidence_level"] = float(confidence_level)
+            record["maxT_critical_value"] = critical
+            if record["statistic"] is None:
+                continue
+            if record["simulation_std"] == 0:
+                centre = record["simulation_mean"]
+                record["simultaneous_lower"] = centre
+                record["simultaneous_upper"] = centre
+            else:
+                centre = record["expected"]
+                half_width = critical * record["simulation_std"]
+                record["simultaneous_lower"] = centre - half_width
+                record["simultaneous_upper"] = centre + half_width
+        if max_statistics:
             for index, z_score, _standardized in valid:
                 extreme = sum(value >= abs(z_score) for value in max_statistics)
                 output[index]["p_value_maxT"] = (extreme + 1) / (permutations + 1)

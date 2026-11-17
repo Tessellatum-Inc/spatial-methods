@@ -19,7 +19,14 @@ reject invalid band/permutation inputs.
 
 ## Limits
 
-No simultaneous confidence envelope, adaptive band selection, edge
+No adaptive band selection, edge
 correction or non-Euclidean distance support. The maxT adjustment is based
 on standardized permutation departures and is a single-step family-wise
 procedure; it is not a step-down Westfall–Young method.
+
+
+## Simultaneous envelope extension
+- A configurable confidence level (default 0.95) uses the finite-sample upper order statistic of replicate-wise maximum absolute standardized departures across valid bands.
+- Envelope bounds are centred on the randomisation expectation; empty bands remain null.
+- Tests cover reproducibility, single-band reduction to the global permutation result, envelope bounds and invalid confidence levels.
+- This is a single-step maxT envelope, not a step-down Westfall–Young procedure.
