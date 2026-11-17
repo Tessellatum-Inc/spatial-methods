@@ -25,7 +25,7 @@ def radon_transform(image, theta=None, rho_resolution=1.0, circle=False):
     diag=np.hypot(h-1,w-1)/2
     limit=diag if not circle else min(cx,cy)
     rho=np.arange(-limit,limit+rho_resolution*.5,rho_resolution)
-    t=np.arange(-diag,diag+1,1.0)
+    t=np.arange(-np.ceil(diag),np.ceil(diag)+1,1.0)
     sino=np.zeros((rho.size,angles.size),dtype=float)
     for j,deg in enumerate(angles):
         rad=np.deg2rad(deg); co=np.cos(rad); si=np.sin(rad)

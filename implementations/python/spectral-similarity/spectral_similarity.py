@@ -11,7 +11,10 @@ def spectral_angle(a,b,axis=-1,zero_policy="nan"):
     denom=nx*ny
     if zero_policy not in ("nan","zero"): raise ValueError("zero_policy must be nan or zero")
     cos=np.divide(dot,denom,out=np.zeros_like(dot,dtype=float),where=denom>0)
-    angle=np.arccos(np.clip(cos,-1,1))
+    cos=np.clip(cos,-1,1)
+    # Round-off can leave mathematically identical spectra a few ulps below 1.
+    cos=np.where(np.abs(cos-1.0)<=1e-12,1.0,np.where(np.abs(cos+1.0)<=1e-12,-1.0,cos))
+    angle=np.arccos(cos)
     return np.where(denom>0,angle,np.nan if zero_policy=="nan" else 0.0)
 
 def spectral_information_divergence(a,b,axis=-1,epsilon=1e-12):

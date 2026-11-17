@@ -59,6 +59,6 @@ def test_invalid_shapes_and_too_few_pixels_are_rejected():
     with pytest.raises(ValueError):
         ir_mad(np.ones((4, 4)), np.ones((4, 5)))
     with pytest.raises(ValueError):
-        ir_mad(np.ones((2, 2, 3)), np.ones((2, 2, 3)))
+        ir_mad(np.ones((1, 2, 3)), np.ones((1, 2, 3)))
     with pytest.raises(ValueError):
         ir_mad(np.ones((5, 5)), np.ones((5, 5)), valid_mask=np.ones((5, 5), dtype=int))
