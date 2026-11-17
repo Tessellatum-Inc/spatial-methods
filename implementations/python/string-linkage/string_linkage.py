@@ -104,9 +104,14 @@ def exact_prefix_blocks(records, field, prefix_length=3):
 
 
 def canopy_pairs(records, field, loose_threshold, tight_threshold):
-    """O(n²) overlapping canopy candidate pairs; for small teaching datasets."""
-    if not 0 <= tight_threshold <= loose_threshold <= 1:
-        raise ValueError("require 0 <= tight_threshold <= loose_threshold <= 1")
+    """O(n²) overlapping canopy candidate pairs; for small teaching datasets.
+
+    The loose threshold admits candidate pairs; the tighter threshold marks
+    a pair as a strong match and removes the matched record from future seed
+    canopies. The thresholds therefore satisfy loose <= tight.
+    """
+    if not 0 <= loose_threshold <= tight_threshold <= 1:
+        raise ValueError("require 0 <= loose_threshold <= tight_threshold <= 1")
     values = [normalize_text(str(r.get(field, ""))) for r in records]
     remaining, pairs = set(range(len(values))), set()
     while remaining:
