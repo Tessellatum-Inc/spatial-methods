@@ -233,12 +233,12 @@ def morans_i_correlogram(
             extreme = sum(abs(value - expected) >= abs(observed - expected)
                           for value in values_sim)
             p_value = (extreme + 1) / (permutations + 1)
-            z_score = (observed - sim_mean) / sim_std if sim_std > 0 else None
+            z_score = (observed - expected) / sim_std if sim_std > 0 else None
             record.update({"simulation_mean": sim_mean, "simulation_std": sim_std,
                            "z_score": z_score, "p_value": p_value, "p_value_maxT": None})
             if sim_std > 0:
                 valid.append((index, z_score,
-                              [(value - sim_mean) / sim_std for value in values_sim]))
+                              [(value - expected) / sim_std for value in values_sim]))
         if valid:
             max_statistics = [max(abs(valid[j][2][rep]) for j in range(len(valid)))
                               for rep in range(permutations)]
