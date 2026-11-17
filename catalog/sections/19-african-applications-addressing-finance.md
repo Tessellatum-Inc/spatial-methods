@@ -92,3 +92,8 @@
 ### Drought-index implementation update
 
 The drought-indices package adds tested VCI, TCI, VHI and gamma SPI with mixed zero-rainfall probability. SPI is calibrated as a single population along the selected time axis; month/season-specific fitting, sensor harmonization, impact modelling and parametric-insurance basis-risk analysis remain open.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable IDs in the [Section 19 atomic completion register](../../docs/section-19-atomic-completion-register.md). The source explicitly warns that names and tools are from memory. The register preserves this uncertainty and adds regional-data, privacy, licensing and high-stakes validation gates. It is a backlog decomposition, not a completion claim.
