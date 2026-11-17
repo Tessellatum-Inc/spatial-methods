@@ -135,7 +135,7 @@ This register decomposes grouped labels into auditable child records. Use the [v
 | S02-RE-12 | GTWR | Spatiotemporal local regression | Verify | Verify temporal/spatial kernel and bandwidth; test temporal leakage. |
 | S02-RE-13 | Geographically weighted principal components | Local dimension reduction | Verify | Identify exact formulation and local covariance; test bandwidth effects. |
 | S02-RE-14 | Geographically weighted summary statistics | Local descriptive statistics | Open | Define local moments and weighting; test edge and sparse-neighbour cases. |
-| S02-RE-15 | Spatially varying coefficient models | Regression model family | Partial | Separate frequentist/Bayesian formulations; define smoothness and identifiability. |
+| S02-RE-15 | Spatially varying coefficient models | Regression model family | Partial | A graph-fused sparse regression baseline estimates location-specific coefficients with L1 sparsity and graph total-variation penalties using ADMM; tests cover convergence on smoothly varying coefficients, sparsity shrinkage, disconnected graph components and invalid inputs. This is one explicit graph-regularised formulation, not GWR/MGWR, Bayesian spatially varying coefficients or a general inferential model. |
 | S02-RE-16 | GeoDetector | Spatial stratified heterogeneity method | Verify | Verify factor/ecological detector statistics and discretisation sensitivity. |
 | S02-RE-17 | LM-lag diagnostic | Spatial regression diagnostic | Partial | Verify score test and assumptions; test under null/alternative. |
 | S02-RE-18 | LM-error diagnostic | Spatial regression diagnostic | Partial | Verify score test and assumptions; test under null/alternative. |
@@ -251,3 +251,8 @@ S02-RE-27 is Partial because `implementations/python/spatial-econometrics/hetero
 ## Implementation reconciliation — SDEM and SARAR/SAC likelihoods
 
 S02-RE-06 is Partial because `implementations/python/spatial-econometrics/slx_sdem.py` implements concentrated Gaussian maximum likelihood for the SDEM specification with spatially lagged covariates and spatially correlated errors. The lesson distinguishes SDEM from SAR/SDM, and tests recover the spatial-error parameter and covariate effects on seeded synthetic data, including the redundant spatial lag of a constant. S02-RE-07 is Partial because `maximum_likelihood.py` implements the joint SARAR/SAC likelihood with separate response-lag and disturbance-lag parameters. A two-dimensional coarse search followed by alternating golden-section refinement is tested against synthetic parameter recovery and invalid search controls. Both are dense teaching baselines; conservative parameter bounds, Gaussian innovation assumptions, no robust covariance/standard errors and no production-scale sparse likelihood remain unresolved.
+
+
+## Implementation reconciliation — graph-fused spatially varying coefficients
+
+The Partial status for S02-RE-15 includes `implementations/python/spatial-regression/graph_fused_lasso.py`, which minimises a location-specific least-squares objective with elementwise L1 sparsity and graph total-variation penalties using ADMM. Its tests exercise convergence on smoothly varying synthetic coefficients, coefficient shrinkage, disconnected graph components and input validation. The implementation is a dense small/medium teaching solver with caller-supplied graph edges; it does not supply uncertainty estimates, automatic graph construction, GWR/MGWR bandwidths or Bayesian inference.
