@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 693 | Rows with a source-entry review status in the section indexes |
-| Partial | 209 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 484 | The source wording is preserved, but no independent review is recorded |
+| Partial | 210 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 483 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -21,7 +21,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 |---:|---:|---:|---:|
 | 1 — Core GIS | 33 | 26 | 7 |
 | 2 — Spatial statistics | 28 | 20 | 8 |
-| 3 — Geostatistics | 26 | 13 | 13 |
+| 3 — Geostatistics | 26 | 14 | 12 |
 | 4 — Raster, terrain and hydrology | 26 | 24 | 2 |
 | 5 — Remote sensing | 36 | 30 | 6 |
 | 6 — Optimization, mobility and transport | 31 | 5 | 26 |
@@ -43,7 +43,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 6 | 22 |
 | **Total** | **693** | **199** | **494** |
 
-The current by-section subtotals now reconcile exactly with the aggregate: **693 source-entry rows, 209 partial, 484 intake-only and zero fully verified**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Historical snapshots below are retained as audit history; the current table above is authoritative.
+The current by-section subtotals now reconcile exactly with the aggregate: **693 source-entry rows, 210 partial, 483 intake-only and zero fully verified**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Historical snapshots below are retained as audit history; the current table above is authoritative.
 
 ## How to interpret this
 
@@ -191,3 +191,8 @@ Section 5's point-cloud processing entry now links to a sparse voxelization base
 ## Implementation reconciliation — Vecchia Gaussian-process approximation
 
 Section 3's large-data Gaussian-process entry now links to a nearest-predecessor Vecchia likelihood baseline using a squared-exponential covariance. The implementation selects nearest prior sites, evaluates local Gaussian conditional means/variances and returns the approximate log-likelihood; with all predecessors it matches the dense Gaussian likelihood to numerical tolerance. Independent tests cover exact-likelihood equivalence, ordering invariance, sparse-neighbour outputs and invalid controls; local numerical checks passed. The source row remains partial because NNGP prediction, covariance tapering, fixed-rank/predictive processes, lattice kriging and multi-resolution approximations remain open. Section 3 now has 13 partial and 13 intake-only rows; aggregate review state is 209 partial, 484 intake-only and zero fully verified.
+
+
+## Implementation reconciliation — Knox space-time interaction test
+
+Section 3's space-time testing entry now links to a Knox test implementation that counts pairs close in both space and time and evaluates excess interaction using a plus-one upper-tail Monte Carlo p-value from temporal-label permutations. Tests cover designed clustering, reproducibility, constant-time nulls and invalid controls. The entry remains partial because space-time K functions, scan statistics, space-time cubes and emerging-hotspot analysis are separate methods not implemented by this test. Section 3 now has 14 partial and 12 intake-only rows; aggregate review state is 210 partial, 483 intake-only and zero fully verified.
