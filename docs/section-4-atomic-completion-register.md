@@ -58,7 +58,7 @@ This register atomises the source groupings. Use the [verification protocol](../
 |---|---|---|---|---|
 | S04-TE-01 | Slope | Terrain derivative | Partial | Define gradient operator, units and CRS; test planes and grid anisotropy. |
 | S04-TE-02 | Aspect | Terrain derivative | Partial | Define azimuth convention and flat-cell handling; test known planar slopes. |
-| S04-TE-03 | Multiscale curvature | Terrain derivative family | Open | Split profile/plan/tangential/mean/Gaussian and scale; test analytic surfaces. |
+| S04-TE-03 | Multiscale curvature | Terrain derivative family | Partial | Implements Gaussian scale-space profile and plan curvature: separable Gaussian smoothing at requested map-unit scales, reflective padding, rectangular cell spacing, explicit finite-DEM contract and the existing 3×3 curvature operator. Tests cover planar invariance across scales, suppression of short-wavelength noise, spacing/border behaviour and invalid scales/inputs. Tangential/mean/Gaussian curvature variants, geographic-grid correction, alternative boundary conditions and exact source-variant verification remain open: [implementation](../implementations/python/terrain-derivatives/README.md). |
 | S04-TE-04 | Hillshade | Terrain visualisation | Partial | Define illumination azimuth/altitude and z-factor; test analytical plane. |
 | S04-TE-05 | Multidirectional hillshade | Terrain visualisation | Verify | Verify light directions and combination rule; distinguish visual enhancement from physical illumination. |
 | S04-TE-06 | Openness | Terrain metric | Verify | Verify positive/negative openness and search radius; test synthetic landforms. |
@@ -202,3 +202,8 @@ This register atomises the source groupings. Use the [verification protocol](../
 7. Reconcile canonical lessons, implementation contracts, independent tests, notebooks and coverage records after evidence is recorded.
 
 **Current conclusion:** Section 4 is atomised into auditable child records. It remains open; this register is not proof of independent verification or operational hydrological/coastal validation.
+
+
+## Implementation reconciliation — multiscale terrain curvature
+
+The Partial status for S04-TE-03 is supported by a tested Gaussian scale-space implementation of profile and plan curvature. The implementation does not claim the broader set of curvature invariants or landform-classification methods sometimes grouped under multiscale terrain analysis.
