@@ -53,8 +53,9 @@ Use the [source-entry verification protocol](../verification-protocol.md) to rec
 
 ## Atomic completion registers
 
-These companion registers decompose grouped source rows into auditable child items. They are backlog and traceability aids—not independent verification or completion claims. Sections 1–11 are not yet represented in this atomic-register series.
+These companion registers decompose grouped source rows into auditable child items. They are backlog and traceability aids—not independent verification or completion claims. Sections 2–9 are not yet represented in this atomic-register series.
 
+- [Section 1 — core GIS, geometry, indexing, proximity, networks and routing](../../docs/section-1-atomic-completion-register.md)
 - [Section 10 — classical, statistical and computational methods](../../docs/section-10-atomic-completion-register.md)
 - [Section 11 — GeoAI, GeoFMs and computer vision](../../docs/section-11-atomic-completion-register.md)
 - [Section 12 — signal processing, GNSS, regional science and resilience](../../docs/section-12-atomic-completion-register.md)
@@ -63,10 +64,6 @@ These companion registers decompose grouped source rows into auditable child ite
 - [Section 15 — vision, registration, extraction and hydrology ML](../../docs/section-15-atomic-completion-register.md)
 - [Section 16 — flows, regions, deformation, marine and applied methods](../../docs/section-16-atomic-completion-register.md)
 - [Section 17 — geometry, scalable computation, design and siting](../../docs/section-17-atomic-completion-register.md)
-- [Section 18 — moving objects, routing, transit, water and ice](../../docs/section-18-atomic-completion-register.md)
-- [Section 19 — African applications, addressing, finance, telecom and seismology](../../docs/section-19-atomic-completion-register.md)
-- [Section 20 — indices, retrieval, event tracking and information theory](../../docs/section-20-atomic-completion-register.md)
-- [Section 21 — neural fields, climate ML, accounting and robust geometry](../../docs/section-21-atomic-completion-register.md)
 - [Section 18 — moving objects, routing, transit, water/ice and emissions](../../docs/section-18-atomic-completion-register.md)
 - [Section 19 — African applications, addressing, finance and seismology](../../docs/section-19-atomic-completion-register.md)
 - [Section 20 — spectral indices, microwave retrieval, events and information theory](../../docs/section-20-atomic-completion-register.md)
