@@ -115,6 +115,9 @@ jobs:
           - example: spatial-streaming-sketches
             directory: implementations/python/spatial-streaming-sketches
             pythonpath: ""
+          - example: random-hyperplane-lsh
+            directory: implementations/python/random-hyperplane-lsh
+            pythonpath: ""
           - example: classification-breaks
             directory: implementations/python/classification-breaks
             pythonpath: ""
