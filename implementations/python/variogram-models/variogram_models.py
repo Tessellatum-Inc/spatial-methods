@@ -3,23 +3,37 @@ from __future__ import annotations
 from math import atan2, comb, cos, degrees, isfinite, radians, sin
 import numpy as np
 from scipy.optimize import least_squares, minimize
+from scipy.special import gamma as gamma_function, kv
 
-_MODELS={"spherical","exponential","gaussian"}
+_MODELS={"spherical","exponential","gaussian","matern"}
 
-def variogram_model(lags,*,model="spherical",nugget=0.0,partial_sill=1.0,range_=1.0):
+def _correlation(ratio, model, nu):
+    if model == "spherical":
+        return 1.0 - np.where(ratio < 1.0, 1.5 * ratio - 0.5 * ratio**3, 1.0)
+    if model == "exponential":
+        return np.exp(-3.0 * ratio)
+    if model == "gaussian":
+        return np.exp(-3.0 * ratio**2)
+    argument = np.sqrt(2.0 * nu) * ratio
+    result = np.ones_like(argument)
+    positive = argument > 0
+    a_pos = argument[positive]
+    result[positive] = (2.0**(1.0 - nu) / gamma_function(nu)) * a_pos**nu * kv(nu, a_pos)
+    return result
+
+
+def variogram_model(lags,*,model="spherical",nugget=0.0,partial_sill=1.0,range_=1.0,nu=1.5):
     """Evaluate spherical, exponential or Gaussian semivariogram models."""
     h=np.asarray(lags,dtype=float); n=float(nugget); s=float(partial_sill); a=float(range_)
     if model not in _MODELS: raise ValueError("model must be spherical, exponential or gaussian")
     if not np.isfinite(h).all() or np.any(h<0): raise ValueError("lags must be finite and non-negative")
     if not np.isfinite((n,s,a)).all() or n<0 or s<0 or a<=0:
         raise ValueError("nugget and partial_sill must be non-negative; range_ must be positive")
+    nu=float(nu)
+    if not np.isfinite(nu) or nu<=0:
+        raise ValueError("nu must be finite and positive")
     ratio=h/a
-    if model=="spherical":
-        shape=np.where(ratio<1,1.5*ratio-0.5*ratio**3,1.0)
-    elif model=="exponential":
-        shape=1-np.exp(-3*ratio)
-    else:
-        shape=1-np.exp(-3*ratio**2)
+    shape=1.0-_correlation(ratio,model,nu)
     result=n+s*shape
     return np.where(h==0.0,0.0,result)
 
@@ -120,10 +134,12 @@ def directional_semivariogram(points,values,bin_edges,*,azimuth_deg=0.0,
     return output
 
 def fit_variogram(lags,semivariances,*,pairs=None,model="spherical",fit_nugget=True,
-                  initial=None):
+                  initial=None,nu=1.5):
     """Fit nugget, partial sill and range by pair-count weighted least squares."""
     h=np.asarray(lags,dtype=float); g=np.asarray(semivariances,dtype=float)
     if model not in _MODELS: raise ValueError("unsupported variogram model")
+    nu=float(nu)
+    if not isfinite(nu) or nu<=0: raise ValueError("nu must be finite and positive")
     if h.ndim!=1 or g.shape!=h.shape or len(h)<3: raise ValueError("lags and semivariances need at least three aligned values")
     mask=np.isfinite(h)&np.isfinite(g)&(h>0)&(g>=0)
     h,g=h[mask],g[mask]
@@ -147,20 +163,20 @@ def fit_variogram(lags,semivariances,*,pairs=None,model="spherical",fit_nugget=T
     if fit_nugget:
         x0=np.array([n0,s0,a0]); lower=[0,1e-12,max(1e-12,float(np.min(h))*1e-6)]
         upper=[np.inf,np.inf,max(float(np.max(h))*1e6,1.0)]
-        def residual(x): return (variogram_model(h,model=model,nugget=x[0],partial_sill=x[1],range_=x[2])-g)*weights
+        def residual(x): return (variogram_model(h,model=model,nugget=x[0],partial_sill=x[1],range_=x[2],nu=nu)-g)*weights
         fit=least_squares(residual,x0,bounds=(lower,upper))
         nugget,sill,range_=map(float,fit.x)
     else:
-        def residual(x): return (variogram_model(h,model=model,nugget=n0,partial_sill=x[0],range_=x[1])-g)*weights
+        def residual(x): return (variogram_model(h,model=model,nugget=n0,partial_sill=x[0],range_=x[1],nu=nu)-g)*weights
         fit=least_squares(residual,[s0,a0],bounds=([1e-12,max(1e-12,float(np.min(h))*1e-6)],[np.inf,max(float(np.max(h))*1e6,1.0)]))
         nugget=n0; sill,range_=map(float,fit.x)
-    return {"model":model,"nugget":nugget,"partial_sill":sill,"sill":nugget+sill,
+    return {"model":model,"nu":nu,"nugget":nugget,"partial_sill":sill,"sill":nugget+sill,
             "range":range_,"weighted_sse":float(np.sum(fit.fun**2)),
             "success":bool(fit.success),"message":str(fit.message),"bins_used":int(len(h))}
 
 
 
-def fit_variogram_reml(points, values, *, model="exponential", initial=None, anisotropy_azimuth_deg=0.0, anisotropy_ratio=1.0, fit_anisotropy=False):
+def fit_variogram_reml(points, values, *, model="exponential", initial=None, anisotropy_azimuth_deg=0.0, anisotropy_ratio=1.0, fit_anisotropy=False, nu=1.5):
     """Fit a constant-mean Gaussian covariance by dense restricted likelihood.
 
     With fit_anisotropy=True, jointly estimates major-axis azimuth and
@@ -176,7 +192,10 @@ def fit_variogram_reml(points, values, *, model="exponential", initial=None, ani
     if not np.isfinite(xy).all() or len(np.unique(xy, axis=0)) != len(xy):
         raise ValueError("points must be finite and unique")
     if model not in _MODELS:
-        raise ValueError("model must be spherical, exponential or gaussian")
+        raise ValueError("model must be spherical, exponential, gaussian or matern")
+    nu=float(nu)
+    if not isfinite(nu) or nu<=0:
+        raise ValueError("nu must be finite and positive")
     variance = float(np.var(z))
     if not isfinite(variance) or variance <= 0:
         raise ValueError("values must have positive finite variance")
@@ -225,13 +244,7 @@ def fit_variogram_reml(points, values, *, model="exponential", initial=None, ani
             candidate_azimuth, candidate_ratio = azimuth, anisotropy_ratio
             candidate_distances = distances
         ratio = candidate_distances / range_
-        if model == "spherical":
-            shape = np.where(ratio < 1.0, 1.5 * ratio - 0.5 * ratio**3, 1.0)
-        elif model == "exponential":
-            shape = 1.0 - np.exp(-3.0 * ratio)
-        else:
-            shape = 1.0 - np.exp(-3.0 * ratio**2)
-        covariance = sill * (1.0 - shape)
+        covariance = sill * _correlation(ratio, model, nu)
         covariance.flat[::len(z) + 1] += nugget + sill * 0.0
         try:
             chol = np.linalg.cholesky(covariance)
@@ -267,20 +280,14 @@ def fit_variogram_reml(points, values, *, model="exponential", initial=None, ani
     if not np.isfinite(result.x).all() or not isfinite(float(result.fun)):
         raise ValueError("REML optimization failed to find a finite covariance model")
     ratio = distances / range_
-    if model == "spherical":
-        shape = np.where(ratio < 1.0, 1.5 * ratio - 0.5 * ratio**3, 1.0)
-    elif model == "exponential":
-        shape = 1.0 - np.exp(-3.0 * ratio)
-    else:
-        shape = 1.0 - np.exp(-3.0 * ratio**2)
-    covariance = sill * (1.0 - shape)
+    covariance = sill * _correlation(ratio, model, nu)
     covariance.flat[::len(z) + 1] += nugget
     chol = np.linalg.cholesky(covariance)
     inv_one = np.linalg.solve(chol.T, np.linalg.solve(chol, ones))
     inv_z = np.linalg.solve(chol.T, np.linalg.solve(chol, z))
     fitted_mean = float(ones @ inv_z) / float(ones @ inv_one)
     return {
-        "model": model, "anisotropy_azimuth_deg": azimuth % 180.0, "anisotropy_ratio": anisotropy_ratio, "anisotropy_fitted": fit_anisotropy, "nugget": float(nugget),
+        "model": model, "nu": nu, "anisotropy_azimuth_deg": azimuth % 180.0, "anisotropy_ratio": anisotropy_ratio, "anisotropy_fitted": fit_anisotropy, "nugget": float(nugget),
         "partial_sill": float(sill), "sill": float(nugget + sill),
         "range": float(range_), "reml_objective": float(result.fun),
         "success": bool(result.success), "message": str(result.message),
