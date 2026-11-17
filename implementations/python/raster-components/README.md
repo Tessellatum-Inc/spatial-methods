@@ -26,3 +26,13 @@ Read the [canonical lesson](../../../algorithms/raster/connected-components.md) 
 The module also provides `connected_components_3d` for binary volumes. Choose 6-connectivity (face neighbours), 18-connectivity (faces and edges) or 26-connectivity (faces, edges and corners). An optional valid-voxel mask makes invalid cells barriers. Labels are deterministic in z/y/x scan order and component sizes are returned.
 
 This is a basic spatial-volume primitive that can support event-object extraction from time stacks or 3-D model outputs. It does not perform temporal object linking, split/merge tracking, periodic-boundary handling or tiled/parallel reconciliation. Tests cover connectivity distinctions, barriers and invalid inputs.
+
+
+## Flood fill and run-length encoding
+
+The package also provides seed-based exact-value flood fill with 4/8
+connectivity and optional validity barriers. `run_length_encode` and
+`run_length_decode` provide a lossless row-major value/count representation
+for finite numeric 2-D arrays, preserving shape and NumPy dtype. This simple
+RLE format is a teaching representation, not a standardized interchange
+format or a substitute for compression tuned to arbitrary imagery.

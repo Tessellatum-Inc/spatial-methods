@@ -27,11 +27,26 @@ $$T(R,C)=O(RC)$$
 
 The label raster requires O(RC) memory; the queue can grow to the size of the largest component.
 
+## Flood fill and run-length encoding
+
+The same package includes seed-based **flood fill**: it returns the exact-value
+region connected to a seed under 4- or 8-neighbour connectivity. A validity
+mask makes NoData cells barriers; a seed on an invalid cell returns an empty
+mask. Equality is exact, so continuous-valued rasters should be quantized or
+processed with a separate tolerance rule before using this operation.
+
+The package also includes a simple lossless **run-length encoding (RLE)**
+representation. It scans a finite numeric 2-D array in row-major order and
+stores consecutive equal values as (value, count) pairs alongside shape and
+dtype metadata. Decoding validates the run total and restores the original
+shape and dtype. RLE is effective for long homogeneous runs, but can expand
+high-entropy imagery and is not a standardized file format.
+
 ## Interpretation and limitations
 
 - Component IDs are arbitrary identifiers assigned by scan order, not class values or importance rankings.
 - 4- and 8-connectivity can produce different component counts and sizes.
-- This baseline does not polygonize components, compute shape descriptors or reconcile labels across distributed tiles.
+- This baseline does not polygonize components, compute shape descriptors or reconcile labels across distributed tiles. The RLE format is not bit-packed, entropy-coded, tiled or interoperable with external raster formats.
 - Production implementations may use run-length encoding, union-find or tiled algorithms to improve memory use and throughput.
 
 ## Exercises

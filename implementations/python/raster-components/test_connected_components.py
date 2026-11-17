@@ -82,3 +82,44 @@ def test_3d_component_input_validation():
         connected_components_3d(np.ones((2, 2, 2)), valid=np.ones((2, 2)))
     with pytest.raises(ValueError, match="only finite"):
         connected_components_3d(np.array([[[1, np.nan]]]))
+
+
+def test_flood_fill_exact_value_and_connectivity():
+    from connected_components import flood_fill
+    raster = np.array([[1,0,1],[0,1,0],[1,0,1]])
+    assert flood_fill(raster, (0,0), connectivity=4).sum() == 1
+    assert flood_fill(raster, (0,0), connectivity=8).sum() == 5
+
+
+def test_flood_fill_respects_valid_mask_and_invalid_seed():
+    from connected_components import flood_fill
+    raster = np.ones((1,4), dtype=int)
+    valid = np.array([[1,1,0,1]], dtype=bool)
+    assert flood_fill(raster, (0,0), valid=valid).tolist() == [[True,True,False,False]]
+    assert not flood_fill(raster, (0,2), valid=valid).any()
+
+
+def test_flood_fill_rejects_invalid_inputs():
+    from connected_components import flood_fill
+    with pytest.raises(ValueError): flood_fill([[1,2]], (0,2))
+    with pytest.raises(ValueError): flood_fill([[1]], (0,0), connectivity=6)
+    with pytest.raises(ValueError): flood_fill([[1]], (0.0,0))
+
+
+def test_rle_round_trip_preserves_shape_dtype_and_values():
+    from connected_components import run_length_encode, run_length_decode
+    for data in (np.array([[1,1,1],[0,0,2]], dtype=np.int16),
+                 np.array([[True,True],[False,False]], dtype=bool),
+                 np.array([[1.5,1.5],[2.25,3.0]], dtype=np.float32)):
+        encoded = run_length_encode(data)
+        decoded = run_length_decode(encoded)
+        np.testing.assert_array_equal(decoded, data)
+        assert decoded.dtype == data.dtype
+
+
+def test_rle_single_run_and_invalid_streams():
+    from connected_components import run_length_encode, run_length_decode
+    assert run_length_encode(np.ones((2,3), dtype=np.uint8))["runs"] == [(1,6)]
+    with pytest.raises(ValueError): run_length_encode(np.empty((0,2)))
+    with pytest.raises(ValueError): run_length_decode({"shape":(2,2),"dtype":"<i8","runs":[(1,3)]})
+    with pytest.raises(ValueError): run_length_decode({"shape":(1,1),"dtype":"<i8","runs":[(1,0)]})

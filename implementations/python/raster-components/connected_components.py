@@ -125,3 +125,111 @@ def connected_components_3d(
                             queue.append((nz, ny, nx))
                 sizes[next_label] = size
     return labels, sizes
+
+
+def flood_fill(
+    raster: Sequence[Sequence[object]] | np.ndarray,
+    seed: tuple[int, int],
+    *,
+    connectivity: int = 4,
+    valid: Sequence[Sequence[bool]] | np.ndarray | None = None,
+) -> np.ndarray:
+    """Return the exact-value region connected to seed; invalid cells are barriers."""
+    data = np.asarray(raster)
+    if data.ndim != 2 or data.size == 0:
+        raise ValueError("raster must be a non-empty 2D array")
+    if data.dtype.kind not in "biuf":
+        raise ValueError("raster values must be boolean, integer or real numeric")
+    if not np.isfinite(data).all():
+        raise ValueError("raster values must be finite")
+    if connectivity not in (4, 8):
+        raise ValueError("connectivity must be 4 or 8")
+    if len(seed) != 2 or any(isinstance(v, bool) or not isinstance(v, (int, np.integer)) for v in seed):
+        raise ValueError("seed must contain two integer indices")
+    sr, sc = map(int, seed)
+    rows, cols = data.shape
+    if not (0 <= sr < rows and 0 <= sc < cols):
+        raise ValueError("seed lies outside raster bounds")
+    if valid is None:
+        valid_mask = np.ones(data.shape, dtype=bool)
+    else:
+        raw_valid = np.asarray(valid)
+        if raw_valid.shape != data.shape or raw_valid.dtype.kind not in "biu" or not np.isin(raw_valid, [0, 1]).all():
+            raise ValueError("valid mask must be a same-shape boolean/0/1 array")
+        valid_mask = raw_valid.astype(bool)
+    result = np.zeros(data.shape, dtype=bool)
+    if not valid_mask[sr, sc]:
+        return result
+    target = data[sr, sc]
+    offsets = ((-1,0),(1,0),(0,-1),(0,1)) if connectivity == 4 else tuple(
+        (dr,dc) for dr in (-1,0,1) for dc in (-1,0,1) if (dr,dc)!=(0,0)
+    )
+    queue = deque([(sr, sc)])
+    result[sr, sc] = True
+    while queue:
+        r, c = queue.popleft()
+        for dr, dc in offsets:
+            nr, nc = r+dr, c+dc
+            if (0 <= nr < rows and 0 <= nc < cols and valid_mask[nr,nc]
+                    and not result[nr,nc] and data[nr,nc] == target):
+                result[nr,nc] = True
+                queue.append((nr,nc))
+    return result
+
+
+def run_length_encode(raster: Sequence[Sequence[object]] | np.ndarray) -> dict:
+    """Losslessly encode a finite numeric 2-D raster as row-major value/count runs."""
+    data = np.asarray(raster)
+    if data.ndim != 2 or data.size == 0:
+        raise ValueError("raster must be a non-empty 2D array")
+    if data.dtype.kind not in "biuf" or not np.isfinite(data).all():
+        raise ValueError("raster must contain finite boolean or numeric values")
+    flat = data.ravel(order="C")
+    runs = []
+    value, count = flat[0].item(), 1
+    for item in flat[1:]:
+        current = item.item()
+        if current == value:
+            count += 1
+        else:
+            runs.append((value, count))
+            value, count = current, 1
+    runs.append((value, count))
+    return {"shape": tuple(data.shape), "dtype": data.dtype.str, "runs": runs}
+
+
+def run_length_decode(encoded: dict) -> np.ndarray:
+    """Decode the value/count representation returned by run_length_encode."""
+    if not isinstance(encoded, dict) or set(encoded) != {"shape", "dtype", "runs"}:
+        raise ValueError("encoded data must contain shape, dtype and runs")
+    shape = encoded["shape"]
+    if (not isinstance(shape, (tuple, list)) or len(shape) != 2
+            or any(isinstance(v, bool) or not isinstance(v, int) or v < 1 for v in shape)):
+        raise ValueError("shape must contain two positive integer dimensions")
+    try:
+        dtype = np.dtype(encoded["dtype"])
+    except (TypeError, ValueError):
+        raise ValueError("invalid dtype") from None
+    if dtype.kind not in "biuf":
+        raise ValueError("only finite boolean or numeric dtypes are supported")
+    runs = encoded["runs"]
+    if not isinstance(runs, (tuple, list)) or not runs:
+        raise ValueError("runs must be a non-empty sequence")
+    values, total = [], 0
+    for run in runs:
+        if not isinstance(run, (tuple, list)) or len(run) != 2:
+            raise ValueError("each run must be (value, positive_count)")
+        value, count = run
+        if isinstance(count, bool) or not isinstance(count, int) or count < 1:
+            raise ValueError("run counts must be positive integers")
+        try:
+            cast = np.asarray(value, dtype=dtype).item()
+        except (TypeError, ValueError, OverflowError):
+            raise ValueError("run value cannot be represented by dtype") from None
+        if not np.isfinite(cast):
+            raise ValueError("run values must be finite")
+        values.extend([cast] * count)
+        total += count
+    if total != shape[0] * shape[1]:
+        raise ValueError("run counts do not match encoded shape")
+    return np.asarray(values, dtype=dtype).reshape(tuple(shape), order="C")
