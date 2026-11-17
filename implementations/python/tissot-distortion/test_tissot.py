@@ -28,9 +28,9 @@ def test_mercator_is_conformal_with_expected_scale():
 
 def test_equirectangular_has_known_parallel_scale():
     result = tissot_indicatrix(equirectangular, 0, 30)
-    assert result["major_scale"] == pytest.approx(1.0, rel=1e-8)
-    assert result["minor_scale"] == pytest.approx(math.cos(math.radians(30)), rel=1e-8)
-    assert result["area_scale"] == pytest.approx(math.cos(math.radians(30)), rel=1e-8)
+    assert result["major_scale"] == pytest.approx(1 / math.cos(math.radians(30)), rel=1e-8)
+    assert result["minor_scale"] == pytest.approx(1.0, rel=1e-8)
+    assert result["area_scale"] == pytest.approx(1 / math.cos(math.radians(30)), rel=1e-8)
     assert result["angular_distortion_degrees"] > 0
 
 

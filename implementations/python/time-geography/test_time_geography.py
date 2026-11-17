@@ -31,7 +31,7 @@ def test_infeasible_budget_returns_empty_area():
 
 def test_point_membership_uses_sum_of_distances():
     mask = contains_potential_path_points(
-        [(5, 0), (5, 2), (5, 3), (0, 0)],
+        [(5, 0), (5, 2), (5, 4), (0, 0)],
         (0, 0), (10, 0), duration=6, speed=2,
     )
     assert mask.tolist() == [True, True, False, True]
