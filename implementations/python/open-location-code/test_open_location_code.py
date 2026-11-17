@@ -13,6 +13,7 @@ def test_known_googleplex_full_code_contains_reference_coordinate():
 
 def test_encoding_is_case_and_longitude_wrap_stable():
     assert encode(0, 181) == encode(0, -179)
+    assert encode(0, -181) == encode(0, 179)
     assert decode("849vcwc8+r9") == decode("849VCWC8+R9")
 
 
