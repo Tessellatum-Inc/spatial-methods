@@ -149,8 +149,8 @@ This register decomposes grouped labels into auditable child records. Use the [v
 | S02-RE-26 | Breusch–Pagan test | Heteroskedasticity diagnostic | Partial | Verify auxiliary regression and degrees of freedom; test robust variants. |
 | S02-RE-27 | Koenker test | Heteroskedasticity diagnostic | Verify | Verify studentised/robust variant and assumptions. |
 | S02-RE-28 | GWR significance tests | Local model inference | Verify | Identify exact test and multiple-testing treatment; test bandwidth uncertainty. |
-| S02-RE-29 | Spatial GMM | Estimation framework | Open | Define moments/instruments and identification; test consistency under simulation. |
-| S02-RE-30 | Spatial HAC standard errors | Covariance estimator | Verify | Verify kernel/bandwidth and asymptotics; test empirical size. |
+| S02-RE-29 | Spatial GMM | Estimation framework | Partial | Two bounded estimators are implemented: heteroskedasticity-robust two-step spatial-lag IV-GMM with a robust sandwich and overidentification statistic, and homoskedastic-innovation Kelejian–Prucha spatial-error GM followed by feasible GLS. Synthetic SAR recovery, exact-identification, zero-error and invalid/underidentified cases are tested. SARAR GTSLS and heteroskedastic error-GM extensions also exist as separate packages; weak-instrument, spatial-dependence, finite-sample and broader model-family validation remain open. |
+| S02-RE-30 | Spatial HAC standard errors | Covariance estimator | Partial | OLS spatial-HAC and spatial-lag 2SLS spatial-HAC covariance baselines use a compact-support Wendland C2 kernel over projected planar coordinates and an explicit bandwidth; tests cover the HC0 no-neighbour limit, hand-reconstructed IV sandwich, symmetry/PSD and invalid inputs. Kernel/bandwidth sensitivity, empirical size and coverage, alternative kernels and scalable sparse implementations remain open. |
 | S02-RE-31 | Spatial panel models | Panel econometric family | Open | Split fixed/random effects and lag/error structures; define time/spatial weights. |
 | S02-RE-32 | Dynamic spatial panel models | Dynamic panel family | Open | Define temporal and spatial lags, instruments and bias correction. |
 | S02-RE-33 | Spatial probit | Limited dependent-variable model | Verify | Verify latent-variable spatial dependence and likelihood approximation. |
@@ -234,3 +234,10 @@ The Partial status for S02-PP-16 reflects a bounded two-mark cross-pattern imple
 ## Implementation reconciliation — robust spatial LM diagnostics
 
 The Partial status for S02-RE-19 and S02-RE-20 reflects the tested Bera–Yoon robust LM-lag and LM-error score adjustments in `implementations/python/spatial-econometrics/diagnostics.py`. The implementation uses the supplied weights unchanged, reports asymptotic chi-square(1) p-values, and returns unavailable results when the nuisance-adjustment denominator is unidentified. The tests compare both statistics with hand-computed formulae and cover the degenerate case. The canonical lesson cites Anselin, Bera, Florax and Yoon (1996). This is a dense-matrix teaching baseline; broader finite-sample calibration, empirical size/power studies, alternative robust score formulations and independent source review remain open.
+
+
+## Implementation reconciliation — spatial GMM and spatial HAC
+
+S02-RE-29 is Partial because `implementations/python/spatial-econometrics/` contains a two-step heteroskedasticity-robust spatial-lag IV-GMM estimator using `[X, WX, …, W^qX]`, and a separate homoskedastic-innovation Kelejian–Prucha spatial-error generalized-moments estimator followed by feasible GLS. The package also includes heteroskedastic SARAR GTSLS and a Kelejian–Prucha joint asymptotic covariance extension. Synthetic recovery and identification/invalid-input tests provide bounded implementation evidence, not proof of instrument validity or a complete spatial-GMM family.
+
+S02-RE-30 is Partial because OLS and spatial-lag 2SLS spatial-HAC covariance routines use a documented compact-support Wendland C2 kernel and declared projected-coordinate bandwidth. Tests include the no-cross-location HC0 limit and an independently reconstructed 2SLS sandwich. Finite-sample size/coverage studies, bandwidth selection and sensitivity, alternative kernel families, space-time/network dependence and scalable sparse computation remain open.
