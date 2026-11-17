@@ -54,3 +54,8 @@ parameter uncertainty. Universal kriging supports only a planar coordinate
 drift, not arbitrary external covariates. Singular systems are rejected
 rather than silently pseudo-inverted. Coordinates must be in meaningful
 planar linear units.
+
+
+## External-drift kriging
+
+The companion `external_drift_kriging_predict` function accepts an n-by-p training-covariate matrix and an m-by-p target-covariate matrix. It adds an intercept, checks full column rank and estimates the unknown drift jointly with the spatial residual through the universal-kriging block system. Covariates and their target values are supplied by the caller; there is no covariate extraction, model selection or measurement-error model.

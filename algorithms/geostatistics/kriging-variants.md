@@ -34,3 +34,8 @@ neighbourhood search, anisotropy estimation or parameter uncertainty.
 - Chilès, J.-P., & Delfiner, P. (2012). *Geostatistics: Modeling Spatial
   Uncertainty*, 2nd ed. Wiley.
 - Deutsch, C. V. (University of Alberta), [Geostatistics Formula Sheet](https://sites.ualberta.ca/~cdeutsch/Geostatistics%20Formula%20Sheet.pdf).
+
+
+## External drift
+
+A separate NumPy implementation adds caller-supplied external covariates to an intercept and solves the universal-kriging block system. It returns latent-field predictions, variances and weights. This covers external-drift kriging with known covariate values; it is not a complete regression-kriging workflow with a separately selected trend model or covariate uncertainty.

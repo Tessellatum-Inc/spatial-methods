@@ -22,3 +22,9 @@ Dense solves only; no variogram fitting, automatic anisotropy, external
 covariates, co-kriging, block support, local neighbourhood selection or
 parameter uncertainty. The solver rejects singular systems rather than
 using a pseudo-inverse.
+
+
+## External-drift extension
+- Caller-supplied training and target covariates with automatic intercept.
+- Full-rank design validation, exact synthetic trend reproduction and an independent augmented-system oracle.
+- Limits: supplied covariates only; no covariate uncertainty, automated extraction, co-kriging, indicator/disjunctive or block support.
