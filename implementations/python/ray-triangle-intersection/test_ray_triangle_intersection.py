@@ -105,3 +105,35 @@ def test_bvh_matches_brute_force_for_seeded_vertical_rays():
             index, hit = actual
             assert hit.t == pytest.approx(expected[0])
             assert index == expected[1]
+
+
+def test_frustum_aabb_culling_inside_outside_and_intersecting_boxes():
+    from ray_triangle_intersection import AABB, aabb_intersects_frustum
+    planes = (
+        (1, 0, 0, 1), (-1, 0, 0, 1),
+        (0, 1, 0, 1), (0, -1, 0, 1),
+        (0, 0, 1, 1), (0, 0, -1, 1),
+    )
+    assert aabb_intersects_frustum(AABB((-.5, -.5, -.5), (.5, .5, .5)), planes)
+    assert not aabb_intersects_frustum(AABB((2, 0, 0), (3, .5, .5)), planes)
+    assert aabb_intersects_frustum(AABB((.9, -.2, -.2), (1.2, .2, .2)), planes)
+
+
+def test_frustum_boundary_and_tolerance_are_conservative():
+    from ray_triangle_intersection import AABB, aabb_intersects_frustum
+    planes = ((-1, 0, 0, 1),)
+    boundary = AABB((1, 0, 0), (2, 1, 1))
+    assert aabb_intersects_frustum(boundary, planes)
+    assert aabb_intersects_frustum(AABB((1.0001, 0, 0), (2, 1, 1)), planes, epsilon=.001)
+    assert not aabb_intersects_frustum(AABB((1.1, 0, 0), (2, 1, 1)), planes, epsilon=.001)
+
+
+def test_invalid_frustum_planes_raise():
+    from ray_triangle_intersection import AABB, aabb_intersects_frustum
+    box = AABB((0, 0, 0), (1, 1, 1))
+    with pytest.raises(ValueError):
+        aabb_intersects_frustum(box, [])
+    with pytest.raises(ValueError):
+        aabb_intersects_frustum(box, ((1, 0, 0),))
+    with pytest.raises(ValueError):
+        aabb_intersects_frustum(box, ((float("nan"), 0, 0, 1),))
