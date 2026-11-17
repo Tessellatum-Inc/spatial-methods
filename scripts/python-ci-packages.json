@@ -816,6 +816,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/rbf-interpolation",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/recurrence-analysis",
     "pythonpath": ""
   },
