@@ -88,7 +88,7 @@ def test_endpoint_stations_can_participate_in_a_feasible_stop_sequence():
     }
 
 
-@pytest.mark.parametrize("value", [True, float("inf"), float("-inf"), float("nan"), 10**10000])
+@pytest.mark.parametrize("value", [True, float("inf"), float("-inf"), float("nan"), pytest.param(10**10000, id="huge-int")])
 def test_non_finite_or_non_numeric_range_values_are_rejected(value):
     with pytest.raises(ValueError):
         flow_refueling_exact({"r": {"length": 1, "sites": {}}}, {"r": 1}, ["a"], 0, value)
