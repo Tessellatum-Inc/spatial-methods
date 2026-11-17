@@ -40,7 +40,7 @@ This section extends computational geometry and adds scalable statistics, fast d
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Space-filling designs: maximin, coffee-house, spatial coverage design (k-means based), Latin hypercube | Spatial sampling and experimental design | 35 | Partially implemented: Latin hypercube, centered LHS, multi-start normalized maximin LHS and deterministic k-means coverage have code and tests; coffee-house design remains unresolved because the source gives no reproducible definition |
-| Model-based design: kriging variance minimization, Bayesian optimal design, sequential and adaptive designs, mutual information sensor selection (submodular greedy) | Model-based and adaptive experimental design | 36 | Not checked — intake only |
+| Model-based design: kriging variance minimization, Bayesian optimal design, sequential and adaptive designs, mutual information sensor selection (submodular greedy) | Model-based and adaptive experimental design | 36 | Partially implemented: a tested Gaussian-process mutual-information greedy sensor selector supports target/candidate covariance, independent observation noise and deterministic tie-breaking; kriging-variance minimization, Bayesian optimal design and broader adaptive path planning remain open |
 | Robotic sampling: adaptive sampling with AUVs and drones, informative path planning | Mobile sensing / robotic path planning | 36 | Not checked — intake only |
 
 ## 3D formats and level-of-detail

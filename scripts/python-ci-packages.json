@@ -604,6 +604,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/mutual-information-sensor-selection",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/natural-neighbour",
     "pythonpath": ""
   },
