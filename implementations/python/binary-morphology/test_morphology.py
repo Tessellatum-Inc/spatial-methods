@@ -139,9 +139,9 @@ def test_binary_granulometry_is_monotone_and_conserves_pattern_spectrum():
     image = np.zeros((15, 15), bool)
     image[3:12, 3:12] = True
     image[6, 6] = False
-    structures = [np.ones((1, 1), bool), np.ones((3, 3), bool), np.ones((5, 5), bool)]
-    result = binary_granulometry(image, structures)
+    result = binary_granulometry(image, [0, 1, 2])
     areas, spectrum = result["areas"], result["pattern_spectrum"]
+    assert result["radii"].tolist() == [0, 1, 2]
     assert areas[0] == int(image.sum())
     assert np.all(np.diff(areas) <= 0)
     assert np.all(spectrum >= 0)
@@ -149,10 +149,9 @@ def test_binary_granulometry_is_monotone_and_conserves_pattern_spectrum():
     assert areas[-1] < areas[0]
 
 
-def test_binary_granulometry_rejects_empty_or_non_nested_scale_families():
+def test_binary_granulometry_rejects_empty_duplicate_or_invalid_radii():
     from morphology import binary_granulometry
     image = np.ones((7, 7), bool)
-    with pytest.raises(ValueError):
-        binary_granulometry(image, [])
-    with pytest.raises(ValueError):
-        binary_granulometry(image, [np.ones((3, 3), bool), np.eye(3, dtype=bool)])
+    for radii in ([], [1, 1], [2, 1], [-1], [1.5], [True]):
+        with pytest.raises(ValueError):
+            binary_granulometry(image, radii)

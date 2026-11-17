@@ -261,26 +261,32 @@ def two_pass_connected_components(image, connectivity=8):
             sizes[compact - 1] += 1
     return labels, np.asarray(sizes, dtype=np.int64)
 
-def binary_granulometry(image, structures):
-    """Measure a binary opening granulometry over nested structuring elements.
+def binary_granulometry(image, radii):
+    """Measure a square-opening granulometry at strictly increasing radii.
 
-    Returns original-plus-opened foreground areas and the pattern spectrum
-    (area removed at each successive scale). Structures must form an
-    increasing family around their common floor-centred origin.
+    Each radius r uses the full (2r+1)-by-(2r+1) square structuring element.
+    This homothetic square family forms a granulometric scale sequence. The
+    result contains the original-plus-opened foreground areas and the
+    pattern spectrum (area removed between successive scales).
     """
     a = _binary(image)
-    family = list(structures)
-    if not family:
-        raise ValueError("at least one structuring element is required")
-    offsets = [_structure(s) for s in family]
-    for previous, current in zip(offsets, offsets[1:]):
-        if not set(previous).issubset(current):
-            raise ValueError("structuring elements must be nested in increasing order")
+    scales = list(radii)
+    if not scales:
+        raise ValueError("at least one radius is required")
+    if any(not isinstance(r, (int, np.integer)) or isinstance(r, (bool, np.bool_)) or r < 0 for r in scales):
+        raise ValueError("radii must be non-negative integers")
+    if any(right <= left for left, right in zip(scales, scales[1:])):
+        raise ValueError("radii must be strictly increasing")
     areas = [int(np.count_nonzero(a))]
-    for structure in family:
+    for radius in scales:
+        structure = np.ones((2 * int(radius) + 1, 2 * int(radius) + 1), dtype=bool)
         area = int(np.count_nonzero(opening(a, structure)))
         if area > areas[-1]:
-            raise RuntimeError("opening area increased; check nesting and border convention")
+            raise RuntimeError("square granulometry area increased; check morphology boundary semantics")
         areas.append(area)
     area_array = np.asarray(areas, dtype=np.int64)
-    return {"areas": area_array, "pattern_spectrum": area_array[:-1] - area_array[1:]}
+    return {
+        "radii": np.asarray(scales, dtype=np.int64),
+        "areas": area_array,
+        "pattern_spectrum": area_array[:-1] - area_array[1:],
+    }
