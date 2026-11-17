@@ -54,7 +54,7 @@ The [planar Gaussian KDE lesson](../../algorithms/statistics/point-pattern-kde.m
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Density-based: [DBSCAN](../../algorithms/statistics/dbscan.md), HDBSCAN, OPTICS, DENCLUE, density peaks, [ST-DBSCAN](../../algorithms/statistics/st-dbscan.md), T-DBSCAN | Clustering algorithms | 3 | Partial — DBSCAN and ST-DBSCAN reference implementations exist; HDBSCAN, OPTICS, DENCLUE, density peaks and T-DBSCAN remain open |
-| Partitioning: k-means, k-medoids, CLARA, CLARANS, constrained and equal-size k-means | Clustering algorithms / constrained variants | 3 | Not checked — intake only |
+| Partitioning: k-means, k-medoids, CLARA, CLARANS, constrained and equal-size k-means | Clustering algorithms / constrained variants | 3 | Partial — deterministic PAM k-medoids and CLARA sample-based search are implemented and tested; k-means, CLARANS and constrained/equal-size variants remain open |
 | Hierarchical and grid: BIRCH, STING, CLIQUE, Ward, mean shift, affinity propagation, spectral, Gaussian mixtures, fuzzy c-means, self-organizing maps, growing neural gas, consensus and co-clustering | Clustering algorithms / model families / grid methods | 3 | Not checked — intake only |
 | Spatially constrained: SKATER, REDCAP, AZP, Max-p, spatial LDA | Regionalisation algorithms / spatial clustering methods | 3 | Not checked — intake only |
 | Geodemographic classification (OAC-style), principal components and factor analysis | Classification approaches / dimensionality reduction | 3 | Not checked — intake only |

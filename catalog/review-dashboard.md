@@ -20,7 +20,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | Section | Source entries | Partial | Intake only |
 |---:|---:|---:|---:|
 | 1 — Core GIS | 33 | 26 | 7 |
-| 2 — Spatial statistics | 28 | 15 | 13 |
+| 2 — Spatial statistics | 28 | 16 | 12 |
 | 3 — Geostatistics | 26 | 8 | 18 |
 | 4 — Raster, terrain and hydrology | 26 | 24 | 2 |
 | 5 — Remote sensing | 36 | 19 | 17 |
@@ -41,7 +41,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 20 — Indices, microwave, events and information | 24 | 7 | 17 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 3 | 23 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 6 | 22 |
-| **Total** | **693** | **184** | **509** |
+| **Total** | **693** | **185** | **508** |
 
 The 17 November recount finds **184 partial**, **509 intake-only** and **zero fully verified** source-entry rows across **693 rows**. The row count is recalculated from the 22 current indexes; three rows previously included in the dashboard total were not present in the current source-entry tables. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Some section indexes have changed row counts since the prior snapshot, so the table below supersedes all historical totals in the reconciliation notes.
 

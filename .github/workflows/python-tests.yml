@@ -424,6 +424,9 @@ jobs:
           - example: point-pattern-kde
             directory: implementations/python/point-pattern-kde
             pythonpath: ""
+          - example: k-medoids
+            directory: implementations/python/k-medoids
+            pythonpath: ""
           - example: clark-evans
             directory: implementations/python/clark-evans
             pythonpath: ""

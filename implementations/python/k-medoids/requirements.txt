@@ -1,0 +1,1 @@
+numpy>=2,<3\npytest>=8,<9\n
