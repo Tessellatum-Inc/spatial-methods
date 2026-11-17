@@ -37,6 +37,18 @@ print(covariance_matrix_diagnostics(C))
 - Eigenvalue diagnostics are a numerical check on a particular matrix, not a proof that a formula is valid for every possible point set.
 - A valid covariance matrix must be symmetric positive semidefinite. A negative eigenvalue beyond numerical tolerance is a warning to inspect the model, geometry, units and numerical precision.
 - The spherical and Wendland C2 formulas in this package are restricted to Euclidean dimensions no greater than three.
-- This package does not implement covariance fitting, anisotropy, measurement-error/nugget estimation, Gaussian-process prediction, spherical covariance models, network covariance models or space-time covariance models.
+- A Gaussian-kernel Gaussian-process approximation using Bayesian random Fourier features is also included. It does not implement covariance parameter fitting, anisotropy, spherical covariance models, network covariance models or space-time covariance models. The RFF predictor uses a finite random basis and is approximate; its dense feature-space posterior solve scales with the feature count.
 
 Read the [canonical method lesson](../../../methods/stationary-covariance-functions.md) and [intern walkthrough](implementation-walkthrough.md).
+
+
+
+## Random Fourier feature Gaussian-process approximation
+
+`fit_random_fourier_gp` samples spectral frequencies for the Gaussian
+covariance convention used above, builds an explicit cosine feature map, and
+fits Bayesian linear weights with a Gaussian prior. `predict_random_fourier_gp`
+returns latent posterior means and variances. Set the feature count and seed
+explicitly to make the approximation reproducible. This is a finite-feature
+approximation, not an exact GP posterior; posterior uncertainty is conditional
+on the sampled feature basis and supplied hyperparameters.
