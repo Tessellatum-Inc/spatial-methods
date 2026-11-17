@@ -1020,6 +1020,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/spatiotemporal-gaussian-process",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/spatiotemporal-validation",
     "pythonpath": ""
   },
