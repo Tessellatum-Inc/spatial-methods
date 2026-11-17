@@ -19,10 +19,10 @@ Let the centre elevation be (z_0), and let two adjacent neighbour centres
 have local coordinates (v_1=(x_1,y_1)), (v_2=(x_2,y_2)) and elevations
 (z_1,z_2). The planar facet gradient (g=(g_x,g_y)) solves
 
-[
-g_x x_1 + g_y y_1 = z_1-z_0,qquad
-g_x x_2 + g_y y_2 = z_2-z_0.
-]
+```text
+gx*x1 + gy*y1 = z1-z0
+gx*x2 + gy*y2 = z2-z0
+```
 
 The downslope vector is (-g). If its aspect lies within the angular sector
 between the two neighbour rays, the implementation splits flow by angular
@@ -50,12 +50,16 @@ multiple-flow partitioning beyond the selected facet, or reproduce every
 GIS vendor's edge and tie conventions. It uses floating-point facet
 gradients and a deterministic clockwise candidate order. Elevation and
 horizontal distance units must be compatible, and geographic longitude/
-latitude grids should be projected or handled geodesically.
+latitude grids should be projected or handled geodesically. The current
+tests use analytic planar surfaces, edge/NoData cases, randomized DEM
+invariants and accumulation conservation; comparison with an independent
+GIS implementation remains outstanding.
 
 ## Runnable implementation
 
 - [Python code and tests](../../implementations/python/d8-flow/dinf_flow.py)
 - [Package README](../../implementations/python/d8-flow/README.md)
+- [Verification record](../../catalog/verification/d-infinity-flow-routing.md)
 - [D8/MFD lesson](d8-flow-direction.md)
 
 ## References
