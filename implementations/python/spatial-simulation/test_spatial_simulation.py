@@ -103,3 +103,5 @@ def test_invalid_schelling_controls():
         schelling_step(grid, tolerance=1.1)
     with pytest.raises(ValueError):
         simulate_schelling(grid, max_iterations=-1)
+    with pytest.raises(ValueError):
+        schelling_step(np.array([[1, -1], [0, 2]]))
