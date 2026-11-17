@@ -19,7 +19,11 @@ The source groups together descriptive statistics, inferential procedures, point
 | Inference: permutation and Monte Carlo tests, Bonferroni, FDR and Šidák correction, Dutilleul's modified t-test, spatial and block bootstrap | Inferential procedures / multiple-testing corrections / resampling | 3 | Partially implemented: global Moran random-labelling permutation inference with seeded simulation and plus-one pseudo-p values is tested; Bonferroni, Šidák, Holm, Hochberg, BH and BY adjustments are implemented; Dutilleul's modified t-test and spatial/block bootstrap remain open |
 | Spatial eigenvector filtering (Moran eigenvectors), Spatial+, restricted spatial regression | Regression approaches / spatial dependence adjustments | 3 | Partial — symmetric HWH eigenvector basis and fixed-size OLS spatial filter implemented; automatic eigenvector selection, Spatial+ and restricted spatial regression remain open |
 
-## Principal component analysis\n\nThe [PCA record](../../algorithms/statistics/pca.md) documents the tested NumPy implementation in [pca-transform](../../implementations/python/pca-transform/README.md). It fits covariance or correlation PCA, supports a valid-row mask and projects observations into descending-variance component space. A separate [principal-axis factor-analysis baseline](../../algorithms/statistics/factor-analysis.md) models common variance and optional varimax rotation; it is not maximum-likelihood or confirmatory factor analysis. OAC-style geodemographic classification remains a distinct open workflow.\n\n## Spatial regression and econometrics
+## Principal component analysis
+
+The [PCA record](../../algorithms/statistics/pca.md) documents the tested NumPy implementation in [pca-transform](../../implementations/python/pca-transform/README.md). It fits covariance or correlation PCA, supports a valid-row mask and projects observations into descending-variance component space. A separate [principal-axis factor-analysis baseline](../../algorithms/statistics/factor-analysis.md) models common variance and optional varimax rotation; it is not maximum-likelihood or confirmatory factor analysis. OAC-style geodemographic classification remains a distinct open workflow.
+
+## Spatial regression and econometrics
 
 | Topic | Coverage |
 |---|---|

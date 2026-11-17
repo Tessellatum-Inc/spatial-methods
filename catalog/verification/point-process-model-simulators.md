@@ -6,7 +6,8 @@ The Section 2 source entry groups Poisson, Cox, Neyman–Scott, Gibbs and Straus
 
 | Model | Canonical record | Implemented treatment | Important boundary |
 |---|---|---|---|
-| Homogeneous Poisson | [Homogeneous Poisson and Thomas](../../algorithms/statistics/poisson-and-thomas-processes.md) | Exact Poisson event count and uniform conditional locations in a rectangle | Homogeneous intensity only |\n| Piecewise-constant inhomogeneous Poisson | [Inhomogeneous Poisson process](../../algorithms/statistics/inhomogeneous-poisson-process.md) | Independent cell Poisson counts with uniform within-cell locations | Exact for supplied piecewise-constant intensity grid; no intensity estimation |
+| Homogeneous Poisson | [Homogeneous Poisson and Thomas](../../algorithms/statistics/poisson-and-thomas-processes.md) | Exact Poisson event count and uniform conditional locations in a rectangle | Homogeneous intensity only |
+| Piecewise-constant inhomogeneous Poisson | [Inhomogeneous Poisson process](../../algorithms/statistics/inhomogeneous-poisson-process.md) | Independent cell Poisson counts with uniform within-cell locations | Exact for supplied piecewise-constant intensity grid; no intensity estimation |
 | Thomas / Gaussian Neyman–Scott | [Homogeneous Poisson and Thomas](../../algorithms/statistics/poisson-and-thomas-processes.md) | Poisson parents and offspring, isotropic Gaussian displacement | Finite Gaussian-tail buffer truncation |
 | Matérn disc-cluster / Neyman–Scott | [Matérn cluster process](../../algorithms/statistics/matern-cluster-process.md) | Poisson parents, Poisson offspring and uniform disc displacement | Compact-support parent buffer; no fitting |
 | Log-Gaussian Cox | [Log-Gaussian Cox process](../../algorithms/statistics/log-gaussian-cox-process.md) | Dense Gaussian-field simulation at cell centres, piecewise-constant cell intensity | Small-grid approximation, capped at 225 cells |
