@@ -19,3 +19,12 @@ For geospatial use, work in a consistent Cartesian 3D coordinate frame. Raw long
 ## Frustum/AABB culling
 
 For an inward-facing plane n dot x + d >= 0, the AABB support vertex in the direction of n maximises the plane expression. If that vertex is still negative (outside tolerance), the entire box is outside that plane and can be culled. Testing all six frustum planes is constant time per box. This is conservative plane culling only; occlusion queries, hierarchical-Z, matrix-to-plane extraction and level-of-detail selection are separate methods.
+
+
+## Spatial kd-tree ray traversal
+
+A spatial kd-tree partitions space rather than merely grouping object bounds. This reference chooses the longest node axis, splits at the median triangle-box centroid and places a triangle in every child cell its AABB intersects. Straddling triangles are therefore duplicated in the tree, but a query tests each original triangle at most once.
+
+Traversal intersects the ray with each child cell, visits the nearer cell first and prunes cells whose entry parameter exceeds the best known hit. The builder stops at the leaf-size threshold, a maximum depth, or a non-progressing split. It is a deterministic median-split teaching baseline; production kd-trees commonly use surface-area cost models and more sophisticated clipping/duplication policies.
+
+The seeded differential tests compare nearest hits with brute-force triangle scans and include split-plane-parallel rays. The [Python package](../../implementations/python/ray-triangle-intersection/README.md) documents the spatial duplication and coordinate-system limitations.

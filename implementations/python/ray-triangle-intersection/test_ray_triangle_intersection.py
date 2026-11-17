@@ -137,3 +137,74 @@ def test_invalid_frustum_planes_raise():
         aabb_intersects_frustum(box, ((1, 0, 0),))
     with pytest.raises(ValueError):
         aabb_intersects_frustum(box, ((float("nan"), 0, 0, 1),))
+
+
+def test_kdtree_empty_and_invalid_controls():
+    from ray_triangle_intersection import build_triangle_kdtree
+    assert build_triangle_kdtree([]) is None
+    with pytest.raises(ValueError):
+        build_triangle_kdtree([TRIANGLE], leaf_size=0)
+    with pytest.raises(ValueError):
+        build_triangle_kdtree([TRIANGLE], max_depth=-1)
+
+
+def test_kdtree_nearest_hit_and_spatial_straddler():
+    from ray_triangle_intersection import build_triangle_kdtree, intersect_kdtree
+    triangles = [
+        ((-1, -1, 0), (1, -1, 0), (0, 1, 0)),
+        ((-1, -1, 2), (1, -1, 2), (0, 1, 2)),
+        ((-2, -2, 1), (2, -2, 1), (0, 2, 1)),
+    ]
+    tree = build_triangle_kdtree(triangles, leaf_size=1)
+    hit = intersect_kdtree(tree, triangles, (0, 0, 5), (0, 0, -1))
+    assert hit is not None
+    index, result = hit
+    assert index == 1
+    assert result.t == pytest.approx(3)
+
+
+def test_kdtree_matches_brute_force_for_seeded_rays():
+    import random
+    from ray_triangle_intersection import (
+        build_triangle_kdtree, intersect_kdtree, intersect_ray_triangle,
+    )
+    rng = random.Random(140429)
+    triangles = []
+    for _ in range(90):
+        x, y, z = (rng.uniform(-10, 10) for _ in range(3))
+        dx, dy = rng.uniform(.1, 2), rng.uniform(.1, 2)
+        triangles.append(((x, y, z), (x+dx, y, z), (x, y+dy, z)))
+    tree = build_triangle_kdtree(triangles, leaf_size=3, max_depth=24)
+    for _ in range(120):
+        origin = tuple(rng.uniform(-12, 12) for _ in range(3))
+        direction = tuple(rng.uniform(-1, 1) for _ in range(3))
+        if sum(v*v for v in direction) < 1e-10:
+            direction = (1, 0, 0)
+        candidates = [
+            (hit.t, i)
+            for i, triangle in enumerate(triangles)
+            if (hit := intersect_ray_triangle(origin, direction, triangle)) is not None
+        ]
+        expected = min(candidates, default=None)
+        actual = intersect_kdtree(tree, triangles, origin, direction)
+        if expected is None:
+            assert actual is None
+        else:
+            assert actual is not None
+            i, hit = actual
+            assert hit.t == pytest.approx(expected[0])
+            assert i == expected[1]
+
+
+def test_kdtree_split_plane_parallel_ray_is_safe():
+    from ray_triangle_intersection import build_triangle_kdtree, intersect_kdtree
+    triangles = [
+        ((0, 0, 0), (1, 0, 0), (0, 1, 0)),
+        ((2, 0, 0), (3, 0, 0), (2, 1, 0)),
+        ((4, 0, 0), (5, 0, 0), (4, 1, 0)),
+        ((6, 0, 0), (7, 0, 0), (6, 1, 0)),
+    ]
+    tree = build_triangle_kdtree(triangles, leaf_size=1)
+    result = intersect_kdtree(tree, triangles, (2.2, .2, 1), (0, 0, -1))
+    assert result is not None
+    assert result[0] == 1

@@ -299,3 +299,145 @@ def aabb_intersects_frustum(
         if nx*positive[0] + ny*positive[1] + nz*positive[2] + offset < -epsilon:
             return False
     return True
+
+
+@dataclass(frozen=True)
+class KDTreeNode:
+    """Spatial kd-tree node; straddling triangles may occur in both children."""
+    bounds: AABB
+    axis: int | None = None
+    split: float | None = None
+    left: "KDTreeNode | None" = None
+    right: "KDTreeNode | None" = None
+    triangle_indices: tuple[int, ...] = ()
+
+    @property
+    def is_leaf(self) -> bool:
+        return self.axis is None
+
+
+def build_triangle_kdtree(
+    triangles: Sequence[Sequence[Sequence[float]]],
+    *,
+    leaf_size: int = 8,
+    max_depth: int = 32,
+) -> KDTreeNode | None:
+    """Build a spatial kd-tree over triangle AABBs.
+
+    The split axis is the longest node extent and the split coordinate is the
+    median of triangle-box centroids. A triangle whose AABB straddles the
+    split plane is referenced by both children. Empty/non-progressing splits
+    become leaves; max_depth bounds duplication and recursion. This is a
+    transparent median-split teaching baseline, not a SAH kd-tree builder.
+    """
+    if leaf_size < 1:
+        raise ValueError("leaf_size must be at least one")
+    if max_depth < 0:
+        raise ValueError("max_depth must be non-negative")
+    tris = tuple(_as_triangle(t) for t in triangles)
+    if not tris:
+        return None
+    boxes = tuple(AABB.from_triangle(t) for t in tris)
+
+    def build(indices: tuple[int, ...], bounds: AABB, depth: int) -> KDTreeNode:
+        if len(indices) <= leaf_size or depth >= max_depth:
+            return KDTreeNode(bounds=bounds, triangle_indices=indices)
+        extents = tuple(bounds.maximum[a] - bounds.minimum[a] for a in range(3))
+        axis = max(range(3), key=lambda a: (extents[a], -a))
+        if extents[axis] <= 0.0:
+            return KDTreeNode(bounds=bounds, triangle_indices=indices)
+        centres = sorted((boxes[i].centroid[axis], i) for i in indices)
+        split = centres[len(centres) // 2][0]
+        if not (bounds.minimum[axis] < split < bounds.maximum[axis]):
+            split = (bounds.minimum[axis] + bounds.maximum[axis]) / 2.0
+        if not (bounds.minimum[axis] < split < bounds.maximum[axis]):
+            return KDTreeNode(bounds=bounds, triangle_indices=indices)
+
+        left_ids = tuple(i for i in indices if boxes[i].minimum[axis] <= split)
+        right_ids = tuple(i for i in indices if boxes[i].maximum[axis] >= split)
+        if not left_ids or not right_ids or (len(left_ids) == len(indices) and len(right_ids) == len(indices)):
+            return KDTreeNode(bounds=bounds, triangle_indices=indices)
+
+        left_min, left_max = list(bounds.minimum), list(bounds.maximum)
+        right_min, right_max = list(bounds.minimum), list(bounds.maximum)
+        left_max[axis], right_min[axis] = split, split
+        left_bounds = AABB(tuple(left_min), tuple(left_max))
+        right_bounds = AABB(tuple(right_min), tuple(right_max))
+        return KDTreeNode(
+            bounds=bounds,
+            axis=axis,
+            split=split,
+            left=build(left_ids, left_bounds, depth + 1),
+            right=build(right_ids, right_bounds, depth + 1),
+        )
+
+    root_bounds = AABB.union([boxes[i] for i in range(len(boxes))])
+    return build(tuple(range(len(tris))), root_bounds, 0)
+
+
+def intersect_kdtree(
+    root: KDTreeNode | None,
+    triangles: Sequence[Sequence[Sequence[float]]],
+    origin: Sequence[float],
+    direction: Sequence[float],
+    *,
+    t_min: float = 1e-9,
+    t_max: float = inf,
+    cull_backface: bool = False,
+) -> tuple[int, RayTriangleHit] | None:
+    """Return the nearest triangle hit with near-first spatial kd traversal.
+
+    Split-plane traversal is effected by intersecting each child's clipped
+    spatial cell. Duplicated straddling triangles are tested at most once per
+    query. The input triangle sequence must match the sequence used to build
+    the tree.
+    """
+    if root is None:
+        return None
+    o, d = _vec3(origin, "origin"), _vec3(direction, "direction")
+    tris = tuple(_as_triangle(t) for t in triangles)
+    if any(i < 0 or i >= len(tris) for i in _kdtree_indices(root)):
+        raise ValueError("kd-tree contains an index outside the supplied triangle sequence")
+    interval = root.bounds.intersect_ray(o, d, t_min, t_max)
+    if interval is None:
+        return None
+    best_t = t_max
+    best: tuple[int, RayTriangleHit] | None = None
+    tested: set[int] = set()
+    stack: list[tuple[float, KDTreeNode]] = [(interval[0], root)]
+    while stack:
+        entry, node = stack.pop()
+        if entry > best_t:
+            continue
+        if node.is_leaf:
+            for index in node.triangle_indices:
+                if index in tested:
+                    continue
+                tested.add(index)
+                hit = intersect_ray_triangle(
+                    o, d, tris[index], t_min=t_min, t_max=best_t,
+                    cull_backface=cull_backface,
+                )
+                if hit is not None and hit.t < best_t:
+                    best_t, best = hit.t, (index, hit)
+            continue
+        children: list[tuple[float, KDTreeNode]] = []
+        for child in (node.left, node.right):
+            if child is not None:
+                child_interval = child.bounds.intersect_ray(o, d, t_min, best_t)
+                if child_interval is not None:
+                    children.append((child_interval[0], child))
+        children.sort(key=lambda item: item[0], reverse=True)
+        stack.extend(children)
+    return best
+
+
+def _kdtree_indices(node: KDTreeNode) -> tuple[int, ...]:
+    if node.is_leaf:
+        return node.triangle_indices
+    indices: list[int] = []
+    if node.left is not None:
+        indices.extend(_kdtree_indices(node.left))
+    if node.right is not None:
+        indices.extend(_kdtree_indices(node.right))
+    return tuple(indices)

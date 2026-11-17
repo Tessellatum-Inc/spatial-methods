@@ -218,3 +218,6 @@ Four source-listed streaming summaries now have tested reference implementations
 - Section 8 representation evaluation: added macro query-level recall@k and arithmetic-normalised mutual information (NMI), with explicit empty-relevance/constant-partition policies and tests. Linear probing, k-NN embedding evaluation and benchmark-specific geographic stratification remain open.
 
 - Section 8 evaluation metrics: added weighted NSE, KGE 2009 and empirical ensemble CRPS with analytic fixtures and explicit undefined-case/variant policies. Modified KGE, parametric continuous CRPS, forecast calibration and design-based accuracy remain open.
+
+
+**Section 14 — kd-tree ray traversal:** added a spatial median-split triangle kd-tree with AABB-cell clipping, straddler duplication, bounded recursion, near-first nearest-hit traversal and per-query de-duplication. Seeded brute-force differential tests and split-plane-parallel ray cases are included. Production SAH construction and robust triangle clipping remain open.
