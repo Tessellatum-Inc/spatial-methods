@@ -271,3 +271,5 @@ These are connected teaching materials, not interchangeable copies of the same e
 - [Progressive morphological ground filter](python/progressive-morphological-filter/README.md): rasterised point-cloud ground classification with progressive window and threshold schedule.
 
 - [RANSAC plane fitting](python/ransac-plane-fitting/README.md): robust single-plane point-cloud fitting with deterministic seeds and inlier diagnostics.
+
+- [CHM watershed crowns](python/chm-watershed-crowns/README.md): deterministic local-maximum seeding and marker-controlled canopy watershed.
