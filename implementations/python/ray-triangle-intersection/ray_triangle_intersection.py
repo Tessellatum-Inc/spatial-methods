@@ -266,3 +266,36 @@ def _leaf_triangle_indices(node: BVHNode) -> tuple[int, ...]:
     if node.right is not None:
         indices.extend(_leaf_triangle_indices(node.right))
     return tuple(indices)
+
+
+def aabb_intersects_frustum(
+    bounds: AABB,
+    planes: Sequence[Sequence[float]],
+    *,
+    epsilon: float = 0.0,
+) -> bool:
+    """Conservatively test an AABB against inward-facing frustum planes.
+
+    Each plane is (nx, ny, nz, offset), with inside defined by
+    nx*x + ny*y + nz*z + offset >= 0. Returns False only when the box is
+    wholly outside at least one plane. This is plane/AABB culling, not
+    occlusion testing or clip-matrix plane extraction.
+    """
+    if not (isfinite(epsilon) and epsilon >= 0):
+        raise ValueError("epsilon must be finite and non-negative")
+    if not planes:
+        raise ValueError("at least one frustum plane is required")
+    for plane in planes:
+        if len(plane) != 4:
+            raise ValueError("each plane must contain nx, ny, nz and offset")
+        nx, ny, nz, offset = (float(value) for value in plane)
+        if not all(isfinite(value) for value in (nx, ny, nz, offset)):
+            raise ValueError("frustum planes must contain finite values")
+        positive = (
+            bounds.maximum[0] if nx >= 0 else bounds.minimum[0],
+            bounds.maximum[1] if ny >= 0 else bounds.minimum[1],
+            bounds.maximum[2] if nz >= 0 else bounds.minimum[2],
+        )
+        if nx*positive[0] + ny*positive[1] + nz*positive[2] + offset < -epsilon:
+            return False
+    return True
