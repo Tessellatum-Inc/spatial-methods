@@ -86,8 +86,8 @@ The source groups many specialist methods and named software systems. This regis
 | S07-EC-13 | Dispersal kernels | Ecological movement model | Open | Define kernel family, tail and scale; fit to telemetry/mark-recapture. |
 | S07-EC-14 | Metapopulation models | Ecological dynamics family | Open | Define patch occupancy, colonisation/extinction and connectivity. |
 | S07-EC-15 | FRAGSTATS | Landscape metrics software | Verify | Pin version and metric definitions; document raster/patch adjacency and licence. |
-| S07-EC-16 | Patch density | Landscape metric | Partial | Define patch count/area denominator and class/landscape level. |
-| S07-EC-17 | Edge density | Landscape metric | Partial | Define edge types, units and boundary treatment. |
+| S07-EC-16 | Patch density | Landscape metric | Partial | Existing `biodiversity-metrics` package labels 4- or 8-neighbour class patches and reports per-class patch counts, cell counts, areas, mean patch area and largest-patch index. Patch density can be derived only after the analyst declares its denominator and units; tests cover diagonal connectivity and class patch counts. FRAGSTATS parity, core/shape metrics and landscape-scale configuration remain open. |
+| S07-EC-17 | Edge density | Landscape metric | Partial | Existing `biodiversity-metrics` package counts horizontal/vertical shared-cell boundaries between unlike valid classes, excludes outer and NoData perimeters, and reports edge length and edge density per hectare (when cell size is metres). Tests check a hand-counted raster, units, NoData and connectivity. Alternative edge definitions, class-specific edge density and FRAGSTATS parity remain open. |
 | S07-EC-18 | Contagion | Landscape configuration metric | Verify | Verify adjacency matrix and normalisation; test raster resolution. |
 | S07-EC-19 | Alpha diversity | Biodiversity metric | Partial | Define richness/evenness metric and sampling effort. |
 | S07-EC-20 | Beta diversity | Biodiversity metric family | Open | Split turnover/nestedness and dissimilarity measures; define abundance/presence. |
