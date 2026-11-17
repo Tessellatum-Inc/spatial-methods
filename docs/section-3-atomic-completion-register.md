@@ -35,7 +35,7 @@ This register separates source groupings into child records and records the work
 | S03-IN-14 | ANUSPLIN | Spline climate interpolation software | Verify | Verify software version, spline formulation and covariates; document licence. |
 | S03-IN-15 | DINEOF | Data-interpolating empirical orthogonal functions | Verify | Verify iterative EOF algorithm, rank selection and convergence; test missing-data patterns. |
 | S03-IN-16 | HANTS | Harmonic analysis of time series | Verify | Verify frequency selection, outlier rejection and gap filling; test irregular sampling. |
-| S03-IN-17 | Matrix completion | Missing-data reconstruction family | Open | Split convex/nonconvex and low-rank methods; define missingness and rank assumptions. |
+| S03-IN-17 | Matrix completion | Missing-data reconstruction family | Partial | Implements dense low-rank nuclear-norm completion with iterative SVD soft-thresholding (Soft-Impute), optional rank cap, observed-cell clamping and convergence diagnostics. Tests cover synthetic low-rank recovery, exact preservation of observed values, complete matrices, rank constraints and invalid inputs. Nonconvex methods, structured/spatiotemporal tensor completion, spatial regularisation, uncertainty and large-scale solvers remain open: [package](../implementations/python/matrix-completion/README.md). |
 | S03-IN-18 | Tensor completion | Multidimensional missing-data reconstruction | Open | Split CP/Tucker/tensor-train and regularisation; test recovery under structured missingness. |
 | S03-IN-19 | Deep inpainting | Learned gap-filling family | Open | Identify architectures and training data; assess spatial/temporal leakage and uncertainty. |
 | S03-IN-20 | STARFM | Spatiotemporal image fusion | Verify | Verify original algorithm and inputs; reproduce temporal transfer and error metrics. |
@@ -218,3 +218,8 @@ This register separates source groupings into child records and records the work
 7. Update canonical records and coverage only after independent evidence and tests are recorded.
 
 **Current conclusion:** Section 3 is decomposed into atomic review items. It remains open; the register is not a claim that every method, model or workflow has been verified or reproduced.
+
+
+## Implementation reconciliation — low-rank matrix completion
+
+S03-IN-17 is Partial because the repository implements and tests a specific convex nuclear-norm Soft-Impute baseline. The row remains open to other convex formulations, nonconvex methods and structured spatial/temporal completion; this implementation does not close the broader family.
