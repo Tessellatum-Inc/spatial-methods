@@ -155,9 +155,12 @@ def morans_i_correlogram(
     distance_edges: Sequence[float],
     *,
     row_standardize_weights: bool = False,
+    permutations: int = 0,
+    seed: int | None = 0,
 ) -> list[dict]:
     """Compute global Moran statistics over non-overlapping distance bands."""
     import math
+    import random
     n = len(values)
     if n < 2:
         raise ValueError("at least two observations are required")
@@ -174,6 +177,12 @@ def morans_i_correlogram(
         raise ValueError("distance_edges must contain at least two finite values")
     if edges[0] < 0 or any(a >= b for a, b in zip(edges, edges[1:])):
         raise ValueError("distance_edges must be non-negative and strictly increasing")
+    if isinstance(permutations, bool) or not isinstance(permutations, int) or permutations < 0:
+        raise ValueError("permutations must be a non-negative integer")
+    if permutations and seed is not None and (isinstance(seed, bool) or not isinstance(seed, int)):
+        raise ValueError("seed must be an integer or None")
+    if permutations and sum((v - sum(x) / n) ** 2 for v in x) == 0:
+        raise ValueError("Moran correlogram is undefined for a constant variable")
     pairs = []
     for i in range(n - 1):
         for j in range(i + 1, n):
@@ -182,6 +191,7 @@ def morans_i_correlogram(
                 raise ValueError("pair distance overflowed")
             pairs.append((distance, i, j))
     output = []
+    band_weights = []
     for band, (lower, upper) in enumerate(zip(edges, edges[1:])):
         weights = [[0.0] * n for _ in range(n)]
         selected = 0
@@ -192,11 +202,47 @@ def morans_i_correlogram(
             if inside:
                 weights[i][j] = weights[j][i] = 1.0
                 selected += 1
-        statistic = None
-        if selected:
-            if row_standardize_weights:
-                weights = row_standardize(weights)
-            statistic = morans_i(x, weights)
+        if selected and row_standardize_weights:
+            weights = row_standardize(weights)
+        statistic = morans_i(x, weights) if selected else None
+        band_weights.append(weights if selected else None)
         output.append({"lower": lower, "upper": upper, "pairs": selected,
                        "statistic": statistic, "expected": -1.0 / (n - 1)})
+    if permutations:
+        rng = random.Random(seed)
+        simulated = [[] for _ in output]
+        for _ in range(permutations):
+            shuffled = x.copy()
+            rng.shuffle(shuffled)
+            for index, weights in enumerate(band_weights):
+                if weights is not None:
+                    simulated[index].append(morans_i(shuffled, weights))
+        valid = []
+        for index, record in enumerate(output):
+            if record["statistic"] is None:
+                record.update({"simulation_mean": None, "simulation_std": None,
+                               "z_score": None, "p_value": None, "p_value_maxT": None})
+                continue
+            values_sim = simulated[index]
+            sim_mean = sum(values_sim) / permutations
+            sim_var = (sum((value - sim_mean) ** 2 for value in values_sim) /
+                       (permutations - 1)) if permutations > 1 else 0.0
+            sim_std = math.sqrt(sim_var)
+            expected = record["expected"]
+            observed = record["statistic"]
+            extreme = sum(abs(value - expected) >= abs(observed - expected)
+                          for value in values_sim)
+            p_value = (extreme + 1) / (permutations + 1)
+            z_score = (observed - sim_mean) / sim_std if sim_std > 0 else None
+            record.update({"simulation_mean": sim_mean, "simulation_std": sim_std,
+                           "z_score": z_score, "p_value": p_value, "p_value_maxT": None})
+            if sim_std > 0:
+                valid.append((index, z_score,
+                              [(value - sim_mean) / sim_std for value in values_sim]))
+        if valid:
+            max_statistics = [max(abs(valid[j][2][rep]) for j in range(len(valid)))
+                              for rep in range(permutations)]
+            for index, z_score, _standardized in valid:
+                extreme = sum(value >= abs(z_score) for value in max_statistics)
+                output[index]["p_value_maxT"] = (extreme + 1) / (permutations + 1)
     return output

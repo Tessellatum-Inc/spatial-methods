@@ -140,3 +140,41 @@ def test_distance_band_correlogram_validates_inputs_and_band_edges():
         morans_i_correlogram([(0,0),(1,0)],[1,2],[0,1,1])
     with pytest.raises(ValueError,match="finite"):
         morans_i_correlogram([(0,0),(float("nan"),0)],[1,2],[0,1])
+
+
+
+def test_moran_correlogram_single_band_permutation_matches_global_oracle():
+    from moran_i import morans_i_correlogram, morans_i_permutation
+    points=[(0,0),(1,0),(2,0),(3,0)]
+    values=[1,2,4,8]
+    got=morans_i_correlogram(points,values,[0,4],permutations=199,seed=31)[0]
+    oracle=morans_i_permutation(values,[[0,1,1,1],[1,0,1,1],[1,1,0,1],[1,1,1,0]],
+                                permutations=199,seed=31)
+    assert got["p_value"] == pytest.approx(oracle["p_value"])
+    assert got["p_value_maxT"] == pytest.approx(got["p_value"])
+    assert got["simulation_std"] > 0
+
+
+def test_moran_correlogram_max_t_adjustment_is_reproducible_and_conservative():
+    from moran_i import morans_i_correlogram
+    points=[(0,0),(1,0),(2,0),(3,0),(4,0)]
+    values=[1,2,3,7,9]
+    a=morans_i_correlogram(points,values,[0,1.1,2.1,5],permutations=199,seed=71)
+    b=morans_i_correlogram(points,values,[0,1.1,2.1,5],permutations=199,seed=71)
+    assert a==b
+    for row in a:
+        if row["p_value"] is not None and row["p_value_maxT"] is not None:
+            assert row["p_value_maxT"] >= row["p_value"]
+            assert 0 < row["p_value"] <= 1
+            assert 0 < row["p_value_maxT"] <= 1
+
+
+def test_moran_correlogram_permutation_rejects_invalid_controls_and_constant_data():
+    from moran_i import morans_i_correlogram
+    points=[(0,0),(1,0),(2,0)]
+    with pytest.raises(ValueError,match="permutations"):
+        morans_i_correlogram(points,[1,2,3],[0,2],permutations=-1)
+    with pytest.raises(ValueError,match="seed"):
+        morans_i_correlogram(points,[1,2,3],[0,2],permutations=9,seed=True)
+    with pytest.raises(ValueError,match="constant"):
+        morans_i_correlogram(points,[2,2,2],[0,2],permutations=9)
