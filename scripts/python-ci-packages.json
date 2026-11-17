@@ -576,6 +576,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/modified-shepard",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/mogi-source",
     "pythonpath": ""
   },
