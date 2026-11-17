@@ -1,4 +1,4 @@
-# Line clipping: Cohen–Sutherland, Liang–Barsky and Cyrus–Beck
+# Line clipping: Cohen–Sutherland, Liang–Barsky, Cyrus–Beck and Nicholl–Lee–Nicholl
 
 Line clipping keeps the part of a finite line segment inside a specified region. It is a geometric operation that changes endpoints or rejects the segment; it is not the same as drawing a complete line and masking pixels afterwards.
 
@@ -89,8 +89,9 @@ Cyrus–Beck is a parametric convex-clipping method. It is not a general solutio
 | Cohen–Sutherland | Axis-aligned rectangle | Endpoint outcodes and trivial tests | Teaching and cheap early rejection |
 | Liang–Barsky | Axis-aligned rectangle | Intersect a segment parameter interval | Compact rectangular clipping |
 | Cyrus–Beck | Convex polygon/polyhedron | Intersect half-space constraints | General convex clipping windows |
+| Nicholl–Lee–Nicholl | Axis-aligned rectangle | Canonical endpoint regions and slope tests | Reduce boundary-intersection cases for rectangular windows |
 
-Nicholl–Lee–Nicholl is another rectangular line-clipping method that uses endpoint-region classification to reduce intersection work. It is useful for literature comparison, but not essential to a first robust implementation.
+Nicholl–Lee–Nicholl is implemented as a fourth rectangular line-clipping method and is covered by differential tests against Liang–Barsky.
 
 ## 6. Worked example
 
@@ -131,7 +132,7 @@ For a robust implementation, compare generated small cases against an independen
 
 ## Scope
 
-This is a method comparison and derivation, not a production clipping library. The named methods are described, but no new implementation is claimed. A future package must specify boundary inclusion, numeric precision, degenerate inputs and differential tests.
+This is a method comparison and derivation with tested teaching implementations. The implementations use floating-point arithmetic, a closed rectangular window for rectangular clippers, and a simple convex ring for Cyrus–Beck. They are not a production exact-predicate geometry kernel. The NLN implementation uses explicit symmetry reductions and slope-region cases; it is different from the repeated iterative clipping in Cohen–Sutherland and Liang–Barsky.
 
 
 ## Nicholl–Lee–Nicholl clipping
