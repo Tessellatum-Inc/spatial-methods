@@ -487,3 +487,6 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [Markov land-change simulation](domain-modeling/markov-land-change.md) — estimate categorical transition probabilities from aligned rasters and simulate independent per-cell transitions.
+
+
+- [Drought and vegetation-condition indicators](domain-modeling/drought-condition-indices.md) — distinguish SPI, VCI, TCI and VHI from SPEI, PDSI and growing degree days.
