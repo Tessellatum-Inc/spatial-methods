@@ -141,3 +141,32 @@ def test_reml_accepts_fixed_geometric_anisotropy():
     assert fit["anisotropy_ratio"] == pytest.approx(0.6)
     with pytest.raises(ValueError):
         fit_variogram_reml(points,values,anisotropy_ratio=0)
+
+
+
+def test_reml_automatic_anisotropy_is_bounded_and_no_worse_than_fixed_start():
+    rng = np.random.default_rng(84)
+    points = np.array([(x, y) for x in range(5) for y in range(5)], dtype=float)
+    delta = points[:, None, :] - points[None, :, :]
+    angle = np.deg2rad(35.0)
+    along = delta[:, :, 0] * np.sin(angle) + delta[:, :, 1] * np.cos(angle)
+    across = delta[:, :, 0] * np.cos(angle) - delta[:, :, 1] * np.sin(angle)
+    distance = np.hypot(along, across / 0.45)
+    covariance = 0.12 * np.exp(-distance / 2.2)
+    covariance.flat[::len(points) + 1] += 0.88
+    values = rng.multivariate_normal(np.full(len(points), 3.0), covariance)
+    fixed = fit_variogram_reml(points, values, model="exponential",
+                               anisotropy_azimuth_deg=0, anisotropy_ratio=1)
+    fitted = fit_variogram_reml(points, values, model="exponential",
+                                anisotropy_azimuth_deg=0, anisotropy_ratio=1,
+                                fit_anisotropy=True)
+    assert fitted["anisotropy_fitted"] is True
+    assert 0.0 <= fitted["anisotropy_azimuth_deg"] < 180.0
+    assert 0.1 <= fitted["anisotropy_ratio"] <= 1.0
+    assert fitted["reml_objective"] <= fixed["reml_objective"] + 1e-6
+
+
+def test_reml_rejects_non_boolean_anisotropy_flag():
+    points = np.array([(x, y) for x in range(2) for y in range(2)], dtype=float)
+    with pytest.raises(ValueError):
+        fit_variogram_reml(points, [0, 1, 2, 4], fit_anisotropy=1)

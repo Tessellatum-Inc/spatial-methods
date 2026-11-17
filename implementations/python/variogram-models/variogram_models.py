@@ -160,12 +160,12 @@ def fit_variogram(lags,semivariances,*,pairs=None,model="spherical",fit_nugget=T
 
 
 
-def fit_variogram_reml(points, values, *, model="exponential", initial=None, anisotropy_azimuth_deg=0.0, anisotropy_ratio=1.0):
-    """Fit an isotropic covariance model by restricted maximum likelihood.
+def fit_variogram_reml(points, values, *, model="exponential", initial=None, anisotropy_azimuth_deg=0.0, anisotropy_ratio=1.0, fit_anisotropy=False):
+    """Fit a constant-mean Gaussian covariance by dense restricted likelihood.
 
-    Uses a constant unknown mean and a dense Gaussian covariance matrix.
-    Nugget is independent measurement/microscale variance; partial_sill is
-    the structured variance. This is a small-data reference implementation.
+    With fit_anisotropy=True, jointly estimates major-axis azimuth and
+    minor/major range ratio (bounded to [0.1, 1]). Otherwise uses supplied
+    geometric-anisotropy parameters. This is a small-data reference method.
     """
     xy = np.asarray(points, dtype=float)
     z = np.asarray(values, dtype=float)
@@ -186,11 +186,15 @@ def fit_variogram_reml(points, values, *, model="exponential", initial=None, ani
     azimuth=float(anisotropy_azimuth_deg)
     if not isfinite(azimuth):
         raise ValueError("anisotropy_azimuth_deg must be finite")
+    if not isinstance(fit_anisotropy, bool):
+        raise ValueError("fit_anisotropy must be boolean")
     delta = xy[:, None, :] - xy[None, :, :]
-    angle=radians(azimuth % 180.0)
-    along=delta[:,:,0]*sin(angle)+delta[:,:,1]*cos(angle)
-    across=delta[:,:,0]*cos(angle)-delta[:,:,1]*sin(angle)
-    distances=np.hypot(along,across/anisotropy_ratio)
+    def transformed_distances(axis_azimuth, axis_ratio):
+        angle = radians(float(axis_azimuth) % 180.0)
+        along = delta[:, :, 0] * sin(angle) + delta[:, :, 1] * cos(angle)
+        across = delta[:, :, 0] * cos(angle) - delta[:, :, 1] * sin(angle)
+        return np.hypot(along, across / float(axis_ratio))
+    distances = transformed_distances(azimuth, anisotropy_ratio)
     positive = distances[distances > 0]
     dmin, dmax = float(np.min(positive)), float(np.max(positive))
     lower_range, upper_range = dmin * 1e-3, dmax * 1e3
@@ -211,9 +215,16 @@ def fit_variogram_reml(points, values, *, model="exponential", initial=None, ani
     ones = np.ones(len(z))
     constant = (len(z) - 1) * np.log(2.0 * np.pi)
 
-    def objective(log_parameters):
-        nugget, sill, range_ = np.exp(log_parameters)
-        ratio = distances / range_
+    def objective(parameters):
+        nugget, sill, range_ = np.exp(parameters[:3])
+        if fit_anisotropy:
+            candidate_azimuth = float(parameters[3])
+            candidate_ratio = float(np.exp(parameters[4]))
+            candidate_distances = transformed_distances(candidate_azimuth, candidate_ratio)
+        else:
+            candidate_azimuth, candidate_ratio = azimuth, anisotropy_ratio
+            candidate_distances = distances
+        ratio = candidate_distances / range_
         if model == "spherical":
             shape = np.where(ratio < 1.0, 1.5 * ratio - 0.5 * ratio**3, 1.0)
         elif model == "exponential":
@@ -242,8 +253,16 @@ def fit_variogram_reml(points, values, *, model="exponential", initial=None, ani
     bounds = [(np.log(lower_var), np.log(upper_var)),
               (np.log(lower_var), np.log(upper_var)),
               (np.log(lower_range), np.log(upper_range))]
-    result = minimize(objective, np.log(start), method="L-BFGS-B", bounds=bounds)
-    nugget, sill, range_ = np.exp(result.x)
+    x0 = list(np.log(start))
+    if fit_anisotropy:
+        bounds.extend([(0.0, 180.0), (np.log(0.1), 0.0)])
+        x0.extend([azimuth % 180.0, np.log(anisotropy_ratio)])
+    result = minimize(objective, np.asarray(x0), method="L-BFGS-B", bounds=bounds)
+    nugget, sill, range_ = np.exp(result.x[:3])
+    if fit_anisotropy:
+        azimuth = float(result.x[3] % 180.0)
+        anisotropy_ratio = float(np.exp(result.x[4]))
+    distances = transformed_distances(azimuth, anisotropy_ratio)
     if not np.isfinite(result.x).all() or not isfinite(float(result.fun)):
         raise ValueError("REML optimization failed to find a finite covariance model")
     ratio = distances / range_
@@ -260,7 +279,7 @@ def fit_variogram_reml(points, values, *, model="exponential", initial=None, ani
     inv_z = np.linalg.solve(chol.T, np.linalg.solve(chol, z))
     fitted_mean = float(ones @ inv_z) / float(ones @ inv_one)
     return {
-        "model": model, "anisotropy_azimuth_deg": azimuth % 180.0, "anisotropy_ratio": anisotropy_ratio, "nugget": float(nugget),
+        "model": model, "anisotropy_azimuth_deg": azimuth % 180.0, "anisotropy_ratio": anisotropy_ratio, "anisotropy_fitted": fit_anisotropy, "nugget": float(nugget),
         "partial_sill": float(sill), "sill": float(nugget + sill),
         "range": float(range_), "reml_objective": float(result.fun),
         "success": bool(result.success), "message": str(result.message),

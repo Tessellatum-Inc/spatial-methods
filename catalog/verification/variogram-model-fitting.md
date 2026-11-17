@@ -8,12 +8,12 @@
 - Pair-count weighted residuals and optional fixed nugget.
 - Directional pair filtering by azimuth and cross-track bandwidth.
 - Matheron, Cressie-Hawkins and Dowd empirical estimators.
-- Fixed geometric anisotropy distance transform with major-axis azimuth and minor/major range ratio in directional binning and REML.
+- Fixed geometric anisotropy distance transform in directional binning and REML, plus optional joint REML estimation of azimuth and minor/major range ratio.
 - Genton (1998) Q_n-based robust semivariance using the prescribed order statistic of all pairwise increment differences within each lag class.
 
 ## Tests
 
-Tests cover zero lag, model sill behaviour, directional filtering, robust estimator non-negativity, hand-computed Genton order-statistic values, Dowd median-scale formula and outlier fixture, sign/translation invariance, directional Genton pair grouping, synthetic spherical parameter recovery, fixed-nugget fitting, seeded synthetic REML fitting, and invalid/degenerate inputs. CI status is tied to the commit containing the tests.
+Tests cover zero lag, model sill behaviour, directional filtering, robust estimator non-negativity, hand-computed Genton order-statistic values, Dowd median-scale formula and outlier fixture, sign/translation invariance, directional Genton pair grouping, synthetic spherical parameter recovery, fixed-nugget fitting, seeded synthetic REML fitting, bounded automatic-anisotropy fitting against the fixed-start objective, and invalid/degenerate inputs. CI status is tied to the commit containing the tests.
 
 REML uses the restricted likelihood with the generalized least-squares estimate of the constant mean. The dense Cholesky implementation is O(n³) in time and O(n²) in memory; it is not a scalable GP method.
 
@@ -25,4 +25,4 @@ REML uses the restricted likelihood with the generalized least-squares estimate 
 
 ## Limits
 
-Automatic anisotropy parameter fitting, nested structures, Matérn models or parameter uncertainty are not implemented. Anisotropy orientation and ratio are supplied by the analyst. Pair-count weighting is a teaching default, not a universal optimum. Genton is O(m²) in the number m of increments in a lag class and is not intended for very large bins. Its Gaussian consistency factor is fixed at 2.2191.
+Automatic anisotropy fitting is available in dense REML, with azimuth in [0, 180) degrees and minor/major ratio in [0.1, 1]. The search is local numerical optimization, not a guarantee of a global optimum. Nested structures, Matérn models and parameter uncertainty are not implemented. Pair-count weighting is a teaching default, not a universal optimum. Genton is O(m²) in the number m of increments in a lag class and is not intended for very large bins. Its Gaussian consistency factor is fixed at 2.2191.
