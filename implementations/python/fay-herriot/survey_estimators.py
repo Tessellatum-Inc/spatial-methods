@@ -46,3 +46,33 @@ def horvitz_thompson(values, inclusion_probabilities, pairwise_inclusion,
             "standard_error_mean": (float(np.sqrt(variance)) / population_size) if variance >= 0 else None,
         })
     return result
+
+
+def hansen_hurwitz(sampled_values, draw_probabilities, *, population_size=None):
+    """Estimate a finite-population total from independent with-replacement draws.
+
+    draw_probabilities contains the per-draw selection probability of the
+    sampled unit on each draw. The variance estimate is the sample variance
+    of y_i/p_i divided by the number of draws; it is unavailable for one draw.
+    """
+    y=np.asarray(sampled_values,dtype=float)
+    p=np.asarray(draw_probabilities,dtype=float)
+    if y.ndim!=1 or y.size<1 or not np.isfinite(y).all():
+        raise ValueError("sampled_values must be a finite non-empty 1D array")
+    if p.shape!=y.shape or not np.isfinite(p).all() or np.any(p<=0) or np.any(p>1):
+        raise ValueError("draw_probabilities must match values and lie in (0,1]")
+    if population_size is not None:
+        if isinstance(population_size,bool) or not isinstance(population_size,int) or population_size<1:
+            raise ValueError("population_size must be a positive integer")
+    weighted=y/p
+    total=float(np.mean(weighted))
+    n=len(y)
+    variance=float(np.sum((weighted-total)**2)/(n*(n-1))) if n>1 else None
+    result={"total":total,"variance_total":variance,
+            "standard_error_total":float(np.sqrt(variance)) if variance is not None else None,
+            "draw_count":n}
+    if population_size is not None:
+        result.update({"mean":total/population_size,
+                       "variance_mean":variance/(population_size**2) if variance is not None else None,
+                       "standard_error_mean":float(np.sqrt(variance))/population_size if variance is not None else None})
+    return result

@@ -51,3 +51,6 @@ This is a design-based estimator; it is not a Fay-Herriot model or a
 model-assisted estimator. The variance estimate can be negative for some
 valid designs and samples; in that case the implementation reports the
 signed variance and leaves the standard error undefined.
+
+
+The same module also implements the Hansen–Hurwitz estimator for independent draws with replacement. It averages the draw-level values divided by their draw probabilities and estimates variance from the sample variance of those weighted draws. A single draw has no internal variance estimate; the function returns `None` for variance and standard error in that case.

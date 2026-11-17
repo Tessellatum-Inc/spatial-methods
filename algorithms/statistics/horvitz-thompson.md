@@ -21,3 +21,7 @@ shrinkage and model-assisted estimators.
 
 ## Source
 - Horvitz, D. G., & Thompson, D. J. (1952). A generalization of sampling without replacement from a finite universe. *Journal of the American Statistical Association*, 47(260), 663–685. https://doi.org/10.1080/01621459.1952.10483446.
+
+
+## Related with-replacement estimator
+The [Hansen–Hurwitz estimator](hansen-hurwitz.md) is the corresponding design-based total estimator for independent with-replacement draws; its variance uses the sample variance of draw-level inverse-probability weights.
