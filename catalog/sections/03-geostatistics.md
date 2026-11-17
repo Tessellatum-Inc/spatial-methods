@@ -35,7 +35,7 @@ This section combines surface estimation, stochastic spatial models, simulation,
 | Spatiotemporal GP (separable and non-separable kernels), spatiotemporal INLA, functional data analysis | Spatiotemporal Gaussian processes / inference framework / statistical methods | 5 | Not checked — intake only |
 | Space-time scan statistics, Knox test, space-time K function, space-time cube, emerging hot spot analysis | Spatiotemporal tests / summary methods / analysis workflow | 5 | Partial — a tested Knox close-in-space/close-in-time pair statistic with temporal-label permutation inference is implemented; space-time K, scan statistics, cube and emerging-hotspot workflows remain open |
 | Spatial survival and frailty models | Survival model families | 5 | Not checked — intake only |
-| Spatiotemporal point processes: Hawkes, LGCP, ETAS | Point-process model families | 5 | Not checked — intake only |
+| Spatiotemporal point processes: Hawkes, LGCP, ETAS | Point-process model families | 5 | Partial — a tested constant-background Hawkes branching simulator with exponential temporal and Gaussian spatial triggering is implemented under periodic boundaries; spatially varying LGCP inference, power-law ETAS, parameter estimation and diagnostics remain open |
 | Trend and change: Mann-Kendall, Sen's slope, harmonic regression, BFAST, LandTrendr, CCDC | Trend tests / regression / change-detection methods | 5 | Partial — tested tie-corrected Mann-Kendall/tau-b, Sen slope, seasonal Mann-Kendall/seasonal Sen and least-squares harmonic regression; serial-correlation correction, BFAST, LandTrendr and CCDC remain open |
 
 ## Data assimilation and inverse methods

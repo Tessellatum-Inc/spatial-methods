@@ -56,3 +56,6 @@ The scan is not a full SaTScan reproduction: it does not implement covariates, t
 The companion `network_point_patterns.py` module handles events on a finite undirected weighted linear network. An event is represented by `(edge_index, offset_from_first_endpoint)`, and edge tuples are `(u, v, positive_length)`. It calculates shortest-path distances between events, considering direct travel along a shared edge and alternate routes through network nodes. The network K estimator counts ordered event pairs within each network-distance threshold and scales by total network length.
 
 This is an uncorrected finite-network descriptive estimator. It does not correct for endpoint effects, network junction bias, varying network intensity or disconnected network components. See [network Ripley's K](../../../algorithms/statistics/network-ripley-k.md) and `test_network_point_patterns.py`.
+
+
+The package also includes a bounded spatiotemporal Hawkes cluster simulator using a constant Poisson background, exponential temporal triggering and Gaussian spatial offspring displacement. It uses periodic spatial boundaries and is documented separately; it is not an ETAS estimator.
