@@ -34,3 +34,26 @@ print(routes)
 The first result is a locally improved closed TSP tour. The second is a
 capacity-feasible set of depot-closed delivery routes; neither is guaranteed
 to be globally optimal.
+
+
+## Vehicle routing with time windows
+
+\`greedy_vrptw\` builds depot-closed routes while respecting one vehicle capacity, customer service-start windows, service durations and a depot return deadline:
+
+\`\`\`python
+from routing_heuristics import greedy_vrptw
+
+result = greedy_vrptw(
+    points=[(0, 0), (1, 0), (2, 0)],
+    demands=[0, 1, 1],
+    time_windows=[(0, 20), (5, 8), (0, 20)],
+    capacity=2,
+    service_times=[0, 2, 0],
+)
+for route in result.routes:
+    print(route.nodes, route.load, route.distance)
+    print([(stop.arrival, stop.service_start, stop.departure) for stop in route.stops])
+print("unserved:", result.unserved)
+\`\`\`
+
+This deterministic nearest-detour construction allows waiting and checks whether each tentative customer can still return to the depot before closing. Each route exposes stop schedules; customers that cannot be inserted are returned in \`result.unserved\`. It is a small-instance heuristic, not an exact VRPTW solver or a road-network dispatch engine. See the [VRPTW method note](../../../algorithms/optimization/vrptw-greedy-insertion.md) for its contract and limitations.
