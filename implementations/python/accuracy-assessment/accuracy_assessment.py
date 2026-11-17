@@ -234,3 +234,65 @@ def normalized_mutual_information(labels_true, labels_pred):
         p_ab = count / n
         mutual += p_ab * log((count*n) / (true_counts[a]*pred_counts[b]))
     return max(0.0, 2.0 * mutual / (h_true + h_pred))
+
+
+def nash_sutcliffe_efficiency(observed, simulated, sample_weight=None):
+    """Nash–Sutcliffe efficiency using the weighted observed mean.
+
+    The constant-observation convention matches r2_score: 1 for a perfect
+    prediction and 0 for an imperfect prediction.
+    """
+    return r2_score(observed, simulated, sample_weight)
+
+
+def kling_gupta_efficiency(observed, simulated, sample_weight=None):
+    """KGE 2009: correlation, standard-deviation ratio and mean ratio.
+
+    Returns None when either series has zero variance or the observed mean is
+    zero, because one or more KGE components are undefined.
+    """
+    truth, prediction, weights = _regression_inputs(observed, simulated, sample_weight)
+    total = sum(weights)
+    mean_obs = sum(w*x for x, w in zip(truth, weights)) / total
+    mean_sim = sum(w*x for x, w in zip(prediction, weights)) / total
+    var_obs = sum(w*(x-mean_obs)**2 for x, w in zip(truth, weights)) / total
+    var_sim = sum(w*(x-mean_sim)**2 for x, w in zip(prediction, weights)) / total
+    if var_obs <= 0 or var_sim <= 0 or mean_obs == 0:
+        return None
+    covariance = sum(w*(a-mean_obs)*(b-mean_sim)
+                     for a, b, w in zip(truth, prediction, weights)) / total
+    correlation = covariance / sqrt(var_obs*var_sim)
+    variability_ratio = sqrt(var_sim/var_obs)
+    bias_ratio = mean_sim/mean_obs
+    return 1.0 - sqrt(
+        (correlation-1.0)**2
+        + (variability_ratio-1.0)**2
+        + (bias_ratio-1.0)**2
+    )
+
+
+def ensemble_crps(observed, ensemble_members, sample_weight=None):
+    """Mean empirical CRPS for finite ensemble forecasts.
+
+    For each case, CRPS = mean(|member - observation|)
+    - 0.5 * mean(|member_i - member_j|) over all ordered member pairs.
+    Cases may have different positive ensemble sizes. Optional weights apply
+    across cases, not within each ensemble.
+    """
+    truth = [float(value) for value in observed]
+    ensembles = [[float(value) for value in row] for row in ensemble_members]
+    if not truth or len(truth) != len(ensembles):
+        raise ValueError("observed and ensemble_members must have equal non-zero lengths")
+    if any(not row for row in ensembles):
+        raise ValueError("each ensemble must contain at least one member")
+    if any(not isfinite(value) for row in ensembles for value in row):
+        raise ValueError("ensemble members must be finite")
+    means = [sum(row)/len(row) for row in ensembles]
+    truth, _, weights = _regression_inputs(truth, means, sample_weight)
+    scores = []
+    for observation, row in zip(truth, ensembles):
+        m = len(row)
+        first = sum(abs(member-observation) for member in row) / m
+        pairwise = sum(abs(a-b) for a in row for b in row) / (2.0*m*m)
+        scores.append(first-pairwise)
+    return sum(w*score for w, score in zip(weights, scores)) / sum(weights)
