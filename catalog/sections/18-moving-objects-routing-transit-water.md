@@ -102,3 +102,8 @@
 3. For transit examples, record service calendar, feed version, frequency and real-time data semantics.
 4. Document sensor, temporal resolution and retrieval assumptions for water, ice and emissions.
 5. Treat trajectory and location data as sensitive; apply privacy review before publishing examples.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 18 atomic completion register](../../docs/section-18-atomic-completion-register.md). The register preserves source uncertainty and distinguishes algorithms from data structures, standards, products, software, models and workflows. It is a traceability backlog, not a completion claim; each child remains open or partial until its applicable evidence gates pass.
