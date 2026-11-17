@@ -1,4 +1,4 @@
-# Möller–Trumbore ray/triangle intersection
+# 3D geometry: ray intersection, BVH and frustum culling
 
 A dependency-free 3D geometry reference package: Möller–Trumbore ray/triangle intersection, AABB slab tests, a binary bounding-volume hierarchy (BVH) built with exact-centroid surface-area-heuristic (SAH) split scans, near-first nearest-hit traversal, and conservative AABB/frustum-plane culling.
 
