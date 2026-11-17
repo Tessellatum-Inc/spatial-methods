@@ -832,6 +832,15 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [ ] Add within-edge event positions, continuous edge integration, edge correction, network K and SANET methods.
 
 
+## SKATER spatial regionalization — 17 November 2026
+
+- [x] Implement deterministic Kruskal MST construction from supplied adjacency costs.
+- [x] Greedily prune edges by within-region sum-of-squares reduction to obtain connected k-regions.
+- [x] Add independent tests for hand-constructed partitions, MST selection, ties, k extremes and invalid graphs.
+- [x] Add canonical documentation, verification record, source-index update and dedicated CI job.
+- [ ] Add REDCAP, AZP, Max-p, spatial LDA and region-size constraints separately.
+
+
 ## Ward hierarchical clustering — 17 November 2026
 
 - [x] Implement the exact Ward increase-in-SSE merge criterion and linkage heights.

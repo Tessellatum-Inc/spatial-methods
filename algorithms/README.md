@@ -414,3 +414,6 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [Ward hierarchical clustering](statistics/ward-clustering.md) — exact dense Ward merge objective, deterministic linkage and flat-tree cutting.
+
+
+- [SKATER spatial regionalization](statistics/skater-regionalization.md) — deterministic MST construction and greedy edge pruning for connected k-regions.
