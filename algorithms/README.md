@@ -484,3 +484,6 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [Network SIR simulation](domain-modeling/network-sir.md) — discrete-time transmission and recovery on a static undirected contact graph, with explicit synchronous update semantics.
+
+
+- [Markov land-change simulation](domain-modeling/markov-land-change.md) — estimate categorical transition probabilities from aligned rasters and simulate independent per-cell transitions.
