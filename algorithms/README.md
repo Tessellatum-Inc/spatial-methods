@@ -461,3 +461,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Progressive morphological ground filtering](photogrammetry/progressive-morphological-ground-filter.md): rasterised progressive opening and height-threshold baseline for XYZ point clouds.
 
 - [RANSAC plane fitting](photogrammetry/ransac-plane-fitting.md): robust single-plane estimation with SVD consensus refinement.
+
+- [CHM watershed crown segmentation](photogrammetry/chm-watershed-crown-segmentation.md): local-maximum markers and watershed segmentation on a canopy height model.
