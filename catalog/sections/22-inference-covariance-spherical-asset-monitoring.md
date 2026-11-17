@@ -105,3 +105,8 @@ A proper Gaussian CAR Gibbs sampler now covers systematic-scan conditional updat
 ### Approximate-inference implementation update
 
 The approximate-inference package now includes numerical Laplace posterior approximation (mode, local covariance and log evidence) and componentwise stepping-out slice sampling. These are reusable inference kernels rather than fitted spatial models; posterior construction, hyperparameter calibration and convergence diagnostics remain model-specific and open.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable IDs, with current evidence and acceptance work recorded in the [Section 22 atomic completion register](../../docs/section-22-atomic-completion-register.md). The register is a backlog decomposition, not a completion claim. Keep this section's review state open until each applicable atomic row passes its stated evidence gates.
