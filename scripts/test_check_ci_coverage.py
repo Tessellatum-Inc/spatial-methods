@@ -13,15 +13,15 @@ class CICoverageTests(unittest.TestCase):
         (base / "implementations" / "python" / "alpha").mkdir(parents=True)
         (base / "notebooks").mkdir()
         (base / ".github" / "workflows" / "python-tests.yml").write_text(
-            "run: python scripts/run_python_package_tests.py\\n", encoding="utf-8"
+            "run: python scripts/run_python_package_tests.py\n", encoding="utf-8"
         )
         (base / "scripts" / "execute_learning_notebooks.py").write_text(
-            "NOTEBOOKS = [('lesson.ipynb', 120)]\\n", encoding="utf-8"
+            "NOTEBOOKS = [('lesson.ipynb', 120)]\n", encoding="utf-8"
         )
         (base / "notebooks" / "lesson.ipynb").write_text("{}", encoding="utf-8")
         package = base / "implementations" / "python" / "alpha"
-        (package / "README.md").write_text("# Alpha\\n", encoding="utf-8")
-        (package / "test_alpha.py").write_text("def test_ok(): pass\\n", encoding="utf-8")
+        (package / "README.md").write_text("# Alpha\n", encoding="utf-8")
+        (package / "test_alpha.py").write_text("def test_ok(): pass\n", encoding="utf-8")
         (base / "scripts" / "python-ci-packages.json").write_text(
             json.dumps([{"directory": "implementations/python/alpha", "pythonpath": ""}]),
             encoding="utf-8",

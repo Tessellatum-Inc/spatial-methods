@@ -154,7 +154,7 @@ def audit_coverage(root: Path = ROOT) -> tuple[list[str], int, int]:
 def main() -> int:
     errors, package_count, notebook_count = audit_coverage()
     if errors:
-        print("\\n".join(errors), file=sys.stderr)
+        print("\n".join(errors), file=sys.stderr)
         return 1
     print(
         f"CI coverage verified: {package_count} Python implementation directories "
