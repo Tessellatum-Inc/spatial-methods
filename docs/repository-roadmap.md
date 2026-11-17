@@ -87,6 +87,7 @@ The goal is not to fill folders or publish pages quickly. The goal is a collecti
 - [x] Add a first remote-sensing lesson for NDVI, with explicit NoData/quality-mask handling, tests, intern walkthrough and interactive notebook.
 - [x] Add a first location-science lesson for uncapacitated p-median, with an exact small-instance solver, tests, intern walkthrough and interactive notebook.
 - [x] Add a MEXCLP expected-coverage lesson, exact small-instance placement solver, independent-busy-fraction tests, intern walkthrough, exercise and interactive sensitivity lab; distinguish it from deterministic backup coverage and hypercube queueing.
+- [x] Add a deterministic greedy VRPTW construction to the existing routing-heuristics package, with service-start windows, waiting, service durations, capacity and depot-return checks; report unserved customers and keep exact/advanced VRPTW methods open.
 - [x] Add a weighted linear combination decision-rule lesson, tested NumPy aggregation baseline, explicit factor/constraint and NoData contracts, sensitivity guidance, intern walkthrough and interactive suitability lab.
 - [x] Add a first 2SFCA accessibility lesson and binary-catchment implementation with explicit supply/demand and unreachable-pair contracts, tests, intern walkthrough and interactive notebook.
 - [x] Add a DBSCAN density-clustering lesson, deterministic border-point policy, tests, intern walkthrough and interactive notebook.
