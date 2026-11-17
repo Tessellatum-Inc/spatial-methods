@@ -4,7 +4,9 @@ This dependency-free teaching implementation computes earliest arrivals in round
 Round 0 is the supplied access-time map; round 1 permits one vehicle boarding;
 each additional round permits one more boarding, so `max_transfers=1` allows
 two vehicle legs. Route trips share an ordered stop sequence. Optional directed
-footpaths are relaxed after each transit round, including chained walks.
+footpaths are relaxed before the first boarding and after every transit round,
+including chained walks. Segment chronology is validated: a vehicle cannot depart
+a stop after the scheduled arrival at the next stop.
 
 The implementation explicitly scans all trips at each reachable boarding
 position. It is a correctness-oriented reference, not the optimized route-scan
