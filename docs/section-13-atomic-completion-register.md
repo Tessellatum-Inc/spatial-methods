@@ -83,17 +83,17 @@ Apply the [verification protocol](../catalog/verification-protocol.md) and [comp
 
 | ID | Atomic item | Kind | Status | Required completion work |
 |---|---|---|---|---|
-| S13-UR-01 | UrbanCLIP | Urban vision-language model | Verify | Resolve exact paper/repository/checkpoint and training corpus; verify licence. |
-| S13-UR-02 | UrbanVLP | Urban vision-language model | Verify | Identify exact model/version and evaluation; avoid acronym ambiguity. |
+| S13-UR-01 | UrbanCLIP | Urban vision-language model | Partial | Identity and initial bibliographic evidence are recorded in [the Section 13 identity audit](../research/section-13-identity-audit.md); resolve versioned checkpoints, code/data provenance, licences and technical claims before completion. |
+| S13-UR-02 | UrbanVLP | Urban vision-language model | Partial | Identity and initial bibliographic evidence are recorded in [the Section 13 identity audit](../research/section-13-identity-audit.md); resolve versioned checkpoints, code/data provenance, licences and technical claims before completion. |
 | S13-UR-03 | Region embedding models | Model family | Open | Split by architecture, region definition and supervision; benchmark spatial transfer. |
 | S13-UR-04 | Street-view/satellite fusion for socioeconomic prediction | Multimodal prediction workflow | Open | Define target, spatial unit and temporal alignment; audit privacy, bias and ecological inference. |
-| S13-UR-05 | UniST | Spatiotemporal foundation model | Verify | Resolve exact paper/project and model version; document data/task scope. |
-| S13-UR-06 | UrbanGPT | Urban language/model system | Verify | Identify exact release and task; distinguish LLM interface from forecasting model. |
+| S13-UR-05 | UniST | Spatiotemporal foundation model | Partial | Identity and initial bibliographic evidence are recorded in [the Section 13 identity audit](../research/section-13-identity-audit.md); resolve versioned checkpoints, code/data provenance, licences and technical claims before completion. |
+| S13-UR-06 | UrbanGPT | Urban language/model system | Partial | Identity and initial bibliographic evidence are recorded in [the Section 13 identity audit](../research/section-13-identity-audit.md); resolve versioned checkpoints, code/data provenance, licences and technical claims before completion. |
 | S13-UR-07 | OpenCity | Urban/traffic model system | Verify | Resolve exact project and version; verify data, architecture and licence. |
-| S13-UR-08 | UrbanDiT | Urban diffusion/forecasting model | Verify | Identify exact paper/checkpoint and diffusion target; document training protocol. |
+| S13-UR-08 | UrbanDiT | Urban diffusion/forecasting model | Partial | Identity and initial bibliographic evidence are recorded in [the Section 13 identity audit](../research/section-13-identity-audit.md); resolve versioned checkpoints, code/data provenance, licences and technical claims before completion. |
 | S13-UR-09 | STFM-style universal forecasters | Model family | Open | Identify concrete models and task definitions; do not cite generic acronym as a specific method. |
-| S13-UR-10 | TrajFM | Trajectory foundation model | Verify | Resolve exact paper/repository and trajectory tokenisation; audit privacy. |
-| S13-UR-11 | UniTraj | Trajectory model/framework | Verify | Identify exact project/version and task; distinguish framework from trained model. |
+| S13-UR-10 | TrajFM | Trajectory foundation model | Partial | Identity and initial bibliographic evidence are recorded in [the Section 13 identity audit](../research/section-13-identity-audit.md); resolve versioned checkpoints, code/data provenance, licences and technical claims before completion. |
+| S13-UR-11 | UniTraj | Trajectory model/framework | Partial | Identity and initial bibliographic evidence are recorded in [the Section 13 identity audit](../research/section-13-identity-audit.md); resolve versioned checkpoints, code/data provenance, licences and technical claims before completion. |
 | S13-UR-12 | Trajectory tokenizers | Representation method family | Open | Split discrete/continuous tokenisation methods; test reconstruction and temporal fidelity. |
 | S13-UR-13 | Mobility LLM next-location prediction | Language/mobility model family | Open | Define sequence, location vocabulary and uncertainty; audit re-identification risk. |
 | S13-UR-14 | Mobility LLM mode prediction | Language/mobility model family | Open | Define mode labels, context and sampling bias; validate across regions. |
@@ -113,17 +113,17 @@ Apply the [verification protocol](../catalog/verification-protocol.md) and [comp
 
 | ID | Atomic item | Kind | Status | Required completion work |
 |---|---|---|---|---|
-| S13-LL-01 | GeoGalactica | Domain language model | Verify | Resolve exact model/repository and checkpoint; verify data and licence. |
-| S13-LL-02 | K2 geospatial model | Domain language model | Verify | Identify exact project/version and task; avoid name collision. |
-| S13-LL-03 | GeoGPT | Domain language model/system | Verify | Identify exact GeoGPT project (name is ambiguous); record version and data. |
-| S13-LL-04 | GeoLLM | Geospatial language model | Verify | Resolve exact paper/repository and model; distinguish homonymous projects. |
+| S13-LL-01 | GeoGalactica | Domain language model | Partial | Identity and initial bibliographic evidence are recorded in [the Section 13 identity audit](../research/section-13-identity-audit.md); resolve versioned checkpoints, code/data provenance, licences and technical claims before completion. |
+| S13-LL-02 | K2 geospatial model | Domain language model | Partial | Identity and initial bibliographic evidence are recorded in [the Section 13 identity audit](../research/section-13-identity-audit.md); resolve versioned checkpoints, code/data provenance, licences and technical claims before completion. |
+| S13-LL-03 | GeoGPT | Domain language model/system | Partial | Identity and initial bibliographic evidence are recorded in [the Section 13 identity audit](../research/section-13-identity-audit.md); resolve versioned checkpoints, code/data provenance, licences and technical claims before completion. |
+| S13-LL-04 | GeoLLM | Geospatial language model | Partial | Identity and initial bibliographic evidence are recorded in [the Section 13 identity audit](../research/section-13-identity-audit.md); resolve versioned checkpoints, code/data provenance, licences and technical claims before completion. |
 | S13-LL-05 | Map-aware instruction-tuned models | Model family | Open | Identify concrete checkpoints and map grounding; test coordinate/topology correctness. |
 | S13-LL-06 | Map visual question answering | Multimodal task | Open | Define map type, question taxonomy and answer evidence; benchmark spatial reasoning. |
 | S13-LL-07 | Map reading | Vision-language task | Open | Define symbol/scale/orientation tasks and ground truth. |
 | S13-LL-08 | Georeferenced map OCR | OCR/georeferencing workflow | Open | Define text extraction, coordinate calibration and uncertainty; test map distortions. |
 | S13-LL-09 | Chart/cartographic-style question answering | Multimodal reasoning task | Open | Define chart grammar and spatial reference; evaluate evidence-grounded responses. |
 | S13-LL-10 | GeoLLM-Engine | Agent evaluation/tool system | Verify | Resolve exact project and release; document benchmark and tool APIs. |
-| S13-LL-11 | GeoBenchX | Geospatial benchmark | Verify | Identify exact benchmark, tasks, licence and evaluation protocol. |
+| S13-LL-11 | GeoBenchX | Geospatial benchmark | Partial | Identity and initial bibliographic evidence are recorded in [the Section 13 identity audit](../research/section-13-identity-audit.md); resolve versioned checkpoints, code/data provenance, licences and technical claims before completion. |
 | S13-LL-12 | GIS Copilot-style agents | Agent workflow family | Open | Identify actual systems and tool scopes; test deterministic execution and permissions. |
 | S13-LL-13 | SpatialEval | Spatial reasoning benchmark | Verify | Resolve exact benchmark version and task definitions; audit data contamination. |
 | S13-LL-14 | GeoQA | Geospatial QA benchmark family | Verify | Disambiguate datasets/projects; document geographic coverage and licence. |
