@@ -24,7 +24,7 @@ This register separates optimisation problems, exact algorithms, heuristics, beh
 | S06-LO-03 | p-dispersion | Facility location optimisation | Open | Define separation objective and selected-site constraints; test ties and infeasibility. |
 | S06-LO-04 | Set covering | Facility location optimisation | Partial | Define coverage radius and candidate set; compare greedy and exact solutions. |
 | S06-LO-05 | Maximal Covering Location Problem (MCLP) | Facility location optimisation | Partial | Define budget and partial demand coverage; test exact binary model. |
-| S06-LO-06 | MEXCLP | Probabilistic facility location | Verify | Verify busy-fraction/availability assumptions and expected coverage formulation. |
+| S06-LO-06 | MEXCLP | Probabilistic facility location | Partial | Existing `mexclp` package exactly enumerates small-instance unit placements under a common or candidate-specific independent busy-fraction assumption, including co-location and diminishing expected coverage. Tests cover hand calculations, heterogeneous busy fractions, zero units, deterministic ties and validation. It is not the adjusted/dependent MEXCLP correction or a hypercube queueing model; large-instance optimisation and dependence calibration remain open. |
 | S06-LO-07 | MALP | Probabilistic facility location | Verify | Resolve exact maximal availability location problem variant and source. |
 | S06-LO-08 | BACOP | Facility location model | Verify | Resolve acronym and exact formulation; do not infer from shorthand. |
 | S06-LO-09 | Hypercube queuing model | Queueing/location model | Verify | Verify dispatch/availability assumptions and approximation; compare simulation. |
@@ -40,7 +40,7 @@ This register separates optimisation problems, exact algorithms, heuristics, beh
 | S06-LO-19 | Flip redistricting | Local Markov-chain proposal | Verify | Verify boundary-unit flip rules and connectivity preservation. |
 | S06-LO-20 | Polsby–Popper compactness | District compactness metric | Partial | Define perimeter/area and geometry units; document sensitivity to boundary detail. |
 | S06-LO-21 | Reock compactness | District compactness metric | Partial | Define minimum enclosing circle and area ratio; test elongated/concave shapes. |
-| S06-LO-22 | Schwartzberg compactness | District compactness metric | Verify | Verify perimeter/circle ratio convention and scaling. |
+| S06-LO-22 | Schwartzberg compactness | District compactness metric | Partial | Existing `districting-compactness` package computes the perimeter/equal-area-circle circumference ratio from a planar simple exterior ring and tests analytic square/circle-like fixtures, orientation and ring-closure invariance. Holes, multipart/geodesic geometry, legal constraints and source-specific convention checks remain open. |
 | S06-LO-23 | Territory design | Spatial partitioning family | Open | Define contiguity, balance, workload and compactness objectives. |
 | S06-LO-24 | Set partitioning | Combinatorial optimisation | Partial | Define exact-cover constraints and column generation interface; test infeasibility. |
 | S06-LO-25 | Land-use allocation | Spatial allocation workflow | Open | Define demand, suitability, transition and competing uses; test conservation and constraints. |
@@ -95,7 +95,7 @@ This register separates optimisation problems, exact algorithms, heuristics, beh
 | S06-AC-03 | Hansen accessibility | Accessibility metric | Partial | Define opportunities and impedance; test units and thresholds. |
 | S06-AC-04 | Reilly's law | Retail gravitation model | Verify | Verify break-point formula and assumptions; compare with Huff model. |
 | S06-AC-05 | 2SFCA | Two-Step Floating Catchment Area | Partial | Define catchment and supply/demand ratio; test zero supply and overlapping catchments. |
-| S06-AC-06 | E2SFCA | Enhanced 2SFCA | Verify | Verify distance decay weights and zones; test sensitivity. |
+| S06-AC-06 | E2SFCA | Enhanced 2SFCA | Partial | Existing `floating-catchment` package implements two-step FCA and E2SFCA with caller-supplied increasing distance-zone upper bounds and non-negative zone weights, plus explicit Gaussian, power-law and Epanechnikov decay kernels. Tests cover hand calculations, inclusive zone boundaries, zero-safe denominators, monotone kernels and compact support. Network impedance, competition choice, capacity, uncertainty and exact published variant verification remain open. |
 | S06-AC-07 | 3SFCA | Three-Step Floating Catchment Area | Verify | Resolve exact variant and step sequence; verify supply/demand competition. |
 | S06-AC-08 | M2SFCA | Modified 2SFCA | Verify | Identify exact modification and source; do not infer from acronym. |
 | S06-AC-09 | G2SFCA | Gaussian 2SFCA variant | Verify | Verify Gaussian decay and parameterisation. |
