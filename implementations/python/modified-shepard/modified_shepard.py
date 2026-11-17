@@ -58,9 +58,9 @@ class ModifiedShepard2D:
 
         n = len(samples)
         self.nw_ = _integer_control(nw if nw is not None else min(19, n - 1),
-                                    name="nw", minimum=2, maximum=n - 1)
+                                    name="nw", minimum=2, maximum=min(19, n - 1))
         self.nq_ = _integer_control(nq if nq is not None else min(13, n - 1),
-                                    name="nq", minimum=5, maximum=n - 1)
+                                    name="nq", minimum=5, maximum=min(19, n - 1))
         self.points_ = samples.copy()
         self.values_ = observations.copy()
         delta = samples[:, None, :] - samples[None, :, :]
