@@ -21,7 +21,7 @@ def test_anisotropic_spacing_and_origin_are_applied():
     volume = np.zeros((5, 5, 5))
     volume[2:, :, :] = 1
     mesh = extract_isosurface(volume, .5, spacing=(2, 3, 4), origin=(10, 20, 30))
-    assert np.allclose(mesh["vertices"][:, 0], 14)
+    assert np.allclose(mesh["vertices"][:, 0], 13)
     assert np.all(mesh["vertices"][:, 1] >= 20)
     assert np.all(mesh["vertices"][:, 2] >= 30)
 
