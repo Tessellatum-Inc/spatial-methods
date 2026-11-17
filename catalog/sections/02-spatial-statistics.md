@@ -120,3 +120,8 @@ Publisher or authoritative bibliographic records were checked for these core ref
 - Ripley (1977), “Modelling spatial patterns,” *Journal of the Royal Statistical Society: Series B (Methodological)*, 39(2), 172–192, [10.1111/j.2517-6161.1977.tb01615.x](https://doi.org/10.1111/j.2517-6161.1977.tb01615.x).
 
 This is a bibliographic metadata check for selected foundations, not a complete verification of all Section 2 source entries, inferential assumptions or software behaviour.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 2 atomic completion register](../../docs/section-2-atomic-completion-register.md). Existing lessons and implementations cover bounded methods only; the register preserves open variants, inference assumptions and source-entry review. It is a traceability backlog, not a completion claim.
