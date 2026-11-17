@@ -68,7 +68,7 @@ The source organises methods by application field. The same statistical, geometr
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Disease mapping: BYM, standardized ratios, empirical Bayes | Disease mapping models / rate estimation | 13 | Not checked — intake only |
-| Epidemic models: SIR on networks, reaction-diffusion, metapopulation, gravity-based importation, mobility-driven forecasting | Epidemic and spatial transmission models | 13 | Not checked — intake only |
+| Epidemic models: SIR on networks, reaction-diffusion, metapopulation, gravity-based importation, mobility-driven forecasting | Epidemic and spatial transmission models | 13 | Partial — a tested synchronous discrete-time SIR baseline on a static undirected contact graph is implemented; reaction-diffusion, metapopulation coupling, gravity-based importation, mobility-driven transmission and empirical calibration remain open |
 | Vector-borne risk: MaxEnt, mechanistic temperature models; contact tracing graphs; spatial survival analysis | Ecological niche models / mechanistic models / network analysis / survival methods | 13 | Not checked — intake only |
 | Exposure: personal exposure from trajectories, environmental justice analysis | Exposure assessment / equity analysis | 13 | Not checked — intake only |
 
