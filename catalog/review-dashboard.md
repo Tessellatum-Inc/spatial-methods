@@ -140,7 +140,7 @@ The Section 2 source-entry recount also identifies an implementation-linked Ripl
 **Historical reconciliation note (17 November 2026):** the following narrative records an earlier snapshot of 693 source-entry rows (188 partial, 505 intake-only); the current authoritative totals are in the section table above (693, 220, 473).
 
 
-**Reconciliation note (17 November 2026):** the historical narrative below contains earlier 695/696-row snapshots. The authoritative current aggregate is 693 source-entry rows, 200 partial, 493 intake-only and zero fully verified. The 22 by-section subtotals reconcile exactly with these totals.
+**Historical reconciliation note (17 November 2026):** the following narrative preserves an earlier 693-row snapshot (200 partial, 493 intake-only); the current authoritative totals are in the section table above (693, 220, 473).
 
 
 ## Implementation reconciliation — Open Location Code
