@@ -112,7 +112,7 @@ Report input point count, output sampling interval, coordinate units, method and
 
 ## Scope
 
-**Implemented teaching baseline:** [Chaikin corner cutting, centripetal/uniform/chordal Catmull–Rom interpolation and arbitrary-degree Bézier evaluation](../implementations/python/curves-smoothing/README.md), with [tests](../implementations/python/curves-smoothing/test_curves_smoothing.py), an [intern walkthrough](../implementations/python/curves-smoothing/implementation-walkthrough.md) and an [executable lab notebook](../notebooks/curves-smoothing-lab.ipynb). B-spline and NURBS evaluation/fitting, Schneider-style Bezier fitting, Kalman filtering and RTS smoothing remain unimplemented and require separate numerical contracts and validation.
+**Implemented teaching baseline:** [Chaikin corner cutting, centripetal/uniform/chordal Catmull–Rom interpolation, arbitrary-degree Bézier evaluation, B-spline/NURBS de Boor evaluation, Schneider-style recursive cubic Bézier fitting, and linear-Gaussian Kalman filtering with RTS smoothing](../implementations/python/curves-smoothing/README.md). Each has independent tests and a focused walkthrough; the spline and smoothing paths also have executable lab notebooks. These methods solve different tasks: curve construction, interpolation, approximation and latent-state estimation must not be conflated.
 
 
 ## Reproducible spline evaluation
