@@ -141,3 +141,64 @@ def gaussian_sensor_mutual_information(
         "kernel": kernel,
         "length_scale": scale,
     }
+
+def greedy_kriging_variance_design(
+    target_points, candidate_points, *, max_sensors,
+    length_scale=1.0, noise_variance=0.1, kernel="gaussian",
+):
+    """Greedily minimize trace of target posterior covariance (A-optimal design)."""
+    targets = _points(target_points, "target_points")
+    candidates = _points(candidate_points, "candidate_points")
+    scale = _positive_scalar(length_scale, "length_scale")
+    if not isinstance(kernel, str) or kernel not in {"gaussian", "exponential"}:
+        raise ValueError("kernel must be 'gaussian' or 'exponential'")
+    if isinstance(max_sensors, (bool, np.bool_)) or not isinstance(max_sensors, (int, np.integer)):
+        raise ValueError("max_sensors must be an integer")
+    if not 0 <= max_sensors <= len(candidates):
+        raise ValueError("max_sensors must be between zero and candidate count")
+    if np.isscalar(noise_variance):
+        noise = np.full(len(candidates), _positive_scalar(noise_variance, "noise_variance"))
+    else:
+        try:
+            raw = np.asarray(noise_variance)
+            if raw.dtype.kind == "b":
+                raise ValueError("noise variances cannot be boolean")
+            noise = np.asarray(noise_variance, dtype=float)
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError("noise_variance must be a positive finite scalar or vector") from exc
+        if noise.shape != (len(candidates),) or not np.all(np.isfinite(noise)) or np.any(noise <= 0):
+            raise ValueError("noise_variance vector must be positive, finite and match candidates")
+    target_cov = _kernel(targets, targets, kernel, scale)
+    _logdet_spd(target_cov, "target covariance")
+    cross_cov = _kernel(targets, candidates, kernel, scale)
+    candidate_cov = _kernel(candidates, candidates, kernel, scale)
+    selected, reductions = [], []
+    conditional = target_cov.copy()
+    current_trace = float(np.trace(conditional))
+    for _ in range(int(max_sensors)):
+        best_index, best_reduction, best_conditional = None, -float("inf"), None
+        for candidate_index in range(len(candidates)):
+            if candidate_index in selected:
+                continue
+            trial = selected + [candidate_index]
+            trial_conditional = _conditional_covariance(
+                target_cov, cross_cov, candidate_cov, noise, trial
+            )
+            _logdet_spd(trial_conditional, "conditional target covariance")
+            reduction = current_trace - float(np.trace(trial_conditional))
+            if reduction > best_reduction + 1e-14:
+                best_index, best_reduction = candidate_index, reduction
+                best_conditional = trial_conditional
+        selected.append(best_index)
+        reduction = max(0.0, float(best_reduction))
+        reductions.append(reduction)
+        current_trace -= reduction
+        conditional = best_conditional
+    return {
+        "selected_indices": tuple(selected),
+        "posterior_variance_trace": float(np.trace(conditional)),
+        "variance_reductions": tuple(reductions),
+        "conditional_covariance": conditional,
+        "kernel": kernel,
+        "length_scale": scale,
+    }

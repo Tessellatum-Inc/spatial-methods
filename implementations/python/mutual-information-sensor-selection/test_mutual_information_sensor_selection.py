@@ -87,3 +87,49 @@ def test_empty_or_nonfinite_coordinates_are_rejected():
         gaussian_sensor_mutual_information([], CANDIDATES, max_sensors=1)
     with pytest.raises(ValueError):
         gaussian_sensor_mutual_information(TARGETS, [[0, float("nan")]], max_sensors=1)
+
+def test_variance_design_single_target_matches_closed_form():
+    from mutual_information_sensor_selection import greedy_kriging_variance_design
+    result = greedy_kriging_variance_design([[0, 0]], [[0, 0], [2, 0]],
+                                            max_sensors=1, noise_variance=.5)
+    assert result["selected_indices"] == (0,)
+    assert result["posterior_variance_trace"] == pytest.approx(1 / 3)
+    assert result["variance_reductions"] == pytest.approx([2 / 3])
+
+
+def test_variance_design_greedy_steps_match_independent_trace_oracle():
+    from mutual_information_sensor_selection import greedy_kriging_variance_design
+    result = greedy_kriging_variance_design(TARGETS, CANDIDATES, max_sensors=3,
+                                            length_scale=1.3,
+                                            noise_variance=[.1, .2, .3, .4])
+    kt = np.exp(-.5 * (np.linalg.norm(TARGETS[:, None]-TARGETS[None, :], axis=2)/1.3)**2)
+    kc = np.exp(-.5 * (np.linalg.norm(CANDIDATES[:, None]-CANDIDATES[None, :], axis=2)/1.3)**2)
+    kx = np.exp(-.5 * (np.linalg.norm(TARGETS[:, None]-CANDIDATES[None, :], axis=2)/1.3)**2)
+    noise = np.array([.1, .2, .3, .4])
+    chosen, current = [], float(np.trace(kt))
+    for selected, reduction in zip(result["selected_indices"], result["variance_reductions"]):
+        remaining, alternatives = [], []
+        for candidate in range(len(CANDIDATES)):
+            if candidate in chosen:
+                continue
+            remaining.append(candidate)
+            ids = np.asarray(chosen + [candidate])
+            conditional = kt - kx[:, ids] @ np.linalg.solve(
+                kc[np.ix_(ids, ids)] + np.diag(noise[ids]), kx[:, ids].T
+            )
+            alternatives.append(current - float(np.trace(conditional)))
+        best = int(np.argmax(alternatives))
+        assert selected == remaining[best]
+        assert reduction == pytest.approx(alternatives[best])
+        chosen.append(selected)
+        current -= reduction
+
+
+def test_variance_design_zero_budget_and_invalid_noise():
+    from mutual_information_sensor_selection import greedy_kriging_variance_design
+    result = greedy_kriging_variance_design(TARGETS, CANDIDATES, max_sensors=0)
+    assert result["selected_indices"] == ()
+    assert result["posterior_variance_trace"] == pytest.approx(3.0)
+    with pytest.raises(ValueError):
+        greedy_kriging_variance_design(TARGETS, CANDIDATES, max_sensors=1,
+                                       noise_variance=[True, False, True, False])

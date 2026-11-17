@@ -35,3 +35,11 @@ measurement noise, estimate covariance hyperparameters, or use non-Gaussian
 likelihoods. It requires a positive-definite target covariance and uses
 planar Euclidean distance. The greedy solution is not claimed to be the
 global optimum for a fixed sensor budget.
+
+## Greedy kriging-variance design
+
+The module also provides `greedy_kriging_variance_design`, an A-optimal
+criterion that greedily reduces the trace of the posterior covariance over
+the supplied target locations. This is distinct from the mutual-information
+(log-determinant) objective and shares its fixed covariance and independent
+noise assumptions.

@@ -16,3 +16,10 @@ The source entry groups model-based and adaptive designs. This record covers
 only the Gaussian-process mutual-information greedy component; kriging
 variance minimization, Bayesian optimal design and robotic path planning
 remain separate methods.
+
+## Additional variance-design objective
+
+A greedy A-optimal design minimizes the trace of the target posterior
+covariance. Tests compare each selection step with an independently
+calculated covariance-trace oracle and a closed-form single-target case.
+This is not a general Bayesian optimal-design engine.
