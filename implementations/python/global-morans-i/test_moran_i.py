@@ -107,3 +107,36 @@ def test_permutation_alternatives_and_invalid_controls():
                                 alternative="less",seed=2)["p_value"]>0
     with pytest.raises(ValueError): morans_i_permutation([1,2,3,4],CHAIN_WEIGHTS,permutations=0)
     with pytest.raises(ValueError): morans_i_permutation([1,2,3,4],CHAIN_WEIGHTS,alternative="upper")
+
+
+
+def test_distance_band_correlogram_matches_global_moran_on_first_band():
+    from moran_i import morans_i_correlogram
+    points=[(0,0),(1,0),(2,0),(3,0)]
+    result=morans_i_correlogram(points,[1,2,3,4],[0,1.1,2.1,4.0])
+    assert [row["pairs"] for row in result] == [3,2,1]
+    assert result[0]["statistic"] == pytest.approx(1/3)
+    assert result[1]["statistic"] is not None
+    assert result[2]["statistic"] is not None
+    assert all(row["expected"] == pytest.approx(-1/3) for row in result)
+
+
+def test_distance_band_correlogram_reports_empty_bands_and_row_standardizes():
+    from moran_i import morans_i_correlogram
+    points=[(0,0),(1,0),(2,0)]
+    raw=morans_i_correlogram(points,[1,2,3],[0,0.5,1.5,3])
+    standardized=morans_i_correlogram(points,[1,2,3],[0,0.5,1.5,3],
+                                      row_standardize_weights=True)
+    assert raw[0]["pairs"] == 0 and raw[0]["statistic"] is None
+    assert raw[1]["pairs"] == 2
+    assert standardized[1]["statistic"] is not None
+
+
+def test_distance_band_correlogram_validates_inputs_and_band_edges():
+    from moran_i import morans_i_correlogram
+    with pytest.raises(ValueError,match="one 2D"):
+        morans_i_correlogram([(0,0)],[1,2],[0,1])
+    with pytest.raises(ValueError,match="strictly increasing"):
+        morans_i_correlogram([(0,0),(1,0)],[1,2],[0,1,1])
+    with pytest.raises(ValueError,match="finite"):
+        morans_i_correlogram([(0,0),(float("nan"),0)],[1,2],[0,1])

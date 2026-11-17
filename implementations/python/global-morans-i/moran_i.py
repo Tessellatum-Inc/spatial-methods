@@ -146,3 +146,57 @@ def morans_i_permutation(
             "alternative":alternative,"permutations":permutations,
             "simulated":simulated,"simulation_mean":mean,
             "simulation_std":variance**0.5}
+
+
+
+def morans_i_correlogram(
+    points: Sequence[Sequence[float]],
+    values: Sequence[float],
+    distance_edges: Sequence[float],
+    *,
+    row_standardize_weights: bool = False,
+) -> list[dict]:
+    """Compute global Moran statistics over non-overlapping distance bands."""
+    import math
+    n = len(values)
+    if n < 2:
+        raise ValueError("at least two observations are required")
+    if len(points) != n or any(len(point) != 2 for point in points):
+        raise ValueError("points must contain one 2D coordinate per value")
+    xy = [[float(point[0]), float(point[1])] for point in points]
+    if not all(isfinite(v) for point in xy for v in point):
+        raise ValueError("coordinates must be finite")
+    x = [float(v) for v in values]
+    if not all(isfinite(v) for v in x):
+        raise ValueError("values must be finite")
+    edges = [float(v) for v in distance_edges]
+    if len(edges) < 2 or not all(isfinite(v) for v in edges):
+        raise ValueError("distance_edges must contain at least two finite values")
+    if edges[0] < 0 or any(a >= b for a, b in zip(edges, edges[1:])):
+        raise ValueError("distance_edges must be non-negative and strictly increasing")
+    pairs = []
+    for i in range(n - 1):
+        for j in range(i + 1, n):
+            distance = math.hypot(xy[j][0] - xy[i][0], xy[j][1] - xy[i][1])
+            if not isfinite(distance):
+                raise ValueError("pair distance overflowed")
+            pairs.append((distance, i, j))
+    output = []
+    for band, (lower, upper) in enumerate(zip(edges, edges[1:])):
+        weights = [[0.0] * n for _ in range(n)]
+        selected = 0
+        for distance, i, j in pairs:
+            inside = distance >= lower and (
+                distance <= upper if band == len(edges) - 2 else distance < upper
+            )
+            if inside:
+                weights[i][j] = weights[j][i] = 1.0
+                selected += 1
+        statistic = None
+        if selected:
+            if row_standardize_weights:
+                weights = row_standardize(weights)
+            statistic = morans_i(x, weights)
+        output.append({"lower": lower, "upper": upper, "pairs": selected,
+                       "statistic": statistic, "expected": -1.0 / (n - 1)})
+    return output

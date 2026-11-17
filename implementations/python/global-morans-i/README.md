@@ -67,3 +67,15 @@ For spatial weights construction and statistical inference, use a maintained lib
 ## Reproduce
 
 The tests use a four-unit chain and check the hand-calculated examples in the [canonical lesson](../../../algorithms/statistics/global-morans-i.md).
+
+
+
+## Distance-band Moran correlogram
+
+`morans_i_correlogram(points, values, distance_edges)` builds a symmetric
+binary neighbour graph independently for each non-overlapping Euclidean
+distance band and returns Moran's I, link count and randomisation expectation.
+The final band includes its upper edge; earlier bands are half-open. Empty
+bands return a null statistic. Optional row standardisation leaves isolates
+as zero rows. This is descriptive, not a multiple-testing procedure or a
+formal correlogram significance envelope.

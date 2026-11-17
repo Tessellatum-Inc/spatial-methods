@@ -129,7 +129,7 @@ def test_directional_semivariogram_accepts_fixed_geometric_anisotropy():
     stretched=directional_semivariogram(points,values,[0,1.5,2.5],azimuth_deg=90,tolerance_deg=90,
                                         anisotropy_azimuth_deg=90,anisotropy_ratio=0.5)
     assert sum(x["pairs"] for x in isotropic) == 3
-    assert sum(x["pairs"] for x in stretched) == 2
+    assert [x["pairs"] for x in stretched] == [1, 2]
 
 
 def test_reml_accepts_fixed_geometric_anisotropy():
