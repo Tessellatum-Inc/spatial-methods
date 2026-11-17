@@ -36,6 +36,10 @@ The NumPy function accepts a state-by-member ensemble, observation vector, linea
 
 The method is a batch ETKF analysis. The implementation is a small dense teaching version and explicitly exposes the transform.
 
+## Stochastic EnKF companion
+
+The companion `enkf_analysis` uses the same forecast ensemble and linear observation model but generates independent perturbed observations with covariance R for each member. The stochastic update preserves the observation-error contribution to the ensemble covariance in expectation; finite ensembles retain Monte Carlo sampling error. It is distinct from the deterministic ETKF transform above.
+
 ## Limitations
 
 This implementation does not include forecast propagation, localization, inflation, adaptive inflation, serial observation processing, nonlinear observation operators, model-error treatment, ensemble generation, adaptive observation targeting or cycling. Finite-ensemble sampling error and rank deficiency remain important; a mathematically correct analysis transform does not remove those practical problems. It is not an implementation of every ensemble square-root filter variant: ETKF, EAKF and serial EnSRF have different transformation constructions.

@@ -25,3 +25,16 @@ These are teaching baselines, not a complete navigation filter. They omit contro
 ## Ensemble transform Kalman filter
 
 The `ensemble_square_root.py` module implements a batch linear ETKF analysis using a symmetric ensemble-space square-root transform. It updates the ensemble deterministically without perturbed observations and supports a full observation-error covariance matrix. This is a teaching implementation; localization, inflation, cycling and nonlinear observation operators remain outside scope. See the [ETKF lesson](../../../methods/ensemble-transform-kalman-filter.md) and [lab notebook](../../../notebooks/ensemble-transform-kalman-filter-lab.ipynb).
+
+
+
+## Stochastic ensemble Kalman filter
+
+The `enkf_analysis` function provides the perturbed-observation stochastic
+EnKF for a batch linear observation operator. It computes sample forecast
+and cross-covariances, forms the Kalman gain, draws an independent
+observation perturbation with covariance R for each ensemble member, and
+updates each member. This differs from ETKF: the stochastic EnKF uses
+perturbed observations, while ETKF uses a deterministic ensemble-space
+square-root transform. Both are analysis steps only; neither includes model
+forecast propagation, localization or inflation.

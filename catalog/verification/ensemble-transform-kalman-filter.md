@@ -19,5 +19,16 @@
 ## Reproduction and rights
 - Original NumPy implementation and tests.
 - Tests compare analysis mean/covariance against the conventional Kalman equations, check determinism and validate malformed inputs.
-- No third-party code, figures or data are reproduced.
+- No third-party code, figures or data are reproduced. The stochastic EnKF companion is tested separately against large-ensemble Kalman moments and observation-perturbation covariance.
 - Repository CI pending.
+
+
+
+## Companion method: stochastic EnKF
+
+The state-estimation package also contains a stochastic perturbed-observation
+EnKF analysis. It computes sample state/observation cross-covariance, adds
+independent Gaussian perturbations with covariance R to each ensemble member's
+observation, and applies the ensemble Kalman gain. This is a separate
+algorithmic variant from the deterministic ETKF; it is not folded into the
+ETKF identity record.
