@@ -103,7 +103,7 @@ A first masked-autoencoding lesson now explains the encoder-visible/decoder-mask
 |---|---|---:|--- |
 | Losses: Dice, Tversky, focal, Lovász-softmax, class-balanced cross-entropy, boundary and distance-transform loss, clDice, Huber, quantile and pinball | Loss functions | 17 | Not checked — intake only |
 | Augmentation: rotation, flip, scale jitter, CutMix, mosaic, copy-paste, spectral jitter, band dropout, cloud and shadow simulation, test-time augmentation | Data augmentation / inference-time procedures | 17 | Not checked — intake only |
-| Metrics: OA, F1, IoU and mIoU, Dice, kappa, mAP with rotated IoU, boundary F-score, panoptic quality, RMSE, MAE, R², NSE, KGE, CRPS, ECE | Evaluation metrics | 17 | Not checked — intake only |
+| Metrics: OA, F1, IoU and mIoU, Dice, kappa, mAP with rotated IoU, boundary F-score, panoptic quality, RMSE, MAE, R², NSE, KGE, CRPS, ECE | Evaluation metrics | 17 | [Classification and segmentation accuracy assessment](../../implementations/python/accuracy-assessment/README.md) implements OA, producer/user accuracy, kappa, quantity/allocation disagreement, per-class F1/IoU/Dice, macro-F1, mean IoU, change FoM and tolerance-aware binary boundary F1 | Partial — these discrete classification and binary-mask metrics are implemented; detection mAP, rotated-box IoU, panoptic quality, regression/forecast metrics, CRPS, ECE and design-based area-adjusted accuracy remain open |
 | Embedding quality: linear probing, k-NN, retrieval recall@k, clustering NMI | Representation evaluation methods | 17 | Not checked — intake only |
 | Benchmarks: GEO-Bench, PANGAEA, Satlas, fMoW, BigEarthNet, EuroSAT | Benchmark suites / datasets | 17 | Not checked — intake only |
 

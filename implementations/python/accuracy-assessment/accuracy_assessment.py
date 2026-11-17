@@ -51,11 +51,29 @@ def accuracy_metrics(matrix):
     kappa = (oa-pe)/(1-pe) if pe < 1 else None
     quantity = sum(abs(row_totals[i]-col_totals[i]) for i in range(n_classes))/(2*n)
     allocation = max(0.0, 1.0-oa-quantity)
+    class_f1 = [
+        (2 * rows[i][i] / (row_totals[i] + col_totals[i]))
+        if row_totals[i] + col_totals[i] else None
+        for i in range(n_classes)
+    ]
+    class_iou = [
+        (rows[i][i] / (row_totals[i] + col_totals[i] - rows[i][i]))
+        if row_totals[i] + col_totals[i] - rows[i][i] else None
+        for i in range(n_classes)
+    ]
+    class_dice = class_f1.copy()
+    valid_f1 = [value for value in class_f1 if value is not None]
+    valid_iou = [value for value in class_iou if value is not None]
     return {
         "n": n,
         "overall_accuracy": oa,
         "producer_accuracy": producer,
         "user_accuracy": user,
+        "class_f1": class_f1,
+        "macro_f1": sum(valid_f1) / len(valid_f1) if valid_f1 else None,
+        "class_iou": class_iou,
+        "mean_iou": sum(valid_iou) / len(valid_iou) if valid_iou else None,
+        "class_dice": class_dice,
         "kappa": kappa,
         "quantity_disagreement": quantity,
         "allocation_disagreement": allocation,
