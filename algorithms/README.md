@@ -439,3 +439,7 @@ Records may have different evidence and implementation status. Check the status 
 ## Remote sensing time series
 
 - [Dynamic and time-weighted DTW](remote-sensing/time-series-dtw.md) — sequence alignment with optional temporal mismatch penalties.
+
+## SAR filtering
+
+- [Adaptive Lee speckle filter](remote-sensing/lee-speckle-filter.md) — local adaptive filtering of single-channel SAR intensity.
