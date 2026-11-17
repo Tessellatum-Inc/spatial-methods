@@ -58,10 +58,10 @@ def test_landscape_patch_metrics_counts_components_and_internal_edges():
     assert result["classes"][2]["patch_count"] == 1
     assert result["classes"][3]["patch_count"] == 1
     assert result["classes"][2]["largest_patch_index"] == pytest.approx(4 / 9 * 100)
-    # Four horizontal/vertical class boundaries in this 3x3 fixture.
-    assert result["edge_count"] == 4
-    assert result["edge_length"] == pytest.approx(40)
-    assert result["edge_density_per_ha"] == pytest.approx(40 / 0.09)
+    # Six horizontal/vertical class boundaries in this 3x3 fixture.
+    assert result["edge_count"] == 6
+    assert result["edge_length"] == pytest.approx(60)
+    assert result["edge_density_per_ha"] == pytest.approx(60 / 0.09)
 
 
 def test_landscape_connectivity_changes_diagonal_patch_count():
