@@ -48,3 +48,65 @@ def test_figure_of_merit():
     with pytest.raises(ValueError): figure_of_merit([], [])
     with pytest.raises(ValueError): figure_of_merit([1], [2])
     with pytest.raises(ValueError): figure_of_merit([1], [1,0])
+
+
+from accuracy_assessment import (
+    expected_calibration_error, mean_absolute_error, r2_score,
+    root_mean_squared_error,
+)
+
+
+def test_regression_metrics_match_analytic_values():
+    assert mean_absolute_error([1, 2, 3], [1, 2, 1]) == pytest.approx(2/3)
+    assert root_mean_squared_error([1, 2, 3], [1, 2, 1]) == pytest.approx((4/3)**.5)
+    assert r2_score([1, 2, 3], [1, 2, 2]) == pytest.approx(.5)
+
+
+def test_regression_metrics_support_sample_weights():
+    assert mean_absolute_error([0, 2], [1, 0], [1, 3]) == pytest.approx(1.75)
+    assert root_mean_squared_error([0, 2], [1, 0], [1, 3]) == pytest.approx(3.25**.5)
+    assert r2_score([0, 2, 4], [0, 1, 4], [1, 2, 1]) == pytest.approx(.75)
+
+
+def test_r2_constant_target_policy_is_finite_and_explicit():
+    assert r2_score([2, 2], [2, 2]) == 1.0
+    assert r2_score([2, 2], [2, 3]) == 0.0
+
+
+def test_regression_metrics_reject_invalid_inputs():
+    with pytest.raises(ValueError):
+        mean_absolute_error([], [])
+    with pytest.raises(ValueError):
+        root_mean_squared_error([1], [1, 2])
+    with pytest.raises(ValueError):
+        r2_score([1, float("nan")], [1, 2])
+    with pytest.raises(ValueError):
+        mean_absolute_error([1, 2], [1, 2], [1, -1])
+    with pytest.raises(ValueError):
+        r2_score([1, 2], [1, 2], [0, 0])
+
+
+def test_expected_calibration_error_top_label_bins():
+    probabilities = [[.9, .1], [.8, .2], [.4, .6], [.3, .7]]
+    labels = [0, 1, 1, 0]
+    assert expected_calibration_error(probabilities, labels, n_bins=2) == pytest.approx(.25)
+    assert expected_calibration_error([[1, 0], [0, 1]], [0, 1]) == pytest.approx(0)
+
+
+def test_expected_calibration_error_respects_sample_weights():
+    probabilities = [[.9, .1], [.8, .2], [.4, .6], [.3, .7]]
+    labels = [0, 1, 1, 0]
+    assert expected_calibration_error(probabilities, labels, n_bins=2, sample_weight=[1, 3, 1, 1]) == pytest.approx(13/30)
+
+
+def test_expected_calibration_error_rejects_invalid_probabilities_and_labels():
+    with pytest.raises(ValueError):
+        expected_calibration_error([], [])
+    with pytest.raises(ValueError):
+        expected_calibration_error([[.8, .3]], [0])
+    with pytest.raises(ValueError):
+        expected_calibration_error([[.5, .5], [.2, .8]], [0])
+    with pytest.raises(ValueError):
+        expected_calibration_error([[.5, .5]], [2])
+    with pytest.raises(ValueError):
+        expected_calibration_error([[.5, .5]], [0], n_bins=0)
