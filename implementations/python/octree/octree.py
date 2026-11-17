@@ -41,10 +41,11 @@ class _Node:
 
 
 class PointRegionOctree:
-    """Static-root bucket octree with insertion, 3D range and exact kNN queries.
+    """Fixed-root bucket octree with insertion, lazy deletion, range and exact kNN.
 
-    Points outside the root box are rejected. Coincident points may remain in
-    an over-capacity leaf at max_depth or when floating midpoints collapse.
+    Deleted IDs remain reserved. Tombstones are periodically purged by a
+    whole-tree rebuild. Points outside the root box are rejected; coincident
+    points may remain in over-capacity leaves at max_depth or midpoint collapse.
     """
     def __init__(self, extent: Iterable[float], points: Iterable[Iterable[float]] = (),
                  *, capacity: int = 8, max_depth: int = 16) -> None:
