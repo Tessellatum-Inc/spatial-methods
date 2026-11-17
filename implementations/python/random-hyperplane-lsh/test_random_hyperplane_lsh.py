@@ -57,3 +57,14 @@ def test_zero_query_and_invalid_top_k():
         index.query([0., 0.])
     with pytest.raises(ValueError):
         index.query([1., 0.], top_k=0)
+
+
+def test_large_finite_values_normalize_without_overflow():
+    index = RandomHyperplaneLSH(3, 4, seed=2).fit([[1e308, 1e308], [1e308, -1e308]])
+    assert index.query([1e308, 1e308])[0].index == 0
+
+
+def test_query_requires_a_one_dimensional_vector():
+    index = RandomHyperplaneLSH().fit([[1.0, 0.0], [0.0, 1.0]])
+    with pytest.raises(ValueError):
+        index.query([[1.0, 0.0]])
