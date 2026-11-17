@@ -576,9 +576,6 @@ jobs:
           - example: nndm
             directory: implementations/python/nndm
             pythonpath: ""
-          - example: ordinary-kriging
-            directory: implementations/python/ordinary-kriging
-            pythonpath: ""
           - example: point-process
             directory: implementations/python/point-process
             pythonpath: ""
