@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from biodiversity_metrics import area_of_occupancy, extent_of_occurrence, species_richness, weighted_endemism
+from biodiversity_metrics import area_of_occupancy, extent_of_occurrence, landscape_patch_metrics, shannon_diversity, species_richness, weighted_endemism
 
 
 def test_eoo_triangle_area_and_hull_vertices():
@@ -43,3 +43,50 @@ def test_grid_and_presence_validation():
         area_of_occupancy([[0., 0.]], origin=(0.,))
     with pytest.raises(ValueError, match="binary"):
         species_richness([[0, 2]])
+
+
+def test_landscape_patch_metrics_counts_components_and_internal_edges():
+    raster = np.array([
+        [1, 1, 2],
+        [1, 2, 2],
+        [3, 3, 2],
+    ])
+    result = landscape_patch_metrics(raster, cell_size=10, connectivity=4)
+    assert result["valid_cells"] == 9
+    assert result["total_patch_count"] == 3
+    assert result["classes"][1]["patch_count"] == 1
+    assert result["classes"][2]["patch_count"] == 1
+    assert result["classes"][3]["patch_count"] == 1
+    assert result["classes"][2]["largest_patch_index"] == pytest.approx(4 / 9 * 100)
+    # Four horizontal/vertical class boundaries in this 3x3 fixture.
+    assert result["edge_count"] == 4
+    assert result["edge_length"] == pytest.approx(40)
+    assert result["edge_density_per_ha"] == pytest.approx(40 / 0.09)
+
+
+def test_landscape_connectivity_changes_diagonal_patch_count():
+    raster = np.array([[1, 0], [0, 1]])
+    four = landscape_patch_metrics(raster, connectivity=4)
+    eight = landscape_patch_metrics(raster, connectivity=8)
+    assert four["classes"][1]["patch_count"] == 2
+    assert eight["classes"][1]["patch_count"] == 1
+
+
+def test_landscape_nodata_and_validation():
+    raster = np.array([[1., 1., -9999.], [2., np.nan, 2.]])
+    result = landscape_patch_metrics(raster, nodata=-9999)
+    assert result["valid_cells"] == 4
+    with pytest.raises(ValueError):
+        landscape_patch_metrics(np.array([[1., np.nan]]))
+    with pytest.raises(ValueError):
+        landscape_patch_metrics(np.array([[1]]), connectivity=6)
+    with pytest.raises(ValueError):
+        landscape_patch_metrics(np.array([[-9999]]), nodata=-9999)
+
+
+def test_shannon_diversity_uniform_and_single_class():
+    assert shannon_diversity(np.array([[1, 1], [1, 1]])) == pytest.approx(0)
+    assert shannon_diversity(np.array([[1, 2], [1, 2]])) == pytest.approx(np.log(2))
+    assert shannon_diversity(np.array([[1., np.nan], [2., 2.]])) == pytest.approx(
+        -(1/3*np.log(1/3) + 2/3*np.log(2/3))
+    )
