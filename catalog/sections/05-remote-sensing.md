@@ -86,7 +86,7 @@ The canonical records now cover the spectral-index family, global Otsu threshold
 | Productivity and structure: light-use efficiency GPP, biomass allometry, LAI and fAPAR retrieval, soil moisture retrieval, albedo | Biophysical retrieval methods / allometric models / products | 9 | Not checked — intake only |
 | Water and atmosphere: Case 2 water quality inversion, aerosol retrieval (dark target, MAIAC), DOAS trace gases, cloud property retrieval | Inversion and retrieval methods | 9 | Not checked — intake only |
 | Cryosphere and ocean: sea ice concentration (NASA Team, Bootstrap), ice motion, glacier velocity, DEM differencing, eddy detection (Okubo-Weiss), SST fronts, altimetry processing | Retrieval / motion estimation / ocean analysis methods | 9 | Not checked — intake only |
-| Thermal and fire: thermal anomaly and volcanic hotspot detection, active fire detection, burned area (MCD64A1) | Detection algorithms / products | 9 | Not checked — intake only |
+| Thermal and fire: thermal anomaly and volcanic hotspot detection, active fire detection, burned area (MCD64A1) | Detection algorithms / products | 9 | Partial — robust local-median/MAD thermal anomaly screening has a tested baseline; sensor-specific active-fire and volcanic algorithms, cloud/smoke screening and MCD64A1 burned-area mapping remain open |
 
 ## Decisions for the next pass
 
