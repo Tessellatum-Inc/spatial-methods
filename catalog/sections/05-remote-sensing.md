@@ -58,7 +58,7 @@ The canonical records now cover the spectral-index family, global Otsu threshold
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Speckle filtering, polarimetric decomposition (H/A/alpha, Freeman-Durden, Yamaguchi), CFAR detection, SAR-to-optical translation | Filtering / decomposition methods / detection / translation models | 8 | Partial — tested adaptive Lee intensity filtering and square-window CA-CFAR for exponential intensity backgrounds; a tested square-window OS-CFAR order-statistics baseline now covers bright-interferer resistance under the independent exponential model; refined/polarimetric filters, H/A/alpha and Freeman-Durden/Yamaguchi decompositions, GO/SO-CFAR and SAR-to-optical translation remain open |
-| InSAR: PS-InSAR, SBAS, SqueeSAR, distributed scatterers, phase unwrapping (SNAPHU, minimum cost flow), coherence change detection, offset tracking, tomographic SAR, autofocus | Interferometric processing workflows / algorithms / software | 9 | Not checked — intake only |
+| InSAR: PS-InSAR, SBAS, SqueeSAR, distributed scatterers, phase unwrapping (SNAPHU, minimum cost flow), coherence change detection, offset tracking, tomographic SAR, autofocus | Interferometric processing workflows / algorithms / software | 9 | [Local interferometric coherence](../../implementations/python/insar-coherence/README.md) has a tested complex-SLC magnitude-coherence estimator and aligned coherence-difference utility | Partial — local coherence estimation is implemented; orbit refinement, co-registration, filtering, phase unwrapping, PS/SBAS time-series analysis, offset tracking, tomography and autofocus remain open |
 
 ## LiDAR and point clouds
 

@@ -424,6 +424,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/insar-coherence",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/inverse-distance-weighting",
     "pythonpath": ""
   },
