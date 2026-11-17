@@ -31,3 +31,8 @@ More tables increase the chance that a similar vector collides somewhere, but al
 ## Scope boundaries
 
 This lesson covers random-hyperplane LSH for cosine similarity. It is not HNSW graph search, IVF-PQ vector quantization, ScaNN anisotropic vector quantization, or a spatially aware index. Euclidean, Jaccard and other metrics require different LSH families or transformations. A production evaluation should report recall@k against exact search, build time, query latency, memory, and sensitivity to data distribution and parameters.
+
+
+## Verification record
+
+See the [implementation verification record](../../catalog/verification/random-hyperplane-lsh.md) for tested scope and outstanding evidence.
