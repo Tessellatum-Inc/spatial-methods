@@ -128,3 +128,8 @@ A first format-selection guide now separates authoritative storage, analytical l
 4. Treat location privacy as a first-class requirement; do not publish identifiable trajectories or sensitive location data as teaching examples.
 5. Verify standard names and software support against current specifications and maintained documentation.
 6. Separate causal identification assumptions from the mechanics of fitting a spatial model.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 9 atomic completion register](../../docs/section-9-atomic-completion-register.md). The register distinguishes geodetic operations, reference models, standards, formats, software, workflows, privacy methods and causal designs. It is a traceability backlog, not a completion claim.
