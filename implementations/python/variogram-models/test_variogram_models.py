@@ -9,6 +9,28 @@ def test_models_are_zero_at_origin_and_approach_sill(model):
     assert variogram_model([1e-9],model=model,nugget=0.2,partial_sill=1.3,range_=5)[0] >= 0.2
     assert y[1]==pytest.approx(1.5)
 
+@pytest.mark.parametrize("nu", [0.5, 1.5, 2.5])
+def test_matern_covariance_matches_closed_form_special_cases(nu):
+    h = np.array([0.0, 1.0, 2.0])
+    r = h / 2.0
+    if nu == 0.5:
+        correlation = np.exp(-r)
+    elif nu == 1.5:
+        q = np.sqrt(3.0) * r
+        correlation = (1.0 + q) * np.exp(-q)
+    else:
+        q = np.sqrt(5.0) * r
+        correlation = (1.0 + q + q*q/3.0) * np.exp(-q)
+    expected = 0.2 + 1.7 * (1.0 - correlation)
+    assert variogram_model(h, model="matern", nugget=0.2,
+                           partial_sill=1.7, range_=2.0, nu=nu) == pytest.approx(expected)
+
+
+def test_matern_rejects_invalid_smoothness():
+    with pytest.raises(ValueError):
+        variogram_model([0, 1], model="matern", nu=0)
+
+
 def test_spherical_model_reaches_sill_at_range():
     assert variogram_model([10],model="spherical",nugget=0.1,partial_sill=2,range_=10)[0]==pytest.approx(2.1)
 
@@ -170,3 +192,20 @@ def test_reml_rejects_non_boolean_anisotropy_flag():
     points = np.array([(x, y) for x in range(2) for y in range(2)], dtype=float)
     with pytest.raises(ValueError):
         fit_variogram_reml(points, [0, 1, 2, 4], fit_anisotropy=1)
+
+
+def test_matern_reml_returns_finite_covariance_fit():
+    rng = np.random.default_rng(96)
+    points = np.array([(x, y) for x in range(4) for y in range(4)], dtype=float)
+    delta = points[:, None, :] - points[None, :, :]
+    distance = np.sqrt(np.sum(delta * delta, axis=2))
+    q = np.sqrt(3.0) * distance / 1.7
+    covariance = 0.25 * (1.0 + q) * np.exp(-q)
+    covariance.flat[::len(points) + 1] += 0.75
+    values = rng.multivariate_normal(np.full(len(points), 2.0), covariance)
+    fit = fit_variogram_reml(points, values, model="matern", nu=1.5)
+    assert fit["model"] == "matern"
+    assert fit["nu"] == pytest.approx(1.5)
+    assert fit["nugget"] > 0
+    assert fit["partial_sill"] > 0
+    assert np.isfinite(fit["reml_objective"])
