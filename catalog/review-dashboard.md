@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 693 | Rows with a source-entry review status in the section indexes |
-| Partial | 200 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 493 | The source wording is preserved, but no independent review is recorded |
+| Partial | 201 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 492 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -23,7 +23,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 2 — Spatial statistics | 28 | 20 | 8 |
 | 3 — Geostatistics | 26 | 12 | 14 |
 | 4 — Raster, terrain and hydrology | 26 | 24 | 2 |
-| 5 — Remote sensing | 36 | 22 | 14 |
+| 5 — Remote sensing | 36 | 23 | 13 |
 | 6 — Optimization, mobility and transport | 31 | 5 | 26 |
 | 7 — Domain modeling | 48 | 1 | 47 |
 | 8 — GeoAI | 54 | 2 | 52 |
@@ -43,7 +43,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 6 | 22 |
 | **Total** | **693** | **199** | **494** |
 
-The current by-section subtotals now reconcile exactly with the aggregate: **693 source-entry rows, 200 partial, 493 intake-only and zero fully verified**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Historical snapshots below are retained as audit history; the current table above is authoritative.
+The current by-section subtotals now reconcile exactly with the aggregate: **693 source-entry rows, 201 partial, 492 intake-only and zero fully verified**. Counts are derived from the current source-entry tables in all 22 section indexes, classifying rows with an implementation-linked or partial status as partial and intake-only rows as not checked. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Historical snapshots below are retained as audit history; the current table above is authoritative.
 
 ## How to interpret this
 
@@ -146,3 +146,8 @@ The Section 2 source-entry recount also identifies an implementation-linked Ripl
 ## Implementation reconciliation — Open Location Code
 
 Section 19's location-encoding family now links to a tested full-code Open Location Code (Plus Code) encoder/decoder with decimal-safe cell-boundary handling and bounds output. The existing geohash implementation remains alongside it. Short-code recovery, what3words, S2 and H3 remain open, and the grouped source row remains partial. The Python CI matrix now includes the new package; its full workflow has not yet been verified.
+
+
+## Implementation reconciliation — fractional-cover regression
+
+Section 5's fractional-cover source row now links to a deterministic CART regression-tree baseline for field-labelled fractions, alongside the existing FCLS spectral-unmixing implementation. The new package includes independent tests for piecewise response recovery, minimum leaf size, constant targets, multifeature splitting and invalid inputs, and is registered as a standalone GitHub Actions job. This does not implement vegetation-continuous-fields products, spatial validation, uncertainty calibration or sensor-specific processing; the grouped source row remains partial. Section 5 now has 23 partial and 13 intake-only entries; the dashboard aggregate is 201 partial, 492 intake-only and zero fully verified.
