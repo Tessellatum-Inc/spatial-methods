@@ -128,3 +128,108 @@ def earliest_arrival(
                 heappush(queue, (candidate, next(serial), neighbor))
 
     return None, float("inf")
+
+
+
+def non_fifo_earliest_arrival(
+    graph: Mapping[Node, Sequence[tuple[Node, EdgeId]]],
+    departure_profiles: Mapping[EdgeId, Mapping[int, int]],
+    start: Node,
+    goal: Node,
+    start_time: int,
+    horizon: int,
+) -> dict:
+    """Exact earliest arrival on a finite integer time-expanded network.
+
+    Every edge profile maps allowed integer departure ticks to non-negative
+    integer travel durations. Waiting one tick at every node is allowed and
+    has zero cost. The finite horizon bounds the time-expanded state space.
+    This supports non-FIFO profiles; it is not a continuous-time solver.
+    """
+    from numbers import Integral
+
+    def integer(value, label, *, minimum=0):
+        if isinstance(value, bool) or not isinstance(value, Integral) or value < minimum:
+            raise ValueError(f"{label} must be an integer >= {minimum}")
+        return int(value)
+
+    start_time = integer(start_time, "start_time")
+    horizon = integer(horizon, "horizon")
+    if horizon < start_time:
+        raise ValueError("horizon must be >= start_time")
+    edge_ids = set()
+    for outgoing in graph.values():
+        for _neighbor, edge_id in outgoing:
+            edge_ids.add(edge_id)
+    if set(departure_profiles) - edge_ids:
+        raise ValueError("departure profile references an unknown edge")
+    profiles = {}
+    for edge_id, profile in departure_profiles.items():
+        if not isinstance(profile, Mapping):
+            raise ValueError("each edge profile must map departure ticks to durations")
+        clean = {}
+        for raw_departure, raw_duration in profile.items():
+            departure = integer(raw_departure, "profile departure")
+            duration = integer(raw_duration, "travel duration")
+            clean[departure] = duration
+        profiles[edge_id] = clean
+
+    initial = (start, start_time)
+    serial = count()
+    queue = [(start_time, next(serial), initial)]
+    best = {initial: start_time}
+    previous = {}
+    terminal = None
+    while queue:
+        current_time, _order, state = heappop(queue)
+        if current_time != best.get(state):
+            continue
+        node, tick = state
+        if node == goal:
+            terminal = state
+            break
+        transitions = []
+        if tick < horizon:
+            transitions.append(((node, tick + 1), ("wait", node, tick, tick + 1)))
+        for neighbor, edge_id in graph.get(node, ()):
+            duration = profiles.get(edge_id, {}).get(tick)
+            if duration is None:
+                continue
+            arrival = tick + duration
+            if arrival <= horizon:
+                transitions.append(((neighbor, arrival),
+                                    ("travel", edge_id, node, neighbor, tick, arrival)))
+        for next_state, action in transitions:
+            arrival = next_state[1]
+            if arrival < best.get(next_state, float("inf")):
+                best[next_state] = arrival
+                previous[next_state] = (state, action)
+                heappush(queue, (arrival, next(serial), next_state))
+
+    if terminal is None:
+        return {"path": None, "arrival_time": None, "legs": [], "waits": [],
+                "start_time": start_time, "horizon": horizon}
+    actions = []
+    state = terminal
+    while state != initial:
+        prior, action = previous[state]
+        actions.append(action)
+        state = prior
+    actions.reverse()
+    legs = []
+    waits = []
+    path = [start]
+    for action in actions:
+        if action[0] == "travel":
+            _, edge_id, tail, head, depart, arrive = action
+            legs.append({"edge_id": edge_id, "from": tail, "to": head,
+                         "departure_time": depart, "arrival_time": arrive})
+            path.append(head)
+        else:
+            _, node, begin, end = action
+            if waits and waits[-1]["node"] == node and waits[-1]["end"] == begin:
+                waits[-1]["end"] = end
+            else:
+                waits.append({"node": node, "start": begin, "end": end})
+    return {"path": path, "arrival_time": terminal[1], "legs": legs,
+            "waits": waits, "start_time": start_time, "horizon": horizon}

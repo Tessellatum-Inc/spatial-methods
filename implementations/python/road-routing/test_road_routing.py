@@ -82,3 +82,70 @@ def test_invalid_time_or_travel_time_rejected():
         earliest_arrival(graph, "A", "B", math.inf, lambda _edge, _t: 1)
     with pytest.raises(ValueError, match="travel times"):
         earliest_arrival(graph, "A", "B", 0, lambda _edge, _t: -1)
+
+
+
+def test_non_fifo_search_waits_for_a_later_faster_departure():
+    from road_routing import non_fifo_earliest_arrival
+    graph={"S":[("T","st")],"T":[]}
+    result=non_fifo_earliest_arrival(graph,{"st":{0:10,1:1}},"S","T",0,10)
+    assert result["path"] == ["S","T"]
+    assert result["arrival_time"] == 2
+    assert result["legs"] == [{"edge_id":"st","from":"S","to":"T",
+                               "departure_time":1,"arrival_time":2}]
+    assert result["waits"] == [{"node":"S","start":0,"end":1}]
+
+
+def test_non_fifo_search_can_wait_at_an_intermediate_node():
+    from road_routing import non_fifo_earliest_arrival
+    graph={"S":[("A","sa")],"A":[("T","at")],"T":[]}
+    profiles={"sa":{0:1},"at":{1:8,2:1}}
+    result=non_fifo_earliest_arrival(graph,profiles,"S","T",0,10)
+    assert result["arrival_time"] == 3
+    assert result["path"] == ["S","A","T"]
+    assert result["waits"] == [{"node":"A","start":1,"end":2}]
+
+
+def test_non_fifo_search_matches_exhaustive_time_expanded_oracle():
+    from road_routing import non_fifo_earliest_arrival
+    graph={"S":[("A","sa"),("B","sb")],"A":[("T","at")],
+           "B":[("T","bt")],"T":[]}
+    profiles={"sa":{0:1,1:4,2:1,3:2},
+              "sb":{0:3,1:1,2:3,3:1},
+              "at":{1:5,2:1,3:4,4:1,5:1},
+              "bt":{1:1,2:4,3:1,4:2,5:1}}
+    start, horizon = 0, 8
+    reachable={("S",start)}
+    for tick in range(start,horizon+1):
+        for node in ("S","A","B","T"):
+            if (node,tick) not in reachable:
+                continue
+            if tick<horizon:
+                reachable.add((node,tick+1))
+            for neighbour,edge in graph.get(node,()):
+                duration=profiles.get(edge,{}).get(tick)
+                if duration is not None and tick+duration<=horizon:
+                    reachable.add((neighbour,tick+duration))
+    expected=min((tick for node,tick in reachable if node=="T"),default=None)
+    actual=non_fifo_earliest_arrival(graph,profiles,"S","T",start,horizon)
+    assert actual["arrival_time"] == expected
+
+
+def test_non_fifo_search_handles_unreachable_and_same_node():
+    from road_routing import non_fifo_earliest_arrival
+    assert non_fifo_earliest_arrival({"S":[("T","st")]} ,{},"S","T",0,3)["path"] is None
+    same=non_fifo_earliest_arrival({},{},"S","S",2,3)
+    assert same["path"] == ["S"] and same["arrival_time"] == 2
+
+
+def test_non_fifo_search_rejects_invalid_profiles_and_horizon():
+    from road_routing import non_fifo_earliest_arrival
+    graph={"S":[("T","st")]}
+    with pytest.raises(ValueError,match="horizon"):
+        non_fifo_earliest_arrival(graph,{},"S","T",3,2)
+    with pytest.raises(ValueError,match="integer"):
+        non_fifo_earliest_arrival(graph,{"st":{0.5:1}},"S","T",0,3)
+    with pytest.raises(ValueError,match="integer"):
+        non_fifo_earliest_arrival(graph,{"st":{0:-1}},"S","T",0,3)
+    with pytest.raises(ValueError,match="unknown edge"):
+        non_fifo_earliest_arrival(graph,{"other":{0:1}},"S","T",0,3)

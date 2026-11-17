@@ -63,7 +63,7 @@ The [road-routing package](../../implementations/python/road-routing/README.md) 
 
 The implementation explicitly does not claim to validate FIFO for an arbitrary Python callable. That remains the caller's responsibility.
 
-## What is still outside this example
+## Discrete non-FIFO routing with waiting\n\nA non-FIFO edge can have an arrival-time function that decreases at a later departure. A node-only label-setting algorithm that immediately traverses the edge may miss a better strategy: wait, then depart later. The package now includes a finite-horizon time-expanded reference implementation. It creates states (node, integer time), adds one-tick waiting transitions at every node, and adds travel transitions only at departure ticks supplied in each edge profile. Dijkstra on this expanded non-negative graph returns an earliest arrival and an explicit wait/travel itinerary.\n\nThe method is exact for the discrete profile model and horizon supplied by the caller. It does not solve arbitrary continuous-time profiles, limited waiting, waiting penalties, or non-FIFO routing without waiting. Its worst-case state count is O(|V|H), before edge relaxations.\n\n## What is still outside this example
 
 - Piecewise profile parsing and exact FIFO validation;
 - waiting and departure-time choice under non-FIFO costs;
@@ -78,7 +78,7 @@ Create an intersection where a left turn is prohibited. Compare a node-only shor
 
 Then define two time-dependent edge profiles. Plot c_e(t) and A_e(t), and identify whether each profile is FIFO. Explain why plotting travel time alone is not enough to test the FIFO property.
 
-## References
+## References\n\n- Orda, A., & Rom, R. (1990). Shortest-path and minimum-delay algorithms in networks with time-dependent edge-length. *Journal of the ACM*, 37(3), 607–625. https://doi.org/10.1145/79147.214078
 
 - Orda, A. and Rom, R. (1990), [Shortest-path and minimum-delay algorithms in networks with time-dependent edge-length](https://doi.org/10.1109/90.58099), Journal of the ACM, 37(3), 607–625.
 - [OSRM routing algorithms overview](https://github.com/Project-OSRM/osrm-backend/wiki/Algorithms).
