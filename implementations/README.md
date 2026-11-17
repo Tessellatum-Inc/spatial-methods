@@ -264,3 +264,6 @@ These are connected teaching materials, not interchangeable copies of the same e
 
 ### Remote sensing and fractional cover
 - [Fractional-cover regression tree](python/fractional-cover/README.md): deterministic CART regression for field-labelled fractions, with independent tests and explicit spatial-validation limitations.
+
+### Photogrammetry
+- [Brown-Conrady lens model](python/brown-conrady/README.md): normalized-coordinate radial/tangential distortion and checked Newton inversion; calibration estimation remains out of scope.
