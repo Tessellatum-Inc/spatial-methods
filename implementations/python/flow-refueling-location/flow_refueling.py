@@ -5,22 +5,31 @@ from collections.abc import Mapping
 from itertools import combinations
 
 def _finite(value, label):
-    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
-        raise ValueError("value must be finite numeric")
-    return float(value)
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"{label} must be finite numeric")
+    try:
+        converted = float(value)
+    except (OverflowError, TypeError, ValueError) as exc:
+        raise ValueError(f"{label} must be finite numeric") from exc
+    if not math.isfinite(converted):
+        raise ValueError(f"{label} must be finite numeric")
+    return converted
 
 def _prepare(paths, weights, candidate_sites, p, vehicle_range):
     if not isinstance(paths, Mapping) or not isinstance(weights, Mapping) or set(paths) != set(weights):
         raise ValueError("paths and weights must be mappings with identical path IDs")
     if isinstance(candidate_sites, (str, bytes)):
         raise ValueError("candidate_sites must be a sequence")
-    sites = list(candidate_sites)
+    try:
+        sites = list(candidate_sites)
+    except TypeError as exc:
+        raise ValueError("candidate_sites must be an iterable of site IDs") from exc
     try:
         unique = set(sites)
     except TypeError as exc:
         raise ValueError("candidate site IDs must be hashable") from exc
-    if len(unique) != len(sites) or not sites:
-        raise ValueError("candidate sites must be non-empty and unique")
+    if len(unique) != len(sites):
+        raise ValueError("candidate sites must be unique")
     if isinstance(p, bool) or not isinstance(p, int) or not 0 <= p <= len(sites):
         raise ValueError("p must be an integer between zero and candidate count")
     vehicle_range = _finite(vehicle_range, "vehicle_range")

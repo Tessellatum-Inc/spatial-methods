@@ -14,8 +14,11 @@ distances s_1,...,s_k, feasibility requires
 
 A route with L <= R is feasible without any station. The reference solver
 uses caller-supplied route lengths and candidate-station positions, then
-enumerates candidate-site subsets exactly. It is exponential and intended
-for small instances and independent test oracles.
+enumerates candidate-site subsets exactly. An empty candidate set is valid
+when zero stations are selected. Numeric inputs must be finite; booleans and
+integers too large for finite floating-point conversion are rejected. Seeded
+randomized tests compare the solver with an independent subset and route-gap
+oracle. It is exponential and intended for small instances and test oracles.
 
 The implementation assumes fixed routes, full initial range, identical
 vehicles, unlimited refueling and no detours. It does not model partial

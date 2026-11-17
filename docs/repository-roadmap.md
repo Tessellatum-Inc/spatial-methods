@@ -610,7 +610,7 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Add an exact small-instance flow-capturing location solver and a greedy marginal-flow baseline. Path weights are counted once, the exact solver provides an oracle, and the greedy guarantee is stated only for the monotone submodular cardinality model.
 - [x] Add tests for exact subset enumeration, path de-duplication, deterministic ties, zero budget and invalid model inputs; register the package in the Python CI matrix.
 - [ ] Execute both new package suites and verify the complete repository Actions run on the resulting head. The commit-status lookup currently returns no status contexts, so these packages are integrated but not CI-verified.
-- [ ] Resolve the source's "coffee-house" sampling label from a precise definition before implementing it; implement flow-refueling location (FRLM) as a distinct range-feasibility model; derive charging demand from trajectories with an independently tested map-matching / route-aggregation contract.
+- [ ] Resolve the source's "coffee-house" sampling label from a precise definition; derive charging demand from trajectories with an independently tested map-matching / route-aggregation contract. The distinct FRLM range-feasibility baseline is implemented; scalable heuristics and network-derived route inputs remain open.
 - [ ] Continue Section 17 with ball-pivoting surface reconstruction, remaining Voronoi/triangulation variants, approximate-nearest-neighbour structures and sparse/large-scale spatial-statistics methods.
 
 

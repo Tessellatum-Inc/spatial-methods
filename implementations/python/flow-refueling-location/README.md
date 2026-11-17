@@ -20,7 +20,9 @@ station.
 ## Algorithm
 
 The reference solver enumerates every p-site subset and checks route
-feasibility. Complexity is exponential in candidate count:
+feasibility. An empty candidate set is valid when p=0; it correctly serves
+only routes no longer than the available range. Candidate IDs must otherwise
+be unique and hashable, and numeric inputs must be finite. Complexity is exponential in candidate count:
 O(binomial(m,p) times total route-station incidences). This is intended for
 small instances, independent validation and benchmark oracles.
 
@@ -32,6 +34,10 @@ refueling at selected sites and no detours. It does not infer paths from a
 road graph, model partial charging, station capacity, queues, heterogeneous
 vehicles, charging time or energy consumption by grade/speed. It is a
 simplified FRLM baseline, not a full electric-vehicle charging model.
+
+The test suite includes a seeded exhaustive subset oracle over randomized
+small instances, endpoint refuelling, empty candidate sets, and invalid or
+non-finite input checks.
 
 ## Difference from FCLM
 

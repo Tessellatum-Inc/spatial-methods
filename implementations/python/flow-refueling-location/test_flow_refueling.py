@@ -59,3 +59,59 @@ def test_station_gap_equal_to_range_is_feasible():
 def test_invalid_frml_models_are_rejected(paths, weights, sites, p, rng):
     with pytest.raises(ValueError):
         flow_refueling_exact(paths, weights, sites, p, rng)
+
+
+def test_empty_candidate_set_is_valid_when_no_stations_are_selected():
+    paths = {"short": {"length": 8, "sites": {}}, "zero": {"length": 0, "sites": {}}}
+    result = flow_refueling_exact(paths, {"short": 3, "zero": 2}, [], 0, 10)
+    assert result == {"sites": (), "objective": 5.0, "feasible_paths": ("short", "zero")}
+
+
+def test_empty_candidate_set_cannot_serve_a_route_beyond_range():
+    result = flow_refueling_exact({"long": {"length": 11, "sites": {}}}, {"long": 4}, [], 0, 10)
+    assert result == {"sites": (), "objective": 0.0, "feasible_paths": ()}
+
+
+def test_station_at_origin_or_destination_is_a_valid_refuel_option():
+    paths = {"origin": {"length": 18, "sites": {"a": 0}}, "destination": {"length": 18, "sites": {"b": 18}}}
+    result = flow_refueling_exact(paths, {"origin": 2, "destination": 3}, ["a", "b"], 1, 10)
+    assert result["objective"] == 3.0
+    assert result["feasible_paths"] == ("destination",)
+
+
+@pytest.mark.parametrize("value", [True, float("inf"), float("-inf"), float("nan"), 10**10000])
+def test_non_finite_or_non_numeric_range_values_are_rejected(value):
+    with pytest.raises(ValueError):
+        flow_refueling_exact({"r": {"length": 1, "sites": {}}}, {"r": 1}, ["a"], 0, value)
+
+
+def test_non_iterable_candidate_sites_raise_a_model_error():
+    with pytest.raises(ValueError, match="candidate_sites"):
+        flow_refueling_exact({"r": {"length": 1, "sites": {}}}, {"r": 1}, None, 0, 5)
+
+
+def test_seeded_random_small_instances_match_independent_route_and_subset_oracle():
+    import random
+    rng = random.Random(20261117)
+    for _ in range(40):
+        sites = [f"s{i}" for i in range(rng.randint(1, 6))]
+        paths, weights = {}, {}
+        for path_index in range(rng.randint(1, 5)):
+            length = rng.randint(0, 35)
+            available = rng.sample(sites, rng.randint(0, len(sites)))
+            path_id = f"r{path_index}"
+            paths[path_id] = {"length": length, "sites": {site: rng.randint(0, length) for site in available}}
+            weights[path_id] = rng.randint(0, 20)
+        vehicle_range, p = rng.randint(1, 12), rng.randint(0, len(sites))
+
+        def oracle_feasible(path, selected):
+            stops = sorted(path["sites"][site] for site in selected if site in path["sites"])
+            boundaries = [0, *stops, path["length"]]
+            return all(boundaries[i + 1] - boundaries[i] <= vehicle_range for i in range(len(boundaries) - 1))
+
+        subsets = list(itertools.combinations(sites, p))
+        expected = max(sum(weights[k] for k, path in paths.items() if oracle_feasible(path, chosen)) for chosen in subsets)
+        actual = flow_refueling_exact(paths, weights, sites, p, vehicle_range)
+        assert actual["objective"] == expected
+        assert actual["sites"] in subsets
+        assert sum(weights[k] for k in actual["feasible_paths"]) == actual["objective"]
