@@ -868,3 +868,10 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Add a learning notebook, source-verification record and CI package registration.
 - [x] Add randomized CLARANS medoid-neighbour search with seeded repeatability tests.
 - [ ] Add constrained/equal-size clustering and spatially contiguous regionalisation as separate methods.
+
+
+## Principal component analysis source reconciliation — 17 November 2026
+
+- [x] Link the existing tested PCA fitting/projection implementation to the Section 2 source entry.
+- [x] Add a canonical method record and scoped verification note; distinguish covariance PCA from standardized correlation PCA.
+- [ ] Implement and verify factor analysis and OAC-style geodemographic classification separately.

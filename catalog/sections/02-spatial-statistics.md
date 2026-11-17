@@ -19,7 +19,7 @@ The source groups together descriptive statistics, inferential procedures, point
 | Inference: permutation and Monte Carlo tests, Bonferroni, FDR and Šidák correction, Dutilleul's modified t-test, spatial and block bootstrap | Inferential procedures / multiple-testing corrections / resampling | 3 | Partially implemented: global Moran random-labelling permutation inference with seeded simulation and plus-one pseudo-p values is tested; Bonferroni, Šidák, Holm, Hochberg, BH and BY adjustments are implemented; Dutilleul's modified t-test and spatial/block bootstrap remain open |
 | Spatial eigenvector filtering (Moran eigenvectors), Spatial+, restricted spatial regression | Regression approaches / spatial dependence adjustments | 3 | Partial — symmetric HWH eigenvector basis and fixed-size OLS spatial filter implemented; automatic eigenvector selection, Spatial+ and restricted spatial regression remain open |
 
-## Spatial regression and econometrics
+## Principal component analysis\n\nThe [PCA record](../../algorithms/statistics/pca.md) documents the tested NumPy implementation in [pca-transform](../../implementations/python/pca-transform/README.md). It fits covariance or correlation PCA, supports a valid-row mask and projects observations into descending-variance component space. Factor analysis and OAC-style geodemographic classification are not included.\n\n## Spatial regression and econometrics
 
 | Topic | Coverage |
 |---|---|
@@ -61,7 +61,7 @@ The [network KDE record](../../algorithms/networks/network-kde.md) and [Python p
 | Partitioning: k-means, k-medoids, CLARA, CLARANS, constrained and equal-size k-means | Clustering algorithms / constrained variants | 3 | Partial — Lloyd k-means with k-means++ seeding, PAM k-medoids, CLARA and randomized CLARANS are implemented and tested; constrained/equal-size variants remain open |
 | Hierarchical and grid: BIRCH, STING, CLIQUE, Ward, mean shift, affinity propagation, spectral, Gaussian mixtures, fuzzy c-means, self-organizing maps, growing neural gas, consensus and co-clustering | Clustering algorithms / model families / grid methods | 3 | Partial — exact dense Ward agglomerative clustering and linkage-tree cutting are implemented and tested; BIRCH, STING, CLIQUE, mean shift, affinity propagation, spectral clustering, mixtures, fuzzy clustering, SOM, GNG, consensus and co-clustering remain open |
 | Spatially constrained: SKATER, REDCAP, AZP, Max-p, spatial LDA | Regionalisation algorithms / spatial clustering methods | 3 | Partial — a deterministic MST-pruning SKATER baseline produces connected k-regions and is independently tested; REDCAP, AZP, Max-p and spatial LDA remain open |
-| Geodemographic classification (OAC-style), principal components and factor analysis | Classification approaches / dimensionality reduction | 3 | Not checked — intake only |
+| Geodemographic classification (OAC-style), principal components and factor analysis | Classification approaches / dimensionality reduction | 3 | Partial — PCA fitting and projection for multiband data are implemented and tested; factor analysis and OAC-style geodemographic classification remain open |
 
 ## Regression and spatial econometrics
 

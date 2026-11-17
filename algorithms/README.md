@@ -417,3 +417,6 @@ Records may have different evidence and implementation status. Check the status 
 
 
 - [SKATER spatial regionalization](statistics/skater-regionalization.md) — deterministic MST construction and greedy edge pruning for connected k-regions.
+
+
+- [Principal component analysis](statistics/pca.md) — covariance/correlation PCA fitting and component projection for multiband observations.
