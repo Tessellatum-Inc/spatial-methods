@@ -26,7 +26,10 @@ def encode(latitude, longitude, code_length=10):
     if not isinstance(code_length, int) or isinstance(code_length, bool) or not 10 <= code_length <= MAX_CODE_LENGTH:
         raise ValueError("code_length must be an integer from 10 to 15")
     latitude = min(Decimal(str(latitude)), Decimal("90") - Decimal("1e-12"))
-    longitude = (Decimal(str(longitude)) + Decimal(180)) % Decimal(360) - Decimal(180)
+    longitude = (Decimal(str(longitude)) + Decimal(180)) % Decimal(360)
+    if longitude < 0:
+        longitude += Decimal(360)
+    longitude -= Decimal(180)
     resolutions = tuple(map(Decimal, ("20", "1", "0.05", "0.0025", "0.000125")))
     lat_value, lon_value = latitude + Decimal(90), longitude + Decimal(180)
     digits = []
