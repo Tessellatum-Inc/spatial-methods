@@ -1,5 +1,6 @@
 """Reference confusion-matrix and thematic-map accuracy measures."""
-from collections import Counter\nfrom math import isfinite, sqrt
+from collections import Counter
+from math import isfinite, sqrt
 
 
 def confusion_matrix(y_true, y_pred, labels=None):
