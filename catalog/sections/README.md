@@ -57,6 +57,7 @@ These companion registers decompose grouped source rows into auditable child ite
 
 - [Section 1 — core GIS, geometry, indexing, proximity, networks and routing](../../docs/section-1-atomic-completion-register.md)
 - [Section 2 — spatial statistics](../../docs/section-2-atomic-completion-register.md)
+- [Section 8 — GeoAI and geospatial foundation models](../../docs/section-8-atomic-completion-register.md)
 - [Section 9 — geodesy, cartography, infrastructure, privacy and semantics](../../docs/section-9-atomic-completion-register.md)
 - [Section 10 — classical, statistical and computational methods](../../docs/section-10-atomic-completion-register.md)
 - [Section 11 — GeoAI, GeoFMs and computer vision](../../docs/section-11-atomic-completion-register.md)
