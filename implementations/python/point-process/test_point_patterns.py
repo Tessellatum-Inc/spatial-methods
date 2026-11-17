@@ -392,3 +392,43 @@ def test_strauss_rejects_invalid_iteration_counts_and_seed():
         simulate_strauss_process((0, 0, 1, 1), 1, 0.5, 0.2, burn_in=-1)
     with pytest.raises(ValueError, match="seed"):
         simulate_strauss_process((0, 0, 1, 1), 1, 0.5, 0.2, seed=True)
+
+
+
+def test_inhomogeneous_poisson_simulator_is_seeded_and_respects_zero_cells():
+    from point_patterns import simulate_inhomogeneous_poisson
+    grid=[[0.0, 80.0],[0.0, 0.0]]
+    a=simulate_inhomogeneous_poisson(grid,(0,0,2,2),seed=71)
+    b=simulate_inhomogeneous_poisson(grid,(0,0,2,2),seed=71)
+    assert a == b
+    assert len(a) > 0
+    assert all(1.0 <= x <= 2.0 and 1.0 <= y <= 2.0 for x,y in a)
+
+
+def test_inhomogeneous_poisson_zero_intensity_returns_no_events():
+    from point_patterns import simulate_inhomogeneous_poisson
+    assert simulate_inhomogeneous_poisson([[0,0],[0,0]],(0,0,1,1),seed=4) == []
+
+
+def test_inhomogeneous_poisson_expected_count_matches_integrated_intensity():
+    from point_patterns import simulate_inhomogeneous_poisson
+    grid=[[0.2,1.4],[0.0,0.7]]
+    counts=[len(simulate_inhomogeneous_poisson(grid,(0,0,2,2),seed=i))
+            for i in range(1200)]
+    expected=2.3
+    assert np.mean(counts) == pytest.approx(expected, abs=0.12)
+
+
+@pytest.mark.parametrize("grid", [[], [[-1]], [[float("nan")]], [[float("inf")]]])
+def test_inhomogeneous_poisson_rejects_invalid_intensity_grid(grid):
+    from point_patterns import simulate_inhomogeneous_poisson
+    with pytest.raises(ValueError):
+        simulate_inhomogeneous_poisson(grid,(0,0,1,1),seed=1)
+
+
+def test_inhomogeneous_poisson_rejects_invalid_window_and_seed():
+    from point_patterns import simulate_inhomogeneous_poisson
+    with pytest.raises(ValueError,match="window"):
+        simulate_inhomogeneous_poisson([[1]],(0,0,0,1),seed=1)
+    with pytest.raises(ValueError,match="seed"):
+        simulate_inhomogeneous_poisson([[1]],(0,0,1,1),seed=True)

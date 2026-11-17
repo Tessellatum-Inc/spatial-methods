@@ -3,6 +3,7 @@ from __future__ import annotations
 from math import cos, exp, hypot, isfinite, pi, sin
 from numbers import Integral
 import random
+import numpy as np
 
 def _validate(points, window):
     pts=[(float(p[0]),float(p[1])) for p in points]
@@ -548,4 +549,47 @@ def simulate_strauss_process(window, beta, gamma, interaction_radius, *,
             ratio = float("inf") if factor == 0 else len(points) / factor
             if rng.random() < min(1.0, ratio):
                 points.pop(index)
+    return points
+
+
+
+def simulate_inhomogeneous_poisson(intensity_grid, window, *, seed=None):
+    """Simulate a piecewise-constant inhomogeneous planar Poisson process.
+
+    intensity_grid is a finite non-negative (rows, columns) array in events
+    per squared coordinate unit. Each cell has constant intensity and events
+    are uniform within that cell. The grid partitions the rectangular window
+    into equal-sized cells; rows run from ymin upward.
+    """
+    intensity = np.asarray(intensity_grid, dtype=float)
+    if intensity.ndim != 2 or intensity.size == 0:
+        raise ValueError("intensity_grid must be a non-empty 2D array")
+    if not np.isfinite(intensity).all() or np.any(intensity < 0):
+        raise ValueError("intensity_grid must be finite and non-negative")
+    if len(window) != 4:
+        raise ValueError("window must be (xmin, ymin, xmax, ymax)")
+    xmin, ymin, xmax, ymax = map(float, window)
+    if not all(map(isfinite, (xmin, ymin, xmax, ymax))) or xmax <= xmin or ymax <= ymin:
+        raise ValueError("window bounds must be finite and have positive width and height")
+    if seed is not None and (isinstance(seed, bool) or not isinstance(seed, Integral)):
+        raise ValueError("seed must be an integer or None")
+    rng = np.random.default_rng(None if seed is None else int(seed))
+    rows, columns = intensity.shape
+    cell_width = (xmax - xmin) / columns
+    cell_height = (ymax - ymin) / rows
+    cell_area = cell_width * cell_height
+    points = []
+    try:
+        for row in range(rows):
+            for column in range(columns):
+                count = int(rng.poisson(float(intensity[row, column]) * cell_area))
+                if count == 0:
+                    continue
+                x0 = xmin + column * cell_width
+                y0 = ymin + row * cell_height
+                xs = rng.uniform(x0, x0 + cell_width, size=count)
+                ys = rng.uniform(y0, y0 + cell_height, size=count)
+                points.extend((float(x), float(y)) for x, y in zip(xs, ys))
+    except (ValueError, OverflowError) as exc:
+        raise ValueError("intensity scale is too large to simulate safely") from exc
     return points
