@@ -283,3 +283,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 - [Vecchia GP approximation](python/vecchia-approximation/README.md): nearest-predecessor conditional likelihood with a squared-exponential covariance baseline.
 
 - [Knox space-time test](python/knox-test/README.md): reproducible permutation inference for close-in-space/close-in-time event pairs.
+
+
+### Domain modeling
+
+- [Spatial cellular automata and Schelling simulation](python/spatial-simulation/README.md): synchronous binary B/S rules and a seeded multi-group relocation baseline, with independent tests and a [walkthrough](python/spatial-simulation/implementation-walkthrough.md).
