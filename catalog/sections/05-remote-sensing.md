@@ -76,7 +76,7 @@ The canonical records now cover the spectral-index family, global Otsu threshold
 | Structure from Motion (COLMAP), bundle adjustment, aerial triangulation, GCP and IMU-aided adjustment, direct georeferencing | Photogrammetric workflows / optimisation / software | 9 | Not checked — intake only |
 | Dense matching: SGM, PatchMatch, multi-view stereo; RPC sensor models; satellite stereo DSM; DSM, DTM and nDSM derivation | Stereo matching algorithms / sensor models / surface products | 9 | Not checked — intake only |
 | Lens calibration (Brown-Conrady), boresight calibration, orthomosaic generation, mesh texturing | Calibration methods / production workflows | 9 | Partial — tested Brown-Conrady radial/tangential forward distortion and Newton inverse are implemented in normalized camera coordinates; calibration estimation, boresight, orthomosaic generation and mesh texturing remain open |
-| Surface reconstruction: Poisson, marching cubes, mesh simplification, 3D alpha shapes, NeRF, 3D Gaussian splatting | Surface reconstruction / mesh algorithms / neural representations | 9 | Not checked — intake only |
+| Surface reconstruction: Poisson, marching cubes, mesh simplification, 3D alpha shapes, NeRF, 3D Gaussian splatting | Surface reconstruction / mesh algorithms / neural representations | 9 | Partial — a tested Lewiner marching-cubes isosurface extraction wrapper and a separate 3D alpha-shape implementation exist; Poisson reconstruction, mesh simplification, NeRF and 3D Gaussian splatting remain open |
 
 ## Biophysical and geophysical retrieval
 
