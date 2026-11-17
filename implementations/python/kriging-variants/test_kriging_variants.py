@@ -106,8 +106,8 @@ def test_sequential_gaussian_simulation_single_cell_conditional_moments():
         )["values"][0]
         for i in range(1200)
     ])
-    covariance=4*np.exp(-1)
-    expected_mean=2*np.exp(-1)
+    covariance=4*np.exp(-3)
+    expected_mean=2*np.exp(-3)
     expected_variance=4-covariance**2/4
     assert draws.mean() == pytest.approx(expected_mean,abs=0.12)
     assert draws.var() == pytest.approx(expected_variance,abs=0.25)
