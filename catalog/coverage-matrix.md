@@ -202,3 +202,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 16 biodiversity: added convex-hull extent of occurrence, aligned-grid area of occupancy, cellwise species richness and inverse-range-size weighted endemism with analytic and direct-matrix tests. These descriptive kernels require caller-supplied projected/equal-area coordinates and grid alignment; alpha hulls, fragmentation metrics, phylogenetic diversity, sampling-bias correction and formal KBA assessment remain open.
+
+
+**Section 19 — location encoding:** the geodesy examples now include full-code Open Location Code (Plus Code) encode/decode and WGS84 cell bounds alongside geohash. This does not close the grouped addressing entry: short-code recovery, what3words-style systems, S2 and H3 remain separate open child methods.
