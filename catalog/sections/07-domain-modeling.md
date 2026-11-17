@@ -96,7 +96,7 @@ The source organises methods by application field. The same statistical, geometr
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
 | Wave models (WAVEWATCH III, SWAN), storm surge (ADCIRC), tidal harmonic analysis (T_TIDE, UTide), ocean drift and Lagrangian particle tracking | Ocean and coastal models / harmonic analysis / particle tracking | 14 | Not checked — intake only |
-| Oil spill and ship detection (SAR), AIS anomaly analysis | Remote-sensing detection / maritime data analysis | 14 | Not checked — intake only |
+| Oil spill and ship detection (SAR), AIS anomaly analysis | Remote-sensing detection / maritime data analysis | 14 | Partial — tested AIS long-gap and implausible implied-speed track-quality screening is available in the [AIS gap-detection package](../../implementations/python/ais-gap-detection/README.md); SAR oil-spill/ship detection, AIS spoofing/behaviour analysis and SAR–AIS fusion remain open |
 | Mangrove and coral mapping, glacier and sea ice analysis | Habitat mapping / cryosphere analysis workflows | 14 | Not checked — intake only |
 
 ## Geoscience, mining and planetary
