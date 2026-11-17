@@ -19,3 +19,16 @@
 The implementation deliberately avoids a pseudo-inverse. A singular system
 usually signals duplicate locations, a rank-deficient drift design or
 inappropriate covariance parameters that need diagnosis.
+
+
+
+## Sequential Gaussian simulation
+
+The simulator uses simple kriging as its conditional distribution engine.
+At each randomised grid location it builds the covariance matrix for all
+observations and previously simulated latent cells, adds measurement noise
+only to original observations, solves for conditional weights and samples a
+normal draw with the corresponding conditional variance. The new simulated
+cell is then added to the conditioning set. This is sequential conditional
+simulation, not an unconditional field draw and not an indicator or
+multiple-point simulator.

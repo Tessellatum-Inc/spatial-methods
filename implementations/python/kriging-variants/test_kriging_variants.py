@@ -81,3 +81,52 @@ def test_invalid_and_rank_deficient_kriging_inputs_are_rejected():
         kriging_predict([(0, 0)], [1], [(1, 0)], partial_sill=0)
     with pytest.raises(ValueError, match="drift"):
         kriging_predict([(0, 0)], [1], [(1, 0)], drift="unknown")
+
+
+
+def test_sequential_gaussian_simulation_is_seeded_and_preserves_exact_data_nodes():
+    from kriging_variants import sequential_gaussian_simulation
+    observations=[(0,0),(1,0)]
+    values=[2.0,4.0]
+    grid=[(0,0),(0.5,0.5),(1,0),(1,1)]
+    a=sequential_gaussian_simulation(observations,values,grid,seed=29)
+    b=sequential_gaussian_simulation(observations,values,grid,seed=29)
+    np.testing.assert_array_equal(a["values"],b["values"])
+    assert a["values"][0] == 2.0
+    assert a["values"][2] == 4.0
+    assert set(a["fixed_grid_indices"]) == {0,2}
+
+
+def test_sequential_gaussian_simulation_single_cell_conditional_moments():
+    from kriging_variants import sequential_gaussian_simulation
+    draws=np.array([
+        sequential_gaussian_simulation(
+            [(0,0)],[2.0],[(1,0)],model="gaussian",
+            partial_sill=4.0,range_=1.0,mean=0.0,seed=i
+        )["values"][0]
+        for i in range(1200)
+    ])
+    covariance=4*np.exp(-1)
+    expected_mean=2*np.exp(-1)
+    expected_variance=4-covariance**2/4
+    assert draws.mean() == pytest.approx(expected_mean,abs=0.12)
+    assert draws.var() == pytest.approx(expected_variance,abs=0.25)
+
+
+def test_sequential_gaussian_simulation_supports_noisy_observations():
+    from kriging_variants import sequential_gaussian_simulation
+    result=sequential_gaussian_simulation(
+        [(0,0)],[10.0],[(0,0),(1,0)],observation_noise=0.5,seed=3
+    )
+    assert np.isfinite(result["values"]).all()
+    assert result["fixed_grid_indices"] == ()
+
+
+def test_sequential_gaussian_simulation_rejects_invalid_inputs():
+    from kriging_variants import sequential_gaussian_simulation
+    with pytest.raises(ValueError,match="unique"):
+        sequential_gaussian_simulation([(0,0),(0,0)],[1,2],[(1,1)])
+    with pytest.raises(ValueError,match="unique"):
+        sequential_gaussian_simulation([(0,0)],[1],[(1,1),(1,1)])
+    with pytest.raises(ValueError,match="observation_noise"):
+        sequential_gaussian_simulation([(0,0)],[1],[(1,1)],observation_noise=-1)

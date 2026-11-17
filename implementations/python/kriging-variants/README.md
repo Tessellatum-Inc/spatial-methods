@@ -39,7 +39,7 @@ result = kriging_predict(
 print(result["prediction"], result["variance"])
 ```
 
-## Limits
+## Sequential Gaussian simulation\n\n`sequential_gaussian_simulation` visits grid locations in seeded random order and samples each from its simple-kriging conditional Gaussian distribution given supplied observations and all earlier simulated cells. It preserves collocated exact observations when observation noise is zero. The known mean, covariance family and parameters are supplied. Observation noise applies only to measured values.\n\nThis is a small-grid reference implementation: each step solves a dense system whose size grows with the number of previously conditioned locations. It does not fit variograms, use local neighbourhoods, simulate indicator/multiple-point models or account for hyperparameter uncertainty.\n\n## Limits
 
 The implementation is dense: the solve costs O(n^3) time and O(n^2) memory.
 It uses a supplied covariance family and parameters; it does not fit a

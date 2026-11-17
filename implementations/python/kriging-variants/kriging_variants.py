@@ -141,3 +141,105 @@ def kriging_predict(
         "observations": int(len(xy)),
         "targets": int(len(target)),
     }
+
+
+
+def sequential_gaussian_simulation(
+    observation_points,
+    observation_values,
+    grid_points,
+    *,
+    model="exponential",
+    partial_sill=1.0,
+    range_=1.0,
+    observation_noise=0.0,
+    mean=0.0,
+    seed=0,
+):
+    """Generate a sequential conditional Gaussian simulation at grid points.
+
+    This simple-kriging simulator uses a supplied known mean and stationary
+    covariance model. Grid locations are visited in seeded random order.
+    Each new latent value is sampled from its Gaussian conditional
+    distribution given the observations and all previously simulated cells.
+    Observation noise applies only to the supplied measurements.
+    """
+    from numbers import Integral
+
+    obs = _points(observation_points, "observation_points", minimum=1)
+    grid = _points(grid_points, "grid_points", minimum=1)
+    z = np.asarray(observation_values, dtype=float)
+    if z.shape != (len(obs),) or not np.isfinite(z).all():
+        raise ValueError("observation_values must be finite and match observation_points")
+    if len({tuple(row) for row in obs}) != len(obs):
+        raise ValueError("observation locations must be unique")
+    if len({tuple(row) for row in grid}) != len(grid):
+        raise ValueError("grid locations must be unique")
+    if model not in _MODELS:
+        raise ValueError("model must be spherical, exponential or gaussian")
+    try:
+        sill, range_, noise, mean = map(
+            float, (partial_sill, range_, observation_noise, mean)
+        )
+    except (TypeError, ValueError) as exc:
+        raise ValueError("simulation parameters must be scalar numbers") from exc
+    if not np.isfinite((sill, range_, noise, mean)).all():
+        raise ValueError("simulation parameters must be finite")
+    if sill <= 0 or range_ <= 0 or noise < 0:
+        raise ValueError("partial_sill and range_ must be positive; observation_noise nonnegative")
+    if isinstance(seed, bool) or (seed is not None and not isinstance(seed, Integral)):
+        raise ValueError("seed must be an integer or None")
+
+    rng = np.random.default_rng(None if seed is None else int(seed))
+    output = np.empty(len(grid), dtype=float)
+    fixed = {}
+    if noise == 0:
+        lookup = {tuple(point): float(value) for point, value in zip(obs, z)}
+        for index, point in enumerate(grid):
+            if tuple(point) in lookup:
+                fixed[index] = lookup[tuple(point)]
+                output[index] = lookup[tuple(point)]
+    order = rng.permutation(len(grid))
+    locations = [point.copy() for point in obs]
+    values = list(map(float, z))
+    diagonal_noise = [noise] * len(obs)
+    for raw_index in order:
+        index = int(raw_index)
+        if index in fixed:
+            continue
+        target = grid[index]
+        current = np.asarray(locations, dtype=float)
+        delta = current[:, None, :] - current[None, :, :]
+        distances = np.hypot(delta[:, :, 0], delta[:, :, 1])
+        covariance = _covariance(
+            distances, model=model, partial_sill=sill, range_=range_
+        )
+        covariance.flat[:: len(current) + 1] += np.asarray(diagonal_noise)
+        cross_distance = np.linalg.norm(current - target, axis=1)
+        cross = _covariance(
+            cross_distance, model=model, partial_sill=sill, range_=range_
+        )
+        try:
+            weights = np.linalg.solve(covariance, cross)
+        except np.linalg.LinAlgError as exc:
+            raise ValueError("conditioning covariance is singular; inspect duplicate sites and noise") from exc
+        conditional_mean = mean + float(weights @ (np.asarray(values) - mean))
+        conditional_variance = sill - float(weights @ cross)
+        tolerance = 1e-9 * max(1.0, sill)
+        if conditional_variance < -tolerance or not np.isfinite(conditional_variance):
+            raise ValueError("conditional simulation variance is invalid")
+        conditional_variance = max(0.0, conditional_variance)
+        draw = float(rng.normal(conditional_mean, np.sqrt(conditional_variance)))
+        output[index] = draw
+        locations.append(target.copy())
+        values.append(draw)
+        diagonal_noise.append(0.0)
+    return {
+        "values": output,
+        "simulation_order": np.asarray(order, dtype=int),
+        "fixed_grid_indices": tuple(sorted(fixed)),
+        "model": model,
+        "mean": mean,
+        "partial_sill": sill,
+        "range": range_,
+    }
