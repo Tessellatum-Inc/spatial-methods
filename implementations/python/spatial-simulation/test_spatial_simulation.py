@@ -3,6 +3,7 @@ import pytest
 
 from spatial_simulation import (
     distance_decay_preferential_attachment,
+    estimate_markov_transition,
     forest_fire_step,
     life_like_step,
     live_neighbor_count,
@@ -10,6 +11,7 @@ from spatial_simulation import (
     same_group_share,
     sample_site_percolation,
     sir_step,
+    simulate_markov_land_change,
     simulate_sir,
     schelling_step,
     simulate_life_like,
@@ -291,3 +293,40 @@ def test_network_sir_rejects_invalid_state_graph_and_probabilities():
     with pytest.raises(ValueError):
         simulate_sir(np.array([3, 0]), graph, infection_probability=0.1,
                      recovery_probability=0.1, steps=0)
+
+
+def test_markov_land_change_estimation_and_absorbing_classes():
+    previous = np.array([[0, 0, 1, 1], [0, 1, 2, 2]])
+    current = np.array([[0, 1, 1, 2], [0, 1, 2, 2]])
+    transition = estimate_markov_transition(previous, current, n_classes=4)
+    assert np.allclose(transition[0], [2 / 3, 1 / 3, 0, 0])
+    assert np.allclose(transition[1], [0, 2 / 3, 1 / 3, 0])
+    assert np.allclose(transition[2], [0, 0, 1, 0])
+    assert np.allclose(transition[3], [0, 0, 0, 1])
+    assert np.allclose(transition.sum(axis=1), 1.0)
+
+
+def test_markov_land_change_simulation_is_seeded_and_preserves_shape():
+    initial = np.array([[0, 1, 2], [2, 1, 0]])
+    transition = np.array([
+        [0.7, 0.2, 0.1],
+        [0.1, 0.8, 0.1],
+        [0.2, 0.2, 0.6],
+    ])
+    a = simulate_markov_land_change(initial, transition, steps=5, seed=17)
+    b = simulate_markov_land_change(initial, transition, steps=5, seed=17)
+    assert a.shape == initial.shape
+    assert np.array_equal(a, b)
+    assert set(np.unique(a)).issubset({0, 1, 2})
+
+
+def test_markov_land_change_validates_alignment_and_transition_matrix():
+    with pytest.raises(ValueError):
+        estimate_markov_transition(np.zeros((2, 2), dtype=int),
+                                   np.zeros((2, 3), dtype=int))
+    with pytest.raises(ValueError):
+        estimate_markov_transition(np.array([[0, -1]]), np.array([[0, 1]]))
+    with pytest.raises(ValueError):
+        simulate_markov_land_change(np.array([[0]]), np.array([[0.5]]), steps=1)
+    with pytest.raises(ValueError):
+        simulate_markov_land_change(np.array([[2]]), np.eye(2), steps=0)
