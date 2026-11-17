@@ -9,7 +9,7 @@ def test_scalar_conjugate_posterior_matches_closed_form():
         [[1.0]], [2.0], [0.0], [[4.0]], [[1.0]]
     )
     assert result["posterior_mean"] == pytest.approx([1.6])
-    assert result["posterior_covariance"] == pytest.approx([[0.8]])
+    np.testing.assert_allclose(result["posterior_covariance"], [[0.8]], rtol=1e-12, atol=1e-12)
     assert result["posterior_std"] == pytest.approx([np.sqrt(0.8)])
 
 
@@ -32,7 +32,7 @@ def test_prior_mean_is_returned_when_observations_are_uninformative():
         [[0.0]], [8.0], [3.0], [[2.0]], [[1.0]]
     )
     assert result["posterior_mean"] == pytest.approx([3.0])
-    assert result["posterior_covariance"] == pytest.approx([[2.0]])
+    np.testing.assert_allclose(result["posterior_covariance"], [[2.0]], rtol=1e-12, atol=1e-12)
 
 
 def test_correlated_observation_noise_supported():
