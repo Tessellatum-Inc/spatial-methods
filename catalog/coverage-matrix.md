@@ -208,3 +208,5 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 14 3D graphics: added Möller–Trumbore ray/triangle intersection, AABB slab tests and a deterministic binary BVH using exact-centroid surface-area-heuristic split scans. Near-first traversal returns the nearest hit and is checked against seeded brute-force ray queries. Production binned SAH, spatial splits, robust exact predicates and kd-tree ray traversal remain open.
+
+- Section 14 visibility: added conservative AABB-versus-frustum-plane culling with inward-plane convention, boundary/tolerance handling and invalid-plane tests. This does not implement clip-matrix extraction, occlusion queries/hierarchical-Z, LOD, shadow mapping or shadow volumes.
