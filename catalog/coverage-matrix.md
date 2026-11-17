@@ -213,3 +213,6 @@ Four source-listed streaming summaries now have tested reference implementations
 
 
 - Section 8 GeoAI evaluation: the accuracy-assessment package now includes weighted/unweighted MAE, RMSE and R-squared with explicit constant-target handling, plus top-label expected calibration error with equal-width bins and optional sample weights. Detection mAP, rotated-box IoU, panoptic quality, NSE/KGE/CRPS, adaptive/classwise calibration and design-based area-adjusted accuracy remain open.
+
+
+- Section 8 representation evaluation: added macro query-level recall@k and arithmetic-normalised mutual information (NMI), with explicit empty-relevance/constant-partition policies and tests. Linear probing, k-NN embedding evaluation and benchmark-specific geographic stratification remain open.
