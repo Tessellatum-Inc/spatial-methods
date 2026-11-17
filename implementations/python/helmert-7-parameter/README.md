@@ -34,3 +34,7 @@ The result is approximately [3657660.78, 255778.43, 5201387.75] metres.
 - This is not a full CRS operation: geographic/geocentric conversion, ellipsoid selection, datum grids, area of use and coordinate epochs are outside scope.
 
 See the [method lesson](../../../methods/helmert-7-parameter.md) and [intern walkthrough](implementation-walkthrough.md).
+
+## Geodetic residual diagnostics
+
+The data_snooping module provides a weighted least-squares adjustment, Baarda-style known-variance residual diagnostics and Pope's tau test when the variance factor is estimated a posteriori. The Pope test uses an explicit two-sided Bonferroni family-wise threshold; see the Pope tau method lesson and verification record in methods/ and catalog/verification/. These are single-adjustment diagnostics, not automatic robust adjustment or certified integrity monitoring.

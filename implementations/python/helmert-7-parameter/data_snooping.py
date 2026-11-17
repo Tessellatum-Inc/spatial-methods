@@ -59,3 +59,74 @@ def adjust_and_snoop(design, observations, covariance=None, sigma0=1.0, critical
         "local_critical_value":float(critical_value),
         "local_test_defined":identifiable,
     }
+
+
+def pope_tau_test(design, observations, covariance=None, significance_level=0.05):
+    """Pope's internally studentized residual test with a Bonferroni family level.
+
+    The a-posteriori variance factor is s0² = v' Q_ll^-1 v / r, where
+    r = m - rank(A). Each residual statistic is |v_i|/(s0 sqrt(q_vv,ii)).
+    The tau critical value is the Student-t transform with r degrees of
+    freedom, using t_(r-1). A two-sided alpha/m tail allocation controls
+    family-wise error conservatively across m tested observations.
+
+    This is a single-adjustment diagnostic. It does not iteratively delete
+    observations or solve masking/swamping caused by multiple outliers.
+    """
+    from scipy.stats import t as student_t
+
+    alpha = float(significance_level)
+    if not np.isfinite(alpha) or not 0.0 < alpha < 1.0:
+        raise ValueError("significance_level must lie strictly between 0 and 1")
+    fit = adjust_and_snoop(
+        design, observations, covariance=covariance,
+        sigma0=1.0, critical_value=np.finfo(float).max,
+    )
+    dof = int(fit["global_degrees_of_freedom"])
+    if dof < 2:
+        raise ValueError("Pope tau test requires at least two residual degrees of freedom")
+    m = len(fit["residuals"])
+    t_critical = float(student_t.ppf(1.0 - alpha / (2.0 * m), dof - 1))
+    critical_tau = float(np.sqrt(dof) * t_critical / np.sqrt(dof - 1 + t_critical**2))
+    variance_factor = float(fit["global_statistic"] / dof)
+    qvv = np.asarray(fit["residual_covariance"], dtype=float)
+    qdiag = np.diag(qvv)
+    residuals = np.asarray(fit["residuals"], dtype=float)
+    tau = np.full(m, np.nan)
+    scale = max(1.0, float(np.max(np.abs(qdiag))), float(np.max(np.abs(residuals)))**2)
+    tolerance = 100.0 * np.finfo(float).eps * scale
+    valid = qdiag > tolerance
+    if variance_factor <= tolerance:
+        return {
+            "status": "zero_residual_variance",
+            "estimate": fit["estimate"],
+            "residuals": residuals,
+            "variance_factor": variance_factor,
+            "degrees_of_freedom": dof,
+            "tau_statistics": tau,
+            "critical_tau": critical_tau,
+            "critical_t": t_critical,
+            "significance_level": alpha,
+            "familywise_adjusted_tail_probability": alpha / (2.0 * m),
+            "largest_absolute_tau_index": None,
+            "flagged_indices": [],
+        }
+    tau[valid] = np.abs(residuals[valid]) / np.sqrt(variance_factor * qdiag[valid])
+    if not np.any(valid):
+        raise ValueError("no observations have positive residual redundancy")
+    largest = int(np.nanargmax(tau))
+    flagged = np.flatnonzero(tau > critical_tau)
+    return {
+        "status": "outlier_flagged" if len(flagged) else "no_outlier_flagged",
+        "estimate": fit["estimate"],
+        "residuals": residuals,
+        "variance_factor": variance_factor,
+        "degrees_of_freedom": dof,
+        "tau_statistics": tau,
+        "critical_tau": critical_tau,
+        "critical_t": t_critical,
+        "significance_level": alpha,
+        "familywise_adjusted_tail_probability": alpha / (2.0 * m),
+        "largest_absolute_tau_index": largest,
+        "flagged_indices": flagged,
+    }

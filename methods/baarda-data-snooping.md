@@ -42,7 +42,7 @@ The implementation returns all local w statistics, residual redundancy numbers, 
 
 The global test detects overall model inconsistency; local data snooping attempts to identify a suspect observation after an overall rejection. A large standardized residual is evidence for investigation, not proof of a blunder. Classical single-outlier data snooping can be weakened by multiple simultaneous outliers, masking, swamping, low redundancy and model misspecification. Re-estimate only after an explicit decision about an observation; automatic deletion is not implemented here.
 
-The current code is a transparent single-adjustment baseline. It does not implement Pope's tau test for unknown variance factor, Baarda's full alternative-hypothesis/reliability design, iterative data snooping, robust M-estimation, RANSAC, free-network datum constraints, nonlinear adjustment or least-squares collocation.
+The current code is a transparent single-adjustment baseline. Pope's internally studentized residual test for an estimated variance factor is implemented separately in the Pope tau lesson. Baarda's full alternative-hypothesis/reliability design, iterative data snooping, robust M-estimation, RANSAC, free-network datum constraints and nonlinear adjustment remain outside this package.
 
 ## Reproduction
 
