@@ -79,3 +79,8 @@
 3. Record embedding model, index type, metadata filters and geographic validation splits for retrieval examples.
 4. Evaluate multimodal models against modality-specific baselines and missing-modality cases.
 5. Document execution sandboxes, SQL validation and data permissions for agent workflows.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 13 atomic completion register](../../docs/section-13-atomic-completion-register.md). The register preserves the source's provisional naming and distinguishes algorithms from models, datasets, software, standards, workflows and evaluation protocols. It is traceability infrastructure, not a verification or completion claim.
