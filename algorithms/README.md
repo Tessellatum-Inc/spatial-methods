@@ -455,3 +455,5 @@ Records may have different evidence and implementation status. Check the status 
 - [Open Location Code (Plus Codes)](geodesy/open-location-code.md): full-code WGS84 encoding/decoding and decoded cell bounds; short-code recovery and geocoding remain out of scope.
 
 - [Fractional-cover regression tree](remote-sensing/fractional-cover-regression-tree.md): deterministic CART baseline for field-labelled fractional-cover estimation.
+
+- [Brown-Conrady lens distortion](photogrammetry/brown-conrady-distortion.md): radial/tangential camera-plane distortion and Newton inverse.
