@@ -162,12 +162,13 @@ def select_rbf_smoothing(
         )
         n = len(samples)
         polynomial = _polynomial(model.points_)
-        radial = _kernel(
+        kernel_matrix = _kernel(
             _distances(model.points_, model.points_), model.kernel_, model.epsilon_
         )
-        radial.flat[::n + 1] += model.smoothing_
+        system_radial = kernel_matrix.copy()
+        system_radial.flat[::n + 1] += model.smoothing_
         system = np.block([
-            [radial, polynomial],
+            [system_radial, polynomial],
             [polynomial.T, np.zeros((polynomial.shape[1], polynomial.shape[1]))],
         ])
         rhs = np.vstack([np.eye(n), np.zeros((polynomial.shape[1], n))])
@@ -175,7 +176,7 @@ def select_rbf_smoothing(
             influence_solution = np.linalg.solve(system, rhs)
         except np.linalg.LinAlgError as exc:
             raise ValueError("RBF smoother system is singular during PRESS evaluation") from exc
-        smoother = radial @ influence_solution[:n] + polynomial @ influence_solution[n:]
+        smoother = kernel_matrix @ influence_solution[:n] + polynomial @ influence_solution[n:]
         denominator = 1.0 - np.diag(smoother)
         if np.any(np.abs(denominator) < 1e-10):
             score = float("inf")
