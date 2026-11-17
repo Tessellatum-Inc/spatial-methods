@@ -1152,6 +1152,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/time-geography",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/time-series-dtw",
     "pythonpath": ""
   },

@@ -71,7 +71,7 @@ The [MEXCLP lesson](../../algorithms/optimization/mexclp.md) adds an availabilit
 | Patterns: flock, convoy, swarm; transport mode detection; activity inference | Moving-object patterns / classification and inference methods | 11 | Not checked — intake only |
 | Mobility models: exploration and preferential return, Lévy flights, continuous-time random walks; metrics (radius of gyration, entropy, predictability) | Mobility models / movement metrics | 11 | Not checked — intake only |
 | Next-location prediction: Markov, DeepMove, LSTPM, GETNext, STAN, Flashback; POI recommendation | Sequential prediction models / recommendation systems | 11 | Not checked — intake only |
-| Time geography: space-time prisms, potential path areas, activity spaces | Spatial-temporal constructs / analytical methods | 11 | Not checked — intake only |
+| Time geography: space-time prisms, potential path areas, activity spaces | Spatial-temporal constructs / analytical methods | 11 | [Time-geography potential path areas](../../implementations/python/time-geography/README.md) provides tested constant-speed Euclidean prism and ellipse baselines | Partial — network-constrained prisms, barriers, time-varying travel and activity-space inference remain open |
 | Movement ecology: MCP, KDE, LoCoH, Brownian bridge, step selection, resource selection functions | Movement ecology estimators / models | 11 | Not checked — intake only |
 | Mobile phone CDR analysis, footfall estimation, segregation from mobility | Data analysis workflows / population and mobility measures | 11 | Not checked — intake only |
 
