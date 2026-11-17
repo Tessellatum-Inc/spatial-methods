@@ -141,3 +141,8 @@ The Section 2 source-entry recount also identifies an implementation-linked Ripl
 
 
 **Reconciliation note (17 November 2026):** the historical narrative below contains earlier 695/696-row snapshots. The authoritative current aggregate is 693 source-entry rows, 197 partial, 496 intake-only and zero fully verified; the by-section subtotals retain the documented four-row discrepancy.
+
+
+## Implementation reconciliation — Open Location Code
+
+Section 19's location-encoding family now links to a tested full-code Open Location Code (Plus Code) encoder/decoder with decimal-safe cell-boundary handling and bounds output. The existing geohash implementation remains alongside it. Short-code recovery, what3words, S2 and H3 remain open, and the grouped source row remains partial. The Python CI matrix now includes the new package; its full workflow has not yet been verified.
