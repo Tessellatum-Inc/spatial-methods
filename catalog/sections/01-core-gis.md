@@ -107,3 +107,8 @@ This pass confirms citation metadata for these selected sources. It does not ver
 - **Kind:** query algorithm.
 - **Treatment:** tested block-nested-loop reference for location-aware multi-criteria dominance. Indexed skyline variants and top-k spatial keyword search remain separate items.
 - **Canonical record:** [spatial skyline](../../algorithms/query-processing/spatial-skyline.md).
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 1 atomic completion register](../../docs/section-1-atomic-completion-register.md). Existing canonical records and implementation links are bounded evidence only; the register preserves open variants and verification work. It is a traceability backlog, not a completion claim.
