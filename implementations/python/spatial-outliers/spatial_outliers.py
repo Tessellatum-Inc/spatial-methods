@@ -84,7 +84,7 @@ def geographically_weighted_scores(coordinates, values, radius):
     if np.any(sums <= np.finfo(float).tiny):
         raise ValueError("each observation needs at least one effective neighbour")
     mean = (weights @ y) / sums
-    variance = (weights @ ((y[None, :] - mean[:, None]) ** 2)) / sums
+    variance = np.sum(weights * (y[None, :] - mean[:, None]) ** 2, axis=1) / sums
     scale = np.sqrt(variance)
     # A perfectly constant neighbourhood has zero local variance. Fall back
     # to the global population scale so a genuine local spike is not hidden.
