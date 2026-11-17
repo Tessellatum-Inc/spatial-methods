@@ -128,6 +128,12 @@ At the current `main` tree snapshot, the repository contains 321 algorithm lesso
 Use the [coverage matrix](../catalog/coverage-matrix.md) for the section-level narrative and the [repository roadmap](repository-roadmap.md) for the next work queue. Recalculate all counts from the actual tree and review records before making a release claim.
 
 
+
+
+## Implementation reconciliation — random-hyperplane LSH
+
+Section 1's approximate-search source row now links to a static multi-table random-hyperplane LSH implementation for cosine similarity. The package includes seeded projection generation, unique candidate collection, exact cosine reranking, input validation and tests; it is registered in the Python CI matrix. This covers only one LSH family. HNSW, IVF-PQ and ScaNN remain separate open systems, and no recall, latency or production-scale claim is made. The Section 1 source-entry status changes from 26 partial / 7 intake-only to 27 partial / 6 intake-only; the aggregate dashboard changes from 219 / 474 to 220 / 473, with 693 rows and zero fully verified. The repository inventory is now expected to include 284 Python implementation packages, 401 non-test Python source files, 370 Python test files and 322 algorithm lessons; these are tree inventory counts, not evidence that all tests pass.
+
 ## Current reconciliation — 17 November 2026 (06:33 UTC+3)
 
 The live main inventory was recounted from the recursive Git tree: 321 algorithm lesson files, 83 method guides, 400 non-test Python source files, 369 Python test files, 283 Python implementation directories and 179 notebooks. The source-review dashboard currently reconciles to 693 grouped source-entry rows across 22 section indexes: 219 partial, 474 intake-only and zero fully verified. Section 7 now records 10 partial and 38 intake-only rows. Recent Section 7 additions include tested categorical landscape patch metrics (patch counts, mean patch area, largest-patch index, internal edge density and Shannon class diversity); the existing raster least-cost corridor method is now cross-linked to ecology connectivity; and the AIS gap/implied-speed screening baseline is cross-linked to maritime track analysis. These are bounded contributions to grouped entries, not full coverage of FRAGSTATS, Circuitscape/Omniscape, Conefor, SAR/AIS fusion or the other named research/software families.
