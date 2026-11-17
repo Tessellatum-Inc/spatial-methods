@@ -359,5 +359,6 @@ def predict_random_forest_classifier(model, samples, *, return_probabilities=Fal
     labels = model["estimator"].predict(x)
     if return_probabilities:
         return {"labels": labels, "classes": model["classes"],
-                "probabilities": model["estimator"].predict_proba(x)}
+                "probabilities": model["estimator"].predict_proba(x),
+                "feature_importances": model["feature_importances"].copy()}
     return labels
