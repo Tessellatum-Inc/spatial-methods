@@ -42,7 +42,7 @@ def test_prefix_blocking():
 def test_canopy_pairs():
     rows = [{"name":"Nairobi"}, {"name":"Nairob"}, {"name":"Mombasa"}]
     assert (0,1) in canopy_pairs(rows, "name", 0.8, 0.95)
-    with pytest.raises(ValueError): canopy_pairs(rows, "name", 0.7, 0.8)
+    with pytest.raises(ValueError): canopy_pairs(rows, "name", 0.8, 0.7)
 
 
 def test_fellegi_sunter_weights():
