@@ -217,7 +217,7 @@ def fit_variogram_reml(points, values, *, model="exponential", initial=None, ani
 
     def objective(parameters):
         nugget, sill, range_ = np.exp(parameters[:3])
-        if fit_anisotropy:
+        if fit_anisotropy and len(parameters) >= 5:
             candidate_azimuth = float(parameters[3])
             candidate_ratio = float(np.exp(parameters[4]))
             candidate_distances = transformed_distances(candidate_azimuth, candidate_ratio)
