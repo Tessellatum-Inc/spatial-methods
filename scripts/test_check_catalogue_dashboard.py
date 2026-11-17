@@ -1,41 +1,33 @@
 import unittest
 
-from check_catalogue_dashboard import cells, classify_status, is_separator, source_rows
+from check_catalogue_dashboard import cells, dashboard_rows
 
 
-class CatalogueDashboardParserTests(unittest.TestCase):
+class CatalogueDashboardTests(unittest.TestCase):
     def test_cells(self):
         self.assertEqual(cells("| A | B |"), ["A", "B"])
 
-    def test_separator(self):
-        self.assertTrue(is_separator("|---|:---:|---:|"))
-        self.assertFalse(is_separator("| data | row |"))
-
-    def test_only_source_entry_tables_are_counted(self):
-        markdown = """| Source entry | Provisional kind | Source page | Verification status |
-|---|---|---:|---|
-| Moran's I | statistic | 1 | Partial — related record exists |
-| Another item | method | 1 | Not checked — intake only |
-
-| Area | Tool | Page |
-|---|---|---:|
-| Raster | GDAL | 2 |
+    def test_dashboard_rows(self):
+        markdown = """| Section | Source entries | Partial | Intake only |
+|---:|---:|---:|---:|
+| 1 — Core GIS | 3 | 2 | 1 |
+| 2 — Statistics | 4 | 1 | 3 |
+| **Total** | **7** | **3** | **4** |
 """
-        self.assertEqual(len(source_rows(markdown)), 2)
-
-    def test_status_classification(self):
         self.assertEqual(
-            classify_status("| A | kind | 1 | Partial — related record exists |", "fixture"),
-            "partial",
-        )
-        self.assertEqual(
-            classify_status("| B | kind | 1 | Not checked — intake only |", "fixture"),
-            "intake",
+            dashboard_rows(markdown),
+            {1: (3, 2, 1), 2: (4, 1, 3)},
         )
 
-    def test_unknown_status_is_rejected(self):
+    def test_duplicate_section_rejected(self):
+        markdown = """| Section | Source entries | Partial | Intake only |
+|---:|---:|---:|---:|
+| 1 — Core GIS | 3 | 2 | 1 |
+| 1 — Duplicate | 3 | 2 | 1 |
+| **Total** | **6** | **4** | **2** |
+"""
         with self.assertRaises(ValueError):
-            classify_status("| C | kind | 1 | Captured |", "fixture")
+            dashboard_rows(markdown)
 
 
 if __name__ == "__main__":
