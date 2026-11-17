@@ -81,8 +81,9 @@ def test_kmeans_coverage_returns_requested_number_and_dimension():
     (2, [(0, 1)], 0),
 ])
 def test_latin_and_maximin_reject_invalid_parameters(n, bounds, candidates):
-    with pytest.raises(ValueError):
-        latin_hypercube(n, bounds)
+    if candidates > 0:
+        with pytest.raises(ValueError):
+            latin_hypercube(n, bounds)
     with pytest.raises(ValueError):
         maximin_latin_hypercube(n, bounds, candidates=candidates)
 

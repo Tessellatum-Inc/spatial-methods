@@ -113,20 +113,38 @@ def sen_slope(values, times=None):
 
 
 def seasonal_sen_slope(values, seasons, times=None):
-    """Median of pairwise slopes formed only by observations in the same season."""
+    """Median of within-season slopes.
+
+    Without explicit times, each season is indexed by its own observation
+    order (0, 1, 2, ...). Explicit times may repeat across different seasons,
+    but must increase strictly within each season.
+    """
     y, groups = _season_groups(values, seasons)
-    x = _times(times, len(y))
+    if times is None:
+        time_by_index = {}
+        for indexed in groups.values():
+            for ordinal, (index, _) in enumerate(indexed):
+                time_by_index[index] = float(ordinal)
+    else:
+        raw_times = _values(times, "times")
+        if len(raw_times) != len(y):
+            raise ValueError("times and values must have equal length")
+        time_by_index = {i: t for i, t in enumerate(raw_times)}
+        for indexed in groups.values():
+            season_times = [time_by_index[i] for i, _ in indexed]
+            if any(b <= a for a, b in zip(season_times, season_times[1:])):
+                raise ValueError("times must be strictly increasing within each season")
     slopes = []
     for indexed in groups.values():
         for pos, (i, yi) in enumerate(indexed[:-1]):
             for j, yj in indexed[pos + 1:]:
-                slopes.append((yj - yi) / (x[j] - x[i]))
+                slopes.append((yj - yi) / (time_by_index[j] - time_by_index[i]))
     if not slopes:
         raise ValueError("at least one season must contain two observations")
     slope = median(slopes)
-    return {"slope": slope,
-            "intercept": median([v - slope * t for t, v in zip(x, y)]),
-            "pair_count": len(slopes)}
+    intercept = median([value - slope * time_by_index[index]
+                        for index, value in enumerate(y)])
+    return {"slope": slope, "intercept": intercept, "pair_count": len(slopes)}
 
 
 def harmonic_regression(values, times=None, *, period, harmonics=1, include_trend=True):
