@@ -51,11 +51,11 @@ def test_invalid_shapes_percentiles_and_exponents():
 
 
 def test_histogram_match_maps_empirical_quantiles_and_constant_band():
-    source = np.array([[0., 0.], [1., 0.], [2., 0.], [3., 0.]])
-    reference = np.array([[10., 7.], [20., 7.], [30., 7.], [40., 7.]])
+    source = np.array([[[0., 0.]], [[1., 0.]], [[2., 0.]], [[3., 0.]]])
+    reference = np.array([[[10., 7.]], [[20., 7.]], [[30., 7.]], [[40., 7.]]])
     out = histogram_match(source, reference, quantiles=16)["matched"]
-    np.testing.assert_allclose(out[:, 0], [10., 20., 30., 40.], atol=1e-10)
-    np.testing.assert_allclose(out[:, 1], 7.0)
+    np.testing.assert_allclose(out[:, 0, 0], [10., 20., 30., 40.], atol=1e-10)
+    np.testing.assert_allclose(out[:, 0, 1], 7.0)
 
 
 def test_histogram_match_respects_mask_and_rejects_bad_inputs():

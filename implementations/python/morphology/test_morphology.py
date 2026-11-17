@@ -12,7 +12,7 @@ def test_opening_removes_isolated_pixel_and_closing_fills_hole():
     a=np.zeros((7,7),bool); a[1:6,1:6]=1; a[3,3]=0; a[0,0]=1
     opened=opening(a)
     assert not opened[0,0]
-    closed=closing(opened)
+    closed=closing(a)
     assert closed[3,3]
 
 def test_gradient_and_validation():
