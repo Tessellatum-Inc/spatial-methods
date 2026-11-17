@@ -28,7 +28,7 @@ A first affine control-point lesson and tested least-squares implementation are 
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Affine, polynomial and rubber-sheeting transforms; thin plate spline rectification; co-registration | Geometric transformations / image registration | 19 | Not checked — intake only |
+| Affine, polynomial and rubber-sheeting transforms; thin plate spline rectification; co-registration | Geometric transformations / image registration | 19 | [Affine georeferencing](../../implementations/python/affine-georeferencing/README.md) and [thin-plate smoothing splines](../../implementations/python/spatial-smoothing/README.md) have tested reference implementations | Partial — affine least-squares fitting and thin-plate spline smoothing are implemented; polynomial/rubber-sheeting transforms, image co-registration and robust control-point matching remain open |
 | Historical map digitization: control point selection, line-following vectorization, map text spotting, symbol segmentation, legend parsing, color quantization | Digitisation and document/image-processing workflows | 19 | Not checked — intake only |
 | Conflation: road and building matching, shape-based matching (turning function, Fourier descriptors, Procrustes, shape context), OSM quality and vandalism detection, completeness estimation | Feature matching / conflation / data quality assessment | 19 | Not checked — intake only |
 
@@ -79,14 +79,14 @@ A first format-selection guide now separates authoritative storage, analytical l
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Topology checks, DE-9IM validation rules, temporal consistency checks, automated QA/QC, outlier rules | Data validation rules / quality assurance workflows | 20 | Not checked — intake only |
+| Topology checks, DE-9IM validation rules, temporal consistency checks, automated QA/QC, outlier rules | Data validation rules / quality assurance workflows | 20 | [DE-9IM and RCC-8 relations](../../implementations/python/spatial-topological-relations/README.md) have tested GEOS-backed predicates | Partial — DE-9IM and RCC-8 wrappers are implemented; temporal consistency, automated QA/QC workflows and general outlier rules remain open |
 | Benchmark design and geographic bias audits for GeoAI | Evaluation design / geographic representativeness audits | 20 | Not checked — intake only |
 
 ## Location privacy
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Geomasking (random perturbation, donut masking), spatial k-anonymity and cloaking, geo-indistinguishability, differential privacy for location data | Privacy protection methods / formal privacy models | 20 | Not checked — intake only |
+| Geomasking (random perturbation, donut masking), spatial k-anonymity and cloaking, geo-indistinguishability, differential privacy for location data | Privacy protection methods / formal privacy models | 20 | [Spatial k-anonymity and differential privacy](../../implementations/python/spatial-privacy/README.md) have tested reference components | Partial — hierarchical quadtree k-anonymity and a bounded-contribution Laplace mechanism are implemented; random/donut geomasking, geo-indistinguishability and trace-level protection remain open |
 | Synthetic population and trajectory generation, federated learning on spatial data | Synthetic data generation / privacy-preserving distributed learning | 20 | Not checked — intake only |
 
 ## Text, social and semantic geography
