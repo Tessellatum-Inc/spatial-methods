@@ -64,8 +64,8 @@ This is the first item-level catalogue pass. The catalogue distinguishes a broad
 
 | Source entry | Provisional kind | Source page | Current record | Verification status |
 |---|---|---:|---|--- |
-| TSP: 2-opt, Lin-Kernighan, Christofides; VRP: Clarke-Wright savings, sweep; Chinese postman and arc routing | Combinatorial optimisation problems / heuristics / algorithms | 2 | Not yet catalogued | Not checked — intake only |
-| CVRP, VRPTW, pickup-and-delivery, dial-a-ride, ALNS, column generation, branch-and-price | Routing problem variants / metaheuristics / exact optimisation methods | 2 | Not yet catalogued | Not checked — intake only |
+| TSP: 2-opt, Lin-Kernighan, Christofides; VRP: Clarke-Wright savings, sweep; Chinese postman and arc routing | Combinatorial optimisation problems / heuristics / algorithms | 2 | [TSP 2-opt and Clarke–Wright CVRP](../../implementations/python/routing-heuristics/README.md) have tested deterministic reference implementations | Partial — 2-opt and parallel Clarke–Wright are implemented; Lin–Kernighan, Christofides, sweep, Chinese postman and arc routing remain open |
+| CVRP, VRPTW, pickup-and-delivery, dial-a-ride, ALNS, column generation, branch-and-price | Routing problem variants / metaheuristics / exact optimisation methods | 2 | [CVRP and greedy VRPTW](../../implementations/python/routing-heuristics/README.md) have tested small-instance constructors | Partial — homogeneous-capacity CVRP and a single-vehicle-capacity/time-window VRPTW greedy constructor are implemented; pickup-and-delivery, dial-a-ride, ALNS and exact column-generation/branch-and-price remain open |
 
 ## Decisions for the next pass
 
