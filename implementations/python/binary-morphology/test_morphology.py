@@ -247,3 +247,47 @@ def test_alpha_tree_constant_and_single_pixel_rasters():
     assert constant["roots"] == [0]
     single = grayscale_alpha_tree(np.array([[2.0]]))
     assert single["nodes"][0]["pixels"] == ((0, 0),)
+
+
+@pytest.mark.parametrize("connectivity", [4, 8])
+def test_alpha_tree_matches_independent_threshold_component_oracle(connectivity):
+    from morphology import grayscale_alpha_tree
+    rng = np.random.default_rng(4401 + connectivity)
+    image = rng.integers(0, 5, size=(5, 6)).astype(float)
+    tree = grayscale_alpha_tree(image, connectivity=connectivity)
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    if connectivity == 8:
+        directions += [(-1, -1), (-1, 1), (1, -1), (1, 1)]
+    edge_weights = []
+    for y in range(image.shape[0]):
+        for x in range(image.shape[1]):
+            for dy, dx in directions:
+                ny, nx = y + dy, x + dx
+                if 0 <= ny < image.shape[0] and 0 <= nx < image.shape[1]:
+                    edge_weights.append(abs(image[y, x] - image[ny, nx]))
+    for alpha in sorted(set(edge_weights)):
+        expected, seen = set(), set()
+        for y in range(image.shape[0]):
+            for x in range(image.shape[1]):
+                if (y, x) in seen:
+                    continue
+                stack, component = [(y, x)], set()
+                seen.add((y, x))
+                while stack:
+                    cy, cx = stack.pop()
+                    component.add((cy, cx))
+                    for dy, dx in directions:
+                        ny, nx = cy + dy, cx + dx
+                        if not (0 <= ny < image.shape[0] and 0 <= nx < image.shape[1]):
+                            continue
+                        if (ny, nx) in seen or abs(image[cy, cx] - image[ny, nx]) > alpha:
+                            continue
+                        seen.add((ny, nx))
+                        stack.append((ny, nx))
+                expected.add(frozenset(component))
+        actual = {
+            frozenset(node["pixels"])
+            for node in tree["nodes"]
+            if node["alpha"] == float(alpha)
+        }
+        assert actual == expected
