@@ -60,6 +60,10 @@
     "pythonpath": "../segment-intersection"
   },
   {
+    "directory": "implementations/python/binary-morphology",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/biodiversity-metrics",
     "pythonpath": ""
   },
@@ -277,6 +281,10 @@
   },
   {
     "directory": "implementations/python/fft-grid-kde",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/floating-catchment",
     "pythonpath": ""
   },
   {
