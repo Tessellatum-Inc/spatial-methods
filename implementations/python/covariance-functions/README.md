@@ -1,12 +1,13 @@
 # Euclidean covariance functions
 
-This package is a small, tested reference for turning distances between locations into covariance matrices. It is designed to make the modelling contract visible before introducing variogram fitting, Gaussian-process inference or large spatial datasets.
+This package provides tested Euclidean covariance functions and a finite-feature Gaussian-process approximation. It makes covariance and approximation assumptions explicit before applying spatial prediction to larger datasets.
 
 ## Included models
 
 - Exponential: \(C(h)=\sigma^2\exp(-h/a)\)
 - Gaussian: \(C(h)=\sigma^2\exp[-(h/a)^2]\)
-- Matérn with \(\nu=3/2\): \(C(h)=\sigma^2(1+\sqrt{3}h/a)\exp(-\sqrt{3}h/a)\)
+- Matérn with \(
+u=3/2\): \(C(h)=\sigma^2(1+\sqrt{3}h/a)\exp(-\sqrt{3}h/a)\)
 - Spherical: compact support at the supplied range, enabled for Euclidean dimensions up to three
 - Wendland C2: compact support at the supplied range, enabled for Euclidean dimensions up to three
 

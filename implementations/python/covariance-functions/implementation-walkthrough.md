@@ -40,3 +40,13 @@ A curve that looks plausible is not enough. A covariance matrix assembled for an
 ## 7. What not to infer
 
 This package does not fit parameters from observations, estimate a nugget, handle anisotropy or provide kriging predictions. The spherical and network cases need geometry-specific validity theory. Do not replace great-circle distance into a familiar planar kernel and assume the result remains valid.
+
+
+## Follow the random-feature approximation
+
+The RFF path samples Gaussian spectral frequencies, constructs cosine
+features and solves a Bayesian linear posterior in the finite feature basis.
+The tests compare its approximate Gram matrix with the exact Gaussian
+covariance and check the large-noise prior limit. Prediction variance is
+conditional on the sampled basis; increasing feature count reduces kernel
+approximation error in expectation but increases the feature-space solve.

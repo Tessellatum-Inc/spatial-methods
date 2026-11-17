@@ -12,7 +12,9 @@ to Matheron's classical half mean squared increment. Genton's estimator uses
 the Q_n robust scale of pairwise differences among the increments in each lag
 class; it is computationally quadratic in the number of increments per class. Dowd's estimator uses 1.099 times the squared median absolute increment. A fixed geometric-anisotropy transform is also supported: azimuth is clockwise from north and the supplied ratio is minor/major range.
 
-Anisotropy parameters are supplied, not estimated; automatic anisotropy fitting, nested structures, Matérn families and parameter uncertainty remain open.\n\nThe Python implementation lives in implementations/python/variogram-models.
+Anisotropy parameters are supplied, not estimated; automatic anisotropy fitting, nested structures, Matérn families and parameter uncertainty remain open.
+
+The Python implementation lives in implementations/python/variogram-models.
 The fitted range and sill depend on the selected model and lag design. The
 current baseline does not fit geometric anisotropy, Matérn families, nested
 structures or parameter uncertainty; these remain separate extensions.

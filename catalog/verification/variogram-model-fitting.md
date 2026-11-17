@@ -8,7 +8,8 @@
 - Pair-count weighted residuals and optional fixed nugget.
 - Directional pair filtering by azimuth and cross-track bandwidth.
 - Matheron, Cressie-Hawkins and Dowd empirical estimators.
-- Fixed geometric anisotropy distance transform with major-axis azimuth and minor/major range ratio in directional binning and REML.\n- Genton (1998) Q_n-based robust semivariance using the prescribed order statistic of all pairwise increment differences within each lag class.
+- Fixed geometric anisotropy distance transform with major-axis azimuth and minor/major range ratio in directional binning and REML.
+- Genton (1998) Q_n-based robust semivariance using the prescribed order statistic of all pairwise increment differences within each lag class.
 
 ## Tests
 
