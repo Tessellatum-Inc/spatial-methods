@@ -55,3 +55,52 @@ def test_translation_and_scaling_invariance():
 def test_outer_boundary_is_counter_clockwise():
     ring = alpha_shape([(0,0),(2,0),(2,2),(0,2),(1,1)],10)[0]
     assert area(ring) > 0
+
+
+def mesh_surface_area(mesh):
+    vertices=np.asarray(mesh["vertices"],dtype=float)
+    total=0.0
+    for a,b,c in mesh["faces"]:
+        total+=0.5*np.linalg.norm(np.cross(vertices[b]-vertices[a],vertices[c]-vertices[a]))
+    return total
+
+
+def test_3d_regular_tetrahedron_circumradius_threshold_and_outward_faces():
+    points=[(0,0,0),(1,0,0),(0,1,0),(0,0,1)]
+    assert alpha_shape_3d(points,math.sqrt(3)/2-1e-8)["faces"]==[]
+    mesh=alpha_shape_3d(points,math.sqrt(3)/2)
+    assert len(mesh["vertices"])==4 and len(mesh["faces"])==4
+    centre=np.array([.25,.25,.25])
+    vertices=np.asarray(mesh["vertices"])
+    for a,b,c in mesh["faces"]:
+        pa,pb,pc=vertices[[a,b,c]]
+        normal=np.cross(pb-pa,pc-pa)
+        opposite=next(p for p in points if not np.allclose(p,pa) and not np.allclose(p,pb) and not np.allclose(p,pc))
+        assert normal @ (np.asarray(opposite)-((pa+pb+pc)/3)) < 0
+
+
+def test_3d_large_alpha_recovers_cube_convex_hull_surface():
+    points=[(x,y,z) for x in (0,1) for y in (0,1) for z in (0,1)]
+    points.append((.5,.5,.5))
+    mesh=alpha_shape_3d(points,10)
+    assert len(mesh["faces"])==12
+    assert mesh_surface_area(mesh)==pytest.approx(6.0)
+
+
+def test_3d_alpha_shape_translation_and_scaling_invariance():
+    points=[(0,0,0),(1,0,0),(0,1,0),(0,0,1)]
+    a=alpha_shape_3d(points,1)
+    b=alpha_shape_3d([(3*x+7,3*y-5,3*z+2) for x,y,z in points],3)
+    assert len(a["faces"])==len(b["faces"])
+    assert mesh_surface_area(b)==pytest.approx(9*mesh_surface_area(a))
+
+
+@pytest.mark.parametrize("alpha",[0,-1,float("nan"),float("inf"),True,"1"])
+def test_3d_alpha_shape_rejects_invalid_threshold(alpha):
+    with pytest.raises(ValueError):
+        alpha_shape_3d([(0,0,0),(1,0,0),(0,1,0),(0,0,1)],alpha)
+
+
+@pytest.mark.parametrize("points",[[],[(0,0,0)],[(0,0,0),(1,0,0),(0,1,0)]])
+def test_3d_alpha_shape_lower_dimensional_inputs(points):
+    assert alpha_shape_3d(points,10)=={"vertices":[],"faces":[]}

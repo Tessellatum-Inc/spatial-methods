@@ -112,3 +112,71 @@ def alpha_shape(points: Sequence[Sequence[float]], alpha: Real) -> list[Ring]:
             rings.append(ring)
     rings.sort(key=lambda ring: (-abs(_signed_area(ring)), -_signed_area(ring), ring[0]))
     return rings
+
+
+def alpha_shape_3d(points: Sequence[Sequence[float]], alpha: Real) -> dict:
+    """Return the boundary triangle mesh of retained 3D Delaunay tetrahedra.
+
+    Alpha is a positive circumradius threshold in coordinate units. This
+    returns the boundary of the retained tetrahedron union, not isolated
+    lower-dimensional simplices of the full 3D alpha complex.
+    """
+    if isinstance(alpha, bool) or not isinstance(alpha, Real):
+        raise ValueError("alpha must be a positive finite circumradius threshold")
+    alpha=float(alpha)
+    if not isfinite(alpha) or alpha<=0:
+        raise ValueError("alpha must be a positive finite circumradius threshold")
+    pts=[]
+    for point in points:
+        if len(point)!=3:
+            raise ValueError("each point must have three coordinates")
+        p=tuple(float(v) for v in point)
+        if not all(isfinite(v) for v in p):
+            raise ValueError("coordinates must be finite")
+        pts.append(p)
+    pts=sorted(set(pts))
+    if len(pts)<4:
+        return {"vertices":[],"faces":[]}
+    coordinates=np.asarray(pts,dtype=float)
+    try:
+        triangulation=Delaunay(coordinates)
+    except QhullError:
+        return {"vertices":[],"faces":[]}
+    face_incidence={}
+    face_templates=((1,2,3),(0,3,2),(0,1,3),(0,2,1))
+    for simplex in triangulation.simplices:
+        tet=list(map(int,simplex))
+        p=coordinates[tet]
+        matrix=2.0*(p[1:]-p[0])
+        rhs=np.sum(p[1:]*p[1:],axis=1)-float(p[0]@p[0])
+        try:
+            centre=np.linalg.solve(matrix,rhs)
+        except np.linalg.LinAlgError:
+            continue
+        radius=float(np.linalg.norm(centre-p[0]))
+        if not isfinite(radius):
+            raise ValueError("tetrahedron circumradius overflowed")
+        if radius>alpha*(1.0+1e-12):
+            continue
+        orientation=float(np.linalg.det(p[1:]-p[0]))
+        if orientation==0:
+            continue
+        if orientation<0:
+            tet[2],tet[3]=tet[3],tet[2]
+        for template in face_templates:
+            face=tuple(tet[i] for i in template)
+            key=tuple(sorted(face))
+            if key in face_incidence:
+                face_incidence[key][1]+=1
+            else:
+                face_incidence[key]=[face,1]
+    if any(count>2 for _face,count in face_incidence.values()):
+        raise ValueError("retained tetrahedra have a non-manifold face incidence")
+    boundary=[face for face,count in face_incidence.values() if count==1]
+    if not boundary:
+        return {"vertices":[],"faces":[]}
+    used=sorted({vertex for face in boundary for vertex in face})
+    remap={old:new for new,old in enumerate(used)}
+    vertices=[pts[i] for i in used]
+    faces=[tuple(remap[i] for i in face) for face in boundary]
+    return {"vertices":vertices,"faces":faces}

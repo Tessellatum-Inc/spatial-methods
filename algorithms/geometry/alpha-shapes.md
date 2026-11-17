@@ -26,13 +26,13 @@ The threshold is a modelling choice, not a universal default. It should reflect 
 
 ## Limitations
 
-The implementation returns unclosed boundary rings: outer rings are counter-clockwise and holes clockwise. It removes duplicate sites. Inputs with fewer than three unique sites or collinear sites return no polygon rings. Non-manifold or open boundaries raise ValueError rather than silently producing malformed output.
+The 2D implementation returns unclosed boundary rings: outer rings are counter-clockwise and holes clockwise. The 3D companion returns vertices and outward-oriented triangular boundary faces. It removes duplicate sites. Inputs with fewer than three unique sites or collinear sites return no polygon rings. Non-manifold or open boundaries raise ValueError rather than silently producing malformed output.
 
-The implementation uses floating-point circumradius comparisons and inherits Qhull's handling of cocircular and near-degenerate sites. It is a transparent 2D teaching baseline, not an exact-predicate production geometry kernel. Weighted and 3D alpha shapes are outside scope. Use a suitable projected CRS when the threshold represents physical distance.
+The implementation uses floating-point circumradius comparisons and inherits Qhull's handling of cocircular and near-degenerate sites. It is a transparent 2D teaching baseline, not an exact-predicate production geometry kernel. A 3D companion filters Delaunay tetrahedra by circumradius and returns the oriented boundary of their union. Weighted alpha shapes and the complete lower-dimensional alpha complex remain outside scope. Use a suitable projected CRS when the threshold represents physical distance.
 
 ## Verification
 
-The test suite checks a square's known circumradius threshold, a concave U-shaped fixture with hand-computed areas, lower-dimensional inputs, duplicates, invalid values, boundary orientation, and translation/scaling invariance. The U-shaped test demonstrates a concave envelope before a larger threshold fills the convex hull.
+The test suite checks 2D square circumradius and concave U-shaped fixtures, plus 3D tetrahedron circumradius thresholds, outward face orientation, cube surface area, lower-dimensional inputs, invalid values and translation/scaling invariance. The U-shaped test demonstrates a concave envelope before a larger threshold fills the convex hull.
 
 ## Implementation
 

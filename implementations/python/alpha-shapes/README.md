@@ -27,7 +27,7 @@ Delaunay construction is typically O(n log n); filtering and boundary extraction
 
 ## Scope and limitations
 
-This is a teaching implementation for finite planar point sets. SciPy/Qhull supplies the triangulation; near-degenerate inputs inherit its floating-point limitations. Non-manifold or open boundaries are rejected rather than silently returned as malformed rings. Weighted and 3D alpha shapes, arbitrary polygonization and production robust predicates are outside scope. Use a projected CRS when alpha represents physical distance.
+This is a teaching implementation for finite planar point sets. SciPy/Qhull supplies the triangulation; near-degenerate inputs inherit its floating-point limitations. Non-manifold or open boundaries are rejected rather than silently returned as malformed rings. Weighted alpha shapes, full lower-dimensional alpha-complex simplices, arbitrary polygonization and production robust predicates are outside scope. A 3D boundary-mesh routine is also provided; it returns the boundary of retained Delaunay tetrahedra, not the full 3D alpha complex. Use a projected CRS when alpha represents physical distance.
 
 ## Verification
 
@@ -38,3 +38,8 @@ Tests cover exact square circumradius thresholds, a concave U-shaped fixture wit
 - Edelsbrunner, H., Kirkpatrick, D., & Seidel, R. (1983). On the shape of a set of points in the plane. IEEE Transactions on Information Theory, 29(4), 551–559.
 - Edelsbrunner, H. (1992). Weighted alpha shapes. Technical Report, Department of Computer Science, University of Illinois.
 - SciPy spatial Delaunay documentation: https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.Delaunay.html
+
+
+## 3D boundary meshes
+
+`alpha_shape_3d` filters 3D Delaunay tetrahedra by circumradius and extracts the oriented boundary triangle mesh. It is a boundary-of-union representation; isolated faces and edges in the full alpha complex are not returned.

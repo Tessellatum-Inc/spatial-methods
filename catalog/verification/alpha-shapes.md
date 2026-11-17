@@ -27,3 +27,9 @@ From implementations/python/alpha-shapes:
     python -m pytest -q
 
 A GitHub Actions run is triggered by the implementation commits; record its final result before marking the entry fully CI-verified.
+
+
+## 3D boundary-mesh extension
+- Delaunay tetrahedra are retained by circumsphere radius and single-incidence oriented faces are extracted.
+- Tests cover a regular tetrahedron's analytic circumradius and outward face orientation, a cube's convex-hull surface area, lower-dimensional inputs and translation/scaling invariance.
+- Limits: this is the boundary of the retained tetrahedron union, not the full alpha complex with isolated faces/edges/vertices; weighted 3D alpha shapes remain open.
