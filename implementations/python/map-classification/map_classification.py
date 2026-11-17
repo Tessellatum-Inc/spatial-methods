@@ -9,8 +9,8 @@ def _validated(values, k):
         raise ValueError("values must be a non-empty finite sequence")
     if not isinstance(k, int) or isinstance(k, bool) or k < 1:
         raise ValueError("k must be a positive integer")
-    if k > len(set(data)):
-        raise ValueError("k cannot exceed the number of distinct values")
+    if k > len(data):
+        raise ValueError("k cannot exceed the number of observations")
     return sorted(data)
 
 
@@ -38,6 +38,8 @@ def quantile_breaks(values, k):
 def jenks_natural_breaks(values, k):
     """Exact Fisher-Jenks 1-D within-class SSE minimization, O(k*n²) time."""
     data = _validated(values, k)
+    if k > len(set(data)):
+        raise ValueError("Jenks class count cannot exceed the number of distinct values")
     n = len(data)
     lower = [[0]*(k+1) for _ in range(n+1)]
     variance = [[float("inf")]*(k+1) for _ in range(n+1)]
