@@ -44,3 +44,14 @@ These indices are indicators, not deterministic forecasts or insurance triggers.
 ## Tests and scope
 
 The linked implementation includes tests for VCI/TCI/VHI bounds and degenerate ranges, gamma SPI with zero-rainfall probability, time-axis handling and missing values, plus threshold-run event extraction. It does not implement SPEI, PDSI or growing degree days in this package.
+
+
+## Growing degree days (GDD)
+
+The simple daily-mean method computes
+
+\[
+GDD_d=\max\left(\min\left(\frac{T_{min,d}+T_{max,d}}{2},T_{upper}\right)-T_{base},0\right),
+\]
+
+where the upper cap is optional. Accumulate daily increments over a stated crop-development period. Base and upper temperatures are crop- and region-specific; a single generic threshold should not be assumed. This package implements the daily mean method, not single-sine or double-sine integration methods.
