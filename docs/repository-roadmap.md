@@ -59,16 +59,16 @@ The goal is not to fill folders or publish pages quickly. The goal is a collecti
 - [x] Add line simplification dossiers and tested open-polyline baselines for Douglas–Peucker and Visvalingam–Whyatt.
 - [x] Add an offsetting dossier and a tested Shapely/GEOS wrapper, explicitly distinguished from Clipper2.
 - [x] Add proximity graph definitions and tested small-input baselines for Gabriel, relative neighbourhood, lune-based beta-skeleton, Yao graph and Euclidean MST.
-- [x] Add a planar point-location dossier, tested static slab locator for pairwise interior-disjoint polygon faces, intern implementation contract and interactive lab; randomized trapezoidal-map construction remains open.
+- [x] Add a planar point-location dossier, tested static slab locator for pairwise interior-disjoint polygon faces, intern implementation contract and interactive lab; add a bounded randomized trapezoidal-decomposition prototype with persistent corridor replacement and public history-DAG queries. The classic expected-time construction bound and fully local adjacency maintenance remain open.
 - [x] Add shortest-path family research and tested Dijkstra, A*, Bellman–Ford and Floyd–Warshall baselines.
 - [x] Add coverage-aware polygon simplification through Shapely/GEOS with validity checks and tests.
 - [x] Add a native Clipper2 C# offset example with a CI smoke test.
 - [x] Extend shortest-path teaching code with bidirectional Dijkstra and directed ALT landmarks.
 - [x] Add a dedicated exact-arithmetic hot-pixel snap-rounding teaching noder, tests, walkthrough, exercise and visual lab. Its pairwise discovery and hot-pixel scan are intentionally not output-sensitive.
-- [ ] Implement efficient Delaunay-based Yao/beta-skeleton constructions and a true randomized trapezoidal-map locator.
+- [ ] Implement specialised efficient Delaunay-based Yao/beta-skeleton constructions with independent topology oracles, and establish the classic expected construction bound plus fully local neighbour maintenance for the randomized trapezoidal-map prototype.
 - [x] Add tested edge-based turn-aware and FIFO time-dependent earliest-arrival baselines.
 - [ ] Extend network routing with contraction hierarchies, non-FIFO routing, transit algorithms and multimodal transfers.
-- [ ] Extend spatial indexing into dynamic trees, octrees, ball/VP trees and space-filling curves.
+- [ ] Extend spatial indexing into dynamic trees and space-filling-curve indexes. Static bucket octree, ball-tree and VP-tree teaching baselines now exist; dynamic update contracts, workload benchmarks and remaining index families are still open.
 - [ ] Extend spatial statistics with spatial correlograms, point-pattern analysis and spatial regression.
 - [x] Add a spatial cross-validation lesson and tested grid-block/buffered-fold baseline with an intern walkthrough; keep block-size selection and deployment-specific design as explicit research decisions.
 - [x] Add a line-clipping lesson and tested Python implementations of Cohen–Sutherland, Liang–Barsky and Cyrus–Beck, with tests, walkthrough and executable notebook; Nicholl–Lee–Nicholl remains unimplemented.
