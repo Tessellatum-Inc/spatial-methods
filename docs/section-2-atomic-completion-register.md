@@ -139,8 +139,8 @@ This register decomposes grouped labels into auditable child records. Use the [v
 | S02-RE-16 | GeoDetector | Spatial stratified heterogeneity method | Verify | Verify factor/ecological detector statistics and discretisation sensitivity. |
 | S02-RE-17 | LM-lag diagnostic | Spatial regression diagnostic | Partial | Verify score test and assumptions; test under null/alternative. |
 | S02-RE-18 | LM-error diagnostic | Spatial regression diagnostic | Partial | Verify score test and assumptions; test under null/alternative. |
-| S02-RE-19 | Robust LM-lag | Spatial regression diagnostic | Verify | Verify robust score adjustment; compare with standard LM. |
-| S02-RE-20 | Robust LM-error | Spatial regression diagnostic | Verify | Verify robust score adjustment; compare with standard LM. |
+| S02-RE-19 | Robust LM-lag | Spatial regression diagnostic | Partial | Bera–Yoon robust score adjustment for the competing spatial-error alternative is implemented with asymptotic chi-square(1) inference; hand-computed score/denominator tests and a degenerate-identification case are covered. Source-variant verification and broader null/alternative size and power studies remain open. |
+| S02-RE-20 | Robust LM-error | Spatial regression diagnostic | Partial | Bera–Yoon robust score adjustment for the competing spatial-lag alternative is implemented with asymptotic chi-square(1) inference; hand-computed score/denominator tests and a degenerate-identification case are covered. Source-variant verification and broader null/alternative size and power studies remain open. |
 | S02-RE-21 | Wald test | Model comparison/inference | Partial | Define parameter restrictions and covariance estimator; test finite-sample behaviour. |
 | S02-RE-22 | Likelihood-ratio test | Model comparison/inference | Partial | Define nested likelihood conditions and boundary cases. |
 | S02-RE-23 | Moran's I on regression residuals | Residual diagnostic | Partial | Define weights and residual standardisation; test size under fitted spatial models. |
@@ -229,3 +229,8 @@ This register decomposes grouped labels into auditable child records. Use the [v
 ## Implementation reconciliation — two-type marked point-pattern summaries
 
 The Partial status for S02-PP-16 reflects a bounded two-mark cross-pattern implementation and its hand-calculation/seeded tests. It does not establish a general marked point-process model or close mark-dependence and randomisation methods.
+
+
+## Implementation reconciliation — robust spatial LM diagnostics
+
+The Partial status for S02-RE-19 and S02-RE-20 reflects the tested Bera–Yoon robust LM-lag and LM-error score adjustments in `implementations/python/spatial-econometrics/diagnostics.py`. The implementation uses the supplied weights unchanged, reports asymptotic chi-square(1) p-values, and returns unavailable results when the nuisance-adjustment denominator is unidentified. The tests compare both statistics with hand-computed formulae and cover the degenerate case. The canonical lesson cites Anselin, Bera, Florax and Yoon (1996). This is a dense-matrix teaching baseline; broader finite-sample calibration, empirical size/power studies, alternative robust score formulations and independent source review remain open.
