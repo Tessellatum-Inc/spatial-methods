@@ -4,7 +4,7 @@
 - **Source pages:** 18–20
 - **Source transcription:** [pages 16–20](../../source-inventory/pages-16-20.md)
 - **Review state:** source entries extracted into this index; not every entry independently verified
-- **Current canonical records:** [Coordinate transformation and CRS axis order](../../algorithms/geodesy/crs-transformation.md), [Geodetic, ECEF and local ENU coordinates](../../algorithms/geodesy/ecef-enu.md), and [Helmert seven-parameter transformation](../../methods/helmert-7-parameter.md)
+- **Current canonical records:** [Coordinate transformation and CRS axis order](../../algorithms/geodesy/crs-transformation.md), [Geodetic, ECEF and local ENU coordinates](../../algorithms/geodesy/ecef-enu.md), [Helmert seven-parameter transformation](../../methods/helmert-7-parameter.md), [String similarity and probabilistic record linkage](../../algorithms/statistics/string-linkage.md), [Numeric map classification](../../algorithms/statistics/map-classification.md), and [Broad-phase collision detection](../../algorithms/statistics/collision-broadphase.md)
 
 This section contains the supporting systems and concepts that make spatial work possible: coordinate reference systems, georeferencing, geocoding, map design, data infrastructure, quality assurance, privacy and geographic language. It also includes graph, topology and causal-analysis methods. These should become connected topic families rather than one oversized “GIS tools” lesson.
 
