@@ -238,12 +238,6 @@ jobs:
           - example: shortest-paths
             directory: implementations/python/shortest-paths
             pythonpath: ""
-          - example: spatial-encodings
-            directory: implementations/python/spatial-encodings
-            pythonpath: ""
-          - example: network-centrality
-            directory: implementations/python/network-centrality
-            pythonpath: ""
           - example: network-communities
             directory: implementations/python/network-communities
             pythonpath: ""
@@ -342,9 +336,6 @@ jobs:
             pythonpath: ""
           - example: geostatistics
             directory: implementations/python/geostatistics
-            pythonpath: ""
-          - example: lee-speckle-filter
-            directory: implementations/python/lee-speckle-filter
             pythonpath: ""
           - example: mann-kendall-sen
             directory: implementations/python/mann-kendall-sen
@@ -812,9 +803,6 @@ jobs:
           - example: sar-cfar
             directory: implementations/python/sar-cfar
             pythonpath: ""
-          - example: open-location-code
-            directory: implementations/python/open-location-code
-            pythonpath: ""
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -860,6 +848,90 @@ jobs:
 
       - name: Run tests
         working-directory: implementations/python/k-medoids
+        run: python -m pytest -q
+
+  test-lee-speckle-filter:
+    name: Test lee-speckle-filter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        working-directory: implementations/python/lee-speckle-filter
+        run: |
+          python -m pip install pytest
+          if [ -f requirements.txt ]; then
+            python -m pip install -r requirements.txt
+          fi
+      - name: Run tests
+        working-directory: implementations/python/lee-speckle-filter
+        run: python -m pytest -q
+
+  test-spatial-encodings:
+    name: Test spatial-encodings
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        working-directory: implementations/python/spatial-encodings
+        run: |
+          python -m pip install pytest
+          if [ -f requirements.txt ]; then
+            python -m pip install -r requirements.txt
+          fi
+      - name: Run tests
+        working-directory: implementations/python/spatial-encodings
+        run: python -m pytest -q
+
+  test-network-centrality:
+    name: Test network-centrality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        working-directory: implementations/python/network-centrality
+        run: |
+          python -m pip install pytest
+          if [ -f requirements.txt ]; then
+            python -m pip install -r requirements.txt
+          fi
+      - name: Run tests
+        working-directory: implementations/python/network-centrality
+        run: python -m pytest -q
+
+  test-open-location-code:
+    name: Test open-location-code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        working-directory: implementations/python/open-location-code
+        run: |
+          python -m pip install pytest
+          if [ -f requirements.txt ]; then
+            python -m pip install -r requirements.txt
+          fi
+      - name: Run tests
+        working-directory: implementations/python/open-location-code
         run: python -m pytest -q
 
   links:
