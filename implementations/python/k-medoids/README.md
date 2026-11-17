@@ -14,16 +14,16 @@ python -m pytest -q
 
 ~~~python
 import numpy as np
-from k_medoids import euclidean_dissimilarity, pam, clara
+from k_medoids import euclidean_dissimilarity, pam, clara, clarans
 
 points = np.array([(0, 0), (0, 1), (1, 0), (8, 8), (8, 9), (9, 8)])
 D = euclidean_dissimilarity(points)
 fit = pam(D, k=2)
-large_fit = clara(D, k=2, n_samples=10, sample_size=6, random_state=7)
+large_fit = clara(D, k=2, n_samples=10, sample_size=6, random_state=7)\nrandom_fit = clarans(D, k=2, max_neighbors=40, num_local=5, random_state=7)
 print(fit["medoids"], fit["labels"], fit["cost"])
 ~~~
 
-PAM uses a greedy BUILD initialization followed by best-improving SWAP steps.
+CLARANS samples medoid/non-medoid neighbours at random and accepts strict\nimprovements until a configured number of unsuccessful neighbour samples\nidentifies a local minimum. PAM uses a greedy BUILD initialization followed\nby best-improving SWAP steps.
 Every medoid is an observed object. CLARA fits PAM to several without-
 replacement samples, then evaluates each candidate medoid set against the
 entire dissimilarity matrix. Ties are resolved deterministically.

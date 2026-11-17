@@ -18,7 +18,7 @@ Input-order tie breaking makes the teaching baseline reproducible.
 Tests include separated clusters, a small brute-force objective oracle,
 medoid membership, direct objective recomputation, k=n, deterministic
 repeated runs, invalid matrices and controls, CLARA reproducibility, and
-full-sample agreement with PAM's objective.
+full-sample agreement with PAM's objective, CLARANS repeatability and\nfull-data objective recomputation.
 
 ## Limitations
 

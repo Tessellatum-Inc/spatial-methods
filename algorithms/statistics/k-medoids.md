@@ -13,7 +13,7 @@ uses a greedy BUILD phase followed by SWAP improvements. The implementation
 uses deterministic input-order tie breaking and stops when no single
 medoid/non-medoid exchange improves the objective.
 
-CLARA (Clustering LARge Applications) runs PAM on repeated samples and
+CLARANS (Clustering Large Applications based upon RANdomized Search) samples\nmedoid/non-medoid swap neighbours and accepts improving moves until a\nconfigured run of unsuccessful samples identifies a local minimum. Repeated\nlocal searches retain the best candidate found.\n\nCLARA (Clustering LARge Applications) runs PAM on repeated samples and
 evaluates each resulting medoid set against all observations. Sampling can
 reduce the expensive search, but the dense teaching implementation still
 stores the full dissimilarity matrix.

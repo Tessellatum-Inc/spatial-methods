@@ -180,3 +180,83 @@ def clara(
         "sample_size": int(sample_size),
         "samples_evaluated": int(n_samples),
     }
+
+
+def clarans(
+    dissimilarity: Sequence[Sequence[float]] | np.ndarray,
+    k: int,
+    *,
+    max_neighbors: int = 250,
+    num_local: int = 5,
+    random_state: int | None = 0,
+    tol: float = 1e-12,
+) -> dict:
+    """Randomized CLARANS medoid-neighbour search.
+
+    Each local search samples medoid/non-medoid swaps. An improving swap is
+    accepted and the unsuccessful-neighbour counter resets; after
+    max_neighbors unsuccessful samples, that local minimum is recorded.
+    """
+    distances = _validate_dissimilarity(dissimilarity)
+    n = len(distances)
+    k, _, tol = _validate_controls(n, k, 1, tol)
+    if isinstance(max_neighbors, (bool, np.bool_)) or not isinstance(max_neighbors, (int, np.integer)) or max_neighbors < 1:
+        raise ValueError("max_neighbors must be a positive integer")
+    if isinstance(num_local, (bool, np.bool_)) or not isinstance(num_local, (int, np.integer)) or num_local < 1:
+        raise ValueError("num_local must be a positive integer")
+    if k == n:
+        medoids = np.arange(n, dtype=int)
+        return {
+            "medoids": medoids,
+            "labels": np.zeros(n, dtype=int),
+            "cost": 0.0,
+            "local_minima": 1,
+            "neighbor_evaluations": 0,
+            "converged": True,
+        }
+
+    rng = np.random.default_rng(random_state)
+    best = None
+    best_cost = float("inf")
+    best_key = None
+    total_evaluations = 0
+
+    for _ in range(int(num_local)):
+        medoids = sorted(int(v) for v in rng.choice(n, size=k, replace=False))
+        current_cost = float(np.min(distances[:, medoids], axis=1).sum())
+        unsuccessful = 0
+        while unsuccessful < int(max_neighbors):
+            position = int(rng.integers(k))
+            available = np.setdiff1d(np.arange(n), np.asarray(medoids), assume_unique=True)
+            candidate = int(rng.choice(available))
+            trial = medoids.copy()
+            trial[position] = candidate
+            trial.sort()
+            trial_cost = float(np.min(distances[:, trial], axis=1).sum())
+            total_evaluations += 1
+            if trial_cost < current_cost - tol:
+                medoids = trial
+                current_cost = trial_cost
+                unsuccessful = 0
+            else:
+                unsuccessful += 1
+
+        key = tuple(medoids)
+        if (current_cost < best_cost - tol or
+                (abs(current_cost - best_cost) <= tol and
+                 (best_key is None or key < best_key))):
+            best_cost = current_cost
+            best_key = key
+            labels, costs = _assign(distances, medoids)
+            best = {
+                "medoids": np.asarray(medoids, dtype=int),
+                "labels": labels,
+                "cost": float(costs.sum()),
+            }
+
+    return {
+        **best,
+        "local_minima": int(num_local),
+        "neighbor_evaluations": total_evaluations,
+        "converged": True,
+    }

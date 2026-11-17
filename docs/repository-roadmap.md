@@ -831,4 +831,4 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Implement CLARA sampling and full-dataset candidate scoring.
 - [x] Add independent objective, brute-force, determinism, invalid-input and sampling tests.
 - [x] Add a learning notebook, source-verification record and CI package registration.
-- [ ] Add CLARANS, constrained/equal-size clustering and spatially contiguous regionalisation as separate methods.
+- [x] Add randomized CLARANS medoid-neighbour search with seeded repeatability tests.\n- [ ] Add constrained/equal-size clustering and spatially contiguous regionalisation as separate methods.

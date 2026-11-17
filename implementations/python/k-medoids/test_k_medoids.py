@@ -100,3 +100,39 @@ def test_clara_rejects_invalid_sampling_controls():
         clara(distances, 2, sample_size=1)
     with pytest.raises(ValueError, match="sample_size"):
         clara(distances, 2, sample_size=99)
+
+
+def test_clarans_is_reproducible_and_returns_full_data_objective():
+    from k_medoids import clarans
+    distances = euclidean_dissimilarity(clustered_points())
+    a = clarans(distances, 2, max_neighbors=30, num_local=5, random_state=31)
+    b = clarans(distances, 2, max_neighbors=30, num_local=5, random_state=31)
+    np.testing.assert_array_equal(a["medoids"], b["medoids"])
+    np.testing.assert_array_equal(a["labels"], b["labels"])
+    assert a["cost"] == pytest.approx(b["cost"])
+    assert a["cost"] == pytest.approx(distances[:, a["medoids"]].min(axis=1).sum())
+    assert len(set(a["medoids"])) == 2
+    assert a["local_minima"] == 5
+    assert a["neighbor_evaluations"] >= 5 * 30
+
+
+def test_clarans_finds_separated_clusters_and_handles_k_equal_n():
+    from k_medoids import clarans
+    points = clustered_points()
+    distances = euclidean_dissimilarity(points)
+    result = clarans(distances, 2, max_neighbors=40, num_local=8, random_state=7)
+    assert result["labels"][0] == result["labels"][1] == result["labels"][2]
+    assert result["labels"][3] == result["labels"][4] == result["labels"][5]
+    assert result["labels"][0] != result["labels"][3]
+    all_medoids = clarans(distances, len(distances))
+    assert all_medoids["cost"] == pytest.approx(0)
+    assert set(all_medoids["medoids"]) == set(range(len(distances)))
+
+
+def test_clarans_rejects_invalid_search_controls():
+    from k_medoids import clarans
+    distances = euclidean_dissimilarity(clustered_points())
+    with pytest.raises(ValueError, match="max_neighbors"):
+        clarans(distances, 2, max_neighbors=0)
+    with pytest.raises(ValueError, match="num_local"):
+        clarans(distances, 2, num_local=0)
