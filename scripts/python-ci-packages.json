@@ -448,6 +448,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/kriging-variants",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/land-change-accounting",
     "pythonpath": ""
   },
