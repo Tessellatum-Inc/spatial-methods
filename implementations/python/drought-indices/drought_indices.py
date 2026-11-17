@@ -53,3 +53,22 @@ def standardized_precipitation_index(precipitation,*,axis=0,min_samples=30,min_p
         probs=q+(1-q)*gamma.cdf(series[valid],shape,loc=0,scale=scale)
         out[(valid,)+idx]=norm.ppf(np.clip(probs,clip_probability,1-clip_probability))
     return np.moveaxis(out,0,axis)
+
+
+def growing_degree_days(tmin, tmax, *, base_temperature, upper_temperature=None):
+    """Daily mean-method growing degree days, optionally capped at an upper mean.
+
+    Returns daily increments; accumulate them over the crop's specified
+    growing period. Missing daily temperatures remain NaN.
+    """
+    lo, hi = _same_shape(tmin, tmax)
+    if np.any(np.isfinite(lo) & np.isfinite(hi) & (hi < lo)):
+        raise ValueError("tmax must not be below tmin")
+    if not np.isfinite(base_temperature):
+        raise ValueError("base_temperature must be finite")
+    mean = (lo + hi) / 2.0
+    if upper_temperature is not None:
+        if not np.isfinite(upper_temperature) or upper_temperature < base_temperature:
+            raise ValueError("upper_temperature must be finite and at least base_temperature")
+        mean = np.minimum(mean, upper_temperature)
+    return np.maximum(mean - base_temperature, 0.0)
