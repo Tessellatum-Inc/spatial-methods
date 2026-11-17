@@ -473,3 +473,8 @@ Records may have different evidence and implementation status. Check the status 
 - [Vecchia Gaussian-process approximation](geostatistics/vecchia-approximation.md): nearest-predecessor Gaussian likelihood factorisation with an exact all-neighbour check.
 
 - [Knox space-time interaction test](geostatistics/knox-space-time-test.md): pair-count statistic with a plus-one temporal-label permutation p-value.
+
+
+## Domain modeling
+
+- [Spatial cellular automata](domain-modeling/cellular-automata.md) — synchronous B/S rules, neighborhood and boundary contracts, and a bounded Schelling-style relocation example.
