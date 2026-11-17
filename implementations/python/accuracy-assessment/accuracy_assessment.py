@@ -65,6 +65,12 @@ def accuracy_metrics(matrix):
     class_dice = class_f1.copy()
     valid_f1 = [value for value in class_f1 if value is not None]
     valid_iou = [value for value in class_iou if value is not None]
+    valid_producer = [value for value in producer if value is not None]
+    valid_user = [value for value in user if value is not None]
+    weighted_f1 = (
+        sum(row_totals[i] * class_f1[i] for i in range(n_classes)
+            if class_f1[i] is not None) / n
+    )
     return {
         "n": n,
         "overall_accuracy": oa,
@@ -72,6 +78,10 @@ def accuracy_metrics(matrix):
         "user_accuracy": user,
         "class_f1": class_f1,
         "macro_f1": sum(valid_f1) / len(valid_f1) if valid_f1 else None,
+        "macro_precision": sum(valid_user) / len(valid_user) if valid_user else None,
+        "macro_recall": sum(valid_producer) / len(valid_producer) if valid_producer else None,
+        "balanced_accuracy": sum(valid_producer) / len(valid_producer) if valid_producer else None,
+        "weighted_f1": weighted_f1,
         "class_iou": class_iou,
         "mean_iou": sum(valid_iou) / len(valid_iou) if valid_iou else None,
         "class_dice": class_dice,

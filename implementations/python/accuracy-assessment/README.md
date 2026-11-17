@@ -60,3 +60,11 @@ secondary structure of T4 phage lysozyme. *Biochimica et Biophysica Acta*,
 405(2), 442–451. Gorodkin, J. (2004). Comparing two K-category assignments
 by a K-category correlation coefficient. *Computational Biology and
 Chemistry*, 28(5–6), 367–374. https://doi.org/10.1016/j.compbiolchem.2004.09.006
+
+
+Additional classification summaries include macro precision, macro recall,
+balanced accuracy (the unweighted mean of defined reference-class recalls),
+and support-weighted F1. Undefined classes with zero reference or predicted
+support are excluded from the corresponding macro mean; weighted F1 is
+weighted by reference support. These summaries complement, rather than
+replace, class-level scores and spatially independent validation.

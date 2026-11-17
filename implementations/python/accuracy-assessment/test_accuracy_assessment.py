@@ -246,3 +246,20 @@ def test_multiclass_matthews_correlation_coefficient_degenerate_and_invalid():
     for bad in ([], [[1, 2], [3]], [[1, -1], [0, 1]], [[1.0, 0], [0, 1]]):
         with pytest.raises(ValueError):
             matthews_correlation_coefficient(bad)
+
+
+
+def test_macro_precision_recall_balanced_accuracy_and_weighted_f1():
+    metrics = accuracy_metrics([[8, 2, 0], [1, 5, 2], [0, 3, 9]])
+    assert metrics["macro_precision"] == pytest.approx(0.7356902356902357)
+    assert metrics["macro_recall"] == pytest.approx(0.725)
+    assert metrics["balanced_accuracy"] == pytest.approx(0.725)
+    assert metrics["weighted_f1"] == pytest.approx(0.7418933807949827)
+
+
+def test_macro_classification_metrics_skip_unsupported_classes():
+    metrics = accuracy_metrics([[4, 0, 0], [0, 0, 0], [1, 1, 2]])
+    assert metrics["macro_precision"] == pytest.approx((4/5 + 0 + 1) / 3)
+    assert metrics["macro_recall"] == pytest.approx((1 + 1/2) / 2)
+    assert metrics["balanced_accuracy"] == metrics["macro_recall"]
+    assert metrics["weighted_f1"] == pytest.approx((4*(8/9) + 4*(2/3)) / 8)
