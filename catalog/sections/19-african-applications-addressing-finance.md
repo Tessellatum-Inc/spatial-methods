@@ -4,7 +4,7 @@
 - **Source pages:** 39–41
 - **Source transcription:** [pages 36–40](../../source-inventory/pages-36-40.md) and [pages 41–47](../../source-inventory/pages-41-47.md)
 - **Review state:** intake extracted; source says names and tools are from memory and require verification
-- **Current canonical records:** [Geohash encoding](../../algorithms/geodesy/geohash.md); none yet
+- **Current canonical records:** [Geohash encoding](../../algorithms/geodesy/geohash.md) and [Open Location Code (Plus Codes)](../../algorithms/geodesy/open-location-code.md)
 
 **Source caution:** the compendium labels these names and tools as memory-based. Treat the regional applications as useful prompts for research, not verified descriptions of current African systems or a representative list of the continent.
 
