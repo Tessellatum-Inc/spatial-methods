@@ -86,3 +86,8 @@ The trend/change source entry now also links to seasonal Mann-Kendall and season
 
 
 The trend/change source entry now also links to a least-squares harmonic regression baseline with configurable period, number of Fourier harmonics and optional linear trend. It returns coefficients, fitted values, residuals, RMSE and R², with rank and sample-size checks. The implementation does not provide autocorrelation-robust inference, automatic period selection, BFAST, LandTrendr or CCDC; the grouped source row remains partial.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 3 atomic completion register](../../docs/section-3-atomic-completion-register.md). The register preserves the source grouping and distinguishes algorithms from models, metrics, software and workflows. It is traceability infrastructure, not a verification or completion claim.
