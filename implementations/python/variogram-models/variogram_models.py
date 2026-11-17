@@ -23,9 +23,9 @@ def _correlation(ratio, model, nu):
 
 
 def variogram_model(lags,*,model="spherical",nugget=0.0,partial_sill=1.0,range_=1.0,nu=1.5):
-    """Evaluate spherical, exponential or Gaussian semivariogram models."""
+    """Evaluate spherical, exponential, Gaussian or Matérn semivariogram models."""
     h=np.asarray(lags,dtype=float); n=float(nugget); s=float(partial_sill); a=float(range_)
-    if model not in _MODELS: raise ValueError("model must be spherical, exponential or gaussian")
+    if model not in _MODELS: raise ValueError("model must be spherical, exponential, gaussian or matern")
     if not np.isfinite(h).all() or np.any(h<0): raise ValueError("lags must be finite and non-negative")
     if not np.isfinite((n,s,a)).all() or n<0 or s<0 or a<=0:
         raise ValueError("nugget and partial_sill must be non-negative; range_ must be positive")

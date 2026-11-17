@@ -17,4 +17,4 @@ baseline, not a scalable likelihood engine.
 Run pytest -q in this directory.
 
 
-The Matérn model accepts a fixed smoothness parameter nu (default 1.5); the covariance is evaluated with the modified Bessel function. The range parameter is the Matérn scale, not the practical-range convention used by the spherical/exponential/Gaussian forms.
+The Matérn model accepts a fixed smoothness parameter nu (default 1.5); the covariance is evaluated with the modified Bessel function. The argument is sqrt(2 nu) times distance divided by the scale parameter. This scale is not the practical-range convention used by the spherical/exponential/Gaussian forms.
