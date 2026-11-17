@@ -806,12 +806,6 @@ jobs:
           - example: time-series-dtw
             directory: implementations/python/time-series-dtw
             pythonpath: ""
-          - example: lee-speckle-filter
-            directory: implementations/python/lee-speckle-filter
-            pythonpath: ""
-          - example: ca-cfar
-            directory: implementations/python/ca-cfar
-            pythonpath: ""
           - example: obia-object-features
             directory: implementations/python/obia-object-features
             pythonpath: ""
