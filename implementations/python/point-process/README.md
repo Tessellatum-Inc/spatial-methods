@@ -59,3 +59,5 @@ This is an uncorrected finite-network descriptive estimator. It does not correct
 
 
 - Toroidal spatial Hawkes simulation with exponential triggering, subcritical branching ratio, wrapped Gaussian spatial offsets and parent/generation identifiers. This is a finite-horizon simulator without pre-window temporal history; it is not ETAS or an estimation routine.
+
+- Simplified marked ETAS branching simulation with exponential magnitude excesses, normalized Omori delays, a power-law spatial triggering kernel, magnitude-dependent productivity and toroidal spatial boundaries. This is a finite-horizon simulator without pre-window history, not a fitted seismicity model.
