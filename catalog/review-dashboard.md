@@ -134,10 +134,10 @@ A Mogi point-source elastic half-space displacement implementation has since mov
 The Section 2 source-entry recount also identifies an implementation-linked Ripley's K/L entry whose status description is more detailed than the standard “Partial” label. It is counted as partial rather than intake-only. Section 16's intervening-opportunities entry is now also implementation-linked. The current row totals are 696 source entries, 163 partial and 533 intake-only.
 
 
-**Reconciliation note (17 November 2026):** the historical narrative below contains earlier 695/696-row snapshots. The authoritative current count is the 22-row section table above: 693 source-entry rows, 187 partial, 506 intake-only and zero fully verified.
+**Historical reconciliation note (17 November 2026):** the following narrative records an earlier snapshot of 693 source-entry rows (187 partial, 506 intake-only); the current authoritative totals are in the section table above (693, 220, 473).
 
 
-**Reconciliation note (17 November 2026):** the historical narrative below contains earlier 695/696-row snapshots. The authoritative current count is the 22-row section table above: 693 source-entry rows, 188 partial, 505 intake-only and zero fully verified.
+**Historical reconciliation note (17 November 2026):** the following narrative records an earlier snapshot of 693 source-entry rows (188 partial, 505 intake-only); the current authoritative totals are in the section table above (693, 220, 473).
 
 
 **Reconciliation note (17 November 2026):** the historical narrative below contains earlier 695/696-row snapshots. The authoritative current aggregate is 693 source-entry rows, 200 partial, 493 intake-only and zero fully verified. The 22 by-section subtotals reconcile exactly with these totals.
