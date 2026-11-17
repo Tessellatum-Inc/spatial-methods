@@ -227,8 +227,9 @@ def sample_site_percolation(
     shape: tuple[int, int], probability: float, *, seed: int | None = None
 ) -> NDArray[np.bool_]:
     """Sample independent occupied sites on a 2D lattice."""
-    if (len(shape) != 2 or any(not isinstance(n, (int, np.integer)) or n < 1
-                               for n in shape)):
+    if (not isinstance(shape, (tuple, list)) or len(shape) != 2
+            or any(not isinstance(n, (int, np.integer)) or isinstance(n, bool) or n < 1
+                   for n in shape)):
         raise ValueError("shape must contain two positive integers")
     if not 0.0 <= probability <= 1.0:
         raise ValueError("probability must be between 0 and 1")
