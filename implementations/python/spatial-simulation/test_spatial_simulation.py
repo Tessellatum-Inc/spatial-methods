@@ -9,6 +9,8 @@ from spatial_simulation import (
     percolates,
     same_group_share,
     sample_site_percolation,
+    sir_step,
+    simulate_sir,
     schelling_step,
     simulate_life_like,
     simulate_schelling,
@@ -235,3 +237,54 @@ def test_watts_strogatz_validates_parameters():
         watts_strogatz_graph(10, k=3, beta=0.2)
     with pytest.raises(ValueError):
         watts_strogatz_graph(10, k=4, beta=1.2)
+
+
+def test_network_sir_transmission_is_synchronous():
+    graph = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]], dtype=bool)
+    initial = np.array([1, 0, 0], dtype=np.uint8)
+    first = sir_step(initial, graph, infection_probability=1.0,
+                     recovery_probability=0.0, seed=1)
+    assert np.array_equal(first, [1, 1, 0])
+    second = sir_step(first, graph, infection_probability=1.0,
+                      recovery_probability=0.0, seed=1)
+    assert np.array_equal(second, [1, 1, 1])
+
+
+def test_network_sir_recovery_and_population_conservation():
+    graph = np.array([[0, 1], [1, 0]], dtype=bool)
+    initial = np.array([1, 0], dtype=np.uint8)
+    result = sir_step(initial, graph, infection_probability=0.0,
+                      recovery_probability=1.0, seed=2)
+    assert np.array_equal(result, [2, 0])
+    simulation = simulate_sir(initial, graph, infection_probability=1.0,
+                               recovery_probability=1.0, steps=3, seed=2)
+    assert len(simulation.counts) == 4
+    assert all(sum(counts) == 2 for counts in simulation.counts)
+
+
+def test_network_sir_seeded_reproducibility():
+    graph = np.ones((5, 5), dtype=bool)
+    np.fill_diagonal(graph, False)
+    initial = np.array([1, 0, 0, 0, 0], dtype=np.uint8)
+    a = simulate_sir(initial, graph, infection_probability=0.35,
+                     recovery_probability=0.2, steps=8, seed=44)
+    b = simulate_sir(initial, graph, infection_probability=0.35,
+                     recovery_probability=0.2, steps=8, seed=44)
+    assert np.array_equal(a.states, b.states)
+    assert a.counts == b.counts
+
+
+def test_network_sir_rejects_invalid_state_graph_and_probabilities():
+    graph = np.array([[0, 1], [1, 0]], dtype=bool)
+    with pytest.raises(ValueError):
+        sir_step(np.array([3, 0]), graph, infection_probability=0.1,
+                 recovery_probability=0.1)
+    with pytest.raises(ValueError):
+        sir_step(np.array([1, 0]), np.array([[0, 1], [0, 0]]),
+                 infection_probability=0.1, recovery_probability=0.1)
+    with pytest.raises(ValueError):
+        sir_step(np.array([1, 0]), graph, infection_probability=1.1,
+                 recovery_probability=0.1)
+    with pytest.raises(ValueError):
+        simulate_sir(np.array([1, 0]), graph, infection_probability=0.1,
+                     recovery_probability=0.1, steps=-1)
