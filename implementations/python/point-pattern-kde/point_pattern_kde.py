@@ -231,3 +231,50 @@ def select_bandwidth_loo(
                  else float(np.average(np.log(predictive[evaluation]), weights=w[evaluation])))
         scores.append((h, score))
     return max(scores, key=lambda item: item[1])[0], scores
+
+
+def silverman_bandwidth(
+    points: Sequence[Sequence[float]] | np.ndarray,
+    *,
+    weights: Sequence[float] | np.ndarray | None = None,
+) -> float:
+    """Return the isotropic bivariate normal-reference bandwidth.
+
+    For d=2 the multivariate normal-reference factor is one, giving
+    h = s * n_eff**(-1/6). Here s is the pooled RMS sample standard
+    deviation of x and y; n_eff is the Kish effective sample size.
+    Weighted sample variances use the reliability-weight correction.
+    This is a scale-based starting value, not a substitute for validation
+    or cross-validated bandwidth selection.
+    """
+    events = np.asarray(points, dtype=float)
+    if events.ndim != 2 or events.shape[1] != 2 or len(events) < 2:
+        raise ValueError("points must have shape (n, 2) with n >= 2")
+    if not np.isfinite(events).all():
+        raise ValueError("point coordinates must be finite")
+
+    if weights is None:
+        w = np.ones(len(events), dtype=float)
+    else:
+        w = np.asarray(weights, dtype=float)
+        if w.shape != (len(events),) or not np.isfinite(w).all() or (w < 0).any():
+            raise ValueError("weights must be finite, non-negative and match points")
+    positive = w > 0
+    if np.count_nonzero(positive) < 2:
+        raise ValueError("at least two positive event weights are required")
+
+    active = events[positive]
+    active_w = w[positive]
+    total = float(active_w.sum())
+    sum_squares = float(np.dot(active_w, active_w))
+    effective_n = total * total / sum_squares
+    denominator = total - sum_squares / total
+    if denominator <= 0 or effective_n <= 1:
+        raise ValueError("at least two effective observations are required")
+
+    mean = np.average(active, axis=0, weights=active_w)
+    variance = np.sum(active_w[:, None] * (active - mean) ** 2, axis=0) / denominator
+    pooled_scale = float(np.sqrt(np.mean(variance)))
+    if not isfinite(pooled_scale) or pooled_scale <= 0:
+        raise ValueError("points must have positive pooled spatial variance")
+    return pooled_scale * effective_n ** (-1.0 / 6.0)

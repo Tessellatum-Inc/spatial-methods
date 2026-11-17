@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from point_pattern_kde import gaussian_kde
+from point_pattern_kde import gaussian_kde, silverman_bandwidth
 
 
 def test_single_point_density_matches_gaussian_kernel_at_grid_centre():
@@ -169,3 +169,57 @@ def test_zero_weight_events_do_not_change_adaptive_pilot_for_active_events():
     )
     np.testing.assert_allclose(base[0], extended[0])
     np.testing.assert_allclose(base[3], extended[3][:3])
+
+
+def test_silverman_bandwidth_matches_bivariate_normal_reference_formula():
+    points = np.array([(-1, -1), (-1, 1), (1, -1), (1, 1)], dtype=float)
+    expected = np.sqrt(4 / 3) * 4 ** (-1 / 6)
+    assert silverman_bandwidth(points) == pytest.approx(expected)
+
+
+def test_silverman_bandwidth_is_translation_and_scale_equivariant():
+    points = np.array([(0, 0), (1, 0), (0, 1), (1, 1)], dtype=float)
+    base = silverman_bandwidth(points)
+    transformed = 7 + 3 * points + np.array([0, -9])
+    assert silverman_bandwidth(transformed) == pytest.approx(3 * base)
+
+
+def test_silverman_bandwidth_equal_weights_match_unweighted():
+    points = np.array([(0, 0), (1, 0), (0, 2), (2, 1)], dtype=float)
+    assert silverman_bandwidth(points, weights=[1, 1, 1, 1]) == pytest.approx(
+        silverman_bandwidth(points)
+    )
+
+
+def test_silverman_bandwidth_uses_kish_effective_sample_size():
+    points = np.array([(0, 0), (1, 0), (0, 1), (1, 1)], dtype=float)
+    weights = np.array([1, 2, 2, 1], dtype=float)
+    mean = np.average(points, axis=0, weights=weights)
+    denominator = weights.sum() - np.dot(weights, weights) / weights.sum()
+    variance = np.sum(weights[:, None] * (points - mean) ** 2, axis=0) / denominator
+    effective_n = weights.sum() ** 2 / np.dot(weights, weights)
+    expected = np.sqrt(np.mean(variance)) * effective_n ** (-1 / 6)
+    assert silverman_bandwidth(points, weights=weights) == pytest.approx(expected)
+
+
+@pytest.mark.parametrize("points", [
+    [(0, 0)],
+    [(1, 1), (1, 1), (1, 1)],
+    [(0, 0), (float("nan"), 1)],
+    [1, 2],
+])
+def test_silverman_bandwidth_rejects_invalid_or_degenerate_points(points):
+    with pytest.raises(ValueError):
+        silverman_bandwidth(points)
+
+
+@pytest.mark.parametrize("weights", [
+    [1],
+    [-1, 1],
+    [0, 0],
+    [1, 0],
+    [1, float("nan")],
+])
+def test_silverman_bandwidth_rejects_invalid_weights(weights):
+    with pytest.raises(ValueError):
+        silverman_bandwidth([(0, 0), (1, 0)], weights=weights)
