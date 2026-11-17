@@ -40,6 +40,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/area-morphology",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/arima-forecasting",
     "pythonpath": ""
   },
