@@ -7,7 +7,15 @@ A planar Gaussian KDE estimates intensity at location x as
 \exp\left(-\frac{\|x-x_i\|^2}{2h^2}\right).
 \]
 
-A global bandwidth h controls the bias-variance trade-off. For an isotropic\nbivariate normal-reference rule, the package uses\n\n\\[ h_{S}=s\\,n_{eff}^{-1/6}, \\]\n\nwhere s is the pooled root-mean-square sample standard deviation of the two\ncoordinate axes and n_eff is the Kish effective sample size (equal to n for\nequal weights). This is a transparent starting value; it assumes a roughly\nGaussian reference distribution and is not an optimality guarantee. Small h preserves
+A global bandwidth h controls the bias-variance trade-off. For an isotropic
+bivariate normal-reference rule, the package uses
+
+\[ h_{S}=s\,n_{eff}^{-1/6}, \]
+
+where s is the pooled root-mean-square sample standard deviation of the two
+coordinate axes and n_eff is the Kish effective sample size (equal to n for
+equal weights). This is a transparent starting value; it assumes a roughly
+Gaussian reference distribution and is not an optimality guarantee. Small h preserves
 local structure but can create noisy peaks; large h smooths local variation.
 Leave-one-out (LOO) likelihood predicts each event from all other events and
 selects the candidate bandwidth with the largest mean log predictive density.
