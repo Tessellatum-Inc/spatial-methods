@@ -3,15 +3,28 @@ from __future__ import annotations
 import math
 from collections.abc import Mapping, Sequence
 
+
 def _number(value, name):
     if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
         raise ValueError(f"{name} must be a finite number")
-    return float(value)
+    result = float(value)
+    if not math.isfinite(result):
+        raise ValueError(f"{name} must be representable as a finite float")
+    return result
+
 
 def _point(value, name):
-    if isinstance(value, (str, bytes)) or len(value) != 2:
+    if isinstance(value, (str, bytes)) or not isinstance(value, Sequence) or len(value) != 2:
         raise ValueError(f"{name} must be a pair of coordinates")
     return (_number(value[0], name), _number(value[1], name))
+
+
+def _advance(x, y, vx, vy, dt):
+    predicted = (x + vx * dt, y + vy * dt)
+    if not all(math.isfinite(v) for v in predicted):
+        raise ValueError("predicted coordinates overflowed finite numeric range")
+    return predicted
+
 
 def predict_position(position, velocity, horizon):
     """Extrapolate a 2D point using constant Cartesian velocity."""
@@ -20,17 +33,18 @@ def predict_position(position, velocity, horizon):
     dt = _number(horizon, "horizon")
     if dt < 0:
         raise ValueError("horizon must be non-negative")
-    return (x + vx * dt, y + vy * dt)
+    return _advance(x, y, vx, vy, dt)
 
-def predictive_range_query(objects: Mapping, bounds: Sequence[float], horizon: float, *, uncertainty_radius: float = 0.0):
-    """Return objects whose predicted uncertainty disk intersects a rectangle.
 
-    Each state is (x, y, vx, vy). Results preserve mapping order and contain
-    (object_id, predicted_position, distance_to_rectangle).
+def predictive_range_query(objects: Mapping, bounds: Sequence[float], horizon: float,
+                           *, uncertainty_radius: float = 0.0):
+    """Return (id, predicted point, distance) for uncertainty disks intersecting a rectangle.
+
+    Each state is (x, y, vx, vy). Results preserve mapping iteration order.
     """
     if not isinstance(objects, Mapping):
         raise ValueError("objects must be a mapping")
-    if isinstance(bounds, (str, bytes)) or len(bounds) != 4:
+    if isinstance(bounds, (str, bytes)) or not isinstance(bounds, Sequence) or len(bounds) != 4:
         raise ValueError("bounds must be (xmin, ymin, xmax, ymax)")
     xmin, ymin, xmax, ymax = (_number(v, "bounds") for v in bounds)
     if xmin > xmax or ymin > ymax:
@@ -41,22 +55,27 @@ def predictive_range_query(objects: Mapping, bounds: Sequence[float], horizon: f
         raise ValueError("horizon and uncertainty_radius must be non-negative")
     results = []
     for object_id, state in objects.items():
-        if isinstance(state, (str, bytes)) or len(state) != 4:
+        if isinstance(state, (str, bytes)) or not isinstance(state, Sequence) or len(state) != 4:
             raise ValueError(f"state for {object_id!r} must be (x, y, vx, vy)")
         x, y, vx, vy = (_number(v, f"state for {object_id!r}") for v in state)
-        predicted = (x + vx * dt, y + vy * dt)
-        nearest_x = min(max(predicted[0], xmin), xmax)
-        nearest_y = min(max(predicted[1], ymin), ymax)
-        distance = math.hypot(predicted[0] - nearest_x, predicted[1] - nearest_y)
+        px, py = _advance(x, y, vx, vy, dt)
+        nearest_x = min(max(px, xmin), xmax)
+        nearest_y = min(max(py, ymin), ymax)
+        distance = math.hypot(px - nearest_x, py - nearest_y)
         if distance <= radius:
-            results.append((object_id, predicted, distance))
+            results.append((object_id, (px, py), distance))
     return results
 
-def dead_reckoning_update_required(reported_position, reported_velocity, elapsed_time, observed_position, *, tolerance: float) -> bool:
+
+def dead_reckoning_update_required(reported_position, reported_velocity,
+                                   elapsed_time, observed_position, *, tolerance):
     """Request a report when observed error exceeds the prediction tolerance."""
     predicted = predict_position(reported_position, reported_velocity, elapsed_time)
     observed = _point(observed_position, "observed_position")
     limit = _number(tolerance, "tolerance")
     if limit < 0:
         raise ValueError("tolerance must be non-negative")
-    return math.hypot(observed[0] - predicted[0], observed[1] - predicted[1]) > limit
+    error = math.hypot(observed[0] - predicted[0], observed[1] - predicted[1])
+    if not math.isfinite(error):
+        raise ValueError("prediction error overflowed finite numeric range")
+    return error > limit

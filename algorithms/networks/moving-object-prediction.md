@@ -1,21 +1,22 @@
 # Moving-object prediction and predictive range queries
 
 For reported position p=(x,y), velocity v=(vx,vy) and elapsed time dt, the
-constant-velocity estimate is p(dt) = p + v dt. This is a short-horizon
-baseline that assumes velocity remains constant and coordinates and time
-units are compatible.
+constant-velocity estimate is p(dt)=p+v*dt. This is a short-horizon baseline
+that assumes velocity remains constant and coordinates and time units are
+compatible. Inputs and calculated coordinates must be finite; arithmetic
+overflow is rejected rather than propagated as infinity.
 
 Given an axis-aligned rectangle R and uncertainty radius r, predict each
 object's center and retain it when the disk of radius r intersects R. The
 implementation computes the Euclidean distance from the predicted center to
 the nearest point on R and tests whether that distance is at most r. This is
 a deterministic bounded-error envelope, not a probabilistic confidence
-statement.
+statement. Rectangle and disk boundaries are inclusive.
 
-A new state report is requested when the observed position differs from the
-extrapolated position by more than a caller-supplied tolerance. Production
-systems may use anisotropic uncertainty, acceleration bounds, network
-constraints or communication cost.
+A new state report is requested when observed position differs from the
+extrapolated position by more than a caller-supplied tolerance. The threshold
+is strict. Production systems may use anisotropic uncertainty, acceleration
+bounds, network constraints or communication cost.
 
 For n objects, a linear scan of one rectangle query costs O(n) time and
 O(k) result storage for k matches. A TPR-tree or another spatiotemporal index
