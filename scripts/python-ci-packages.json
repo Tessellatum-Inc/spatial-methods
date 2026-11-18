@@ -76,6 +76,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/bowyer-watson",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/brovey-pansharpening",
     "pythonpath": ""
   },
@@ -880,6 +884,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/ray-triangle-intersection",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/rbf-interpolation",
     "pythonpath": ""
   },
@@ -1265,10 +1273,6 @@
   },
   {
     "directory": "implementations/python/zonal-statistics",
-    "pythonpath": ""
-  },
-  {
-    "directory": "implementations/python/ray-triangle-intersection",
     "pythonpath": ""
   }
 ]
