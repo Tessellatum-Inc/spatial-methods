@@ -728,6 +728,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/p-dispersion",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/p-median",
     "pythonpath": ""
   },
