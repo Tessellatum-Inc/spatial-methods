@@ -948,6 +948,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/sensor-noise-estimation",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/set-covering",
     "pythonpath": ""
   },
