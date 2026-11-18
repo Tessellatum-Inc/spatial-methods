@@ -1,23 +1,23 @@
 # Release readiness and completion ledger
 
 **Snapshot:** 18 November 2026  
-**Repository:** `geo-dev-hub/spatial-analysis`  
-**Working branch:** `completion/section-22-atomic-audit`  
+**Repository:** `Tessellatum-Inc/spatial-methods`  
 **Integration target:** `main`  
-**Pull request:** [#3](https://github.com/geo-dev-hub/spatial-analysis/pull/3) — draft, open, unmerged
+**Latest main commit:** `e8d0bbdb4f2e9c847330075ad76249b7b61101a0` — Restore original README with Spatial Methods name
 
-This is the single release-gate record. It distinguishes an engineering-ready foundation from complete source-entry verification. The project is no longer in its build phase; remaining work is stabilization, closure, and a release decision. Do not reopen broad audits without a concrete defect or release blocker.
+This is the single release-gate record. It distinguishes a maintainable engineering foundation from complete source-entry verification. Closeout is focused on concrete release blockers, not repeated broad audits.
 
 ## Current engineering checkpoint
 
-- Current head before this ledger update: `a9aae51ee2eefd9c9fe50a47f2cd0c046c2e7994`.
-- Current-head PR workflow [44227052820](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44227052820) completed: **58 of 59 jobs succeeded; 0 failed; 1 skipped**. The skipped job was contributor-sign-off verification, which is not applicable to this PR event. The separate push workflow [44227046308](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44227046308) also succeeded on the same head.
-- The passing matrix covers the repository's isolated Python-package tests, notebook execution, Clipper2 checks and integrity checks. It is CI evidence, not proof that every method in the source compendium is technically verified.
-- Latest changes included internal-link/anchor checking and numeric overflow guards for Hansen–Hurwitz. No additional code changes are required by the current CI result.
+- PR #3 (compendium foundation), PR #4 (Patreon launch foundation), and PR #6 (Spatial Methods identity) are merged.
+- PR #5 was superseded by PR #6. PR #2's Bowyer–Watson work was completed within the compendium foundation; do not reopen the stale branch.
+- The README is restored to its original welcoming Spatial Analysis text with only the heading renamed to Spatial Methods. Standalone logo removed. Its navigation and links remain.
+- Latest main workflow [44272370055](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44272370055) completed successfully. This verifies that the README change passed the configured Python examples workflow; it does not replace the broader full-workflow evidence recorded below.
+- The earlier 58/59-job CI result and link/anchor integrity checks remain historical evidence for the prior candidate, not a fresh count for this commit.
 
 ## Source-review checkpoint
 
-The current [source review dashboard](../catalog/review-dashboard.md), recounted from all 22 section indexes on 18 November 2026:
+The [source review dashboard](../catalog/review-dashboard.md) last recorded 695 source-entry rows on 18 November 2026:
 
 | Review label | Entries |
 |---|---:|
@@ -26,13 +26,13 @@ The current [source review dashboard](../catalog/review-dashboard.md), recounted
 | Intake only / not checked | 389 |
 | Fully verified | 0 |
 
-These counts describe source-entry status, not repository completion percentages. Many entries point to lessons, implementations, or related records, but their complete identity, bibliography, technical-claim, or rights review remains incomplete. The dashboard is transparent about this and must not be changed to imply verification that has not occurred.
+These are source-entry review statuses, not repository completion percentages. Entries may link to lessons or implementations while identity, bibliography, technical claims, reproduction or rights review remains incomplete. Preserve uncertainty labels; do not promote entries without evidence.
 
 ## Decisions already made
 
 - Original code, tests, scripts and executable examples: Apache-2.0.
 - Original explanatory prose, tutorials, exercises, narrative notebook content and project-created diagrams: CC BY 4.0.
-- Future contributions: DCO 1.1 sign-off on each contribution commit; do not rewrite historical commits to retroactively add sign-offs.
+- Future contributions: DCO 1.1 sign-off on each contribution commit; do not rewrite historical commits retroactively.
 - Third-party material and the preserved source transcription are excluded from blanket project licensing unless a specific reuse basis is established.
 - The public repository is the technical resource. Patreon may sell guided learning, curation, support and community services—not exclusive rights over publicly licensed material.
 
@@ -40,58 +40,57 @@ See [licensing and reuse](licensing-and-reuse.md), [licensing decision record](l
 
 ## Release candidate notes
 
-Draft versioned notes: [Engineering Foundation 0.1.0](releases/engineering-foundation-0.1.0.md). They are scope notes, not a published release/tag.
+Draft versioned notes: [Engineering Foundation 0.1.0](releases/engineering-foundation-0.1.0.md). This is scope documentation, not a published release or tag.
 
-## Three-batch closeout
+## Closeout
 
-### Batch 1 — Stabilization: complete
+### Stabilization — complete based on recorded evidence
 
-- [x] Latest head's CI passes (58 success; 1 expected skip; no failures).
-- [x] Internal Markdown/notebook link and heading-anchor checks are wired into CI.
-- [x] Recent implementation fixes are included.
-- [x] Freeze feature additions unless a release-critical defect is discovered.
+- [x] Repository foundation and major integration work merged.
+- [x] Python/package tests, notebooks, Clipper2 checks and integrity checks passed on the prior candidate (recorded as 58 successful, 0 failed, 1 expected skip).
+- [x] Markdown/notebook link and heading-anchor checks are wired into CI.
+- [x] README identity correction restored and committed on main.
+- [x] Freeze feature additions unless a release-critical defect is found.
 
-### Batch 2 — Closure: in progress
+### Closure — remaining bounded tasks
 
-- [ ] Reconcile README, catalogue/dashboard, licence notices and release notes to the final head.
-- [ ] Keep uncertain source claims clearly labelled as unverified; do not inflate source verification statuses.
-- [ ] Keep questionable third-party material out of the licensed public release or link to it only.
-- [ ] Close obvious navigation, setup, packaging, or documentation defects found in the consolidated pass.
-- [ ] Publish a bounded-scope release note and clear extension/maintenance instructions.
+- [ ] Reconcile final release notices, scope statement and release notes against the current main tree.
+- [ ] Keep unverified source claims and uncertain third-party material clearly labelled or excluded/link-only.
+- [ ] Review clean-install/setup instructions and obvious packaging/navigation defects; fix only confirmed defects.
+- [ ] Conduct a focused rendered/mobile/accessibility pass; report limitations honestly.
 
-### Batch 3 — Release decision: pending
+### Release decision — pending
 
-- [ ] One consolidated final checklist on the exact release candidate; no audit loops.
-- [ ] Confirm CI green on exact candidate.
-- [ ] Confirm release-scope statement, attribution and rights exclusions.
-- [ ] Decide whether to merge and tag a public **engineering foundation release** or defer for a named material blocker.
+- [ ] Run the complete CI workflow on the exact release candidate after closure edits.
+- [ ] Confirm license/attribution exclusions and bounded release scope.
+- [ ] Make a single release decision: tag the public engineering foundation or defer for one named material blocker.
 
-## Gates and how they will be handled
+## Gates
 
-| Gate | State | Closeout rule |
+| Gate | State | Release rule |
 |---|---|---|
-| 47-page source preservation and 22-section navigation | Complete | Preserve as source record; no scope loss |
-| Catalogue/dashboard reconciliation | Complete at current snapshot | Recount once on release candidate |
-| Python examples, notebooks, CI and checks | Passed on current head | Re-run after final changes; fix failures only |
-| Implementation scope and limitations | In place, uneven coverage | Preserve bounded/teaching-baseline labels; don't promise production readiness |
-| Source identity and bibliography across all entries | Open | Transparently retain unknown/ambiguous items; do not block engineering-foundation release unless public claims mislead |
-| Technical claims across all entries | Open | Do not label fully verified; queue future verification work |
-| Third-party asset rights | Open | Remove, replace or link-only any unclear third-party material in the release; retain exclusions |
-| Transcription rights (47-page source) | Open | Keep excluded from blanket licensing; revisit only if a rights-cleared edition is intended |
-| Rendered/mobile/accessibility review | Not yet complete | Fix obvious and critical usability defects in the final pass; disclose any unperformed review, don't claim certification |
-| Release notes, scope and version | Pending | Complete in closeout, with an explicit foundation-release scope |
+| 47-page source preservation and 22-section navigation | Complete | Preserve the source record |
+| Catalogue/dashboard structure | Established; status snapshot dated 18 Nov | Recount once at release candidate |
+| Python examples, notebooks, CI and checks | Prior candidate passed; latest README workflow green | Run exact candidate once; fix failures only |
+| Implementation scope and limitations | In place, uneven coverage | Keep teaching-baseline/bounded labels |
+| Source identity and bibliography across all entries | Open | Keep unknowns explicit; not a foundation-release blocker unless public claims mislead |
+| Technical claims across all entries | Open | Do not claim full verification; continue as research backlog |
+| Third-party asset rights | Open | Remove, replace or link-only unclear material; retain exclusions |
+| Transcription rights | Open | Keep source transcription outside blanket licence |
+| Rendered/mobile/accessibility review | Open | Fix obvious critical defects; no certification claims |
+| Release notes, scope and version | Pending | Finish bounded release notes and explicit scope |
 
 ## Integration policy
 
-1. Work only on concrete closure items on this branch.
-2. Avoid new methods, features, broad research sweeps, or speculative cleanups during closeout.
-3. If a rights concern is identified, remove or isolate the material from the release rather than expanding into a legal research loop.
-4. Once the declared engineering-foundation gates are met, mark PR #3 ready for review and merge only after the required review and release decision. Do not merge solely on a green CI result.
-5. Run the full workflow on the exact merged `main` commit, tag that verified candidate, and handle later additions through normal reviewed PRs.
+1. Work on concrete closure items only.
+2. No new methods, feature work, broad research sweeps or speculative cleanup during release closeout.
+3. Isolate unclear rights material rather than starting an unbounded legal review.
+4. Do not merge or tag solely because CI is green; complete the stated scope and review.
+5. Run full CI on the exact release candidate, tag that verified commit, and handle later additions through normal reviewed changes.
 
 ## Completion definitions
 
-- **Engineering foundation release:** the 22-section structure, extension rules, licence boundaries, tested examples, CI, catalogue integrity and public learning pathways are stable enough for ongoing maintenance and additions. Unverified source rows and rights-excluded content are clearly labelled and not presented as validated or licensed.
-- **Full compendium verification:** all 695 source-entry rows and their child records receive appropriate identity, bibliography, technical-claim, implementation/reproduction and rights reviews. This is a separate long-term research programme—not a prerequisite for releasing a transparent engineering foundation.
+- **Engineering foundation release:** the 22-section structure, extension rules, licence boundaries, tested examples, CI, catalogue integrity and public learning paths are stable for ongoing maintenance. Unverified source rows and rights-excluded content remain clearly labelled and are not presented as validated or licensed.
+- **Full compendium verification:** all 695 source-entry rows and their child records receive identity, bibliography, technical-claim, implementation/reproduction and rights reviews. This is a long-term research programme, not a prerequisite for a transparent foundation release.
 
-The closeout is explicitly aimed at the first milestone. Do not let the second milestone turn into an indefinite release blocker.
+Closeout targets the engineering foundation. Full source verification must not become an indefinite release blocker.
