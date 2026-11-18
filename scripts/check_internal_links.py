@@ -54,7 +54,7 @@ def markdown_sources(path: Path) -> list[tuple[str, str]]:
 
 def resolve_target(source_name: str, raw_target: str) -> Path | None:
     target = raw_target.strip().split()[0].strip("<>")
-    if not target or target.startswith("#"):
+    if not target:
         return None
     parsed = urlsplit(target)
     if parsed.scheme or parsed.netloc:
