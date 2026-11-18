@@ -2,6 +2,8 @@
 
 **Understand the methods behind the maps, models and decisions that shape our world.**
 
+<p align="center"><img src="assets/spatial-methods-mark.svg" alt="Spatial Methods geometric mark" width="112" /></p>
+
 Spatial data is everywhere. It helps us find places, plan journeys, understand changing environments, measure access to services and make better decisions about the places we share.
 
 But what actually happens behind the map? How does a computer know two areas overlap? How do we find the best route, measure a pattern, predict what might change or decide where something should go?
@@ -74,6 +76,7 @@ The initial scope comes from the supplied *Spatial Analysis Algorithms: Complete
 - [Compendium completion standard and release gates](docs/compendium-completion-standard.md)
 - [How we research and explain a method](docs/project-method.md)
 - [How we write and teach](docs/voice-and-writing.md)
+- [Spatial Methods identity and visual guide](docs/brand-guidelines.md)
 - [How we reuse and attribute visual sources](docs/visual-sources-and-attribution.md)
 - [How we check technical claims](docs/research-standard.md)
 - [How to contribute](CONTRIBUTING.md)
