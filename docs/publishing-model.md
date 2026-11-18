@@ -1,62 +1,84 @@
-# How the learning and membership experience works
+# The public archive and the membership experience
 
-The collection is open to explore. Membership is for people who want to go further, learn with more structure and have the complete material together in one place.
+**Operating principle:** GitHub is the complete public technical archive. Patreon is the paid learning, guidance and community layer.
 
-The idea is straightforward: useful material should be easy to discover, and deeper learning should feel worth coming back for.
+The public repository must be valuable and independently usable. Membership should help people learn faster, stay consistent, get feedback and apply the methods—not make the public archive artificially incomplete.
 
-## Read and explore for free
+## 1. Public GitHub: the complete technical foundation
 
 Anyone can:
 
-- explore the public collection and its learning paths;
-- read selected full explanations and weekly introductions;
-- use public examples, code and exercises;
-- ask questions, suggest topics and help improve the work;
-- follow the project as new methods and research are added.
+- read the explanations, mathematics, source references and limitations;
+- use the original code, tests, notebooks and examples under their published licences;
+- follow public learning paths and complete exercises;
+- inspect benchmarks, implementation decisions, corrections and contribution history;
+- suggest topics, report errors and contribute improvements;
+- add new algorithms, variants, methods and implementations through the extension protocol.
 
-There should be enough here to understand the quality and usefulness of the work before deciding to become a member.
+The public archive is not a teaser. Do not reserve essential implementation details, corrections or safety-critical limitations for paid members.
 
-## Go further with membership
+## 2. Patreon: pay for guidance, depth and support
 
-Membership is designed for people who want the complete learning experience:
+Patreon can provide original companion material and services that make the archive easier to learn from:
 
-- the full weekly edition, with the deeper explanation behind the public introduction;
-- the complete eligible archive, available as soon as membership begins;
-- detailed method guides, references and further reading;
-- guided learning paths and practical study plans;
-- notebooks, worked examples, exercises and solutions;
-- datasets and experiments where the licences allow sharing;
-- performance comparisons and implementation notes;
-- opportunities to discuss methods, share work and learn alongside others.
+- sequenced study programmes with weekly milestones;
+- annotated reading plans and curated method collections;
+- extended walkthroughs that explain design decisions and debugging;
+- additional exercises, challenge sets and worked solution discussions;
+- project briefs and applied case studies using permitted data;
+- live workshops, office hours and group problem-solving sessions;
+- feedback on member projects, within clearly stated scope;
+- member discussions, accountability and peer learning;
+- downloadable study planners, progress trackers and revision sheets.
 
-The final membership levels, prices and exact benefits will be tested before they are promised. The aim is not to put a price tag on every useful explanation. It is to offer a genuinely richer way to learn.
+A paid lesson may point to public code and explain how to use it. It must not imply that the code or public explanation is exclusive.
 
-## Joining later should never mean starting behind
+## 3. Suggested membership structure
 
-A person who joins in the second year should not have to wait a year to catch up. They should be able to explore the eligible archive from day one and receive new weekly editions from the date they join.
+Start with a small number of benefits that can be delivered consistently. Avoid promising unlimited personal support or a new full course every week.
 
-The archive is organised by topic and learning path as well as by publication date. Someone can follow the original weekly journey, start with a subject they need today, or use the collection as a reference library.
+| Level | Purpose | Example benefits |
+|---|---|---|
+| Supporter | Sustain the open archive | Supporter updates, roadmap notes, behind-the-scenes research summaries and community participation |
+| Guided learner | Turn the archive into a learning programme | Monthly guided path, study plan, companion notes, exercises and solution discussions |
+| Studio / cohort | Learn by applying methods | Periodic live workshops, project briefs, group critique and limited office-hour sessions |
 
-## One piece of research, many useful ways to learn
+These are benefit concepts, not final tier names or prices. Launch with one reliable guided-learning offer first; add higher-touch benefits only after demand and delivery capacity are demonstrated.
 
-A researched method can become:
+## 4. One research effort, multiple outputs
 
-1. a clear public explanation;
-2. a complete weekly learning edition;
-3. a detailed technical guide;
-4. a notebook or practical exercise;
-5. part of a subject collection, course or workshop.
+A researched method should have one canonical technical record. From that record, create several useful learning formats:
 
-These are different ways into the same subject, not five disconnected versions that drift apart. Technical corrections are made against the main record and carried into related learning materials.
+1. Public canonical explanation with references, assumptions and limitations.
+2. Public code, tests, notebook or external integration where appropriate.
+3. Public exercises that help readers practise.
+4. Patreon companion path with sequence, context, milestones and reflection prompts.
+5. Optional workshop or applied project that teaches the method in a realistic setting.
 
-## The community stays open
+When a technical correction is made, update the canonical public source first and carry it into derivative teaching materials. Do not allow paid and public versions to drift apart.
 
-You do not need a membership to point out an error, suggest a method, share a useful reference or contribute to the public project.
+## 5. Archive access and continuity
 
-Membership supports the extra depth, organisation and learning experience. It is not a fee for permission to participate.
+New members should be able to access the eligible Patreon learning archive immediately, organised by topic and learning path—not only by publication date. People who cancel retain access to the public GitHub archive and any material they independently downloaded under its licence. Patreon-only services and platform-hosted benefits remain subject to the platform's membership terms.
 
-## How the project is organised
+Keep the canonical technical work in GitHub. Patreon should not become the only storage location for essential source code, corrections or reference material.
 
-The public technical collection and its contributions live in GitHub. Membership and payment are handled separately. The process starts simply and is improved as we learn what readers actually use.
+## 6. Publishing cadence
 
-We would rather make a small number of excellent, useful learning experiences than build a complicated platform before it is needed.
+Prefer a sustainable cadence over volume. A good starting rhythm is one substantial guided learning release per month, supported by smaller progress notes and community prompts. A quarterly workshop or cohort can be added when there is enough demand.
+
+The cadence should be reduced rather than silently missed when research or technical validation takes longer. Accuracy and trust matter more than a content treadmill.
+
+## 7. What not to sell
+
+- Exclusive access to code or documentation already released under Apache-2.0 or CC BY 4.0.
+- Unlicensed third-party figures, datasets, papers or copied source text.
+- Guaranteed individual consulting, debugging or project delivery unless separately scoped and priced.
+- Claims that a teaching implementation is production-ready when it is not.
+- A promise that membership makes the project complete or guarantees a particular outcome.
+
+## 8. What success looks like
+
+Track whether members actually use the material: path completion, exercise participation, workshop attendance, repeat engagement, questions resolved, project progress and renewal. Use that evidence to improve the learning experience before adding more tiers or platforms.
+
+The GitHub archive grows through research and contributions. Patreon grows by helping people turn that knowledge into capability.
