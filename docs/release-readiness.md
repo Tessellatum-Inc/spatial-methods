@@ -10,10 +10,10 @@ This file is the release-gate record. It deliberately distinguishes a healthy so
 
 ## Current engineering checkpoint
 
-- Branch head at this update: `791fea00ddf79933cd5e7c573326078e2280352d`.
+- Branch head at this update: `7e6cbd474afcde335610ef52d7891231b9966ffc` (release-ledger-only follow-up).
 - The historical 58/58 workflow run [44208356316](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44208356316) is green, but is **not** the current-head run.
 - Current-head workflow run [44221714064](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44221714064) returned **30 jobs, all 30 successful**. This observed page includes Python package shards, notebook shards, Clipper2 checks and the internal-link/catalogue/CI-checker job.
-- The 30/30 result is not evidence that every workflow required by the earlier 58-job run has completed on this head. Exact-head CI remains **partially confirmed**, not fully green. The latest combined commit-status endpoint returned no status entries. Any later source change requires another exact-head run before release.
+- The 30/30 result is tied to the immediately preceding head `791fea00ddf79933cd5e7c573326078e2280352d`, not the release-ledger follow-up. The follow-up is documentation-only, but exact-head CI remains **partially confirmed**, not fully green. The latest combined commit-status endpoint returned no status entries. Any later source change requires another exact-head run before release
 
 ## Source-review checkpoint
 
