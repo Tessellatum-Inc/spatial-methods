@@ -38,11 +38,11 @@ The Euclidean foundation covers five stationary covariance examples and finite-m
 
 ## Sensor artifact and geometry correction
 
-A scoped [Haar-detail MAD sensor-noise estimator](../../algorithms/remote-sensing/sensor-noise-estimation.md) is now implemented and tested for approximately additive white-Gaussian noise, including independent per-band estimates. It does not cover correlated/periodic/signal-dependent noise or physical sensor calibration.
+A scoped [Haar-detail MAD sensor-noise estimator](../../algorithms/remote-sensing/sensor-noise-estimation.md) is implemented and tested for approximately additive white-Gaussian noise, including independent per-band estimates. The existing [Fourier filtering package](../../implementations/python/fourier-filtering/README.md) now also provides user-guided conjugate-symmetric notch filtering for periodic destriping, with a synthetic vertical-stripe recovery test. These bounded baselines do not cover correlated/periodic/signal-dependent noise generally, automatic stripe-peak detection, wavelet destriping or physical sensor calibration.
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Destriping (Fourier, wavelet), noise estimation, MTF compensation, deblurring, jitter correction | Sensor artifact correction / image restoration | 46 | Partial — Haar diagonal-detail MAD estimates additive white-Gaussian noise sigma per band with seeded synthetic tests; Fourier/wavelet destriping, MTF compensation, deblurring, jitter correction and broader sensor-noise models remain open |
+| Destriping (Fourier, wavelet), noise estimation, MTF compensation, deblurring, jitter correction | Sensor artifact correction / image restoration | 46 | Partial — user-guided Fourier notch rejection and synthetic periodic-stripe attenuation are tested; Haar diagonal-detail MAD estimates additive white-Gaussian noise sigma per band. Automatic stripe detection, wavelet destriping, MTF compensation, deblurring, jitter correction and broader sensor-noise models remain open |
 | Line-scan and rolling-shutter geometric models, attitude and star tracker processing, boresight refinement | Sensor geometry and calibration workflows | 46 | Not checked — intake only |
 | Cloud removal with SAR guidance, SAR-optical fusion, hyperspectral destriping | Multisensor restoration and fusion | 46 | Not checked — intake only |
 
