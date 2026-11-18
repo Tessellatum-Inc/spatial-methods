@@ -22,7 +22,7 @@ These are **name-alignment signals, not confirmed orphan counts**. Canonical ver
 
 No source status was promoted and no item was declared orphaned based on this scan.
 
-## Next reconciliation step
+**Confirmed alias crosswalk:** [Catalogue crosswalk — Batch 1](../catalog/catalogue-crosswalk-batch-1.md) records six direct name differences after inspecting the linked verification/package READMEs. This is a small confirmed sample, not a full reconciliation of the mismatch list.\n\n## Next reconciliation step
 
 For the 109 direct-mismatch signals, create explicit crosswalk entries (canonical record ↔ package slug ↔ notebook ↔ source-section row) where a relationship is supported by reading the underlying files. Split true multi-method families into child records when necessary; mark unresolved mapping questions rather than infer equivalence from similar names.
 
