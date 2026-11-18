@@ -112,7 +112,7 @@ A native [Clipper2 offsetting example](implementations/clipper2-csharp/README.md
 
 The weekly edition format is documented in the [newsletter issue template](docs/newsletter-issue-template.md).
 
-**Current stage:** the compendium now has tested learning material across geometry, routing, spatial statistics, geostatistics, raster and terrain analysis, remote sensing, location science, decision support, GeoAI and geodesy. The repository inventory and CI status are tracked in the [roadmap](docs/repository-roadmap.md). All 22 source sections are indexed, but each source entry still needs appropriate verification, and many methods remain to be researched and implemented.
+**Current stage:** the engineering foundation is assembled across 22 indexed source sections, with learning material, tested examples, notebooks, catalogue checks and CI. The latest pre-closeout head completed CI with 58 successful jobs and one expected skipped contributor-sign-off job. This is a stable engineering foundation—not a claim that all 695 source-entry rows are verified or that every third-party item is licensed for redistribution. See the [release readiness ledger](docs/release-readiness.md) for the closeout boundary and [review dashboard](catalog/review-dashboard.md) for source-verification status.
 
 
 ## Repository completion and review
