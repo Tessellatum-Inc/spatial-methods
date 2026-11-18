@@ -99,7 +99,7 @@ A method is complete only when its canonical record names the exact variant and 
 |---|---|---|---|---|
 | S22-SEN-01 | Fourier destriping | Image restoration | Open | Define stripe orientation/frequency model; synthetic stripe recovery and signal-preservation tests |
 | S22-SEN-02 | Wavelet destriping | Image restoration | Open | Specify wavelet/threshold strategy; compare against clean synthetic scenes |
-| S22-SEN-03 | Sensor noise estimation | Estimation | Open | Separate noise models; bias/variance tests on known noise |
+| S22-SEN-03 | Sensor noise estimation | Estimation | Partial | A scoped Haar diagonal-detail MAD estimator now estimates per-band additive white-Gaussian sigma; seeded synthetic tests cover known noise levels, smooth trends, band separation, odd dimensions and invalid inputs. It does not model correlated, periodic, signal-dependent or full physical sensor noise: [lesson](../algorithms/remote-sensing/sensor-noise-estimation.md), [package](../implementations/python/sensor-noise-estimation/README.md), [verification](../catalog/verification/sensor-noise-estimation.md). Broader noise models and independent source-variant review remain open. |
 | S22-SEN-04 | Modulation transfer function compensation | Image restoration | Open | Define sensor MTF/deconvolution regularisation; stability and ringing tests |
 | S22-SEN-05 | Image deblurring | Inverse problem | Open | Specify blur kernel and regulariser; quantify reconstruction and noise amplification |
 | S22-SEN-06 | Jitter correction | Geometric correction | Open | Define platform/sensor motion model; synthetic displacement recovery |
