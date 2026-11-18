@@ -1,6 +1,8 @@
 import numpy as np
 import pytest
-from fourier_filtering import (fft2_image, ifft2_image, radial_filter, filter_frequency,\n                              notch_reject_filter, destripe_periodic)
+from fourier_filtering import (fft2_image, ifft2_image, radial_filter, filter_frequency,
+    notch_reject_filter, destripe_periodic,
+)
 
 def test_round_trip():
     x=np.random.default_rng(4).normal(size=(13,17))
