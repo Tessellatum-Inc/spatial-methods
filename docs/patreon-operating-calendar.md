@@ -1,4 +1,4 @@
-# Patreon operating calendar
+# Spatial Methods — Patreon operating calendar
 
 ## Monthly production cycle
 
