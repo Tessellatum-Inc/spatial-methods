@@ -26,11 +26,12 @@ def test_invalid():
 def test_notch_filter_removes_known_periodic_vertical_striping():
     rows, cols = 64, 96
     y, x = np.indices((rows, cols))
-    clean = 20.0 + 0.05 * x + 0.02 * y
+    clean = (20.0 + 0.5 * np.cos(2 * np.pi * 2 * x / cols)
+             + 0.2 * np.sin(2 * np.pi * 3 * y / rows))
     stripe = 3.0 * np.cos(2 * np.pi * 7 * x / cols)
     observed = clean + stripe
     restored = destripe_periodic(observed, centers=[(0.0, 7 / cols)], radius=0.008)
-    assert np.sqrt(np.mean((restored - clean) ** 2)) < 0.15
+    assert np.sqrt(np.mean((restored - clean) ** 2)) < 1e-6
 
 
 def test_notch_filter_is_conjugate_symmetric_and_preserves_dc():
