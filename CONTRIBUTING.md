@@ -87,9 +87,9 @@ An AI-assisted pull request must:
 1. Be clearly disclosed in its pull request description, identifying the tool or agent and summarising its role.
 2. Preserve normal commit authorship and provenance; do not impersonate a human contributor or fabricate a DCO trailer.
 3. Be reviewed by a human maintainer for correctness, security, licensing, source attribution, tests and scope.
-4. The human maintainer must complete the explicit review-attestation checkbox in the pull request description only after that review is complete.
+4. Receive the repository's `agent-reviewed` label from a human maintainer only after that review is complete.
 
-The checked statement `- [x] Human maintainer review completed: AI-generated changes, licensing, provenance, tests and scope reviewed.` is the maintainer's explicit attestation. CI treats the DCO check as not applicable to agent-generated commits only when this exact checked statement is present. Editing the pull request description triggers CI again. Without it, the normal DCO check remains mandatory for every contribution commit.
+The `agent-reviewed` label is the maintainer's explicit attestation that the review above has occurred. For a pull request carrying that label, CI records the DCO check as not applicable to the agent-generated commits and requires the label to be present when the check runs. Applying the label triggers CI again. Without the label, the normal DCO check remains mandatory for every contribution commit.
 
 This exception does not waive review, licensing, attribution, testing or legal responsibilities. Human-authored commits in mixed contributions must still carry their own DCO sign-offs.
 
