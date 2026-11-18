@@ -52,7 +52,8 @@ Read [how the implementation works](implementation-walkthrough.md) for ring norm
 
 - This is a teaching implementation for a single simple ring.
 - It does not support holes, multipolygons or self-intersecting rings.
-- It uses exact floating-point comparisons for the boundary test. Real datasets may require a carefully chosen tolerance or robust predicates.
+- The original `locate_point` and `locate_point_winding` functions use floating-point arithmetic and exact equality; they are pedagogical, not robust predicates.
+- The additional `locate_point_exact`, `winding_number_exact` and `locate_point_winding_exact` functions convert finite decimal coordinates to `Fraction` and use division-free exact orientation signs. They avoid floating-point predicate sign errors for the supplied decimal representations, at higher computational cost.
 - It uses planar x/y coordinates; it does not transform CRS or interpret longitude/latitude.
 - Production systems should use a geometry library with documented topology and boundary semantics.
 
@@ -67,3 +68,8 @@ The 12 tests passed in the recorded environment. Run them again in your own envi
 ## Winding-number implementation
 
 The module also exposes `winding_number(point, ring)` and `locate_point_winding(point, ring)`. These implement the signed crossing-count method and the nonzero winding fill rule. The scalar winding function raises on boundary points because the winding number is undefined there; the three-way classifier reports boundary separately. For simple rings, seeded randomized tests compare the winding classifier against the independent even-odd ray-crossing implementation. Both are O(n) in the number of ring edges.
+
+
+## Exact-rational predicate variants
+
+For data where floating-point boundary classification is unacceptable, use `locate_point_exact(point, ring)` or `locate_point_winding_exact(point, ring)`. Both preserve a separate `BOUNDARY` result and use exact rational orientation tests without calculating ray/edge intersection coordinates. `winding_number_exact` returns the signed integer winding count and raises when the query is on the boundary. The exact variants are still scoped to one simple planar ring: they do not validate ring simplicity, model holes or multipolygons, or resolve application-specific fill rules for self-intersecting paths. Fraction arithmetic can be slower and use more memory than floating-point predicates.

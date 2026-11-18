@@ -142,3 +142,110 @@ def locate_point_winding(point: Coordinate, ring: Sequence[Coordinate]) -> Point
         elif b[1] <= p[1] and side < 0:
             count -= 1
     return PointLocation.INSIDE if count != 0 else PointLocation.OUTSIDE
+
+
+# Exact-rational variants ----------------------------------------------------
+
+from fractions import Fraction
+
+ExactCoordinate = tuple[Fraction, Fraction]
+
+
+def _exact_number(value: object) -> Fraction:
+    """Convert a finite numeric coordinate to its exact decimal rational."""
+    if isinstance(value, bool):
+        raise ValueError("boolean coordinates are not supported")
+    try:
+        numeric = float(value)
+        if not isfinite(numeric):
+            raise ValueError("coordinates must be finite")
+        return Fraction(str(value))
+    except (TypeError, ValueError, ZeroDivisionError, OverflowError) as exc:
+        raise ValueError("coordinates must be finite numeric values") from exc
+
+
+def _exact_point(value: Sequence[object]) -> ExactCoordinate:
+    if len(value) != 2:
+        raise ValueError("each point must contain exactly two coordinates")
+    return _exact_number(value[0]), _exact_number(value[1])
+
+
+def _exact_ring(ring: Sequence[Sequence[object]]) -> list[ExactCoordinate]:
+    vertices = [_exact_point(vertex) for vertex in ring]
+    if len(vertices) > 1 and vertices[0] == vertices[-1]:
+        vertices.pop()
+    if len(vertices) < 3 or len(set(vertices)) < 3:
+        raise ValueError("A ring must contain at least three distinct vertices.")
+    return vertices
+
+
+def _exact_orientation(a: ExactCoordinate, b: ExactCoordinate,
+                       p: ExactCoordinate) -> Fraction:
+    """Exact signed cross product; positive is left of directed edge a→b."""
+    return ((b[0] - a[0]) * (p[1] - a[1])
+            - (b[1] - a[1]) * (p[0] - a[0]))
+
+
+def _exact_on_segment(p: ExactCoordinate, a: ExactCoordinate,
+                      b: ExactCoordinate) -> bool:
+    return (
+        _exact_orientation(a, b, p) == 0
+        and min(a[0], b[0]) <= p[0] <= max(a[0], b[0])
+        and min(a[1], b[1]) <= p[1] <= max(a[1], b[1])
+    )
+
+
+def locate_point_exact(point: Sequence[object],
+                       ring: Sequence[Sequence[object]]) -> PointLocation:
+    """Exact-rational even–odd ray crossing for one simple planar ring.
+
+    Finite input coordinates are converted from their string representation
+    to Fraction. Boundary is tested first; half-open vertical intervals and
+    orientation signs avoid division and ambiguous vertex double-counting.
+    """
+    p = _exact_point(point)
+    vertices = _exact_ring(ring)
+    inside = False
+    for a, b in zip(vertices, vertices[1:] + vertices[:1]):
+        if _exact_on_segment(p, a, b):
+            return PointLocation.BOUNDARY
+        side = _exact_orientation(a, b, p)
+        if a[1] <= p[1] < b[1] and side > 0:
+            inside = not inside
+        elif b[1] <= p[1] < a[1] and side < 0:
+            inside = not inside
+    return PointLocation.INSIDE if inside else PointLocation.OUTSIDE
+
+
+def winding_number_exact(point: Sequence[object],
+                         ring: Sequence[Sequence[object]]) -> int:
+    """Exact signed winding number; raises when the query is on the boundary."""
+    p = _exact_point(point)
+    vertices = _exact_ring(ring)
+    count = 0
+    for a, b in zip(vertices, vertices[1:] + vertices[:1]):
+        if _exact_on_segment(p, a, b):
+            raise ValueError("point lies on the ring boundary; use locate_point_winding_exact")
+        side = _exact_orientation(a, b, p)
+        if a[1] <= p[1] < b[1] and side > 0:
+            count += 1
+        elif b[1] <= p[1] < a[1] and side < 0:
+            count -= 1
+    return count
+
+
+def locate_point_winding_exact(point: Sequence[object],
+                               ring: Sequence[Sequence[object]]) -> PointLocation:
+    """Exact-rational three-way classifier using the nonzero winding rule."""
+    p = _exact_point(point)
+    vertices = _exact_ring(ring)
+    count = 0
+    for a, b in zip(vertices, vertices[1:] + vertices[:1]):
+        if _exact_on_segment(p, a, b):
+            return PointLocation.BOUNDARY
+        side = _exact_orientation(a, b, p)
+        if a[1] <= p[1] < b[1] and side > 0:
+            count += 1
+        elif b[1] <= p[1] < a[1] and side < 0:
+            count -= 1
+    return PointLocation.INSIDE if count != 0 else PointLocation.OUTSIDE

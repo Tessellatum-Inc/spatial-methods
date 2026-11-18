@@ -183,3 +183,8 @@ The reference implementation has tests for interior, exterior, edge and vertex c
 | Version | Date | Change | Author / contributor |
 |---|---|---|---|
 | 0.1 | 2026-11-13 | Initial research draft with tested teaching implementation | Project draft |
+
+
+## Exact predicate implementation
+
+The companion Python package now also includes exact-rational ray-crossing and winding-number variants. They convert finite decimal coordinates to rational values and use division-free orientation tests, avoiding floating-point sign errors for the represented decimal inputs. This improves predicate robustness but does not add ring simplicity validation, holes, multipolygons or CRS/geodesic semantics. See the package [README](../../implementations/python/point-in-polygon/README.md) and [walkthrough](../../implementations/python/point-in-polygon/implementation-walkthrough.md).
