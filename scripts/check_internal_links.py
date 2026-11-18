@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Check relative Markdown links and notebook Markdown links in this repository.
 
-External URLs and same-page anchors are deliberately skipped. This check
-validates that local targets exist; it does not validate heading anchors or
-the availability of external websites.
+External URLs and same-page anchors are skipped. This validates local file
+existence, not heading anchors or external site availability.
 """
 
 from __future__ import annotations
