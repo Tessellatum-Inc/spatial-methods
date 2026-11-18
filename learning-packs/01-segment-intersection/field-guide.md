@@ -46,7 +46,7 @@ The signed determinant tells us whether C lies to the left of the directed line 
 
 The determinant is twice the signed area of triangle ABC. Its sign—not its magnitude—is what the intersection predicate needs.
 
-![Orientation cases](../assets/learning-packs/01-segment-intersection/orientation.svg)
+![Orientation cases](../../assets/learning-packs/01-segment-intersection/orientation.svg)
 
 ## 3. From orientation to intersection
 
@@ -65,7 +65,7 @@ That is why the algorithm combines orientation with an on-segment test that chec
 
 If all four orientations are zero, the segments are collinear. Project them onto a coordinate axis and compare their one-dimensional intervals. Their intervals may be disjoint, touch at one endpoint, or overlap over a positive length.
 
-![Segment intersection cases](../assets/learning-packs/01-segment-intersection/intersection-cases.svg)
+![Segment intersection cases](../../assets/learning-packs/01-segment-intersection/intersection-cases.svg)
 
 ## 4. The algorithm at a glance
 
@@ -78,7 +78,7 @@ If all four orientations are zero, the segments are collinear. Project them onto
 
 The decision process is shown below.
 
-![Decision flow](../assets/learning-packs/01-segment-intersection/decision-flow.svg)
+![Decision flow](../../assets/learning-packs/01-segment-intersection/decision-flow.svg)
 
 ## 5. Why exact arithmetic matters
 
