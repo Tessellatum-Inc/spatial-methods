@@ -1,17 +1,26 @@
-# Source verification — Hausdorff and discrete Fréchet distances
+# Source verification — Hausdorff and Fréchet distances
 
 ## Identity
 
-The Hausdorff metric originates in Hausdorff's *Grundzüge der Mengenlehre* (1914). The discrete Fréchet dynamic program is described by Eiter and Mannila (1994), *Computing Discrete Fréchet Distance*, Technical Report CD-TR 94/64, Vienna University of Technology.
+Hausdorff distance is a set-distance metric: the directed version is the maximum distance from elements in one set to their nearest element in the other; the symmetric version is the maximum of the two directed values. The discrete Fréchet distance measures similarity between ordered vertex sequences using a max-min dynamic program. It is not the continuous Fréchet distance.
+
+- Eiter & Mannila (1994), *Computing Discrete Fréchet Distance*, Technical Report CD-TR 94/64, Vienna University of Technology.
+- Alt & Godau (1995), “Computing the Fréchet distance between two polygonal curves,” *International Journal of Computational Geometry & Applications*, 5(1–2), 75–91.
 
 ## Implemented scope
 
-The Python baseline computes directed and symmetric Hausdorff distance between finite point sets and discrete Fréchet distance between ordered vertex sequences. The latter uses the standard max-min dynamic-programming recurrence with a rolling row.
+The previously overlooked `implementations/python/geometry-metrics/` package is a direct package mapping for the canonical record. Its README describes:
+- Directed and symmetric Hausdorff distance for finite point sets (vertex/sample-point distance, not continuous line/segment geometry).
+- Discrete Fréchet for ordered vertex sequences, O(mn) time and O(n) rolling-row memory.
+- Continuous Fréchet decision by Alt–Godau free-space reachability and distance approximation by bisection to absolute tolerance.
+- Additional related geometry metrics, each with separate limitations.
 
-## Limitations
+The package is dependency-free and has tests. A package name/README match does not substitute for CI evidence or validation of every algorithm variant.
 
-Hausdorff is applied to sampled vertices, not continuous segments. Discrete Fréchet is not continuous Fréchet. Both are planar Euclidean computations and require consistent coordinate units. The direct Hausdorff implementation is quadratic in the two point-set sizes; the Fréchet implementation is O(mn) time and O(n) memory.
+## Limits
+
+Planar Euclidean coordinates must share a CRS and linear units. Hausdorff here treats the input as sampled points. Discrete Fréchet is not continuous Fréchet. The implementation's continuous decision/approximation component is a separate method and must be evaluated independently.
 
 ## Rights
 
-Definitions and algorithm recurrences are paraphrased; no source code or figures are reproduced.
+Bibliographic metadata and original explanations only. No source paper text, figures or data are reproduced.
