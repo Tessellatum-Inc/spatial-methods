@@ -115,5 +115,4 @@ The weekly edition format is documented in the [newsletter issue template](docs/
 
 ## Support and learn deeper
 
-The technical archive remains open and independently usable. If you'd like guided learning paths, companion exercises, deeper walkthroughs, workshops and community learning around the methods, join us on [Patreon](https://www.patreon.com/c/StacyMwangi).
-
+The technical archive remains open and independently usable. If you'd like guided learning paths, companion exercises, deeper walkthroughs, workshops and community learning around the methods, join us on [Patreon](https://www.patreon.com/c/SpatialMethods).
