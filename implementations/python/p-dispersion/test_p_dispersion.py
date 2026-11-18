@@ -8,8 +8,8 @@ def test_exact_max_min_selection_on_line():
     coordinates = np.array([0.0, 1.0, 4.0, 8.0, 10.0])
     distances = np.abs(coordinates[:, None] - coordinates[None, :])
     sites, separation = solve_p_dispersion(distances, p=3)
-    assert sites == (0, 3, 4)
-    assert separation == pytest.approx(2.0)
+    assert sites == (0, 2, 3)
+    assert separation == pytest.approx(4.0)
 
 
 def test_square_tie_is_lexicographically_deterministic():
