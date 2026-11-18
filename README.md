@@ -33,7 +33,7 @@ You do not have to start at the beginning. You do not have to know everything be
 | Exploring calculations interactively | [Notebooks and labs](notebooks/README.md) |
 | Checking the source coverage | [Coverage matrix](catalog/coverage-matrix.md) |
 | Learning at your own pace | [Learning paths](learning-paths/README.md) |
-| Finding patterns in spatial data | [Spatial autocorrelation and hotspots](learning-paths/global-spatial-autocorrelation.md), [point-pattern analysis](learning-paths/point-pattern-foundations.md) and [spatial clustering](learning-paths/spatial-clustering-foundations.md) |
+| Finding patterns in spatial data | [Spatial autocorrelation and hotspots](learning-paths/global-spatial-autorrelation.md), [point-pattern analysis](learning-paths/point-pattern-foundations.md) and [spatial clustering](learning-paths/spatial-clustering-foundations.md) |
 | Estimating values between observations | [Spatial interpolation foundations](learning-paths/geostatistics-foundations.md) and [interpolation and geostatistics path](learning-paths/interpolation-and-geostatistics.md) |
 | Working with raster distances | [Raster distance foundations](learning-paths/raster-distance-foundations.md) |
 | Summarising raster neighbourhoods | [Focal raster statistics](algorithms/raster/focal-statistics.md) |
@@ -101,7 +101,7 @@ Go further with [Bentley–Ottmann](algorithms/geometry/bentley-ottmann.md), whi
 
 ## A first look at spatial patterns
 
-Start with the [spatial autocorrelation learning path](learning-paths/global-spatial-autocorrelation.md). It connects six methods, from global Moran's I and Geary's C to local clusters, neighbourhood differences and Getis-Ord hotspots. Local Geary and global Getis-Ord G are supplementary companions added during research. For point data, the new [DBSCAN clustering lesson](algorithms/statistics/dbscan.md) shows how core points, border points and noise are distinguished.
+Start with the [spatial autocorrelation learning path](learning-paths/global-spatial-autorrelation.md). It connects six methods, from global Moran's I and Geary's C to local clusters, neighbourhood differences and Getis-Ord hotspots. Local Geary and global Getis-Ord G are supplementary companions added during research. For point data, the new [DBSCAN clustering lesson](algorithms/statistics/dbscan.md) shows how core points, border points and noise are distinguished.
 
 You can read the individual lessons or open their [interactive notebooks](notebooks/README.md). The examples use small, reproducible data so you can change the values, inspect the spatial relationships and see what changes in the result.
 
@@ -112,3 +112,8 @@ A native [Clipper2 offsetting example](implementations/clipper2-csharp/README.md
 The weekly edition format is documented in the [newsletter issue template](docs/newsletter-issue-template.md).
 
 **Current stage:** the compendium now has tested learning material across geometry, routing, spatial statistics, geostatistics, raster and terrain analysis, remote sensing, location science, decision support, GeoAI and geodesy. The repository inventory and CI status are tracked in the [roadmap](docs/repository-roadmap.md). All 22 source sections are indexed, but each source entry still needs appropriate verification, and many methods remain to be researched and implemented.
+
+## Support and learn deeper
+
+The technical archive remains open and independently usable. If you'd like guided learning paths, companion exercises, deeper walkthroughs, workshops and community learning around the methods, join us on [Patreon](https://www.patreon.com/c/StacyMwangi).
+
