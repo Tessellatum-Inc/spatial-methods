@@ -13,9 +13,9 @@ The goal is not to fill folders or publish pages quickly. The goal is a collecti
 - [x] Contribution guidance and GitHub issue forms.
 - [x] Add an automated check for relative links in Markdown files and notebook Markdown cells.
 - [ ] Check heading anchors and rendered navigation across the repository.
-- [ ] Confirm rights to publish the supplied compendium and its transcription.
-- [x] Prepare a licensing decision proposal for original code, documentation, third-party material and contributions.
-- [ ] Choose project licences for original code and documentation; agree contributor sign-off.
+- [x] Record the owner's confirmation that the supplied compendium is their own project and compilation; page-level review of any incorporated third-party content in the public transcription remains open.
+- [x] Prepare and adopt the split licence decision: Apache-2.0 for original code, CC BY 4.0 for original learning material, and DCO 1.1 sign-off for future contributions.
+- [x] Publish licence texts, material-scope exclusions, DCO instructions and a pull-request checklist; automatic DCO validation applies to new pull requests, with PR #3 exempted from retroactive sign-off.
 - [ ] Review navigation on a phone-sized screen and with a screen reader.
 
 ## 2. The source compendium is accounted for
@@ -29,6 +29,7 @@ The goal is not to fill folders or publish pages quickly. The goal is a collecti
 - [x] Record source-page provenance in the item-level section indexes.
 - [ ] Map duplicates, variants and cross-domain relationships across the full catalogue.
 - [x] Define a primary record-type taxonomy and classification rules.
+- [x] Define a stable extension protocol for supplemental sources, canonical records, variants, implementations, tests, notebooks, exercises and cross-index reconciliation.
 - [x] Add a conservative source-entry review label to every entry row across all 22 section indexes; a linked canonical record is marked partial, not verified.
 - [ ] Confirm the primary kind and record identity, bibliography, technical-claim and rights status separately for every source entry.
 
@@ -876,3 +877,15 @@ The change is a meaningful extension, not completion of the polygon overlay work
 - [x] Link the existing tested PCA fitting/projection implementation to the Section 2 source entry.
 - [x] Add a canonical method record and scoped verification note; distinguish covariance PCA from standardized correlation PCA.
 - [ ] Implement and validate OAC-style geodemographic classification as a complete workflow, including indicator selection, geographic units, scaling, clustering, stability and external validation. A principal-axis factor-analysis teaching baseline with optional varimax rotation is now implemented; maximum-likelihood and confirmatory factor models remain open.
+
+
+## Licensing and extensibility foundation — 18 November 2026
+
+- Original code, tests, scripts and executable examples are licensed under Apache-2.0.
+- Original learning prose, tutorials, exercises, narrative notebook content and project-created diagrams are licensed under CC BY 4.0.
+- DCO 1.1 is adopted prospectively. The new checker verifies sign-off on every commit in new pull requests; the existing PR #3 is exempt because its 211-commit history predates the policy.
+- The owner's authorship statement for the 47-page compendium is recorded. The source transcription remains outside the blanket licence until any incorporated third-party material is reviewed.
+- The public GitHub archive remains complete and reusable. Patreon is defined as the guided-learning, curation, support and community layer, not an exclusive code/documentation paywall.
+- [Extension protocol](extension-protocol.md) establishes how future methods, variants and implementations are added without changing the historical intake layer.
+
+These are foundation decisions, not completion of the source-review or release gates. The latest dashboard still records 695 source-entry rows: 304 Partial, 391 intake-only and zero Fully verified. Heading-anchor/rendered navigation, mobile and screen-reader review, source identity/bibliography/technical verification, third-party rights review and full current-head validation remain open.

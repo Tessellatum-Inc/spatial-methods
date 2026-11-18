@@ -113,3 +113,8 @@ A native [Clipper2 offsetting example](implementations/clipper2-csharp/README.md
 The weekly edition format is documented in the [newsletter issue template](docs/newsletter-issue-template.md).
 
 **Current stage:** the compendium now has tested learning material across geometry, routing, spatial statistics, geostatistics, raster and terrain analysis, remote sensing, location science, decision support, GeoAI and geodesy. The repository inventory and CI status are tracked in the [roadmap](docs/repository-roadmap.md). All 22 source sections are indexed, but each source entry still needs appropriate verification, and many methods remain to be researched and implemented.
+
+
+## Licences and contribution policy
+
+Original code and executable examples are available under [Apache-2.0](LICENSE). Original learning material and project-created diagrams are available under [CC BY 4.0](LICENSE-DOCUMENTATION). See [licence scope and exclusions](LICENSES.md), the [DCO](DCO), and the [extension protocol](docs/extension-protocol.md) for future additions. Third-party assets and the preserved source transcription are not covered by a blanket project licence unless their individual rights are documented.
