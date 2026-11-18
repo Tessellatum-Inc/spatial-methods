@@ -1,53 +1,49 @@
-# Verification work queue — Batch 1
+# Verification work queue — long-term research backlog
 
 Snapshot: 18 November 2026
 
-This is a prioritisation queue for a practical verification sprint, not a claim that these topics have been verified. Status remains governed by the [source-entry verification protocol](../catalog/verification-protocol.md) and the [review dashboard](../catalog/review-dashboard.md).\n\n**Structural audits:** [Catalogue alignment audit — Batch 1](catalogue-alignment-audit.md) and three README-level crosswalk batches ([Batch 1](../catalog/catalogue-crosswalk-batch-1.md), [Batch 2](../catalog/catalogue-crosswalk-batch-2.md), [Batch 3](../catalog/catalogue-crosswalk-batch-3.md)). These reconcile confirmed aliases and record unresolved package-name questions; they are not complete orphan audits.
+This is a prioritised research backlog, **not a release checklist**. The engineering-foundation release can proceed with the current explicit uncertainty labels and rights exclusions. This queue governs future source verification; it does not justify reopening completed engineering work. Status is defined by the [source-entry verification protocol](../catalog/verification-protocol.md) and [review dashboard](../catalog/review-dashboard.md).
+
+**Structural crosswalks:** [Catalogue alignment audit](catalogue-alignment-audit.md) and crosswalk batches [1](../catalog/catalogue-crosswalk-batch-1.md), [2](../catalog/catalogue-crosswalk-batch-2.md), [3](../catalog/catalogue-crosswalk-batch-3.md), and [4](../catalog/catalogue-crosswalk-batch-4.md). These resolve documented aliases and implementation mappings; they do not claim exhaustive source or orphan verification.
 
 ## Work rules
 
-- Keep the source's original label and provenance intact.
-- Split grouped labels into child items before verification when different methods, variants, or rights apply.
+- Keep the original source label and page provenance intact.
+- Split grouped labels into child records when methods, variants, or rights differ.
 - Record primary evidence and the exact claim checked; a DOI/title lookup alone does not verify technical claims.
-- Use teaching-baseline, library-wrapper, or reproduction labels accurately; passing tests does not certify production readiness.
-- Rights checks are separate. Where reuse is not clear, link to the source rather than copying.
-- Update section-index statuses and the dashboard only after evidence is collected and reviewed.
+- Label teaching baselines, library wrappers and reproductions accurately; passing tests do not certify production readiness.
+- Rights checks are independent. If reuse is unclear, link to the source rather than copying.
+- Update source-entry labels and the dashboard only after evidence has been collected and reviewed.
 
-## Priority batches
+## Priority backlog
 
-### Batch A — identity and source cleanup
-1. Resolve obvious duplicate names and alias relationships across all 22 sections.
-2. Split multi-method source rows into individual children, preserving parent grouping.
-3. Flag ambiguous, unavailable, or untraceable names as unresolved instead of guessing.
-4. Reconcile each child with existing lessons, implementations, tests, and notebooks.
+### A — Source identity and reconciliation
+1. Resolve ambiguous names and alias relationships.
+2. Split multi-method entries into reviewable children while preserving parent groupings.
+3. Retain ambiguous or untraceable names as unresolved rather than guessing.
+4. Reconcile children with lessons, implementations, tests, notebooks and external references.
 
-### Batch B — foundational claims and high reuse
-1. Geometry predicates and overlay families: contracts, boundary conventions, precision and robustness.
-2. Spatial indexing and query structures: invariants, supported queries, workload assumptions.
-3. Graph and network methods: directedness, weight semantics, admissible heuristics and tie rules.
-4. Raster methods: grid alignment, NoData propagation, units, neighbourhood definitions and resampling semantics.
-5. Spatial statistics: weights, null models, edge corrections, estimands, inference and multiple testing.
+### B — Technical review, prioritised by reuse and risk
+1. Geometry and overlay: boundary conventions, precision, robustness.
+2. Spatial indexes: invariants, operations, complexity and workload assumptions.
+3. Network methods: directedness, weight semantics, admissible heuristics and tie rules.
+4. Raster: grid alignment, NoData, units, neighbourhood and resampling semantics.
+5. Spatial statistics: weights, null models, edge correction, estimands, inference and multiple testing.
 
-### Batch C — citations and rights
-- Verify primary bibliographic records for foundational methods.
-- Verify third-party code/data/figures individually.
-- Correct, replace, or link-only any assets with uncertain reuse rights.
-- Preserve evidence URLs/DOIs and access dates.
+### C — Bibliography and rights
+- Verify authoritative bibliographic records for foundational methods.
+- Verify third-party code, data and figures individually.
+- Remove, replace or link-only assets with unclear rights.
+- Record stable evidence URLs/DOIs and access dates.
 
-### Batch D — release UX and reproducibility
-- Check Markdown heading anchors and internal navigation in the rendered site.
-- Test install and execution from clean environments.
-- Review notebook order, hidden state, outputs and reproducibility.
-- Check mobile readability, keyboard navigation, screen-reader structure and alt text.
-- Confirm issue templates, contribution instructions and license notices.
+### D — Learning and reproducibility improvements
+- Review rendered navigation, mobile layout, keyboard use, screen-reader structure and alt text.
+- Test clean-environment setup for packages as changes warrant.
+- Keep notebooks reproducible, ordered and free of hidden-state dependence.
+- Improve issue templates, contribution guidance and licence notices when needed.
 
-## Sprint log
+## Backlog handling
 
-| Batch | State | Evidence |
-|---|---|---|
-| A | In progress | Structural inventory exists; direct slug mismatches are documented but manual alias crosswalk is still outstanding |
-| B | Queued | Existing tests and lessons are evidence for specific scopes only |
-| C | Queued | Asset-level rights audit not completed |
-| D | Queued | Rendered/mobile/accessibility release audit not completed |
+Do this work opportunistically as contributors, readers, users or new releases surface needs. Do not conduct another broad audit merely to refresh the table. Verify specific records in small, evidence-backed batches and retain the distinction between source preservation, technical verification and reuse rights.
 
-**Do not promote any source-entry review label from this queue alone.** This document defines work order; verification requires actual evidence attached to the reviewed record.
+**Release boundary:** this queue does not block the declared engineering-foundation milestone. The release ledger identifies the actual closeout gates.
