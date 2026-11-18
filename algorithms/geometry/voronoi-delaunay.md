@@ -95,7 +95,7 @@ Voronoi and Delaunay structures can be built through several algorithm families:
 | Bowyer–Watson | Remove triangles whose circumcircles contain the inserted site, then retriangulate the cavity | Circumcircle predicates and cavity boundary handling are numerically sensitive |
 | Local edge flipping | Start from a triangulation and flip edges until the local Delaunay condition holds | Requires a valid initial triangulation and termination rules |
 
-The repository's runnable package uses SciPy/Qhull. It does **not** implement Fortune's sweep or Bowyer–Watson. That distinction is explicit so a library call is not mistaken for an implementation of a named algorithm.
+The repository now contains two deliberately distinct implementation paths. The SciPy/Qhull package remains a library-backed workflow. A separate [dependency-free Bowyer–Watson package](../../implementations/python/bowyer-watson/README.md) implements incremental cavity removal with exact rational orientation and in-circle predicates; its [verification record](../../catalog/verification/bowyer-watson.md) documents the tested envelope and limitations. Neither package implements Fortune's sweep. The Bowyer–Watson code is a small/medium teaching baseline, not an optimized production triangulator.
 
 ## Degeneracies and modelling choices
 
