@@ -10,11 +10,11 @@ This file is the release-gate record. It deliberately distinguishes a healthy so
 
 ## Current engineering checkpoint
 
-- The completion branch is 217 commits ahead of `main` and has no commits behind its merge base.
-- Last recorded branch head: `cecd797927d7a0cb0d1050fccdf8dc2b118ffb03`.
+- The completion branch is 220 commits ahead of `main` and has no commits behind its merge base.
+- Last recorded branch head for this ledger update: `d5166a97baa6c16710181e8de2e0e605144d050d`.
 - GitHub Actions workflow run [44208356316](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44208356316) completed successfully: **58/58 jobs passed**.
 - The workflow covers 48 isolated Python package shards, eight notebook shards, internal-link and catalogue checks, CI coverage checks, DCO checker unit tests, and Clipper2 C# checks.
-- The passing run is tied to the exact commit above. Any later source change requires a new exact-head validation run before release.
+- The passing run is tied to the exact commit above. The documentation-only ledger and README/roadmap link commits have triggered workflow run [44217288937](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44217288937), run 6099; it was pending when this ledger was refreshed and must complete successfully before this newer head is called validated. Any later source change requires a new exact-head validation run before release.
 
 ## Source-review checkpoint
 
