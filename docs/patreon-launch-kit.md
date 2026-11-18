@@ -1,6 +1,6 @@
-# Patreon launch foundation
+# Spatial Methods — Patreon launch foundation
 
-**Purpose:** turn the public Spatial Analysis archive into its guided learning and research community.
+**Purpose:** turn the public Spatial Methods archive into its guided learning and research community.
 
 **Canonical technical home:** https://github.com/geo-dev-hub/spatial-analysis
 
