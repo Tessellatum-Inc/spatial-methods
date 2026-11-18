@@ -1,12 +1,12 @@
-# Patreon launch posts
+# Spatial Methods — Patreon launch posts
 
 These are publication-ready drafts. Replace the bracketed Patreon page URL after the creator page is live.
 
 ## Public launch announcement
 
-**A new way to learn spatial analysis**
+**A place to understand spatial methods**
 
-The Spatial Analysis compendium is now available as an open technical archive: explanations, algorithms, references, implementations, tests, notebooks and learning paths.
+The Spatial Methods open archive brings together explanations, algorithms, references, implementations, tests, notebooks and learning paths.
 
 But a large archive can be difficult to navigate alone. Knowing that a method exists is different from understanding when to use it, how to test it and what its limitations mean in practice.
 
@@ -19,7 +19,7 @@ There are three ways to take part:
 - **Laboratory:** guided monthly learning packs, exercises and companion walkthroughs.
 - **Research Circle:** quarterly workshops, project showcases and group critique.
 
-Start with the open archive: https://github.com/geo-dev-hub/spatial-analysis
+Start with the open archive: https://github.com/Tessellatum-Inc/spatial-methods
 
 Explore the membership: [Patreon page URL]
 
@@ -27,7 +27,7 @@ The aim is simple: make spatial methods easier to understand, practise and apply
 
 ## Patreon welcome post
 
-# Welcome to Spatial Analysis
+# Welcome to Spatial Methods
 
 Thank you for being here and helping build a place where spatial methods can be understood, tested and put to work.
 
@@ -35,7 +35,7 @@ This membership is the guided learning layer around our open technical archive. 
 
 ### Start here
 
-1. Visit the public archive: https://github.com/geo-dev-hub/spatial-analysis
+1. Visit the public archive: https://github.com/Tessellatum-Inc/spatial-methods
 2. Browse the learning paths and choose a topic that matches your experience.
 3. Open the current monthly learning pack in the Laboratory collection.
 4. Use the discussion thread to share questions, observations or a small reproducible example.
@@ -65,7 +65,7 @@ Our first guided learning pack explores segment intersection: the deceptively ri
 The pack connects the geometry to an exact orientation predicate, then works through proper crossings, endpoint contacts, collinear overlap and disjoint cases. It includes five exercises, hints, worked answers and a production-readiness discussion.
 
 Start with the public explanation and tested code:
-https://github.com/geo-dev-hub/spatial-analysis/tree/main/algorithms/geometry
+https://github.com/Tessellatum-Inc/spatial-methods/tree/main/algorithms/geometry
 
 Then open the member learning pack and work through the exercises before reading the answers.
 
@@ -73,7 +73,7 @@ Bring your questions to this month's discussion thread. Please use small synthet
 
 ## Monthly digest template
 
-# Spatial Analysis — [Month Year]
+# Spatial Methods — [Month Year]
 
 **This month's focus:** [one-sentence theme]
 
