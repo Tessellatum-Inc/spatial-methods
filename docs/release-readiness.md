@@ -10,11 +10,10 @@ This file is the release-gate record. It deliberately distinguishes a healthy so
 
 ## Current engineering checkpoint
 
-- The completion branch is 220 commits ahead of `main` and has no commits behind its merge base.
-- Last recorded branch head for this ledger update: `d5166a97baa6c16710181e8de2e0e605144d050d`.
-- GitHub Actions workflow run [44208356316](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44208356316) completed successfully: **58/58 jobs passed**.
-- The workflow covers 48 isolated Python package shards, eight notebook shards, internal-link and catalogue checks, CI coverage checks, DCO checker unit tests, and Clipper2 C# checks.
-- The passing run is tied to the exact commit above. The documentation-only ledger and README/roadmap link commits have triggered workflow run [44217288937](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44217288937), run 6099; it was pending when this ledger was refreshed and must complete successfully before this newer head is called validated. Any later source change requires a new exact-head validation run before release.
+- Branch head at this update: `791fea00ddf79933cd5e7c573326078e2280352d`.
+- The historical 58/58 workflow run [44208356316](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44208356316) is green, but is **not** the current-head run.
+- Current-head workflow run [44221714064](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44221714064) returned **30 jobs, all 30 successful**. This observed page includes Python package shards, notebook shards, Clipper2 checks and the internal-link/catalogue/CI-checker job.
+- The 30/30 result is not evidence that every workflow required by the earlier 58-job run has completed on this head. Exact-head CI remains **partially confirmed**, not fully green. The latest combined commit-status endpoint returned no status entries. Any later source change requires another exact-head run before release.
 
 ## Source-review checkpoint
 
