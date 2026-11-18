@@ -6,7 +6,7 @@ These are publication-ready drafts. Replace the bracketed Patreon page URL after
 
 **A place to understand spatial methods**
 
-The Spatial Methods open archive is now available as an open technical archive: explanations, algorithms, references, implementations, tests, notebooks and learning paths.
+The Spatial Methods open archive brings together explanations, algorithms, references, implementations, tests, notebooks and learning paths.
 
 But a large archive can be difficult to navigate alone. Knowing that a method exists is different from understanding when to use it, how to test it and what its limitations mean in practice.
 
