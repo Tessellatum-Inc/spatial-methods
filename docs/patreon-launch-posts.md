@@ -1,12 +1,12 @@
-# Patreon launch posts
+# Spatial Methods — Patreon launch posts
 
 These are publication-ready drafts. Replace the bracketed Patreon page URL after the creator page is live.
 
 ## Public launch announcement
 
-**A new way to learn spatial analysis**
+**A place to understand spatial methods**
 
-The Spatial Analysis compendium is now available as an open technical archive: explanations, algorithms, references, implementations, tests, notebooks and learning paths.
+The Spatial Methods open archive is now available as an open technical archive: explanations, algorithms, references, implementations, tests, notebooks and learning paths.
 
 But a large archive can be difficult to navigate alone. Knowing that a method exists is different from understanding when to use it, how to test it and what its limitations mean in practice.
 
@@ -27,7 +27,7 @@ The aim is simple: make spatial methods easier to understand, practise and apply
 
 ## Patreon welcome post
 
-# Welcome to Spatial Analysis
+# Welcome to Spatial Methods
 
 Thank you for being here and helping build a place where spatial methods can be understood, tested and put to work.
 
@@ -73,7 +73,7 @@ Bring your questions to this month's discussion thread. Please use small synthet
 
 ## Monthly digest template
 
-# Spatial Analysis — [Month Year]
+# Spatial Methods — [Month Year]
 
 **This month's focus:** [one-sentence theme]
 
