@@ -68,7 +68,7 @@ The GitHub Actions workflow currently covers 321 Python implementation packages 
 
 Read [LICENSES.md](LICENSES.md) and [licensing and reuse](docs/licensing-and-reuse.md). Original code is Apache-2.0; original learning material is CC BY 4.0. Third-party assets retain their own terms.
 
-New contribution commits must include a DCO sign-off. Configure your Git identity, then use:
+Human-authored contribution commits must include a DCO sign-off. Configure your Git identity, then use:
 
 ```bash
 git config user.name "Your Name"
@@ -77,6 +77,21 @@ git commit -s -m "Describe your contribution"
 ```
 
 The resulting commit message includes `Signed-off-by: Your Name <you@example.com>`. Sign off every commit in your contribution. Do not sign off on behalf of another person. The DCO is a provenance certification, not a copyright assignment.
+
+### AI-assisted and agent-generated contributions
+
+AI tools and autonomous coding agents may prepare changes, but they cannot truthfully provide a human DCO certification. Never add a human's sign-off to a commit they did not create or personally certify.
+
+An AI-assisted pull request must:
+
+1. Be clearly disclosed in its pull request description, identifying the tool or agent and summarising its role.
+2. Preserve normal commit authorship and provenance; do not impersonate a human contributor or fabricate a DCO trailer.
+3. Be reviewed by a human maintainer for correctness, security, licensing, source attribution, tests and scope.
+4. Receive the repository's `agent-reviewed` label from a human maintainer only after that review is complete.
+
+The `agent-reviewed` label is the maintainer's explicit attestation that the review above has occurred. For a pull request carrying that label, CI records the DCO check as not applicable to the agent-generated commits and requires the label to be present when the check runs. Applying the label triggers CI again. Without the label, the normal DCO check remains mandatory for every contribution commit.
+
+This exception does not waive review, licensing, attribution, testing or legal responsibilities. Human-authored commits in mixed contributions must still carry their own DCO sign-offs.
 
 ## Help us keep it trustworthy
 
