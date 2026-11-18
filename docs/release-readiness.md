@@ -38,6 +38,10 @@ These counts describe source-entry status, not repository completion percentages
 
 See [licensing and reuse](licensing-and-reuse.md), [licensing decision record](licensing-decision-proposal.md), [licence scope register](../LICENSES.md) and [compendium provenance](compendium-provenance.md).
 
+## Release candidate notes
+
+Draft versioned notes: [Engineering Foundation 0.1.0](releases/engineering-foundation-0.1.0.md). They are scope notes, not a published release/tag.
+
 ## Three-batch closeout
 
 ### Batch 1 — Stabilization: complete
