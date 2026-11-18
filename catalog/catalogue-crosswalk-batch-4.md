@@ -53,3 +53,15 @@ Do not mark these rows Fully verified. Continue package mapping by examining lik
 - The implementation keeps repeated draws in the ordered sample, estimates the total as the mean of (y_i/p_i), estimates variance as the sample variance of draw-level estimates divided by (n), and optionally scales to mean/mean variance for a supplied population size.
 - Updated `catalog/verification/hansen-hurwitz.md` to link the implementation and distinguish CI pending from tests authored.
 - Package CI registration adds one isolated Python test shard. Current CI must validate the new files before this implementation is marked tested.
+
+
+## Follow-up mapping corrections — 18 November 2026
+
+The previous four-record table is superseded by these current tree findings:
+
+- **Hansen–Hurwitz:** dedicated package `implementations/python/hansen-hurwitz/` now exists, with estimator, tests, README, requirements and isolated Python CI manifest registration. Validation awaits current-head CI.
+- **Hausdorff and Fréchet:** the previously missed direct mapping is `implementations/python/geometry-metrics/`. README describes point-set directed/symmetric Hausdorff, discrete Fréchet, and a separate continuous Fréchet decision/approximation implementation. The canonical verification record now links this package and explicitly distinguishes sampled-point Hausdorff, discrete Fréchet and continuous Fréchet.
+- **Harris market potential:** no dedicated package README is confirmed. `huff-model` is a probabilistic competitive facility-choice model and is not Harris's market-potential index; do not map the two by name similarity.
+- **Inhomogeneous Ripley K:** remains unresolved in implementation mapping. The `ripley-k` README covers homogeneous K/L and CSR simulation envelope, not intensity-reweighted inhomogeneous K.
+
+These are mapping-only findings; source-entry review labels remain unchanged.
