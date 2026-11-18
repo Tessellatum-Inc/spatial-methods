@@ -7,6 +7,12 @@ The ensemble module implements empirical-distribution CRPS per case and its samp
 Run python -m pip install -r requirements.txt and python -m pytest -q from this directory. See the individual module docstrings for contracts and the package walkthrough for derivations.
 
 
+
+
+## Spatial neighbourhood verification fractions skill score
+
+The `spatial_fss.py` module implements the Fractions Skill Score for paired regular two-dimensional grids. It thresholds the observed and forecast fields, computes neighbourhood event fractions with summed-area tables, and evaluates the standard FSS numerator and denominator. Neighbourhood width is an odd number of grid cells; `truncate` clips windows at the grid edge and `valid` scores only complete windows. The result is undefined (`None`) when the denominator is zero. It is a small-grid teaching baseline; physical grid spacing, projection, masks, threshold selection and reference interpretation remain the caller's responsibility. See [implementation](spatial_fss.py) and [tests](test_spatial_fss.py).
+
 ## MODE-inspired object extraction and matching
 
 The object_verification module implements a bounded sequence: optional Gaussian smoothing, thresholding, connected-component labelling, measurement of area/intensity/weighted centroid/orientation, and minimum-cost one-to-one forecast-observation matching with explicit unmatched objects. The matching cost uses normalized centroid distance and log-ratio penalties for area and mean intensity.

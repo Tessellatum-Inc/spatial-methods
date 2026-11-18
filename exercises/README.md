@@ -17,8 +17,8 @@ Not every topic needs six exercises. Choose the progression that fits the method
 
 ## Current exercise material
 
-- [Point in polygon](../algorithms/geometry/point-in-polygon.md#have-a-go)
-- [Segment intersection](../algorithms/geometry/segment-intersection.md#have-a-go)
+- [Point in polygon](../algorithms/geometry/point-in-polygon.md#14-have-a-go)
+- [Segment intersection](../algorithms/geometry/segment-intersection.md#14-have-a-go)
 - [Snap-rounding noder](snap-rounding-noder.md)
 - [Randomized trapezoidal-map construction](randomized-trapezoidal-map.md)
 - [Proximity-graph scaling](proximity-graph-scaling.md)
