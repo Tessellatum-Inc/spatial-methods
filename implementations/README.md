@@ -13,7 +13,25 @@ Each implementation should state:
 - known limitations and what the example does not implement;
 - a step-by-step walkthrough that explains the code, decisions and validation.
 
-## Examples\n\n### Photogrammetry and survey planning\n\n- [Photogrammetric flight-design calculations](python/photogrammetric-flight-design/README.md): nadir GSD, image footprint and overlap-constrained line/exposure spacing.\n\n### Compositional statistics\n\n- [Compositional data geometry](python/compositional-data/README.md): closure, explicit multiplicative zero replacement, CLR and Aitchison distance.\n\n### Moving objects\n\n- [Moving-object prediction](python/moving-object-prediction/README.md): constant-velocity prediction, uncertainty-aware predictive range queries and dead-reckoning update policy with reference tests.\n\n\n### Statistical surveillance\n\n- [Syndromic surveillance](python/syndromic-surveillance/README.md): two-sided tabular CUSUM and explicit EARS-style C1/C2/C3 count-series detectors, with lagged baselines, validation and reference tests.\n
+## Examples
+
+### Photogrammetry and survey planning
+
+- [Photogrammetric flight-design calculations](python/photogrammetric-flight-design/README.md): nadir GSD, image footprint and overlap-constrained line/exposure spacing.
+
+### Compositional statistics
+
+- [Compositional data geometry](python/compositional-data/README.md): closure, explicit multiplicative zero replacement, CLR and Aitchison distance.
+
+### Moving objects
+
+- [Moving-object prediction](python/moving-object-prediction/README.md): constant-velocity prediction, uncertainty-aware predictive range queries and dead-reckoning update policy with reference tests.
+
+
+### Statistical surveillance
+
+- [Syndromic surveillance](python/syndromic-surveillance/README.md): two-sided tabular CUSUM and explicit EARS-style C1/C2/C3 count-series detectors, with lagged baselines, validation and reference tests.
+
 
 ### Forecast verification
 
@@ -29,7 +47,7 @@ Each implementation should state:
 
 - [Line clipping](python/line-clipping/README.md): Cohen–Sutherland and Liang–Barsky rectangle clipping plus Cyrus–Beck convex-window clipping, with tests, an [intern walkthrough](python/line-clipping/implementation-walkthrough.md) and a [lab notebook](../notebooks/line-clipping-lab.ipynb).
 
-- [Exact orientation predicate](python/exact-orientation/README.md): rational-arithmetic reference sign test for 2D orientation, including near-degenerate float regression tests and an [intern walkthrough](python/exact-orientation/implementation-walkthrough.md). This is an exact reference implementation, not adaptive expansion arithmetic; the [visual lab](../notebooks/exact-orientation-lab.ipynb) compares it with a naive determinant.
+- [Exact orientation predicate](python/exact-orientation/README.md): rational-arithmetic reference sign test for 2D orientation, including near-degenerate float regression tests and an [intern walkthrough](python/exact-orientation/implementation-walkthrough.md).\n- [Bowyer–Watson Delaunay triangulation](python/bowyer-watson/README.md): dependency-free incremental 2D cavity retriangulation with exact rational predicates, cocircular tie policy, seeded invariant tests and a walkthrough. This is an exact reference implementation, not adaptive expansion arithmetic; the [visual lab](../notebooks/exact-orientation-lab.ipynb) compares it with a naive determinant.
 
 - [Polygon intersection with Python and Shapely](python/polygon-intersection/README.md): a library-backed overlay operation with nine tests and a [step-by-step walkthrough](python/polygon-intersection/implementation-walkthrough.md).
 - [Point in polygon with Python](python/point-in-polygon/README.md): a transparent ray-crossing implementation with 12 tests and a [step-by-step walkthrough](python/point-in-polygon/implementation-walkthrough.md).
@@ -45,7 +63,7 @@ Each implementation should state:
 - [MEXCLP expected coverage](python/mexclp/README.md): exact small-instance expected-coverage solver with equal, independent unit busy probabilities and possible co-location.
 - [M/M/c queue metrics](python/mmc-queue/README.md): steady-state Erlang-C waiting and system metrics for one FCFS queue feeding identical parallel servers.
 - [Two-step floating catchment area](python/two-step-fca/README.md): binary-catchment supply/demand accessibility measure with explicit impedance matrix semantics, tests and an [intern walkthrough](python/two-step-fca/implementation-walkthrough.md).
-- [Discrete p-center](python/p-center/README.md): exact small-instance minimax facility-location solver.
+- [Discrete p-center](python/p-center/README.md): exact small-instance minimax facility-location solver.\n- [Exact p-dispersion](python/p-dispersion/README.md): exact small-instance max-min separation solver with deterministic tie handling, tests and an [intern walkthrough](python/p-dispersion/implementation-walkthrough.md).
 - [Location set covering](python/set-covering/README.md): exact small-instance solver for minimum-cardinality coverage of every demand row.
 
 ### Geodesy and georeferencing
@@ -288,3 +306,7 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Domain modeling
 
 - [Spatial cellular automata and Schelling simulation](python/spatial-simulation/README.md): synchronous binary B/S rules, seeded Schelling relocation, site percolation, stochastic forest-fire dynamics, spatial preferential attachment, Watts–Strogatz small-world graphs a discrete-time network SIR model and a first-order categorical Markov land-change baseline, with independent tests and a [walkthrough](python/spatial-simulation/implementation-walkthrough.md).
+
+### 3D geometry
+
+- [Möller–Trumbore ray/triangle intersection](python/ray-triangle-intersection/README.md): dependency-free reference implementation, independent edge/degeneracy/culling tests and a walkthrough.

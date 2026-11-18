@@ -49,3 +49,31 @@ Use the [source-entry verification protocol](../verification-protocol.md) to rec
 4. Confirm a primary kind and decide which items deserve individual canonical records.
 5. Assign stable IDs only when scope is clear.
 6. Add prerequisites, examples, tests and learning-path links.
+
+
+## Atomic completion registers
+
+All 22 sections now have companion atomic registers that expand grouped source rows into reviewable child items. These are traceability/backlog aids, **not** independent verification or completion claims. Each register links to its preserved source transcription and catalogue index, uses conservative statuses, and records applicable research, implementation, test, documentation and rights work.
+
+- [Section 1 — Core GIS: geometry, indexing and routing](../../docs/section-1-atomic-completion-register.md)
+- [Section 2 — Spatial statistics](../../docs/section-2-atomic-completion-register.md)
+- [Section 3 — Geostatistics, interpolation and uncertainty](../../docs/section-3-atomic-completion-register.md)
+- [Section 4 — Raster, terrain, hydrology and geomorphology](../../docs/section-4-atomic-completion-register.md)
+- [Section 5 — Remote sensing, SAR, LiDAR and photogrammetry](../../docs/section-5-atomic-completion-register.md)
+- [Section 6 — Optimization, mobility and transport](../../docs/section-6-atomic-completion-register.md)
+- [Section 7 — Domain modelling](../../docs/section-7-atomic-completion-register.md)
+- [Section 8 — GeoAI and geospatial foundation models](../../docs/section-8-atomic-completion-register.md)
+- [Section 9 — Geodesy, cartography and spatial infrastructure](../../docs/section-9-atomic-completion-register.md)
+- [Section 10 — Classical, statistical and computational additions](../../docs/section-10-atomic-completion-register.md)
+- [Section 11 — GeoAI, computer vision and foundation-model additions](../../docs/section-11-atomic-completion-register.md)
+- [Section 12 — Signal processing, GNSS and regional science](../../docs/section-12-atomic-completion-register.md)
+- [Section 13 — GeoFM workflows, urban and mobility models, geo-LLMs](../../docs/section-13-atomic-completion-register.md)
+- [Section 14 — Databases, graphics, morphology and hazards](../../docs/section-14-atomic-completion-register.md)
+- [Section 15 — Vision, registration, extraction and hydrology ML](../../docs/section-15-atomic-completion-register.md)
+- [Section 16 — Flows, regions, deformation and applied domains](../../docs/section-16-atomic-completion-register.md)
+- [Section 17 — Geometry, scalable computation, design and siting](../../docs/section-17-atomic-completion-register.md)
+- [Section 18 — Moving objects, routing, transit, water and ice](../../docs/section-18-atomic-completion-register.md)
+- [Section 19 — African applications, addressing, finance and seismology](../../docs/section-19-atomic-completion-register.md)
+- [Section 20 — Indices, retrieval, events and information theory](../../docs/section-20-atomic-completion-register.md)
+- [Section 21 — Neural fields, climate ML, accounting and robust geometry](../../docs/section-21-atomic-completion-register.md)
+- [Section 22 — Inference, covariance, spherical statistics and asset monitoring](../../docs/section-22-atomic-completion-register.md)

@@ -33,3 +33,10 @@ Run `python -m pytest -q` in `implementations/python/binary-morphology`. Tests c
 The package also includes the two-subiteration Zhang-Suen parallel thinning rule. For each foreground pixel, it counts its eight neighbours and the 0-to-1 transitions around the ring. A pixel is a deletion candidate when it has two to six foreground neighbours and exactly one circular transition. Two different triplet constraints are applied in alternating subiterations to avoid deleting pixels that would break the local skeleton structure. Iteration stops when a full pair of subiterations removes no pixels.
 
 This is a binary topology-preserving thinning baseline for suitable raster masks, not a medial-axis transform: it does not compute maximal inscribed discs or metric distance-to-boundary information. Pixel connectivity and raster boundary conventions matter. The implementation zero-pads outside the raster and uses 8-neighbour foreground connectivity.
+
+
+## Grayscale max-trees and min-trees
+
+The package now includes an explicit connected-component hierarchy for grayscale rasters. A max-tree links connected components of upper-level sets as the threshold descends; a min-tree links connected components of lower-level sets as the threshold rises. Nodes store their birth level, pixel membership, area and parent. The implementation supports 4- and 8-connectivity and preserves deterministic row-major component ordering.
+
+This is a transparent threshold-relabeling reference, not the quasi-linear union-find algorithms used by production morphology libraries. It recomputes components at every distinct gray level and stores pixel membership for each node, so its time and memory costs can be high. It does not implement alpha trees or attribute-filter pruning. Tests cover nested components, parent containment, level ordering, plateaus, connectivity, constant rasters and invalid inputs.

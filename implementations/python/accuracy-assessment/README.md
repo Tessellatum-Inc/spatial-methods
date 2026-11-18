@@ -1,10 +1,10 @@
-# Classification and segmentation accuracy assessment
+# Classification, regression, retrieval and calibration metrics
 
 Dependency-free reference functions for a reference-row/prediction-column
 confusion matrix; overall, producer and user accuracy; Cohen's kappa;
 quantity and allocation disagreement; per-class F1, intersection-over-union
 (IoU) and Dice; macro-F1 and mean IoU; binary change-detection Figure of Merit
-(FoM); and tolerance-aware binary boundary F1 for 2D masks.
+(FoM); tolerance-aware binary boundary F1 for 2D masks; regression MAE, RMSE and weighted R-squared; top-label expected calibration error (ECE) with equal-width bins and optional sample weights; Nash–Sutcliffe efficiency (NSE), KGE 2009, and empirical ensemble CRPS.
 
 Run python -m pip install -r requirements.txt && python -m pytest -q.
 
@@ -17,7 +17,61 @@ implementation is O(B_ref * B_pred).
 
 Not implemented here: design-based area-adjusted accuracy, sampling variance,
 confidence intervals, fuzzy kappa, detection mAP, rotated-box IoU, panoptic
-quality, multi-date error propagation, probabilistic calibration metrics,
-regression/forecast metrics (including CRPS, NSE and KGE), or full sampling
+quality, multi-date error propagation, adaptive/classwise calibration metrics,
+modified KGE variants and distributional/continuous CRPS estimators, or full sampling
 design. Do not interpret these pixel-count metrics as area-adjusted estimates
 when the validation sample design requires area weighting.
+
+
+Regression metrics use finite paired observations and optional non-negative sample weights. R-squared returns 1 for a perfect constant target and 0 for an imperfect constant target. ECE is top-label confidence calibration with equal-width bins; it is sensitive to bin count and sample size and is not a classwise or adaptive calibration estimator.
+
+Retrieval/evaluation helpers include macro query-level recall@k (queries without relevant items are skipped; all-empty relevance returns None) and arithmetic-normalised mutual information (NMI) for arbitrary cluster labels. These are descriptive metrics; geographic stratification and benchmark-specific relevance protocols remain caller responsibilities.
+
+
+NSE uses the weighted observed mean and the same finite constant-target policy as R-squared. KGE is the 2009 three-component form (Pearson correlation, standard-deviation ratio and mean ratio); it returns None when a required component is undefined. Ensemble CRPS is the empirical finite-ensemble score and supports case weights; it is not a continuous parametric-distribution CRPS estimator.
+
+
+## Land-change and map-association measures
+
+The package exposes named Pontius quantity and allocation disagreement
+functions using a reference-row/prediction-column confusion matrix. Their
+sum is the total disagreement (1 - overall accuracy) under this count-based
+definition. It also includes uncorrected Cramer's V for a contingency table
+and mean absolute class-area error with optional explicit class weights.
+Cramer's V is an effect size, not a p-value. Class-area MAE is a descriptive
+error in the caller's area units; it is not a design-based area-adjusted
+accuracy estimate and does not include sampling uncertainty.
+
+Reference: Pontius, R. G. (2000). Quantification error versus location error
+in comparison of categorical maps. *Photogrammetric Engineering & Remote
+Sensing*, 66(8), 1011–1016. Cramér, H. (1946). *Mathematical Methods of
+Statistics*. Princeton University Press.
+
+
+The package also exposes the multiclass Matthews correlation coefficient
+(MCC) for reference-row/prediction-column confusion matrices. MCC ranges
+from -1 (complete inverse association) through 0 (no better than chance
+association under the marginals) to +1 (perfect prediction); a zero
+denominator returns None. It is a global summary and should be reported
+alongside class-specific measures and leakage-safe geographic evaluation.
+
+References: Matthews, B. W. (1975). Comparison of the predicted and observed
+secondary structure of T4 phage lysozyme. *Biochimica et Biophysica Acta*,
+405(2), 442–451. Gorodkin, J. (2004). Comparing two K-category assignments
+by a K-category correlation coefficient. *Computational Biology and
+Chemistry*, 28(5–6), 367–374. https://doi.org/10.1016/j.compbiolchem.2004.09.006
+
+
+Additional classification summaries include macro precision, macro recall,
+balanced accuracy (the unweighted mean of defined reference-class recalls),
+and support-weighted F1. Undefined classes with zero reference or predicted
+support are excluded from the corresponding macro mean; weighted F1 is
+weighted by reference support. These summaries complement, rather than
+replace, class-level scores and spatially independent validation.
+
+
+The calibration helpers also include macro classwise one-vs-rest ECE with
+equal-width probability bins. Each class probability is compared with its
+binary membership outcome, and class errors are averaged equally. This is
+not adaptive ECE; report per-class reliability diagrams and bin counts when
+class imbalance or small validation samples make the macro summary unstable.

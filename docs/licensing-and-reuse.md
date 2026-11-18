@@ -1,57 +1,51 @@
 # Licensing, attribution and reuse
 
-A public repository is not automatically an open-licensed repository. Until a licence is added, copyright remains with the relevant rights holder and others should not assume they can copy, modify or redistribute the material.
+**Decision status: selected for original project material on 18 November 2026.**
 
-This document records the current position and the decisions that must be made before inviting substantial external contributions or packaging the collection for paid learning. See the [licensing decision proposal](licensing-decision-proposal.md) for a recommended code, documentation and contribution setup; it has not been applied.
+The repository uses a split licence model to keep code reusable, learning material shareable and third-party rights intact.
 
-## Current position
+## Selected project licences
 
-- **No project-wide code or documentation licence has been selected yet.**
-- The supplied *Spatial Analysis Algorithms: Complete Compendium* and its page-by-page transcription are preserved as source intake. They are not automatically covered by any future project licence. Confirm the right to publish and redistribute the source material before assigning it a licence or treating it as reusable project content.
-- Third-party papers, diagrams, datasets, software documentation and code retain their own rights and licence terms.
-- Seven Wikimedia Commons figures are currently embedded in lessons: three under CC BY-SA 4.0, two under CC BY-SA 3.0 (one also offered under GFDL 1.2+), one dedicated under CC0 1.0 and one dedicated to the public domain. Each is separately identified in the [visual-source register](visual-sources-and-attribution.md). Their licences do not automatically apply to the surrounding project text.
-- Contributors should not submit material they do not have permission to share.
+- **Original code, tests, scripts and executable examples:** Apache License 2.0 (`Apache-2.0`).
+- **Original explanatory prose, tutorials, exercises, narrative notebook content and project-created diagrams:** Creative Commons Attribution 4.0 International (`CC-BY-4.0`).
+- **Future contributions:** Developer Certificate of Origin 1.1 (DCO), with a `Signed-off-by` line on each contribution commit.
 
-## Recommended licence structure to decide
+The complete terms are in [LICENSE](../LICENSE), [LICENSE-DOCUMENTATION](../LICENSE-DOCUMENTATION) and [DCO](../DCO). The [licence scope register](../LICENSES.md) explains exactly which material is and is not covered.
 
-These are recommendations for discussion, not licences already applied to the repository.
+## Why this combination
 
-| Material | Suggested approach | Why |
-|---|---|---|
-| Original project code | MIT or Apache-2.0 | Both are widely recognised permissive software licences. MIT is simpler; Apache-2.0 includes an express patent grant and more detailed contributor terms. |
-| Original project documentation | CC BY 4.0 | Allows sharing and adaptation, including commercial reuse, with attribution. |
-| Original diagrams | Same as documentation unless a specific visual has a different licence | Keeps project-created teaching visuals easy to reuse and maintain. |
-| Third-party figures | Keep the original figure's licence and attribution attached | Never imply that a project licence overrides the creator's terms. |
-| Datasets | Licence each dataset individually | Data may have separate database rights, access terms, privacy limits or attribution conditions. |
-| Supplied compendium and transcription | Confirm rights before licensing or redistribution | The project must not grant rights it does not hold. |
+Apache-2.0 is a permissive open-source software licence with an express patent grant and clear redistribution conditions. It is suitable for a technical repository whose implementations should be usable in research, education and commercial applications.
 
-A single licence should not be applied indiscriminately to every file. A dataset, a software package, an original explanation and a third-party figure can have different rights.
+CC BY 4.0 allows the original learning material to be shared and adapted, including commercially, provided attribution, a licence link and change indication are supplied. This is deliberate: the public archive should be genuinely reusable, not merely visible.
 
-## Contributions
+A DCO is lighter than a copyright-assignment CLA. Contributors keep their copyright and certify that they have the right to submit their work under the relevant project licence. The DCO is not itself a licence.
 
-Before accepting code or documentation contributions under a project-wide licence, choose how contributors confirm they have the right to submit their work.
+## What is excluded
 
-A lightweight option is the **Developer Certificate of Origin (DCO)**: contributors sign off commits to certify that they have the right to contribute the material under the project's chosen licence. A Contributor Licence Agreement (CLA) is another option, but adds more administration and should only be used if there is a clear reason.
+Project-wide licences do not apply to third-party works or assets that the project cannot license. In particular:
 
-Do not add a DCO sign-off requirement until the project licences and contribution process are confirmed.
+- the 47-page compendium transcription remains outside the blanket licence until any third-party incorporated content has been checked page by page;
+- third-party figures retain their own licence and attribution;
+- datasets, software packages, code excerpts, model weights and papers retain their own terms;
+- trademarks, logos and names are not granted by these licences.
 
-## How this fits with membership
+The owner has confirmed that the compendium is their own project and compilation, developed with AI assistance. This establishes its project provenance, not automatic rights over every work incorporated into it. The [provenance record](compendium-provenance.md) explains the distinction.
 
-A public licence and a paid membership can coexist, but the distinction must be honest.
+When reuse rights are unclear, link to the original source rather than copying it. Do not mark an asset permitted merely because its source is cited or it is publicly accessible.
 
-- Do not place material that has already been released under a licence permitting free redistribution behind a paywall as though members have exclusive rights to it.
-- Membership can add genuine value through guided study plans, extended research notes, worked notebooks, solution sets, annotated walkthroughs, curated collections, workshops and member discussions.
-- A third-party dataset or figure can only be included in a paid edition when its licence permits that use.
-- A member-only derivative must not remove attribution or other conditions from the source material it builds on.
+## Public GitHub and paid Patreon
 
-The public collection should remain useful in its own right. Membership should offer additional depth, structure and support—not obscure the rights of readers and contributors.
+The GitHub repository is the complete public technical archive. Original code and learning materials remain available under their stated licences. Patreon is a separate paid learning and support layer: guided curricula, structured study plans, annotated walkthroughs, extended practice, solution discussions, workshops, office hours and community access.
 
-## Decisions still required
+Do not move material already released under a licence permitting free commercial redistribution behind a paywall as though it were exclusive. Patreon may offer convenience, curation, teaching, support and newly created companion materials; it cannot revoke public licence rights.
 
-1. Confirm the rights to publish the supplied compendium and its transcription.
-2. Choose the licence for original project code.
-3. Choose the licence for original project documentation and diagrams.
-4. Decide whether to use DCO sign-off or a CLA.
-5. Define how member-only derivatives will be separated from openly licensed public material.
+## Applying the licences correctly
 
-Until these decisions are made, keep the current attribution notes and do not add a blanket licence file.
+- Preserve existing third-party attribution and licence notices.
+- Mark modified third-party assets and retain their required attribution.
+- Add file-level notices when a file has a different licence or contains mixed material.
+- Record exact versions and source URLs for dependencies and data.
+- Do not copy substantial passages or figures merely to make a lesson look complete.
+- Review rights separately from technical correctness.
+
+The [licensing and release-risk audit](licensing-audit-batch-2.md) records current policy-level findings and the next asset review batch. This is a project licensing policy, not legal advice. For institutional distribution, commercial sublicensing, substantial third-party incorporation or uncertainty about rights, obtain qualified legal review.

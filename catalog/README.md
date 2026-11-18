@@ -24,7 +24,7 @@ For every source entry, preserve:
 
 Normalisation is a second pass. Do not silently delete, rename or merge source entries because they appear redundant. Preserve the original source label and record a canonical label or relationship separately. The source explicitly marks some later additions as remembered and requiring verification; keep those entries flagged.
 
-Use the [source-entry verification protocol](verification-protocol.md) to record identity, bibliography, technical claims, implementation and rights as separate dimensions. Do not use one blanket “verified” status. The [selected verification notes](selected-verification-notes.md) demonstrate the level of evidence recorded for a small number of bibliography checks.
+Use the [source-entry verification protocol](verification-protocol.md) to record identity, bibliography, technical claims, implementation and rights as separate dimensions. Do not use one blanket “verified” status. The [selected verification notes](selected-verification-notes.md) demonstrate the level of evidence recorded for a small number of bibliography checks. The structural alias reconciliations are recorded in [Catalogue crosswalk Batch 1](catalogue-crosswalk-batch-1.md), [Batch 2](catalogue-crosswalk-batch-2.md), [Batch 3](catalogue-crosswalk-batch-3.md), and [Batch 4](catalogue-crosswalk-batch-4.md); these inventories do not upgrade technical verification statuses.
 
 ## Stable IDs
 

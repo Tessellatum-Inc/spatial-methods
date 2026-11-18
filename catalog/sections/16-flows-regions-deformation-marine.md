@@ -120,3 +120,8 @@ The regional-dynamics package now includes a cumulative exponential intervening-
 ### Biodiversity range metrics implementation update
 
 A new `biodiversity-metrics` package provides planar convex-hull extent of occurrence, aligned-grid area of occupancy, cellwise species richness and inverse-range-size weighted endemism. Analytic geometry and direct matrix oracles cover the numerical kernels. These do not constitute a complete IUCN assessment: alpha hulls, range fragmentation, sampling-bias correction, phylogenetic diversity and key-biodiversity-area criteria remain outstanding.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 16 atomic completion register](../../docs/section-16-atomic-completion-register.md). The register preserves source uncertainty and distinguishes algorithms from data structures, standards, products, software, models and workflows. It is a traceability backlog, not a completion claim; each child remains open or partial until its applicable evidence gates pass.

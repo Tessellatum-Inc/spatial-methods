@@ -68,9 +68,14 @@ jobs:
         run: python -m unittest discover -s scripts -p "test_check_ci_coverage.py"
       - name: Test notebook execution sharding
         run: python -m unittest discover -s scripts -p "test_notebook_sharding.py"
+      - name: Test DCO sign-off checker
+        run: python -m unittest discover -s scripts -p "test_check_dco_signoff.py"
 
       - name: Reconcile source catalogue dashboard
         run: python scripts/check_catalogue_dashboard.py
+
+      - name: Test internal link checker
+        run: python -m unittest discover -s scripts -p "test_check_internal_links.py"
 
       - name: Check local Markdown and notebook links
         run: python scripts/check_internal_links.py
@@ -104,6 +109,27 @@ jobs:
           python -m ipykernel install --user --name python3
           mkdir -p /tmp/notebook-output
           python scripts/execute_learning_notebooks.py --shard-count 8 --shard-index ${{ matrix.shard }}
+  dco:
+    name: Verify contributor sign-offs
+    # PR #3 contains the historical 211-commit build-up from before DCO adoption.
+    # New pull requests must sign off every commit; do not retroactively rewrite history.
+    if: github.event_name == 'pull_request' && github.event.pull_request.number != 3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Check DCO sign-offs
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python scripts/check_dco_signoff.py "$BASE_SHA" "$HEAD_SHA"
+
   clipper2:
     name: Clipper2 C# offset checks
     runs-on: ubuntu-latest

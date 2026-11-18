@@ -95,3 +95,8 @@ The existing spectral-indices package now covers the named vegetation, pigment, 
 ### Information-theory implementation update
 
 The spatial-information-theory package adds tested Shannon, Renyi and Tsallis entropy, masked categorical-map entropy, normalized permutation entropy, sample entropy and adjacency-weighted spatial conditional entropy/mutual information. Stable ordinal sorting defines deterministic tie handling. Recurrence analysis is implemented separately with fixed-threshold recurrence plots and standard RQA measures. Transfer entropy, spatial information flow and causal inference remain separate open methods.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable IDs in the [Section 20 atomic completion register](../../docs/section-20-atomic-completion-register.md). The source explicitly warns that names are from memory and should be verified before citation. The register preserves that uncertainty and is a backlog decomposition, not a completion claim. Keep Section 20 open until applicable rows pass the independent evidence gates.

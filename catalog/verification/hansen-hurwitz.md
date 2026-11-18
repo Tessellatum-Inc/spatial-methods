@@ -1,15 +1,18 @@
 # Source verification — Hansen–Hurwitz estimator
 
 ## Identity and bibliography
-- Hansen, M. H., & Hurwitz, W. N. (1943). “On the theory of sampling from finite populations.” *The Annals of Mathematical Statistics*, 14(4), 333–362. DOI 10.1214/aoms/1177731356.
+- Hansen, M. H., & Hurwitz, W. N. (1943). “On the theory of sampling from finite populations.” *The Annals of Mathematical Statistics*, 14(4), 333–362. DOI: https://doi.org/10.1214/aoms/1177731356.
 
 ## Technical claims
-- For independent with-replacement draws, the total estimator is the average of observed values divided by their draw probabilities.
-- The variance estimator is the sample variance of the draw-level inverse-probability weights divided by draw count.
+- Under independent with-replacement draws with known per-draw selection probability (p_i), the draw-level estimate is (y_i/p_i), and the total estimator averages those draw-level estimates.
+- Its estimated variance is the sample variance of the draw-level estimates divided by draw count. This variance estimate is unavailable for a single draw.
+- Duplicate draws remain separate observations in the ordered sample. This is not the Horvitz–Thompson estimator for without-replacement inclusion probabilities.
 
 ## Implementation and tests
-- NumPy implementation supports duplicate draws, optional population mean, and explicitly unavailable variance for a single draw.
-- Tests cover a hand-computed with-replacement sample, mean scaling, single-draw behavior, invalid probabilities, misaligned arrays and population size.
+- A new NumPy baseline was added at [implementations/python/hansen-hurwitz](../../implementations/python/hansen-hurwitz/README.md).
+- It accepts aligned ordered draw values and probabilities, validates inputs, returns total and draw-level estimates, and optionally scales to population mean/variance using a supplied population size.
+- Tests cover a hand-calculated example, repeated draws, total/mean scaling, one-draw variance unavailability, and invalid arrays/probabilities/population sizes.
+- **CI:** PR head `fb1d3f85c8980ddec5e11b871536da14da7b580e` passed GitHub Actions run [#44225761429](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44225761429). This confirms the package tests at that head; subsequent commits require fresh validation.
 
 ## Limits and rights
-Requires independent with-replacement draws and the correct per-draw selection probabilities. It is not the Horvitz–Thompson estimator for a without-replacement sample. Original implementation and explanatory text; bibliographic metadata only.
+Requires independent with-replacement draws and the correct per-draw selection probabilities. It is not a Horvitz–Thompson estimator for a without-replacement design. The implementation is an educational baseline; no spatial autocorrelation, cluster sampling variance, nonresponse adjustment, sampling design generation or confidence interval is included. Bibliographic metadata and original explanatory text only; no paper text, figure or data is reproduced.

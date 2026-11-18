@@ -88,3 +88,10 @@ Read the [point-in-polygon lesson](../../../algorithms/geometry/point-in-polygon
 python -m pip install -r requirements.txt
 python -m pytest -q
 ```
+
+
+## 10. Exact-rational alternative
+
+The module also provides exact-rational variants. Coordinates are converted to `Fraction` from their decimal string representation, then orientation is evaluated with integer/rational cross products. For a half-open upward edge, a positive orientation means the horizontal ray crosses to the right; for a downward edge, a negative orientation means the same. This avoids division and floating-point sign decisions. Boundary is still tested first. The trade-off is higher arithmetic cost, and exact arithmetic does not validate polygon topology or add holes/multipolygon support.
+
+Use `locate_point_exact` for even–odd classification, `locate_point_winding_exact` for nonzero fill, and `winding_number_exact` when the signed count itself is needed.

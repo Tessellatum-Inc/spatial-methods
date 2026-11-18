@@ -8,6 +8,8 @@
 
 **Source caution:** the compendium says model names in this section are representative and from memory. Treat each as a research lead, not a verified model catalogue. Confirm papers, model cards, code, release dates, datasets and licence terms before citation.
 
+**Selected identity research:** [Section 13 model and benchmark identity audit](../../research/section-13-identity-audit.md). This confirms initial identities for selected named models and benchmarks only; releases, licences, data provenance and technical claims remain open.
+
 ## Using GeoFMs: embedding-based workflows
 
 | Source entry | Provisional kind | Source page | Verification status |
@@ -39,9 +41,9 @@
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Urban vision-language: UrbanCLIP, UrbanVLP, region embedding models, street-view and satellite fusion for socioeconomic prediction | Urban vision-language models / multimodal prediction | 27 | Not checked — intake only |
-| Spatiotemporal and traffic foundation models: UniST, UrbanGPT, OpenCity, UrbanDiT, STFM-style universal forecasters | Spatiotemporal and traffic model families | 27 | Not checked — intake only |
-| Trajectory foundation models: TrajFM, UniTraj, trajectory tokenizers, mobility LLMs for next-location and mode prediction | Trajectory representation and prediction models | 27 | Not checked — intake only |
+| Urban vision-language: UrbanCLIP, UrbanVLP, region embedding models, street-view and satellite fusion for socioeconomic prediction | Urban vision-language models / multimodal prediction | 27 | Partial — selected bibliography checked; canonical lesson pending |
+| Spatiotemporal and traffic foundation models: UniST, UrbanGPT, OpenCity, UrbanDiT, STFM-style universal forecasters | Spatiotemporal and traffic model families | 27 | Partial — selected bibliography checked; canonical lesson pending |
+| Trajectory foundation models: TrajFM, UniTraj, trajectory tokenizers, mobility LLMs for next-location and mode prediction | Trajectory representation and prediction models | 27 | Partial — selected bibliography checked; canonical lesson pending |
 | General time-series foundation models applied to spatial sensors: TimesFM, Chronos, Moirai, Lag-Llama, with spatial adapters | Time-series foundation models / spatial adaptation workflows | 27 | Not checked — intake only |
 | Hypergraph and heterogeneous graph neural networks for urban knowledge graphs, region and POI embeddings (HGI, ReMVC) | Graph architectures / urban representation learning | 28 | Not checked — intake only |
 
@@ -49,9 +51,9 @@
 
 | Source entry | Provisional kind | Source page | Verification status |
 |---|---|---:|--- |
-| Domain LLMs: GeoGalactica, K2, GeoGPT, GeoLLM, map-aware instruction-tuned models | Domain language model families | 28 | Not checked — intake only |
+| Domain LLMs: GeoGalactica, K2, GeoGPT, GeoLLM, map-aware instruction-tuned models | Domain language model families | 28 | Partial — selected bibliography checked; canonical lesson pending |
 | Map understanding: map VQA, map reading, georeferenced map OCR, chart and cartographic style question answering | Map understanding tasks / multimodal evaluation | 28 | Not checked — intake only |
-| Tool-use evaluation: GeoLLM-Engine, GeoBenchX, GIS Copilot-style agents, spatial reasoning benchmarks (SpatialEval, GeoQA) | Agent evaluation / benchmark suites | 28 | Not checked — intake only |
+| Tool-use evaluation: GeoLLM-Engine, GeoBenchX, GIS Copilot-style agents, spatial reasoning benchmarks (SpatialEval, GeoQA) | Agent evaluation / benchmark suites | 28 | Partial — selected bibliography checked; canonical lesson pending |
 | Pipelines: natural language to spatial SQL, to PyQGIS, to GeoPandas or GDAL, with validation, execution sandboxes and self-repair loops | Natural-language interfaces / agent workflows / execution safeguards | 28 | Not checked — intake only |
 | Retrieval and grounding: GeoRAG over STAC catalogs, metadata-aware retrieval, OSM tag reasoning, gazetteer-augmented generation | Retrieval-augmented generation / geographic grounding | 28 | Not checked — intake only |
 
@@ -79,3 +81,8 @@
 3. Record embedding model, index type, metadata filters and geographic validation splits for retrieval examples.
 4. Evaluate multimodal models against modality-specific baselines and missing-modality cases.
 5. Document execution sandboxes, SQL validation and data permissions for agent workflows.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 13 atomic completion register](../../docs/section-13-atomic-completion-register.md). The register preserves the source's provisional naming and distinguishes algorithms from models, datasets, software, standards, workflows and evaluation protocols. It is traceability infrastructure, not a verification or completion claim.

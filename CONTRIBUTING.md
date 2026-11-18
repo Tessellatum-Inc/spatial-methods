@@ -21,54 +21,74 @@ Small contributions matter. A clear issue report can be just as useful as a larg
 
 1. Check whether the topic or issue is already in the collection.
 2. Tell us what you changed and why.
-3. Include a primary or authoritative source for technical claims; check the title, authors, publication venue, year and DOI/URL against that source rather than copying a citation from another bibliography.
+3. Include a primary or authoritative source for technical claims; check title, authors, venue, year and DOI/URL against that source.
 4. If a source entry is uncertain or only partly checked, say so explicitly instead of marking it verified.
-5. If you share code, include the versions and steps needed to run it.
-6. For spatial examples, state the coordinate reference system, units and any important assumptions.
+5. If you share code, include versions and reproducible run steps.
+6. For spatial examples, state the coordinate reference system, units, spatial/temporal scope and important assumptions.
 7. Only share data, code and images that you have permission to redistribute.
+8. Distinguish original work from AI-assisted drafting, generated content and third-party source material; a human contributor remains responsible for checking the submitted work.
 
-If you're unsure how to contribute, open an issue and describe what you have in mind. GitHub offers short forms for technical corrections, topic suggestions and visual sources. You can start a conversation before preparing a full change.
+## Contribution workflow
 
-If you are ready to make a change, open a pull request. The repository checklist will help reviewers check the evidence, tests, mathematics, visuals and reuse rights.
+Use the [extension protocol](docs/extension-protocol.md) when adding a new algorithm, variant, model, dataset or implementation. It explains stable IDs, source traceability, record types, expected deliverables and the update order for indexes and coverage.
 
-### Run the checks
+For each new method:
 
-From the repository root, run the checks relevant to your change:
+- preserve the exact source label and provenance if it comes from the original compendium;
+- if it is a new addition, record it as a supplemental source with its own reference and date;
+- split grouped methods into separately reviewable child records;
+- create or update the canonical lesson before linking it from indexes;
+- include tests and a notebook only when they add meaningful evidence or learning value;
+- state whether the deliverable is a teaching baseline, reproduction, library integration or production-oriented implementation;
+- record rights separately from technical verification.
+
+If you're unsure, open an issue and describe the idea before preparing a full change.
+
+## Run the checks
+
+From the repository root:
 
 ```bash
-# Check relative links in Markdown files and notebook Markdown cells
 python scripts/check_internal_links.py
+python scripts/check_catalogue_dashboard.py
+python scripts/check_ci_coverage.py
+```
 
-# Run one Python example's test suite
-cd implementations/python/geary-c
+For a Python package:
+
+```bash
+cd implementations/python/<package-name>
 python -m pip install -r requirements.txt
 python -m pytest -q
 ```
 
-The GitHub Actions workflow currently covers 287 Python implementation packages in 48 isolated shards, executes all 180 learning notebooks, checks catalogue/dashboard consistency and internal links, and runs the Clipper2 C# smoke checks. The package manifest is maintained in [scripts/python-ci-packages.json](scripts/python-ci-packages.json), notebook coverage in [scripts/execute_learning_notebooks.py](scripts/execute_learning_notebooks.py), and the workflow in [.github/workflows/python-tests.yml](.github/workflows/python-tests.yml). Counts change as packages and notebooks are added; run [scripts/check_ci_coverage.py](scripts/check_ci_coverage.py) to verify that each current package and notebook is included exactly once. If you change a notebook, run it from top to bottom before opening the pull request; a successful CI run is useful evidence, not a substitute for checking the explanation and assumptions.
+The GitHub Actions workflow currently covers 321 Python implementation packages in 48 isolated shards, executes all 180 learning notebooks, checks catalogue/dashboard consistency and internal links, and runs Clipper2 C# smoke checks. Counts change as packages and notebooks are added; the coverage checker should pass before a pull request is ready.
+
+## Licensing and sign-off
+
+Read [LICENSES.md](LICENSES.md) and [licensing and reuse](docs/licensing-and-reuse.md). Original code is Apache-2.0; original learning material is CC BY 4.0. Third-party assets retain their own terms.
+
+New contribution commits must include a DCO sign-off. Configure your Git identity, then use:
+
+```bash
+git config user.name "Your Name"
+git config user.email "you@example.com"
+git commit -s -m "Describe your contribution"
+```
+
+The resulting commit message includes `Signed-off-by: Your Name <you@example.com>`. Sign off every commit in your contribution. Do not sign off on behalf of another person. The DCO is a provenance certification, not a copyright assignment.
 
 ## Help us keep it trustworthy
 
-We want explanations that are approachable without being careless.
-
-Use the [source-entry verification protocol](catalog/verification-protocol.md) to distinguish identity, bibliographic metadata, technical claims, implementation status and reuse rights. A passing test suite does not verify a literature claim, and a citation does not establish redistribution permission.
-
 - Tell readers when a method is exact, approximate, heuristic or stochastic.
-- Separate what the mathematics guarantees from what a particular software package does.
-- Explain when a result depends on the data, coordinate system, precision or software version.
-- Don't present one benchmark as proof that a method is always faster.
+- Separate mathematical guarantees from software behaviour.
+- Explain dependence on data, coordinate systems, precision and software versions.
+- Do not present one benchmark as proof that a method is always faster.
 - Never invent a source, result or test.
+- A passing test suite does not verify a literature claim; a citation does not establish permission to reproduce an asset.
 
 ## Credit and reuse
 
-Read the [licensing and reuse note](docs/licensing-and-reuse.md) and the [licensing decision proposal](docs/licensing-decision-proposal.md) before contributing material that will be redistributed. The project has not selected blanket licences for code or documentation yet, and the supplied source inventory is not automatically covered by a future project licence.
-
-Substantial contributions will be credited in the relevant material or project notes. Please link to original sources rather than copying large sections of someone else's writing, figures, code or datasets.
-
-The project will publish clear licences for code and documentation. Until those are in place, please ask before assuming a contribution can be reused elsewhere.
-
-## What happens next?
-
-Contributions may be reviewed for accuracy, clarity, accessibility and reproducibility. We may suggest changes or ask a follow-up question. When people disagree about a technical detail, we'll make the assumptions visible and use evidence to work through it.
+Contributors retain copyright in their contributions. Substantial contributions will be credited in the relevant material or project notes. We may ask for corrections or decline material that cannot be independently checked or lawfully redistributed.
 
 Thanks for helping make spatial analysis clearer, more useful and easier to explore.

@@ -96,3 +96,8 @@
 3. For dynamic datums, state the reference-frame realisation and coordinate epoch.
 4. Keep accounting definitions and map-change metrics tied to their stated framework.
 5. Treat GNSS integrity and proof-of-location as safety and security topics with carefully scoped claims.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable IDs in the [Section 21 atomic completion register](../../docs/section-21-atomic-completion-register.md). The source explicitly warns that names are from memory and should be verified before citation. The register preserves that uncertainty and is a backlog decomposition, not a completion claim. Keep Section 21 open until each applicable row passes the identity, bibliography, technical, implementation, independent-test, teaching and rights gates.

@@ -76,3 +76,8 @@
 3. Distinguish a benchmark dataset from a benchmark protocol and from a model leaderboard.
 4. Compare learned routing and allocation with established optimisation baselines.
 5. Do not present this source list as a current ranking or complete inventory.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 11 atomic completion register](../../docs/section-11-atomic-completion-register.md). The register preserves the source's provisional naming and distinguishes models, checkpoints, datasets, tasks, evaluation protocols and operational workflows. It is a traceability backlog, not a verified model catalogue or completion claim.

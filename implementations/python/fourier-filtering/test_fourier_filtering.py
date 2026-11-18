@@ -1,6 +1,8 @@
 import numpy as np
 import pytest
-from fourier_filtering import fft2_image, ifft2_image, radial_filter, filter_frequency
+from fourier_filtering import (fft2_image, ifft2_image, radial_filter, filter_frequency,
+    notch_reject_filter, destripe_periodic,
+)
 
 def test_round_trip():
     x=np.random.default_rng(4).normal(size=(13,17))
@@ -21,3 +23,29 @@ def test_ideal_lowpass_attenuates_checkerboard():
 def test_invalid():
     with pytest.raises(ValueError): fft2_image(np.ones(3))
     with pytest.raises(ValueError): radial_filter((5,5),0)
+
+
+def test_notch_filter_removes_known_periodic_vertical_striping():
+    rows, cols = 64, 96
+    y, x = np.indices((rows, cols))
+    clean = (20.0 + 0.5 * np.cos(2 * np.pi * 2 * x / cols)
+             + 0.2 * np.sin(2 * np.pi * 3 * y / rows))
+    stripe = 3.0 * np.cos(2 * np.pi * 7 * x / cols)
+    observed = clean + stripe
+    restored = destripe_periodic(observed, centers=[(0.0, 7 / cols)], radius=0.008)
+    assert np.sqrt(np.mean((restored - clean) ** 2)) < 1e-6
+
+
+def test_notch_filter_is_conjugate_symmetric_and_preserves_dc():
+    shape = (32, 48)
+    h = notch_reject_filter(shape, [(0.0, 5 / 48)], radius=0.01)
+    assert h[shape[0] // 2, shape[1] // 2] == pytest.approx(1.0)
+    assert h[shape[0] // 2, shape[1] // 2 + 5] < 1e-12
+    assert h[shape[0] // 2, shape[1] // 2 - 5] < 1e-12
+    assert np.allclose(h, np.roll(h[::-1, ::-1], shift=(1, 1), axis=(0, 1)), atol=1e-12)
+
+
+def test_notch_filter_rejects_invalid_parameters():
+    with pytest.raises(ValueError): notch_reject_filter((8, 8), [], 0.1)
+    with pytest.raises(ValueError): notch_reject_filter((8, 8), [(0.0, 0.1)], 0)
+    with pytest.raises(ValueError): notch_reject_filter((8, 8), [(0.0, 0.5)], 0.1)

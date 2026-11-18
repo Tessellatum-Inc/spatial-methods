@@ -76,6 +76,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/bowyer-watson",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/brovey-pansharpening",
     "pythonpath": ""
   },
@@ -397,6 +401,10 @@
   },
   {
     "directory": "implementations/python/hand",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/hansen-hurwitz",
     "pythonpath": ""
   },
   {
@@ -724,6 +732,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/p-dispersion",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/p-median",
     "pythonpath": ""
   },
@@ -880,6 +892,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/ray-triangle-intersection",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/rbf-interpolation",
     "pythonpath": ""
   },
@@ -937,6 +953,10 @@
   },
   {
     "directory": "implementations/python/segment-intersection",
+    "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/sensor-noise-estimation",
     "pythonpath": ""
   },
   {

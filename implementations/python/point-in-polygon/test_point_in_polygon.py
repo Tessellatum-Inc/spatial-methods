@@ -90,3 +90,48 @@ def test_winding_number_rejects_nonfinite_inputs():
         winding_number((float("nan"), 0), SQUARE)
     with pytest.raises(ValueError, match="finite"):
         locate_point_winding((0, 0), [(0, 0), (1, 0), (0, float("inf"))])
+
+
+def test_exact_predicates_handle_near_boundary_decimal_values_without_tolerance():
+    from point_in_polygon import (
+        locate_point_exact, locate_point_winding_exact, winding_number_exact,
+    )
+    ring = [(0, 0), (10, 0), (10, 10), (0, 10)]
+    assert locate_point_exact((5, "0.00000000000000000001"), ring) is PointLocation.INSIDE
+    assert locate_point_exact((5, "-0.00000000000000000001"), ring) is PointLocation.OUTSIDE
+    assert locate_point_exact((5, 0), ring) is PointLocation.BOUNDARY
+    assert locate_point_winding_exact((5, "0.00000000000000000001"), ring) is PointLocation.INSIDE
+    assert winding_number_exact((5, 5), ring) == 1
+
+
+def test_exact_predicates_preserve_large_integer_coordinate_distinctions():
+    from point_in_polygon import locate_point_exact, locate_point_winding_exact
+    base = 10**18
+    ring = [(base, base), (base + 4, base), (base + 4, base + 4), (base, base + 4)]
+    assert locate_point_exact((base + 2, base + 2), ring) is PointLocation.INSIDE
+    assert locate_point_winding_exact((base + 4, base + 2), ring) is PointLocation.BOUNDARY
+
+
+def test_exact_predicates_reject_nonfinite_and_boolean_coordinates():
+    from point_in_polygon import locate_point_exact, winding_number_exact
+    with pytest.raises(ValueError, match="finite"):
+        locate_point_exact((float("nan"), 0), SQUARE)
+    with pytest.raises(ValueError, match="finite"):
+        winding_number_exact((0, 0), [(0, 0), (1, 0), (0, float("inf"))])
+    with pytest.raises(ValueError, match="boolean"):
+        locate_point_exact((True, 0), SQUARE)
+
+
+def test_exact_winding_and_even_odd_agree_on_seeded_simple_polygons():
+    import math
+    import random
+    from point_in_polygon import locate_point_exact, locate_point_winding_exact
+    rng = random.Random(20261118)
+    for _ in range(100):
+        angles = sorted(rng.random() * 2 * math.pi for _ in range(10))
+        ring = [(round((2 + rng.random() * 5) * math.cos(a), 6),
+                 round((2 + rng.random() * 5) * math.sin(a), 6))
+                for a in angles]
+        for _ in range(20):
+            point = (round(rng.uniform(-8, 8), 6), round(rng.uniform(-8, 8), 6))
+            assert locate_point_exact(point, ring) is locate_point_winding_exact(point, ring)

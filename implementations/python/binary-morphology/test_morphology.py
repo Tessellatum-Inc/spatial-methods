@@ -133,3 +133,269 @@ def test_two_pass_components_handles_empty_and_single_component_masks():
     labels, sizes = two_pass_connected_components(image, 4)
     assert np.unique(labels).tolist() == [1]
     assert sizes.tolist() == [20]
+
+def test_binary_granulometry_is_monotone_and_conserves_pattern_spectrum():
+    from morphology import binary_granulometry
+    image = np.zeros((15, 15), bool)
+    image[3:12, 3:12] = True
+    image[6, 6] = False
+    result = binary_granulometry(image, [0, 1, 2])
+    areas, spectrum = result["areas"], result["pattern_spectrum"]
+    assert result["radii"].tolist() == [0, 1, 2]
+    assert areas[0] == int(image.sum())
+    assert np.all(np.diff(areas) <= 0)
+    assert np.all(spectrum >= 0)
+    assert int(spectrum.sum()) == int(areas[0] - areas[-1])
+    assert areas[-1] < areas[0]
+
+
+def test_binary_granulometry_rejects_empty_duplicate_or_invalid_radii():
+    from morphology import binary_granulometry
+    image = np.ones((7, 7), bool)
+    for radii in ([], [1, 1], [2, 1], [-1], [1.5], [True]):
+        with pytest.raises(ValueError):
+            binary_granulometry(image, radii)
+
+
+def test_max_tree_builds_nested_upper_level_components_and_root():
+    from morphology import grayscale_component_tree
+    image = np.array([[0, 0, 0], [0, 5, 0], [0, 0, 4]], dtype=float)
+    tree = grayscale_component_tree(image, polarity="max", connectivity=4)
+    nodes = tree["nodes"]
+    assert len(tree["roots"]) == 1
+    root = nodes[tree["roots"][0]]
+    assert root["level"] == 0
+    assert root["area"] == image.size
+    leaves = [node for node in nodes if node["parent"] == root["id"]]
+    assert sorted(node["level"] for node in leaves) == [4.0, 5.0]
+    for node in nodes:
+        if node["parent"] is not None:
+            parent = nodes[node["parent"]]
+            assert set(node["pixels"]).issubset(set(parent["pixels"]))
+            assert parent["level"] < node["level"]
+
+
+def test_min_tree_builds_nested_lower_level_components_and_root():
+    from morphology import grayscale_component_tree
+    image = np.array([[5, 5, 5], [5, 0, 5], [5, 5, 1]], dtype=float)
+    tree = grayscale_component_tree(image, polarity="min", connectivity=4)
+    nodes = tree["nodes"]
+    assert len(tree["roots"]) == 1
+    root = nodes[tree["roots"][0]]
+    assert root["level"] == 5
+    assert root["area"] == image.size
+    leaves = [node for node in nodes if node["parent"] == root["id"]]
+    assert sorted(node["level"] for node in leaves) == [0.0, 1.0]
+    for node in nodes:
+        if node["parent"] is not None:
+            parent = nodes[node["parent"]]
+            assert set(node["pixels"]).issubset(set(parent["pixels"]))
+            assert parent["level"] > node["level"]
+
+
+def test_component_trees_handle_plateaus_and_constant_images():
+    from morphology import grayscale_component_tree
+    plateau = np.array([[0, 0, 0, 0], [0, 3, 3, 0], [0, 3, 3, 0], [0, 0, 0, 0]])
+    tree4 = grayscale_component_tree(plateau, "max", 4)
+    tree8 = grayscale_component_tree(plateau, "max", 8)
+    assert len(tree4["nodes"]) == 2
+    assert len(tree8["nodes"]) == 2
+    constant = grayscale_component_tree(np.full((3, 5), 7), "min", 8)
+    assert len(constant["nodes"]) == 1
+    assert constant["nodes"][0]["area"] == 15
+    assert constant["roots"] == [0]
+
+
+def test_component_tree_rejects_invalid_inputs():
+    from morphology import grayscale_component_tree
+    for bad in ([], np.ones(3), np.ones((2, 2, 2)), np.array([[np.nan]])):
+        with pytest.raises(ValueError):
+            grayscale_component_tree(bad)
+    with pytest.raises(ValueError):
+        grayscale_component_tree(np.ones((2, 2)), "alpha")
+    with pytest.raises(ValueError):
+        grayscale_component_tree(np.ones((2, 2)), connectivity=6)
+
+
+def test_alpha_tree_builds_nested_quasi_flat_zones_and_validates_inputs():
+    from morphology import grayscale_alpha_tree
+    image = np.array([[0, 0, 5], [0, 4, 5]], dtype=float)
+    tree = grayscale_alpha_tree(image, connectivity=4)
+    nodes = tree["nodes"]
+    assert len(tree["roots"]) == 1
+    root = nodes[tree["roots"][0]]
+    assert root["area"] == image.size
+    assert root["alpha"] == 4.0
+    assert any(node["area"] == 3 and node["alpha"] == 0.0 for node in nodes)
+    for node in nodes:
+        if node["parent"] is not None:
+            parent = nodes[node["parent"]]
+            assert set(node["pixels"]).issubset(set(parent["pixels"]))
+            assert parent["alpha"] > node["alpha"]
+    for bad in ([], np.ones(3), np.array([[np.inf]])):
+        with pytest.raises(ValueError):
+            grayscale_alpha_tree(bad)
+    with pytest.raises(ValueError):
+        grayscale_alpha_tree(image, connectivity=6)
+
+
+def test_alpha_tree_constant_and_single_pixel_rasters():
+    from morphology import grayscale_alpha_tree
+    constant = grayscale_alpha_tree(np.full((2, 3), 7.0))
+    assert len(constant["nodes"]) == 1
+    assert constant["nodes"][0]["alpha"] == 0.0
+    assert constant["roots"] == [0]
+    single = grayscale_alpha_tree(np.array([[2.0]]))
+    assert single["nodes"][0]["pixels"] == ((0, 0),)
+
+
+@pytest.mark.parametrize("connectivity", [4, 8])
+def test_alpha_tree_matches_independent_threshold_component_oracle(connectivity):
+    from morphology import grayscale_alpha_tree
+    rng = np.random.default_rng(4401 + connectivity)
+    image = rng.integers(0, 5, size=(5, 6)).astype(float)
+    tree = grayscale_alpha_tree(image, connectivity=connectivity)
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    if connectivity == 8:
+        directions += [(-1, -1), (-1, 1), (1, -1), (1, 1)]
+    edge_weights = []
+    for y in range(image.shape[0]):
+        for x in range(image.shape[1]):
+            for dy, dx in directions:
+                ny, nx = y + dy, x + dx
+                if 0 <= ny < image.shape[0] and 0 <= nx < image.shape[1]:
+                    edge_weights.append(abs(image[y, x] - image[ny, nx]))
+    for alpha in sorted(set(edge_weights)):
+        expected, seen = set(), set()
+        for y in range(image.shape[0]):
+            for x in range(image.shape[1]):
+                if (y, x) in seen:
+                    continue
+                stack, component = [(y, x)], set()
+                seen.add((y, x))
+                while stack:
+                    cy, cx = stack.pop()
+                    component.add((cy, cx))
+                    for dy, dx in directions:
+                        ny, nx = cy + dy, cx + dx
+                        if not (0 <= ny < image.shape[0] and 0 <= nx < image.shape[1]):
+                            continue
+                        if (ny, nx) in seen or abs(image[cy, cx] - image[ny, nx]) > alpha:
+                            continue
+                        seen.add((ny, nx))
+                        stack.append((ny, nx))
+                expected.add(frozenset(component))
+        # At threshold alpha, the active tree partition consists of
+        # nodes born at or below alpha whose parent has not yet been born.
+        actual = set()
+        for node in tree["nodes"]:
+            parent_id = node["parent"]
+            parent_alpha = (tree["nodes"][parent_id]["alpha"]
+                            if parent_id is not None else float("inf"))
+            if node["alpha"] <= float(alpha) and parent_alpha > float(alpha):
+                actual.add(frozenset(node["pixels"]))
+        assert actual == expected
+
+
+
+def _threshold_area_filter_oracle(image, min_area, polarity, connectivity):
+    """Independent threshold-set oracle; deliberately avoids component trees."""
+    fallback = image.min() if polarity == "max" else image.max()
+    result = np.full(image.shape, fallback, dtype=image.dtype)
+    for level in np.unique(image):
+        mask = image >= level if polarity == "max" else image <= level
+        labels, sizes = connected_components(mask, connectivity)
+        for label, size in enumerate(sizes, start=1):
+            if size >= min_area:
+                region = labels == label
+                if polarity == "max":
+                    result[region] = np.maximum(result[region], level)
+                else:
+                    result[region] = np.minimum(result[region], level)
+    return result
+
+
+@pytest.mark.parametrize("connectivity", [4, 8])
+@pytest.mark.parametrize("polarity", ["max", "min"])
+def test_grayscale_area_attribute_filter_matches_threshold_set_oracle(connectivity, polarity):
+    from morphology import grayscale_area_attribute_filter
+    rng = np.random.default_rng(8140 + connectivity)
+    for _ in range(12):
+        image = rng.integers(0, 8, size=(6, 7), dtype=np.int16)
+        for min_area in (1, 2, 4, 9, image.size + 1):
+            actual = grayscale_area_attribute_filter(image, min_area, polarity, connectivity)
+            expected = _threshold_area_filter_oracle(image, min_area, polarity, connectivity)
+            assert np.array_equal(actual, expected)
+
+
+def test_grayscale_area_opening_and_closing_have_expected_filter_properties():
+    from morphology import grayscale_area_attribute_filter
+    image = np.full((7, 9), 10, dtype=np.int16)
+    image[1, 1] = 30
+    image[3:5, 4:6] = 25
+    image[5, 7] = 0
+    opened = grayscale_area_attribute_filter(image, 2, "max", 4)
+    closed = grayscale_area_attribute_filter(image, 2, "min", 4)
+    assert np.all(opened <= image)
+    assert np.all(closed >= image)
+    assert opened[1, 1] == 10
+    assert np.all(opened[3:5, 4:6] == 25)
+    assert closed[5, 7] == 10
+    assert np.array_equal(grayscale_area_attribute_filter(image, 1, "max"), image)
+    assert np.array_equal(grayscale_area_attribute_filter(image, 1, "min"), image)
+    assert np.array_equal(grayscale_area_attribute_filter(opened, 2, "max", 4), opened)
+    assert np.array_equal(grayscale_area_attribute_filter(closed, 2, "min", 4), closed)
+
+
+def test_grayscale_area_filter_rejects_invalid_parameters():
+    from morphology import grayscale_area_attribute_filter
+    image = np.arange(9).reshape(3, 3)
+    for value in (0, -1, 1.5, True):
+        with pytest.raises(ValueError):
+            grayscale_area_attribute_filter(image, value)
+    with pytest.raises(ValueError):
+        grayscale_area_attribute_filter(image, 2, polarity="alpha")
+    with pytest.raises(ValueError):
+        grayscale_area_attribute_filter(image, 2, connectivity=6)
+
+
+def test_moore_contours_trace_single_pixel_and_rectangular_component():
+    from morphology import moore_neighbor_contours
+    single = np.zeros((4, 5), bool)
+    single[2, 3] = True
+    contours = moore_neighbor_contours(single)
+    assert len(contours) == 1
+    assert contours[0].tolist() == [[2, 3]]
+
+    rectangle = np.zeros((8, 9), bool)
+    rectangle[2:6, 3:7] = True
+    contour, = moore_neighbor_contours(rectangle)
+    assert tuple(contour[0]) == (2, 3)
+    assert len({tuple(point) for point in contour}) == len(contour)
+    assert len(contour) == 12
+    assert all(rectangle[y, x] for y, x in contour)
+    assert all(
+        max(abs(int(a[0])-int(b[0])), abs(int(a[1])-int(b[1]))) == 1
+        for a, b in zip(contour, np.roll(contour, -1, axis=0))
+    )
+
+
+def test_moore_contours_separate_components_and_respect_connectivity():
+    from morphology import moore_neighbor_contours
+    image = np.zeros((6, 6), bool)
+    image[0, 0] = True
+    image[2:4, 2:4] = True
+    image[5, 5] = True
+    assert len(moore_neighbor_contours(image, 8)) == 3
+    diagonal = np.eye(3, dtype=bool)
+    assert len(moore_neighbor_contours(diagonal, 4)) == 3
+    assert len(moore_neighbor_contours(diagonal, 8)) == 1
+
+
+def test_moore_contours_validate_connectivity_and_empty_input():
+    from morphology import moore_neighbor_contours
+    assert moore_neighbor_contours(np.zeros((3, 4), bool)) == []
+    with pytest.raises(ValueError):
+        moore_neighbor_contours(np.ones((2, 2)), 6)
+    with pytest.raises(ValueError):
+        moore_neighbor_contours(np.ones((2, 2)), True)

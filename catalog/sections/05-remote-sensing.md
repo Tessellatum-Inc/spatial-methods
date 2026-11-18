@@ -112,3 +112,8 @@ The co-registration source entry now includes a tested FFT phase-correlation tra
 
 
 The change-detection source entry now has a NumPy CVA baseline (after-minus-before vectors, Euclidean magnitude and ridge-stabilized Mahalanobis magnitude) plus post-classification transition matrices and change masks. These require aligned, radiometrically comparable dates and do not implement IR-MAD or learned change-detection architectures.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 5 atomic completion register](../../docs/section-5-atomic-completion-register.md). The register preserves the source grouping and distinguishes algorithms from models, metrics, software and workflows. It is traceability infrastructure, not a verification or completion claim.

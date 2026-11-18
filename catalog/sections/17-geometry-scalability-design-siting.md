@@ -112,3 +112,8 @@ The new package supplies HyperLogLog cardinality estimation, Count-Min frequency
 ### Fast KDE implementation update
 
 The FFT-grid KDE package adds weighted point binning, truncated Gaussian convolution, density scaling and optional discrete boundary correction. It is an approximate regular-grid estimator; dual-tree KDE, adaptive bandwidths and distributed implementations remain open.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 17 atomic completion register](../../docs/section-17-atomic-completion-register.md). The register preserves source uncertainty and distinguishes algorithms from data structures, standards, products, software, models and workflows. It is a traceability backlog, not a completion claim; each child remains open or partial until its applicable evidence gates pass.

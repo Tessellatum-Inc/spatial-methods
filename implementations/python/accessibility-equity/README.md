@@ -37,7 +37,7 @@ Weighted p10, median and p90 describe the lower, middle and upper parts of the p
 S(t)=\frac{\sum_i w_i\,\mathbf{1}(a_i<t)}{\sum_i w_i}.
 \]
 
-Group summaries and the max-minus-min group mean gap provide a first comparison, not a complete account of within-group inequality.
+Group summaries and the max-minus-min group mean gap provide a first comparison, not a complete account of within-group inequality.\n\n## Supplemental inequality indices\n\n`weighted_atkinson(values, inequality_aversion=1.0, weights=None)` computes the Atkinson index for a declared inequality-aversion parameter epsilon. Epsilon 0 returns zero by definition; epsilon 1 uses the weighted geometric mean; larger epsilon places more weight on the lower tail. A positive-weight zero value makes the equally distributed equivalent zero for epsilon at least 1. `weighted_theil_t(values, weights=None)` computes the population-weighted Theil T (generalised entropy 1), with zero-valued observations contributing zero. Both return zero for an all-zero distribution. These are descriptive, parameter-sensitive supplements to the Gini/Lorenz view, not substitutes for absolute access levels or a normative decision.
 
 ## Input contract and limitations
 

@@ -1,33 +1,30 @@
-## What changed?
+## What does this change?
 
-Describe the reader-facing or technical improvement.
+<!-- Describe the problem, method or learning gap this addresses. -->
 
-## Why does it help?
+## Source and scope
 
-What question, problem or gap does this address?
+- [ ] I checked for an existing canonical record, alias or variant.
+- [ ] I preserved original source wording/page provenance, or clearly marked this as a supplemental source.
+- [ ] I used primary or authoritative references and checked bibliographic metadata.
+- [ ] I stated the method's assumptions, limits and implementation level.
+- [ ] I recorded third-party assets and their exact reuse terms; uncertain assets are linked, not copied.
 
-## Evidence and sources
+## Validation
 
-- [ ] Technical claims are supported by appropriate sources.
-- [ ] Source wording and uncertainty have not been silently changed.
-- [ ] Software behaviour includes relevant version details.
+- [ ] Relevant tests pass.
+- [ ] New edge cases, invariants or differential checks are included where appropriate.
+- [ ] Notebooks run top-to-bottom from a clean environment, if changed.
+- [ ] Internal links, catalogue dashboard and CI coverage checks pass.
+- [ ] Documentation, indexes and coverage matrix are updated.
 
-## Examples and tests
+## Rights and contribution origin
 
-- [ ] I ran the relevant tests or explained why tests do not apply.
-- [ ] Examples include expected output and reproducible steps.
-- [ ] Spatial examples state CRS, units and important assumptions.
-- [ ] New edge cases have regression tests where appropriate.
+- [ ] I have the right to submit every part of this contribution under the applicable project licence.
+- [ ] Every new contribution commit has a DCO `Signed-off-by` line (use `git commit -s`).
+- [ ] AI-assisted material has been reviewed and verified by me; I take responsibility for its correctness and provenance.
+- [ ] I have not included confidential, personal, restricted or unlicensed material.
 
-## Mathematics and visuals
+## Notes for reviewers
 
-- [ ] Equations use rendered Markdown math and define their symbols.
-- [ ] Diagrams have useful captions and alt text.
-- [ ] Reused visuals have verified licences and attribution.
-- [ ] Adaptations are identified and comply with the source licence.
-
-## Data and licensing
-
-- [ ] I have permission to share any added data, code, text or images.
-- [ ] I have not copied substantial third-party material without permission.
-- [ ] Any unresolved licence question is clearly identified.
+<!-- Limitations, unresolved questions, follow-up work, or why a notebook/implementation is not applicable. -->

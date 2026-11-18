@@ -58,7 +58,7 @@ $$
 
 Compare highest and lowest group means using an absolute gap and a ratio. Also inspect within-group distributions.
 
-## A practical workflow
+## Supplemental inequality measures\n\nThe Gini coefficient is not the only summary of relative inequality. The implementation also exposes two complementary indices:\n\n- **Atkinson index:** `weighted_atkinson` uses an explicit inequality-aversion parameter ε. Higher ε gives greater weight to shortfalls at the lower end of the distribution. At ε = 1 it uses the weighted geometric mean; ε = 0 is the equality-neutral limit. A zero-access observation with positive population weight drives the equally distributed equivalent to zero for ε ≥ 1.\n- **Theil T:** `weighted_theil_t` is the population-weighted generalised entropy index with parameter 1. Zero-access observations contribute zero to the sum by the conventional limit.\n\nNeither index determines what level or distribution is fair. Report the parameter, weights, absolute access levels and lower-tail outcomes; compare indices rather than selecting one as a universal fairness score.\n\n## A practical workflow
 
 1. Calculate accessibility using a documented destination set, mode, time period, impedance matrix and opportunity measure.
 2. Join population weights and group labels using a defensible spatial crosswalk.

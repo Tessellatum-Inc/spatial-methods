@@ -10,8 +10,8 @@ For an image x[m,n], the 2-D DFT is the sum over rows and columns of x[m,n] exp(
 
 ## Implemented scope
 
-The NumPy reference provides forward/inverse transforms and radial ideal, Gaussian and Butterworth low-pass, high-pass and band-pass transfer functions. Cutoff units are cycles per pixel. See [implementation](../../implementations/python/fourier-filtering/README.md).
+The NumPy reference provides forward/inverse transforms and radial ideal, Gaussian and Butterworth low-pass, high-pass and band-pass transfer functions. Cutoff units are cycles per pixel. See [implementation](../../implementations/python/fourier-filtering/README.md), including its synthetic vertical-stripe recovery test.
 
 ## Assumptions and limitations
 
-The DFT treats the image as periodically extended. Discontinuities at image boundaries can cause spectral leakage; tapering/windowing may help but changes the signal. Ideal filters have sharp frequency cutoffs and can cause ringing. This implementation does not cover notch filtering, deconvolution, phase correlation or geospatial NoData interpolation.
+The DFT treats the image as periodically extended. Discontinuities at image boundaries can cause spectral leakage; tapering/windowing may help but changes the signal. Ideal filters have sharp frequency cutoffs and can cause ringing. The package now also provides user-guided conjugate-symmetric notch rejection for known periodic components and a scoped periodic destriping helper. The caller supplies the frequency peak(s); automatic peak discovery, deconvolution, phase correlation and geospatial NoData interpolation remain outside scope.

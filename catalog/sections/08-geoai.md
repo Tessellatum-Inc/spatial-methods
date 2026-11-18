@@ -103,8 +103,8 @@ A first masked-autoencoding lesson now explains the encoder-visible/decoder-mask
 |---|---|---:|--- |
 | Losses: Dice, Tversky, focal, Lovász-softmax, class-balanced cross-entropy, boundary and distance-transform loss, clDice, Huber, quantile and pinball | Loss functions | 17 | Not checked — intake only |
 | Augmentation: rotation, flip, scale jitter, CutMix, mosaic, copy-paste, spectral jitter, band dropout, cloud and shadow simulation, test-time augmentation | Data augmentation / inference-time procedures | 17 | Not checked — intake only |
-| Metrics: OA, F1, IoU and mIoU, Dice, kappa, mAP with rotated IoU, boundary F-score, panoptic quality, RMSE, MAE, R², NSE, KGE, CRPS, ECE | Evaluation metrics | 17 | [Classification and segmentation accuracy assessment](../../implementations/python/accuracy-assessment/README.md) implements OA, producer/user accuracy, kappa, quantity/allocation disagreement, per-class F1/IoU/Dice, macro-F1, mean IoU, change FoM and tolerance-aware binary boundary F1 | Partial — these discrete classification and binary-mask metrics are implemented; detection mAP, rotated-box IoU, panoptic quality, regression/forecast metrics, CRPS, ECE and design-based area-adjusted accuracy remain open |
-| Embedding quality: linear probing, k-NN, retrieval recall@k, clustering NMI | Representation evaluation methods | 17 | Not checked — intake only |
+| Metrics: OA, F1, IoU and mIoU, Dice, kappa, mAP with rotated IoU, boundary F-score, panoptic quality, RMSE, MAE, R², NSE, KGE, CRPS, ECE | Evaluation metrics | 17 | [Accuracy-assessment package](../../implementations/python/accuracy-assessment/README.md) implements classification/segmentation metrics, boundary F1, weighted MAE/RMSE/R², NSE, KGE 2009, empirical ensemble CRPS, top-label ECE, recall@k and NMI | Partial — these bounded reference metrics are tested; detection mAP, rotated-box IoU, panoptic quality, modified KGE, continuous CRPS, design-based area-adjusted accuracy and forecast calibration remain open |
+| Embedding quality: linear probing, k-NN, retrieval recall@k, clustering NMI | Representation evaluation methods | 17 | [Accuracy-assessment package](../../implementations/python/accuracy-assessment/README.md) now includes macro recall@k and arithmetic-normalised mutual information (NMI) with tests | Partial — recall@k and NMI baselines are implemented; linear probing, k-NN embedding evaluation and geographic benchmark protocols remain open |
 | Benchmarks: GEO-Bench, PANGAEA, Satlas, fMoW, BigEarthNet, EuroSAT | Benchmark suites / datasets | 17 | Not checked — intake only |
 
 ## Spatial validity, uncertainty and interpretability
@@ -126,3 +126,8 @@ A first masked-autoencoding lesson now explains the encoder-visible/decoder-mask
 4. Compare foundation models with transparent baselines and task-specific models.
 5. Record sensor, spatial resolution, temporal coverage, training data provenance and inference constraints.
 6. Keep the source warning visible: this is a representative intake list, not a verified ranking or exhaustive catalogue.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 8 atomic completion register](../../docs/section-8-atomic-completion-register.md). The register preserves the source's representative/unverified warning and separates architectures, objectives, checkpoints, datasets, tasks, metrics, adaptation and deployment workflows. It is not a verified model catalogue or completion claim.
