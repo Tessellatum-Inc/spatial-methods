@@ -5,7 +5,7 @@
 **Prerequisites:** Basic coordinate geometry. Python familiarity is needed only for the implementation exercises.  
 **Suggested study time:** 60–90 minutes for the core; additional study paths are provided below.
 
-This is a guided companion to the public [segment intersection lesson](../algorithms/geometry/segment-intersection.md) and its [tested Python implementation](../implementations/python/segment-intersection/README.md).
+This release includes a polished [field guide](../learning-packs/01-segment-intersection/field-guide.md), an [educator companion](../learning-packs/01-segment-intersection/educator-companion.md), original diagrams, a public [technical lesson](../algorithms/geometry/segment-intersection.md), and a [tested Python implementation](../implementations/python/segment-intersection/README.md).
 
 ## Why this method matters
 
