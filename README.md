@@ -1,6 +1,8 @@
-# Spatial Analysis
+# Spatial Methods
 
 **Understand the methods behind the maps, models and decisions that shape our world.**
+
+<p align="center"><img src="assets/spatial-methods-mark.svg" alt="Spatial Methods geometric mark" width="112" /></p>
 
 Spatial data is everywhere. It helps us find places, plan journeys, understand changing environments, measure access to services and make better decisions about the places we share.
 
@@ -65,7 +67,7 @@ You can read, try an example, follow a learning path or help us make something c
 
 ## About this repository
 
-This is the public home for the project's explanations, research references, examples and collaborative work. It is maintained as a version-controlled technical resource so that corrections and improvements remain visible.
+Spatial Methods is an open, growing collection of spatial methods and the ideas behind them. It brings together clear explanations, research references, tested implementations, exercises and learning paths. Corrections and improvements remain visible, and the collection is built to be useful whether you are learning, applying or contributing.
 
 The initial scope comes from the supplied *Spatial Analysis Algorithms: Complete Compendium* (47 pages, 12 November 2026). Its page-by-page text is preserved under [source-inventory](source-inventory/README.md). The original inventory is broad and includes algorithms, operations, statistical models, data structures, software, metrics and applied methods. Each item is reviewed before being presented as established technical guidance. All 22 original sections now have item-level intake indexes; these preserve the source groupings and mark what still needs verification. An indexed entry is not automatically a researched or validated lesson.
 
@@ -74,6 +76,7 @@ The initial scope comes from the supplied *Spatial Analysis Algorithms: Complete
 - [Compendium completion standard and release gates](docs/compendium-completion-standard.md)
 - [How we research and explain a method](docs/project-method.md)
 - [How we write and teach](docs/voice-and-writing.md)
+- [Spatial Methods identity and visual guide](docs/brand-guidelines.md)
 - [How we reuse and attribute visual sources](docs/visual-sources-and-attribution.md)
 - [How we check technical claims](docs/research-standard.md)
 - [How to contribute](CONTRIBUTING.md)
