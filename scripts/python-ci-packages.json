@@ -404,6 +404,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/hansen-hurwitz",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/hants-time-series",
     "pythonpath": ""
   },
