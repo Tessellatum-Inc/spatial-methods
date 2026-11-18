@@ -4,6 +4,8 @@ This roadmap keeps the work focused on making the public collection genuinely us
 
 The goal is not to fill folders or publish pages quickly. The goal is a collection that a new reader can enter easily, learn from independently, reproduce and improve with others.
 
+For the current audited state, exact-head CI evidence, outstanding release gates and integration policy, see the [release-readiness ledger](release-readiness.md).
+
 ## 1. The reader can find their way
 
 - [x] Public-facing introduction and clear first steps.
