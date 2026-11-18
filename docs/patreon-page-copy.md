@@ -1,8 +1,8 @@
-# Patreon page copy
+# Spatial Methods — Patreon page copy
 
 ## Page title
 
-Spatial Analysis — Learn the methods behind the map
+Spatial Methods — Learn the methods behind the map
 
 ## Short description
 
@@ -12,7 +12,7 @@ A growing open archive of spatial algorithms, models and practical examples—pl
 
 Spatial data helps us understand places, patterns, movement and change. But behind every map or model are methods worth understanding: how geometries relate, how routes are found, how spatial patterns are measured, how models make predictions and where their assumptions can fail.
 
-Spatial Analysis makes those methods easier to explore.
+Spatial Methods makes those methods easier to explore.
 
 The public repository is our open technical archive: explanations, references, code, tests, notebooks, exercises and learning paths. You can use it without becoming a member.
 
@@ -28,7 +28,7 @@ Membership adds a guided learning experience. We turn individual methods into st
 
 ### How to begin
 
-1. Explore the public Spatial Analysis repository: https://github.com/geo-dev-hub/spatial-analysis
+1. Explore the public Spatial Methods repository: https://github.com/geo-dev-hub/spatial-analysis
 2. Choose a learning path or start with geometry foundations.
 3. Join Library for structured notes, Laboratory for guided practice, or Research Circle for group application and discussion.
 
