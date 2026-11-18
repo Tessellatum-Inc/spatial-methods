@@ -80,6 +80,21 @@ def resolve_target(source_name: str, raw_target: str) -> Path | None:
     return resolved.resolve()
 
 
+def resolve_heading_anchor(source_name: str, raw_target: str) -> tuple[Path | None, str]:
+    target = raw_target.strip().split()[0].strip("<>")
+    parsed = urlsplit(target)
+    if parsed.scheme or parsed.netloc:
+        return None, ""
+    anchor = unquote(parsed.fragment).lower()
+    target_path = unquote(parsed.path)
+    source = ROOT / source_name.split(" [markdown cell", 1)[0]
+    if target_path.startswith("/"):
+        resolved = ROOT / target_path.lstrip("/")
+    else:
+        resolved = source.parent / target_path if target_path else source
+    return resolved.resolve(), anchor
+
+
 def main() -> int:
     errors: list[str] = []
     checked = 0
@@ -101,6 +116,21 @@ def main() -> int:
                 checked += 1
                 if not resolved.exists():
                     errors.append(f"{source_name}: broken local link -> {raw_target}")
+                    continue
+                target_file, anchor = resolve_heading_anchor(source_name, raw_target)
+                if anchor and target_file and target_file.suffix.lower() == ".md" and target_file.exists():
+                    heading_text = strip_fenced_code(target_file.read_text(encoding="utf-8"))
+                    heading_ids = set()
+                    for heading in re.findall(r"^#{1,6}\\s+(.+)$", heading_text, re.MULTILINE):
+                        clean = re.sub(r"\\[[^\\]]*\\]\\([^)]*\\)", "", heading)
+                        clean = re.sub(r"<[^>]+>", "", clean)
+                        clean = clean.strip().lower()
+                        clean = re.sub(r"[^\\w -]", "", clean)
+                        clean = re.sub(r"\\s+", "-", clean.strip())
+                        heading_ids.add(clean)
+                    heading_ids.update(re.findall(r"\\{#([A-Za-z0-9_.:-]+)\\}", heading_text))
+                    if anchor not in heading_ids:
+                        errors.append(f"{source_name}: missing local heading anchor -> {raw_target}")
 
     if errors:
         print("\n".join(errors))
