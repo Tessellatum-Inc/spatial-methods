@@ -16,7 +16,7 @@ from urllib.parse import unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 LINK_RE = re.compile(r"!?(?:\[[^\]]*\])\(([^)]+)\)")
 HEADING_RE = re.compile(r"^\s{0,3}(#{1,6})\s+(.+?)\s*#*\s*$")
-HTML_ANCHOR_RE = re.compile(r"<a\s+(?:[^>]*?\s)?(?:id|name)=[\"']([^\\"']+)[\\"'][^>]*>", re.I)
+HTML_ANCHOR_RE = re.compile(r'''<a\s+[^>]*?(?:id|name)\s*=\s*["']([^"']+)["'][^>]*>''', re.I)
 
 def strip_fenced_code(text: str) -> str:
     """Remove fenced code blocks so example URLs/headings are not checked."""
