@@ -1,6 +1,6 @@
 import unittest
 
-from check_internal_links import github_heading_slug, heading_anchors, resolve_heading_anchor, resolve_target
+from check_internal_links import github_heading_slug, heading_anchors, resolve_heading_anchor, resolve_target, strip_fenced_code
 
 
 class InternalLinkAnchorTests(unittest.TestCase):
@@ -17,10 +17,10 @@ class InternalLinkAnchorTests(unittest.TestCase):
     def test_explicit_html_anchor_is_recognized(self):
         self.assertIn("custom-target", heading_anchors('<a id="custom-target"></a>'))
 
-    def test_fenced_code_is_not_a_heading(self):
+    def test_fenced_code_is_removed_before_heading_parse(self):
         fence = chr(96) * 3
-        text = "# Actual\\n" + fence + "md\\n# Not a heading\\n" + fence + "\\n"
-        self.assertEqual(heading_anchors(text), {"actual"})
+        text = "# Actual" + chr(10) + fence + "md" + chr(10) + "# Not a heading" + chr(10) + fence + chr(10)
+        self.assertEqual(heading_anchors(strip_fenced_code(text)), {"actual"})
 
     def test_same_page_fragment_resolves_to_source(self):
         import tempfile
@@ -30,8 +30,7 @@ class InternalLinkAnchorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             file_path = root / "guide.md"
-            file_path.write_text("""# Heading
-""", encoding="utf-8")
+            file_path.write_text("# Heading" + chr(10), encoding="utf-8")
             old_root = checker.ROOT
             checker.ROOT = root
             try:
