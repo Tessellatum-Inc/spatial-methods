@@ -48,7 +48,7 @@ def test_estimate_overflow_rejected_cleanly():
 
 def test_variance_overflow_rejected_cleanly():
     with pytest.raises(ValueError, match="variance estimate overflowed"):
-        hansen_hurwitz([1e150, -1e150], [1.0, 1.0])
+        hansen_hurwitz([1e200, -1e200], [1.0, 1.0])
 
 
 @pytest.mark.parametrize("n", [0, -2, 2.5, True])
