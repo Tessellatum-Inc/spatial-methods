@@ -7,17 +7,17 @@ This batch inspected 20 candidate package paths. Eleven direct-name matches were
 
 ## Confirmed inspected direct matches
 
-- [`geohash`](../implementations/python/geohash/README.md) ↔ [verification record](verification/geohash.md)
-- [`glcm-texture`](../implementations/python/glcm-texture/README.md) ↔ [verification record](verification/glcm-texture.md)
-- [`greiner-hormann`](../implementations/python/greiner-hormann/README.md) ↔ [verification record](verification/greiner-hormann.md)
-- [`haar-wavelet`](../implementations/python/haar-wavelet/README.md) ↔ [verification record](verification/haar-wavelet.md)
-- [`hilbert-rtree`](../implementations/python/hilbert-rtree/README.md) ↔ [verification record](verification/hilbert-rtree.md)
-- [`hough-lines`](../implementations/python/hough-lines/README.md) ↔ [verification record](verification/hough-lines.md)
-- [`huff-model`](../implementations/python/huff-model/README.md) ↔ [verification record](verification/huff-model.md)
-- [`insar-coherence`](../implementations/python/insar-coherence/README.md) ↔ [verification record](verification/insar-coherence.md)
-- [`k-core`](../implementations/python/k-core/README.md) ↔ [verification record](verification/k-core.md)
-- [`k-means`](../implementations/python/k-means/README.md) ↔ [verification record](verification/k-means.md)
-- [`k-medoids`](../implementations/python/k-medoids/README.md) ↔ [verification record](verification/k-medoids.md)
+- [`geohash`](../implementations/python/geohash/README.md) ↔ (catalogue entry; verification record not separately linked)
+- [`glcm-texture`](../implementations/python/glcm-texture/README.md) ↔ (catalogue entry; verification record not separately linked)
+- [`greiner-hormann`](../implementations/python/greiner-hormann/README.md) ↔ (catalogue entry; verification record not separately linked)
+- [`haar-wavelet`](../implementations/python/haar-wavelet/README.md) ↔ (catalogue entry; verification record not separately linked)
+- [`hilbert-rtree`](../implementations/python/hilbert-rtree/README.md) ↔ (catalogue entry; verification record not separately linked)
+- [`hough-lines`](../implementations/python/hough-lines/README.md) ↔ (catalogue entry; verification record not separately linked)
+- [`huff-model`](../implementations/python/huff-model/README.md) ↔ (catalogue entry; verification record not separately linked)
+- [`insar-coherence`](../implementations/python/insar-coherence/README.md) ↔ (catalogue entry; verification record not separately linked)
+- [`k-core`](../implementations/python/k-core/README.md) ↔ (catalogue entry; verification record not separately linked)
+- [`k-means`](../implementations/python/k-means/README.md) ↔ (catalogue entry; verification record not separately linked)
+- [`k-medoids`](../implementations/python/k-medoids/README.md) ↔ (catalogue entry; verification record not separately linked)
 
 ## Not resolved in this batch
 
