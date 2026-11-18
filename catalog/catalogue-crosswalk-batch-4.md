@@ -24,14 +24,14 @@ Package READMEs reviewed directly at the reviewed head: `implementations/python/
 - **LAMBDA** is a covariance-aware integer least-squares method with ambiguity decorrelation and conditional search. The package is not an end-to-end PPP/RTK estimator. A fixed ambiguity candidate or ratio statistic alone is not an integrity guarantee.
 - **Residual RAIM/FDE** here is a small linear-model exercise: residual test, single-observation deletion candidates and ambiguity reporting. A unique deletion is not proof of fault identity; safety-critical integrity needs fault hypotheses, missed-detection/false-alarm risk, protection levels, availability/continuity analysis and model-specific monitoring.
 
-## Remaining four canonical records: mapping stays open
+## Four-record implementation mapping reconciliation
 
 | Record | Evidence / implementation observation | Current classification |
 |---|---|---|
-| Hansen–Hurwitz estimator | The with-replacement estimator weights each draw by inverse draw probability and averages draw-level total estimates. It differs from Horvitz–Thompson under without-replacement designs. No dedicated package is present in the current implementation tree. | Canonical identity supported; implementation mapping not found |
-| Hausdorff and discrete Fréchet distance | Canonical record covers finite point-set Hausdorff and ordered vertex-sequence discrete Fréchet. Continuous Hausdorff of geometric sets and continuous Fréchet are different scopes; no dedicated package README was found. | Canonical identity supported; implementation mapping not found |
-| Harris market potential | Canonical record describes destination market mass weighted by inverse-power distance decay, with configurable exponent and self-potential treatment. No dedicated package README was found. | Canonical identity supported; implementation mapping not found |
-| Inhomogeneous Ripley K | Canonical record describes the ordered-pair intensity-reweighted estimator with optional rectangular translation correction. The existing `ripley-k` package README documents homogeneous K/L and a CSR envelope, not the inhomogeneous estimator. | Canonical record exists; package implementation not confirmed in tree |
+| Hansen–Hurwitz estimator | Dedicated package `implementations/python/hansen-hurwitz/` includes estimator, unit tests, README, requirements and isolated CI registration. | Mapping confirmed; CI pending at current head |
+| Hausdorff and discrete Fréchet distance | `implementations/python/geometry-metrics/` directly covers sampled-point Hausdorff, discrete Fréchet, and continuous Fréchet decision/approximation, with scopes distinguished in its README. | Mapping confirmed; variant-specific source review remains open |
+| Harris market potential | Existing `implementations/python/regional-dynamics/market_potential.py` provides inverse-power impedance with configurable exponent and self-potential policy; `test_market_potential.py` and the registered lab notebook cover it. No separate package is required. | Mapping confirmed; CI pending at current head |
+| Inhomogeneous Ripley K | Existing `implementations/python/ripley-k/ripley_k.py` includes `inhomogeneous_ripley_k`, supplied event-specific intensity weighting, and optional rectangular translation correction; `test_ripley_k.py` covers constant-intensity equivalence, event weights and validation. | Mapping confirmed; CI pending at current head |
 
 ## Bibliographic anchors for follow-up verification
 
@@ -44,7 +44,7 @@ Package READMEs reviewed directly at the reviewed head: `implementations/python/
 
 ## Next action
 
-Do not mark these rows Fully verified. Continue package mapping by examining likely related implementations and tests, then independently audit the source identity, exact estimator/variant, bibliography, numerical contract, and rights. A name match or README match is not a complete source review.
+Do not mark these rows Fully verified. Mapping is now confirmed for all four records; continue the independent source identity, exact estimator/variant, bibliography, numerical contract, and rights review. A name match, README match or passing unit test is not a complete source review.
 
 
 ## Implementation follow-up — Hansen–Hurwitz (18 November 2026)
@@ -61,7 +61,7 @@ The previous four-record table is superseded by these current tree findings:
 
 - **Hansen–Hurwitz:** dedicated package `implementations/python/hansen-hurwitz/` now exists, with estimator, tests, README, requirements and isolated Python CI manifest registration. Validation awaits current-head CI.
 - **Hausdorff and Fréchet:** the previously missed direct mapping is `implementations/python/geometry-metrics/`. README describes point-set directed/symmetric Hausdorff, discrete Fréchet, and a separate continuous Fréchet decision/approximation implementation. The canonical verification record now links this package and explicitly distinguishes sampled-point Hausdorff, discrete Fréchet and continuous Fréchet.
-- **Harris market potential:** no dedicated package README is confirmed. `huff-model` is a probabilistic competitive facility-choice model and is not Harris's market-potential index; do not map the two by name similarity.
-- **Inhomogeneous Ripley K:** remains unresolved in implementation mapping. The `ripley-k` README covers homogeneous K/L and CSR simulation envelope, not intensity-reweighted inhomogeneous K.
+- **Harris market potential:** mapping is confirmed to `regional-dynamics/market_potential.py`, its dedicated test file and the existing lab notebook. `huff-model` remains a separate probabilistic competitive facility-choice model; do not conflate the two.
+- **Inhomogeneous Ripley K:** mapping is confirmed to the existing `inhomogeneous_ripley_k` function in the `ripley-k` package, including tests and supplied-intensity limitations.
 
 These are mapping-only findings; source-entry review labels remain unchanged.

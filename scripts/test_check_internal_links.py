@@ -1,6 +1,6 @@
 import unittest
 
-from check_internal_links import github_heading_slug, heading_anchors, resolve_heading_anchor
+from check_internal_links import github_heading_slug, heading_anchors, resolve_heading_anchor, resolve_target
 
 
 class InternalLinkAnchorTests(unittest.TestCase):
@@ -32,7 +32,7 @@ class InternalLinkAnchorTests(unittest.TestCase):
             try:
                 target, anchor = resolve_heading_anchor("guide.md", "#heading")
                 self.assertEqual(target, file_path.resolve())
-                self.assertEqual(anchor, "heading")
+                self.assertEqual(anchor, "heading")\n                self.assertEqual(resolve_target("guide.md", "#heading"), file_path.resolve())
             finally:
                 checker.ROOT = old_root
 

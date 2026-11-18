@@ -60,9 +60,9 @@ def resolve_target(source_name: str, raw_target: str) -> Path | None:
     if parsed.scheme or parsed.netloc:
         return None
     target_path = unquote(parsed.path)
-    if not target_path:
-        return None
     source = ROOT / source_name.split(" [markdown cell", 1)[0]
+    if not target_path:
+        return source.resolve()
     resolved = ROOT / target_path.lstrip("/") if target_path.startswith("/") else source.parent / target_path
     return resolved.resolve()
 
