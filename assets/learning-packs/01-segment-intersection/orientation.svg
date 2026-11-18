@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620">
+<rect width="1200" height="620" fill="#202326"/>
+<g font-family="Arial,sans-serif" fill="#f2eee8">
+<text x="60" y="64" font-size="30" font-weight="bold">ORIENTATION · WHICH SIDE OF THE LINE?</text>
+<text x="60" y="102" font-size="18" fill="#b8b8b3">The signed determinant classifies the turn A → B → C.</text>
+</g>
+<g stroke="#747b80" stroke-width="2" stroke-dasharray="7 8"><path d="M95 430 L510 430"/><path d="M690 430 L1105 430"/></g>
+<g stroke="#d47b59" stroke-width="9" stroke-linecap="round"><path d="M145 430 L465 430"/><path d="M735 430 L1055 430"/></g>
+<g stroke="#f0eee8" stroke-width="3" fill="none"><path d="M145 430 L280 220 L465 430"/><path d="M735 430 L870 220 L1055 430"/></g>
+<g fill="#d47b59"><circle cx="145" cy="430" r="9"/><circle cx="465" cy="430" r="9"/><circle cx="735" cy="430" r="9"/><circle cx="1055" cy="430" r="9"/></g>
+<g fill="#f2eee8" font-family="Arial,sans-serif" font-size="22"><text x="125" y="470">A</text><text x="465" y="470">B</text><text x="270" y="195">C</text><text x="715" y="470">A</text><text x="1055" y="470">B</text><text x="860" y="195">C</text></g>
+<g fill="#8fc6ad" font-family="Arial,sans-serif" font-size="25" font-weight="bold"><text x="170" y="535">POSITIVE · COUNTER-CLOCKWISE</text></g>
+<g fill="#e2a17e" font-family="Arial,sans-serif" font-size="25" font-weight="bold"><text x="760" y="535">SAME TEST, REVERSED DIRECTION</text></g>
+<text x="60" y="590" font-family="Arial,sans-serif" font-size="17" fill="#b8b8b3">Zero means collinear. The sign depends on the direction from A to B.</text>
+</svg>
