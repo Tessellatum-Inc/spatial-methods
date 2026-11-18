@@ -121,14 +121,14 @@ def main() -> int:
                 if anchor and target_file and target_file.suffix.lower() == ".md" and target_file.exists():
                     heading_text = strip_fenced_code(target_file.read_text(encoding="utf-8"))
                     heading_ids = set()
-                    for heading in re.findall(r"^#{1,6}\\s+(.+)$", heading_text, re.MULTILINE):
-                        clean = re.sub(r"\\[[^\\]]*\\]\\([^)]*\\)", "", heading)
+                    for heading in re.findall(r"^#{1,6}\s+(.+)$", heading_text, re.MULTILINE):
+                        clean = re.sub(r"\[[^]]*]([^)]+)", "", heading)
                         clean = re.sub(r"<[^>]+>", "", clean)
                         clean = clean.strip().lower()
-                        clean = re.sub(r"[^\\w -]", "", clean)
-                        clean = re.sub(r"\\s+", "-", clean.strip())
+                        clean = re.sub(r"[^w -]", "", clean)
+                        clean = re.sub(r"s+", "-", clean.strip())
                         heading_ids.add(clean)
-                    heading_ids.update(re.findall(r"\\{#([A-Za-z0-9_.:-]+)\\}", heading_text))
+                    heading_ids.update(re.findall(r"{#([A-Za-z0-9_.:-]+)}", heading_text))
                     if anchor not in heading_ids:
                         errors.append(f"{source_name}: missing local heading anchor -> {raw_target}")
 
