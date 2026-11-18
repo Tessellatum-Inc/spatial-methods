@@ -45,3 +45,11 @@ Package READMEs reviewed directly at the reviewed head: `implementations/python/
 ## Next action
 
 Do not mark these rows Fully verified. Continue package mapping by examining likely related implementations and tests, then independently audit the source identity, exact estimator/variant, bibliography, numerical contract, and rights. A name match or README match is not a complete source review.
+
+
+## Implementation follow-up — Hansen–Hurwitz (18 November 2026)
+
+- Added a dedicated NumPy package at `implementations/python/hansen-hurwitz/` with estimator, tests, README and isolated CI registration.
+- The implementation keeps repeated draws in the ordered sample, estimates the total as the mean of (y_i/p_i), estimates variance as the sample variance of draw-level estimates divided by (n), and optionally scales to mean/mean variance for a supplied population size.
+- Updated `catalog/verification/hansen-hurwitz.md` to link the implementation and distinguish CI pending from tests authored.
+- Package CI registration adds one isolated Python test shard. Current CI must validate the new files before this implementation is marked tested.
