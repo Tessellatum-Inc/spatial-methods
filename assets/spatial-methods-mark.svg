@@ -1,18 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" role="img" aria-labelledby="title desc">
   <title id="title">Spatial Methods mark</title>
-  <desc id="desc">A terracotta geometric intersection set within a measured charcoal grid.</desc>
-  <rect width="240" height="240" rx="18" fill="#F3EFE6"/>
-  <g fill="none" stroke="#7A817D" stroke-width="2" opacity=".55">
-    <path d="M40 40H200M40 80H200M40 120H200M40 160H200M40 200H200"/>
-    <path d="M40 40V200M80 40V200M120 40V200M160 40V200M200 40V200"/>
+  <desc id="desc">Three identical diamond-shaped tiles arranged symmetrically in a triangular formation.</desc>
+  <rect width="240" height="180" rx="14" fill="#F3EFE6"/>
+  <g stroke="none">
+    <path d="M120 8L164 33L120 58L76 33Z" fill="#C86B4A"/>
+    <path d="M64 105L108 130L64 155L20 130Z" fill="#252525"/>
+    <path d="M176 105L220 130L176 155L132 130Z" fill="#7A817D"/>
   </g>
-  <g fill="none" stroke="#252525" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter">
-    <path d="M56 176L176 56"/>
-    <path d="M56 64L176 184"/>
-  </g>
-  <path d="M116 120L120 116L124 120L120 124Z" fill="#C86B4A"/>
-  <circle cx="56" cy="176" r="7" fill="#C86B4A"/>
-  <circle cx="176" cy="56" r="7" fill="#C86B4A"/>
-  <circle cx="56" cy="64" r="7" fill="#C86B4A"/>
-  <circle cx="176" cy="184" r="7" fill="#C86B4A"/>
 </svg>
