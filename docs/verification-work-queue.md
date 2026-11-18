@@ -2,7 +2,7 @@
 
 Snapshot: 18 November 2026
 
-This is a prioritisation queue for a practical verification sprint, not a claim that these topics have been verified. Status remains governed by the [source-entry verification protocol](verification-protocol.md) and the [review dashboard](review-dashboard.md).\n\n**Latest structural audit:** [Catalogue alignment audit — Batch 1](catalogue-alignment-audit.md). Exact-slug mismatch signals are documented; none are classified as orphans without manual crosswalk review.
+This is a prioritisation queue for a practical verification sprint, not a claim that these topics have been verified. Status remains governed by the [source-entry verification protocol](verification-protocol.md) and the [review dashboard](review-dashboard.md).\n\n**Structural audits:** [Catalogue alignment audit — Batch 1](catalogue-alignment-audit.md) and three README-level crosswalk batches ([Batch 1](../catalog/catalogue-crosswalk-batch-1.md), [Batch 2](../catalog/catalogue-crosswalk-batch-2.md), [Batch 3](../catalog/catalogue-crosswalk-batch-3.md)). These reconcile confirmed aliases and record unresolved package-name questions; they are not complete orphan audits.
 
 ## Work rules
 
