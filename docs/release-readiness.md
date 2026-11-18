@@ -3,7 +3,7 @@
 **Snapshot:** 18 November 2026  
 **Repository:** `Tessellatum-Inc/spatial-methods`  
 **Integration target:** `main`  
-**Latest main commit:** `e8d0bbdb4f2e9c847330075ad76249b7b61101a0` — Restore original README with Spatial Methods name
+**Latest main commit:** `335ee479a0b6f9cc088da9a29c1fbea641dd0503` — Fix broken global autocorrelation links
 
 This is the single release-gate record. It distinguishes a maintainable engineering foundation from complete source-entry verification. Closeout is focused on concrete release blockers, not repeated broad audits.
 
@@ -12,7 +12,8 @@ This is the single release-gate record. It distinguishes a maintainable engineer
 - PR #3 (compendium foundation), PR #4 (Patreon launch foundation), and PR #6 (Spatial Methods identity) are merged.
 - PR #5 was superseded by PR #6. PR #2's Bowyer–Watson work was completed within the compendium foundation; do not reopen the stale branch.
 - The README is restored to its original welcoming Spatial Analysis text with only the heading renamed to Spatial Methods. Standalone logo removed. Its navigation and links remain.
-- Latest main workflow [44272370055](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44272370055) completed successfully. This verifies that the README change passed the configured Python examples workflow; it does not replace the broader full-workflow evidence recorded below.
+- Latest main workflow [44278892636](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44278892636) completed successfully on 18 November 2026, following the latest main commit. It verifies the configured Python examples workflow; it does not replace the broader full-workflow evidence recorded below.
+- Patreon pathway is updated to the current Spatial Methods URL in the README and issue-template contact configuration.
 - The earlier 58/59-job CI result and link/anchor integrity checks remain historical evidence for the prior candidate, not a fresh count for this commit.
 
 ## Source-review checkpoint
