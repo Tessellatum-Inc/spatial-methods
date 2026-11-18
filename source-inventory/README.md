@@ -5,6 +5,8 @@
 **Spatial Analysis Algorithms: Complete Compendium**  
 Supplied to the project on 12 November 2026. 47 pages.
 
+The project owner has confirmed that the compendium is their own project and compilation, developed with AI assistance. See [compendium provenance and authorship](../docs/compendium-provenance.md) for the recorded statement and its limits.
+
 The transcription below preserves the extracted text in original page order. It is an intake copy, not an independently verified reference work. Some later additions in the source explicitly warn that names are from memory and should be verified before citation; those warnings are retained in the page transcriptions and must be respected during research.
 
 ## Page transcription
