@@ -1,8 +1,11 @@
 # Catalogue crosswalk — Batch 4: bundled methods and unresolved scope
 
+> **Validation update (18 November 2026):** Current PR head `fb1d3f85c8980ddec5e11b871536da14da7b580e` passed GitHub Actions run [#44225761429](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44225761429) with workflow conclusion **success**. This supersedes the older "CI pending at current head" labels in the four-record table for CI validation only; source/bibliographic/rights review remains open and no row is promoted to Fully verified. The jobs endpoint returned a partial list, so this statement is based on workflow-level success, not a claimed complete job inventory.
+
+
 **Date:** 18 November 2026  
 **Reviewed head:** `fed4dd557f5b13ae67d8a23df66720d76c0468b8`  
-**Scope:** Resolve the Batch 3 name-mapping uncertainty for five GNSS entries and four non-GNSS entries. This is a mapping and bibliographic review; it does not promote source-entry review labels or claim reproduction of source papers.
+**Scope:** Resolve the Batch 3 name-mapping uncertainty for five GNSS entries and four non-GNSS entries. This is a mapping and bibliographic review; it does not promote source-entry review labels or claim reproduction of source papers. The original review snapshot is retained below; the latest validation note supersedes stale CI-pending labels.
 
 ## GNSS package mappings resolved
 
