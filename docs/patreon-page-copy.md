@@ -2,90 +2,121 @@
 
 ## Page title
 
-Spatial Methods — Learn the methods behind the map
+Spatial Methods — Understand the methods behind spatial data
 
 ## Short description
 
-A growing open archive of spatial algorithms, models and practical examples—plus guided learning, exercises and a community for people who want to understand and apply them.
+A curated knowledge and learning platform for spatial methods, algorithms and models—serving learners, educators, researchers and professionals through open technical resources and guided study.
 
 ## About
 
-Spatial data helps us understand places, patterns, movement and change. But behind every map or model are methods worth understanding: how geometries relate, how routes are found, how spatial patterns are measured, how models make predictions and where their assumptions can fail.
+Spatial methods sit beneath the maps, models, analyses and decisions that shape how we understand the world. They draw on mathematics, computer science, statistics, engineering and domain knowledge.
 
-Spatial Methods makes those methods easier to explore.
+Spatial Methods is an independent, continually developing knowledge resource for exploring those methods deeply and using them responsibly.
 
-The public repository is our open technical archive: explanations, references, code, tests, notebooks, exercises and learning paths. You can use it without becoming a member.
+It is for students building foundations, educators preparing instruction, PhD candidates and postdoctoral researchers investigating methods, professionals solving applied problems, and developers building spatial systems. People can enter at different levels without being confined to a beginner or expert track.
 
-Membership adds a guided learning experience. We turn individual methods into structured study packs, walk through worked examples, create practice exercises, discuss implementation choices and bring learners together around real spatial problems.
+Our public repository is the open technical archive: explanations, references, implementations, tests, notebooks, exercises and learning paths. It remains useful without membership.
 
-### What membership supports
+Membership adds curation and guided depth: sequenced study, carefully selected literature, worked examples, practice, comparative analysis, research discussions and opportunities to learn with others.
 
-- Clear, sequenced learning paths through a large technical subject.
-- Worked examples that connect concepts, mathematics and code.
-- Exercises and solution discussions that help you practise independently.
-- Reproducible notebooks and project briefs where they improve understanding.
-- A thoughtful community for questions, peer learning and applied research.
+### What you'll find
+
+- **Knowledge library:** organized methods, concepts, references, topic maps and learning pathways.
+- **Foundations:** intuitive explanations, terminology, visual reasoning and introductory exercises.
+- **Methods and implementation:** mathematical formulations, algorithms, reproducible code, tests and notebooks.
+- **Analysis:** correctness, complexity, assumptions, precision, limitations and comparisons.
+- **Research:** literature exploration, variants, benchmarks, open questions and critical discussion.
+- **Teaching resources:** lesson structures, demonstrations, exercises and reusable instructional material.
+- **Applied practice:** case studies and connections to real spatial workflows.
+
+Not every release covers every dimension. Each resource states its intended depth, prerequisites, evidence and limitations.
 
 ### How to begin
 
 1. Explore the public Spatial Methods repository: https://github.com/Tessellatum-Inc/spatial-methods
-2. Choose a learning path or start with geometry foundations.
-3. Join Library for structured notes, Laboratory for guided practice, or Research Circle for group application and discussion.
+2. Choose a subject or method that matches your question and experience.
+3. Use the resource's depth labels to navigate directly to the material you need.
+4. Join a membership to support and participate in the curated learning and research experience.
 
-You do not need to know everything before you begin. Start with a question and follow it as far as you like.
+**The open archive stays open. Membership helps turn a growing body of knowledge into a more navigable, rigorous and useful learning experience.**
 
-**The open archive stays open. Membership helps you turn it into capability.**
+## Library — $4/month
 
-## Library — $4/month (proposed)
-
-A structured reading room for people who want to explore spatial analysis and help sustain the open archive.
+For readers, educators, learners and curious practitioners who value thoughtful curation.
 
 Includes:
 - Monthly research and learning digest.
-- Curated reading lists and topic maps.
+- Curated reading lists, references and topic maps.
 - Downloadable study notes and learning-path guides.
-- Member polls on future learning topics.
+- Teaching and discussion prompts where relevant.
+- Member polls to help prioritise future topics.
 - Access to the organised member archive.
 
-## Laboratory — $12/month (proposed)
+Delivery: one substantial digest or curated guide each month, plus occasional short updates.
 
-For learners who want to practise methods and understand how the pieces fit together.
+## Laboratory — $12/month
+
+For people who want to understand methods deeply and work with them.
 
 Everything in Library, plus:
-- One guided learning pack each month.
+- One guided learning release each month.
 - Worked examples and annotated walkthroughs.
-- Practice exercises, hints and worked solution notes.
-- Companion notebooks or code walkthroughs when useful.
-- A monthly discussion thread for the current learning pack.
+- Exercises, hints and worked solution notes.
+- Companion notebooks, code walkthroughs and reproducibility notes where appropriate.
+- Method analysis covering assumptions, edge cases and limitations when relevant.
+- A monthly discussion thread for the current release.
 
-## Research Circle — $29/month (proposed)
+Delivery: one complete monthly learning pack. Core public code and technical explanations remain available under their repository licences; membership adds structure, guided study, practice and interpretation.
 
-For practitioners and advanced learners who want to apply methods, share work and learn with others.
+## Research Circle — $29/month
+
+For researchers, advanced learners and practitioners who want to investigate, compare and apply methods with others.
 
 Everything in Laboratory, plus:
-- One quarterly live workshop or research clinic.
-- Member project showcases and structured peer feedback.
-- Priority topic voting and a quarterly research brief.
-- Limited group review opportunities, announced with each cycle.
+- One quarterly group workshop or research clinic.
+- Research briefs and comparative method explorations.
+- Member project showcases and structured peer discussion.
+- Priority topic voting.
+- Limited group feedback opportunities, announced with each cycle.
 
-This is a group learning membership, not unlimited private consulting or guaranteed custom project delivery.
+This is a group learning and research membership, not unlimited private consulting, guaranteed manuscript supervision or custom project delivery.
+
+## Our depth framework
+
+Resources may be labelled by one or more dimensions:
+
+- **FOUNDATIONS** — intuition, concepts and terminology.
+- **METHOD** — mathematical formulation and algorithmic reasoning.
+- **IMPLEMENTATION** — code, tests, reproducibility and practical use.
+- **ANALYSIS** — correctness, complexity, assumptions, precision and limitations.
+- **RESEARCH** — literature, variants, benchmarks and open questions.
+- **TEACHING** — lesson structures, demonstrations and reusable instructional resources.
+
+These labels describe the content, not the academic rank of the reader. A student can explore advanced material; a researcher can revisit foundations.
 
 ## FAQ
 
 ### Is the GitHub repository free?
 Yes. The public technical archive is intended to remain useful on its own. Read explanations, inspect code and tests, follow public learning paths and contribute without paying.
 
-### What does membership pay for?
-Guided instruction, organisation, practice materials, worked examples, workshops and community—not exclusive access to public code or documentation.
+### Who is Spatial Methods for?
+Students, educators, independent learners, researchers, PhD candidates, postdocs, developers and working professionals. Each release states its prerequisites and depth.
 
-### Do I need to be an expert?
-No. Each learning release states its prerequisites. Some topics are introductory; others assume experience with programming, GIS, statistics or mathematics.
+### What does membership pay for?
+Curation, structure, guided instruction, practice materials, research interpretation, workshops and community—not exclusive access to public code or documentation.
+
+### Are the materials only introductory?
+No. The collection spans foundations, implementation, analysis and research. The depth varies by topic and is stated clearly.
+
+### Can educators use the materials?
+Resources labelled TEACHING are designed to support instruction. Each asset states its reuse terms. Public code and documentation retain their repository licences; membership does not change those licences.
 
 ### How often will new material arrive?
-The starting commitment is one substantial guided learning release and one digest each month. Research Circle workshops are quarterly. We prefer reliable, carefully prepared material to an unrealistic posting schedule.
+The starting commitment is one substantial guided learning release and one digest each month. Research Circle workshops are quarterly. We prefer reliable, carefully prepared work to an unrealistic posting schedule.
 
 ### Do members receive personal consulting?
-No. Research Circle includes bounded group learning and review opportunities. Private consulting, custom development and guaranteed individual support are separate services.
+No. Research Circle includes bounded group learning and feedback opportunities. Private consulting, custom development and guaranteed individual supervision are separate services.
 
 ### Can I use the code in my own work?
 Use code and documentation according to the licence stated in the repository. Check each asset's notices and third-party attributions. Patreon membership does not change those licences.
