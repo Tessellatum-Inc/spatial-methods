@@ -12,7 +12,7 @@
 - A new NumPy baseline was added at [implementations/python/hansen-hurwitz](../../implementations/python/hansen-hurwitz/README.md).
 - It accepts aligned ordered draw values and probabilities, validates inputs, returns total and draw-level estimates, and optionally scales to population mean/variance using a supplied population size.
 - Tests cover a hand-calculated example, repeated draws, total/mean scaling, one-draw variance unavailability, and invalid arrays/probabilities/population sizes.
-- **CI:** pending at the time this record was updated. Tests are not claimed to have passed until the current PR-head workflow completes.
+- **CI:** PR head `fb1d3f85c8980ddec5e11b871536da14da7b580e` passed GitHub Actions run [#44225761429](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44225761429). This confirms the package tests at that head; subsequent commits require fresh validation.
 
 ## Limits and rights
 Requires independent with-replacement draws and the correct per-draw selection probabilities. It is not a Horvitz–Thompson estimator for a without-replacement design. The implementation is an educational baseline; no spatial autocorrelation, cluster sampling variance, nonresponse adjustment, sampling design generation or confidence interval is included. Bibliographic metadata and original explanatory text only; no paper text, figure or data is reproduced.

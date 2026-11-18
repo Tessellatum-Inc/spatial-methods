@@ -32,6 +32,7 @@ print(result.mean_estimate)
 - Duplicate units are represented by repeated observations and are not collapsed.
 - This is not a Horvitz–Thompson inclusion-probability estimator for a without-replacement sample.
 - The estimator is unbiased for a population total under its sampling design; no design can be inferred from the arrays alone.
+- Overflow in weighted estimates or variance calculations is rejected explicitly instead of returning non-finite results.
 - No spatial autocorrelation adjustment, cluster variance, nonresponse correction, PPS design generator or confidence-interval routine is included.
 
 ## Run tests

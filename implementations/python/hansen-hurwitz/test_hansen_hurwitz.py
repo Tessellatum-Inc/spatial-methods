@@ -41,6 +41,16 @@ def test_invalid_vectors_rejected(values, probs):
         hansen_hurwitz(values, probs)
 
 
+def test_estimate_overflow_rejected_cleanly():
+    with pytest.raises(ValueError, match="draw estimates or total estimate overflowed"):
+        hansen_hurwitz([1e308], [1e-308])
+
+
+def test_variance_overflow_rejected_cleanly():
+    with pytest.raises(ValueError, match="variance estimate overflowed"):
+        hansen_hurwitz([1e150, -1e150], [1.0, 1.0])
+
+
 @pytest.mark.parametrize("n", [0, -2, 2.5, True])
 def test_invalid_population_size_rejected(n):
     with pytest.raises(ValueError):

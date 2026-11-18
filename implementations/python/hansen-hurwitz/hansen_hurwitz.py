@@ -39,9 +39,18 @@ def hansen_hurwitz(values, draw_probabilities, *, population_size: int | None = 
         raise ValueError("draw probabilities must be finite and in (0, 1]")
     if population_size is not None and (isinstance(population_size, bool) or not isinstance(population_size, (int, np.integer)) or population_size <= 0):
         raise ValueError("population_size must be a positive integer")
-    estimates = y / p
-    total = float(estimates.mean())
-    var_total = float(estimates.var(ddof=1) / y.size) if y.size > 1 else None
-    mean = total / population_size if population_size is not None else None
-    var_mean = var_total / (population_size ** 2) if var_total is not None and population_size is not None else None
+    with np.errstate(over="ignore", divide="ignore", invalid="ignore"):
+        estimates = y / p
+        total = float(estimates.mean())
+        var_total = float(estimates.var(ddof=1) / y.size) if y.size > 1 else None
+        mean = total / population_size if population_size is not None else None
+        var_mean = var_total / (population_size ** 2) if var_total is not None and population_size is not None else None
+    if not np.isfinite(estimates).all() or not math.isfinite(total):
+        raise ValueError("draw estimates or total estimate overflowed to a non-finite value")
+    if var_total is not None and not math.isfinite(var_total):
+        raise ValueError("variance estimate overflowed to a non-finite value")
+    if mean is not None and not math.isfinite(mean):
+        raise ValueError("mean estimate overflowed to a non-finite value")
+    if var_mean is not None and not math.isfinite(var_mean):
+        raise ValueError("mean variance estimate overflowed to a non-finite value")
     return HansenHurwitzResult(total, var_total, mean, var_mean, estimates.copy())
