@@ -6,18 +6,18 @@
 **Integration target:** `main`  
 **Pull request:** [#3](https://github.com/geo-dev-hub/spatial-analysis/pull/3) — draft, open, unmerged
 
-This file is the release-gate record. It deliberately distinguishes a healthy software build from completion of the source compendium. A green CI run is necessary, but it is not evidence that the source bibliography, technical claims or reuse rights have been verified.
+This is the single release-gate record. It distinguishes an engineering-ready foundation from complete source-entry verification. The project is no longer in its build phase; remaining work is stabilization, closure, and a release decision. Do not reopen broad audits without a concrete defect or release blocker.
 
 ## Current engineering checkpoint
 
-- Branch head at this update: `7e6cbd474afcde335610ef52d7891231b9966ffc` (release-ledger-only follow-up).
-- The historical 58/58 workflow run [44208356316](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44208356316) is green, but is **not** the current-head run.
-- Current-head workflow run [44221714064](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44221714064) returned **30 jobs, all 30 successful**. This observed page includes Python package shards, notebook shards, Clipper2 checks and the internal-link/catalogue/CI-checker job.
-- The 30/30 result is tied to the immediately preceding head `791fea00ddf79933cd5e7c573326078e2280352d`, not the release-ledger follow-up. The follow-up is documentation-only, but exact-head CI remains **partially confirmed**, not fully green. The latest combined commit-status endpoint returned no status entries. Any later source change requires another exact-head run before release
+- Current head before this ledger update: `a9aae51ee2eefd9c9fe50a47f2cd0c046c2e7994`.
+- Current-head PR workflow [44227052820](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44227052820) completed: **58 of 59 jobs succeeded; 0 failed; 1 skipped**. The skipped job was contributor-sign-off verification, which is not applicable to this PR event. The separate push workflow [44227046308](https://github.com/geo-dev-hub/spatial-analysis/actions/runs/44227046308) also succeeded on the same head.
+- The passing matrix covers the repository's isolated Python-package tests, notebook execution, Clipper2 checks and integrity checks. It is CI evidence, not proof that every method in the source compendium is technically verified.
+- Latest changes included internal-link/anchor checking and numeric overflow guards for Hansen–Hurwitz. No additional code changes are required by the current CI result.
 
 ## Source-review checkpoint
 
-The current [source review dashboard](../catalog/review-dashboard.md), recalculated from all 22 section indexes on 18 November 2026, records:
+The current [source review dashboard](../catalog/review-dashboard.md), recounted from all 22 section indexes on 18 November 2026:
 
 | Review label | Entries |
 |---|---:|
@@ -26,49 +26,68 @@ The current [source review dashboard](../catalog/review-dashboard.md), recalcula
 | Intake only / not checked | 389 |
 | Fully verified | 0 |
 
-These are source-entry review labels, not implementation counts or a completion percentage. A partial row can point to a tested implementation while still lacking complete identity, bibliography, technical-claim or rights review. Grouped entries may need to be split into multiple canonical child records.
+These counts describe source-entry status, not repository completion percentages. Many entries point to lessons, implementations, or related records, but their complete identity, bibliography, technical-claim, or rights review remains incomplete. The dashboard is transparent about this and must not be changed to imply verification that has not occurred.
 
 ## Decisions already made
 
 - Original code, tests, scripts and executable examples: Apache-2.0.
 - Original explanatory prose, tutorials, exercises, narrative notebook content and project-created diagrams: CC BY 4.0.
-- Future contributions: DCO 1.1 sign-off on each contribution commit.
-- Third-party material and the preserved source transcription are excluded from blanket project licensing unless the specific reuse basis is established.
-- The GitHub archive remains the complete public technical resource. Patreon may sell guided learning, curation, support and community services; it must not imply exclusive rights over material already released under public licences.
+- Future contributions: DCO 1.1 sign-off on each contribution commit; do not rewrite historical commits to retroactively add sign-offs.
+- Third-party material and the preserved source transcription are excluded from blanket project licensing unless a specific reuse basis is established.
+- The public repository is the technical resource. Patreon may sell guided learning, curation, support and community services—not exclusive rights over publicly licensed material.
 
-See [licensing and reuse](licensing-and-reuse.md), the [licensing decision record](licensing-decision-proposal.md), [licence scope register](../LICENSES.md) and [compendium provenance](compendium-provenance.md).
+See [licensing and reuse](licensing-and-reuse.md), [licensing decision record](licensing-decision-proposal.md), [licence scope register](../LICENSES.md) and [compendium provenance](compendium-provenance.md).
 
-## Release gates
+## Three-batch closeout
 
-| Gate | Current state | Evidence required to close |
+### Batch 1 — Stabilization: complete
+
+- [x] Latest head's CI passes (58 success; 1 expected skip; no failures).
+- [x] Internal Markdown/notebook link and heading-anchor checks are wired into CI.
+- [x] Recent implementation fixes are included.
+- [x] Freeze feature additions unless a release-critical defect is discovered.
+
+### Batch 2 — Closure: in progress
+
+- [ ] Reconcile README, catalogue/dashboard, licence notices and release notes to the final head.
+- [ ] Keep uncertain source claims clearly labelled as unverified; do not inflate source verification statuses.
+- [ ] Keep questionable third-party material out of the licensed public release or link to it only.
+- [ ] Close obvious navigation, setup, packaging, or documentation defects found in the consolidated pass.
+- [ ] Publish a bounded-scope release note and clear extension/maintenance instructions.
+
+### Batch 3 — Release decision: pending
+
+- [ ] One consolidated final checklist on the exact release candidate; no audit loops.
+- [ ] Confirm CI green on exact candidate.
+- [ ] Confirm release-scope statement, attribution and rights exclusions.
+- [ ] Decide whether to merge and tag a public **engineering foundation release** or defer for a named material blocker.
+
+## Gates and how they will be handled
+
+| Gate | State | Closeout rule |
 |---|---|---|
-| Preserve all 47 source pages and 22 sections | Complete | Source transcription and section indexes remain intact |
-| Keep catalogue dashboard reconciled | Complete at this snapshot | Automated recount passes on the release candidate |
-| Resolve identity and grouped source entries | Open | Each source entry is split where needed and linked to authoritative identities or explicitly retained as ambiguous/not found |
-| Verify bibliography | Open | Primary or authoritative records for each applicable child entry |
-| Check technical claims | Open | Equations, assumptions, guarantees, units, variants and limitations checked against primary evidence |
-| Reconcile canonical lessons and implementations | In progress | Every in-scope child has an appropriate treatment and an explicit bounded scope |
-| Verify third-party reuse rights | Open | Per-asset licence/permission records; remove or link-only where rights are unclear |
-| Code and notebook CI | Passed at recorded head | Re-run on the exact release candidate after all changes |
-| DCO policy for future contributions | Implemented | DCO checker and tests remain green; historical PR #3 is explicitly exempt from retroactive sign-off |
-| Rendered navigation and heading anchors | Open | Rendered-site link/anchor audit |
-| Mobile and assistive-technology review | Open | Phone-sized layout, keyboard navigation and screen-reader review |
-| Release metadata and public edition scope | Open | Versioned release notes, changelog, scope statement and final sign-off |
+| 47-page source preservation and 22-section navigation | Complete | Preserve as source record; no scope loss |
+| Catalogue/dashboard reconciliation | Complete at current snapshot | Recount once on release candidate |
+| Python examples, notebooks, CI and checks | Passed on current head | Re-run after final changes; fix failures only |
+| Implementation scope and limitations | In place, uneven coverage | Preserve bounded/teaching-baseline labels; don't promise production readiness |
+| Source identity and bibliography across all entries | Open | Transparently retain unknown/ambiguous items; do not block engineering-foundation release unless public claims mislead |
+| Technical claims across all entries | Open | Do not label fully verified; queue future verification work |
+| Third-party asset rights | Open | Remove, replace or link-only any unclear third-party material in the release; retain exclusions |
+| Transcription rights (47-page source) | Open | Keep excluded from blanket licensing; revisit only if a rights-cleared edition is intended |
+| Rendered/mobile/accessibility review | Not yet complete | Fix obvious and critical usability defects in the final pass; disclose any unperformed review, don't claim certification |
+| Release notes, scope and version | Pending | Complete in closeout, with an explicit foundation-release scope |
 
 ## Integration policy
 
-1. Continue substantive work on `completion/section-22-atomic-audit` while PR #3 remains the review and integration vehicle.
-2. Do not rewrite historical commits merely to retrofit DCO sign-offs. The policy applies prospectively.
-3. Do not merge the 217-commit branch into `main` merely because CI is green. The source-review, rights and publishing-accessibility gates remain material.
-4. Before integration, reconcile the branch's final dashboard, roadmap, README, licence notices and release notes against the exact tree.
-5. Once the gates required for the declared public edition are satisfied, mark PR #3 ready for review, obtain the required review, and merge it into `main`. The merged `main` commit becomes the authoritative release candidate.
-6. Run the full workflow on that exact `main` commit, tag the verified release, and keep later work in normal reviewed pull requests.
+1. Work only on concrete closure items on this branch.
+2. Avoid new methods, features, broad research sweeps, or speculative cleanups during closeout.
+3. If a rights concern is identified, remove or isolate the material from the release rather than expanding into a legal research loop.
+4. Once the declared engineering-foundation gates are met, mark PR #3 ready for review and merge only after the required review and release decision. Do not merge solely on a green CI result.
+5. Run the full workflow on the exact merged `main` commit, tag that verified candidate, and handle later additions through normal reviewed PRs.
 
-## What “complete” means
+## Completion definitions
 
-There are two different milestones and they must not be conflated:
+- **Engineering foundation release:** the 22-section structure, extension rules, licence boundaries, tested examples, CI, catalogue integrity and public learning pathways are stable enough for ongoing maintenance and additions. Unverified source rows and rights-excluded content are clearly labelled and not presented as validated or licensed.
+- **Full compendium verification:** all 695 source-entry rows and their child records receive appropriate identity, bibliography, technical-claim, implementation/reproduction and rights reviews. This is a separate long-term research programme—not a prerequisite for releasing a transparent engineering foundation.
 
-- **Engineering foundation complete:** the repository structure, extension rules, licence model, CI, tested implementation conventions and public learning pathways are stable enough for ongoing additions and maintenance.
-- **Full compendium review complete:** every source entry and its applicable child records have completed identity, bibliography, technical-claim, implementation/reproduction and rights review, with the public learning experience checked.
-
-The first milestone can be achieved before the second. The repository must not claim the second while the dashboard still reports zero fully verified source entries. New algorithms and implementations can continue to be added through the extension protocol without weakening that standard.
+The closeout is explicitly aimed at the first milestone. Do not let the second milestone turn into an indefinite release blocker.
