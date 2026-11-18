@@ -1,7 +1,8 @@
 # Catalogue crosswalk — Batch 2: direct name matches inspected
 
 **Snapshot:** 18 November 2026  
-**Tree:** `e264b26d9eef53ac08f0667b3c9b8ec76b9bba5d`
+**Inspected tree:** `e264b26d9eef53ac08f0667b3c9b8ec76b9bba5d`  
+**Current branch:** `completion/section-22-atomic-audit`
 
 This batch inspected 20 Python package README files for the exact matching verification record/package slug. The mappings below are direct-slug relationships with scope notes retained in package documentation; this is a file inspection, not a full algorithm validation.
 
@@ -40,6 +41,11 @@ This batch inspected 20 Python package README files for the exact matching verif
 - **Edge detection:** thresholds are absolute gradient magnitudes, not auto-normalised across images.
 - **Drought indices:** VCI/TCI/VHI/SPI/GDD have calibration/seasonality assumptions; they are indicators rather than forecasts.
 
+## Current-tree reconciliation
+
+A subsequent tree-level check at branch head `d6130f6bb7631068ae0404947429808c9320d2f4` confirmed that all 20 canonical verification files named in this crosswalk still exist. This check was performed against the canonical `catalog/verification/` directory; the earlier README inspection of package paths remains the evidence for implementation-file presence.
+
+
 ## Limitations
 
-This pass did not inspect source indexes, package code, test execution, notebooks or primary literature. Matching slugs are evidence of file alignment only. Verification status remains unchanged until the algorithm record's technical claims, source identity, bibliography and rights are independently reviewed.
+This pass did not inspect source indexes, package code, test execution, notebooks or primary literature. Matching slugs and file presence are evidence of structural alignment only. Verification status remains unchanged until the algorithm record's technical claims, source identity, bibliography and rights are independently reviewed.
