@@ -1,105 +1,174 @@
-# Spatial Methods — Patreon launch foundation
+# Spatial Methods — Patreon launch and operating strategy
 
-**Purpose:** turn the public Spatial Methods archive into its guided learning and research community.
+**Purpose:** operate Patreon as the membership, editorial and community interface to a broader spatial methods knowledge platform.
 
-**Canonical technical home:** https://github.com/Tessellatum-Inc/spatial-methods
+**Canonical technical home:** https://github.com/Tessellatum-Inc/spatial-methods  
+**Patreon:** https://www.patreon.com/c/SpatialMethods
 
-## Positioning
+## Strategic positioning
 
-Learn the methods behind spatial data, maps, models and decisions. Explore a growing open technical archive, then join the membership to study methods in sequence, practise with guided exercises, build reproducible projects and learn alongside other practitioners.
+Spatial Methods is not a student tutorial subscription. It is a curated, continually developing knowledge and capability resource for understanding, teaching, researching and applying spatial methods.
 
-Patreon is not a paywall around the repository. The public archive remains independently useful. Membership pays for the teaching layer: structure, interpretation, practice, feedback and community.
+The audience includes:
+- Students and independent learners building foundations.
+- Educators and instructors seeking rigorous, reusable teaching resources.
+- PhD candidates, postdoctoral researchers and research groups investigating methods.
+- Professionals and practitioners selecting, evaluating and applying methods.
+- Developers and technical teams building spatial systems.
 
-## Audience
+People enter at different levels. We organise knowledge by subject, method and depth—not by academic rank.
 
-- GIS and geospatial students who want to understand methods beyond tool buttons.
-- Analysts and practitioners who need to choose, implement and explain methods responsibly.
-- Developers building spatial applications, pipelines and decision-support systems.
-- Researchers and educators who value reproducible examples and technical discussion.
-- Learners moving into spatial data from adjacent disciplines.
+## Platform architecture
+
+Each release is engineered once and distributed through the appropriate surfaces.
+
+### Patreon — membership experience
+Editorial introductions, context, learning objectives, resource navigation, announcements, discussion prompts, member polls and workshop information. Patreon is not the canonical home for long code blocks, complex equations or interactive notebooks.
+
+### GitHub — technical source of truth
+Canonical technical explanations, mathematical notation, code, tests, notebooks, reproducibility instructions, references, version history and public learning paths. Public archive content remains accessible under its stated licences.
+
+### Downloadable resources — portable learning products
+Typeset field guides, diagrams, exercise sheets, answer keys, teaching materials and bundled resources. Each asset carries its own reuse and attribution terms.
+
+Do not duplicate canonical technical content across platforms. Patreon posts should link to the maintained resource and explain why it matters.
+
+## Content depth framework
+
+Apply one or more labels to each resource. These labels describe the depth of the material, not the intended academic rank of the reader.
+
+- **FOUNDATIONS:** intuition, concepts, terminology and introductory understanding.
+- **METHOD:** mathematical formulation, definitions and algorithmic reasoning.
+- **IMPLEMENTATION:** code, tests, reproducibility and practical use.
+- **ANALYSIS:** correctness, complexity, assumptions, numerical precision, limitations and comparisons.
+- **RESEARCH:** literature, variants, benchmarks, open questions and critical investigation.
+- **TEACHING:** lesson structures, demonstrations, exercises, discussion prompts and reusable instructional material.
+
+Not every topic needs every dimension. State prerequisites, scope, evidence, limitations and what is not covered.
+
+## One method, multiple entry points
+
+A method is curated as a connected resource rather than a one-off tutorial. Where appropriate, it includes:
+1. Problem statement, motivation and terminology.
+2. Visual intuition and conceptual explanation.
+3. Formal definition and mathematical reasoning.
+4. Algorithm and correctness considerations.
+5. Implementation, tests and reproducibility.
+6. Complexity, assumptions, edge cases and failure modes.
+7. Literature, variants, comparisons and research questions.
+8. Exercises, worked solutions and teaching prompts.
+9. Applications and links to related methods.
+
+The resource can be expanded over time. Do not imply that every release is exhaustive or research-original.
 
 ## Membership tiers — proposed USD monthly prices
 
-These are launch recommendations. Confirm prices and Patreon payout/tax presentation in the creator dashboard before publishing.
+Confirm prices, benefits, access controls, taxes and payout presentation in the creator dashboard before publishing.
 
 ### Library — $4/month
-
-For readers who want a structured way to explore and support the archive.
-
+For readers, educators, learners and practitioners who value curation.
 - Monthly research and learning digest.
-- Curated reading lists and topic maps.
+- Curated reading lists, references and topic maps.
 - Downloadable study notes and learning-path guides.
-- Member polls to prioritise future teaching topics.
-- Access to the organised Patreon learning archive.
+- Teaching and discussion prompts where relevant.
+- Member polls and organised member archive.
 
 Delivery: one substantial digest or curated guide each month, plus occasional short updates.
 
 ### Laboratory — $12/month
-
-For learners who want to work through methods, not only read about them.
-
+For people who want to understand methods deeply and work with them.
 Everything in Library, plus:
-- One guided learning release each month, with a worked example.
-- Practice exercises, hints and worked solution notes.
-- Companion notebooks or code walkthroughs when they add genuine learning value.
-- Reproducibility notes: environment, inputs, expected outputs and known limitations.
-- Monthly discussion thread for that release.
+- One guided learning release each month.
+- Worked examples and annotated walkthroughs.
+- Exercises, hints and worked solution notes.
+- Companion notebooks, code walkthroughs and reproducibility notes where useful.
+- Method analysis of assumptions, edge cases and limitations where relevant.
+- Monthly discussion thread.
 
-Delivery: one complete monthly learning pack. Public source code and core technical explanations remain public under their repository licences; membership adds guided instruction and practice.
+Delivery: one complete monthly learning pack. Public code and technical explanations remain open under their repository licences; membership adds curation, guided study, practice and interpretation.
 
 ### Research Circle — $29/month
-
-For practitioners who want a small, thoughtful space to apply and discuss methods.
-
+For researchers, advanced learners and practitioners who want to investigate, compare and apply methods with others.
 Everything in Laboratory, plus:
-- Quarterly live group workshop or research clinic.
-- Member project showcase and structured peer feedback.
-- Priority topic voting and a quarterly research brief.
-- A limited number of group review slots per quarter, allocated transparently.
+- One quarterly group workshop or research clinic.
+- Research briefs and comparative method explorations.
+- Member project showcases and structured peer discussion.
+- Priority topic voting.
+- Limited group feedback opportunities, announced with each cycle.
 
-Delivery: one quarterly live session, not unlimited private consulting. Individual implementation, debugging or project delivery is not included.
+This is not unlimited private consulting, guaranteed manuscript supervision or custom project delivery.
 
-## Launch rules
+## Editorial and production cycle
 
-1. Launch with these three tiers only if the creator dashboard supports the intended benefits and delivery calendar.
-2. Do not promise weekly full courses, unlimited direct messages, guaranteed personal replies or custom consulting.
-3. Publish the first Laboratory learning pack before actively promoting paid tiers.
-4. Make the public GitHub archive visible and link it from the page.
-5. Publish the welcome post and a clear start-here post before inviting people.
-6. State the licence boundary: code and documentation retain their repository licences; Patreon-only teaching materials are separate original works with reuse terms stated on each asset.
-7. Review conversion, engagement and delivery capacity after 30 days. Do not add tiers before the first cohort has used the material.
+1. **Discover:** identify a method, question, application or gap.
+2. **Investigate:** review primary literature, theory, established implementations and variants.
+3. **Master:** derive, implement, test, experiment and benchmark where appropriate.
+4. **Curate:** create explanations at multiple depths, diagrams, exercises, references and teaching material.
+5. **Distribute:** publish canonical technical resources on GitHub, portable assets where useful, and editorial/member navigation on Patreon.
+6. **Compound:** correct, expand, connect and revisit resources as knowledge and evidence improve.
+
+This cycle supports the creator's own technical mastery while producing a reusable knowledge asset for the wider community.
+
+## Release package standard
+
+A release should state:
+- Title, subject and problem.
+- Intended audience and prerequisites.
+- Depth labels.
+- Learning or research outcomes.
+- Scope and exclusions.
+- Canonical technical location.
+- Downloads and companion resources.
+- References and attribution.
+- Licence and permitted reuse.
+- Version/date and correction history.
+- Discussion or application prompt.
+
+Use only the formats appropriate to the subject. A research note does not need a notebook; an algorithm implementation should have tests; a teaching resource should include instructional guidance.
 
 ## First 30 days
 
 | Timing | Release | Purpose |
 |---|---|---|
-| Launch | Welcome + start here | Explain the archive, membership and how to begin |
-| Launch | Public announcement | Invite readers to explore the open archive and support guided learning |
-| Week 1 | Geometry foundations learning pack | Give members a concrete first experience |
-| Week 2 | Member discussion: where do segments meet? | Surface questions and learner needs |
-| Week 3 | Research note: exact predicates and numerical robustness | Demonstrate technical depth without hiding core facts |
-| Week 4 | Monthly digest + next-topic poll | Establish rhythm and invite participation |
+| Launch | Welcome / Start Here | Explain the platform, audiences, navigation and open archive |
+| Launch | Public announcement | Introduce the wider mission and invite exploration |
+| Week 1 | Segment intersection learning release | Demonstrate multiple depths and practical value |
+| Week 2 | Method discussion | Surface questions from learners, educators, researchers and practitioners |
+| Week 3 | Robust predicates and numerical precision research note | Demonstrate analytical depth and limitations |
+| Week 4 | Monthly digest and topic poll | Establish rhythm and invite participation |
 
-## Operating rhythm
+## Sustainable operating rhythm
 
-- Monthly: one substantial guided learning pack.
+- Monthly: one substantial guided learning or research release.
 - Monthly: one concise research/learning digest.
-- Monthly: one member discussion or practice prompt.
+- Monthly: one discussion, exercise or application prompt.
 - Quarterly: one Research Circle workshop.
 - Corrections and canonical technical changes are made in GitHub first.
 
+Do not promise weekly full courses, unlimited direct messages, guaranteed personal replies or custom consulting.
+
+## Quality and integrity standards
+
+- Distinguish established results, interpretation, hypotheses and original contributions.
+- Cite primary literature and authoritative technical references where possible.
+- Never present a teaching implementation as production-ready without evidence.
+- State assumptions, coordinate-system requirements, precision models and limitations.
+- Make exercises and solutions internally consistent and test code before release.
+- Respect repository licences, third-party notices and asset-specific teaching-material terms.
+- Keep public technical foundations useful; membership sells curation, guided depth and participation.
+
 ## Success measures
 
-Track repository click-throughs, paid conversion, tier mix, recurring revenue, learning-pack engagement, exercise participation, questions resolved, workshop attendance, renewals, cancellations and production time. Optimise for members using the material and returning, not post volume.
+Track paid conversion, tier mix, recurring revenue, repository click-throughs, resource use, exercise participation, educator/researcher engagement, questions resolved, workshop attendance, renewals, cancellations and production time. Optimise for usefulness, trust and retention—not post volume.
 
 ## Publication checklist
 
 - [ ] Creator page name, avatar, cover and short description set.
-- [ ] About page copy published.
+- [ ] About page reflects the multi-audience mission.
 - [ ] Public GitHub archive linked.
-- [ ] Three tier descriptions and prices reviewed in creator dashboard.
-- [ ] Welcome post and start-here post published.
-- [ ] First learning pack published to Laboratory and Research Circle.
+- [ ] Tier descriptions and prices match actual creator-dashboard settings.
+- [ ] Welcome / Start Here post published.
+- [ ] First learning release is complete and quality-checked.
 - [ ] Public launch post published.
-- [ ] Tier benefits match actual access settings.
-- [ ] Payout, tax, currency and membership settings reviewed by the account owner.
+- [ ] Tier access settings verified.
+- [ ] Payout, tax, currency and membership settings reviewed by account owner.
