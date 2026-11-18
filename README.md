@@ -24,6 +24,7 @@ You do not have to start at the beginning. You do not have to know everything be
 
 | If you're interested in… | Start here |
 |---|---|
+| Following a curiosity into a technical subject | [Radar: a curiosity-led exploration](explorations/radar/README.md) |
 | The building blocks of GIS | [Core GIS and geometry](learning-paths/README.md#start-with-a-problem) |
 | How spatial algorithms work | [Algorithm collection](algorithms/README.md) |
 | Working examples and code | [Implementations](implementations/README.md) |
@@ -67,7 +68,7 @@ You can read, try an example, follow a learning path or help us make something c
 
 This is the public home for the project's explanations, research references, examples and collaborative work. It is maintained as a version-controlled technical resource so that corrections and improvements remain visible.
 
-The initial scope comes from the supplied *Spatial Analysis Algorithms: Complete Compendium* (47 pages, 12 November 2026). Its page-by-page text is preserved under [source-inventory](source-inventory/README.md). The original inventory is broad and includes algorithms, operations, statistical models, data structures, software, metrics and applied methods. Each item is reviewed before being presented as established technical guidance. All 22 original sections now have item-level intake indexes; these preserve the source groupings and mark what still needs verification. An indexed entry is not automatically a researched or validated lesson.
+The initial scope comes from the supplied *Spatial Analysis Algorithms: Complete Compendium* (47 pages, 12 November 2026). Its page-by-page text is preserved under [source-inventory](source-inventory/README.md). The original inventory is broad and includes algorithms, operations, statistical models, data structures, software, metrics and applied methods. Each item is reviewed before being presented as established technical guidance. All 22 original sections have item-level intake indexes; these preserve the source groupings and mark what still needs verification. An indexed entry is not automatically a researched or validated lesson.
 
 ### How the work is made
 
