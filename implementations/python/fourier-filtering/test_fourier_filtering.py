@@ -39,7 +39,7 @@ def test_notch_filter_is_conjugate_symmetric_and_preserves_dc():
     assert h[shape[0] // 2, shape[1] // 2] == pytest.approx(1.0)
     assert h[shape[0] // 2, shape[1] // 2 + 5] < 1e-12
     assert h[shape[0] // 2, shape[1] // 2 - 5] < 1e-12
-    assert np.allclose(h, h[::-1, ::-1], atol=1e-12)
+    assert np.allclose(h, np.roll(h[::-1, ::-1], shift=(1, 1), axis=(0, 1)), atol=1e-12)
 
 
 def test_notch_filter_rejects_invalid_parameters():
