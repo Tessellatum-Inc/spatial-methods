@@ -122,8 +122,7 @@ def main() -> int:
                     heading_text = strip_fenced_code(target_file.read_text(encoding="utf-8"))
                     heading_ids = set()
                     for heading in re.findall(r"^#{1,6}\\s+(.+)$", heading_text, re.MULTILINE):
-                        clean = re.sub(r"\\[[^\\]]*\\]\\([^)]*\\)", "", heading)
-                        clean = re.sub(r"<[^>]+>", "", clean).strip().lower()
+                        clean = heading.strip().lower()
                         clean = re.sub(r"[^\\w -]", "", clean)
                         clean = re.sub(r"\\s+", "-", clean.strip())
                         heading_ids.add(clean)
