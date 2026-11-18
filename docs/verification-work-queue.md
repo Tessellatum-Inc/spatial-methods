@@ -2,7 +2,7 @@
 
 Snapshot: 18 November 2026
 
-This is a prioritisation queue for a practical verification sprint, not a claim that these topics have been verified. Status remains governed by the [source-entry verification protocol](verification-protocol.md) and the [review dashboard](review-dashboard.md).
+This is a prioritisation queue for a practical verification sprint, not a claim that these topics have been verified. Status remains governed by the [source-entry verification protocol](verification-protocol.md) and the [review dashboard](review-dashboard.md).\n\n**Latest structural audit:** [Catalogue alignment audit — Batch 1](catalogue-alignment-audit.md). Exact-slug mismatch signals are documented; none are classified as orphans without manual crosswalk review.
 
 ## Work rules
 
@@ -45,7 +45,7 @@ This is a prioritisation queue for a practical verification sprint, not a claim 
 
 | Batch | State | Evidence |
 |---|---|---|
-| A | Queued | No comprehensive cross-section identity/duplicate audit recorded yet |
+| A | In progress | Structural inventory exists; direct slug mismatches are documented but manual alias crosswalk is still outstanding |
 | B | Queued | Existing tests and lessons are evidence for specific scopes only |
 | C | Queued | Asset-level rights audit not completed |
 | D | Queued | Rendered/mobile/accessibility release audit not completed |
