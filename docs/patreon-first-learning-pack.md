@@ -1,11 +1,29 @@
-# Laboratory learning pack 01: Do two line segments meet?
+# Learning release 01: Do two line segments meet?
 
-**Topic:** Segment intersection  
-**Level:** Foundations to intermediate  
-**Suggested study time:** 60–90 minutes  
-**Prerequisites:** Basic Python reading; familiarity with points and line segments is helpful.
+**Subject:** Computational geometry  
+**Depth:** FOUNDATIONS · METHOD · IMPLEMENTATION · ANALYSIS · TEACHING  
+**Prerequisites:** Basic coordinate geometry. Python familiarity is needed only for the implementation exercises.  
+**Suggested study time:** 60–90 minutes for the core; additional study paths are provided below.
 
 This is a guided companion to the public [segment intersection lesson](../algorithms/geometry/segment-intersection.md) and its [tested Python implementation](../implementations/python/segment-intersection/README.md).
+
+## Why this method matters
+
+Given two finite line segments, determine whether they do not meet, meet at one point, or share a segment.
+
+A line extends forever. A segment does not. Checking whether two supporting lines intersect is not enough: the intersection may lie outside one or both finite segments.
+
+This small geometric question appears in topology, map processing, CAD, computer graphics, robotics and spatial data validation. It is also a useful case study in how mathematical predicates, implementation details and data assumptions affect computational results.
+
+## Choose your route
+
+The core explanation is shared. Choose the additional depth that matches your purpose; these are entry points, not separate audiences or locked academic tracks.
+
+- **Learner:** work through the intuition, classification table, guided exercises and worked answers.
+- **Educator:** use the concept sequence, visual classification cases and exercise prompts to build a lesson or practical session.
+- **Researcher:** examine predicate robustness, degeneracies, exact arithmetic, algorithmic variants and the boundary between pairwise testing and all-intersections problems.
+- **Practitioner:** focus on precision policy, coordinate reference systems, geometry validity, spatial indexing and production-tool selection.
+- **Developer:** run the reference implementation, inspect its tests, extend edge-case coverage and compare implementation strategies.
 
 ## Learning outcomes
 
@@ -13,13 +31,8 @@ By the end, you should be able to:
 - distinguish a proper crossing, endpoint contact, collinear touch, collinear overlap and disjoint pair;
 - explain why orientation tests are central to segment intersection;
 - understand why exact integer predicates and rational intersection coordinates are useful;
-- describe the boundary of this teaching implementation and when a more robust geometry engine is appropriate.
-
-## The problem
-
-Given two finite line segments, determine whether they do not meet, meet at one point, or share a segment.
-
-A line extends forever. A segment does not. Checking whether two supporting lines intersect is not enough: the intersection may lie outside one or both finite segments.
+- describe the boundary of this teaching implementation and when a more robust geometry engine is appropriate;
+- identify why pairwise intersection and finding all intersections in a large collection are different computational problems.
 
 ## The key idea: orientation
 
@@ -90,6 +103,43 @@ The teaching implementation uses integer endpoints and exact rational output for
 
 Explain at least four additional concerns before using this pairwise function in production. Consider robust predicates, coordinate reference systems, spatial indexing, precision policy, geometry validity and the cost of testing every pair.
 
+## Educator extension
+
+A short teaching sequence can be organised around three questions:
+
+1. Why is testing infinite lines insufficient for finite segments?
+2. How can the orientation of three points be determined without calculating angles?
+3. Why do collinear and endpoint cases require explicit treatment?
+
+Ask learners to predict each classification before revealing the result. Use the six-row classification table as a formative assessment prompt. For a longer session, have learners design test cases before inspecting the implementation.
+
+## Research extension
+
+Use these questions to move beyond the introductory predicate:
+
+- What guarantees are required of an orientation predicate for a geometric algorithm to remain topologically consistent?
+- When are exact integer arithmetic and rational constructions practical, and when do coordinate magnitude or representation constraints matter?
+- How do adaptive-precision predicates differ from applying an arbitrary floating-point epsilon?
+- What changes when the task is to report every intersection among n segments rather than test one pair?
+- Compare a pairwise predicate with a sweep-line approach such as Bentley–Ottmann. What assumptions affect the complexity and robustness of each?
+- Which degeneracies must an implementation define and handle explicitly?
+
+A research treatment should consult primary literature and robust computational geometry references before making claims about guarantees or performance. This pack is a starting point, not a literature review or claim of novel research.
+
+## Practitioner extension
+
+Before using a pairwise segment function in a production workflow, document:
+- the coordinate reference system and units;
+- the coordinate precision and tolerance policy;
+- geometry validity assumptions;
+- the exact meaning of intersection required by the application;
+- how candidate pairs are selected (for example, spatial indexing);
+- the geometry engine and predicate semantics;
+- expected data volume and performance requirements;
+- validation against representative and adversarial cases.
+
+A pairwise teaching function is not a scalable overlay pipeline.
+
 ## Hints
 
 - A segment's bounding box is a cheap necessary condition for intersection.
@@ -147,3 +197,7 @@ You are ready to move on when you can explain:
 ## Member discussion prompt
 
 Where have you encountered geometry that appears to intersect on a map but fails a computational test—or the reverse? Describe the data, coordinate system and precision assumptions. Avoid sharing confidential client data.
+
+## Scope note
+
+This is a multi-entry guided learning resource, not a complete treatment of computational geometry, a formal verification, a production deployment guide or an exhaustive research review. Follow the linked canonical lesson, implementation and references for the technical source material; report corrections or missing cases through the repository's contribution process.
