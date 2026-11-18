@@ -8,14 +8,18 @@ class InternalLinkAnchorTests(unittest.TestCase):
         self.assertEqual(github_heading_slug("My **Spatial** Analysis (2026)!"), "my-spatial-analysis-2026")
 
     def test_duplicate_headings_receive_numeric_suffixes(self):
-        text = "# Methods\\n## Methods\\n## Methods\\n"
+        text = """# Methods
+## Methods
+## Methods
+"""
         self.assertEqual(heading_anchors(text), {"methods", "methods-1", "methods-2"})
 
     def test_explicit_html_anchor_is_recognized(self):
-        self.assertIn("custom-target", heading_anchors('<a id="custom-target"></a>\\n# Heading'))
+        self.assertIn("custom-target", heading_anchors('<a id="custom-target"></a>'))
 
     def test_fenced_code_is_not_a_heading(self):
-        text = "# Actual\\n\\x60\\x60\\x60md\\n# Not a heading\\n\\x60\\x60\\x60\\n"
+        fence = chr(96) * 3
+        text = "# Actual\\n" + fence + "md\\n# Not a heading\\n" + fence + "\\n"
         self.assertEqual(heading_anchors(text), {"actual"})
 
     def test_same_page_fragment_resolves_to_source(self):
@@ -26,7 +30,8 @@ class InternalLinkAnchorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             file_path = root / "guide.md"
-            file_path.write_text("# Heading\\n", encoding="utf-8")
+            file_path.write_text("""# Heading
+""", encoding="utf-8")
             old_root = checker.ROOT
             checker.ROOT = root
             try:
