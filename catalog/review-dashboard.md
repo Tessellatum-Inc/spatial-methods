@@ -9,8 +9,8 @@ This dashboard counts the source-entry review labels in the 22 item-level sectio
 | Measure | Entries | Meaning |
 |---|---:|---|
 | Source-entry rows counted | 695 | Rows with a source-entry review status in the section indexes |
-| Partial | 304 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
-| Not checked — intake only | 391 | The source wording is preserved, but no independent review is recorded |
+| Partial | 305 | A related canonical record or selected citation check exists, but the grouped source entry remains unverified |
+| Not checked — intake only | 390 | The source wording is preserved, but no independent review is recorded |
 | Fully verified | 0 | No row is currently labelled fully verified across the independent review dimensions |
 
 Note: the 22 indexes also contain implementation inventories and explanatory tables. Those are not source-entry rows and are excluded from these counts.
@@ -24,7 +24,7 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 3 — Geostatistics | 26 | 23 | 3 |
 | 4 — Raster, terrain and hydrology | 27 | 23 | 4 |
 | 5 — Remote sensing | 36 | 30 | 6 |
-| 6 — Optimization, mobility and transport | 31 | 12 | 19 |
+| 6 — Optimization, mobility and transport | 31 | 13 | 18 |
 | 7 — Domain modeling | 48 | 11 | 37 |
 | 8 — GeoAI | 54 | 9 | 45 |
 | 9 — Geodesy, cartography and infrastructure | 39 | 9 | 30 |
@@ -41,9 +41,9 @@ Note: the 22 indexes also contain implementation inventories and explanatory tab
 | 20 — Indices, microwave, events and information | 25 | 9 | 16 |
 | 21 — Neural fields, climate accounting and robust geometry | 26 | 6 | 20 |
 | 22 — Inference, covariance, spherical methods and asset monitoring | 28 | 11 | 17 |
-| **Total** | **695** | **304** | **391** |
+| **Total** | **695** | **305** | **390** |
 
-The current by-section subtotals reconcile exactly with the aggregate: **695 source-entry rows, 304 partial, 391 intake-only and zero fully verified**. Counts are derived directly from the current source-entry tables in all 22 section indexes. Intake-only rows are classified as not checked; explicit fully verified rows are counted separately; all other non-empty statuses—including implementation-linked records—remain partial. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Historical snapshots below are retained as audit history; the current table above is authoritative.
+The current by-section subtotals reconcile exactly with the aggregate: **695 source-entry rows, 305 partial, 390 intake-only and zero fully verified**. Counts are derived directly from the current source-entry tables in all 22 section indexes. Intake-only rows are classified as not checked; explicit fully verified rows are counted separately; all other non-empty statuses—including implementation-linked records—remain partial. Section 4's storage/compression row is retained as intake-only; implementation-linked rows in Sections 17 and 20 are counted as partial. Historical snapshots below are retained as audit history; the current table above is authoritative.
 
 ## How to interpret this
 

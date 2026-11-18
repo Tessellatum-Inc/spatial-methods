@@ -1,5 +1,9 @@
 # Algorithm collection
 
+## Optimisation
+
+- [Metaheuristics for spatial optimisation](optimization/metaheuristics.md) — a source-linked taxonomy of evolutionary, trajectory, swarm, memory-based, multi-start and mathematical-programming hybrid search families.
+
 Each record explains one method or operation, its assumptions, where it is useful, and what can go wrong. The collection is growing from the supplied [source inventory](../source-inventory/README.md); an entry is not treated as verified merely because it appears in that inventory.
 
 ## Compositional statistics

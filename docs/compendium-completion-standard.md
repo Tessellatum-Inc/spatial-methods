@@ -157,6 +157,6 @@ The project owner has confirmed authorship of the original compendium and compil
 
 ## Current outstanding release gates
 
-The latest dashboard contains 695 source-entry rows: 304 Partial, 391 intake-only and zero Fully verified. The repository still needs identity and bibliography checks, claim-level technical verification, child-record splitting for grouped entries, implementation/reproduction evidence where appropriate, and per-asset rights review. It also needs rendered heading/navigation review, mobile and screen-reader accessibility review, and a complete CI pass on the final release candidate.
+The latest dashboard contains 695 source-entry rows: 305 Partial, 390 intake-only and zero Fully verified. The repository still needs identity and bibliography checks, claim-level technical verification, child-record splitting for grouped entries, implementation/reproduction evidence where appropriate, and per-asset rights review. It also needs rendered heading/navigation review, mobile and screen-reader accessibility review, and a complete CI pass on the final release candidate.
 
 The extension protocol defines how new methods and variants are added after the initial foundation. Completion means that the intake is accounted for, each entry has a defensible disposition and evidence, and the maintenance process is reliable—not that the collection will stop growing.
