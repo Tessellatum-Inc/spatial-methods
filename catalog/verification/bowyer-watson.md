@@ -12,6 +12,7 @@
 - Counter-clockwise output triangles; zero-area replacement faces are discarded.
 - Strict in-circle policy: cocircular ties are retained rather than forcing a flip.
 - Duplicate, insufficient, non-finite and all-collinear inputs are rejected.
+- The super-triangle was widened to 128× the input bounding span after CI exposed a missing-face regression at a 32× scale; the seeded cloud test now asserts both Euler face count and representation of every input site. This is a tested practical margin, not a proof for arbitrarily near-collinear configurations.
 
 ## Independent checks
 

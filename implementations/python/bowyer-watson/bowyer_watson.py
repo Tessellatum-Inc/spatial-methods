@@ -89,11 +89,14 @@ def delaunay_triangulate(
 
     centre_x = (min_x + max_x) / 2
     centre_y = (min_y + max_y) / 2
-    # This enclosing triangle is deliberately much larger than the input box.
+    # A wide enclosing triangle keeps the finite triangulation away from
+    # super-triangle circumcircle artefacts for ordinary, non-degenerate clouds.
+    # A finite multiplier cannot bound arbitrarily near-collinear inputs; the
+    # Euler and empty-circle tests define the verified teaching envelope.
     super_points: tuple[Point, Point, Point] = (
-        (centre_x - 32 * span, centre_y - 16 * span),
-        (centre_x + 32 * span, centre_y - 16 * span),
-        (centre_x, centre_y + 32 * span),
+        (centre_x - 128 * span, centre_y - 64 * span),
+        (centre_x + 128 * span, centre_y - 64 * span),
+        (centre_x, centre_y + 128 * span),
     )
     super_set = set(super_points)
     initial = _ccw(*super_points)

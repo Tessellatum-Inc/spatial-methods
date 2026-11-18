@@ -72,6 +72,7 @@ def test_seeded_general_position_clouds_match_planar_triangle_count_and_empty_ci
         points = [(Fraction(str(x)), Fraction(str(y))) for x, y in raw]
         triangles = delaunay_triangulate(raw)
         assert len(triangles) == 2 * n - 2 - _hull_size(points)
+        assert {vertex for triangle in triangles for vertex in triangle} == set(points)
         assert all(orient(*triangle) > 0 for triangle in triangles)
         _assert_empty_circumcircles(points, triangles)
 
