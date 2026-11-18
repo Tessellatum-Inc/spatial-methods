@@ -1,4 +1,4 @@
-# Spatial Analysis
+# Spatial Methods
 
 **Understand the methods behind the maps, models and decisions that shape our world.**
 
@@ -65,7 +65,7 @@ You can read, try an example, follow a learning path or help us make something c
 
 ## About this repository
 
-This is the public home for the project's explanations, research references, examples and collaborative work. It is maintained as a version-controlled technical resource so that corrections and improvements remain visible.
+Spatial Methods is an open, growing collection of spatial methods and the ideas behind them. It brings together clear explanations, research references, tested implementations, exercises and learning paths. Corrections and improvements remain visible, and the collection is built to be useful whether you are learning, applying or contributing.
 
 The initial scope comes from the supplied *Spatial Analysis Algorithms: Complete Compendium* (47 pages, 12 November 2026). Its page-by-page text is preserved under [source-inventory](source-inventory/README.md). The original inventory is broad and includes algorithms, operations, statistical models, data structures, software, metrics and applied methods. Each item is reviewed before being presented as established technical guidance. All 22 original sections now have item-level intake indexes; these preserve the source groupings and mark what still needs verification. An indexed entry is not automatically a researched or validated lesson.
 
