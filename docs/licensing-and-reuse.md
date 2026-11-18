@@ -48,4 +48,4 @@ Do not move material already released under a licence permitting free commercial
 - Do not copy substantial passages or figures merely to make a lesson look complete.
 - Review rights separately from technical correctness.
 
-This is a project licensing policy, not legal advice. For institutional distribution, commercial sublicensing, substantial third-party incorporation or uncertainty about rights, obtain qualified legal review.
+The [licensing and release-risk audit](licensing-audit-batch-2.md) records current policy-level findings and the next asset review batch. This is a project licensing policy, not legal advice. For institutional distribution, commercial sublicensing, substantial third-party incorporation or uncertainty about rights, obtain qualified legal review.
