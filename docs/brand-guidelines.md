@@ -56,7 +56,7 @@ Use coordinate grids, measured lines, intersections, contours, cells, nodes, bou
 
 ## Mark
 
-The repository mark is a compact geometric construction: two spatial paths crossing a measured grid. The mark is a supporting identifier, not a substitute for the written name. Use the supplied SVG as the source asset; do not redraw it inconsistently in individual documents.
+The mark is three identical diamond-shaped tiles arranged symmetrically in a compact triangular formation. The terracotta, charcoal and field-grey palette gives the symbol a simple visual signature without relying on a literal map pin or decorative detail. The mark is a supporting identifier, not a substitute for the written name. Use the supplied SVG as the source asset; do not redraw it inconsistently in individual documents.
 
 ## Architecture
 
