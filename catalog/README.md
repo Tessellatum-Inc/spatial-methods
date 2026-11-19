@@ -10,7 +10,7 @@ This directory is the structured index of the project's knowledge inventory. It 
 
 ## Machine-readable knowledge catalogue
 
-- [Canonical knowledge records](knowledge-records.jsonl) — first ten records for the reference, positioning and measurement cluster.
+- [Canonical knowledge records](knowledge-records.jsonl) — first eleven records for the reference, positioning and measurement cluster.
 - [Knowledge-record JSON Schema](schemas/knowledge-record.schema.json) — metadata contract for canonical records.
 - [Catalogue operating rules](records/README.md) — stable IDs, metadata conventions and change process.
 - [Catalogue validator](validate_knowledge_catalog.py) — standard-library checks for record metadata, subject IDs, canonical paths and graph references.
@@ -32,7 +32,7 @@ This directory is the structured index of the project's knowledge inventory. It 
 - [Measurement principles and field verification](../foundations/measurement-science/measurement-principles-and-field-verification.md) — the first foundational synthesis, covering the measurement chain, uncertainty, error sources, redundancy and procedure-specific field verification.
 - [Measurement models and measurand definition](../foundations/measurement-science/measurement-models-and-measurand-definition.md) — defines the quantity before modelling it, then demonstrates first-order uncertainty propagation with correlated inputs.
 - [Standard uncertainty: Type A and Type B evaluation](../foundations/measurement-science/standard-uncertainty-type-a-type-b.md) — explains statistical and non-statistical evaluation methods, probability models and combination of uncertainty components.
-- [Covariance and GLS Python implementation](../implementations/python/covariance-gls/README.md) — dependency-free covariance checks, session-common covariance construction, Cholesky GLS, tests and a synthetic network example.
+- [Covariance and GLS Python implementation](../implementations/python/covariance-gls/README.md) — dependency-free covariance checks, unconstrained and exact-constraint GLS, datum-defect tests and synthetic network examples.
 - [Covariance, correlated observations and generalized least squares](../foundations/measurement-science/covariance-correlated-observations-and-gls.md) — explains covariance, shared error structures, propagation and GLS using synthetic Exercises D and K.
 - [Exercise A: repeated distance and horizontal-angle observations](../experiments/measurement/exercise-a-repeated-distance-and-angle.md) — a reproducible synthetic worked experiment with a machine-readable dataset and Python analysis; explicitly not field evidence.
 - [Exercise B: differential levelling and loop adjustment](../experiments/measurement/exercise-b-differential-levelling-loop.md) — a synthetic levelling loop with forward/reverse observations, weighted closure adjustment, elevation covariance and a reproducible analysis.
