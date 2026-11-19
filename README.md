@@ -99,6 +99,8 @@ The initial scope comes from the supplied *Spatial Analysis Algorithms: Complete
 - [Product brief](docs/product-brief.md)
 - [Experience and information architecture](docs/experience-architecture.md)
 - [Reusable exploration template](templates/exploration-template.md)
+- [Tool and instrument record template](templates/tool-instrument-template.md)
+- [Offer and economic validation template](templates/offer-validation-template.md)
 - [Research and source evaluation standard](docs/research-and-source-evaluation.md)
 - [Curiosity Desk operating guide](docs/curiosity-desk.md)
 - [Practical investigation template](templates/laboratory-investigation-template.md)
