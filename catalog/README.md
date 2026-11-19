@@ -12,6 +12,7 @@ This directory is the structured index of the project's knowledge inventory. It 
 - [Measurement principles and field verification](../foundations/measurement-science/measurement-principles-and-field-verification.md) — the first foundational synthesis, covering the measurement chain, uncertainty, error sources, redundancy and procedure-specific field verification.
 - [Exercise A: repeated distance and horizontal-angle observations](../experiments/measurement/exercise-a-repeated-distance-and-angle.md) — a reproducible synthetic worked experiment with a machine-readable dataset and Python analysis; explicitly not field evidence.
 - [Exercise B: differential levelling and loop adjustment](../experiments/measurement/exercise-b-differential-levelling-loop.md) — a synthetic levelling loop with forward/reverse observations, weighted closure adjustment, elevation covariance and a reproducible analysis.
+- [Exercise C: weighted least-squares adjustment of a vertical control network](../experiments/measurement/exercise-c-weighted-control-network.md) — a synthetic multi-route network with observation equations, weighted adjustment, residual diagnostics and parameter covariance.
 
 ## Coverage
 
