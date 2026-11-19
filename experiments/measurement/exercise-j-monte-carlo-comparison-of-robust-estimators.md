@@ -22,8 +22,8 @@ The augmented design adds a hypothetical independent B–E height-difference obs
 For each trial, every observation is regenerated around its reference height difference with independent Gaussian noise and the observation's stated a-priori standard uncertainty. Gross errors are then injected into selected observations:
 
 - clean observations;
-- one +20 mm error on CE (a comparatively weakly redundant observation in the baseline design);
-- one +20 mm error on AB (a comparatively strong observation);
+- one +20 mm error on CE;
+- one +20 mm error on AB;
 - two +15 mm errors on BD and CE;
 - +15 mm on BD and −15 mm on CE.
 
@@ -53,8 +53,8 @@ For snooping, the clean-data rate is the proportion of trials with at least one 
 | AB +20 mm | Augmented | 6.097 (0.035) | 1.099 (0.025) | 1.595 (0.037) |
 | BD +15, CE +15 mm | Baseline | 4.419 (0.021) | 1.521 (0.078) | 2.195 (0.036) |
 | BD +15, CE +15 mm | Augmented | 3.213 (0.018) | 1.067 (0.021) | 1.379 (0.024) |
-| BD +15, CE −15 mm | Baseline | 3.435 (0.016) | 1.161 (0.021) | 1.544 (0.023) |
-| BD +15, CE −15 mm | Augmented | 3.392 (0.016) | 1.025 (0.019) | 1.457 (0.023) |
+| BD +15, CE −15 mm | Baseline | 3.452 (0.016) | 1.171 (0.022) | 1.572 (0.024) |
+| BD +15, CE −15 mm | Augmented | 3.408 (0.016) | 1.026 (0.019) | 1.462 (0.023) |
 
 Snooping's clean-data false-flag frequency was 0.8% for the baseline design and 1.4% for the augmented design (nominal per-round alpha 1%). Exact-set identification rates were:
 
@@ -63,7 +63,7 @@ Snooping's clean-data false-flag frequency was 0.8% for the baseline design and 
 | CE +20 mm | 100.0% | 100.0% |
 | AB +20 mm | 100.0% | 100.0% |
 | BD +15, CE +15 mm | 94.4% | 100.0% |
-| BD +15, CE −15 mm | 99.8% | 100.0% |
+| BD +15, CE −15 mm | 99.6% | 99.8% |
 
 These rates are specific to the selected network, error magnitudes, test rule and 500-trial simulation. A 100% observed rate does not establish a true 100% probability; the finite sample still has uncertainty.
 
