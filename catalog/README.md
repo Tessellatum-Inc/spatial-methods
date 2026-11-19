@@ -8,6 +8,8 @@ This directory is the structured index of the project's knowledge inventory. It 
 - [Subject-to-repository alignment register](subject-alignment-register.md) — connects the subject map to existing algorithms, methods, verification records, implementations, notebooks, learning paths and source sections. Its current mappings are structural, not technical verification.
 - [First curation cluster: reference, positioning and measurement](first-curation-cluster-reference-positioning-measurement.md) — maps existing geodesy, GNSS and uncertainty assets, identifies field-survey and standards gaps, and defines an applied capstone.
 
+- [Surveying and field measurement source map](surveying-field-measurement-source-map.md) — an initial authority-ranked source register for measurement science, instrument verification, GNSS practice, control/topographic surveying and levelling, with subject-ID links and open research streams.
+
 ## Coverage
 
 See the [source-to-repository coverage matrix](coverage-matrix.md) for an honest view of what is captured, what has been researched and where work remains. The matrix deliberately does not count a source transcription as verified coverage. See the [source review dashboard](review-dashboard.md) for a dated count of all 695 source-entry rows and their current review labels.
