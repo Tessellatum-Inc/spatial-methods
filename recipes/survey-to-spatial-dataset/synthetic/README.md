@@ -52,6 +52,16 @@ The fixture uses arbitrary local Cartesian X/Y values in metres. It deliberately
 
 It does not calculate positional accuracy, certify independence, verify field evidence, test a real CRS transformation, assess accessibility compliance or establish fitness for operational use. The four declared independent checks are fixture attributes, not independently audited evidence.
 
+## Automated tests
+
+Run the positive and negative validator tests from this directory:
+
+```bash
+python -m unittest -v test_validate_pilot.py
+```
+
+The tests cover a passing fixture, an unknown asset-to-stop foreign key and a duplicate stop identifier. They use only the Python standard library.
+
 ## Negative test
 
 A manual negative test was run by changing one asset's `stop_id` to a nonexistent identifier. The validator correctly returned FAIL and reported the unknown foreign key. The committed fixture remains clean so the standard run demonstrates a passing schema check.
