@@ -1,7 +1,7 @@
 # Source register and claim-evidence mapping
 
 **Version:** 0.1  
-**Status:** Initial structured register; source identities and candidate relevance imported from the surveying and field measurement source map. Claim-level support is not yet verified against full source text.
+**Status:** Active structured register; first claim-level review completed for the VIM and legacy GUM core on 2026-11-20. Seven source-to-claim links are now marked verified; other candidate links remain unverified.
 
 ## Purpose
 
@@ -57,4 +57,4 @@ A public URL does not imply permission to reproduce a document. Prefer original 
 
 ## Current boundary
 
-The initial source set is deliberately small and concentrated on measurement science, field verification, GNSS practice, control surveying, levelling, reference frames and Kenyan regulatory context. It is not a complete bibliography and does not establish the current legal or technical status of Kenya's national reference system. The existing source map records unresolved legal and KENREF questions; those must remain open until primary documents are inspected and reconciled.
+The initial source set is deliberately small and concentrated on measurement science, field verification, GNSS practice, control surveying, levelling, reference frames and Kenyan regulatory context. The first technical review inspected the BIPM-hosted VIM3 and legacy GUM texts, and checked the BIPM's 2026 GUM suite overview and amendment listing. The GUM is a maintained suite, not merely JCGM 100:2008; source records for the suite and the 2026 nonlinearity amendment are retained separately. It is not a complete bibliography and does not establish the current legal or technical status of Kenya's national reference system. The existing source map records unresolved legal and KENREF questions; those must remain open until primary documents are inspected and reconciled.
