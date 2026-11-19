@@ -1,6 +1,6 @@
 # PostGIS schema — survey-to-spatial-dataset capstone
 
-**Status:** schema, synthetic ingestion, spatial QA and GeoPackage delivery implemented; live end-to-end verification pending.  
+**Status:** synthetic schema, ingestion, spatial QA and GeoPackage/ZIP delivery implemented and end-to-end verified in GitHub Actions (19 November 2026).  
 **Purpose:** test a traceable spatial data ingestion, quality-review and handover path without misrepresenting synthetic data as field evidence.
 
 ## Files
@@ -55,4 +55,5 @@ A successful QA run means only that these programmed checks found no hard failur
 - The loader accepts only the declared EPSG:4326 synthetic fixture format; it is not yet a general ingestion framework.
 - It does not load actual GNSS/instrument-native data or implement a field data capture form.
 - The export is a selected-attribute handover; it does not yet include every relational register, raw source file, or a full metadata standard profile.
-- Live Docker/PostGIS end-to-end execution is required before describing the complete pipeline as passed.
+- The complete workflow passed in [GitHub Actions run 44611562926](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44611562926). Its [synthetic delivery artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44611562926/artifacts/14572751901) contains the GeoPackage, QA JSON and ZIP handover (14-day artifact retention).
+- Verification is limited to the synthetic fixture and programmed software checks. No field observations, independent positional references, accuracy assessment or operational release have been completed.
