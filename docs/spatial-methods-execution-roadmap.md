@@ -264,3 +264,6 @@ The initial implementation is complete only when:
 5. Verify all repository links and draft assets, then hand over the exact account-level actions for the creator dashboard. **Repository verification underway; creator-dashboard verification remains with the account owner.**
 
 The roadmap is a working control document. Update it as deliverables are completed; do not create parallel plans that drift from the canonical version.
+
+
+**Nairobi Sentinel-1 practical case (19 Nov 2026):** Nairobi is selected as the first scene-specific study area. The investigation guide now defines a WGS 84 scene-search window and a scene-selection rule; a separate scene record captures metadata, processing provenance and validation requirements. The actual scene identifier, download/access, processing and observations remain pending and are not claimed complete.
