@@ -247,6 +247,10 @@ It does not model uncertain control, correlated observations, multiple variance 
 
 The next practical progression is to design and observe a real small levelling network (with appropriate supervision, equipment and permissions), retain setup-level records, include independent check ties and compare field results against a preselected specification. Only then extend to uncertain control constraints, correlated observations and formal outlier testing.
 
+## 13. Next exercise
+
+[Exercise D — stochastic control and correlated observations](exercise-d-stochastic-control-and-correlation.md) extends this network by assigning finite uncertainty to control and modelling shared session effects.
+
 ## 13. Sources and further reading
 
 - NOAA, *Geodetic Leveling, Manual NOS NGS 3*: https://www.ngs.noaa.gov/PUBS_LIB/Geodeticleveling_nos_3.pdf
