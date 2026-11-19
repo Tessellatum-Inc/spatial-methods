@@ -99,7 +99,7 @@ def main():
     print("EXERCISE J — SYNTHETIC MONTE CARLO ONLY")
     print(f"trials_per_design_case={TRIALS}; seed={SEED}; alpha={ALPHA}; Huber_c={HUBER_C}")
     print("Augmented design adds a hypothetical independent B-E observation (sigma=1.6 mm).")
-    print("case,design,method,mean_trial_coordinate_RMSE_mm,MC_SE_mm,snooping_false_flag_or_exact_ID_rate,rate_MC_SE")
+    print("case,design,method,mean_trial_coordinate_RMSE_mm,MC_SE_mm,snooping_false_flag_or_all_error_detection_rate,rate_MC_SE")
     for dname,template in designs.items():
         for cname,indices,magnitude in cases:
             errors={m:[] for m in ("LS","Snooping","Huber")}; rates=[]
@@ -121,9 +121,9 @@ def main():
                 mean,se=mean_se(values); rate=sum(rates)/TRIALS if method=="Snooping" else ""
                 rate_se=math.sqrt(rate*(1-rate)/TRIALS) if method=="Snooping" else ""
                 print(f"{cname},{dname},{method},{mean:.3f},{se:.3f},{rate},{rate_se}")
-    print("\nRates: clean = family-wise false-flag frequency; contaminated = exact identification of every injected observation.")
+    print("\nRates: clean = family-wise false-flag frequency; contaminated = all-error detection rate: every injected observation is flagged, possibly alongside innocent observations.")
     print("Monte Carlo SE is the standard error of the reported mean RMSE or binomial rate.")
-    print("Exact-set identification is stricter than detecting at least one injected error.")
+    print("All-error detection requires every injected error to be flagged; it does not require the flagged set to contain only true errors.")
     print("Model: independent Gaussian errors, known sigmas, exact datum, linear network; no shared systematics or correlated groups.")
     print("Sequential snooping is the Exercise I diagnostic heuristic, not an exact sequential family-wise procedure.")
     print("Huber downweighting is not proof of a physical blunder. Preserve raw observations.")
