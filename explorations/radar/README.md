@@ -16,6 +16,20 @@ A useful first distinction:
 
 Radar does not simply “see through everything”. The signal and the resulting measurement depend on wavelength, polarisation, viewing geometry, surface roughness, moisture, vegetation structure and the processing applied.
 
+## Use this exploration in the way that helps you
+
+You can use the same subject in several ways; these are optional routes, not a prescribed sequence.
+
+- **Understand:** begin with the opening question and the first 90-minute investigation.
+- **Research:** use the [radar territory map](territory-map.md) to distinguish branches, then investigate the source base for the branch that interests you.
+- **Practise:** follow the [Sentinel-1 backscatter investigation](sentinel-1-backscatter-investigation.md) and create a scene interpretation record.
+- **Build:** follow the SAR imaging or signal-processing thread toward implementation, once the underlying measurement and product are clear.
+- **Teach:** use the opening question, branch distinctions and observation prompts as a starting point for a demonstration; check source licences before reusing third-party material.
+- **Apply:** choose an application such as flood mapping or deformation monitoring, then identify the domain evidence and validation required.
+- **Explore further:** follow a connection into electromagnetics, statistics, geodesy, hydrology or computing.
+
+The [territory map](territory-map.md) distinguishes Earth-observation SAR, weather radar, radar systems engineering, signal processing and other radar applications. It is an orientation map, not a claim that all branches have been researched to equal depth.
+
 ## Choose a thread, not a job title
 
 These threads overlap. You can move between them whenever a question pulls you in another direction.
