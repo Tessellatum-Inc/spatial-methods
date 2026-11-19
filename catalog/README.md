@@ -10,7 +10,7 @@ This directory is the structured index of the project's knowledge inventory. It 
 
 ## Machine-readable knowledge catalogue
 
-- [Canonical knowledge records](knowledge-records.jsonl) — first six records for the reference, positioning and measurement cluster.
+- [Canonical knowledge records](knowledge-records.jsonl) — first seven records for the reference, positioning and measurement cluster.
 - [Knowledge-record JSON Schema](schemas/knowledge-record.schema.json) — metadata contract for canonical records.
 - [Catalogue operating rules](records/README.md) — stable IDs, metadata conventions and change process.
 - [Catalogue validator](validate_knowledge_catalog.py) — standard-library checks for record metadata, subject IDs, canonical paths and graph references.
@@ -20,7 +20,7 @@ This directory is the structured index of the project's knowledge inventory. It 
 
 - [Source register rules](sources/README.md) — stable source identities, evidence states, review workflow and reuse safeguards.
 - [Structured source register](sources/source-register.jsonl) — initial source records for measurement science, field verification, GNSS, control, levelling, reference frames and Kenyan context.
-- [Claim-to-source evidence map](sources/claim-evidence-map.csv) — initial candidate links from the measurement-science foundation to external sources; links remain unverified until relevant source passages are inspected.
+- [Claim-to-source evidence map](sources/claim-evidence-map.csv) — claim-level links from canonical measurement-science resources to external sources, with verified and candidate states kept distinct.
 
 ## Subject navigation
 
