@@ -46,6 +46,7 @@ Read the [canonical four-pillar architecture](docs/knowledge-tools-real-world-ar
 | The building blocks of GIS | [Core GIS and geometry](learning-paths/README.md#start-with-a-problem) |
 | How spatial algorithms work | [Algorithm collection](algorithms/README.md) |
 | Working examples and code | [Implementations](implementations/README.md) |
+| Following an end-to-end spatial workflow | [Spatial Recipes](recipes/README.md) and the [survey-to-spatial-dataset capstone](recipes/survey-to-spatial-dataset/README.md) |
 | Testing speed and accuracy | [Benchmarks](benchmarks/README.md) |
 | Practising with exercises | [Exercises](exercises/README.md) |
 | Following research questions | [Research notes](research/README.md) |
