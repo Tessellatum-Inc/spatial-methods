@@ -86,8 +86,11 @@ def main():
     print("\nAdjusted elevations:")
     point_names = ["BM-A", "TP1", "TP2", "TP3"]
     for i, (name, elevation) in enumerate(zip(point_names, elevations)):
-        standard_uncertainty_mm = math.sqrt(height_cov[i][i])
-        print(f"{name}: {elevation:.6f} m; u={standard_uncertainty_mm:.3f} mm")
+        if i == 0:
+            print(f"{name}: {elevation:.6f} m; fixed constraint in this example")
+        else:
+            standard_uncertainty_mm = math.sqrt(height_cov[i-1][i-1])
+            print(f"{name}: {elevation:.6f} m; u={standard_uncertainty_mm:.3f} mm")
 
     print("\nAdjusted height covariance matrix (mm^2):")
     for row in height_cov:
