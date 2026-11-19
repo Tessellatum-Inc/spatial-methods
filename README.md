@@ -25,6 +25,8 @@ You do not have to start at the beginning. You do not have to know everything be
 | If you're interested in… | Start here |
 |---|---|
 | Following a curiosity into a technical subject | [Radar: a curiosity-led exploration](explorations/radar/README.md) |
+| Mapping radar's distinct branches | [Radar territory map](explorations/radar/territory-map.md) |
+| Trying a first real-data investigation | [Sentinel-1 backscatter investigation](explorations/radar/sentinel-1-backscatter-investigation.md) |
 | The building blocks of GIS | [Core GIS and geometry](learning-paths/README.md#start-with-a-problem) |
 | How spatial algorithms work | [Algorithm collection](algorithms/README.md) |
 | Working examples and code | [Implementations](implementations/README.md) |
