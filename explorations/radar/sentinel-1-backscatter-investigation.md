@@ -34,47 +34,63 @@ Ask:
 4. Which physical explanations are plausible?
 5. What other evidence would help distinguish them?
 
-## 3. Find a scene
+## 3. Choose your data route
 
-Open [ASF Vertex](https://search.asf.alaska.edu/) and choose a small area you recognise.
+There are two sensible ways to begin. Choose based on whether your immediate goal is interpretation or learning the processing chain.
 
-1. Search a location with a mixture of land-cover types if possible.
-2. Filter to Sentinel-1.
-3. Select one scene and record its acquisition date, relative orbit or pass information if exposed, mode, product type and available polarisations.
-4. Prefer a scene with the product metadata needed for the question. Do not compare two scenes as if they were directly equivalent until acquisition and processing differences have been checked.
-5. Note the provider's current access and download requirements.
+### Route A — inspect a prepared RTC product (recommended first)
 
-You can use the [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/) as an alternative data-discovery route.
+Use [ASF Vertex](https://search.asf.alaska.edu/) to search Sentinel-1 and look for an available **Radiometrically Terrain Corrected (RTC)** product for your area. ASF's [RTC Product Guide](https://hyp3-docs.asf.alaska.edu/guides/rtc_product_guide/) explains the product, available radiometry, pixel spacing, DEM and optional processing choices.
 
-**Record:** location or AOI, scene identifier, acquisition date/time, product type, mode, polarisation, orbit/pass and source URL.
+This route reduces the setup burden. It does not remove the need to understand the processing history.
+
+Record:
+- scene identifier and acquisition date/time;
+- source Sentinel-1 product and acquisition mode;
+- polarisation;
+- RTC product identifier and generation options;
+- radiometric convention (gamma-nought or sigma-nought);
+- scale (power, amplitude or decibel);
+- pixel spacing and DEM;
+- whether a speckle filter was applied.
+
+**Important:** RTC products are processed derivatives, not raw sensor observations. Read the product metadata and guide before interpreting or comparing values.
+
+### Route B — process a Sentinel-1 GRD product yourself
+
+Search for a Sentinel-1 **GRD** product in ASF Vertex or the [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/). For a first backscatter interpretation, GRD is generally the more approachable product family: it is detected and multi-looked. It does not preserve the complex phase required for conventional interferometric processing. The official [Sentinel-1 Product Definition](https://sentiwiki.copernicus.eu/__attachments/1673968/S1-RS-MDA-52-7440-Sentinel-1-Product-Definition-2025-2.8.pdf) describes the distinction between SLC and GRD.
+
+Record the product identifier, acquisition date/time, mode, resolution class, polarisation and orbit/pass metadata. Do not treat a quick-look image or uncalibrated digital number as a quantitative backscatter measurement.
 
 ## 4. Inspect before interpreting
 
-Use the browse/preview capability available in the data portal, or open the downloaded product in a suitable tool.
-
-If using [ESA SNAP](https://step.esa.int/main/download/snap-download/), first confirm the current version and product support. Work from a copy of the downloaded data and retain the original.
+Open the RTC GeoTIFF or GRD product in a suitable GIS or image-processing tool. If using [ESA SNAP](https://step.esa.int/main/download/snap-download/), confirm the current version and product support first. The [Sentinel-1 Toolbox feature list](https://step.esa.int/main/toolboxes/sentinel-1-toolbox/s1tbx-features/) documents capabilities including calibration, speckle filtering, orbit handling and Range-Doppler terrain correction.
 
 Inspect:
-- image dimensions and bands;
-- polarisation channels available;
-- displayed units and scaling;
-- no-data areas and scene edges;
-- obvious geometric distortions, shadows or artefacts;
-- whether the image has been calibrated or terrain corrected.
+- product type and processing level;
+- image dimensions, bands and polarisation channels;
+- whether values are calibrated backscatter, and the coefficient used;
+- whether values are linear power or decibels;
+- map projection, pixel spacing and no-data areas;
+- DEM and terrain-correction information, if applicable;
+- visible geometric distortions, shadows, layover or artefacts.
 
-Do not infer physical backscatter values from an arbitrary display stretch or screenshot. Record the actual band and units.
+Do not infer physical backscatter values from an arbitrary display stretch or screenshot. Record the actual band, units, scaling and processing history.
 
 ## 5. Optional processing route
 
-The exact workflow depends on the Sentinel-1 product and the question. Use current ESA/ASF documentation for the selected product. A common high-level route for a Sentinel-1 GRD backscatter interpretation is:
+For a GRD workflow in SNAP, use the current ESA/STEP documentation and product metadata to choose appropriate operators and parameters. A high-level workflow may include:
 
-1. Read the product metadata and confirm the product type and polarisations.
-2. Apply the appropriate radiometric calibration to obtain a defined backscatter quantity (for example, sigma nought), following the product-specific guidance.
-3. Apply terrain correction when a map-geocoded result is required, using an appropriate DEM and recording its source.
-4. Choose a display scale suitable for the units and purpose.
-5. Export the result with metadata and processing notes.
+1. Inspect metadata and confirm the GRD product, mode and polarisation.
+2. Apply an appropriate orbit file when required by the processing objective and available orbit quality.
+3. Apply product-appropriate noise handling and radiometric calibration.
+4. Decide whether radiometric terrain correction / terrain flattening is required for the intended analysis and terrain.
+5. Apply geometric terrain correction when a map-geocoded output is needed.
+6. Export the output with its metadata, processing graph and parameter record.
 
-Do not treat this as a universal recipe. Orbit-file handling, border-noise treatment, thermal-noise handling, speckle filtering, terrain flattening, resampling and other steps depend on the product, software version and scientific question. Avoid adding filters simply to make an image look smoother.
+This is deliberately not a universal button-by-button recipe. The correct order and operator settings depend on product type, acquisition mode, SNAP version and scientific objective. See the [Copernicus Sentinel-1 GRD processing description](https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Data/S1GRD.html) and the [ASF RTC Product Guide](https://hyp3-docs.asf.alaska.edu/guides/rtc_product_guide/) for documented processing choices.
+
+**Do not automatically despeckle.** ASF notes that speckle filtering can reduce apparent noise but also reduce spatial resolution; whether it helps depends on the application. Compare filtered and unfiltered data when filtering is justified, and record the choice.
 
 ## 6. Observe and record
 
@@ -141,9 +157,12 @@ Choose one extension only when it answers a question you now have:
 
 ## 11. Sources and technical checks
 
-- [ASF Vertex](https://search.asf.alaska.edu/) — scene discovery and product metadata.
+- [ASF Vertex](https://search.asf.alaska.edu/) — scene discovery and access to available derived products.
+- [ASF RTC Product Guide](https://hyp3-docs.asf.alaska.edu/guides/rtc_product_guide/) — product radiometry, DEM, scale, pixel spacing and speckle-filter choices.
 - [ASF learning resources](https://asf.alaska.edu/learn/) — SAR concepts and data guidance.
-- [ESA SNAP](https://step.esa.int/main/download/snap-download/) — processing environment and current documentation.
+- [ESA Sentinel-1 Toolbox features](https://step.esa.int/main/toolboxes/sentinel-1-toolbox/s1tbx-features/) — documented SNAP processing capabilities.
+- [Copernicus Sentinel-1 GRD processing documentation](https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Data/S1GRD.html) — processing stages and backscatter coefficient options for that service.
+- [Sentinel-1 Product Definition (2025, revision 2/8)](https://sentiwiki.copernicus.eu/__attachments/1673968/S1-RS-MDA-52-7440-Sentinel-1-Product-Definition-2025-2.8.pdf) — authoritative product definitions, including SLC and GRD.
 - [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/) — Sentinel data discovery and access.
 
 Before publishing a result based on a specific scene, record the exact product identifier, processing parameters, software version, DEM and reference data. Recheck current product-specific guidance. This guide intentionally does not prescribe universal parameter values.
