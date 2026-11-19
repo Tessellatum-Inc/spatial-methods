@@ -2,11 +2,11 @@
 
 **Version:** 0.1  
 **Status:** Foundation specification  
-**Product category:** Curiosity-led knowledge, research and practical exploration environment
+**Product category:** Curiosity-led knowledge, research, technology and practical capability environment
 
 ## 1. Product in one sentence
 
-Spatial Methods helps people investigate the spatial and computational world by turning a curiosity, question or problem into a navigable body of knowledge, useful next actions and connections they can continue to build on.
+Spatial Methods helps people investigate the spatial, computational and connected scientific-technological world by turning a curiosity, question or problem into navigable knowledge, useful next actions, practical capability and connections they can continue to build on.
 
 ## 2. The problem
 
@@ -45,26 +45,27 @@ The platform should let someone choose an intention when it helps, but must not 
 
 ### Core domain
 
-Spatial Methods focuses on methods, ideas, tools and applications at the intersection of:
-- spatial data, geographic information and geospatial systems;
-- mathematics, geometry, statistics and computational methods;
-- remote sensing, measurement and spatial observation;
-- networks, routing, optimisation and operations research;
-- simulation, modelling and spatially situated systems;
-- data engineering, databases, software and visualisation;
-- spatial machine learning, AI and emerging computational approaches.
+Spatial and computational methods remain important roots, but the intended territory is broader. Spatial Methods connects the foundations, data, methods, technologies and tools that help people understand and interact with the world. Relevant territories may include:
+- mathematics, statistics, geometry, topology and information theory;
+- physics, chemistry, biology and other sciences where they connect to investigation and technology;
+- measurement, sensing, signals, imaging and experimental methods;
+- spatial data, geographic information, remote sensing and geospatial systems;
+- algorithms, software, data engineering, AI and computational infrastructure;
+- engineering, electronics, robotics, automation and scientific instrumentation;
+- simulation, modelling, optimisation and operations research;
+- applications in research, industry, environment, infrastructure, health and human systems.
 
-Adjacent fields are included when they materially explain or enable a spatial or computational question. This is a connected domain, not a claim to cover every subject in existence.
+This is not a claim to cover every subject exhaustively. A curiosity should be followed into the fields that genuinely explain it. Do not force unrelated subjects into a spatial workflow merely because Spatial Methods has spatial roots.
 
 ### What belongs
 
-A subject belongs when it helps explain, measure, represent, analyse, model, compute with, visualise or make decisions about spatial phenomena or spatially organised systems.
+A subject belongs when it meaningfully helps explain a phenomenon, measure or represent a system, generate or interpret data, develop a method or technology, operate or build a tool, conduct an experiment, or solve a real-world problem. Some subjects are worth exploring for foundational or intellectual reasons even when no immediate application is known.
 
-A curiosity can enter through an application, a technology, a role someone has encountered, a paper, a dataset, an algorithm, a tool or a basic question. The entry point does not dictate the eventual structure.
+A curiosity can enter through a phenomenon, question, application, technology, instrument, paper, dataset, algorithm, tool or practical problem. The entry point does not dictate the eventual structure.
 
 ### What does not belong by default
 
-- Generic coverage of unrelated subjects with no meaningful spatial or computational connection.
+- Unfocused coverage that has no meaningful connection to the question, investigation or wider knowledge architecture.
 - Unannotated link dumps or automated collections presented as curation.
 - Unsupported claims of comprehensive coverage.
 - Repackaging copyrighted courses, papers, books, figures or datasets without permission.
@@ -94,7 +95,7 @@ An exploration can serve a person who wants an accessible explanation and anothe
 A useful resource shelf says what a source contributes, who or what it helps, what it assumes, how current it is and where its limitations lie. A list of links alone is not enough.
 
 ### Understanding connects to action
-Where the subject permits, the user should be able to do something: inspect a dataset, reproduce an analysis, compare methods, solve a problem, run code, teach a concept or formulate a research question.
+Where the subject permits, the user should be able to do something: inspect a dataset, reproduce an analysis, compare methods, solve a problem, run code, teach a concept, use an instrument, build a prototype or formulate a research question. Practical work may involve software, simulation, physical equipment, shared laboratories or remote infrastructure.
 
 ### Knowledge accumulates
 The result of an exploration should be reusable and connected to previous and future work. It should not disappear into a one-off post.
@@ -137,7 +138,19 @@ Newsletter, Medium, LinkedIn, talks and other channels help people discover usef
 ### Membership principle
 People should not have to choose a subject or identity-based tier. Membership differences may reflect the amount of guided support, practical material and participation available. Exact prices and benefits remain subject to capacity and creator-dashboard verification.
 
-## 10. What success means
+## 10. Economic sustainability
+
+Spatial Methods should progressively fund its own operations and growth. Its economic model should support the intellectual mission without putting every piece of knowledge behind a paywall or allowing commercial incentives to distort research quality.
+
+Value may be created through memberships, publishing, education, software, data products, APIs, physical tools, experiment kits, technical services, commissioned research, sponsorships, grants and institutional partnerships. These are possible routes, not assumed revenue. Validate demand, pricing, rights, delivery costs and maintenance before scaling.
+
+Keep the public technical archive independently useful. Paid value should come from genuine additional guidance, participation, products, infrastructure or services. Track contribution after direct costs, delivery effort, recurring obligations, cash requirements and customer concentration. Reinvest deliberately in operations, research, equipment, product development, contributors and reserves.
+
+Treat reusable research, software, datasets, protocols, prototypes, teaching resources, distribution and partnerships as assets. Record ownership, licences, provenance, maintenance and contributor terms. Prefer low fixed costs and borrow, rent, simulate or partner for expensive infrastructure until demand justifies ownership.
+
+The detailed operating model is maintained in [Economic sustainability architecture](economic-sustainability-architecture.md).
+
+## 11. What success means
 
 The product is working when people can:
 - arrive with an imprecise curiosity and find a credible way in;
@@ -149,7 +162,7 @@ The product is working when people can:
 
 Measure usefulness and continuity, not simply the number of posts or links published.
 
-## 11. Product boundaries
+## 12. Product boundaries
 
 Spatial Methods is not:
 - a universal search engine or exhaustive index of the internet;
@@ -159,7 +172,7 @@ Spatial Methods is not:
 - a single fixed curriculum through which everyone must progress;
 - a guarantee that an example or teaching implementation is suitable for production.
 
-## 12. Decision test
+## 13. Decision test
 
 Before creating a feature, post or resource, ask:
 
@@ -172,3 +185,5 @@ Before creating a feature, post or resource, ask:
 7. Can we deliver and maintain it honestly?
 
 If these questions have no useful answers, do not create the asset merely to fill a publishing calendar.
+
+For physical and technical work, also ask whether the proposed activity is safe, accessible, reproducible and honest about the difference between simulation, prototype and validated operation. See [Knowledge, tools and real-world capability architecture](knowledge-tools-real-world-architecture.md).
