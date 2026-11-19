@@ -10,6 +10,8 @@ This is a place to find out.
 
 We began with spatial and computational methods. The wider ambition is to connect those foundations to the sciences, technologies, data, instruments and practical experiments that help us understand and interact with the world. We investigate how things work, how they are measured, how data is produced and interpreted, and how methods and tools can be used, built and improved. Spatial analysis remains a strong, developed part of the collection—not a boundary around every future exploration.
 
+| Theoretical foundations and their subject map | [Foundations](foundations/README.md) |
+
 ## What you can do here
 
 - **Make sense of a method.** Clear explanations of what it does, how it works and what to watch out for.
