@@ -3,7 +3,7 @@
 **Version:** 0.1  
 **Status:** Initial taxonomy; subject coverage not yet assessed  
 **Role:** Canonical navigation index for the wider Geoinformatics knowledge universe  
-**Related architecture:** [Four-pillar architecture](../docs/knowledge-tools-real-world-architecture.md), [record types](record-types.md), [coverage matrix](coverage-matrix.md), [editorial and resource curation standard](../docs/editorial-resource-architecture.md)
+**Related architecture:** [Four-pillar architecture](../docs/knowledge-tools-real-world-architecture.md), [subject-to-repository alignment register](subject-alignment-register.md), [record types](record-types.md), [coverage matrix](coverage-matrix.md), [editorial and resource curation standard](../docs/editorial-resource-architecture.md)
 
 ## 1. Purpose and boundaries
 
