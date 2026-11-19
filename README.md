@@ -1,6 +1,6 @@
 # Spatial Methods
 
-**Understand the methods behind the maps, models and decisions that shape our world.**
+**Explore the knowledge, data, methods and tools that help us understand and shape the world.**
 
 Spatial data is everywhere. It helps us find places, plan journeys, understand changing environments, measure access to services and make better decisions about the places we share.
 
@@ -8,12 +8,14 @@ But what actually happens behind the map? How does a computer know two areas ove
 
 This is a place to find out.
 
-We explore the ideas behind spatial analysis, make them easier to understand, try them with real examples and show where they are useful. From the fundamentals to the methods used in research and production, the goal is simple: help more people understand what these tools do, when to use them and how to put them to work.
+We began with spatial and computational methods. The wider ambition is to connect those foundations to the sciences, technologies, data, instruments and practical experiments that help us understand and interact with the world. We investigate how things work, how they are measured, how data is produced and interpreted, and how methods and tools can be used, built and improved. Spatial analysis remains a strong, developed part of the collection—not a boundary around every future exploration.
 
 ## What you can do here
 
 - **Make sense of a method.** Clear explanations of what it does, how it works and what to watch out for.
-- **See it in action.** Examples, code, maps, tests and practical experiments.
+- **See it in action.** Examples, code, maps, tests, simulations and practical experiments.
+- **Connect knowledge to tools.** Explore instruments, sensors, machines, software and the principles behind them.
+- **Make and investigate.** Find realistic routes to experiments, prototypes and real-world applications.
 - **Go deeper.** Mathematics, performance, trade-offs and the details that matter when the easy example isn't enough.
 - **Find your way through.** Follow a guided path, start with a problem you have, or explore whatever catches your interest.
 - **Build with others.** Share a correction, ask a question, contribute an implementation or help improve an explanation.
@@ -72,6 +74,11 @@ You can read, try an example, follow a learning path or help us make something c
 This is the public home for the project's explanations, research references, examples and collaborative work. It is maintained as a version-controlled technical resource so that corrections and improvements remain visible.
 
 The initial scope comes from the supplied *Spatial Analysis Algorithms: Complete Compendium* (47 pages, 12 November 2026). Its page-by-page text is preserved under [source-inventory](source-inventory/README.md). The original inventory is broad and includes algorithms, operations, statistical models, data structures, software, metrics and applied methods. Each item is reviewed before being presented as established technical guidance. All 22 original sections have item-level intake indexes; these preserve the source groupings and mark what still needs verification. An indexed entry is not automatically a researched or validated lesson.
+
+### Architecture and sustainability
+
+- [Knowledge, tools and real-world capability architecture](docs/knowledge-tools-real-world-architecture.md)
+- [Economic sustainability architecture](docs/economic-sustainability-architecture.md)
 
 ### How the work is made
 
