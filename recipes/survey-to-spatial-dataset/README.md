@@ -309,6 +309,8 @@ The next technical method is documented in the [independent positional verificat
 
 ## 9. Proposed first application
 
+The [Nairobi pilot feasibility assessment](feasibility-assessment-nairobi-pilot.md) compares candidate corridors, local equipment and technical-support pathways, professional review, authority/permission questions and field-readiness gates. Its current recommendation is to proceed only with reconnaissance and enquiries; field acquisition is not authorised.
+
 The proposed first application is a small [urban public-transport stop and roadside-asset inventory](pilot-project-definition.md) in Nairobi. It is a design candidate, not a confirmed site or authorised field assignment. The linked project definition sets out the study question, scope boundaries, relational data model, collection principles, validation strategy, deliverables and G0 feasibility gate.
 
 This application is intended to connect measurement science and field acquisition to a useful spatial dataset. It does not imply official stop designation, route validation, cadastral authority, engineering acceptance or accessibility certification.
