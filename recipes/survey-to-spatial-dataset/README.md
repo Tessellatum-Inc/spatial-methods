@@ -295,8 +295,14 @@ Use the [surveying and field measurement source map](../../catalog/surveying-fie
 
 The source map records edition, access and jurisdiction caveats. Before an operational protocol is released, inspect the exact current documents and confirm that each supports the specific claim being made.
 
+## 9. Proposed first application
+
+The proposed first application is a small [urban public-transport stop and roadside-asset inventory](pilot-project-definition.md) in Nairobi. It is a design candidate, not a confirmed site or authorised field assignment. The linked project definition sets out the study question, scope boundaries, relational data model, collection principles, validation strategy, deliverables and G0 feasibility gate.
+
+This application is intended to connect measurement science and field acquisition to a useful spatial dataset. It does not imply official stop designation, route validation, cadastral authority, engineering acceptance or accessibility certification.
+
 ## 9. Current status and next decision
 
 **Current status: G0 design-stage skeleton.** The workflow architecture and source routes are documented. No site has been selected, no equipment has been inspected, no permissions have been obtained, no field observations have been collected and no physical validation is claimed.
 
-The next decision is to choose the first bounded application and confirm the practical access conditions. Only then should the workflow be specialised into an executable field protocol.
+The next decision is to confirm whether the proposed Nairobi stop/asset inventory is feasible, identify a suitable corridor and resolve access, safety, equipment, reference and independent-check requirements. Only then should it be specialised into an executable field protocol.
