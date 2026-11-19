@@ -1,7 +1,7 @@
 # Source register and claim-evidence mapping
 
 **Version:** 0.1  
-**Status:** Active structured register; first claim-level review completed for the VIM and legacy GUM core on 2026-11-20. Twelve source-to-claim links are now marked verified; other candidate links remain unverified.
+**Status:** Active structured register; claim-level reviews completed for the VIM, legacy GUM core and NIST TN 1297 on 2026-11-20. Eighteen source-to-claim links are now marked verified; other candidate links remain unverified.
 
 ## Purpose
 
