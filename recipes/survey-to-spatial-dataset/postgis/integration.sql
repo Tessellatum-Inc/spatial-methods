@@ -122,15 +122,29 @@ BEGIN
 END;
 $$;
 
+-- Complete the valid asset subtype so QA does not mistake a test fixture
+-- for an intentionally incomplete production feature.
+INSERT INTO pilot.asset (
+    feature_id, stop_id, asset_type, presence, observation_datetime
+) VALUES (
+    '00000000-0000-0000-0000-000000000003',
+    '00000000-0000-0000-0000-000000000001',
+    'shelter', 'present', now()
+);
+
 -- 8. Controlled-value constraints must reject an unknown asset type.
-DO $$
+INSERT INTO pilot.inventory_feature(feature_id, feature_type, geom)
+VALUES ('00000000-0000-0000-0000-000000000004', 'asset',
+        ST_SetSRID(ST_MakePoint(3, 3), 3857));
+
+DO $
 DECLARE rejected boolean := false;
 BEGIN
     BEGIN
         INSERT INTO pilot.asset (
             feature_id, asset_type, presence, observation_datetime
         ) VALUES (
-            '00000000-0000-0000-0000-000000000003',
+            '00000000-0000-0000-0000-000000000004',
             'imaginary_asset', 'present', now()
         );
     EXCEPTION WHEN OTHERS THEN
@@ -140,6 +154,6 @@ BEGIN
         RAISE EXCEPTION 'FAIL: invalid asset type was accepted';
     END IF;
 END;
-$$;
+$;
 
 SELECT 'PASS: CRS configuration, SRID enforcement, subtype integrity, foreign key, controlled values and SRID retrieval' AS integration_result;
