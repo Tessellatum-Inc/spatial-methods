@@ -317,6 +317,8 @@ This application is intended to connect measurement science and field acquisitio
 
 The [Nairobi pilot reconnaissance and readiness pack](reconnaissance-readiness-pack.md) now turns the feasibility assessment into a controlled next-step protocol: authority and access enquiries, non-intrusive reconnaissance, safety and data-governance checks, corridor comparison criteria and explicit readiness gates. It does not authorise fieldwork; the current decision remains NOT READY for field acquisition.
 
+The [stakeholder outreach templates](outreach-enquiry-templates.md) provide draft enquiries for KURA, an equipment supplier, the University of Nairobi's Department of Geospatial and Space Technology, and Nairobi City County. These are drafts only; no correspondence has been sent and no responses or approvals are implied.
+
 ## 9. Current status and next decision
 
 **Current status: G0 design plus a limited G1 synthetic schema rehearsal.** The workflow architecture and source routes are documented. No site has been selected, no equipment has been inspected, no permissions have been obtained, no field observations have been collected and no physical validation is claimed.
