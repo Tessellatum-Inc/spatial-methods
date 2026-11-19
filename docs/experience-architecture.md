@@ -328,7 +328,13 @@ Initial release requires:
 7. Consistent metadata, annotations and cross-links.
 8. A simple continuity record that members can use without special software.
 
-## 12. Acceptance tests
+## 12. Working templates and operating standards
+
+- [Exploration template](../templates/exploration-template.md) — adaptable structure for a curiosity-led investigation.
+- [Research and source evaluation standard](research-and-source-evaluation.md) — source discovery, annotation, evidence, verification and licensing checks.
+- [Curiosity Desk operating guide](curiosity-desk.md) — intake, triage, prioritisation and member-facing submission copy.
+
+## 13. Acceptance tests
 
 The architecture is usable when:
 - A visitor can arrive with an imprecise question and understand the first useful direction.
