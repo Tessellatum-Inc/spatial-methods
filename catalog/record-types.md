@@ -21,6 +21,7 @@ A **source entry** is an item as it appears in the supplied compendium. A **cano
 | implementation | A particular software package, library, class, API or concrete realisation of a method | GEOS OverlayNG; Shapely; a PostGIS function |
 | dataset | A named collection of observations, features, imagery or other data product | A satellite scene collection; a published building-footprint dataset |
 | application | A domain-specific analytical use or solution pattern | Transit accessibility analysis; flood exposure assessment |
+| foundation | A foundational body of theory or scientific knowledge supporting methods and applications | Measurement science; geodesy; radiometry |
 
 Choose the kind that best describes the subject of the record itself, not every kind of thing it depends on. Use related-record links and tags for secondary relationships.
 
@@ -39,7 +40,8 @@ Ask these questions in order:
 9. Is it a measure of error, quality or performance? Use **metric**.
 10. Is it a named computational action? Use **operation**.
 11. Is it a reproducible procedure with explicit steps? Use **algorithm**.
-12. Is it a wider analytical technique or domain solution? Use **method** or **application**, choosing the one that best captures the record's purpose.
+12. Is it a foundational body of theory or scientific knowledge? Use **foundation**.
+13. Is it a wider analytical technique or domain solution? Use **method** or **application**, choosing the one that best captures the record's purpose.
 
 These questions guide classification; they are not a reason to split one concept into unnecessary pages.
 
@@ -77,6 +79,7 @@ A method describes an analytical approach. A workflow specifies an ordered seque
 | Spatial weights matrix | data_structure | Contiguity, distance-band and k-nearest-neighbour construction |
 | GeoJSON | standard | Geometry model; software implementations |
 | Transit accessibility analysis | application | Network model; routing algorithm; impedance and access metrics |
+| Measurement principles and field verification | foundation | Metrology, uncertainty, surveying and quality assurance methods |
 
 ## Catalogue fields
 
