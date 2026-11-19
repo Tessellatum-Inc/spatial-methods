@@ -67,7 +67,7 @@ def prepare(rows,a):
         for j in range(n): q[i][j]+= (COMMON_SIGMA_MM/1000.0)**2
     l=cholesky(q)
     aw=transpose([forward(l,col) for col in transpose(a)])
-    ad=[[a[i][j]/rows[i]["sigma"] for j in range(n)] for i in range(n)]
+    ad=[[a[i][j]/rows[i]["sigma"] for j in range(4)] for i in range(n)]
     return q,l,aw,ad
 
 def fit(aw,ad,l,rows,blocks,mode):
