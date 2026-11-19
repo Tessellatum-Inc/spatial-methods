@@ -197,7 +197,7 @@ Use the evidence to improve navigation and curation before adding unnecessary fe
 
 ## 7. Execution sequence
 
-**Progress update — 19 November 2026:** Phase 1 (Product foundation) has been documented in `docs/product-brief.md` and `docs/experience-architecture.md`. The editorial curation standard and publishing model have also been aligned. The next phase is to build the reusable operating templates and research workflow; this is not a claim that the Patreon creator page has been configured or published.
+**Progress update — 19 November 2026:** Phase 1 (Product foundation) is documented in `docs/product-brief.md` and `docs/experience-architecture.md`. The editorial curation standard and publishing model have been aligned. Phase 2 (Operating system) is underway: the reusable exploration template, research/source evaluation standard and Curiosity Desk workflow are now in place. Remaining phase-2 work includes the practical-lab, research-dispatch and member-post templates, plus an editorial intake/backlog convention. This is not a claim that the Patreon creator page has been configured or published.
 
 
 Work in connected batches, completing and verifying each stage before layering on more material.
