@@ -9,6 +9,7 @@ This directory is the structured index of the project's knowledge inventory. It 
 - [First curation cluster: reference, positioning and measurement](first-curation-cluster-reference-positioning-measurement.md) — maps existing geodesy, GNSS and uncertainty assets, identifies field-survey and standards gaps, and defines an applied capstone.
 
 - [Surveying and field measurement source map](surveying-field-measurement-source-map.md) — an initial authority-ranked source register for measurement science, instrument verification, GNSS practice, control/topographic surveying and levelling, with subject-ID links and open research streams.
+- [Measurement principles and field verification](../foundations/measurement-science/measurement-principles-and-field-verification.md) — the first foundational synthesis, covering the measurement chain, uncertainty, error sources, redundancy and procedure-specific field verification.
 
 ## Coverage
 
