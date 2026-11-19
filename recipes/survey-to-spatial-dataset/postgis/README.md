@@ -9,6 +9,7 @@
 - [`compose.yaml`](compose.yaml) — disposable local PostGIS service and ingestion container.
 - [`integration.sql`](integration.sql) — database-level positive and negative tests.
 - [`ingest_pilot.py`](ingest_pilot.py) — validates and loads the synthetic fixture.
+- [`test_ingest_pilot.py`](test_ingest_pilot.py) — five standard-library preflight tests.
 - [`input/`](input/) — manifest and explicitly synthetic CSV point records.
 - [`requirements.txt`](requirements.txt) and [`Dockerfile`](Dockerfile) — isolated Python ingestion environment.
 - [`run-integration.sh`](run-integration.sh) — executes database tests and ingestion.
@@ -22,7 +23,7 @@ cd recipes/survey-to-spatial-dataset/postgis
 sh run-integration.sh
 ```
 
-The script starts PostGIS, recreates the disposable `pilot` schema, runs the database integration tests, then runs the ingestion container. The service listens on localhost port 55432. It uses local-only test credentials; do not reuse them or expose the service publicly.
+The script starts PostGIS, recreates the disposable `pilot` schema, runs the database integration tests, runs five ingestion-package preflight tests, then runs the ingestion container. The service listens on localhost port 55432. It uses local-only test credentials; do not reuse them or expose the service publicly.
 
 Stop the database with:
 
@@ -56,7 +57,7 @@ The source file hashes and raw-record references preserve traceability. The fixt
 
 ## Integration tests
 
-The database script tests CRS configuration, SRID enforcement, SRID retrieval, subtype integrity, foreign keys and controlled values. The ingestion script adds input validation, hash capture, coordinate transformation and relational loading.
+The database script tests CRS configuration, SRID enforcement, SRID retrieval, subtype integrity, foreign keys and controlled values. The ingestion script adds input validation, hash capture, coordinate transformation and relational loading. Five unit tests cover the committed fixture, unknown stop references, duplicate identifiers, non-synthetic manifests and out-of-range coordinates; they are wired into the runner but have not yet been executed in this environment.
 
 A successful run demonstrates software behaviour for this synthetic fixture only. It does not prove field acquisition quality, positional accuracy, independence of checks, completeness, topology or operational fitness.
 
