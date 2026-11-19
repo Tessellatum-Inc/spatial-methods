@@ -10,6 +10,28 @@
 - **Expected effort:** Approximately 60–120 minutes, depending on data access and whether SNAP is used.
 - **Status:** Practical guide; no scene-specific result is claimed in this document.
 
+## Study area: Nairobi, Kenya
+
+The first worked case uses the Nairobi urban area as a practical, recognisable study setting.
+
+**Search window (WGS 84):** west 36.65°E, south 1.45°S, east 37.05°E, north 1.15°S.
+
+This is a rectangular scene-discovery window around Nairobi's urban core, **not** an official Nairobi County or metropolitan boundary and not the final analysis mask. Once a scene is selected, use a documented Nairobi boundary or a clearly described sub-area for any area-based statistics. Keep the search window and analysis boundary conceptually separate.
+
+**Initial question:** How does C-band Sentinel-1 backscatter vary across Nairobi's dense built-up areas, vegetated/open spaces and water-related surfaces, and which patterns can be explained by surface scattering versus acquisition geometry?
+
+This is an interpretation exercise, not a claim that SAR alone can reliably classify Nairobi's land cover.
+
+### Scene-selection rule
+
+Use the Copernicus Data Space catalogue or ASF Vertex to identify candidate scenes. Start with the latest available **Sentinel-1 IW GRD** acquisition intersecting the search window, preferably with **VV and VH**. Select one complete scene that covers the intended sub-area. Record the acquisition time, relative orbit, pass direction, product identifier, polarisation, resolution class and footprint. If the newest candidate has incomplete coverage, missing dual polarisation or an unsuitable footprint, move to the next suitable acquisition and record why.
+
+For a first pass, use the original GRD product in a reproducible processing workflow or a documented RTC derivative. Do not mix values from different providers or processing conventions as though they were directly equivalent. The Copernicus Data Space catalogue documents worldwide Sentinel-1 GRD availability; its catalogue APIs support spatial and temporal product searches.
+
+### Comparison context
+
+Where practical, identify a Sentinel-2 optical observation close to the SAR acquisition date and use it only as contextual evidence for visible surface conditions. Record the time difference, cloud cover and any seasonal or land-cover change that limits comparison. Optical imagery is not ground truth. Add a dated reference layer or authoritative local dataset if the interpretation makes a specific land-cover or water claim.
+
 ## 1. What you will produce
 
 A short scene interpretation record containing:
