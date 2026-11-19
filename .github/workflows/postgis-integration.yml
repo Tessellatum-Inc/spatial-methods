@@ -1,0 +1,46 @@
+name: PostGIS capstone integration
+
+on:
+  push:
+    paths:
+      - "recipes/survey-to-spatial-dataset/postgis/**"
+      - ".github/workflows/postgis-integration.yml"
+  pull_request:
+    paths:
+      - "recipes/survey-to-spatial-dataset/postgis/**"
+      - ".github/workflows/postgis-integration.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: postgis-capstone-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  postgis-rehearsal:
+    name: PostGIS schema, ingestion and spatial QA
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Run disposable PostGIS integration rehearsal
+        working-directory: recipes/survey-to-spatial-dataset/postgis
+        run: sh run-integration.sh
+
+      - name: Upload spatial QA report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-spatial-qa-report
+          path: recipes/survey-to-spatial-dataset/postgis/output/spatial-qa-report.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Tear down disposable database
+        if: always()
+        working-directory: recipes/survey-to-spatial-dataset/postgis
+        run: docker compose down --volumes --remove-orphans
