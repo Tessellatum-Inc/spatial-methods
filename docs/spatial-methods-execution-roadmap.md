@@ -159,6 +159,8 @@ Tiers distinguish depth, practical support and participation—not which subject
 
 **Exit condition:** Radar demonstrates the full experience and can serve different intentions without pretending its branches are interchangeable.
 
+**Current assets:** `explorations/radar/README.md`, `explorations/radar/territory-map.md`, `explorations/radar/sentinel-1-backscatter-investigation.md` and `explorations/radar/source-notes.md`. The content and source register are prepared; a scene-specific practical result remains a separate validation task.
+
 ### Workstream 5 — Patreon implementation
 - Rewrite the page identity, short description, About section, tier descriptions and FAQ around the product promise.
 - Set up Start Here, Exploration Library, Curiosity Desk, Laboratory and Research Dispatches as clear member-facing destinations.
@@ -167,6 +169,8 @@ Tiers distinguish depth, practical support and participation—not which subject
 - Prepare the Radar launch sequence and link canonical GitHub material.
 - Verify creator-dashboard prices, benefits, access settings and presentation before publishing.
 
+**Prepared assets:** `publishing/patreon-page-copy.md`, `publishing/patreon-start-here.md`, `publishing/patreon-navigation-post.md`, `publishing/patreon-curiosity-desk.md` and `publishing/radar-launch-post.md`. These are draft copy files; they do not represent published Patreon posts.
+
 **Exit condition:** A new member can understand what Spatial Methods offers, where to begin, how to get value and how to participate.
 
 ### Workstream 6 — Distribution and discovery
@@ -174,6 +178,8 @@ Tiers distinguish depth, practical support and participation—not which subject
 - Maintain one canonical technical source; link rather than create conflicting copies.
 - Prepare launch copy and a repeatable distribution checklist.
 - Make every public entry point lead to a useful next action.
+
+**Prepared asset:** `publishing/distribution-kit.md`.
 
 **Exit condition:** A repeatable path from discovery to exploration, membership or contribution.
 
@@ -200,7 +206,7 @@ Use the evidence to improve navigation and curation before adding unnecessary fe
 
 ## 7. Execution sequence
 
-**Progress update — 19 November 2026:** Phase 1 (Product foundation) is complete. Phase 2's operating assets are in place and are now being exercised against Radar. The flagship has a distinct-branch territory map, explicit optional routes for different intentions, and a first practical Sentinel-1 backscatter investigation. These are initial working assets, not a claim of exhaustive coverage or independently validated scene results. Phase 2 will be formally closed after the end-to-end workflow and links are checked. Patreon creator-page configuration and publication remain separate account-owner actions.
+**Progress update — 19 November 2026:** Phase 1 (Product foundation) and Phase 2 (Operating system) are complete. The Radar flagship now has a distinct-branch territory map, multiple optional routes, a Sentinel-1 practical investigation with separate prepared-RTC and self-processing entry routes, and an annotated evidence register. The sources and core product assumptions have been checked against ESA, Copernicus and ASF documentation. No scene-specific processing result is claimed yet. The Patreon build kit now includes page/about copy, provisional tier copy, welcome, navigation, Curiosity Desk and Radar launch posts, plus a cross-channel distribution kit. These are prepared drafts, not published account changes. Creator-dashboard prices, access settings and scheduling still require owner verification.
 
 
 Work in connected batches, completing and verifying each stage before layering on more material.
@@ -252,9 +258,9 @@ The initial implementation is complete only when:
 ## 10. Immediate execution batch
 
 1. Complete and verify the operating templates and editorial backlog. **Completed.**
-2. Exercise the documented workflow against Radar, identify gaps and improve the flagship exploration. **Next.**
-3. Produce the complete Patreon page and launch-post kit from the verified content.
-4. Prepare distribution and operational schedules.
-5. Verify every file, link, claim, licence and member journey; then hand over the exact account-level actions for the creator dashboard.
+2. Exercise the documented workflow against Radar and strengthen its product distinctions, practical route and evidence register. **Content and source review completed; scene-specific practical verification remains.**
+3. Produce the Patreon page and launch-post kit from the Radar content. **Draft kit prepared.**
+4. Prepare distribution and operational schedules. **Distribution kit prepared; scheduling deferred until publication dates and account settings are confirmed.**
+5. Verify all repository links and draft assets, then hand over the exact account-level actions for the creator dashboard. **Repository verification underway; creator-dashboard verification remains with the account owner.**
 
 The roadmap is a working control document. Update it as deliverables are completed; do not create parallel plans that drift from the canonical version.
