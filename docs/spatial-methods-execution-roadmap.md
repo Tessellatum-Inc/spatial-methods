@@ -5,13 +5,13 @@
 
 ## 1. Product destination
 
-Spatial Methods is an exploration and mastery environment for the spatial and computational world.
+Spatial Methods is a curiosity-led knowledge, research and practical capability environment. Its strong spatial and computational foundations connect outward to the sciences, technologies, data, instruments and methods through which people understand and interact with the world.
 
-People arrive with different curiosities and different intentions. One person may want a clear explanation; another may need a research map, a reproducible experiment, a teaching resource, working code or help applying a method. The product must support these different outcomes without forcing everyone through the same curriculum or assigning people to fixed learner categories.
+People may enter through a question, phenomenon, dataset, method, instrument, technology, application or practical problem. They may want explanation, research, teaching, software, physical experimentation or a useful product. The experience supports these different intentions without forcing everyone through one curriculum or assigning fixed learner identities.
 
-**Core promise:** Bring a question, interest or problem. Spatial Methods helps you understand the territory, find and assess useful knowledge, choose a meaningful next action, develop capability and follow connections as far as you want.
+**Core promise:** Bring a curiosity, question or problem. Spatial Methods helps you navigate the relevant knowledge, understand how it is observed and represented, investigate the methods and tools involved, and develop the capability to do something useful with it.
 
-The organising unit is the **curiosity / investigation**, not the job title, academic level, profession or a rigid discipline tree.
+The organising unit remains the **curiosity / investigation**. The architecture connects foundations, measurement, data, methods, tools, experiments and applications without turning them into a mandatory sequence or rigid discipline tree.
 
 ### Product principles
 
@@ -24,6 +24,8 @@ The organising unit is the **curiosity / investigation**, not the job title, aca
 7. **Evidence and honesty:** State scope, prerequisites, uncertainty, source quality, licensing and limitations. Never imply completeness where it has not been achieved.
 8. **Open foundations:** Keep the public technical archive independently useful. Membership pays for curation, guidance, original companion work and participation—not artificial withholding.
 9. **Sustainable delivery:** Promise only what can be consistently researched, produced and maintained.
+10. **Practical capability:** Connect knowledge to instruments, software, equipment, experiments and real-world systems where appropriate.
+11. **Economic sustainability:** Build a diversified, evidence-led model in which valuable outputs help finance continued research, operations and development.
 
 ## 2. Experience architecture
 
@@ -62,6 +64,17 @@ These are connected product capabilities, not separate audience tracks.
 - Preserve what was explored, sources consulted, actions taken, findings, surprises, unresolved questions and next steps.
 - Link related investigations across subject boundaries.
 - Let people resume an exploration or start another without losing the context they created.
+
+### G. Tools and technologies — practical capability
+- Connect relevant principles to instruments, sensors, machines, electronics, software and computational infrastructure.
+- Explain what a tool measures, manipulates, computes or produces, how it works, and what limits it.
+- Identify realistic access routes: simulation, public data, low-cost components, borrowing, hiring, shared facilities, remote infrastructure or specialist partnerships.
+- Distinguish conceptual understanding, software implementation, simulation, prototype testing and physical validation.
+
+### H. Experiments and real-world applications
+- Support practical investigations where they improve understanding or capability.
+- Record equipment, data, procedures, calibration, uncertainty, safety, expected outputs and limitations.
+- Preserve reusable outputs such as code, datasets, protocols, models, prototypes, teaching assets and product designs.
 
 ## 3. A flexible exploration record
 
@@ -204,9 +217,32 @@ Track evidence that the experience is useful:
 
 Use the evidence to improve navigation and curation before adding unnecessary features or more tiers.
 
+
+### Workstream 9 — Knowledge-to-tools architecture
+- Define the connected model spanning phenomena, foundations, measurement, data, methods, tools, experiments and applications.
+- Create adaptable records for tools and instruments, including operating principles, inputs/outputs, capabilities, limitations, access routes, safety and related experiments.
+- Distinguish physical measurements, simulations, software implementations, prototypes and validated systems.
+- Test the architecture against drones, radar, microscopy, robotics and astronomy without forcing them into a spatial workflow.
+
+**Canonical specification:** `docs/knowledge-tools-real-world-architecture.md`.
+
+**Exit condition:** A person can enter through a question, tool, dataset or application and follow meaningful connections into foundations and practical work. Expensive infrastructure is not assumed to be owned.
+
+### Workstream 10 — Economic sustainability
+- Inventory existing assets, channels, offers, costs and obligations.
+- Identify value created by research, publishing, software, data, education, physical tools, services and partnerships.
+- Distinguish open knowledge from paid guidance, products, infrastructure and services.
+- Validate customer demand and willingness to pay before building or purchasing extensively.
+- Track contribution, maintenance burden, cash requirements, retention and concentration risk.
+- Define reinvestment categories, reserves, asset stewardship and contributor agreements.
+
+**Canonical specification:** `docs/economic-sustainability-architecture.md`.
+
+**Exit condition:** Each significant activity has a clear revenue, reusable-asset or strategic-capability rationale, and the ecosystem can assess whether its offers and operations are financially sustainable.
+
 ## 7. Execution sequence
 
-**Progress update — 19 November 2026:** Phase 1 (Product foundation) and Phase 2 (Operating system) are complete. The Radar flagship now has a distinct-branch territory map, multiple optional routes, a Sentinel-1 practical investigation with separate prepared-RTC and self-processing entry routes, and an annotated evidence register. The sources and core product assumptions have been checked against ESA, Copernicus and ASF documentation. No scene-specific processing result is claimed yet. The Patreon build kit now includes page/about copy, provisional tier copy, welcome, navigation, Curiosity Desk and Radar launch posts, plus a cross-channel distribution kit. These are prepared drafts, not published account changes. Creator-dashboard prices, access settings and scheduling still require owner verification.
+**Progress update — 19 November 2026:** The product foundation and operating system are established. The next strategic layer has now been formalised in two new specifications: the knowledge-to-tools and real-world capability architecture, and the economic sustainability architecture. These are working specifications to guide the next templates, demonstrations and validation work. The Radar flagship now has a distinct-branch territory map, multiple optional routes, a Sentinel-1 practical investigation with separate prepared-RTC and self-processing entry routes, and an annotated evidence register. The sources and core product assumptions have been checked against ESA, Copernicus and ASF documentation. No scene-specific processing result is claimed yet. The Patreon build kit now includes page/about copy, provisional tier copy, welcome, navigation, Curiosity Desk and Radar launch posts, plus a cross-channel distribution kit. These are prepared drafts, not published account changes. Creator-dashboard prices, access settings and scheduling still require owner verification.
 
 
 Work in connected batches, completing and verifying each stage before layering on more material.
@@ -221,6 +257,8 @@ Work in connected batches, completing and verifying each stage before layering o
 | 5 | Distribution system | Channel adaptations, launch sequence and publishing checklist |
 | 6 | Operational readiness | Backlog, capacity, cadence, measurement and maintenance routines |
 | 7 | Release verification | Link, content, licence, access, navigation and member-journey checks; close all known blockers |
+| 8 | Knowledge-to-tools architecture | Tool/instrument record, practical investigation extensions and cross-disciplinary demonstration tests |
+| 9 | Economic sustainability | Asset and cost inventory, offer validation, unit economics, reinvestment and risk controls |
 
 Do not start by scheduling a large volume of posts. First create and verify the system and its initial content; then schedule only what is finished, accurate and ready to publish.
 
@@ -250,6 +288,9 @@ The initial implementation is complete only when:
 - Welcome, Curiosity Desk and first exploration posts are prepared.
 - GitHub and Patreon destinations link correctly and do not contradict one another.
 - The distribution and operating workflows are documented.
+- The knowledge-to-tools architecture connects foundations, measurement, data, methods, instruments, experiments and applications.
+- Physical, simulated and computational work are clearly distinguished.
+- The economic model defines value creation, revenue options, open/paid boundaries, unit economics and reinvestment.
 - Cadence and benefits are realistic for available capacity.
 - All known release blockers are resolved and the final assets are verified.
 
@@ -262,6 +303,7 @@ The initial implementation is complete only when:
 3. Produce the Patreon page and launch-post kit from the Radar content. **Draft kit prepared.**
 4. Prepare distribution and operational schedules. **Distribution kit prepared; scheduling deferred until publication dates and account settings are confirmed.**
 5. Verify all repository links and draft assets, then hand over the exact account-level actions for the creator dashboard. **Repository verification underway; creator-dashboard verification remains with the account owner.**
+6. Formalise the expanded knowledge-to-tools architecture and economic sustainability model. **Working specifications created; next step is to operationalise them through templates and cross-disciplinary tests.**
 
 The roadmap is a working control document. Update it as deliverables are completed; do not create parallel plans that drift from the canonical version.
 
