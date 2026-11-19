@@ -137,7 +137,7 @@ INSERT INTO pilot.inventory_feature(feature_id, feature_type, geom)
 VALUES ('00000000-0000-0000-0000-000000000004', 'asset',
         ST_SetSRID(ST_MakePoint(3, 3), 3857));
 
-DO $
+DO $invalid_asset_type$
 DECLARE rejected boolean := false;
 BEGIN
     BEGIN
@@ -154,6 +154,6 @@ BEGIN
         RAISE EXCEPTION 'FAIL: invalid asset type was accepted';
     END IF;
 END;
-$;
+$invalid_asset_type$;
 
 SELECT 'PASS: CRS configuration, SRID enforcement, subtype integrity, foreign key, controlled values and SRID retrieval' AS integration_result;
