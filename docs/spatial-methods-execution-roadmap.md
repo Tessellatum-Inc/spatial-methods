@@ -200,7 +200,7 @@ Use the evidence to improve navigation and curation before adding unnecessary fe
 
 ## 7. Execution sequence
 
-**Progress update — 19 November 2026:** Phase 1 (Product foundation) is complete. Phase 2 (Operating system) now has the reusable exploration template, research/source evaluation standard, Curiosity Desk workflow, practical investigation template, research dispatch template, Patreon post templates and editorial backlog. The README links to these assets. The operating system is ready to be exercised against the Radar exploration; Phase 2 will be formally closed after the end-to-end workflow is tested and any gaps are corrected. Patreon creator-page configuration and publication remain separate account-owner actions.
+**Progress update — 19 November 2026:** Phase 1 (Product foundation) is complete. Phase 2's operating assets are in place and are now being exercised against Radar. The flagship has a distinct-branch territory map, explicit optional routes for different intentions, and a first practical Sentinel-1 backscatter investigation. These are initial working assets, not a claim of exhaustive coverage or independently validated scene results. Phase 2 will be formally closed after the end-to-end workflow and links are checked. Patreon creator-page configuration and publication remain separate account-owner actions.
 
 
 Work in connected batches, completing and verifying each stage before layering on more material.
