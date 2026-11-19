@@ -13,7 +13,7 @@ This directory is the structured index of the project's knowledge inventory. It 
 - [Exercise A: repeated distance and horizontal-angle observations](../experiments/measurement/exercise-a-repeated-distance-and-angle.md) — a reproducible synthetic worked experiment with a machine-readable dataset and Python analysis; explicitly not field evidence.
 - [Exercise B: differential levelling and loop adjustment](../experiments/measurement/exercise-b-differential-levelling-loop.md) — a synthetic levelling loop with forward/reverse observations, weighted closure adjustment, elevation covariance and a reproducible analysis.
 - [Exercise C: weighted least-squares adjustment of a vertical control network](../experiments/measurement/exercise-c-weighted-control-network.md) — a synthetic multi-route network with observation equations, weighted adjustment, residual diagnostics and parameter covariance.
-- [Exercise D: stochastic control and correlated observations](../experiments/measurement/exercise-d-stochastic-control-and-correlation.md) — compares fixed and uncertain datum control and introduces a non-diagonal observation covariance model.
+- [Exercise D: stochastic control and correlated observations](../experiments/measurement/exercise-d-stochastic-control-and-correlation.md) — compares fixed and uncertain datum control and introduces a non-diagonal observation covariance model.\n- [Exercise E: minimally constrained vertical network](../experiments/measurement/exercise-e-minimally-constrained-vertical-network.md) — demonstrates the vertical datum defect, inner constraints, free-network covariance and transfer onto an external control datum.
 
 ## Coverage
 
