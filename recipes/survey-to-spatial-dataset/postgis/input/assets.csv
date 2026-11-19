@@ -1,0 +1,5 @@
+asset_id,stop_id,longitude,latitude,asset_type,presence,condition,observation_datetime
+SYN-ASSET-001,SYN-STOP-001,0.00011,0.00011,shelter,present,fair,2026-11-19T09:01:00Z
+SYN-ASSET-002,SYN-STOP-001,0.00012,0.00010,seat,present,good,2026-11-19T09:02:00Z
+SYN-ASSET-003,SYN-STOP-002,0.00021,0.00016,sign,obscured,unknown,2026-11-19T09:06:00Z
+SYN-ASSET-004,SYN-STOP-003,0.00031,0.00024,kerb_ramp,not_assessed,unknown,2026-11-19T09:11:00Z
