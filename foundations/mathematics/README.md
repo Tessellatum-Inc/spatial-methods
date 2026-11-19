@@ -13,7 +13,7 @@ The sequence below moves from mathematical language toward structures and method
 | Module | Topic | Main spatial connections |
 |---|---|---|
 | 01 | [Mathematical language, quantities and spatial models](mathematical-language-quantities-and-spatial-models.md) | Variables, units, functions, coordinate pairs, scale, area, density and modelling |
-| 02 | Number systems, arithmetic and numerical representation | Measurement values, precision, rounding, significant figures and numerical data |
+| 02 | [Number systems, arithmetic and numerical representation](number-systems-arithmetic-and-numerical-representation.md) | Measurement values, precision, rounding, significant figures and numerical data |
 | 03 | Ratios, proportions, rates and logarithms | Map scale, resolution, density, rates of change, decibels and spectral transforms |
 | 04 | Equations, inequalities and mathematical reasoning | Thresholds, constraints, classification rules and solving spatial problems |
 | 05 | Functions and relationships | Transformations, distance functions, terrain surfaces and spatial models |
@@ -63,4 +63,4 @@ Do not mistake a long list of formulas for a foundation. The aim is to teach how
 
 ## Current status
 
-Module 01 is the first developed module. The remaining modules are planned, not yet written or reviewed. Coverage will expand only when each module has meaningful explanatory content.
+Modules 01 and 02 have initial public content. They require further technical review and expansion. Modules 03–10 remain planned, not yet written or reviewed. Coverage will expand only when each module has meaningful explanatory content.
