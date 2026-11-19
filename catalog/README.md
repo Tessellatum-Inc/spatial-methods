@@ -15,6 +15,8 @@ This directory is the structured index of the project's knowledge inventory. It 
 - [Exercise C: weighted least-squares adjustment of a vertical control network](../experiments/measurement/exercise-c-weighted-control-network.md) — a synthetic multi-route network with observation equations, weighted adjustment, residual diagnostics and parameter covariance.
 - [Exercise D: stochastic control and correlated observations](../experiments/measurement/exercise-d-stochastic-control-and-correlation.md) — compares fixed and uncertain datum control and introduces a non-diagonal observation covariance model.\n- [Exercise E: minimally constrained vertical network](../experiments/measurement/exercise-e-minimally-constrained-vertical-network.md) — demonstrates the vertical datum defect, inner constraints, free-network covariance and transfer onto an external control datum.
 
+- [Exercise F: network quality, statistical testing and blunder detection](../experiments/measurement/exercise-f-network-quality-and-blunder-detection.md) — compares global chi-square and local standardized-residual diagnostics, injects a synthetic gross error, examines multiple testing and withholding sensitivity, and includes an independent synthetic check.
+
 ## Coverage
 
 See the [source-to-repository coverage matrix](coverage-matrix.md) for an honest view of what is captured, what has been researched and where work remains. The matrix deliberately does not count a source transcription as verified coverage. See the [source review dashboard](review-dashboard.md) for a dated count of all 695 source-entry rows and their current review labels.
