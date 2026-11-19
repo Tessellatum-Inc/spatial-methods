@@ -27,6 +27,7 @@ You do not have to start at the beginning. You do not have to know everything be
 | Following a curiosity into a technical subject | [Radar: a curiosity-led exploration](explorations/radar/README.md) |
 | Mapping radar's distinct branches | [Radar territory map](explorations/radar/territory-map.md) |
 | Trying a first real-data investigation | [Sentinel-1 backscatter investigation](explorations/radar/sentinel-1-backscatter-investigation.md) |
+| Checking Radar source quality and product assumptions | [Radar source notes](explorations/radar/source-notes.md) |
 | The building blocks of GIS | [Core GIS and geometry](learning-paths/README.md#start-with-a-problem) |
 | How spatial algorithms work | [Algorithm collection](algorithms/README.md) |
 | Working examples and code | [Implementations](implementations/README.md) |
@@ -100,6 +101,10 @@ The initial scope comes from the supplied *Spatial Analysis Algorithms: Complete
 - [Editorial and resource curation standard](docs/editorial-resource-architecture.md)
 - [The learning and membership experience](docs/publishing-model.md)
 - [Spatial Methods product and execution roadmap](docs/spatial-methods-execution-roadmap.md)
+- [Patreon page and tier copy (draft)](publishing/patreon-page-copy.md)
+- [Patreon welcome and navigation posts](publishing/patreon-start-here.md) · [field guide](publishing/patreon-navigation-post.md) · [Curiosity Desk post](publishing/patreon-curiosity-desk.md)
+- [Radar member launch post](publishing/radar-launch-post.md)
+- [Distribution kit](publishing/distribution-kit.md)
 
 ### First examples
 
