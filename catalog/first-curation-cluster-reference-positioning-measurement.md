@@ -91,7 +91,14 @@ The first applied capstone should be a **survey-to-spatial-dataset workflow**: p
 
 This capstone should be designed only after its measurement method, equipment assumptions, data availability and validation plan are specified. It is not yet a claim that a field campaign has been conducted.
 
-## 7. Completion criteria for this cluster
+
+## Knowledge-graph seed
+
+The first machine-readable relationship slice for this cluster is [knowledge-graph-reference-positioning-measurement.csv](knowledge-graph-reference-positioning-measurement.csv). It expresses a deliberately small set of subject-to-subject relationships using existing stable subject IDs. The evidence path and relationship basis are retained for review.
+
+This is an initial curated graph slice, not a complete graph of the cluster. Some edges are directly documented in the subject crosswalk or foundational record; others are explicit editorial mappings that should be reviewed as the linked records are deepened. A relationship does not imply that either endpoint is complete, implemented, tested or validated.
+
+## 8. Completion criteria for this cluster
 
 The cluster is ready for a meaningful first release when:
 
