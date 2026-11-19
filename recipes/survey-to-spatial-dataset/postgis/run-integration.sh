@@ -17,6 +17,9 @@ docker compose exec -T postgis psql \
   --set ON_ERROR_STOP=1 \
   --file /tests/integration.sql
 
+# Run pure input-package tests before attempting a database load.
+docker compose run --rm --no-deps ingest python -m unittest -v test_ingest_pilot
+
 # integration.sql configures EPSG:3857 for the isolated database test.
 # The fixture arrives in EPSG:4326 and is transformed inside PostGIS.
 docker compose run --rm ingest
