@@ -6,6 +6,7 @@ This directory is the structured index of the project's knowledge inventory. It 
 
 - [Complete knowledge base and AI-readiness architecture](../docs/knowledge-base-and-ai-readiness-architecture.md) — defines the relationship between canonical content, catalogues, knowledge relationships, Patreon curation, future AI retrieval and product opportunities.
 - [Initial knowledge graph relationship model](knowledge-graph-model.md) — a controlled vocabulary for connecting identifiable knowledge objects without duplicating canonical content.
+- [Reference, positioning and measurement graph seed](knowledge-graph-reference-positioning-measurement.csv) — the first small, reviewable machine-readable relationship slice using existing subject IDs.
 
 ## Subject navigation
 
