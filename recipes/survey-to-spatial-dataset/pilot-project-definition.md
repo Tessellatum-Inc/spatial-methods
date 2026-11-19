@@ -177,6 +177,8 @@ A GeoPackage is a candidate delivery container for vector layers and related tab
 
 **Gate decision:** not authorised for field execution. Progress to a field protocol only when the material dependencies have evidence-backed answers.
 
+The initial implementation is now available in the [synthetic rehearsal directory](synthetic/README.md). It tests the draft tables and referential checks with invented local-plane values; it is not a geospatially referenced sample or field dataset.
+
 ## 9. Synthetic rehearsal opportunity
 
 Before any field activity, create a small synthetic dataset to test:
