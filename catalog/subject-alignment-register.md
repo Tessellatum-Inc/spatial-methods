@@ -195,6 +195,8 @@ Why this cluster: it connects theoretical foundations, field measurement, GNSS, 
 
 The cluster is a recommendation for the next curation sprint, not a claim that its contents are already complete.
 
+The first cluster has its own inspected asset crosswalk and preliminary gap analysis: [Reference, positioning and measurement](first-curation-cluster-reference-positioning-measurement.md). It distinguishes existing GNSS/geodesy assets from the field-survey and standards work that remains.
+
 ## 9. Immediate next actions
 
 1. Create a file-level inventory of the existing canonical records, verification records, packages, notebooks and learning paths.
