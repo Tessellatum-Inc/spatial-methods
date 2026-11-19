@@ -142,8 +142,11 @@ Tiers distinguish depth, practical support and participation—not which subject
 - Establish research notes, provenance, fact-checking and correction workflows.
 - Define source and asset licensing checks.
 - Create reusable templates for exploration briefs, resource shelves, research dispatches, practical labs and member posts.
+- Maintain a prioritised editorial backlog and a clear submission-to-publication workflow.
 
 **Exit condition:** Another person could follow the documented process and produce a credible, consistent exploration.
+
+**Current assets:** `templates/exploration-template.md`, `templates/laboratory-investigation-template.md`, `templates/research-dispatch-template.md`, `templates/patreon-post-templates.md`, `docs/research-and-source-evaluation.md`, `docs/curiosity-desk.md` and `docs/editorial-backlog.md`.
 
 ### Workstream 4 — Flagship exploration: Radar
 - Use Radar as the first full test, not as the platform's permanent organising category.
@@ -197,7 +200,7 @@ Use the evidence to improve navigation and curation before adding unnecessary fe
 
 ## 7. Execution sequence
 
-**Progress update — 19 November 2026:** Phase 1 (Product foundation) is documented in `docs/product-brief.md` and `docs/experience-architecture.md`. The editorial curation standard and publishing model have been aligned. Phase 2 (Operating system) is underway: the reusable exploration template, research/source evaluation standard and Curiosity Desk workflow are now in place. Remaining phase-2 work includes the practical-lab, research-dispatch and member-post templates, plus an editorial intake/backlog convention. This is not a claim that the Patreon creator page has been configured or published.
+**Progress update — 19 November 2026:** Phase 1 (Product foundation) is complete. Phase 2 (Operating system) now has the reusable exploration template, research/source evaluation standard, Curiosity Desk workflow, practical investigation template, research dispatch template, Patreon post templates and editorial backlog. The README links to these assets. The operating system is ready to be exercised against the Radar exploration; Phase 2 will be formally closed after the end-to-end workflow is tested and any gaps are corrected. Patreon creator-page configuration and publication remain separate account-owner actions.
 
 
 Work in connected batches, completing and verifying each stage before layering on more material.
@@ -248,12 +251,10 @@ The initial implementation is complete only when:
 
 ## 10. Immediate execution batch
 
-1. Reconcile this roadmap with the current Patreon and editorial documents.
-2. Rewrite the product and editorial architecture around curiosity-led, multi-intent exploration.
-3. Create the exploration template, source-evaluation standard and Curiosity Desk workflow.
-4. Build Radar as the first end-to-end proof.
-5. Produce the complete Patreon page and launch-post kit.
-6. Prepare distribution and operational schedules.
-7. Verify every file, link, claim, licence and member journey; then hand over the exact account-level actions for the creator dashboard.
+1. Complete and verify the operating templates and editorial backlog. **Completed.**
+2. Exercise the documented workflow against Radar, identify gaps and improve the flagship exploration. **Next.**
+3. Produce the complete Patreon page and launch-post kit from the verified content.
+4. Prepare distribution and operational schedules.
+5. Verify every file, link, claim, licence and member journey; then hand over the exact account-level actions for the creator dashboard.
 
 The roadmap is a working control document. Update it as deliverables are completed; do not create parallel plans that drift from the canonical version.
