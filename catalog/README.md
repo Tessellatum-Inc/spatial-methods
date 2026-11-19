@@ -2,6 +2,11 @@
 
 This directory is the structured index of the project's knowledge inventory. It includes algorithms, operations, data structures, models, statistics, standards, workflows, systems and applied methods. Full technical explanations belong in canonical records in their relevant directories.
 
+## Subject navigation
+
+- [Geoinformatics master subject index](master-subject-index.md) — the canonical map of subject areas, stable IDs, priorities and cross-pillar relationships.
+- [Subject-to-repository alignment register](subject-alignment-register.md) — connects the subject map to existing algorithms, methods, verification records, implementations, notebooks, learning paths and source sections. Its current mappings are structural, not technical verification.
+
 ## Coverage
 
 See the [source-to-repository coverage matrix](coverage-matrix.md) for an honest view of what is captured, what has been researched and where work remains. The matrix deliberately does not count a source transcription as verified coverage. See the [source review dashboard](review-dashboard.md) for a dated count of all 695 source-entry rows and their current review labels.
