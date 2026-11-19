@@ -10,6 +10,7 @@ This directory is the structured index of the project's knowledge inventory. It 
 
 - [Surveying and field measurement source map](surveying-field-measurement-source-map.md) — an initial authority-ranked source register for measurement science, instrument verification, GNSS practice, control/topographic surveying and levelling, with subject-ID links and open research streams.
 - [Measurement principles and field verification](../foundations/measurement-science/measurement-principles-and-field-verification.md) — the first foundational synthesis, covering the measurement chain, uncertainty, error sources, redundancy and procedure-specific field verification.
+- [Exercise A: repeated distance and horizontal-angle observations](../experiments/measurement/exercise-a-repeated-distance-and-angle.md) — a reproducible synthetic worked experiment with a machine-readable dataset and Python analysis; explicitly not field evidence.
 
 ## Coverage
 
