@@ -23,14 +23,22 @@ docker compose run --rm --no-deps ingest python -m unittest -v test_ingest_pilot
 # Load the explicitly synthetic fixture into the isolated EPSG:3857 test database.
 docker compose run --rm ingest
 
-# Generate a machine-readable QA report. A hard QA failure makes psql return nonzero.
+# Generate a machine-readable QA report, preserving it even when hard checks fail.
 mkdir -p output
+set +e
 docker compose exec -T postgis psql \
   --username spatial_methods \
   --dbname spatial_methods_test \
   --set ON_ERROR_STOP=1 \
   --tuples-only --no-align \
   --file /tests/spatial-qa.sql > output/spatial-qa-report.json
+qa_exit=$?
+set -e
 
 echo "Spatial QA report:"
 cat output/spatial-qa-report.json
+
+if [ "$qa_exit" -ne 0 ]; then
+  echo "Spatial QA reported hard failures (psql exit $qa_exit)." >&2
+  exit "$qa_exit"
+fi
