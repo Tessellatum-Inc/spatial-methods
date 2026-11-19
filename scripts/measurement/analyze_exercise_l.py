@@ -114,7 +114,7 @@ def fit_block_huber(a, y, q, blocks):
         qb = [[q[i][j] for j in ids] for i in ids]
         lb = cholesky(qb)
         ab = [[a[i][j] for j in range(len(a[0]))] for i in ids]
-        aw.append([forward(lb, col) for col in transpose(ab)])
+        aw.append(transpose([forward(lb, col) for col in transpose(ab)]))
         yw.append(forward(lb, [y[i] for i in ids]))
     weights = [1.0]*len(blocks)
     for _ in range(100):
