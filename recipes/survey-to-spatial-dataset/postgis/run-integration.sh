@@ -11,7 +11,7 @@ docker compose run --rm --no-deps ingest python -m unittest -v test_ingest_pilot
 docker compose run --rm ingest
 mkdir -p output
 set +e
-docker compose exec -T postgis psql --username spatial_methods --dbname spatial_methods_test --set ON_ERROR_STOP=1 --tuples-only --no-align --file /tests/spatial-qa.sql > output/spatial-qa-report.json
+docker compose exec -T postgis psql --quiet --username spatial_methods --dbname spatial_methods_test --set ON_ERROR_STOP=1 --tuples-only --no-align --file /tests/spatial-qa.sql > output/spatial-qa-report.json
 qa_exit=$?
 set -e
 echo "Spatial QA report:"
