@@ -125,7 +125,29 @@ Run from the repository root:
 python scripts/measurement/analyze_exercise_d.py
 ~~~
 
-The script prints adjusted elevations, formal standard uncertainties, residuals, covariance matrices and degrees of freedom for all three models. The expected qualitative differences are:
+The script prints adjusted elevations, formal standard uncertainties, residuals, covariance matrices and degrees of freedom for all three models. With the committed dataset and stated assumptions, the reference results are:
+
+| Point | Model A elevation (m) | Model B elevation (m) | Model C elevation (m) |
+|---|---:|---:|---:|
+| A | Fixed at 100.000000 | 100.001000 | 100.001000 |
+| B | 101.200857 | 101.201857 | 101.201873 |
+| C | 102.000466 | 102.001466 | 102.001474 |
+| D | 101.700976 | 101.701976 | 101.701979 |
+| E | 102.401048 | 102.402048 | 102.402051 |
+
+Formal standard uncertainties (mm):
+
+| Point | Model A | Model B | Model C |
+|---|---:|---:|---:|
+| A | Fixed | 2.000 | 2.000 |
+| B | 1.057 | 2.262 | 2.267 |
+| C | 1.036 | 2.253 | 2.261 |
+| D | 1.018 | 2.244 | 2.245 |
+| E | 1.199 | 2.332 | 2.333 |
+
+The correlated model has a slightly different solution and covariance because its session-common error terms change the information structure. The numerical effect is modest for this deliberately small synthetic example; it should not be exaggerated. All three models have five degrees of freedom. Their weighted residual sums are conditional on their respective covariance assumptions and should not be compared as though they were ordinary unweighted sums of squared residuals.
+
+The expected qualitative differences are:
 
 - Model A reports uncertainty conditional on an exact datum; A has no estimated uncertainty.
 - Model B propagates the 2 mm control uncertainty into the absolute elevations.
