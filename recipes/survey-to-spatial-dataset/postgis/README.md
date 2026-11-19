@@ -1,17 +1,58 @@
 # PostGIS schema — survey-to-spatial-dataset capstone
 
-**Status:** authored SQL design; not yet executed against a live PostgreSQL/PostGIS database.  
+**Status:** authored schema and integration harness; execution against a live PostGIS service is pending.  
 **Purpose:** move the capstone from CSV-only record validation toward a spatially enabled, traceable relational model.
 
 ## Files
 
 - [`postgis-schema.sql`](postgis-schema.sql) — schema, constraints, triggers and indexes.
+- [`compose.yaml`](compose.yaml) — disposable local PostGIS service.
+- [`integration.sql`](integration.sql) — database-level positive and negative tests.
+- [`run-integration.sh`](run-integration.sh) — starts the service and executes the tests.
+
+## Run the integration test
+
+Requires Docker Engine with the Docker Compose plugin.
+
+```bash
+cd recipes/survey-to-spatial-dataset/postgis
+sh run-integration.sh
+```
+
+The service listens on localhost port 55432. It uses a local-only test password and a disposable test database. Do not reuse these credentials or expose the service publicly. Stop the service with:
+
+```bash
+docker compose down
+```
+
+The test script drops and recreates the `pilot` schema each time it runs. Do not point this compose file at a production database or modify it to use production credentials.
+
+## Test CRS boundary
+
+The integration test uses EPSG:3857 solely as a known PostGIS SRID for software-level enforcement tests, with synthetic coordinates at (0, 0). This does **not** select a CRS for the Nairobi pilot, does not represent a Nairobi location and does not validate a real-world coordinate transformation.
+
+The existing CSV rehearsal contains arbitrary local Cartesian X/Y values with no CRS. **Do not load those values into this schema, assign them an EPSG code, or export them as mapped locations.**
+
+Before loading actual project geometry, select the CRS from the intended use, authoritative source and applicable jurisdictional requirements. Confirm the SRID in the target PostGIS installation and record the authority, code, official name, units, coordinate epoch where relevant, axis convention and evidence reference.
+
+## What the integration test checks
+
+1. Geometry insertion is rejected before project CRS configuration.
+2. A configured test CRS allows a matching geometry.
+3. The stored geometry retains its SRID.
+4. A mismatched SRID is rejected.
+5. A stop subtype must reference a base feature typed as a stop.
+6. A stop feature cannot be inserted as an asset subtype.
+7. An asset cannot reference a nonexistent stop.
+8. An invalid asset type is rejected.
+
+A passing run establishes only that these database behaviours work in the tested container/image version. It does not establish positional accuracy, independent quality evidence, topology, completeness, CRS suitability or fitness for operational use.
 
 ## Architecture
 
 The schema separates:
 
-- `project_config`: the approved horizontal CRS and coordinate convention for this project;
+- `project_config`: approved horizontal CRS and coordinate convention;
 - `inventory_feature`: shared point geometry and stable feature identity;
 - `stop` and `asset`: typed feature attributes;
 - `raw_record`: immutable-source references and SHA-256 provenance;
@@ -21,44 +62,11 @@ The schema separates:
 - `processing_run`: reproducible processing metadata;
 - `data_dictionary`: versioned field definitions.
 
-The feature geometry uses a PostGIS `geometry(Point)` column and a trigger that requires its SRID to match the single configured project SRID. This avoids embedding an invented CRS in the schema. The configuration row must be populated only after the reference decision is made.
+## Remaining limitations
 
-## Important CRS and fixture boundary
-
-The existing CSV rehearsal contains arbitrary local Cartesian X/Y values with no CRS. **Do not load those values into this schema, assign them an EPSG code, or export them as mapped locations.** They remain useful for record-validation tests only.
-
-Before loading any geometry:
-
-1. Select the coordinate reference system from the intended use, authoritative source and applicable jurisdictional requirements.
-2. Confirm the SRID is present and correctly defined in the target PostGIS installation.
-3. Record authority, code, official CRS name, units, coordinate epoch where relevant, axis convention and the decision's evidence reference.
-4. Populate `pilot.project_config`.
-5. Transform source coordinates only through a documented, suitable coordinate operation. Preserve original coordinates and transformation provenance.
-
-A CRS label alone is not proof that a coordinate transformation is correct.
-
-## Deployment assumptions and caveats
-
-- PostgreSQL with a compatible PostGIS extension is required.
-- The script creates a dedicated `pilot` schema and enables PostGIS at the database level.
-- UUIDs are supplied by the ingestion process; no UUID-generation extension is assumed.
-- The script is intended for a new/empty `pilot` schema. It is not an idempotent migration framework.
-- The SQL has not yet been run against a live database. Syntax, trigger behaviour, constraints and indexes still require integration testing.
-- The `is_independent` field records a documented assertion; the database cannot prove that a check is genuinely independent.
-- Geometry checks here are limited to non-empty, valid point geometry and matching SRID. They do not establish positional accuracy, topology, completeness or fitness for use.
-- The schema currently models point features. Lines/polygons, 3D geometry, vertical CRS, multiple project CRSs and full event/version history require explicit requirements before extension.
+- The schema models point features only. Lines/polygons, 3D geometry, vertical CRS, multiple project CRSs and full event/version history require explicit requirements.
+- `is_independent` records a documented assertion; the database cannot prove that a check is genuinely independent.
+- Geometry validity and SRID checks do not establish positional accuracy or fitness for use.
 - Raw bytes should be held in controlled object/file storage; `storage_uri` is a reference, not a storage implementation.
-- GeoPackage export is not implemented by this SQL file.
-
-## Next implementation gate
-
-Build a small integration test against a disposable PostGIS database, including:
-
-- valid configured SRID and accepted point insertion;
-- rejection when project CRS is not configured;
-- rejection of a point with the wrong SRID;
-- rejection of stop/asset subtype mismatch;
-- foreign-key and controlled-value failures;
-- retrieval of geometry with SRID preserved.
-
-Only after those tests should we implement ingestion from a genuinely georeferenced, explicitly synthetic fixture. Keep that fixture separate from the current unreferenced local-plane CSV rehearsal.
+- GeoPackage export and real-data ingestion are not implemented.
+- The integration harness must actually be run in a Docker-capable environment before the SQL can be described as tested.
