@@ -156,4 +156,8 @@ BEGIN
 END;
 $invalid_asset_type$;
 
+-- Remove the intentionally incomplete feature used only by the negative test.
+DELETE FROM pilot.inventory_feature
+WHERE feature_id = '00000000-0000-0000-0000-000000000004';
+
 SELECT 'PASS: CRS configuration, SRID enforcement, subtype integrity, foreign key, controlled values and SRID retrieval' AS integration_result;
