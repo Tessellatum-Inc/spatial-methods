@@ -8,7 +8,8 @@ A small, dependency-free Python implementation supporting the Spatial Methods me
 - `constrained_gls.py` — exact-constraint GLS using a Lagrange-multiplier KKT system; supports rank-deficient design matrices when constraints remove all datum defects.
 - `test_covariance_gls.py` — tests for covariance validity, shared-session structure and unconstrained GLS.
 - `test_constrained_gls.py` — tests for inner constraints, non-zero exact constraints, unresolved datum defects and singular observation covariance.
-- `example_exercise_k.py` — applies the reusable solver to the repository's synthetic Exercise D network used in Exercise K.
+- `example_exercise_k.py` — applies the unconstrained solver to the synthetic Exercise D network used in Exercise K.
+- `example_exercise_e.py` — reproduces the free-network solution in Exercise E using the exact-constraint solver.
 
 ## Run
 
@@ -17,6 +18,7 @@ From this directory:
 ```bash
 python -m unittest -v
 python example_exercise_k.py
+python example_exercise_e.py
 ```
 
 No third-party packages are required.
