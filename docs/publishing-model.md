@@ -1,84 +1,131 @@
-# The public archive and the membership experience
+# Spatial Methods — Public archive and membership experience
 
-**Operating principle:** GitHub is the complete public technical archive. Patreon is the paid learning, guidance and community layer.
+**Version:** 0.2  
+**Related specifications:** [Product brief](product-brief.md), [Experience architecture](experience-architecture.md), [Editorial and resource curation standard](editorial-resource-architecture.md).
 
-The public repository must be valuable and independently usable. Membership should help people learn faster, stay consistent, get feedback and apply the methods—not make the public archive artificially incomplete.
+## 1. The shared product
 
-## 1. Public GitHub: the complete technical foundation
+Spatial Methods is an exploration and mastery environment for the spatial and computational world.
 
-Anyone can:
+People arrive with different curiosities and different intentions. They may want to understand a concept, learn a method, research a question, practise, build, teach, apply knowledge or simply explore. These are not separate audiences that need separate subject libraries. They are different ways of using a connected body of knowledge.
 
-- read the explanations, mathematics, source references and limitations;
-- use the original code, tests, notebooks and examples under their published licences;
-- follow public learning paths and complete exercises;
-- inspect benchmarks, implementation decisions, corrections and contribution history;
-- suggest topics, report errors and contribute improvements;
-- add new algorithms, variants, methods and implementations through the extension protocol.
+The central product is the exploration: a durable investigation that connects questions, explanations, sources, practical actions and related subjects.
 
-The public archive is not a teaser. Do not reserve essential implementation details, corrections or safety-critical limitations for paid members.
+## 2. GitHub — the public technical archive
 
-## 2. Patreon: pay for guidance, depth and support
+GitHub is the canonical home for durable technical work:
+- explanations, mathematics and technical definitions;
+- code, tests, notebooks and reproducibility instructions;
+- research notes, references and source provenance;
+- datasets or links to permitted data sources;
+- exercises and worked examples;
+- corrections, version history and contribution records.
 
-Patreon can provide original companion material and services that make the archive easier to learn from:
+The archive should be independently useful. Do not make essential technical explanations, corrections or safety-relevant limitations artificially incomplete to force membership.
 
-- sequenced study programmes with weekly milestones;
-- annotated reading plans and curated method collections;
-- extended walkthroughs that explain design decisions and debugging;
-- additional exercises, challenge sets and worked solution discussions;
-- project briefs and applied case studies using permitted data;
-- live workshops, office hours and group problem-solving sessions;
-- feedback on member projects, within clearly stated scope;
-- member discussions, accountability and peer learning;
-- downloadable study planners, progress trackers and revision sheets.
+## 3. Patreon — the member experience
 
-A paid lesson may point to public code and explain how to use it. It must not imply that the code or public explanation is exclusive.
+Patreon helps people navigate and use the wider knowledge environment through:
+- curated entry points and annotated resource shelves;
+- guided routes through selected explorations;
+- companion explanations and practical instructions;
+- original worksheets, notebooks or study materials where they add value;
+- research dispatches and comparative briefs;
+- discussion, polls and the Curiosity Desk;
+- group workshops, clinics and bounded feedback where offered.
 
-## 3. Suggested membership structure
+Patreon should not become a duplicate technical repository. Link to canonical GitHub resources and explain why they matter.
 
-Start with a small number of benefits that can be delivered consistently. Avoid promising unlimited personal support or a new full course every week.
+## 4. Five editorial destinations
 
-| Level | Purpose | Example benefits |
-|---|---|---|
-| Supporter | Sustain the open archive | Supporter updates, roadmap notes, behind-the-scenes research summaries and community participation |
-| Guided learner | Turn the archive into a learning programme | Monthly guided path, study plan, companion notes, exercises and solution discussions |
-| Studio / cohort | Learn by applying methods | Periodic live workshops, project briefs, group critique and limited office-hour sessions |
+- **Start Here:** the promise, navigation, how to explore and how to participate.
+- **Exploration Library:** durable investigations, subject maps, routes and resource shelves.
+- **Curiosity Desk:** member questions and interests, intake, triage and editorial responses.
+- **Laboratory:** practical investigations, exercises, code, notebooks and datasets.
+- **Research Dispatches:** selected papers, tools, developments, debates and emerging questions.
 
-These are benefit concepts, not final tier names or prices. Launch with one reliable guided-learning offer first; add higher-touch benefits only after demand and delivery capacity are demonstrated.
+These are navigation destinations, not separate subscription tiers or learner categories. One exploration may link to content in several destinations.
 
-## 4. One research effort, multiple outputs
+## 5. Membership principle
 
-A researched method should have one canonical technical record. From that record, create several useful learning formats:
+Subject access should not be divided by membership tier. A member should not have to subscribe to a "research subject", "beginner subject" or "professional subject".
 
-1. Public canonical explanation with references, assumptions and limitations.
-2. Public code, tests, notebook or external integration where appropriate.
-3. Public exercises that help readers practise.
-4. Patreon companion path with sequence, context, milestones and reflection prompts.
-5. Optional workshop or applied project that teaches the method in a realistic setting.
+Membership levels may distinguish:
+- the amount of structured guidance;
+- access to additional companion materials;
+- practical depth and worked investigations;
+- participation in discussions, workshops or bounded group feedback.
 
-When a technical correction is made, update the canonical public source first and carry it into derivative teaching materials. Do not allow paid and public versions to drift apart.
+The current proposed tiers are:
 
-## 5. Archive access and continuity
+| Tier | Proposed price | Intended value |
+|---|---:|---|
+| Library | $4/month | Organised exploration archive, annotated resource shelves, topic maps, discovery editions, Curiosity Desk participation and polls |
+| Laboratory | $12/month | Library benefits plus guided practical investigations, worked examples, exercises, notebooks and technical walkthroughs where appropriate |
+| Research Circle | $29/month | Laboratory benefits plus comparative research briefs, quarterly group workshops or clinics, project showcases, peer discussion and bounded group feedback |
 
-New members should be able to access the eligible Patreon learning archive immediately, organised by topic and learning path—not only by publication date. People who cancel retain access to the public GitHub archive and any material they independently downloaded under its licence. Patreon-only services and platform-hosted benefits remain subject to the platform's membership terms.
+These are proposed terms, not confirmation of current Patreon dashboard settings. Verify price, access rules, benefits, taxes and delivery capacity before publishing.
 
-Keep the canonical technical work in GitHub. Patreon should not become the only storage location for essential source code, corrections or reference material.
+Do not promise bespoke courses on demand, unlimited direct support, guaranteed individual supervision or a full new exploration every week.
 
-## 6. Publishing cadence
+## 6. One investigation, several useful outputs
 
-Prefer a sustainable cadence over volume. A good starting rhythm is one substantial guided learning release per month, supported by smaller progress notes and community prompts. A quarterly workshop or cohort can be added when there is enough demand.
+A single research effort may produce:
+1. A durable public technical resource.
+2. An annotated exploration with scope, distinctions and routes.
+3. A curated resource shelf linking high-quality external sources.
+4. A practical activity or reproducible artefact, if appropriate.
+5. A Patreon companion post that guides members through the work.
+6. A short public article or newsletter edition that introduces the question.
+7. A discussion prompt or workshop when there is a genuine reason.
 
-The cadence should be reduced rather than silently missed when research or technical validation takes longer. Accuracy and trust matter more than a content treadmill.
+Not every investigation needs all seven outputs. Choose formats based on usefulness, not a fixed content bundle.
 
-## 7. What not to sell
+## 7. Open knowledge, original value and licensing
 
-- Exclusive access to code or documentation already released under Apache-2.0 or CC BY 4.0.
-- Unlicensed third-party figures, datasets, papers or copied source text.
-- Guaranteed individual consulting, debugging or project delivery unless separately scoped and priced.
-- Claims that a teaching implementation is production-ready when it is not.
-- A promise that membership makes the project complete or guarantees a particular outcome.
+- Link to external books, papers, videos, software and datasets; do not republish them without permission.
+- Check the licence and attribution terms of code, data, figures and other assets.
+- Keep public material under its stated repository licence.
+- Patreon membership does not override the licence of a public resource.
+- Charge for original curation, interpretation, structure, guided support, community and original companion work—not exclusive access to material that is already openly licensed.
 
-## 8. What success looks like
+## 8. Editorial cadence
 
-Track whether members actually use the material: path completion, exercise participation, workshop attendance, repeat engagement, questions resolved, project progress and renewal. Use that evidence to improve the learning experience before adding more tiers or platforms.
+Use a sustainable monthly rhythm as a planning aid:
+- Discover: surface a curiosity or important development.
+- Investigate: map the subject and curate evidence.
+- Practise: publish a useful activity or worked investigation when appropriate.
+- Connect: highlight related questions, member contributions and next directions.
 
-The GitHub archive grows through research and contributions. Patreon grows by helping people turn that knowledge into capability.
+This is not a promise that every exploration will be completed in one month or that every week must contain a full release. Publish when the work is ready and verified.
+
+## 9. Continuity and archive access
+
+Organise Patreon posts so members can find useful material by exploration and destination, not only by date. Keep canonical technical work in GitHub. Where possible, link a Patreon post to the current version of the relevant resource.
+
+Platform access after cancellation is governed by Patreon's current terms and the creator's settings. Do not promise permanent access to Patreon-hosted material unless the platform and offer explicitly support it.
+
+## 10. What membership does not imply
+
+Membership is not automatically:
+- personal consulting or private supervision;
+- guaranteed answers to every question;
+- custom research or software development;
+- a formal qualification or accreditation;
+- a promise of a particular learning, research or professional outcome.
+
+Any separately offered service must have its own scope, availability, price and terms.
+
+## 11. Success measures
+
+Measure whether people use and benefit from the experience:
+- exploration visits and return visits;
+- clicks and engagement with curated sources;
+- practical activity starts and completions;
+- questions clarified or answered;
+- member suggestions that lead to reusable resources;
+- workshop participation and project progress;
+- membership conversion, tier mix, renewal and cancellation;
+- editorial effort and maintenance cost.
+
+Use evidence to improve usefulness and continuity before adding more tiers, platforms or publishing volume.
