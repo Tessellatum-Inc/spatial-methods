@@ -38,6 +38,37 @@ How a phenomenon or system becomes observable:
 - sampling, acquisition, telemetry and signal generation;
 - remote, in-situ, laboratory and observational methods.
 
+
+
+#### Observation and data-acquisition systems: broad by design
+
+Observation and acquisition must not be reduced to drones, remote sensing or any single instrument family. The scope includes how information about the world is detected, sampled, measured, generated, digitised and transmitted.
+
+Relevant modalities and environments include, without implying an exhaustive taxonomy:
+
+- **Space-based:** Earth-observation satellites, GNSS, space telescopes, radar altimeters, radiometers and atmospheric instruments.
+- **Terrestrial and geophysical:** surveying systems, total stations, GNSS receivers, laser scanners, seismic arrays, ground-penetrating radar and geophysical instruments.
+- **Atmospheric and environmental:** weather stations, air-quality networks, stream gauges, oceanographic buoys, environmental samplers and distributed sensor networks.
+- **Marine and underwater:** sonar, hydrophones, acoustic Doppler current profilers, underwater imaging, remotely operated and autonomous underwater vehicles.
+- **Laboratory and analytical:** microscopes, spectrometers, chromatographs, mass spectrometers, thermal analysers and chemical sensors.
+- **Industrial and machine systems:** machine vision, vibration and pressure sensors, encoders, RFID, industrial telemetry and process-monitoring systems.
+- **Medical and biological:** MRI, CT, ultrasound, EEG, ECG, biosensors, sequencing and other diagnostic or research instruments.
+- **Astronomical and particle observation:** optical and radio telescopes, spectrographs, photometers, particle detectors and gravitational-wave observatories.
+- **Human and administrative:** surveys, transactions, censuses, operational records, mobility traces and other human-generated observations.
+- **Digital systems:** application events, network telemetry, logs, platform monitoring and machine-generated records.
+- **Experimental and computational generation:** controlled experiments, simulations, synthetic environments, numerical models and digital twins.
+
+Keep four related but distinct questions visible:
+
+1. **Acquisition:** How is a signal, sample, event or record captured?
+2. **Measurement:** What quantity is estimated, in what units, under what calibration and uncertainty?
+3. **Data generation:** Is the information observed, human-recorded, experimentally produced, simulated or otherwise computed?
+4. **Transmission and acquisition infrastructure:** How is it digitised, synchronised, communicated, stored and made available?
+
+A real acquisition chain may span the phenomenon, sensor or sampling interface, transducer/detector, analogue electronics, signal conditioning, digitisation, timing and positioning, communications, storage and processing. Not every system contains every stage, and some combine several stages in one device. Record the actual chain rather than assuming a generic sensor-to-dataset pipeline.
+
+No modality is inherently the centre of the architecture. Choose examples according to the question being investigated, the evidence available and the capabilities required.
+
 ### D. Data and representation
 What is produced by observation, computation or human activity, and how it is represented:
 - signals, time series, images, spectra, point clouds, tables, graphs, spatial data and event streams;
@@ -245,6 +276,10 @@ Do not force unrelated subjects into a geospatial workflow. Follow the subject w
 
 The architecture is working when:
 - someone can enter through a tool, phenomenon, question, dataset, method or application;
+- observation and acquisition cover diverse physical, biological, environmental, industrial, human, digital and computational sources—not just drones or remote sensing;
+- acquisition, measurement, data generation and transmission are distinguishable and can be traced as a system;
+- general-purpose, domain-specific, highly specialised and frontier applications can be represented without forcing them into one workflow;
+- specialist prerequisites, validation, safety and consequences of error are visible where relevant;
 - an exploration can connect foundations to measurement, data, computation and practical work without forcing a linear sequence;
 - physical tools are treated as engineered systems, not shopping recommendations;
 - people can identify realistic access routes without owning expensive infrastructure;
