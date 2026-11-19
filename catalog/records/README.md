@@ -24,7 +24,7 @@ Subject IDs such as `SM-FND-011` identify subject territories; record IDs identi
 
 `evidence_refs` currently points to repository paths that support the mapping or contextual interpretation. It is not a substitute for claim-level citations inside the canonical resource. External bibliographic provenance should be added in a dedicated source model rather than squeezed into a path field.
 
-The first ten records are a pilot metadata slice for the reference, positioning and measurement cluster. Their subject assignments and summaries are editorial mappings and should be reviewed as the linked content receives deeper technical review.
+The first eleven records are a pilot metadata slice for the reference, positioning and measurement cluster. Their subject assignments and summaries are editorial mappings and should be reviewed as the linked content receives deeper technical review.
 
 ## Change process
 
