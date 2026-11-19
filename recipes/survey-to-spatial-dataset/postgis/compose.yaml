@@ -15,3 +15,14 @@ services:
     volumes:
       - ./postgis-schema.sql:/tests/postgis-schema.sql:ro
       - ./integration.sql:/tests/integration.sql:ro
+
+  ingest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://spatial_methods:spatial_methods_local_only@postgis:5432/spatial_methods_test
+    depends_on:
+      postgis:
+        condition: service_healthy
+    command: ["python", "/app/ingest_pilot.py", "--input", "/app/input"]
