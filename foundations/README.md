@@ -44,6 +44,10 @@ The subject IDs below are stable identifiers from the [Geoinformatics master sub
 | SM-FND-019 | Systems theory, complexity and emergence | Planned | Systems, feedback, networks, dynamical systems, complexity and emergence |
 | SM-FND-020 | Physical, environmental and life-science foundations | Planned | Physical, chemical, ecological and biological processes underlying spatial phenomena |
 
+### Mathematics for spatial science
+
+The mathematics domain begins with [Mathematical language, quantities and spatial models](mathematics/mathematical-language-quantities-and-spatial-models.md). The [mathematics domain roadmap](mathematics/README.md) defines the planned progression across mathematical language, number systems, ratios, functions, coordinate geometry, vectors, modelling and discrete mathematics.
+
 ### Existing measurement-science resources
 
 The first developed foundation domain is measurement science:
