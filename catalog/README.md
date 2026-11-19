@@ -16,6 +16,12 @@ This directory is the structured index of the project's knowledge inventory. It 
 - [Catalogue validator](validate_knowledge_catalog.py) — standard-library checks for record metadata, subject IDs, canonical paths and graph references.
 - [Record types and classification](record-types.md) — controlled primary record kinds.
 
+## Source provenance and claim evidence
+
+- [Source register rules](sources/README.md) — stable source identities, evidence states, review workflow and reuse safeguards.
+- [Structured source register](sources/source-register.jsonl) — initial source records for measurement science, field verification, GNSS, control, levelling, reference frames and Kenyan context.
+- [Claim-to-source evidence map](sources/claim-evidence-map.csv) — initial candidate links from the measurement-science foundation to external sources; links remain unverified until relevant source passages are inspected.
+
 ## Subject navigation
 
 - [Geoinformatics master subject index](master-subject-index.md) — the canonical map of subject areas, stable IDs, priorities and cross-pillar relationships.
