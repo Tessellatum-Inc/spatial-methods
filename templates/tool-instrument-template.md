@@ -105,7 +105,25 @@ For regulated, hazardous or safety-critical equipment, direct users to current o
 
 Explain each important connection.
 
-## 12. Procurement and commercial notes (optional)
+
+
+## 12. Application context and specialisation (when relevant)
+
+- **Application or operational context:**
+- **Specialisation:** General-purpose / Domain-specific / Highly specialised / Frontier or research / Other (explain):
+- **Problem and intended outcome:**
+- **Domain knowledge and specialist roles required:**
+- **Operating environment and constraints:**
+- **Required acquisition systems, data, methods and infrastructure:**
+- **Performance criteria and validation evidence:**
+- **Uncertainty, failure consequences and acceptable limits:**
+- **Safety, legal, ethical, professional or regulatory requirements:**
+- **Maturity:** Exploratory / Educational / Research / Prototype / Operational / Safety-critical (explain):
+- **Evidence gaps and review date:**
+
+Do not treat this spectrum as a quality ranking. Explain what creates the specialisation in this case; do not infer that a tool is suitable for operational or safety-critical use from a successful demonstration.
+
+## 13. Procurement and commercial notes (optional)
 - **Verified suppliers or official product page:**
 - **Purchase / rental / service model:**
 - **Total cost of ownership considerations:**
@@ -115,7 +133,7 @@ Explain each important connection.
 
 This is not an endorsement. Separate technical evaluation from purchasing advice.
 
-## 13. Sources, rights and review
+## 14. Sources, rights and review
 - **Official documentation:**
 - **Independent technical references:**
 - **Standards and regulatory sources:**
