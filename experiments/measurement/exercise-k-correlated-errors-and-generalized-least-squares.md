@@ -89,6 +89,20 @@ python scripts/measurement/analyze_exercise_k.py
 
 The script prints a direct comparison on the committed Exercise D observations, followed by the Monte Carlo table. The latter is generated reproducibly from the stated seed and trial count; the output is the authoritative numerical result for the current implementation.
 
+### Reproduced Monte Carlo results
+
+The committed implementation was executed for 5,000 trials. RMSE and formal standard uncertainty are in millimetres; coverage is the empirical proportion of nominal 95% intervals containing the true coordinate.
+
+| Point | GLS RMSE | GLS formal u | GLS coverage | Diagonal WLS RMSE | Diagonal formal u | Diagonal coverage |
+|---|---:|---:|---:|---:|---:|---:|
+| A | 1.996 | 2.000 | 94.94% | 1.996 | 2.000 | 94.94% |
+| B | 2.266 | 2.267 | 94.84% | 2.267 | 2.275 | 94.94% |
+| C | 2.242 | 2.261 | 95.22% | 2.243 | 2.264 | 95.28% |
+| D | 2.230 | 2.245 | 95.16% | 2.230 | 2.255 | 95.36% |
+| E | 2.330 | 2.333 | 95.24% | 2.330 | 2.345 | 95.34% |
+
+For this particular network and modest 0.35 mm session-common term, the numerical differences are small. The diagonal model slightly overstates several coordinate standard uncertainties here, while its empirical coverage remains close to 95%. This is an important result in itself: ignoring correlation does not guarantee an obvious or uniformly optimistic error. The effect depends on how the shared error projects through the network geometry and observation groups. The GLS solution is the statistically coherent estimator under the covariance model used to generate these trials; the diagonal model is misspecified even where its numerical results happen to be close.
+
 Interpret the results by comparing empirical RMSE with formal standard uncertainty and by examining interval coverage. A diagonal model can produce plausible-looking coordinate estimates while misrepresenting their uncertainty because it fails to account for common information shared by observations. The direction and magnitude of the effect depend on the network geometry, session membership and covariance magnitudes; do not assume that every formal uncertainty will always be smaller or always be larger.
 
 ## 6. Interpretation and practical implications
