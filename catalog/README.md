@@ -24,6 +24,8 @@ This directory is the structured index of the project's knowledge inventory. It 
 
 ## Subject navigation
 
+- [Theoretical foundations collection](../foundations/README.md) — the domain map and development standard for the Foundations pillar.
+
 - [Geoinformatics master subject index](master-subject-index.md) — the canonical map of subject areas, stable IDs, priorities and cross-pillar relationships.
 - [Subject-to-repository alignment register](subject-alignment-register.md) — connects the subject map to existing algorithms, methods, verification records, implementations, notebooks, learning paths and source sections. Its current mappings are structural, not technical verification.
 - [First curation cluster: reference, positioning and measurement](first-curation-cluster-reference-positioning-measurement.md) — maps existing geodesy, GNSS and uncertainty assets, identifies field-survey and standards gaps, and defines an applied capstone.
