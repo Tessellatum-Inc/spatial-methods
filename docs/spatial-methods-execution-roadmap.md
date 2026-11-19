@@ -11,7 +11,7 @@ People may enter through a question, phenomenon, dataset, method, instrument, te
 
 **Core promise:** Bring a curiosity, question or problem. Spatial Methods helps you navigate the relevant knowledge, understand how it is observed and represented, investigate the methods and tools involved, and develop the capability to do something useful with it.
 
-The organising unit remains the **curiosity / investigation**. The architecture connects foundations, measurement, data, methods, tools, experiments and applications without turning them into a mandatory sequence or rigid discipline tree.
+The organising unit remains the **curiosity / investigation**. The architecture connects foundations, observation and acquisition, measurement, data, methods, tools, experiments and applications without turning them into a mandatory sequence or rigid discipline tree. Applications range from general-purpose capabilities to domain-specific, highly specialised and frontier research systems; their distinct requirements and validation burdens must remain visible.
 
 ### Product principles
 
@@ -219,10 +219,12 @@ Use the evidence to improve navigation and curation before adding unnecessary fe
 
 
 ### Workstream 9 — Knowledge-to-tools architecture
-- Define the connected model spanning phenomena, foundations, measurement, data, methods, tools, experiments and applications.
+- Define the connected model spanning phenomena, foundations, broad observation/acquisition systems, measurement, data, methods, tools, experiments and applications.
+- Represent the distinction between general-purpose, domain-specific, highly specialised and frontier/research applications without turning it into a rigid hierarchy.
+- Make specialist knowledge, operating context, validation burden, safety and consequences of error visible in application records.
 - Create adaptable records for tools and instruments, including operating principles, inputs/outputs, capabilities, limitations, access routes, safety and related experiments.
 - Distinguish physical measurements, simulations, software implementations, prototypes and validated systems.
-- Test the architecture against drones, radar, microscopy, robotics and astronomy without forcing them into a spatial workflow.
+- Test diverse acquisition systems and applications at different specialisation levels, including environmental, medical, industrial, astronomical, underwater and computational cases; do not privilege drones or force any field into a spatial workflow.
 
 **Canonical specification:** `docs/knowledge-tools-real-world-architecture.md`.
 
