@@ -93,7 +93,7 @@ def main():
     base=load_rows(); augmented=[dict(r) for r in base]
     augmented.append({"observation_id":"BE*","from_point":"B","to_point":"E","observed_delta_h_m":TRUE[3]-TRUE[0],"sigma":.0016})
     designs={"baseline":base,"augmented":augmented}
-    cases=[("clean",[],0.),("one_weak_20mm",[8],.020),("one_strong_20mm",[0],.020),
+    cases=[("clean",[],0.),("CE_plus_20mm",[8],.020),("AB_plus_20mm",[0],.020),
            ("two_same_sign_15mm",[3,8],.015),("two_opposite_sign_15mm",[3,8],.015)]
     rng=random.Random(SEED)
     print("EXERCISE J — SYNTHETIC MONTE CARLO ONLY")
