@@ -37,7 +37,7 @@ The same scenario definitions and seed are used for both designs. The augmented 
 
 The primary estimation metric is the mean across trials of the four-coordinate RMSE, in millimetres, against the constructed reference elevations. The MC SE is the sample standard deviation of trial RMSE divided by the square root of the number of trials.
 
-For snooping, the clean-data rate is the proportion of trials with at least one false flag (family-wise false-flag frequency). In contaminated cases, the rate is the proportion of trials in which every injected observation appears in the withheld set (exact-set identification). Exact-set identification is deliberately stricter than detecting at least one true error. Binomial MC SE is reported for these rates.
+For snooping, the clean-data rate is the proportion of trials with at least one false flag (family-wise false-flag frequency). In contaminated cases, the rate is the proportion of trials in which every injected observation appears in the withheld set (all-error detection). This does not require the withheld set to contain only true errors; innocent observations may also be flagged. Binomial MC SE is reported for these rates.
 
 ## 4. Results
 
@@ -56,7 +56,7 @@ For snooping, the clean-data rate is the proportion of trials with at least one 
 | BD +15, CE −15 mm | Baseline | 3.452 (0.016) | 1.171 (0.022) | 1.572 (0.024) |
 | BD +15, CE −15 mm | Augmented | 3.408 (0.016) | 1.026 (0.019) | 1.462 (0.023) |
 
-Snooping's clean-data false-flag frequency was 0.8% for the baseline design and 1.4% for the augmented design (nominal per-round alpha 1%). Exact-set identification rates were:
+Snooping's clean-data false-flag frequency was 0.8% for the baseline design and 1.4% for the augmented design (nominal per-round alpha 1%). All-error detection rates were:
 
 | Contamination | Baseline | Augmented |
 |---|---:|---:|
