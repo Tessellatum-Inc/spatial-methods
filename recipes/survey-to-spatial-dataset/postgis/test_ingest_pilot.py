@@ -27,7 +27,8 @@ class IngestionPackageTests(unittest.TestCase):
 
     def test_unknown_stop_foreign_key_fails(self):
         path = self.input_dir / "assets.csv"
-        rows = list(csv.DictReader(path.open(encoding="utf-8", newline="")))
+        with path.open(encoding="utf-8", newline="") as handle:
+            rows = list(csv.DictReader(handle))
         rows[0]["stop_id"] = "NO-SUCH-STOP"
         with path.open("w", encoding="utf-8", newline="") as handle:
             writer = csv.DictWriter(handle, fieldnames=rows[0].keys())
