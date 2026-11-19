@@ -2,6 +2,11 @@
 
 This directory is the structured index of the project's knowledge inventory. It includes algorithms, operations, data structures, models, statistics, standards, workflows, systems and applied methods. Full technical explanations belong in canonical records in their relevant directories.
 
+## Knowledge architecture
+
+- [Complete knowledge base and AI-readiness architecture](../docs/knowledge-base-and-ai-readiness-architecture.md) — defines the relationship between canonical content, catalogues, knowledge relationships, Patreon curation, future AI retrieval and product opportunities.
+- [Initial knowledge graph relationship model](knowledge-graph-model.md) — a controlled vocabulary for connecting identifiable knowledge objects without duplicating canonical content.
+
 ## Subject navigation
 
 - [Geoinformatics master subject index](master-subject-index.md) — the canonical map of subject areas, stable IDs, priorities and cross-pillar relationships.
