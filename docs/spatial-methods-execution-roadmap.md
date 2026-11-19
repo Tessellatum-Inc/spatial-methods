@@ -242,6 +242,63 @@ Use the evidence to improve navigation and curation before adding unnecessary fe
 
 **Exit condition:** Each significant activity has a clear revenue, reusable-asset or strategic-capability rationale, and the ecosystem can assess whether its offers and operations are financially sustainable.
 
+
+### Strategic execution rule — build capability, not file volume
+
+The four pillars define the knowledge architecture. They do not require equal publishing volume in every period, and they are not four independent production queues. Work is selected as a portfolio of connected investigations and deliverables.
+
+Every substantial work item should primarily advance one or more of these outcomes:
+
+1. **Curated understanding:** establish accurate, navigable knowledge and authoritative source trails.
+2. **Method capability:** explain, implement, compare or validate a spatial method.
+3. **Observation and acquisition capability:** understand how information is measured, sensed, sampled, generated or collected, including instruments, operating conditions and uncertainty.
+4. **Applied capability:** combine the pillars in a reproducible workflow or a real-world problem.
+5. **Ecosystem value:** make the result teachable, reusable, discoverable, maintainable or economically sustainable.
+
+These are portfolio outcomes, not additional pillars.
+
+#### Work selection and continuation gate
+
+Before starting a substantial exercise, tutorial, research thread or implementation, record:
+
+- the problem or knowledge gap it addresses;
+- its primary pillar and meaningful cross-pillar connections;
+- who could use the result and for what;
+- the expected artefact (for example, a source map, canonical explanation, tested implementation, field protocol, dataset, recipe or applied case);
+- what evidence will establish that the work is correct and useful;
+- the next practical or research step it enables;
+- its effort, dependencies and maintenance burden.
+
+Continue a research sequence only when the next step answers a distinct question, resolves a material limitation, improves a transferable capability or enables an application. Do not create another exercise merely because the previous one has a later letter.
+
+Synthetic experiments are legitimate for controlled investigation, but must be labelled as synthetic and connected to the real measurement process, data characteristics, instrument behaviour or operational decision they help explain. They do not substitute for field observations or independent validation.
+
+#### First cross-pillar applied capability sprint
+
+The next priority is to develop the existing **survey-to-spatial-dataset** capstone from the reference, positioning and measurement cluster. It should connect:
+
+- **Theoretical Foundations:** reference systems, measurement science, uncertainty, adjustment and quality.
+- **Spatial Data Collection:** field planning, control, instrument/positioning choices, observation procedures, metadata and acquisition constraints.
+- **Spatial Algorithms:** coordinate operations, adjustment, quality assessment and relevant computational methods.
+- **Spatial Recipes:** an end-to-end field-to-office workflow with explicit inputs, decisions, checks and deliverables.
+
+The sprint begins with an evidence-backed design and gap review, not an invented field campaign. Specify the intended application, study scale, equipment/access assumptions, authoritative Kenyan and international references, data rights, safety, validation design and realistic cost before claiming operational readiness. Clearly separate desk research, synthetic demonstration, public-data processing, prototype testing and physical field validation.
+
+The measurement-science exercises A–O remain a valuable research thread and supporting teaching material. They are not the whole programme. Exercise P or another continuation should be commissioned only if the sprint or a separate evidence-backed research question establishes its value.
+
+#### Portfolio review
+
+At each milestone review, ask:
+
+1. Are all four pillars represented in the growing body of knowledge, without forcing artificial symmetry?
+2. Are we strengthening connections between theory, acquisition, computation and workflows?
+3. Have we moved beyond synthetic examples where real data or field practice is feasible and appropriate?
+4. Are outputs reusable by students, educators, researchers and practitioners at different levels?
+5. Does the work produce a demonstrable capability, useful public resource or validated opportunity?
+6. Are we maintaining quality and provenance rather than accumulating unreviewed material?
+
+If the answer is no, redirect effort toward the missing capability before expanding the same thread.
+
 ## 7. Execution sequence
 
 **Progress update — 19 November 2026:** The product foundation and operating system are established. The next strategic layer has now been formalised in two new specifications: the knowledge-to-tools and real-world capability architecture, and the economic sustainability architecture. These are working specifications to guide the next templates, demonstrations and validation work. The Radar flagship now has a distinct-branch territory map, multiple optional routes, a Sentinel-1 practical investigation with separate prepared-RTC and self-processing entry routes, and an annotated evidence register. The sources and core product assumptions have been checked against ESA, Copernicus and ASF documentation. No scene-specific processing result is claimed yet. The Patreon build kit now includes page/about copy, provisional tier copy, welcome, navigation, Curiosity Desk and Radar launch posts, plus a cross-channel distribution kit. These are prepared drafts, not published account changes. Creator-dashboard prices, access settings and scheduling still require owner verification.
