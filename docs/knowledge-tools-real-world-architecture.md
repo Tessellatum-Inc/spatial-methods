@@ -14,126 +14,109 @@ A person may enter through a mathematical question, a physical phenomenon, a dat
 
 **Working promise:** Explore how the world works, understand how it is measured and represented, investigate the methods and technologies involved, and develop the capability to do useful things with that knowledge.
 
-## 2. The connected model
+## 2. The definitive structure: four pillars
 
-The following dimensions are a shared conceptual model, not departments, a taxonomy that every subject must fit, or a mandatory learning sequence.
+Spatial Methods is organised around four permanent pillars. These are the top-level structure for the knowledge archive, research, practical work and future products.
 
-### A. Phenomena, systems and questions
-What exists, happens or needs to be understood? This may include physical phenomena, living systems, human systems, engineered systems, abstract mathematical objects or practical problems.
+### 1. Spatial Algorithms
 
-### B. Foundations
-The principles that explain or support investigation:
-- mathematics: algebra, calculus, geometry, linear algebra, probability, statistics, topology, optimisation and numerical analysis;
+Reusable computational methods for working with spatial data and spatial problems.
+
+An algorithm record explains:
+- the problem it addresses and the task it performs;
+- its mathematical and computational foundations;
+- inputs, outputs, assumptions and preconditions;
+- the procedure, variants and implementation choices;
+- complexity, accuracy, performance and limitations;
+- tests, benchmarks, example data and suitable applications.
+
+Algorithms are reusable building blocks. One algorithm may support many different recipes and applications. Keep the distinction between an algorithm, a broader method, a statistical model, an operation, a data structure and a software implementation explicit.
+
+### 2. Spatial Recipes
+
+Reproducible, problem-oriented workflows that show how to accomplish something.
+
+A recipe combines the appropriate data, algorithms, software or instruments, parameters, decisions and validation steps into an executable or repeatable procedure. It should explain when the workflow is suitable, what is needed, how to carry it out, how to assess the result and where it can fail.
+
+A recipe may use one algorithm or many. It may also include data acquisition, preprocessing, analysis, modelling, visualisation and delivery. Recipes are not merely tutorials or lists of software steps: they preserve the reasoning and decisions that make a workflow reproducible.
+
+Recipes can be general-purpose, domain-specific or highly specialised. Their depth and validation requirements must match the application.
+
+### 3. Spatial Data Collection
+
+How information about spatial phenomena and systems is observed, detected, measured, sampled, generated, acquired and transmitted.
+
+This pillar covers the complete breadth of collection and measurement—not just drones, satellites or remote sensing. It includes, where relevant:
+- terrestrial surveying, GNSS, laser scanning and geophysical measurement;
+- satellite and airborne observation, radar, optical imaging and photogrammetry;
+- marine, underwater and oceanographic instruments;
+- atmospheric, weather and environmental sensor networks;
+- laboratory, analytical, biological and medical measurement;
+- industrial sensing, machine vision and process telemetry;
+- human, administrative, mobility and operational records;
+- digital telemetry, network and application data;
+- controlled experiments, computational generation and synthetic spatial data.
+
+Distinguish four questions in each relevant record:
+1. **Observation and acquisition:** how is the signal, sample, event or record captured?
+2. **Measurement:** what quantity is estimated, in what units, with what calibration and uncertainty?
+3. **Data generation:** is the information observed, human-recorded, experimentally produced, simulated or computed?
+4. **Transmission and infrastructure:** how is it digitised, positioned, timed, communicated, stored and made available?
+
+A collection system may include the phenomenon, sampling interface, sensor, transducer or detector, electronics, signal conditioning, digitisation, positioning and timing, communications, storage and processing. Describe the actual system rather than assuming every device follows one generic pipeline.
+
+### 4. Theoretical Foundations
+
+The knowledge that explains why spatial phenomena, measurements, representations, algorithms and workflows behave as they do.
+
+This includes, as relevant:
+- mathematics: geometry, algebra, calculus, linear algebra, probability, statistics, topology, optimisation and numerical analysis;
+- spatial science: geodesy, cartography, spatial statistics, geographic theory and spatial cognition;
 - physical sciences: mechanics, electromagnetism, optics, thermodynamics, fluid dynamics and wave physics;
-- life and chemical sciences: biology, chemistry, molecular science and systems biology;
-- computational and information sciences: computer science, information theory, logic, algorithms and complexity;
+- life, environmental and chemical sciences;
+- computer science, information theory, data structures, algorithms and complexity;
 - engineering principles: electronics, materials, control, measurement and system design.
 
-Include foundations when they materially explain the curiosity. Do not force every exploration to begin with prerequisites.
+Foundations are not a compulsory first stage or a single prerequisite ladder. Link the theory that materially explains a method, instrument, dataset or application, and expose deeper routes for people who need them.
 
-### C. Observation, measurement and sensing
-How a phenomenon or system becomes observable:
-- measurement theory, uncertainty, calibration and standards;
-- sensors, detectors, instruments and experimental design;
-- sampling, acquisition, telemetry and signal generation;
-- remote, in-situ, laboratory and observational methods.
+## 3. How the four pillars connect
 
+The four pillars are distinct, but they are designed to connect:
 
+- **Foundations explain** the principles behind collection systems, algorithms and recipes.
+- **Data collection produces or acquires** observations and measurements that can be represented and investigated.
+- **Algorithms transform, analyse or model** data and can be reused across many workflows.
+- **Recipes combine** the relevant foundations, collection methods, data, algorithms, tools and decisions to accomplish a task.
+- **Applications provide context** for choosing and validating the right combination.
 
-#### Observation and data-acquisition systems: broad by design
+Applications are not a fifth pillar. They are the real-world contexts in which the four pillars are brought together. They range from general-purpose capabilities through domain-specific work to highly specialised, frontier or safety-critical applications.
 
-Observation and acquisition must not be reduced to drones, remote sensing or any single instrument family. The scope includes how information about the world is detected, sampled, measured, generated, digitised and transmitted.
+Data, software, instruments, experiments, research, teaching and products are important resources or outputs that connect the pillars; they are not additional top-level pillars.
 
-Relevant modalities and environments include, without implying an exhaustive taxonomy:
+## 4. Application specialisation and validation
 
-- **Space-based:** Earth-observation satellites, GNSS, space telescopes, radar altimeters, radiometers and atmospheric instruments.
-- **Terrestrial and geophysical:** surveying systems, total stations, GNSS receivers, laser scanners, seismic arrays, ground-penetrating radar and geophysical instruments.
-- **Atmospheric and environmental:** weather stations, air-quality networks, stream gauges, oceanographic buoys, environmental samplers and distributed sensor networks.
-- **Marine and underwater:** sonar, hydrophones, acoustic Doppler current profilers, underwater imaging, remotely operated and autonomous underwater vehicles.
-- **Laboratory and analytical:** microscopes, spectrometers, chromatographs, mass spectrometers, thermal analysers and chemical sensors.
-- **Industrial and machine systems:** machine vision, vibration and pressure sensors, encoders, RFID, industrial telemetry and process-monitoring systems.
-- **Medical and biological:** MRI, CT, ultrasound, EEG, ECG, biosensors, sequencing and other diagnostic or research instruments.
-- **Astronomical and particle observation:** optical and radio telescopes, spectrographs, photometers, particle detectors and gravitational-wave observatories.
-- **Human and administrative:** surveys, transactions, censuses, operational records, mobility traces and other human-generated observations.
-- **Digital systems:** application events, network telemetry, logs, platform monitoring and machine-generated records.
-- **Experimental and computational generation:** controlled experiments, simulations, synthetic environments, numerical models and digital twins.
-
-Keep four related but distinct questions visible:
-
-1. **Acquisition:** How is a signal, sample, event or record captured?
-2. **Measurement:** What quantity is estimated, in what units, under what calibration and uncertainty?
-3. **Data generation:** Is the information observed, human-recorded, experimentally produced, simulated or otherwise computed?
-4. **Transmission and acquisition infrastructure:** How is it digitised, synchronised, communicated, stored and made available?
-
-A real acquisition chain may span the phenomenon, sensor or sampling interface, transducer/detector, analogue electronics, signal conditioning, digitisation, timing and positioning, communications, storage and processing. Not every system contains every stage, and some combine several stages in one device. Record the actual chain rather than assuming a generic sensor-to-dataset pipeline.
-
-No modality is inherently the centre of the architecture. Choose examples according to the question being investigated, the evidence available and the capabilities required.
-
-### D. Data and representation
-What is produced by observation, computation or human activity, and how it is represented:
-- signals, time series, images, spectra, point clouds, tables, graphs, spatial data and event streams;
-- data models, coordinate systems, metadata, encoding and schemas;
-- provenance, quality, uncertainty, bias, missingness and licensing;
-- storage, transmission, interoperability and lifecycle.
-
-Data is not a single kind of object. Its meaning depends on how it was generated, measured, transformed and represented.
-
-### E. Methods, models and computation
-How questions are formalised and investigated:
-- mathematical and statistical methods;
-- algorithms and data structures;
-- physical, biological and social models;
-- numerical methods, simulation and optimisation;
-- signal and image processing;
-- machine learning and inference;
-- software, databases, distributed systems and computational infrastructure.
-
-### F. Instruments, tools and technologies
-What people use to observe, measure, manipulate, compute, construct or operate:
-- scientific instruments: microscopes, telescopes, spectrometers and laboratory equipment;
-- sensors and measurement systems: GNSS, IMUs, LiDAR, radar and environmental sensors;
-- machines and platforms: drones, robots, vehicles and automated systems;
-- electronics: microcontrollers, radios, circuits, embedded computers and test equipment;
-- software: GIS, CAD, simulation, modelling, analysis and control systems;
-- computational infrastructure: GPUs, clusters, cloud systems and remote research platforms;
-- field and workshop equipment.
-
-Tools include physical and digital systems. They should be understood as engineered systems with capabilities, operating principles, interfaces, constraints and failure modes—not merely products to buy.
-
-### G. Experiments, construction and practical capability
-What can be tested, reproduced, built, configured, operated or improved?
-- conceptual and mathematical experiments;
-- software implementations and computational notebooks;
-- simulations and synthetic data;
-- field measurements and laboratory investigations;
-- hardware prototypes and instrument integration;
-- calibration, validation, testing and troubleshooting;
-- comparison, replication and independent verification.
-
-### H. Applications, services and systems
-
-Applications vary substantially in scope, specialisation, operating context and consequence. They should not be presented as though they are all general-purpose tools or interchangeable workflows.
+Applications vary substantially in scope, specialisation, operating context and consequence. Do not present them as though they are all general-purpose tools or interchangeable workflows.
 
 A useful working spectrum is:
 
-- **General-purpose capabilities:** data exploration, mapping, visualisation, statistical analysis, modelling, simulation and workflow automation. These can serve many domains, though still require context and competent use.
-- **Domain-specific applications:** flood modelling, medical imaging, precision agriculture, transport planning, mineral exploration, weather forecasting and habitat assessment. They combine shared foundations with domain knowledge, specialised data and context-specific methods.
-- **Highly specialised applications:** seismic inversion, radiotherapy treatment planning, satellite orbit determination, underwater acoustic localisation and industrial non-destructive testing. These may require advanced expertise, specialised instruments, rigorous validation, formal standards or regulated practice.
-- **Frontier and research applications:** experimental instruments, emerging measurement techniques, novel algorithms and systems whose methods, benchmarks or operational practices are still being established.
+- **General-purpose:** data exploration, mapping, visualisation, spatial statistics, modelling, simulation and workflow automation.
+- **Domain-specific:** flood modelling, transport planning, precision agriculture, mineral exploration, habitat assessment and spatial public-health analysis.
+- **Highly specialised:** seismic inversion, radiotherapy treatment planning, satellite orbit determination, underwater acoustic localisation and industrial non-destructive testing.
+- **Frontier and research:** experimental instruments, emerging measurement techniques, novel algorithms and systems whose methods or operational practices are still being established.
 
-This is a spectrum, not a fixed ranking or taxonomy. An application may move along it as technology, evidence and practice mature. Specialisation is not simply a measure of difficulty: it may arise from domain-specific theory, narrow operating conditions, rare equipment, data constraints, safety or regulatory requirements, or the consequences of error.
+This is a spectrum, not a fixed ranking. Specialisation may arise from domain theory, operating conditions, rare equipment, data constraints, safety or regulatory requirements, or the consequences of error.
 
 For each application, make visible where relevant:
-- the problem, users, operating environment and intended decision or outcome;
-- domain knowledge and prerequisites that cannot be replaced by generic tool proficiency;
-- required data, instruments, methods, infrastructure and specialist roles;
+- the problem, users, operating environment and intended decision;
+- domain knowledge and specialist roles;
+- required data, instruments, algorithms, recipes and infrastructure;
 - performance criteria, validation evidence, uncertainty and acceptable failure;
 - safety, legal, ethical, professional and regulatory obligations;
 - whether the work is exploratory, educational, research-grade, operational or safety-critical.
 
-Applications may enable scientific discovery, engineering and product development, environmental observation, infrastructure, transport, health, agriculture, industry, public services and new forms of interaction. Foundational inquiry also has value without an immediate application.
+The intended application determines the required depth and validation burden. Do not imply that a general-purpose demonstration is suitable for a specialised or safety-critical deployment.
 
-## 3. Movement is non-linear
+## 5. Movement is non-linear
 
 People can enter and move between dimensions in any direction.
 
@@ -145,7 +128,7 @@ Examples:
 
 A practical problem may expose a missing foundation. A mathematical idea may suggest a new instrument. A dataset may raise questions about the physical process that generated it. Preserve these feedback loops.
 
-## 4. Cross-disciplinary demonstration territories
+## 6. Cross-disciplinary demonstration territories
 
 Use diverse territories to test whether the architecture works beyond spatial analysis.
 
@@ -159,7 +142,7 @@ Use diverse territories to test whether the architecture works beyond spatial an
 
 These are test cases, not a closed list or a new rigid subject hierarchy. Each territory must retain its own scientific and engineering distinctions. Shared foundations should be linked without flattening differences.
 
-## 5. Tool and instrument records
+## 7. Tool and instrument records
 
 Create a Tool and Instrument Directory as a connected resource, not a shopping catalogue.
 
@@ -181,7 +164,7 @@ A record should capture, where relevant:
 
 Do not invent specifications or imply that a tool is suitable for a task without evidence. Separate independent scientific principles from manufacturer claims and marketing language.
 
-## 6. Access and practical engagement levels
+## 8. Access and practical engagement levels
 
 Not every capability requires ownership. Record realistic access routes:
 
@@ -194,7 +177,7 @@ Not every capability requires ownership. Record realistic access routes:
 
 These are access options, not levels of status. Expensive infrastructure should not be treated as the default measure of practical depth.
 
-## 7. Practical investigation records
+## 9. Practical investigation records
 
 A practical activity should be designed around a question or capability, not around a product demonstration.
 
@@ -215,7 +198,7 @@ Capture as appropriate:
 
 Distinguish simulation from physical measurement, demonstration from validation, and a teaching prototype from a production-ready system.
 
-## 8. Outputs and reusable assets
+## 10. Outputs and reusable assets
 
 An exploration may generate one or more reusable outputs:
 - explanations, derivations and reference notes;
@@ -231,7 +214,7 @@ An exploration may generate one or more reusable outputs:
 
 Record provenance, version, licence, dependencies, evidence and maintenance expectations. A single investigation may support several outputs, but do not manufacture deliverables where they add no value.
 
-## 9. Relationship model
+## 11. Relationship model
 
 Connect records with explicit relationships, such as:
 - explains foundation of;
@@ -252,7 +235,7 @@ Connect records with explicit relationships, such as:
 
 Prefer explained relationships over a large flat tag collection.
 
-## 10. Quality and safety principles
+## 12. Quality and safety principles
 
 - Preserve the distinction between theory, simulation, measurement, observation and interpretation.
 - State assumptions, units, uncertainty, calibration and provenance where relevant.
@@ -263,7 +246,7 @@ Prefer explained relationships over a large flat tag collection.
 - Avoid giving unsafe operational instructions; route specialist or regulated activities through qualified supervision and official guidance.
 - Distinguish open-source designs from permission to operate equipment or transmit signals in a particular jurisdiction.
 
-## 11. How this extends the existing Spatial Methods collection
+## 13. How this extends the existing Spatial Methods collection
 
 The spatial and computational archive remains a strong, developed starting territory. It becomes one connected branch within the wider system:
 - spatial algorithms become methods with mathematical and computational lineage;
@@ -274,7 +257,7 @@ The spatial and computational archive remains a strong, developed starting terri
 
 Do not force unrelated subjects into a geospatial workflow. Follow the subject wherever its own foundations, technologies and applications lead.
 
-## 12. Implementation sequence
+## 14. Implementation sequence
 
 1. Approve the conceptual model and update the product brief.
 2. Add adaptable fields for tools, instruments, experiments and physical outputs to the exploration template.
@@ -284,7 +267,7 @@ Do not force unrelated subjects into a geospatial workflow. Follow the subject w
 6. Link the new records to existing spatial algorithms and Radar material where relationships are genuine.
 7. Build indexes only after enough high-quality records exist to justify them.
 
-## 13. Acceptance tests
+## 15. Acceptance tests
 
 The architecture is working when:
 - someone can enter through a tool, phenomenon, question, dataset, method or application;
