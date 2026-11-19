@@ -315,6 +315,8 @@ The proposed first application is a small [urban public-transport stop and roads
 
 This application is intended to connect measurement science and field acquisition to a useful spatial dataset. It does not imply official stop designation, route validation, cadastral authority, engineering acceptance or accessibility certification.
 
+The [Nairobi pilot reconnaissance and readiness pack](reconnaissance-readiness-pack.md) now turns the feasibility assessment into a controlled next-step protocol: authority and access enquiries, non-intrusive reconnaissance, safety and data-governance checks, corridor comparison criteria and explicit readiness gates. It does not authorise fieldwork; the current decision remains NOT READY for field acquisition.
+
 ## 9. Current status and next decision
 
 **Current status: G0 design plus a limited G1 synthetic schema rehearsal.** The workflow architecture and source routes are documented. No site has been selected, no equipment has been inspected, no permissions have been obtained, no field observations have been collected and no physical validation is claimed.
