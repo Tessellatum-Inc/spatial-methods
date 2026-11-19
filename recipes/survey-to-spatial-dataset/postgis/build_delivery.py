@@ -64,9 +64,9 @@ def main() -> int:
       JOIN pilot.asset AS a ON a.feature_id = f.feature_id
       ORDER BY f.feature_id
     """
-    run(["ogr2ogr", "-f", "GPKG", str(GPKG), PG, "-sql", stop_sql,
+    run(["ogr2ogr", "-f", "GPKG", str(GPKG), PG, "-dialect", "PostgreSQL", "-sql", stop_sql,
          "-nln", "stops", "-nlt", "POINT", "-lco", "SPATIAL_INDEX=YES"])
-    run(["ogr2ogr", "-f", "GPKG", "-update", str(GPKG), PG, "-sql", asset_sql,
+    run(["ogr2ogr", "-f", "GPKG", "-update", str(GPKG), PG, "-dialect", "PostgreSQL", "-sql", asset_sql,
          "-nln", "assets", "-nlt", "POINT", "-lco", "SPATIAL_INDEX=YES"])
 
     info = subprocess.run(
