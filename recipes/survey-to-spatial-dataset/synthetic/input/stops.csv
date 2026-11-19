@@ -1,0 +1,5 @@
+stop_id,x_local_m,y_local_m,stop_status,evidence_basis,observed_at,position_method,position_quality_class,observer_id
+STOP-SYN-001,12.4,8.1,observed_stop,synthetic fixture classification,2026-11-19T09:00:00+03:00,simulated_local_coordinate,synthetic_only,TEAM-SYN
+STOP-SYN-002,45.0,9.2,signed_stop,synthetic sign observation,2026-11-19T09:05:00+03:00,simulated_local_coordinate,synthetic_only,TEAM-SYN
+STOP-SYN-003,78.3,10.4,uncertain,synthetic ambiguous example,2026-11-19T09:10:00+03:00,simulated_local_coordinate,synthetic_only,TEAM-SYN
+STOP-SYN-004,111.6,11.0,observed_stop,synthetic fixture classification,2026-11-19T09:15:00+03:00,simulated_local_coordinate,synthetic_only,TEAM-SYN
