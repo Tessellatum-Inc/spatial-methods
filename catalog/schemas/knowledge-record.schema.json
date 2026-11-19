@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://spatial-methods.example/schema/knowledge-record.schema.json",
+  "$id": "https://github.com/Tessellatum-Inc/spatial-methods/blob/main/catalog/schemas/knowledge-record.schema.json",
   "title": "Spatial Methods canonical knowledge record",
   "description": "Metadata contract for a canonical public knowledge object. This schema validates catalogue metadata, not the technical correctness of the referenced content.",
   "type": "object",
