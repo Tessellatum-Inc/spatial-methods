@@ -15,6 +15,7 @@ services:
     volumes:
       - ./postgis-schema.sql:/tests/postgis-schema.sql:ro
       - ./integration.sql:/tests/integration.sql:ro
+      - ./spatial-qa.sql:/tests/spatial-qa.sql:ro
 
   ingest:
     build:
