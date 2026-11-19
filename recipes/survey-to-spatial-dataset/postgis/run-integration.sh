@@ -20,6 +20,17 @@ docker compose exec -T postgis psql \
 # Run pure input-package tests before attempting a database load.
 docker compose run --rm --no-deps ingest python -m unittest -v test_ingest_pilot
 
-# integration.sql configures EPSG:3857 for the isolated database test.
-# The fixture arrives in EPSG:4326 and is transformed inside PostGIS.
+# Load the explicitly synthetic fixture into the isolated EPSG:3857 test database.
 docker compose run --rm ingest
+
+# Generate a machine-readable QA report. A hard QA failure makes psql return nonzero.
+mkdir -p output
+docker compose exec -T postgis psql \
+  --username spatial_methods \
+  --dbname spatial_methods_test \
+  --set ON_ERROR_STOP=1 \
+  --tuples-only --no-align \
+  --file /tests/spatial-qa.sql > output/spatial-qa-report.json
+
+echo "Spatial QA report:"
+cat output/spatial-qa-report.json
