@@ -303,6 +303,8 @@ The fixture uses invented local Cartesian coordinates with **no CRS**. It is del
 
 The script was executed against the committed fixture: 4 stops, 6 assets, 4 observations, 4 quality-check records; 0 validation errors. A negative test with an unknown asset-to-stop foreign key correctly returned a failure. The committed report preserves the input hashes and limitations.
 
+A separate [PostGIS schema design](postgis/README.md) now defines a CRS-aware relational model for a future spatial implementation. It is an authored SQL design, not yet tested against a live PostGIS database. The unreferenced local-plane CSV fixture must not be loaded into it or assigned an assumed CRS.
+
 ## 9. Proposed first application
 
 The proposed first application is a small [urban public-transport stop and roadside-asset inventory](pilot-project-definition.md) in Nairobi. It is a design candidate, not a confirmed site or authorised field assignment. The linked project definition sets out the study question, scope boundaries, relational data model, collection principles, validation strategy, deliverables and G0 feasibility gate.
