@@ -305,6 +305,8 @@ The script was executed against the committed fixture: 4 stops, 6 assets, 4 obse
 
 A separate [PostGIS schema design](postgis/README.md) now defines a CRS-aware relational model for a future spatial implementation. It is an authored SQL design, not yet tested against a live PostGIS database. The unreferenced local-plane CSV fixture must not be loaded into it or assigned an assumed CRS.
 
+The PostGIS package now also contains a synthetic-only [ingestion pipeline](postgis/ingest_pilot.py), a declared EPSG:4326 test fixture, five input preflight tests and a Docker Compose runner. Its database test target is EPSG:3857; this is a software test only, not a CRS decision for the Nairobi application. The pipeline and tests are committed but still require execution in a Docker-capable environment.
+
 ## 9. Proposed first application
 
 The proposed first application is a small [urban public-transport stop and roadside-asset inventory](pilot-project-definition.md) in Nairobi. It is a design candidate, not a confirmed site or authorised field assignment. The linked project definition sets out the study question, scope boundaries, relational data model, collection principles, validation strategy, deliverables and G0 feasibility gate.
