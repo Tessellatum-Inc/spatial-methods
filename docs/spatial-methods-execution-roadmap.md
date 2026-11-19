@@ -303,7 +303,8 @@ The initial implementation is complete only when:
 3. Produce the Patreon page and launch-post kit from the Radar content. **Draft kit prepared.**
 4. Prepare distribution and operational schedules. **Distribution kit prepared; scheduling deferred until publication dates and account settings are confirmed.**
 5. Verify all repository links and draft assets, then hand over the exact account-level actions for the creator dashboard. **Repository verification underway; creator-dashboard verification remains with the account owner.**
-6. Formalise the expanded knowledge-to-tools architecture and economic sustainability model. **Working specifications created; next step is to operationalise them through templates and cross-disciplinary tests.**
+6. Formalise the expanded knowledge-to-tools architecture and economic sustainability model. **Working specifications created.**
+7. Operationalise the architecture with tool/instrument records, physical/computational investigation modes and offer validation. **Templates created; cross-disciplinary tests and baseline financial inventory remain.**
 
 The roadmap is a working control document. Update it as deliverables are completed; do not create parallel plans that drift from the canonical version.
 
