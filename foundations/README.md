@@ -1,0 +1,116 @@
+# Theoretical foundations
+
+The foundations collection explains the mathematical, statistical, physical and scientific principles that make spatial measurement, computation and reasoning possible.
+
+It is one of the four permanent Spatial Methods pillars:
+
+- **Theoretical Foundations** explain why methods work, what assumptions they require and where they fail.
+- **Spatial Algorithms** turn mathematical and scientific ideas into computational procedures.
+- **Spatial Data Collection** connects those ideas to observation, measurement, sampling and acquisition in the real world.
+- **Spatial Recipes** combine knowledge, data, algorithms and tools to accomplish tasks.
+
+These pillars are connected, not a prescribed learning sequence. A reader may enter through a practical problem, a measurement technology, an algorithm or a theoretical question.
+
+## What belongs here
+
+A foundation should explain the underlying concepts and reasoning, not merely document how to operate a software package. It should establish definitions, mathematical or physical models, assumptions, derivations where useful, examples, limitations and connections to other subjects.
+
+Implementation details belong in the relevant algorithm, method or implementation records. Field procedures belong with collection methods and recipes. A foundation may link to all of them without duplicating their content.
+
+## Subject map
+
+The subject IDs below are stable identifiers from the [Geoinformatics master subject index](../catalog/master-subject-index.md). The status describes this foundations collection, not the maturity of the wider subject.
+
+| Subject ID | Foundation domain | Collection status | Planned coverage |
+|---|---|---|---|
+| SM-FND-001 | Mathematics for spatial science | Planned | Mathematical language, functions, vectors, coordinate geometry, proof and modelling |
+| SM-FND-002 | Linear algebra and matrix methods | Planned | Vectors, matrices, linear systems, rank, eigenvalues, decompositions and quadratic forms |
+| SM-FND-003 | Calculus and differential methods | Planned | Derivatives, gradients, integrals, multivariable calculus, differential equations and fields |
+| SM-FND-004 | Probability and statistical inference | Planned | Probability models, distributions, sampling, estimation, testing and Bayesian reasoning |
+| SM-FND-005 | Spatial statistics and stochastic processes | Planned | Random fields, spatial dependence, point processes, spatial sampling and spatiotemporal processes |
+| SM-FND-006 | Geometry and computational geometry theory | Planned | Euclidean, affine and projective geometry; metric spaces; geometric constructions |
+| SM-FND-007 | Topology and spatial relations | Planned | Topological spaces, continuity, connectedness, boundaries and spatial relations |
+| SM-FND-008 | Geodesy and reference systems | Existing material; expansion required | Earth figure, datums, reference frames, coordinate systems, gravity and transformations |
+| SM-FND-009 | Earth science, physical geography and geomorphology | Planned | Earth systems, landforms, processes, terrain and spatial environmental variation |
+| SM-FND-010 | Cartographic theory and visual perception | Planned | Scale, visual variables, perception, symbolisation, generalisation and map communication |
+| SM-FND-011 | Measurement science, accuracy and uncertainty | In progress | Measurands, measurement models, uncertainty, covariance, traceability and verification |
+| SM-FND-012 | Remote sensing physics and radiometry | Planned | Electromagnetic radiation, spectra, radiometric quantities, interaction and observation models |
+| SM-FND-013 | Optics, electromagnetism and wave physics | Planned | Geometric optics, wave behaviour, electromagnetic principles and sensor physics |
+| SM-FND-014 | Signal processing and information theory | Planned | Sampling, filtering, transforms, spectral analysis, information and signal detection |
+| SM-FND-015 | Computer science, algorithms and complexity | Planned | Computation models, data structures, algorithm analysis, logic and computability |
+| SM-FND-016 | Numerical analysis and scientific computing | Planned | Floating-point arithmetic, conditioning, stability, approximation and numerical solution |
+| SM-FND-017 | Optimisation and operations research | Planned | Linear/nonlinear optimisation, constrained problems, graph optimisation and decision theory |
+| SM-FND-018 | Geographic information science and spatial thinking | Planned | Geographic concepts, spatial cognition, representation, scale, ontology and GIScience theory |
+| SM-FND-019 | Systems theory, complexity and emergence | Planned | Systems, feedback, networks, dynamical systems, complexity and emergence |
+| SM-FND-020 | Physical, environmental and life-science foundations | Planned | Physical, chemical, ecological and biological processes underlying spatial phenomena |
+
+### Existing measurement-science resources
+
+The first developed foundation domain is measurement science:
+
+1. [Measurement principles and field verification](measurement-science/measurement-principles-and-field-verification.md)
+2. [Measurement models and measurand definition](measurement-science/measurement-models-and-measurand-definition.md)
+3. [Standard uncertainty: Type A and Type B evaluation](measurement-science/standard-uncertainty-type-a-type-b.md)
+4. [Covariance, correlated observations and generalized least squares](measurement-science/covariance-correlated-observations-and-gls.md)
+
+These resources are connected to the [measurement science and survey adjustment learning path](../learning-paths/measurement-science-and-survey-adjustment.md), synthetic [measurement experiments](../experiments/measurement/) and the [covariance/GLS Python implementation](../implementations/python/covariance-gls/README.md).
+
+## How each foundation will be developed
+
+A topic is not complete because it has a page. Each substantial foundation should be developed against an explicit content standard.
+
+1. **Scope and vocabulary** — define the subject, its boundaries and important terminology.
+2. **First principles** — explain the underlying mathematical, physical or scientific ideas.
+3. **Models and derivations** — establish equations, assumptions, units and conditions of use.
+4. **Interpretation** — explain what the quantities and results mean in spatial contexts.
+5. **Worked examples** — use transparent examples, with synthetic inputs labelled as such.
+6. **Limitations and failure modes** — identify simplifications, edge cases and common misconceptions.
+7. **Connections** — link relevant algorithms, collection technologies, recipes, applications and neighbouring foundations.
+8. **Evidence and references** — cite authoritative and primary sources, recording edition, scope and claim-level support where appropriate.
+9. **Review and maintenance** — record technical review status, version-sensitive details and unresolved questions.
+
+Not every topic needs the same mathematical depth or the same type of example. The standard is consistent intellectual care, not a rigid page template.
+
+## Recommended internal organisation
+
+As subject coverage grows, organise material into durable domain folders rather than one large flat directory:
+
+- `mathematics/`
+- `linear-algebra/`
+- `calculus-and-differential-methods/`
+- `probability-and-statistics/`
+- `spatial-statistics/`
+- `geometry-and-topology/`
+- `geodesy-and-reference-systems/`
+- `earth-science-and-physical-geography/`
+- `cartography-and-visual-perception/`
+- `measurement-science/`
+- `remote-sensing-physics/`
+- `optics-and-electromagnetism/`
+- `signal-processing-and-information-theory/`
+- `computer-science/`
+- `numerical-analysis/`
+- `optimisation-and-operations-research/`
+- `geographic-information-science/`
+- `systems-and-complexity/`
+- `environmental-and-life-sciences/`
+
+Create a folder when substantive canonical material is ready to live there; avoid filling the repository with empty placeholders.
+
+## Development principles
+
+- **Build a connected knowledge base, not twenty isolated textbooks.** Cross-link concepts and explain dependencies.
+- **Teach from first principles without assuming every reader is a mathematician.** Introduce prerequisites and build depth progressively.
+- **Do not flatten differences between disciplines.** Geodesy, cartography, remote sensing physics, statistics and computer science have distinct intellectual foundations.
+- **Separate established theory from modelling choices.** Make assumptions and conventions visible.
+- **Keep examples reproducible.** Publish data, code and computational assumptions when they materially support the explanation.
+- **Distinguish synthetic demonstrations from real-world evidence.**
+- **Use authoritative sources critically.** A citation supports specific claims within its scope; it does not validate an entire page.
+- **Avoid duplicate content.** Explain the theory here and link to canonical algorithms, implementations, collection methods and recipes elsewhere.
+- **Review before declaring coverage mature.** Planned, drafted, researched, reviewed, implemented and validated are different states.
+
+## Relationship to the wider knowledge base
+
+The foundations collection is the theory layer of a connected knowledge system. The [master subject index](../catalog/master-subject-index.md) provides stable subject identities. The [knowledge-record catalogue](../catalog/README.md) identifies canonical resources. The [knowledge graph model](../catalog/knowledge-graph-model.md) records explicit relationships. The [knowledge-base architecture](../docs/knowledge-base-and-ai-readiness-architecture.md) explains how these layers can support future curation and grounded retrieval.
+
+The objective is not to finish every subject in one pass. It is to build a reliable, navigable foundation that can grow without losing coherence, provenance or technical quality.
