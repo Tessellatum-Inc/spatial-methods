@@ -17,6 +17,8 @@ This directory is the structured index of the project's knowledge inventory. It 
 
 - [Exercise F: network quality, statistical testing and blunder detection](../experiments/measurement/exercise-f-network-quality-and-blunder-detection.md) — compares global chi-square and local standardized-residual diagnostics, injects a synthetic gross error, examines multiple testing and withholding sensitivity, and includes an independent synthetic check.
 
+- [Exercise G: reliability, detectability and network design](../experiments/measurement/exercise-g-reliability-and-network-design.md) — computes redundancy numbers, minimal detectable biases and external effects, then compares an added independent B–E link with a uniform precision improvement.
+
 ## Coverage
 
 See the [source-to-repository coverage matrix](coverage-matrix.md) for an honest view of what is captured, what has been researched and where work remains. The matrix deliberately does not count a source transcription as verified coverage. See the [source review dashboard](review-dashboard.md) for a dated count of all 695 source-entry rows and their current review labels.
