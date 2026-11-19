@@ -167,4 +167,7 @@ The implementation uses only the Python standard library. It reads the Exercise 
 4. “Minimum-variance-based outlier detection method using forward-search model error in geodetic networks” (2024), *Geoscientific Model Development*, 17, 2187. Reviews and compares robust and iterative detection approaches in geodetic adjustment. [Open article](https://gmd.copernicus.org/articles/17/2187/2024/). <Cite refs={["turn718204search2"]}/>
 5. Huber, P. J. (1964), “Robust Estimation of a Location Parameter,” *The Annals of Mathematical Statistics*, 35(1), 73–101. Foundational paper for Huber's robust M-estimation. [DOI](https://doi.org/10.1214/aoms/1177703732).
 
+
+6. Hekimoglu, S., Durdag, U. M., Dogan, A. H. and Erdogan, B. (2026), “Enhancing the Reliability of M-Estimation through Redundancy Design,” *Journal of Surveying Engineering*, 152(2). Examines the interaction between redundancy design and robust M-estimation using Monte Carlo tests on a regression model and levelling network; the reported evaluation focuses on uncorrelated observations. [DOI](https://doi.org/10.1061/JSUED2.SUENG-1654). <Cite refs={["turn718204search5"]}/>
+
 This is an original, limited teaching implementation informed by the cited literature. It is not a complete production adjustment package, and the selected examples do not establish a universally best estimator.
