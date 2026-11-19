@@ -33,7 +33,7 @@ Spatial Methods is organised around four connected pillars:
 
 Applications bring these pillars together. Some are general-purpose; others are domain-specific, highly specialised or at the research frontier. The four pillars are not a prescribed sequence: start wherever your question or interest leads.
 
-Read the [canonical four-pillar architecture](docs/knowledge-tools-real-world-architecture.md) for definitions, relationships and implementation standards.
+Read the [canonical four-pillar architecture](docs/knowledge-tools-real-world-architecture.md) for definitions, relationships and implementation standards. Use the [Geoinformatics master subject index](catalog/master-subject-index.md) to navigate the wider subject universe and its cross-pillar connections.
 
 ## Explore
 
@@ -50,6 +50,7 @@ Read the [canonical four-pillar architecture](docs/knowledge-tools-real-world-ar
 | Practising with exercises | [Exercises](exercises/README.md) |
 | Following research questions | [Research notes](research/README.md) |
 | Exploring calculations interactively | [Notebooks and labs](notebooks/README.md) |
+| Navigating the wider Geoinformatics subject universe | [Master subject index](catalog/master-subject-index.md) |
 | Checking the source coverage | [Coverage matrix](catalog/coverage-matrix.md) |
 | Learning at your own pace | [Learning paths](learning-paths/README.md) |
 | Finding patterns in spatial data | [Spatial autocorrelation and hotspots](learning-paths/global-spatial-autocorrelation.md), [point-pattern analysis](learning-paths/point-pattern-foundations.md) and [spatial clustering](learning-paths/spatial-clustering-foundations.md) |
@@ -91,6 +92,7 @@ The initial scope comes from the supplied *Spatial Analysis Algorithms: Complete
 ### Architecture and sustainability
 
 - [Knowledge, tools and real-world capability architecture](docs/knowledge-tools-real-world-architecture.md)
+- [Geoinformatics master subject index](catalog/master-subject-index.md)
 - [Economic sustainability architecture](docs/economic-sustainability-architecture.md)
 
 ### How the work is made
