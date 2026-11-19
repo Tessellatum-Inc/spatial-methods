@@ -9,6 +9,8 @@ The first connected application of this taxonomy is the [reference, positioning 
 
 The sixth worked experiment is [Exercise F: network quality, statistical testing and blunder detection](../experiments/measurement/exercise-f-network-quality-and-blunder-detection.md), extending the synthetic vertical network into global and local statistical testing, gross-error propagation, multiple-testing caution and independent checking.
 
+The seventh worked experiment is [Exercise G: reliability, detectability and network design](../experiments/measurement/exercise-g-reliability-and-network-design.md), moving from post-adjustment diagnostics to pre-survey design using redundancy numbers, minimal detectable bias and external reliability.
+
 ## 1. Purpose and boundaries
 
 This index maps the subjects that Spatial Methods may investigate, curate, teach, implement or connect to real-world applications.
