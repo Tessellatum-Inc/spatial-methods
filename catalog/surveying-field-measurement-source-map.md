@@ -178,7 +178,22 @@ Before publishing Kenya-specific operational guidance, establish a dedicated loc
 - professional requirements and applicable engineering/client specifications;
 - data licensing, access conditions and restrictions on cadastral or control information.
 
-The applicable current Kenyan documents have not yet been confirmed in this source map. Do not infer local compliance from the foreign manuals listed above.
+### Kenya-specific source stream — initial findings
+
+| Source | Authority and scope | Main use | Status/caution |
+|---|---|---|---|
+| [Survey Act, Cap. 299 — Kenya Law](https://new.kenyalaw.org/akn/ke/act/1961/25/eng@2022-12-31/source.pdf) | Primary legislation governing land surveys, geographical names, licensing and survey administration | Establish the statutory framework, roles of the Director of Surveys and Land Surveyors' Board, licensed practice, survey marks, survey records and regulation-making powers | Kenya Law copy is legislation as at 31 December 2022; check subsequent amendments and subsidiary legislation before legal reliance |
+| [Land Surveyors' Board — Resources and Guidelines](https://www.lsb.go.ke/resources) | Official regulator resource portal listing legislation, notices and local/international guidance | Use as a discovery point for current professional notices, local guidance and referenced technical documents | Search-indexed page lists a 2026 notice set and guidance including GNSS, aerial surveys, measured surveys, IGS CORS guidance and a Kenyan road-design topographic-survey manual; individual files still need retrieval and review |
+| [Land Surveyors' Board — Surveying practice overview](https://lsb.go.ke/engagesurv) | Official board overview of surveying activities, including topographic and geodetic surveying | Map the regulator's description of professional surveying scope and KENREF/control/CORS concepts | Overview page is explanatory, not a substitute for statute, regulation or technical specification |
+| [Draft National Land Surveying and Mapping Policy (2021)](https://lands.go.ke/wp-content/uploads/2021/10/Draft-National-Land-Surveying-and-Mapping-Policy-2021.pdf) | Ministry of Lands draft policy document | Historical and policy-context evidence about national control, coordinate reference system fragmentation and the proposed CORS/KENREF direction | Explicitly a draft. Its statements about network condition, CORS deployment or public availability are historical claims from the draft, not verified current status |
+| [Kenya Gazette — clarification of national and county functions (2016)](https://www.igrtc.go.ke/sites/default/files/2024-10/Gazette%20No.%202238%20of%201st%20April%202016%20Clarification%20of%20Functions%20as%20exercised%20by%20the%20National%20and%20County%20Government%20in%20accordance%20with%20the%20fourth%20schedule%20of%20the%20Costitution..pdf) | Gazette material allocating geodetic/reference-frame and control-network responsibilities | Trace institutional responsibilities for KENREF, national control, CORS, vertical datum, geoid and gravity/magnetic work | Dated 2016; verify against current institutional mandates and subsequent gazetted changes |
+| [The Evolution of the Kenyan Geodetic Reference Frame (2024)](https://journals.umat.edu.gh/index.php/gmj/article/view/665) | Peer-reviewed research by Kenyan university-affiliated authors | Research context on historical Kenyan geodetic networks, KENREF development and coordination challenges | Research evidence, not an official declaration of current national reference-frame status |
+
+The Survey Act's statutory text assigns functions to the Director of Surveys and Land Surveyors' Board, addresses licensing and the conduct of surveys, protects survey marks, and provides for regulations on survey procedures, records, accuracy and instrument testing. This makes it a foundational legal source for the Kenya branch, but not a technical substitute for current survey regulations and specifications.
+
+The LSB resource portal is now the best starting point for discovering the current Kenyan professional source set. The next review must retrieve the listed documents individually, check their publication status and issuing authority, and distinguish binding law, regulator guidance, professional guidance and draft policy. The 2021 draft policy is particularly useful as a research lead, but must not be presented as adopted policy or proof of the current state of KENREF/CORS.
+
+Do not infer local compliance from the foreign manuals listed above.
 
 ## 8. Curation workflow and acceptance criteria
 
