@@ -8,6 +8,14 @@ This directory is the structured index of the project's knowledge inventory. It 
 - [Initial knowledge graph relationship model](knowledge-graph-model.md) — a controlled vocabulary for connecting identifiable knowledge objects without duplicating canonical content.
 - [Reference, positioning and measurement graph seed](knowledge-graph-reference-positioning-measurement.csv) — the first small, reviewable machine-readable relationship slice using existing subject IDs.
 
+## Machine-readable knowledge catalogue
+
+- [Canonical knowledge records](knowledge-records.jsonl) — first six records for the reference, positioning and measurement cluster.
+- [Knowledge-record JSON Schema](schemas/knowledge-record.schema.json) — metadata contract for canonical records.
+- [Catalogue operating rules](records/README.md) — stable IDs, metadata conventions and change process.
+- [Catalogue validator](validate_knowledge_catalog.py) — standard-library checks for record metadata, subject IDs, canonical paths and graph references.
+- [Record types and classification](record-types.md) — controlled primary record kinds.
+
 ## Subject navigation
 
 - [Geoinformatics master subject index](master-subject-index.md) — the canonical map of subject areas, stable IDs, priorities and cross-pillar relationships.
