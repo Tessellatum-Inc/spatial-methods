@@ -87,6 +87,7 @@ The initial scope comes from the supplied *Spatial Analysis Algorithms: Complete
 - [Exercises](exercises/README.md)
 - [Benchmarks](benchmarks/README.md)
 - [The learning and membership experience](docs/publishing-model.md)
+- [Spatial Methods product and execution roadmap](docs/spatial-methods-execution-roadmap.md)
 
 ### First examples
 
