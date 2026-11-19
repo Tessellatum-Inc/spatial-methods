@@ -197,6 +197,9 @@ Use the evidence to improve navigation and curation before adding unnecessary fe
 
 ## 7. Execution sequence
 
+**Progress update — 19 November 2026:** Phase 1 (Product foundation) has been documented in `docs/product-brief.md` and `docs/experience-architecture.md`. The editorial curation standard and publishing model have also been aligned. The next phase is to build the reusable operating templates and research workflow; this is not a claim that the Patreon creator page has been configured or published.
+
+
 Work in connected batches, completing and verifying each stage before layering on more material.
 
 | Phase | Focus | Required output |
