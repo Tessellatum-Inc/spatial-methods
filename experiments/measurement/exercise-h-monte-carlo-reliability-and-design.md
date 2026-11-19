@@ -155,9 +155,9 @@ The next field-facing validation must use independently collected observations w
 
 From the repository root:
 
-\`\`\`bash
+```bash
 python scripts/measurement/analyze_exercise_h.py
-\`\`\`
+```
 
 The implementation uses only the Python standard library. It reads the Exercise C CSV, builds both design matrices, simulates observation errors, computes correlated standardised residuals, applies the Bonferroni threshold and reports empirical outcomes.
 
