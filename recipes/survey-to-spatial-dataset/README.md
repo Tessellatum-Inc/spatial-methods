@@ -1,6 +1,6 @@
 # Survey-to-spatial-dataset workflow
 
-**Status:** Design brief and workflow skeleton; no field campaign has been conducted.  
+**Status:** G0 design plus a limited G1 synthetic software rehearsal; no field campaign has been conducted.  
 **Recipe pillar:** Spatial Recipes  
 **Connected pillars:** Theoretical Foundations, Spatial Data Collection and Spatial Algorithms  
 **Related cluster:** [Reference, positioning and measurement](../../catalog/first-curation-cluster-reference-positioning-measurement.md)  
@@ -303,9 +303,9 @@ The fixture uses invented local Cartesian coordinates with **no CRS**. It is del
 
 The script was executed against the committed fixture: 4 stops, 6 assets, 4 observations, 4 quality-check records; 0 validation errors. A negative test with an unknown asset-to-stop foreign key correctly returned a failure. The committed report preserves the input hashes and limitations.
 
-A separate [PostGIS schema design](postgis/README.md) now defines a CRS-aware relational model for a future spatial implementation. It is an authored SQL design, not yet tested against a live PostGIS database. The unreferenced local-plane CSV fixture must not be loaded into it or assigned an assumed CRS.
+A separate [PostGIS implementation](postgis/README.md) now includes a CRS-aware relational schema, synthetic-only ingestion, five preflight tests, database integration checks, spatial QA and GeoPackage/ZIP export. The complete Docker/PostGIS workflow passed in GitHub Actions on 19 November 2026 ([run and artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44611562926)). The test target EPSG:3857 is a software test only, not a CRS decision for the Nairobi application. The fixture coordinates and attributes are invented; successful ingestion and QA do not establish positional accuracy or field fitness. The unreferenced local-plane CSV fixture must not be loaded into this pipeline or assigned an assumed CRS.
 
-The PostGIS package now also contains a synthetic-only [ingestion pipeline](postgis/ingest_pilot.py), a declared EPSG:4326 test fixture, five input preflight tests and a Docker Compose runner. Its database test target is EPSG:3857; this is a software test only, not a CRS decision for the Nairobi application. The pipeline and tests are committed but still require execution in a Docker-capable environment.
+The next technical method is documented in the [independent positional verification plan](positional-verification-plan.md). It defines how a future field dataset could be checked against an independent reference, while leaving the actual method, acceptance criteria and sample design unresolved until the site and intended use are known.
 
 ## 9. Proposed first application
 
