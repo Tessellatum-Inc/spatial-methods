@@ -1,0 +1,17 @@
+services:
+  postgis:
+    image: postgis/postgis:16-3.5-alpine
+    environment:
+      POSTGRES_DB: spatial_methods_test
+      POSTGRES_USER: spatial_methods
+      POSTGRES_PASSWORD: spatial_methods_local_only
+    ports:
+      - "55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spatial_methods -d spatial_methods_test"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - ./postgis-schema.sql:/tests/postgis-schema.sql:ro
+      - ./integration.sql:/tests/integration.sql:ro
