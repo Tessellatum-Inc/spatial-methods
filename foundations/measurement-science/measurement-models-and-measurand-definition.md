@@ -152,7 +152,6 @@ u_c(A)=\sqrt{0.0025+0.0064+0.0040}
 \approx 0.1136\;\text{m}^2
 \]
 
-<text> </text>
 
 | Assumption | Combined standard uncertainty |
 |---|---:|
