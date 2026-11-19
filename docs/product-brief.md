@@ -71,6 +71,21 @@ A curiosity can enter through a phenomenon, question, application, technology, i
 - Repackaging copyrighted courses, papers, books, figures or datasets without permission.
 - Guaranteed individual supervision, consulting or custom project delivery as an implied membership benefit.
 
+## 4A. The four-pillar structure
+
+The permanent organising structure of Spatial Methods has four pillars:
+
+1. **Spatial Algorithms** — reusable computational methods, their theory, implementations, assumptions, tests and limitations.
+2. **Spatial Recipes** — reproducible workflows that combine data, algorithms, tools, parameters and decisions to accomplish a task.
+3. **Spatial Data Collection** — the broad systems and methods used to observe, measure, sample, generate, acquire and transmit spatial information, from field and laboratory instruments to satellites, industrial systems and digital records.
+4. **Theoretical Foundations** — the mathematics, statistics, spatial science, physical sciences, life sciences, computer science and engineering principles that explain the other pillars.
+
+These are the four top-level pillars, not four mandatory stages. People can enter through any of them and move between them in any direction.
+
+Applications are contexts in which the pillars are combined, not a fifth pillar. Applications may be general-purpose, domain-specific, highly specialised or frontier/research-oriented. The required depth, expertise and validation must match the intended use.
+
+Data, instruments, software, experiments, teaching, research and products are resources or outputs connected across the pillars; they do not create additional top-level categories. The detailed definitions and relationship model are maintained in [the four-pillar architecture](knowledge-tools-real-world-architecture.md).
+
 ## 5. Product promise
 
 Bring a question, interest or problem. Spatial Methods helps you:
