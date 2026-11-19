@@ -153,9 +153,9 @@ A more advanced follow-up should:
 
 From the repository root:
 
-\`\`\`bash
+```bash
 python scripts/measurement/analyze_exercise_i.py
-\`\`\`
+```
 
 The implementation uses only the Python standard library. It reads the Exercise C CSV and constructs the contaminated cases in memory; it does not alter the source dataset.
 
