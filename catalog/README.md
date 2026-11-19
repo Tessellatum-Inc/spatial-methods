@@ -10,7 +10,7 @@ This directory is the structured index of the project's knowledge inventory. It 
 
 ## Machine-readable knowledge catalogue
 
-- [Canonical knowledge records](knowledge-records.jsonl) — first seven records for the reference, positioning and measurement cluster.
+- [Canonical knowledge records](knowledge-records.jsonl) — first ten records for the reference, positioning and measurement cluster.
 - [Knowledge-record JSON Schema](schemas/knowledge-record.schema.json) — metadata contract for canonical records.
 - [Catalogue operating rules](records/README.md) — stable IDs, metadata conventions and change process.
 - [Catalogue validator](validate_knowledge_catalog.py) — standard-library checks for record metadata, subject IDs, canonical paths and graph references.
