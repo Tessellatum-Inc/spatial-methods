@@ -5,7 +5,7 @@
 **Role:** Canonical navigation index for the wider Geoinformatics knowledge universe  
 **Related architecture:** [Four-pillar architecture](../docs/knowledge-tools-real-world-architecture.md), [subject-to-repository alignment register](subject-alignment-register.md), [record types](record-types.md), [coverage matrix](coverage-matrix.md), [editorial and resource curation standard](../docs/editorial-resource-architecture.md)
 
-The first connected application of this taxonomy is the [reference, positioning and measurement curation cluster](first-curation-cluster-reference-positioning-measurement.md), which links existing repository assets to the relevant subject IDs and records preliminary gaps.
+The first connected application of this taxonomy is the [reference, positioning and measurement curation cluster](first-curation-cluster-reference-positioning-measurement.md), which links existing repository assets to the relevant subject IDs and records preliminary gaps. The first technical foundation is [Measurement principles and field verification](../foundations/measurement-science/measurement-principles-and-field-verification.md), linked primarily to SM-FND-011 and its surveying/quality-control relationships.
 
 ## 1. Purpose and boundaries
 
