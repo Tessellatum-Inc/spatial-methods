@@ -18,6 +18,7 @@ This directory is the structured index of the project's knowledge inventory. It 
 - [Exercise F: network quality, statistical testing and blunder detection](../experiments/measurement/exercise-f-network-quality-and-blunder-detection.md) — compares global chi-square and local standardized-residual diagnostics, injects a synthetic gross error, examines multiple testing and withholding sensitivity, and includes an independent synthetic check.
 
 - [Exercise G: reliability, detectability and network design](../experiments/measurement/exercise-g-reliability-and-network-design.md) — computes redundancy numbers, minimal detectable biases and external effects, then compares an added independent B–E link with a uniform precision improvement.\n- [Exercise H: Monte Carlo reliability and design simulation](../experiments/measurement/exercise-h-monte-carlo-reliability-and-design.md) — simulates correlated standardised-residual tests under single and multiple gross errors, compares the baseline and augmented networks, and reports empirical detection, false alarms, identification and masking.
+- [Exercise I: robust estimation and iterative outlier identification](../experiments/measurement/exercise-i-robust-estimation-and-outlier-identification.md) — compares ordinary least squares, sequential data snooping and Huber IRLS under uncontaminated, single-error and multiple-error scenarios.
 
 ## Coverage
 
