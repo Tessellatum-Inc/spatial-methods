@@ -111,15 +111,27 @@ What can be tested, reproduced, built, configured, operated or improved?
 - comparison, replication and independent verification.
 
 ### H. Applications, services and systems
-What can the knowledge and capability enable?
-- scientific discovery and research;
-- engineering and product development;
-- environmental observation and monitoring;
-- infrastructure, transport and logistics;
-- health, agriculture, industry and public services;
-- decision support, operational systems and new forms of interaction.
 
-Applications are not the sole justification for foundational knowledge. Some explorations are valuable because they answer a scientific or intellectual question.
+Applications vary substantially in scope, specialisation, operating context and consequence. They should not be presented as though they are all general-purpose tools or interchangeable workflows.
+
+A useful working spectrum is:
+
+- **General-purpose capabilities:** data exploration, mapping, visualisation, statistical analysis, modelling, simulation and workflow automation. These can serve many domains, though still require context and competent use.
+- **Domain-specific applications:** flood modelling, medical imaging, precision agriculture, transport planning, mineral exploration, weather forecasting and habitat assessment. They combine shared foundations with domain knowledge, specialised data and context-specific methods.
+- **Highly specialised applications:** seismic inversion, radiotherapy treatment planning, satellite orbit determination, underwater acoustic localisation and industrial non-destructive testing. These may require advanced expertise, specialised instruments, rigorous validation, formal standards or regulated practice.
+- **Frontier and research applications:** experimental instruments, emerging measurement techniques, novel algorithms and systems whose methods, benchmarks or operational practices are still being established.
+
+This is a spectrum, not a fixed ranking or taxonomy. An application may move along it as technology, evidence and practice mature. Specialisation is not simply a measure of difficulty: it may arise from domain-specific theory, narrow operating conditions, rare equipment, data constraints, safety or regulatory requirements, or the consequences of error.
+
+For each application, make visible where relevant:
+- the problem, users, operating environment and intended decision or outcome;
+- domain knowledge and prerequisites that cannot be replaced by generic tool proficiency;
+- required data, instruments, methods, infrastructure and specialist roles;
+- performance criteria, validation evidence, uncertainty and acceptable failure;
+- safety, legal, ethical, professional and regulatory obligations;
+- whether the work is exploratory, educational, research-grade, operational or safety-critical.
+
+Applications may enable scientific discovery, engineering and product development, environmental observation, infrastructure, transport, health, agriculture, industry, public services and new forms of interaction. Foundational inquiry also has value without an immediate application.
 
 ## 3. Movement is non-linear
 
@@ -276,6 +288,10 @@ Do not force unrelated subjects into a geospatial workflow. Follow the subject w
 
 The architecture is working when:
 - someone can enter through a tool, phenomenon, question, dataset, method or application;
+- observation and acquisition cover diverse physical, biological, environmental, industrial, human, digital and computational sources—not just drones or remote sensing;
+- acquisition, measurement, data generation and transmission are distinguishable and can be traced as a system;
+- general-purpose, domain-specific, highly specialised and frontier applications can be represented without forcing them into one workflow;
+- specialist prerequisites, validation, safety and consequences of error are visible where relevant;
 - observation and acquisition cover diverse physical, biological, environmental, industrial, human, digital and computational sources—not just drones or remote sensing;
 - acquisition, measurement, data generation and transmission are distinguishable and can be traced as a system;
 - general-purpose, domain-specific, highly specialised and frontier applications can be represented without forcing them into one workflow;
