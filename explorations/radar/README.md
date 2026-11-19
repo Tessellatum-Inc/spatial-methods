@@ -123,6 +123,10 @@ Create a one-page observation note. Include:
 
 This note is your first artefact. It is more valuable than ticking off five videos without testing what you understood.
 
+## First worked study area
+
+The [Nairobi Sentinel-1 scene record](nairobi-sentinel-1-scene-record.md) defines the first study window, scene-selection rule and evidence record.
+
 ## What to explore next
 
 Choose the next investigation based on the question that stayed with you.
