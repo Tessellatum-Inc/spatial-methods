@@ -295,6 +295,14 @@ Use the [surveying and field measurement source map](../../catalog/surveying-fie
 
 The source map records edition, access and jurisdiction caveats. Before an operational protocol is released, inspect the exact current documents and confirm that each supports the specific claim being made.
 
+## 9. Synthetic rehearsal — first executable validation pipeline
+
+A standard-library Python validator and a small synthetic fixture are available in [synthetic rehearsal](synthetic/README.md). The fixture contains four stop records, six asset records, four observation records and four example quality checks. It validates required fields, identifiers, controlled values, foreign-key relationships, timestamps and declared check records, then writes a JSON QA report and CSV error list.
+
+The fixture uses invented local Cartesian coordinates with **no CRS**. It is deliberately not georeferenced and must not be displayed as Nairobi locations. A passing run demonstrates schema/record validation only; it does not establish positional accuracy, field performance, independent evidence or operational fitness.
+
+The script was executed against the committed fixture: 4 stops, 6 assets, 4 observations, 4 quality-check records; 0 validation errors. A negative test with an unknown asset-to-stop foreign key correctly returned a failure. The committed report preserves the input hashes and limitations.
+
 ## 9. Proposed first application
 
 The proposed first application is a small [urban public-transport stop and roadside-asset inventory](pilot-project-definition.md) in Nairobi. It is a design candidate, not a confirmed site or authorised field assignment. The linked project definition sets out the study question, scope boundaries, relational data model, collection principles, validation strategy, deliverables and G0 feasibility gate.
@@ -303,6 +311,6 @@ This application is intended to connect measurement science and field acquisitio
 
 ## 9. Current status and next decision
 
-**Current status: G0 design-stage skeleton.** The workflow architecture and source routes are documented. No site has been selected, no equipment has been inspected, no permissions have been obtained, no field observations have been collected and no physical validation is claimed.
+**Current status: G0 design plus a limited G1 synthetic schema rehearsal.** The workflow architecture and source routes are documented. No site has been selected, no equipment has been inspected, no permissions have been obtained, no field observations have been collected and no physical validation is claimed.
 
 The next decision is to confirm whether the proposed Nairobi stop/asset inventory is feasible, identify a suitable corridor and resolve access, safety, equipment, reference and independent-check requirements. Only then should it be specialised into an executable field protocol.
