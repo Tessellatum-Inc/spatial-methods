@@ -9,7 +9,7 @@ from covariance_gls import (
     session_common_covariance,
 )
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "data" / "measurement" / "exercise-d-stochastic-control-network.csv"
 POINTS = ("A", "B", "C", "D", "E")
 CONTROL_VALUE_M = 100.001
