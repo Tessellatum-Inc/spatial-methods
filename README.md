@@ -33,7 +33,7 @@ Spatial Methods is organised around four connected pillars:
 
 Applications bring these pillars together. Some are general-purpose; others are domain-specific, highly specialised or at the research frontier. The four pillars are not a prescribed sequence: start wherever your question or interest leads.
 
-Read the [canonical four-pillar architecture](docs/knowledge-tools-real-world-architecture.md) for definitions, relationships and implementation standards. Use the [Geoinformatics master subject index](catalog/master-subject-index.md) to navigate the wider subject universe and its cross-pillar connections.
+Read the [canonical four-pillar architecture](docs/knowledge-tools-real-world-architecture.md) for definitions, relationships and implementation standards. The [complete knowledge base and AI-readiness architecture](docs/knowledge-base-and-ai-readiness-architecture.md) explains how canonical content, catalogues, Patreon curation and future AI interfaces fit together. Use the [Geoinformatics master subject index](catalog/master-subject-index.md) to navigate the wider subject universe and its cross-pillar connections.
 
 ## Explore
 
@@ -93,6 +93,8 @@ The initial scope comes from the supplied *Spatial Analysis Algorithms: Complete
 ### Architecture and sustainability
 
 - [Knowledge, tools and real-world capability architecture](docs/knowledge-tools-real-world-architecture.md)
+- [Complete knowledge base and AI-readiness architecture](docs/knowledge-base-and-ai-readiness-architecture.md)
+- [Initial knowledge graph relationship model](catalog/knowledge-graph-model.md)
 - [Geoinformatics master subject index](catalog/master-subject-index.md)
 - [Economic sustainability architecture](docs/economic-sustainability-architecture.md)
 
