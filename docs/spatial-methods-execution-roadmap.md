@@ -218,17 +218,17 @@ Track evidence that the experience is useful:
 Use the evidence to improve navigation and curation before adding unnecessary features or more tiers.
 
 
-### Workstream 9 — Knowledge-to-tools architecture
-- Define the connected model spanning phenomena, foundations, broad observation/acquisition systems, measurement, data, methods, tools, experiments and applications.
-- Represent the distinction between general-purpose, domain-specific, highly specialised and frontier/research applications without turning it into a rigid hierarchy.
-- Make specialist knowledge, operating context, validation burden, safety and consequences of error visible in application records.
-- Create adaptable records for tools and instruments, including operating principles, inputs/outputs, capabilities, limitations, access routes, safety and related experiments.
-- Distinguish physical measurements, simulations, software implementations, prototypes and validated systems.
-- Test diverse acquisition systems and applications at different specialisation levels, including environmental, medical, industrial, astronomical, underwater and computational cases; do not privilege drones or force any field into a spatial workflow.
+### Workstream 9 — Four-pillar architecture and operationalisation
+- Organise the canonical knowledge structure around exactly four pillars: Spatial Algorithms, Spatial Recipes, Spatial Data Collection and Theoretical Foundations.
+- Treat applications as contexts that combine the pillars, not as a fifth pillar; represent their range from general-purpose to highly specialised and frontier/research work.
+- Define shared record types, metadata and relationships without creating extra top-level pillars for data, instruments, software, experiments, teaching or products.
+- Build and test representative records in each pillar, then connect them through real examples and recipes.
+- Cover the full breadth of spatial data acquisition and measurement; do not privilege drones, satellites or any single modality.
+- Match specialist knowledge, safety, operating context and validation requirements to the intended application.
 
 **Canonical specification:** `docs/knowledge-tools-real-world-architecture.md`.
 
-**Exit condition:** A person can enter through a question, tool, dataset or application and follow meaningful connections into foundations and practical work. Expensive infrastructure is not assumed to be owned.
+**Exit condition:** The repository visibly and consistently uses the four pillars; a reader can enter through any pillar, follow meaningful connections and understand how the combined knowledge supports applications at different levels of specialisation.
 
 ### Workstream 10 — Economic sustainability
 - Inventory existing assets, channels, offers, costs and obligations.
@@ -259,7 +259,7 @@ Work in connected batches, completing and verifying each stage before layering o
 | 5 | Distribution system | Channel adaptations, launch sequence and publishing checklist |
 | 6 | Operational readiness | Backlog, capacity, cadence, measurement and maintenance routines |
 | 7 | Release verification | Link, content, licence, access, navigation and member-journey checks; close all known blockers |
-| 8 | Knowledge-to-tools architecture | Tool/instrument record, practical investigation extensions and cross-disciplinary demonstration tests |
+| 8 | Four-pillar architecture | Canonical definitions, linked record types, representative examples and cross-pillar recipes |
 | 9 | Economic sustainability | Asset and cost inventory, offer validation, unit economics, reinvestment and risk controls |
 
 Do not start by scheduling a large volume of posts. First create and verify the system and its initial content; then schedule only what is finished, accurate and ready to publish.
