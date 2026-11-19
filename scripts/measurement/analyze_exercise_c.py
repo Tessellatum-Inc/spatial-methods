@@ -82,7 +82,7 @@ def main():
     print("\nAdjusted elevations and formal standard uncertainties:")
     for i, point in enumerate(UNKNOWN_POINTS):
         u = math.sqrt(q_x[i][i])
-        print(f"{point}: {estimates[i]+FIXED_ELEVATION_M:.6f} m; "
+        print(f"{point}: {estimates[i]:.6f} m; "
               f"formal u={u*1000:.3f} mm; posterior-scaled u={u*sigma0*1000:.3f} mm")
     print("\nResiduals (adjusted minus observed):")
     print("id,from,to,residual_mm,normalized_residual")
