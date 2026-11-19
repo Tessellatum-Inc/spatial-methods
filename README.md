@@ -22,6 +22,19 @@ We began with spatial and computational methods. The wider ambition is to connec
 
 You do not have to start at the beginning. You do not have to know everything before you join in.
 
+## The four pillars
+
+Spatial Methods is organised around four connected pillars:
+
+1. **Spatial Algorithms** — reusable computational methods and how they work.
+2. **Spatial Recipes** — reproducible workflows that combine data, algorithms, tools and decisions.
+3. **Spatial Data Collection** — how spatial information is observed, measured, sampled, generated and acquired across many technologies and environments.
+4. **Theoretical Foundations** — the mathematics and sciences that explain the methods, measurements and systems.
+
+Applications bring these pillars together. Some are general-purpose; others are domain-specific, highly specialised or at the research frontier. The four pillars are not a prescribed sequence: start wherever your question or interest leads.
+
+Read the [canonical four-pillar architecture](docs/knowledge-tools-real-world-architecture.md) for definitions, relationships and implementation standards.
+
 ## Explore
 
 | If you're interested in… | Start here |
