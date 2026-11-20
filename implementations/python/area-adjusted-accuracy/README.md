@@ -179,3 +179,6 @@ A further design-weighted analysis decomposes both maps' error matrices by refer
 - [Class-specific error investigation](class-specific-error-analysis.md)
 - [Reproducible analysis script](class_error_analysis.py)
 - [Unit tests](test_class_error_analysis.py)
+
+
+The Fiji–WorldCover comparison now includes a [documentary legend adjudication](legend-adjudication.md), which explains why some large transitions may reflect differences in the two class systems. It does not claim point-level image adjudication; that remains a separate evidence gate.

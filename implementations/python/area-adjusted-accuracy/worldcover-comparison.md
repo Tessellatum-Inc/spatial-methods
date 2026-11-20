@@ -252,3 +252,8 @@ The four-outcome analysis estimates the eligible-domain proportions where both m
 ## Class-specific error investigation
 
 The overall accuracy difference is not evenly distributed across classes. The class-specific analysis identifies the largest omission contributions and map-to-reference transitions, including WorldCover tree at reference shrubland points and WorldCover grassland/tree at reference agriculture points. It also exposes the instability of user's accuracy for classes with very few mapped predictions. See [class-specific error investigation](class-specific-error-analysis.md) and its [reproducible script](class_error_analysis.py). The results describe error patterns; they do not establish causes.
+
+
+### Legend adjudication
+
+A documentary review of Fiji project class definitions against ESA WorldCover v200 shows material differences in the tree, shrubland, grassland, agriculture and wetland concepts. In particular, Fiji agriculture includes visible livestock-management and recently-fallow evidence, whereas WorldCover cropland is annual-crop focused and pasture is included in grassland. See the [legend adjudication note](legend-adjudication.md). This is an ontology review only: point-level imagery has not yet been adjudicated, so the observed transitions cannot yet be apportioned between legend mismatch and actual map error.
