@@ -48,3 +48,7 @@ The GLS illustration uses a symmetric positive-definite covariance matrix and Ch
 - [Matrix factorizations foundation module](../../../foundations/linear-algebra/matrix-factorizations-lu-qr-cholesky-svd.md)
 - [Covariance matrices and multivariate structure](../../../foundations/linear-algebra/covariance-matrices-and-multivariate-structure.md)
 - [Linear algebra sequence audit](../../../foundations/linear-algebra/sequence-audit.md)
+
+## Integrated workflow
+
+The [integrated synthetic spatial case](integrated-case.md) connects affine control transformation, terrain-plane fitting, covariance-aware GLS and SVD diagnostics in one reproducible workflow. It includes a separate script and tests; its assumptions and limits are documented explicitly.
