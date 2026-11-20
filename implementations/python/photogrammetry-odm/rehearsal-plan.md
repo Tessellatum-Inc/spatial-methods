@@ -91,7 +91,7 @@ python -m pip install huggingface_hub
 python acquire_rehearsal_dataset.py ./data/heig-vd-scop
 ```
 
-The helper resolves the repository's current commit SHA, downloads `datasets/drone_heig_2019/` at that immutable revision, and writes `acquisition-provenance.json` with the revision, retrieval timestamp, client/Python versions, and per-file sizes and SHA-256 checksums. Preserve this manifest. Then inspect the dataset-specific README and run `dataset_audit.py` against `./data/heig-vd-scop/datasets/drone_heig_2019`. Keep imagery outside this repository; store only provenance, processing records, non-sensitive logs and concise result summaries.
+The helper resolves the repository's current commit SHA and downloads `datasets/drone_heig_2019/` into `./data/heig-vd-scop/snapshots/<commit-sha>/` at that immutable revision. It writes `acquisition-provenance.json` in the same revision-specific directory, with the revision, retrieval timestamp, client/Python versions, and per-file sizes and SHA-256 checksums. Separate revision directories prevent stale files from a previous snapshot being mixed into a new manifest; existing snapshots are retained. Preserve this manifest. Then inspect the dataset-specific README and run `dataset_audit.py` against `./data/heig-vd-scop/snapshots/<commit-sha>/datasets/drone_heig_2019`. Keep imagery outside this repository; store only provenance, processing records, non-sensitive logs and concise result summaries.
 
 ## Current access limitation
 
