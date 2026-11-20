@@ -23,6 +23,10 @@ The sequence below moves from mathematical language toward structures and method
 | 09 | Mathematical modelling and dimensional analysis | Model construction, units, scaling and checking plausibility |
 | 10 | Introductory discrete mathematics and logic | Sets, relations, graphs, Boolean operations and spatial predicates |
 
+## Coverage audit
+
+The eight existing modules have received an initial coverage audit. The [mathematics gap register](gap-register.md) records missing concepts, priorities, dependencies and the recommended treatment for each gap. It deliberately distinguishes material that belongs in this domain from topics that should be developed in specialist foundations. This is an editorial planning review, not independent technical certification.
+
 ## What this domain covers—and what it does not
 
 This domain establishes the common mathematical language. More specialised theory has its own home:
@@ -67,4 +71,4 @@ Do not mistake a long list of formulas for a foundation. The aim is to teach how
 
 ## Current status
 
-Modules 01–08 have initial public content. Their notation and source coverage have received an editorial pass, but independent technical review and further expansion remain necessary. Modules 09–10 remain planned, not yet written or reviewed. Coverage will expand only when each module has meaningful explanatory content.
+Modules 01–08 have initial public content and have received notation, source and initial coverage audits. Independent technical review and targeted expansion remain necessary. Modules 09–10 remain planned, not yet written or reviewed. The gap register guides the next work; coverage will expand only when each module has meaningful explanatory content.
