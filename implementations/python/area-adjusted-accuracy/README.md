@@ -12,7 +12,50 @@ It fills a deliberately separate gap in the shared [accuracy-assessment metrics 
 - The mapped-class area proportions are known and sum to one.
 - Samples from different strata are treated as independent.
 
-The estimator is not a generic design-based engine. Do not use it unchanged for cluster, unequal-probability, adaptive, general systematic or spatially balanced samples.
+The original `area_adjusted_accuracy.py` estimator is for the special case where the evaluated map classes are also the sampling strata. A second estimator, `stratified_accuracy.py`, supports a different evaluated map while retaining the original sample strata and their area weights. Both require independent simple random sampling within the supplied strata; neither is a generic engine for cluster, arbitrary unequal-probability, adaptive, general systematic or spatially balanced samples.
+
+## When sampling strata differ from the evaluated map
+
+Use this when a reference sample was selected using one map, but you want to evaluate another map at the same sample locations. The input columns are `sampling_stratum`, `map_class` and `reference_class`. Sampling-stratum weights must describe the target population; they are not the evaluated map's class proportions.
+
+```csv
+sample_id,sampling_stratum,map_class,reference_class
+p01,original_forest,tree,tree
+p02,original_forest,grassland,grassland
+p03,original_water,water,water
+```
+
+Run the general estimator with weights and, optionally, eligible population sizes keyed by sampling stratum:
+
+```bash
+python stratified_accuracy.py comparison.csv \
+  --stratum-area-weights '{"original_forest":0.7,"original_water":0.3}' \
+  --stratum-population-sizes '{"original_forest":7000,"original_water":3000}' \
+  --json-out comparison-report.json
+```
+
+The general estimator constructs each map/reference cell by weighting its within-sampling-stratum joint proportion. It then estimates overall accuracy, mapped-class and reference-class area marginals, user's accuracy and producer's accuracy. Map and reference labels must be harmonised to a defensible common legend. If a map has classes with no reference counterpart, those labels remain distinct and are counted as disagreement; do not force them into a convenient class without a documented crosswalk.
+
+### Fiji sample and ESA WorldCover 2021 v200
+
+The repository now includes an extraction workflow for evaluating ESA WorldCover against the Fiji reference sample without pretending that WorldCover classes were the sampling strata.
+
+1. Download the official WorldCover 2021 v200 10 m COG tiles covering all Fiji sample points and create a covering VRT/mosaic. Use analytical raster data, not a rendered WMS/WMTS.
+2. Install the optional `rasterio` dependency: `python -m pip install -r requirements-worldcover.txt`.
+3. Sample the WorldCover raster at the pinned 834 Fiji reference points:
+
+```bash
+python sample_worldcover.py \
+  --geojson /path/to/fiji-lulc-2021-test-data.geojson \
+  --raster /path/to/worldcover-2021-fiji.vrt \
+  --output worldcover-fiji-sample.csv
+```
+
+4. Run `stratified_accuracy.py` using the original Fiji sampling-stratum weights and pixel counts. The full command and class harmonisation discussion are in [the Fiji–WorldCover comparison guide](worldcover-comparison.md).
+
+The extraction script preserves the original Fiji sample strata, reference labels and point order, assigns stable local sample IDs, transforms point coordinates to the raster CRS and fails on nodata or missing coverage. It writes a provenance sidecar with raster metadata and file fingerprints. Its default WorldCover-to-reference label mapping is provisional and must be reviewed for the intended legend before interpreting accuracy.
+
+**No WorldCover raster has yet been sampled and no WorldCover comparison result is claimed.**
 
 ## Input
 
@@ -81,7 +124,7 @@ This is an educational and analytical baseline, not a regulatory or certificatio
 - Olofsson, P., Foody, G. M., Herold, M., Stehman, S. V., Woodcock, C. E., & Wulder, M. A. (2014). Good practices for estimating area and assessing accuracy of land change. *Remote Sensing of Environment*, 148, 42–57. https://doi.org/10.1016/j.rse.2014.02.015
 - Olofsson, P., Foody, G. M., Stehman, S. V., & Woodcock, C. E. (2013). Making better use of accuracy data in land change studies: Estimating accuracy and area and quantifying uncertainty using stratified estimation. *Remote Sensing of Environment*, 129, 122–131. https://doi.org/10.1016/j.rse.2012.10.031
 
-A real public-data example is documented in [Fiji 2021 land-cover map accuracy](fiji-case-study.md). The case script downloads a pinned GeoJSON snapshot, verifies its Git blob identity and applies the supported estimator. The raw dataset is not redistributed in this repository.
+A real public-data analysis is documented in [Fiji 2021 land-cover map accuracy](fiji-case-study.md). The [Fiji–WorldCover comparison guide](worldcover-comparison.md) is a separate, prepared comparison workflow; its WorldCover extraction remains pending raster acquisition and execution.
 
 ## Learning materials
 
@@ -92,6 +135,12 @@ A real public-data example is documented in [Fiji 2021 land-cover map accuracy](
 - [Fiji 2021 real-data case study](fiji-case-study.md)
 - [Fiji case reproduction script](fiji_case_study.py)
 - [Fiji case script tests](test_fiji_case_study.py)
+- [Estimator for independent sampling strata](stratified_accuracy.py)
+- [Tests for the independent-strata estimator](test_stratified_accuracy.py)
+- [ESA WorldCover point-sampling script](sample_worldcover.py)
+- [WorldCover sampling tests](test_sample_worldcover.py)
+- [WorldCover comparison guide](worldcover-comparison.md)
+- [Optional rasterio requirements](requirements-worldcover.txt)
 - [Introductory synthetic sample CSV](sample.csv)
 
-The test suite includes synthetic regression cases, finite-population correction checks and a structural fixture for the Fiji case script. The Fiji script itself analyses the pinned public dataset when run with network access; its test fixture does not substitute for a live download. Passing tests does not establish support for other sampling designs.
+The tests include synthetic regression cases, finite-population correction checks, a structural fixture for the Fiji case script, and fixtures for the independent sampling-strata estimator and pinned point reader. These tests have not yet been executed in this repository workflow. Passing tests does not establish support for other sampling designs or validate the provisional class crosswalk.
