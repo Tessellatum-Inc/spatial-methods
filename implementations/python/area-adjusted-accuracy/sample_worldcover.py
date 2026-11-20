@@ -1,7 +1,9 @@
 """Sample ESA WorldCover classes at the pinned Fiji reference points.
 
-Requires rasterio. Supply every local GeoTIFF/COG tile needed to cover the
-834 points using repeated --raster arguments. The output preserves the
+Requires rasterio. Supply every local GeoTIFF/COG tile or HTTPS COG URL needed
+to cover the 834 points using repeated --raster arguments. HTTPS sources are
+read through GDAL's /vsicurl/ virtual filesystem, which can use HTTP range
+requests instead of downloading complete tiles. The output preserves the
 original Fiji sampling strata and reference labels, while adding the evaluated
 map class.
 """
@@ -12,6 +14,7 @@ import csv
 import hashlib
 import json
 from pathlib import Path
+from urllib.parse import urlsplit
 
 FIJI_REVISION = "050021d57c99abaaa6f2c511e4f718a402c7ca2a"
 EXPECTED_GIT_BLOB_SHA1 = "d07afda85d40b2eb6b13d2c17089e5b061a577c9"
@@ -96,6 +99,21 @@ def read_pinned_points(path: str) -> tuple[list[dict], str]:
     return points, actual
 
 
+def rasterio_source(path: str) -> str:
+    """Return a GDAL-readable path, enabling range reads for HTTPS COGs."""
+    if path.startswith("https://"):
+        return "/vsicurl/" + path
+    if path.startswith("http://"):
+        raise ValueError("Remote raster sources must use HTTPS.")
+    return path
+
+
+def source_name(path: str) -> str:
+    """Return a readable source basename for local paths and URLs."""
+    parsed = urlsplit(path)
+    return Path(parsed.path if parsed.scheme else path).name
+
+
 def sha256_file(path: str | Path) -> str:
     digest = hashlib.sha256()
     with Path(path).open("rb") as stream:
@@ -126,7 +144,7 @@ def sample_worldcover(
     output = []
     with ExitStack() as stack:
         sources = [
-            (path, stack.enter_context(rasterio.open(path)))
+            (path, stack.enter_context(rasterio.open(rasterio_source(path))))
             for path in raster_paths
         ]
         for path, src in sources:
@@ -136,7 +154,8 @@ def sample_worldcover(
         metadata_tiles = []
         for path, src in sources:
             metadata_tiles.append({
-                "raster_path_as_supplied": str(Path(path)),
+                "raster_path_as_supplied": path,
+                "raster_source_kind": "https_cog_range_read" if path.startswith("https://") else "local_file",
                 "raster_driver": src.driver,
                 "raster_crs": str(src.crs),
                 "raster_width": src.width,
@@ -198,7 +217,7 @@ def sample_worldcover(
                 "worldcover_code": code,
                 "longitude": point["longitude"],
                 "latitude": point["latitude"],
-                "source_tile": Path(path).name,
+                "source_tile": source_name(path),
             })
 
         metadata = {
@@ -220,7 +239,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--geojson", required=True, help="Pinned Fiji reference-sample GeoJSON")
     parser.add_argument("--raster", action="append", required=True,
-                        help="Local WorldCover COG/GeoTIFF tile; repeat for every tile covering the sample")
+                        help="Local WorldCover COG/GeoTIFF tile or HTTPS COG URL; repeat for every tile covering the sample")
     parser.add_argument("--output", required=True, help="Output CSV path")
     parser.add_argument("--class-names", default=None,
                         help="Optional JSON object mapping WorldCover integer codes to harmonised labels")
@@ -240,9 +259,16 @@ def main() -> int:
         ).hexdigest()
         metadata["fiji_geojson_path_as_supplied"] = str(Path(args.geojson))
         for tile in metadata["raster_tiles"]:
-            tile_path = Path(tile["raster_path_as_supplied"])
-            tile["sha256"] = sha256_file(tile_path)
-            tile["size_bytes"] = tile_path.stat().st_size
+            supplied_source = tile["raster_path_as_supplied"]
+            if supplied_source.startswith("https://"):
+                tile["byte_fingerprint"] = (
+                    "not_computed_remote_range_read; record the source URL and "
+                    "raster metadata, or download locally to compute SHA-256"
+                )
+            else:
+                tile_path = Path(supplied_source)
+                tile["sha256"] = sha256_file(tile_path)
+                tile["size_bytes"] = tile_path.stat().st_size
         output_path = Path(args.output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with output_path.open("w", newline="", encoding="utf-8") as stream:
