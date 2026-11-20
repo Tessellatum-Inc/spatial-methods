@@ -90,9 +90,9 @@ $$
 
 where:
 
-- (d) is distance travelled;
-- (v) is average speed over the interval;
-- (t) is elapsed time.
+- $d$ is distance travelled;
+- $v$ is average speed over the interval;
+- $t$ is elapsed time.
 
 If $v=30\,\mathrm{km/h}$ and $t=0.5\,\mathrm{h}$, then $d=15\,\mathrm{km}$.
 
