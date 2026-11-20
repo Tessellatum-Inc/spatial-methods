@@ -45,7 +45,7 @@ where M is map distance and f\(M\) is represented ground distance, with both dis
 If \(M\) is measured in centimetres and \(s=25{,}000\), then:
 
 \[
-f(2\;\mathrm{cm})=50{,}000\;\mathrm{cm}=500\;\mathrm{m}.
+\(f(2\;\mathrm{cm})=50{,}000\;\mathrm{cm}=500\;\mathrm{m}\).
 \]
 
 A reasonable domain might be non-negative map distances for a particular map. The output is non-negative ground distance under this simplified scale model. The formula does not establish map accuracy or account for local projection scale variation.
@@ -106,7 +106,7 @@ where x and y are horizontal offsets in metres from a local origin and z is elev
 At \(x,y\) = \(100,200\):
 
 \[
-z(100,200)=100+0.02(100)-0.01(200)=100\;\mathrm{m}.
+\(z(100,200)=100+0.02(100)-0.01(200)=100\;\mathrm{m}\).
 \]
 
 This is a simple plane, not a realistic terrain model. Its coefficients represent constant slopes in the x and y directions under the chosen local coordinate convention. A real terrain surface is more complex and requires observations, interpolation or another modelling method.
@@ -314,7 +314,7 @@ The composed mapping is:
 For \(m=0.04\,\mathrm{m}\):
 
 \[
-(g\circ f)(0.04)=1{,}000\;\mathrm{m}.
+\((g\circ f)(0.04)=1{,}000\;\mathrm{m}\).
 \]
 
 This example makes units and sequence explicit. A software pipeline that silently assumes a different input unit would produce a result wrong by a scale factor.
@@ -530,7 +530,7 @@ A team fits a function to observed temperatures and location coordinates.
 ## 16. Answers and checks
 
 1. **Map-scale function:** domain M ≥ 0 cm; codomain G ≥ 0 m; range [0,∞) m. f(3.5) = 1,750 m.
-2. **Invertibility:** f(2) = f(−2) = 4, so the function is not injective on all real numbers. Restrict domain to x ≥ 0; inverse is f⁻¹\(y\) = √y for y ≥ 0.
+2. **Invertibility:** \(f(2)=f(-2)=4\), so the function is not injective on all real numbers. Restrict domain to x ≥ 0; inverse is \(f^{-1}(y)=\sqrt{y}\) for \(y\geq0\).
 3. **Composition:** first h(mm) = mm/1,000 metres; then g\(m\) = 10,000m. Composition gives 10 × mm metres. For 85 mm, output is 850 m. Omitting conversion gives a result 1,000 times too large.
 4. **Terrain:** z\(100,200\) = 250 + 4 + 6 = 260 m. Coefficients are dimensionless for metre inputs and metre output. The expression is affine in x and y, so equal increments in either coordinate produce constant elevation increments. Real terrain has curvature, local features, discontinuities and measurement/interpolation error.
 5. **Distance:** d\(x,y\) = √((x−300)²+(y−400)²). At \(600,800\), d = √\(300²+400²\) = 500 m. Within 250 m: (x−300)²+(y−400)² ≤ 250², a closed disk in the assumed plane.
