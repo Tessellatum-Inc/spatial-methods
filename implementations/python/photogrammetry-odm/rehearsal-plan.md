@@ -12,7 +12,7 @@
 - Dataset directory: `datasets/drone_heig_2019/`
 - Licence: Creative Commons Attribution 4.0 International (CC BY 4.0).
 - Required attribution: HEIG-VD, Geomatics group (2026), “HEIG-VD drone 2019 (Yverdon campus)”.
-- Dataset card states the collection's own datasets are CC BY 4.0; the dataset-specific README repeats this licence.
+- The collection card states that the collection's datasets are CC BY 4.0. The dataset-specific README has not yet been retrieved in this environment, so dataset-level terms should be checked before redistribution.
 - Dataset-specific README: https://huggingface.co/datasets/heig-vd-geo/scop-datasets/blob/main/datasets/drone_heig_2019/README.md
 - Download size: approximately 280 MB for the dataset directory.
 - Contents confirmed by the collection catalogue: 32 geotagged drone images and 31 ground points (LV95) with image measurements. Exact image dimensions, total size, detailed observation counts, additional exports and vertical-height reference have not been confirmed from the dataset-specific README or files in this environment.
