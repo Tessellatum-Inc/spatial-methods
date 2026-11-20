@@ -44,9 +44,9 @@ Area weights are proportions of the total mapped area, not sample proportions. `
 
 Rows of the estimated error matrix are mapped classes (sampling strata); columns are reference classes. Each cell is the estimated proportion of the total mapped area in that map/reference combination:
 
-[
+\[
 \hat p_{ij}=W_i\frac{n_{ij}}{n_i}.
-]
+\]
 
 The report includes:
 - estimated area-proportion error matrix;
@@ -59,12 +59,12 @@ The report includes:
 
 For the supported stratified design, the variance of the overall accuracy estimate is estimated by
 
-[
+\[
 \widehat{\operatorname{Var}}(\widehat{OA})=
-\sum_i W_i^2\frac{\hat U_i(1-\hat U_i)}{n_i-1},
-]
+\sum_i W_i^2\frac{\hat U_i(1-\hat U_i)}{n_i-1}f_i,
+\]
 
-where \(\hat U_i=n_{ii}/n_i\). Reference-class area proportion estimates are column totals of the area-proportion error matrix. Their variance is estimated by summing the independent within-stratum proportion variances. Producer's-accuracy uncertainty uses a delta-method approximation for its ratio estimator.
+where \(\hat U_i=n_{ii}/n_i\) and \(f_i=1-n_i/N_i\) when stratum population size \(N_i\) is supplied; otherwise \(f_i=1\). Reference-class area proportion estimates are column totals of the area-proportion error matrix. Their variance is estimated by summing the independent within-stratum proportion variances with the same stratum-specific correction. Producer's-accuracy uncertainty uses a delta-method approximation for its ratio estimator.
 
 ## Important interpretation
 
