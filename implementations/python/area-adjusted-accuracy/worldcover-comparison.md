@@ -69,17 +69,17 @@ ESA WorldCover 2021 v200 is distributed as 10 m Cloud Optimized GeoTIFF tiles in
 
 The 834 sample coordinates cross the antimeridian and fall in **five** 3° × 3° tiles: `S18E174`, `S18E177`, `S18W180`, `S21E177` and `S21W180`. This was derived from all 834 coordinates in the pinned GeoJSON; do not assume one Fiji tile covers the sample. This coordinate audit found 1 point in S18E174, 602 in S18E177, 44 in S18W180, 172 in S21E177 and 15 in S21W180. The script accepts repeated `--raster` arguments and checks that each point falls in exactly one supplied tile. It transforms the GeoJSON EPSG:4326 coordinates to each raster CRS before sampling. It fails on missing coverage, nodata, overlapping supplied tiles or unrecognised class codes; it does not silently drop points.
 
-The official tile naming convention encodes the lower-left latitude and longitude of each 3° tile. For this sample the five S3 objects are:
+The official tile naming convention encodes the lower-left latitude and longitude of each 3° tile. The five source URLs are:
 
-```bash
-aws s3 cp --no-sign-request s3://esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18E174_Map.tif .
-aws s3 cp --no-sign-request s3://esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18E177_Map.tif .
-aws s3 cp --no-sign-request s3://esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18W180_Map.tif .
-aws s3 cp --no-sign-request s3://esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_S21E177_Map.tif .
-aws s3 cp --no-sign-request s3://esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_S21W180_Map.tif .
+```text
+https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18E174_Map.tif
+https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18E177_Map.tif
+https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18W180_Map.tif
+https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S21E177_Map.tif
+https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S21W180_Map.tif
 ```
 
-Confirm the five objects exist and inspect their metadata before extraction; this repository has not downloaded or checked their raster bytes yet.
+The script can now read HTTPS COG URLs directly through GDAL's `/vsicurl/` virtual filesystem. This can use HTTP range requests to read only the raster blocks needed around the sample points rather than downloading every full tile. The AWS objects have not been byte-verified in this repository; a successful extraction must still confirm that every URL resolves, every point is covered exactly once and no sampled cell is nodata. Remote reads record source URLs and raster metadata but cannot provide a local whole-file SHA-256. For a byte-level audit, download the tiles locally and use local file paths instead.
 
 ### Install the optional extraction dependency
 
@@ -92,11 +92,11 @@ python -m pip install -r requirements-worldcover.txt
 \`\`\`bash
 python sample_worldcover.py \\
   --geojson /path/to/fiji-lulc-2021-test-data.geojson \\
-  --raster /path/to/ESA_WorldCover_10m_2021_v200_S18E174_Map.tif \\
-  --raster /path/to/ESA_WorldCover_10m_2021_v200_S18E177_Map.tif \\
-  --raster /path/to/ESA_WorldCover_10m_2021_v200_S18W180_Map.tif \\
-  --raster /path/to/ESA_WorldCover_10m_2021_v200_S21E177_Map.tif \\
-  --raster /path/to/ESA_WorldCover_10m_2021_v200_S21W180_Map.tif \\
+  --raster https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18E174_Map.tif \\
+  --raster https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18E177_Map.tif \\
+  --raster https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18W180_Map.tif \\
+  --raster https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S21E177_Map.tif \\
+  --raster https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S21W180_Map.tif \\
   --output worldcover-fiji-sample.csv
 \`\`\`
 
@@ -151,8 +151,8 @@ Do not compare maps using separate convenience samples and then attribute differ
 ## Current execution status
 
 - Fiji GeoJSON: pinned source revision and structure audited online; original point features have not been downloaded and hashed locally in this workflow.
-- WorldCover raster: not yet downloaded or sampled.
-- Extraction code: published; local raster execution not performed.
+- WorldCover raster: not downloaded locally; remote COG range-read support is implemented but live object access and point extraction have not yet been run.
+- Extraction code: published; local or remote raster execution not performed.
 - Generic estimator: published; repository test suite has not yet been executed.
 - Fiji–WorldCover accuracy numbers: **not available yet**.
 
