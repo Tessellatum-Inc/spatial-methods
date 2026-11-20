@@ -234,7 +234,7 @@ This rate can help with planning, but it is not a universal productivity benchma
 
 ### 6.4 Units reveal the rate's meaning
 
-Examples include metres per second (speed), square kilometres per year (area-change rate), people per square kilometre (population density), observations per site (sampling intensity) and bytes per second (data throughput).
+Examples include metres per second (speed), square kilometres per year \(area-change rate\), people per square kilometre (population density), observations per site (sampling intensity) and bytes per second (data throughput).
 
 If the units do not match the question, the rate is probably not the one needed.
 
@@ -434,7 +434,7 @@ A hypothetical mapped wetland area changes from 84 km² to 72 km² over 6 years.
 
 ### Exercise 6 — Logarithms
 
-1. Evaluate log₁₀(1,000).
+1. Evaluate log₁₀\(1,000\).
 2. Evaluate log₂(64).
 3. Calculate the decibel level for a power ratio of 10.
 4. Calculate the decibel level for an amplitude ratio of 10 when power is proportional to amplitude squared.
@@ -456,7 +456,7 @@ A team wants to forecast the number of field assets recorded in a database over 
 3. **Density:** Ward A is 1,200 people/km² by total area and 1,500 people/km² by land area. Ward B is 1,100 people/km² by total area and 1,375 people/km² by land area. The denominator changes the meaning; use the definition that matches the question and disclose it.
 4. **Raster:** 30 m × 30 m = 900 m² = 0.09 ha. 900 km² = 900,000,000 m², giving approximately 1,000,000 cells. At 15 m, cell area is 225 m² and the estimate is approximately 4,000,000 cells. Grid alignment, shape, masking and boundary effects change actual counts.
 5. **Change rate:** (72 − 84) ÷ 6 = −2 km²/year. Relative change = (72 − 84) ÷ 84 × 100 ≈ −14.3%. This is an interval average, not a trajectory or causal analysis.
-6. **Logarithms:** log₁₀(1,000) = 3; log₂(64) = 6; power ratio 10 gives 10 dB; amplitude ratio 10 under the square-law condition gives 20 dB. The reference ratio makes the logarithm's argument dimensionless and interpretable.
+6. **Logarithms:** log₁₀\(1,000\) = 3; log₂(64) = 6; power ratio 10 gives 10 dB; amplitude ratio 10 under the square-law condition gives 20 dB. The reference ratio makes the logarithm's argument dimensionless and interpretable.
 7. **Model selection:** constant addition may suit a stable annual survey programme with similar coverage; proportional growth may suit an expanding system where new records arise in proportion to the existing inventory. Coverage changes, funding, duplicate removal, asset retirement, policy, population change, data quality and access can invalidate either assumption. Historical observations, a defined process, uncertainty analysis and out-of-sample evaluation are needed for a defensible forecast.
 
 ## 13. Connections across Spatial Methods
@@ -464,7 +464,7 @@ A team wants to forecast the number of field assets recorded in a database over 
 - **Spatial algorithms:** density estimation, map-scale operations, raster resampling, change metrics, image transforms and normalisation.
 - **Spatial data collection:** sampling intensity, survey productivity, sensor dynamic range and temporal observation rates.
 - **Spatial recipes:** area and population summaries, resolution selection, change reporting, monitoring and data-volume planning.
-- **Theoretical foundations:** measurement uncertainty (SM-FND-011), geodesy and reference systems (SM-FND-008), calculus and differential methods (SM-FND-003), probability and statistical inference (SM-FND-004), remote sensing physics (SM-FND-012) and signal processing (SM-FND-014).
+- **Theoretical foundations:** measurement uncertainty \(SM-FND-011\), geodesy and reference systems \(SM-FND-008\), calculus and differential methods \(SM-FND-003\), probability and statistical inference \(SM-FND-004\), remote sensing physics \(SM-FND-012\) and signal processing \(SM-FND-014\).
 
 Related subjects are not substitutes for one another. Map scale, raster cell size, positional accuracy, measurement resolution and uncertainty describe different properties.
 
@@ -485,6 +485,6 @@ The explanations and worked spatial examples are original Spatial Methods teachi
 
 1. **OpenStax.** *Algebra and Trigonometry 2e*. [Chapter 4: Linear Functions](https://openstax.org/books/algebra-and-trigonometry-2e/pages/4-introduction-to-linear-functions) and [Chapter 6: Exponential and Logarithmic Functions](https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-introduction-to-exponential-and-logarithmic-functions). Used for proportional relationships, rates, exponential growth and logarithm properties.
 2. **Esri.** [Explore imagery — Spatial resolution](https://learn.arcgis.com/en/projects/explore-imagery-spatial-resolution/). Used for the applied discussion of raster cell size, represented detail and resolution trade-offs. This is a software-vendor tutorial, not a universal resolution standard.
-3. **BIPM.** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication](https://www.bipm.org/en/si-brochure-9). Used for unit expression and dimensional consistency when defining rates and densities.
+3. **BIPM.** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication]\(https://www.bipm.org/en/si-brochure-9\). Used for unit expression and dimensional consistency when defining rates and densities.
 
 **Limitations:** A mathematical relationship such as proportionality or exponential growth is not evidence that a particular spatial process follows that model. Model choice requires domain knowledge and appropriate data.
