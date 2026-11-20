@@ -43,7 +43,7 @@ The domain will develop:
 | 04 | [Sampling designs and sampling distributions](sampling-designs-and-sampling-distributions.md) | Field sampling, ground truth, survey design and spatially representative inference | Initial module published |
 | 05 | [Likelihood and statistical estimation](likelihood-and-statistical-estimation.md) | Parameter estimation, regression, geostatistics and model fitting | Initial module published |
 | 06 | [Confidence intervals, hypothesis tests and statistical decisions](confidence-intervals-hypothesis-tests-and-statistical-decisions.md) | Accuracy assessment, change detection and model comparison | Initial module published |
-| 07 | Bayesian inference and predictive distributions | Evidence updating, risk mapping and probabilistic prediction | Planned |
+| 07 | [Bayesian inference and predictive distributions](bayesian-inference-and-predictive-distributions.md) | Evidence updating, risk mapping and probabilistic prediction | Initial module published |
 | 08 | Statistical diagnostics, calibration and model criticism | Prediction validation, classification calibration and uncertainty communication | Planned |
 
 The sequence is a suggested route, not a compulsory order. Readers may enter through a concrete application and follow its prerequisites.
@@ -68,4 +68,4 @@ A probability value is not self-explanatory. Record what is random, what populat
 
 ## Review status
 
-This is an initial domain collection. Modules 01–06 are researched syntheses based on cited probability, metrology and sampling-design material and original spatial examples. Independent technical review, learner testing and further modules remain outstanding. No publication in this folder constitutes professional statistical certification or validation of a real spatial dataset.
+This is an initial domain collection. Modules 01–07 are researched syntheses based on cited probability, metrology and sampling-design material and original spatial examples. Independent technical review, learner testing and further modules remain outstanding. No publication in this folder constitutes professional statistical certification or validation of a real spatial dataset.
