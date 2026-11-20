@@ -402,11 +402,11 @@ An iterative scalar solver produces estimates 20.0, 22.0, 23.0, 23.5 and 23.75.
 ## 15. Answers and checks
 
 1. **Sampling sequence:** x_0=250 and x_{n+1}=x_n+15. Explicitly x_n=250+15n. Thus x_8=370 m. The formula describes nominal positions only; no stochastic observation or positional uncertainty model is supplied.
-2. **Grid refinement:** h_n=80(1/2)^n m. At n=4, h_4=5 m. Cell area is 25 m². Cell width is reduced by 16, so cell area is reduced by 16 and cell count over a fixed area increases by approximately 16, not four. Boundary effects and grid alignment can alter the exact count.
+2. **Grid refinement:** h_n=80(1/2)^n m. At n=4, h_4=5 m. Cell area is 25 m². Cell width is reduced by 16, so cell area is reduced by 16²=256 and cell count over a fixed area increases by approximately 256. Each halving of cell width produces four times as many cells over a fixed planar area. Boundary effects and grid alignment can alter the exact count.
 3. **Limit:** a_0=17, a_1=11, a_3=8. The limit is 5. It is the limit of this mathematical sequence, not evidence that an external measurement or model target equals 5.
 4. **Series:** a_0=8, r=1/2. First four terms sum to 8+4+2+1=15. Infinite sum is 8/(1−1/2)=16. The formula requires |r|<1.
 5. **Error:** signed error = 249.2−250.0 = −0.8 m. Absolute error = 0.8 m. Relative error = 0.8/250.0 = 0.0032 = 0.32%. The difference could reflect rounding, approximation, measurement, model or other effects; the comparison alone does not identify a cause.
-6. **Raster:** 20 m cells cover 400 m²; 5 m cells cover 25 m². The cell-area ratio is 16:1. Approximately 16 times as many cells are needed for the same area. Resampling cannot create new observations or recover detail absent from the source.
+6. **Raster:** 20 m cells cover 400 m²; 5 m cells cover 25 m². The cell-area ratio is 256:1. Approximately 256 times as many cells are needed for the same area. Resampling cannot create new observations or recover detail absent from the source.
 7. **Iteration:** changes are 2.0, 1.0, 0.5 and 0.25. The sequence appears to approach 24. The 0.3 successive-change test first passes on the final update (23.5 to 23.75). A residual is needed because small updates can occur away from a solution; also check constraints, stagnation, numerical failure or the maximum-iteration condition.
 
 ## 16. Connections across Spatial Methods
