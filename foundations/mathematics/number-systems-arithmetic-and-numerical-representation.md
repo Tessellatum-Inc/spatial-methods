@@ -501,3 +501,14 @@ A responsible spatial workflow does not interpret digits in isolation. It asks w
 - [Master subject index](../../catalog/master-subject-index.md)
 
 This module introduces numeric representation and reporting. It does not provide a full treatment of floating-point error analysis, numerical conditioning or computational stability; those belong in the numerical analysis foundation.
+
+
+## References and further reading
+
+The explanations and spatial examples in this module are original Spatial Methods teaching material. These references support the treatment of quantities, SI units and digital numeric representation.
+
+1. **Bureau International des Poids et Mesures (BIPM).** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication](https://www.bipm.org/en/si-brochure-9). Relevant sections: 2.3.3–2.3.4 and 5.4, including the expression of quantity values, units and uncertainty.
+2. **IEEE Standards Association.** (2019). *IEEE Standard for Floating-Point Arithmetic*, IEEE Std 754-2019. [Standard catalogue record](https://standards.ieee.org/ieee/754/6210/). The public catalogue describes the scope of binary and decimal floating-point formats and operations. The normative standard text was not accessed for this module; no clause-level claims are made.
+3. **Thompson, A. and Taylor, B. N.** (2008). *Guide for the Use of the International System of Units (SI)*, NIST Special Publication 811. [NIST publication record](https://doi.org/10.6028/NIST.SP.811e2008). A practical guide to SI usage; consult the current BIPM brochure where later updates matter.
+
+**Limitations:** This is an introductory treatment, not a full account of floating-point arithmetic, numerical error analysis or storage-format specifications. IEEE 754 is a technical standard; its public catalogue page does not provide the complete normative text.
