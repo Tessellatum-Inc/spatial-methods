@@ -563,4 +563,6 @@ The explanations and spatial examples are original Spatial Methods teaching mate
 2. **OpenStax.** *Algebra and Trigonometry 2e*. [Chapter 4: Linear Functions](https://openstax.org/books/algebra-and-trigonometry-2e/pages/4-introduction-to-linear-functions), [Chapter 5: Polynomial and Rational Functions](https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-introduction-to-polynomial-and-rational-functions), and [Chapter 6: Exponential and Logarithmic Functions](https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-introduction-to-exponential-and-logarithmic-functions). Used for common function families and their properties.
 3. **Esri.** [Coordinate systems, map projections, and transformations](https://doc.esri.com/en/arcgis-pro/latest/help/mapping/properties/coordinate-systems-and-projections.html). Used for the applied interpretation of coordinate transformations as spatial mappings. It is product documentation and does not replace geodetic theory.
 
+**Source register:** `SM-SRC-000021`, `SM-SRC-000024`.
+
 **Limitations:** Empirical functions and fitted models require data, model diagnostics and domain-specific validation. A function's mathematical form alone does not establish a causal or physically valid relationship.
