@@ -26,7 +26,7 @@ The sequence below moves from mathematical language toward structures and method
 
 ## Coverage audit
 
-Modules 01–11 have received an initial coverage audit. The [mathematics gap register](gap-register.md) records missing concepts, priorities, dependencies and the recommended treatment for each gap. It deliberately distinguishes material that belongs in this domain from topics that should be developed in specialist foundations. This is an editorial planning review, not independent technical certification.
+Modules 01–11 have received an initial editorial coverage review. The [application coverage audit](application-coverage-audit.md) tests the sequence against eight representative spatial workflows, identifies where introductory mathematics is sufficient, and routes deeper requirements to specialist foundations. The [mathematics gap register](gap-register.md) tracks individual content gaps and revisions. Neither audit is independent technical certification or evidence of learner competence.
 
 ## What this domain covers—and what it does not
 
