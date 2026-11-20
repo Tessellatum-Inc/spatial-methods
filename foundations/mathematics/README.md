@@ -20,8 +20,8 @@ The sequence below moves from mathematical language toward structures and method
 | 06 | [Coordinate geometry and reference frames](coordinate-geometry-and-reference-frames.md) | Cartesian coordinates, lines, planes, coordinate transformations and geometric interpretation |
 | 07 | [Vectors and vector operations](vectors-and-vector-operations.md) | Displacement, direction, velocity, gradients and 3D geometry |
 | 08 | [Sequences, series and approximation](sequences-series-and-approximation.md) | Iterative algorithms, discretisation and convergence |
-| 09 | Mathematical modelling and dimensional analysis | Model construction, units, scaling and checking plausibility |
-| 10 | Introductory discrete mathematics and logic | Sets, relations, graphs, Boolean operations and spatial predicates |
+| 09 | [Mathematical modelling and dimensional analysis](mathematical-modelling-and-dimensional-analysis.md) | Model construction, assumptions, units, scaling, sensitivity and plausibility checks |
+| 10 | Trigonometry for spatial science *(planned)* | Angles, radians, trigonometric functions, bearings and planar geometry |\n| 11 | Introductory discrete mathematics and logic *(planned)* | Sets, relations, graphs, Boolean operations and spatial predicates |
 
 ## Coverage audit
 
@@ -71,4 +71,4 @@ Do not mistake a long list of formulas for a foundation. The aim is to teach how
 
 ## Current status
 
-Modules 01–08 have initial public content and have received notation, source and initial coverage audits. Independent technical review and targeted expansion remain necessary. Modules 09–10 remain planned, not yet written or reviewed. The gap register guides the next work; coverage will expand only when each module has meaningful explanatory content.
+Modules 01–09 have initial public content and have received notation, source and initial coverage audits. Independent technical review and targeted expansion remain necessary. Modules 10–11 remain planned, not yet written or reviewed. The gap register guides the next work; coverage will expand only when each module has meaningful explanatory content.
