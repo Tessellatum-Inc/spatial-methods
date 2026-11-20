@@ -14,12 +14,11 @@
 - Required attribution: HEIG-VD, Geomatics group (2026), “HEIG-VD drone 2019 (Yverdon campus)”.
 - The collection card states that the collection's datasets are CC BY 4.0. The dataset-specific README has not yet been retrieved in this environment, so dataset-level terms should be checked before redistribution.
 - Dataset-specific README: https://huggingface.co/datasets/heig-vd-geo/scop-datasets/blob/main/datasets/drone_heig_2019/README.md
-- Download size: approximately 280 MB for the dataset directory.
 - Contents confirmed by the collection catalogue: 32 geotagged drone images and 31 ground points (LV95) with image measurements. Exact image dimensions, total size, detailed observation counts, additional exports and vertical-height reference have not been confirmed from the dataset-specific README or files in this environment.
 - Sensor and acquisition date in the collection catalogue: senseFly S.O.D.A. on an eBee; 16 July 2019.
 - Coordinate caution: the catalogue labels ground points LV95. Do not assume that this alone fully specifies the vertical datum or that all image EXIF positions are suitable as control. Confirm these details from the dataset-specific README and raw metadata before preparing GCPs.
 
-The images are a small, real aerial survey rather than synthetic placeholders. The catalogue description makes this a promising candidate for a controlled processing exercise, but suitability for a control/checkpoint split must be established from the actual observation files. It is not evidence that ODM will reproduce the original Metashape solution.
+The images are a small, real aerial survey rather than synthetic placeholders. The catalogue description makes this a promising candidate for a controlled processing exercise, but suitability for a control/checkpoint split must be established from the actual observation files. A repository listing also shows a commit message mentioning an OPK exterior-orientation export; its presence, contents, provenance and suitability for comparison still need direct inspection. It is not evidence that ODM will reproduce the original Metashape solution.
 
 ## Important coordinate and control cautions
 
@@ -96,4 +95,4 @@ The helper resolves the repository's current commit SHA, downloads `datasets/dro
 
 ## Current access limitation
 
-The dataset catalogue and licence are discoverable online, but direct download and dataset-specific file inspection could not be completed in the current execution environment because outbound DNS/network access is unavailable. The Python audit utility's four unit tests were executed against local test fixtures and passed; the actual dataset has not been audited. No control/checkpoint partition has been created. To continue on a network-enabled machine, run `acquire_rehearsal_dataset.py`, retain its resolved commit SHA, then run the image audit and inspect the original ground-point and image-observation files before deciding any split.
+The dataset catalogue and licence are discoverable online, but direct download and dataset-specific file inspection could not be completed in the current execution environment because outbound DNS/network access is unavailable. The image-audit utility's four unit tests and acquisition-manifest helper's three unit tests were executed against local fixtures/mirrored source and passed; the actual dataset has not been audited. No control/checkpoint partition has been created. To continue on a network-enabled machine, run `acquire_rehearsal_dataset.py`, retain its resolved commit SHA, then run the image audit and inspect the original ground-point and image-observation files before deciding any split.
