@@ -52,3 +52,5 @@ The GLS illustration uses a symmetric positive-definite covariance matrix and Ch
 ## Integrated workflow
 
 The [integrated synthetic spatial case](integrated-case.md) connects affine control transformation, terrain-plane fitting, covariance-aware GLS and SVD diagnostics in one reproducible workflow. It includes a separate script and tests; its assumptions and limits are documented explicitly.
+
+The [learner exercise and worked solution](integrated-case-exercise.md) provides staged tasks, a submission checklist and a 20-point marking guide.
