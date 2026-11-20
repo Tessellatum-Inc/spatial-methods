@@ -14,17 +14,17 @@
 - Required attribution: HEIG-VD, Geomatics group (2026), “HEIG-VD drone 2019 (Yverdon campus)”.
 - The dataset-specific README also states CC BY 4.0 and gives the dataset citation. Retain the publisher's required attribution when reusing the data.
 - Dataset-specific README: https://huggingface.co/datasets/heig-vd-geo/scop-datasets/blob/main/datasets/drone_heig_2019/README.md
-- Dataset README: 32 original JPG images at 5472 × 3648 px; 31 surveyed ground points, 206 image measurements for 30 points, and a Metashape OPK export. It explicitly identifies LV95 horizontal coordinates (EPSG:2056) and LN02 heights in metres. The GCP text currently renders 30 coordinate rows, so reconcile this with the README's 31-point description during local parsing.
+- Dataset README: 32 original JPG images at 5472 × 3648 px; 31 surveyed ground points, 206 image measurements for 30 points, and a Metashape OPK export. It explicitly identifies LV95 horizontal coordinates (EPSG:2056) and LN02 heights in metres. The GCP text renders 31 coordinate rows, consistent with the README; point 100 is present but has no image measurement and duplicates point 206's coordinates.
 - Sensor and acquisition date in the collection catalogue: senseFly S.O.D.A. on an eBee; 16 July 2019.
 - Coordinate caution: the dataset README explicitly states LV95 horizontal coordinates and LN02 heights. Preserve these as separate horizontal and vertical reference metadata; do not treat EPSG:2056 alone as a complete 3D CRS. The README describes EXIF GPS as metre-level consumer GNSS, not survey control.
 
-The dataset-specific README and online text exports establish that the observation CSV has 206 image measurements for 30 point labels, and that the OPK file contains Metashape exterior orientations from an adjustment that used the ground points as control. The README says point 100 has no image measurement and shares coordinates with point 206. The rendered GCP coordinate file lists 30 labelled rows despite the README's 31 surveyed-point statement. These are now documented source-level findings; reconcile them against the downloaded files before splitting points. The OPK file is comparison material only, not independent validation.
+The dataset-specific README and online text exports establish that the observation CSV has 206 image measurements for 30 point labels, and that the OPK file contains Metashape exterior orientations from an adjustment that used the ground points as control. The README says point 100 has no image measurement and shares coordinates with point 206. The rendered GCP coordinate file lists 31 labelled rows, consistent with the README. Point 100 is present but has no image measurement and duplicates point 206's coordinates. Verify this relationship against the downloaded files before splitting points. The OPK file is comparison material only, not independent validation.
 
 ## Important coordinate and control cautions
 
 1. Confirm the horizontal CRS, vertical datum, height type, axis order and units from the dataset-specific README and source files. Do not infer the vertical datum from the LV95 label alone. Record horizontal and vertical reference components separately.
 2. Confirm how the selected ODM release interprets GCP Z values and how the resulting products encode vertical metadata before using any GCP file.
-3. Locally parse the downloaded ground-point and image-observation files. Reconcile the README's 31 surveyed points with the 30 coordinate rows visible in GCP_MN95.txt; verify the stated 206 observations, 30 observed point labels, duplicate point 100/206 coordinate note, finite pixel values and image filename mappings.
+3. Locally parse the downloaded ground-point and image-observation files. Verify the 31 coordinate rows in GCP_MN95.txt, the stated 206 observations and 30 observed point labels, the duplicate point 100/206 coordinates, finite pixel values and image filename mappings.
 4. Partition only verified, image-measured points into adjustment controls and withheld independent checkpoints. Record the split and rationale. Never use a withheld checkpoint as an ODM GCP.
 5. Treat the supplied Metashape OPK exterior orientations as comparison material only: the README states they came from a Metashape adjustment using the ground points as control, so they are not independent validation.
 6. Do not present image EXIF positions as survey control without evidence of their accuracy and reference system.
@@ -40,7 +40,7 @@ The dataset-specific README and online text exports establish that the observati
 - Preserve the downloaded archive and record its retrieval date, source revision, file manifest and checksums.
 - Verify the 32 image files, dimensions, EXIF metadata and image labels.
 - Use the publisher-confirmed files `gcp/GCP_MN95.txt`, `gcp/gcp_obs.csv` and `opk.txt`; the online README identifies their schemas and reference frames.
-- Locally reconcile the 31-point README statement against the 30 coordinate rows visible in the GCP text; verify 206 observation rows and 30 distinct measured point labels.
+- Locally verify the 31 coordinate rows, 206 observation rows and 30 distinct measured point labels.
 - Confirm observation image labels (with `EB-02-00761_` prefix and no extension) map unambiguously to the full JPG filenames; confirm OPK short photo IDs map to the same image set.
 - Record the source revision and exact file paths before any coordinate interpretation or point split.
 
