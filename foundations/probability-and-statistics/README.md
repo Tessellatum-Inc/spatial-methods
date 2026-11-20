@@ -37,7 +37,7 @@ The domain will develop:
 
 | Module | Topic | Spatial connections | Status |
 |---|---|---|---|
-| 01 | [Probability models, events and conditioning](probability-models-events-and-conditioning.md) | Screening maps, classification prevalence, spatial sampling units, conditional evidence and Bayes' theorem | Initial public module |
+| 01 | [Probability models, events and conditioning](probability-models-events-and-conditioning.md) | Screening maps, classification prevalence, spatial sampling units, conditional evidence and Bayes' theorem | Initial module published |
 | 02 | [Random variables, distributions and probability models](random-variables-and-distributions.md) | Measurement outcomes, event counts, detection and classification | Initial module published |
 | 03 | [Joint distributions, covariance and dependence](joint-distributions-covariance-and-dependence.md) | Correlated measurements, multivariate spatial data and dependence structures | Initial module published |
 | 04 | [Sampling designs and sampling distributions](sampling-designs-and-sampling-distributions.md) | Field sampling, ground truth, survey design and spatially representative inference | Initial module published |
