@@ -76,7 +76,7 @@ These are design-weighted estimates from the sample, not direct measurements of 
 
 The source dataset's eligible domain excludes Tikinas used for training. Its stratum population pixel counts are accepted as supplied; the source raster and exclusion mask were not independently reconstructed. Reference labels remain the dataset's visual interpretations. No positional-tolerance or mixed-pixel rule was applied: each point was assigned the class of its containing raster cell.
 
-The [successful automated rehearsal and downloadable outputs](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44696117456) contain the sampled CSV, source/raster metadata, accuracy report and paired comparison report.
+The [successful automated rehearsal and downloadable outputs](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44698503572) contain the sampled CSV, source/raster metadata, accuracy report and paired comparison report.
 
 ### ESA WorldCover class legend and provisional harmonisation
 
@@ -224,7 +224,7 @@ Do not compare maps using separate convenience samples and then attribute differ
 - Extraction: all 834 reference points were sampled successfully, with no missing coverage, overlap or nodata failures.
 - WorldCover design-adjusted overall accuracy: 74.12% (SE 2.37 percentage points; approximate 95% Wald interval 69.47%–78.76%).
 - Paired comparison against the original Fiji map: −8.39 percentage points (paired SE 1.50; approximate 95% Wald interval −11.32 to −5.45).
-- Reproducibility outputs: [successful GitHub Actions run and 30-day artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44696117456).
+- Reproducibility outputs: [successful GitHub Actions run and 30-day artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44698503572).
 
 ## Sources
 

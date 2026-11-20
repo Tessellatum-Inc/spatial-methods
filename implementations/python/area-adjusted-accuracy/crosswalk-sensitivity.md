@@ -55,7 +55,7 @@ Run from this directory with the sampled CSV produced by sample_worldcover.py:
       --stratum-population-sizes '{"water":1779768,"mangrove":3549325,"bare_soil_rock":541204,"urban":687659,"agriculture":14279258,"grassland":15115599,"shrubland":4972515,"tree":116131948}' \
       --json-out worldcover-fiji-crosswalk-sensitivity.json
 
-The JSON report records the input CSV SHA-256, all scenario definitions, estimates, paired standard errors, intervals and stratum diagnostics. The GitHub Actions rehearsal runs this command and uploads the JSON alongside the extracted sample and primary accuracy reports.
+The JSON report records the input CSV SHA-256, all scenario definitions, estimates, paired standard errors, intervals and stratum diagnostics. The [successful GitHub Actions rehearsal](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44698503572) uploads the JSON alongside the extracted sample and primary accuracy reports. The [area-adjusted-accuracy package CI](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44698503342) passed all 42 tests, including the four new sensitivity tests.
 
 ## Interpretation and limits
 
