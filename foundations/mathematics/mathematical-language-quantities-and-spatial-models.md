@@ -411,3 +411,14 @@ The central habit is to move deliberately between the real-world question and it
 - [Measurement science and survey adjustment learning path](../../learning-paths/measurement-science-and-survey-adjustment.md)
 
 This module introduces mathematical language and modelling habits. It is not a substitute for the deeper treatment of linear algebra, calculus, statistics, geometry, geodesy or numerical analysis in their respective foundation domains.
+
+
+## References and further reading
+
+The explanations, spatial examples and exercises in this module are original Spatial Methods teaching material. These references support the mathematical language, quantity and coordinate-system concepts introduced here.
+
+1. **Bureau International des Poids et Mesures (BIPM).** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication and current version](https://www.bipm.org/en/si-brochure-9). Relevant sections: 2.3.3–2.3.4 on dimensions and derived units; 5.4 on expressing quantity values and units. Primary international reference for SI quantities and units.
+2. **OpenStax.** *Algebra and Trigonometry 2e*. [Chapter 2: Equations and Inequalities](https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-introduction-to-equations-and-inequalities); [Chapter 3: Functions](https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-introduction-to-functions); [Chapter 12: Analytic Geometry](https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-introduction-to-analytic-geometry). Used for elementary algebraic language, functions and coordinate geometry.
+3. **Esri.** [Coordinate systems, map projections, and transformations](https://doc.esri.com/en/arcgis-pro/latest/help/mapping/properties/coordinate-systems-and-projections.html). Used as applied GIS documentation for coordinate reference frames, geographic versus projected coordinates and projection distortion. It is product documentation, not a substitute for geodetic standards.
+
+**Limitations:** The sources above do not establish the legal or geodetic status of any particular national coordinate reference system. Coordinate examples in this module are illustrative and should not be treated as operational CRS definitions.
