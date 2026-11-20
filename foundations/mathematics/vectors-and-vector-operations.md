@@ -26,7 +26,7 @@ This module introduces vector concepts and common operations. Formal vector spac
 
 A **scalar** is a quantity represented by one value, such as distance, mass, temperature or elapsed time.
 
-A **point** identifies a position in a specified coordinate frame. In a Cartesian frame, it may be written P=(x,y,z).
+A **point** identifies a position in a specified coordinate frame. In a Cartesian frame, it may be written \(P=(x,y,z)\).
 
 A **vector** represents a directed quantity or displacement. In a Cartesian basis, it may be written:
 
@@ -290,13 +290,13 @@ Cross products are useful for computing surface normals, orientation and areas i
 
 ## 10. Vector equations of lines
 
-A line through point r_0 with direction vector v can be represented as:
+A line through point \(\mathbf r_0\) with direction vector \(\mathbf v\) can be represented as:
 
 \[
 \mathbf r(t)=\mathbf r_0+t\mathbf v,\qquad t\in\mathbb R.
 \]
 
-For a finite segment, restrict t to [0,1] when r_0 is the start point and r_0+v is the end point.
+For a finite segment, restrict \(t\) to \([0,1]\) when \(\mathbf r_0\) is the start point and \(\mathbf r_0+\mathbf v\) is the end point.
 
 This representation is useful for describing straight trajectories, survey baselines and geometric intersections. A path consisting of several straight segments is piecewise linear and requires more than one segment parameterisation.
 
