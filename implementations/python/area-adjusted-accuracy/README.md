@@ -62,7 +62,7 @@ For the supported stratified design, the variance of the overall accuracy estima
 \sum_i W_i^2\frac{\hat U_i(1-\hat U_i)}{n_i-1},
 ]
 
-where (hat U_i=n_{ii}/n_i). Reference-class area proportion estimates are column totals of the area-proportion error matrix. Their variance is estimated by summing the independent within-stratum proportion variances. Producer's-accuracy uncertainty uses a delta-method approximation for its ratio estimator.
+where \(\hat U_i=n_{ii}/n_i\). Reference-class area proportion estimates are column totals of the area-proportion error matrix. Their variance is estimated by summing the independent within-stratum proportion variances. Producer's-accuracy uncertainty uses a delta-method approximation for its ratio estimator.
 
 ## Important interpretation
 
@@ -81,9 +81,12 @@ This is an educational and analytical baseline, not a regulatory or certificatio
 
 No real map or reference sample has been analysed here. The accompanying tests use synthetic fixtures only.
 
-
 ## Learning materials
 
-- [Learner exercise and worked solution](exercise.md)
+- [Introductory learner exercise and worked solution](exercise.md)
+- [Advanced three-class disproportionate-sampling exercise](advanced-exercise.md)
+- [Advanced exercise sample CSV](advanced-sample.csv)
 - [Assessment report template](report-template.md)
-- [Synthetic sample CSV](sample.csv)
+- [Introductory synthetic sample CSV](sample.csv)
+
+The test suite includes a synthetic three-class regression case and checks that producer's accuracy is reported as undefined when a reference class has zero estimated area. Passing tests does not establish performance on a real map or support for other sampling designs.
