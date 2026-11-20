@@ -150,6 +150,14 @@ The subscript \(d\) emphasises that expectation and variance are over the sampli
 
 An estimated standard error is the square root of an estimated sampling variance. It describes the variability of an estimator under the assumed design and analysis. It is not the standard deviation of individual observations, nor does it include every possible source of uncertainty.
 
+### Law of large numbers
+
+The **law of large numbers (LLN)** describes how an appropriately defined sample average or sample proportion approaches its population expectation or probability as the amount of information grows, under the conditions of the relevant theorem. It explains why repeated observations can stabilise an estimate; it does not say that every larger dataset is automatically more representative or less biased.
+
+For independent, identically distributed observations with a finite expected value, the sample mean converges to the population mean in probability (the weak law). Stronger forms give almost-sure convergence under their stated conditions. Other sampling designs and dependent observations require results matched to those designs and dependence structures.
+
+In spatial work, collecting more nearby pixels or points may add much less independent information than collecting observations across new areas, times or relevant strata. Spatial autocorrelation, clustered selection, changing measurement conditions and an incomplete sampling frame can all undermine a naive independent-observation interpretation. The LLN does not repair selection bias, coverage error, nonresponse or a poorly defined target population.
+
 ### Central limit theorem: useful, not automatic
 
 Under suitable conditions, appropriately standardised sample means approach a normal distribution as sample size increases. This helps motivate confidence intervals and tests.
