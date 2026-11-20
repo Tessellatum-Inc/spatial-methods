@@ -32,7 +32,7 @@ Numerical analysis owns floating-point error, conditioning, stability, convergen
 | 03 | [Linear systems, elimination, rank and null spaces](linear-systems-elimination-rank-and-null-spaces.md) | Control networks, datum defects and coordinate estimation | Initial public content |
 | 04 | [Bases, dimension, coordinates and change of basis](bases-dimension-coordinates-and-change-of-basis.md) | Local/global frames, basis choice and representation | Initial public content |
 | 05 | [Inner products, norms, orthogonality and projections](inner-products-norms-orthogonality-and-projections.md) | Residuals, least squares and geometric distance | Initial public content |
-| 06 | Least squares and constrained systems | Survey adjustment, regression and exact constraints | Planned |
+| 06 | [Least squares and constrained systems](least-squares-and-constrained-systems.md) | Survey adjustment, regression and exact constraints | Initial public content |
 | 07 | Symmetric matrices, quadratic forms and definiteness | Covariance, energy functions and optimisation | Planned |
 | 08 | Eigenvalues, eigenvectors and spectral structure | PCA, stability, spatial weights and network structure | Planned |
 | 09 | Matrix factorizations | Cholesky GLS, QR least squares, SVD and rank diagnosis | Planned |
@@ -58,4 +58,4 @@ Do not conflate a mathematically valid model with a valid spatial interpretation
 
 ## Review status
 
-Modules 01–05 are initial teaching resources. They have not received independent technical review or learner testing. The subject collection is incomplete; publication of a module does not constitute technical certification.
+Modules 01–06 are initial teaching resources. They have not received independent technical review or learner testing. The subject collection is incomplete; publication of a module does not constitute technical certification.
