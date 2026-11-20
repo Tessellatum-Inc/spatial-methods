@@ -271,7 +271,7 @@ Substituting into the first equation:
 6+y=10\Rightarrow y=4.
 \]
 
-The solution is (x,y) = (6,4).
+The solution is \(x,y\) = \(6,4\).
 
 ### Spatial interpretation
 
@@ -597,7 +597,7 @@ For each question, decide whether an equation, inequality or system is the most 
 - **Spatial algorithms:** threshold queries, spatial filters, geometric intersection, constrained optimisation and rule-based classification.
 - **Spatial data collection:** acceptable measurement ranges, sensor thresholds, survey tolerances and field eligibility rules.
 - **Spatial recipes:** site screening, proximity analysis, quality checks, route-length constraints and field planning.
-- **Theoretical foundations:** linear algebra and matrix methods (SM-FND-002), coordinate geometry (SM-FND-006), probability and statistical inference (SM-FND-004), geodesy and reference systems (SM-FND-008), measurement science (SM-FND-011) and numerical analysis (SM-FND-016).
+- **Theoretical foundations:** linear algebra and matrix methods \(SM-FND-002\), coordinate geometry \(SM-FND-006\), probability and statistical inference \(SM-FND-004\), geodesy and reference systems \(SM-FND-008\), measurement science \(SM-FND-011\) and numerical analysis \(SM-FND-016\).
 
 ## 18. Scope and limitations
 
@@ -616,6 +616,6 @@ The explanations and spatial examples are original Spatial Methods teaching mate
 
 1. **OpenStax.** *Algebra and Trigonometry 2e*. [Chapter 2: Equations and Inequalities](https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-introduction-to-equations-and-inequalities), including linear and quadratic equations, absolute-value inequalities and applications.
 2. **OpenStax.** *Algebra and Trigonometry 2e*. [Chapter 11: Systems of Equations and Inequalities](https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-introduction-to-systems-of-equations-and-inequalities). Used for simultaneous equations and feasible sets.
-3. **BIPM.** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication](https://www.bipm.org/en/si-brochure-9). Used for quantity and unit conventions in dimensional checks.
+3. **BIPM.** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication]\(https://www.bipm.org/en/si-brochure-9\). Used for quantity and unit conventions in dimensional checks.
 
 **Limitations:** These sources support introductory algebra, not the full treatment of constrained optimisation, linear algebra, numerical solution or formal mathematical proof.
