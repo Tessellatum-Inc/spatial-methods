@@ -150,7 +150,8 @@ The audit does not justify adding another broad mathematics module. It identifie
 
 - **APP-MATH-01 implemented:** Module 10 now includes a complete two-leg local planar traverse from azimuths and distances through coordinate updates, direction checks, path length versus displacement, and explicit limitations. Independent technical review and learner testing remain outstanding.
 - **APP-MATH-02 implemented:** Module 11 now evaluates a spatial QA predicate across TRUE, FALSE and UNKNOWN cases, explains why UNKNOWN is not selected by a typical SQL WHERE clause, and distinguishes attribute logic from geometry predicate semantics. Database-specific implementation and learner testing remain outstanding.
-- **APP-MATH-03 to APP-MATH-06 remain open.**
+- **APP-MATH-03 implemented:** Module 08 now combines a fixed-extent 20 m / 10 m / 5 m grid comparison, cell areas and counts, a scale/offset conversion, and an explicit explanation of why upsampling does not create independent observations or new sensor detail. Modules 02 and 03 cross-link to the worked example. Technical review and learner testing remain outstanding.
+- **APP-MATH-04 to APP-MATH-06 remain open.**
 
 ## 6. What this audit does not justify
 
