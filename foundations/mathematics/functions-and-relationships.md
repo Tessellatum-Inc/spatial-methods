@@ -489,12 +489,12 @@ A team fits a function to observed temperatures and location coordinates.
 
 ## 16. Answers and checks
 
-1. **Map-scale function:** domain M ≥ 0 cm; codomain G ≥ 0 m; range [0,∞) m. f(3.5) = 1,750 m.
-2. **Invertibility:** $f(2)=f(-2)=4$, so the function is not injective on all real numbers. Restrict domain to x ≥ 0; inverse is $f^{-1}(y)=\sqrt{y}$ for $y\geq0$.
-3. **Composition:** first h(mm) = mm/1,000 metres; then g$m$ = 10,000m. Composition gives 10 × mm metres. For 85 mm, output is 850 m. Omitting conversion gives a result 1,000 times too large.
-4. **Terrain:** z$100,200$ = 250 + 4 + 6 = 260 m. Coefficients are dimensionless for metre inputs and metre output. The expression is affine in x and y, so equal increments in either coordinate produce constant elevation increments. Real terrain has curvature, local features, discontinuities and measurement/interpolation error.
-5. **Distance:** d$x,y$ = √((x−300)²+(y−400)²). At $600,800$, d = √$300²+400²$ = 500 m. Within 250 m: (x−300)²+(y−400)² ≤ 250², a closed disk in the assumed plane.
-6. **Mapping:** T$250,300$ = $350,250$. Inverse T⁻¹(x',y') = $x'−100,y'+50$. Applying it returns $250,300$. The mapping changes coordinate values under a stated convention, not the point's physical location.
+1. **Map-scale function:** domain $M\geq0\,\mathrm{cm}$; codomain $G\geq0\,\mathrm{m}$; range $[0,\infty)\,\mathrm{m}$. $f(3.5)=1{,}750\,\mathrm{m}$.
+2. **Invertibility:** $f(2)=f(-2)=4$, so the function is not injective on all real numbers. Restrict the domain to $x\geq0$; the inverse is $f^{-1}(y)=\sqrt{y}$ for $y\geq0$.
+3. **Composition:** first $h(mm)=mm/1{,}000$ metres; then $g(m)=10{,}000m$. Composition gives $10\times mm$ metres. For 85 mm, the output is 850 m. Omitting the millimetre-to-metre conversion gives a result 1,000 times too large.
+4. **Terrain:** $z(100,200)=250+0.04(100)+0.03(200)=260\,\mathrm{m}$. Coefficients are dimensionless for metre inputs and metre output. The expression is affine in x and y, so equal increments in either coordinate produce constant elevation increments. Real terrain has curvature, local features, discontinuities and measurement/interpolation error.
+5. **Distance:** $d(x,y)=\sqrt{(x-300)^2+(y-400)^2}$. At $(600,800)$, $d=\sqrt{300^2+400^2}=500\,\mathrm{m}$. Within 250 m: $(x-300)^2+(y-400)^2\leq250^2$, a closed disk in the assumed plane.
+6. **Mapping:** $T(250,300)=(350,250)$. Inverse $T^{-1}(x',y')=(x'-100,y'+50)$. Applying it returns $(250,300)$. The mapping changes coordinate values under a stated convention, not the point's physical location.
 7. **Models:** an analytical model is specified from an assumed relationship; an empirical model is estimated from observations. Check data coverage and sampling, residual structure and independent predictive performance; also inspect uncertainty and extrapolation. A spatial association alone does not identify a causal process.
 
 ## 17. Connections across Spatial Methods
