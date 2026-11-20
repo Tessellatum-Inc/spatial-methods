@@ -30,7 +30,7 @@ Numerical analysis owns floating-point error, conditioning, stability, convergen
 | 01 | [Vectors, matrices and linear transformations](vectors-matrices-and-linear-transformations.md) | Coordinate operations, design matrices, raster/vector data arrays and linear models | Initial public content |
 | 02 | [Linear combinations, span, independence and subspaces](linear-combinations-span-independence-and-subspaces.md) | Network geometry, parameter identifiability and model structure | Initial public content |
 | 03 | [Linear systems, elimination, rank and null spaces](linear-systems-elimination-rank-and-null-spaces.md) | Control networks, datum defects and coordinate estimation | Initial public content |
-| 04 | Bases, dimension, coordinates and change of basis | Local/global frames, basis choice and representation | Planned |
+| 04 | [Bases, dimension, coordinates and change of basis](bases-dimension-coordinates-and-change-of-basis.md) | Local/global frames, basis choice and representation | Initial public content |
 | 05 | Inner products, norms, orthogonality and projections | Residuals, least squares and geometric distance | Planned |
 | 06 | Least squares and constrained systems | Survey adjustment, regression and exact constraints | Planned |
 | 07 | Symmetric matrices, quadratic forms and definiteness | Covariance, energy functions and optimisation | Planned |
@@ -58,4 +58,4 @@ Do not conflate a mathematically valid model with a valid spatial interpretation
 
 ## Review status
 
-Modules 01–03 are initial teaching resources. They have not received independent technical review or learner testing. The subject collection is incomplete; publication of a module does not constitute technical certification.
+Modules 01–04 are initial teaching resources. They have not received independent technical review or learner testing. The subject collection is incomplete; publication of a module does not constitute technical certification.
