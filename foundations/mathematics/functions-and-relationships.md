@@ -553,3 +553,14 @@ All worked numerical examples are hypothetical. They do not constitute survey re
 ## 19. Further development
 
 The next module develops coordinate geometry and reference frames: points, lines, planes, geometric loci, coordinate descriptions and the relationship between geometric objects and their numerical representations. Vector and matrix operations will be treated in greater depth in their dedicated foundations.
+
+
+## References and further reading
+
+The explanations and spatial examples are original Spatial Methods teaching material. These references support the mathematical treatment of functions and relationships.
+
+1. **OpenStax.** *Algebra and Trigonometry 2e*. [Chapter 3: Functions](https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-introduction-to-functions), including function notation, domains and ranges, composition and inverse functions.
+2. **OpenStax.** *Algebra and Trigonometry 2e*. [Chapter 4: Linear Functions](https://openstax.org/books/algebra-and-trigonometry-2e/pages/4-introduction-to-linear-functions), [Chapter 5: Polynomial and Rational Functions](https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-introduction-to-polynomial-and-rational-functions), and [Chapter 6: Exponential and Logarithmic Functions](https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-introduction-to-exponential-and-logarithmic-functions). Used for common function families and their properties.
+3. **Esri.** [Coordinate systems, map projections, and transformations](https://doc.esri.com/en/arcgis-pro/latest/help/mapping/properties/coordinate-systems-and-projections.html). Used for the applied interpretation of coordinate transformations as spatial mappings. It is product documentation and does not replace geodetic theory.
+
+**Limitations:** Empirical functions and fitted models require data, model diagnostics and domain-specific validation. A function's mathematical form alone does not establish a causal or physically valid relationship.
