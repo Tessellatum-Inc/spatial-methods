@@ -24,7 +24,7 @@ The subject IDs below are stable identifiers from the [Geoinformatics master sub
 | Subject ID | Foundation domain | Collection status | Planned coverage |
 |---|---|---|---|
 | SM-FND-001 | Mathematics for spatial science | Initial collection; review required | Mathematical language, functions, vectors, coordinate geometry, proof and modelling |
-| SM-FND-002 | Linear algebra and matrix methods | Initial module published; expansion and review required | Vectors, matrices, linear systems, rank, eigenvalues, decompositions and quadratic forms |
+| SM-FND-002 | Linear algebra and matrix methods | Initial ten-module sequence published; desk audit completed; independent review and learner testing pending | Vectors, matrices, linear systems, rank, eigenvalues, decompositions, covariance and multivariate structure |
 | SM-FND-003 | Calculus and differential methods | Planned | Derivatives, gradients, integrals, multivariable calculus, differential equations and fields |
 | SM-FND-004 | Probability and statistical inference | Planned | Probability models, distributions, sampling, estimation, testing and Bayesian reasoning |
 | SM-FND-005 | Spatial statistics and stochastic processes | Planned | Random fields, spatial dependence, point processes, spatial sampling and spatiotemporal processes |
@@ -50,7 +50,7 @@ The mathematics domain begins with [Mathematical language, quantities and spatia
 
 ### Linear algebra and matrix methods
 
-The next specialist domain is [Linear algebra and matrix methods](linear-algebra/README.md), selected because matrix operations, linear systems, covariance structures and transformations recur throughout the repository's survey adjustment, CRS, PCA, regression, geostatistics and optimisation work. The first module, [Vectors, matrices and linear transformations](linear-algebra/vectors-matrices-and-linear-transformations.md), establishes the shared notation and spatial interpretation. The domain remains incomplete and requires independent technical review and learner testing.
+[Linear algebra and matrix methods](linear-algebra/README.md) now contains an initial ten-module sequence, selected because matrix operations, linear systems, covariance structures and transformations recur throughout the repository's survey adjustment, CRS, PCA, regression, geostatistics and optimisation work. The sequence runs from [vectors, matrices and linear transformations](linear-algebra/vectors-matrices-and-linear-transformations.md) through [covariance matrices and multivariate structure](linear-algebra/covariance-matrices-and-multivariate-structure.md). Its [sequence audit](linear-algebra/sequence-audit.md) records the desk review and the remaining work. Independent technical review and learner testing are still required.
 
 ### Existing measurement-science resources
 
