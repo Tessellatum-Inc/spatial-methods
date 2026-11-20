@@ -71,7 +71,7 @@ a_n=a_0r^n.
 
 ### Example: arithmetic sequence
 
-A grid coordinate starts at \(0\,\\mathrm{m}\) and increases by \(10\,\\mathrm{m}\) at each step. The sequence is \(0,10,20,30,\\ldots\). It can represent regularly spaced sample positions along one axis.
+A grid coordinate starts at \(0\,\mathrm{m}\) and increases by \(10\,\mathrm{m}\) at each step. The sequence is \(0,10,20,30,\ldots\). It can represent regularly spaced sample positions along one axis.
 
 ### Example: geometric sequence
 
@@ -265,7 +265,7 @@ An iterative method generates a sequence of estimates:
 x_0,x_1,x_2,\ldots
 \]
 
-A common stopping test checks whether successive estimates have changed by less than a tolerance \(\\varepsilon\):
+A common stopping test checks whether successive estimates have changed by less than a tolerance \(\varepsilon\):
 
 \[
 |x_{n+1}-x_n|<\varepsilon.
@@ -302,7 +302,7 @@ t_n=t_0+n\Delta t.
 
 A model then updates its state at each step. The choice of Δt can affect numerical stability, computational cost and the fidelity with which rapid changes are represented.
 
-For example, a vehicle movement model sampled at \(\\Delta t=1\,\\mathrm{s}\) may miss short events that occur between samples. A smaller time step can capture more temporal detail, but it also increases data volume and computation. Whether it improves the model depends on the process and measurement design.
+For example, a vehicle movement model sampled at \(\Delta t=1\,\mathrm{s}\) may miss short events that occur between samples. A smaller time step can capture more temporal detail, but it also increases data volume and computation. Whether it improves the model depends on the process and measurement design.
 
 A time step is not the same as the temporal accuracy of the input observations.
 
