@@ -40,3 +40,7 @@ The GLS covariance is an assumed AR(1)-style matrix with standard deviation 0.03
 This is not a geodetic adjustment, a field-survey workflow, a terrain product, an instrument calibration, or evidence of positional/elevation accuracy. It does not estimate the covariance parameters, handle robust outliers, model spatially varying terrain, propagate control uncertainty, validate a CRS, or provide independent survey checks. It is an instructional integration of standard NumPy/SciPy routines.
 
 For isolated method demonstrations, see [the factorization companion](README.md). For the underlying theory, see [matrix factorizations](../../../foundations/linear-algebra/matrix-factorizations-lu-qr-cholesky-svd.md) and [covariance matrices](../../../foundations/linear-algebra/covariance-matrices-and-multivariate-structure.md).
+
+## Teaching companion
+
+Use the [practical exercise and worked solution](integrated-case-exercise.md) for learner tasks, interpretation questions and a marking guide.
