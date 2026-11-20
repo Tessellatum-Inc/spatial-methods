@@ -233,9 +233,9 @@ Start with [Measurement science and survey adjustment](measurement-science-and-s
 6. Examine classwise calibration if the map provides probabilities.
 7. Report sampling uncertainty, class imbalance, reference limitations and geographic variation.
 
-Use [Module 04 — sampling designs](../foundations/probability-and-statistics/sampling-designs-and-sampling-distributions.md), the [accuracy-assessment implementation](../implementations/python/accuracy-assessment/README.md), and [spatial cross-validation](../methods/spatial-cross-validation.md).
+Use [Module 04 — sampling designs](../foundations/probability-and-statistics/sampling-designs-and-sampling-distributions.md), the [count-based accuracy-assessment metrics](../implementations/python/accuracy-assessment/README.md), the new [area-adjusted map accuracy method](../methods/area-adjusted-map-accuracy.md) and its [Python implementation and tests](../implementations/python/area-adjusted-accuracy/README.md), plus [spatial cross-validation](../methods/spatial-cross-validation.md).
 
-**Evidence boundary:** the current accuracy-assessment implementation explicitly does not implement design-based area-adjusted accuracy or its sampling variance. Its count-based metrics must not be presented as those estimates.
+**Evidence boundary:** the new implementation supports only independent simple random sampling within mapped-class strata. It does not support arbitrary unequal-probability, cluster, general systematic or spatially balanced designs. Its reference labels are treated as correct, and its intervals are normal-approximation teaching baselines.
 
 ### Route C — Spatial prediction and environmental patterns
 
