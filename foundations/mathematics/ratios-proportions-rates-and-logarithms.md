@@ -415,12 +415,12 @@ A team wants to forecast the number of field assets recorded in a database over 
 
 ## 12. Answers and checks
 
-1. **Map scale:** 7.2 cm × 25,000 = 180,000 cm = 1,800 m = 1.8 km. For 850 m, 850 m ÷ 25,000 = 0.034 m = 3.4 cm. Scale alone says nothing about source or positional accuracy.
-2. **Proportions:** change = 5 percentage points. Relative increase = (23 − 18) ÷ 18 × 100 ≈ 27.8%. Check whether the valid-area denominator and class definitions remained comparable.
-3. **Density:** Ward A is 1,200 people/km² by total area and 1,500 people/km² by land area. Ward B is 1,100 people/km² by total area and 1,375 people/km² by land area. The denominator changes the meaning; use the definition that matches the question and disclose it.
-4. **Raster:** 30 m × 30 m = 900 m² = 0.09 ha. 900 km² = 900,000,000 m², giving approximately 1,000,000 cells. At 15 m, cell area is 225 m² and the estimate is approximately 4,000,000 cells. Grid alignment, shape, masking and boundary effects change actual counts.
-5. **Change rate:** (72 − 84) ÷ 6 = −2 km²/year. Relative change = (72 − 84) ÷ 84 × 100 ≈ −14.3%. This is an interval average, not a trajectory or causal analysis.
-6. **Logarithms:** log₁₀$1,000$ = 3; log₂(64) = 6; power ratio 10 gives 10 dB; amplitude ratio 10 under the square-law condition gives 20 dB. The reference ratio makes the logarithm's argument dimensionless and interpretable.
+1. **Map scale:** $7.2\,\mathrm{cm}\times25{,}000=180{,}000\,\mathrm{cm}=1{,}800\,\mathrm{m}=1.8\,\mathrm{km}$. For 850 m, $850\,\mathrm{m}/25{,}000=0.034\,\mathrm{m}=3.4\,\mathrm{cm}$. Scale alone says nothing about source or positional accuracy.
+2. **Proportions:** change $=23\%-18\%=5$ percentage points. Relative increase $=(23-18)/18\times100\%\approx27.8\%$. Check whether the valid-area denominator and class definitions remained comparable.
+3. **Density:** Ward A is $42{,}000/35=1{,}200\;\mathrm{people\,km^{-2}}$ by total area and $42{,}000/28=1{,}500\;\mathrm{people\,km^{-2}}$ by land area. Ward B is $55{,}000/50=1{,}100\;\mathrm{people\,km^{-2}}$ by total area and $55{,}000/40=1{,}375\;\mathrm{people\,km^{-2}}$ by land area. The denominator changes the meaning; use the definition that matches the question and disclose it.
+4. **Raster:** $30\,\mathrm{m}\times30\,\mathrm{m}=900\,\mathrm{m}^2=0.09\,\mathrm{ha}$. $900\,\mathrm{km}^2=900{,}000{,}000\,\mathrm{m}^2$, giving approximately $1{,}000{,}000$ cells. At 15 m, cell area is $225\,\mathrm{m}^2$ and the estimate is approximately $4{,}000{,}000$ cells. Grid alignment, shape, masking and boundary effects change actual counts.
+5. **Change rate:** $(72-84)/6=-2\,\mathrm{km}^2\,\mathrm{yr}^{-1}$. Relative change $=(72-84)/84\times100\%\approx-14.3\%$. This is an interval average, not a trajectory or causal analysis.
+6. **Logarithms:** $\log_{10}(1{,}000)=3$; $\log_2(64)=6$; a power ratio of 10 gives $10\,\mathrm{dB}$; an amplitude ratio of 10 under the square-law condition gives $20\,\mathrm{dB}$. The reference ratio makes the logarithm's argument dimensionless and interpretable.
 7. **Model selection:** constant addition may suit a stable annual survey programme with similar coverage; proportional growth may suit an expanding system where new records arise in proportion to the existing inventory. Coverage changes, funding, duplicate removal, asset retirement, policy, population change, data quality and access can invalidate either assumption. Historical observations, a defined process, uncertainty analysis and out-of-sample evaluation are needed for a defensible forecast.
 
 ## 13. Connections across Spatial Methods
