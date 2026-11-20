@@ -313,3 +313,8 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### 3D geometry
 
 - [Möller–Trumbore ray/triangle intersection](python/ray-triangle-intersection/README.md): dependency-free reference implementation, independent edge/degeneracy/culling tests and a walkthrough.
+
+
+### Design-based map accuracy
+
+- [Area-adjusted map accuracy](python/area-adjusted-accuracy/README.md): mapped-class-stratified simple-random-sample estimators for area-proportion error matrices, overall/user's/producer's accuracy, reference-class area and approximate uncertainty. Not a general unequal-probability or spatial sampling engine.
