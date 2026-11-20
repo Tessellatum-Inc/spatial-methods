@@ -97,15 +97,21 @@ class SamplingStrataAccuracyTests(unittest.TestCase):
                 self.rows, self.weights, stratum_population_sizes={"A": 40, "B": 30}
             )
 
-    def test_class_with_no_estimated_reference_area_has_undefined_producers_accuracy(self):
+    def test_nonmatching_map_and_reference_legends_are_retained_as_errors(self):
         rows = [
             {"sampling_stratum": "A", "map_class": "forest", "reference_class": "forest"},
             {"sampling_stratum": "A", "map_class": "forest", "reference_class": "forest"},
-            {"sampling_stratum": "B", "map_class": "other_map_only", "reference_class": "forest"},
-            {"sampling_stratum": "B", "map_class": "other_map_only", "reference_class": "forest"},
+            {"sampling_stratum": "B", "map_class": "other_map_only", "reference_class": "grass"},
+            {"sampling_stratum": "B", "map_class": "other_map_only", "reference_class": "grass"},
         ]
         result = estimate_stratified_accuracy(rows, {"A": 0.5, "B": 0.5})
-        self.assertIsNone(result["producers_accuracy_by_reference_class"]["other_map_only"])
+        self.assertAlmostEqual(
+            result["users_accuracy_by_map_class"]["other_map_only"]["estimate"], 0.0
+        )
+        self.assertAlmostEqual(
+            result["producers_accuracy_by_reference_class"]["grass"]["estimate"], 0.0
+        )
+        self.assertAlmostEqual(result["overall_accuracy"]["estimate"], 0.5)
 
 
 if __name__ == "__main__":
