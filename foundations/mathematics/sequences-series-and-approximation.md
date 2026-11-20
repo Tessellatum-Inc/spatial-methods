@@ -406,7 +406,7 @@ An iterative scalar solver produces estimates \(20.0,22.0,23.0,23.5,23.75\).
 3. **Limit:** \(a_0=17\), \(a_1=11\), \(a_3=8\). The limit is \(5\). It is the limit of this mathematical sequence, not evidence that an external measurement or model target equals 5.
 4. **Series:** \(a_0=8\), \(r=1/2\). First four terms sum to \(8+4+2+1=15\). Infinite sum is \(8/(1-1/2)=16\). The formula requires \(|r|<1\).
 5. **Error:** signed error is \(249.2-250.0=-0.8\,\mathrm{m}\). Absolute error is \(0.8\,\mathrm{m}\). Relative error is \(0.8/250.0=0.0032=0.32\%\). The difference could reflect rounding, approximation, measurement, model or other effects; the comparison alone does not identify a cause.
-6. **Raster:** 20 m cells cover 400 m²; 5 m cells cover 25 m². The cell-area ratio is 256:1. Approximately 256 times as many cells are needed for the same area. Resampling cannot create new observations or recover detail absent from the source.
+6. **Raster:** \(20\,\mathrm{m}\) cells cover \(400\,\mathrm{m}^2\); \(5\,\mathrm{m}\) cells cover \(25\,\mathrm{m}^2\). The cell-area ratio is 16:1. Approximately 16 times as many cells are needed for the same area. Resampling cannot create new observations or recover detail absent from the source.
 7. **Iteration:** changes are \(2.0,1.0,0.5,0.25\). The sequence appears to approach \(24\). The 0.3 successive-change test first passes on the final update (23.5 to 23.75). A residual is needed because small updates can occur away from a solution; also check constraints, stagnation, numerical failure or the maximum-iteration condition.
 
 ## 16. Connections across Spatial Methods
