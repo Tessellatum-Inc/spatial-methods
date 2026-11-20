@@ -53,7 +53,7 @@ Each module should include, where relevant:
 - clear definitions and consistent mathematical notation;
 - inline mathematics using single dollar delimiters, for example `$x^2+y^2=r^2$`;
 - display mathematics using double dollar delimiters on their own lines, for example `$$` on a line before and after the expression;
-- units typeset upright with `\\mathrm{}` and symbols defined;
+- units typeset upright with `\mathrm{}` and symbols defined;
 - intuitive explanation followed by formal treatment;
 - derivations or justification of important relationships;
 - worked spatial examples with units;
