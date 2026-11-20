@@ -107,7 +107,7 @@ The script does not transform coordinates, account for reference-survey uncertai
 python -m unittest -v
 ```
 
-Tests cover project validation and command construction without running Docker, checkpoint metrics, validation and JSON output, image inventory/hash behaviour, and acquisition-manifest hashing and metadata. A successful unit test is not a test of ODM, image quality or a real photogrammetric project.
+Tests cover project validation and command construction without running Docker, checkpoint metrics, validation and JSON output, image inventory/hash behaviour, acquisition-manifest hashing and metadata, and structural checks for GCP/observation/OPK records and rotation matrices. A successful unit test is not a test of ODM, image quality or a real photogrammetric project.
 
 ## Dataset inventory and image audit
 
@@ -121,6 +121,17 @@ python dataset_audit.py /path/to/drone_heig_2019 --expected-images 32 \\
 The utility inventories supported image files recursively, records file sizes and SHA-256 hashes, and (when Pillow is installed) verifies image readability and reports dimensions, basic camera EXIF and whether GPS metadata is present. It does not expose GPS coordinates. A present GPS tag is not evidence of positional accuracy. Keep the JSON manifest with the processing record; do not commit source imagery or a manifest containing sensitive metadata.
 
 Run the companion tests with `python -m unittest -v`.
+
+## Dataset metadata and geometry audit
+
+After acquiring the HEIG-VD dataset, run the structural auditor:
+
+```bash
+python dataset_metadata_audit.py /path/to/drone_heig_2019 \\
+  --json-out dataset-metadata-audit.json
+```
+
+It checks the publisher's GCP coordinate, image-observation and OPK text exports; expected record counts; duplicate coordinate groups; observed point and image mappings; pixel-coordinate bounds against the README dimensions; and OPK rotation-matrix orthogonality/determinants. It is a structural consistency check, not a CRS transformation, survey validation or control/checkpoint design. It reports the known point 100/206 coordinate coincidence rather than treating it as an automatic file error. The README's stated 31 GCPs, 206 observations, 30 image-measured points and 32 orientations are defaults; inspect any count mismatch rather than suppressing it.
 
 ## End-to-end rehearsal
 
