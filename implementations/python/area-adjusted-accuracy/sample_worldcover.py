@@ -13,6 +13,7 @@ import argparse
 import csv
 import hashlib
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -222,6 +223,12 @@ def sample_worldcover(
 
         metadata = {
             "product": "ESA WorldCover 2021 v200",
+            "product_citation": "Zanaga et al. (2022), ESA WorldCover 10 m 2021 v200, https://doi.org/10.5281/zenodo.7254221",
+            "product_attribution": "© ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",
+            "product_license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+            "product_data_access": "https://esa-worldcover.org/en/data-access",
+            "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
+            "raster_access_method": "GDAL /vsicurl/ HTTPS range reads; full remote COG files are not materialised locally",
             "raster_tiles": metadata_tiles,
             "sampling_method": "single-pixel containing each point using rasterio.sample",
             "point_coordinate_crs": "EPSG:4326",
