@@ -5,7 +5,7 @@ All data are synthetic, dimensionless teaching values.
 from __future__ import annotations
 
 import numpy as np
-from scipy.linalg import lu
+from scipy.linalg import lu, lu_factor, lu_solve
 
 
 def lu_coordinate_system():
@@ -14,7 +14,8 @@ def lu_coordinate_system():
     expected = np.array([2.0, -1.0, 3.0])
     b = a @ expected
     p, l, u = lu(a)
-    solution = np.linalg.solve(a, b)
+    lu_packed, pivots = lu_factor(a)
+    solution = lu_solve((lu_packed, pivots), b)
     return {"A": a, "b": b, "P": p, "L": l, "U": u,
             "solution": solution, "factorization_error": np.linalg.norm(a-p@l@u)}
 
