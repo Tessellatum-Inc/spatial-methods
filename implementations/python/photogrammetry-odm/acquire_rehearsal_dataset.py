@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import json
 import platform
+import re
 from datetime import datetime, timezone
 from importlib.metadata import version
 from pathlib import Path
@@ -27,6 +28,13 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def revision_snapshot_dir(destination: Path, revision: str) -> Path:
+    """Return an isolated local directory for one immutable Hub revision."""
+    if not re.fullmatch(r"[0-9a-fA-F]{40}", revision):
+        raise ValueError("Expected a 40-character hexadecimal repository commit SHA.")
+    return destination / "snapshots" / revision.lower()
 
 
 def build_manifest(destination: Path, dataset_dir: Path, revision: str) -> dict:
@@ -83,17 +91,19 @@ def main() -> int:
     revision = HfApi().repo_info(repo_id=REPO_ID, repo_type=REPO_TYPE).sha
     if not revision:
         raise RuntimeError("The Hub did not return a repository commit SHA.")
+    snapshot_dir = revision_snapshot_dir(destination, revision)
+    snapshot_dir.mkdir(parents=True, exist_ok=True)
 
     snapshot_download(
         repo_id=REPO_ID,
         repo_type=REPO_TYPE,
         revision=revision,
         allow_patterns=[f"{DATASET_PATH}/**"],
-        local_dir=str(destination),
+        local_dir=str(snapshot_dir),
         max_workers=4,
     )
 
-    dataset_dir = destination / DATASET_PATH
+    dataset_dir = snapshot_dir / DATASET_PATH
     if not dataset_dir.is_dir():
         raise RuntimeError(
             f"Download completed without the expected directory: {dataset_dir}. "
@@ -101,7 +111,7 @@ def main() -> int:
         )
 
     manifest = build_manifest(destination, dataset_dir, revision)
-    manifest_path = destination / "acquisition-provenance.json"
+    manifest_path = snapshot_dir / "acquisition-provenance.json"
     manifest_path.write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
@@ -109,6 +119,7 @@ def main() -> int:
 
     print(f"Repository: {manifest['repository']}")
     print(f"Resolved revision: {revision}")
+    print(f"Revision snapshot: {snapshot_dir}")
     print(f"Dataset directory: {dataset_dir}")
     print(f"Files fingerprinted: {manifest['file_count']}")
     print(f"Provenance manifest: {manifest_path}")
