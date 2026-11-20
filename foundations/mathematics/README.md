@@ -15,7 +15,7 @@ The sequence below moves from mathematical language toward structures and method
 | 01 | [Mathematical language, quantities and spatial models](mathematical-language-quantities-and-spatial-models.md) | Variables, units, functions, coordinate pairs, scale, area, density and modelling |
 | 02 | [Number systems, arithmetic and numerical representation](number-systems-arithmetic-and-numerical-representation.md) | Measurement values, precision, rounding, significant figures and numerical data |
 | 03 | [Ratios, proportions, rates and logarithms](ratios-proportions-rates-and-logarithms.md) | Map scale, resolution, density, rates of change, decibels and spectral transforms |
-| 04 | Equations, inequalities and mathematical reasoning | Thresholds, constraints, classification rules and solving spatial problems |
+| 04 | [Equations, inequalities and mathematical reasoning](equations-inequalities-and-mathematical-reasoning.md) | Thresholds, constraints, classification rules and solving spatial problems |
 | 05 | Functions and relationships | Transformations, distance functions, terrain surfaces and spatial models |
 | 06 | Coordinate geometry and reference frames | Cartesian coordinates, lines, planes, coordinate transformations and geometric interpretation |
 | 07 | Vectors and vector operations | Displacement, direction, velocity, gradients and 3D geometry |
@@ -63,4 +63,4 @@ Do not mistake a long list of formulas for a foundation. The aim is to teach how
 
 ## Current status
 
-Modules 01–03 have initial public content. They require further technical review and expansion. Modules 04–10 remain planned, not yet written or reviewed. Coverage will expand only when each module has meaningful explanatory content.
+Modules 01–04 have initial public content. They require further technical review and expansion. Modules 05–10 remain planned, not yet written or reviewed. Coverage will expand only when each module has meaningful explanatory content.
