@@ -449,7 +449,7 @@ The explanations and worked spatial examples are original Spatial Methods teachi
 
 1. **OpenStax.** *Algebra and Trigonometry 2e*. [Chapter 4: Linear Functions](https://openstax.org/books/algebra-and-trigonometry-2e/pages/4-introduction-to-linear-functions) and [Chapter 6: Exponential and Logarithmic Functions](https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-introduction-to-exponential-and-logarithmic-functions). Used for proportional relationships, rates, exponential growth and logarithm properties.
 2. **Esri.** [Explore imagery — Spatial resolution](https://learn.arcgis.com/en/projects/explore-imagery-spatial-resolution/). Used for the applied discussion of raster cell size, represented detail and resolution trade-offs. This is a software-vendor tutorial, not a universal resolution standard.
-3. **BIPM.** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication]$https://www.bipm.org/en/si-brochure-9$. Used for unit expression and dimensional consistency when defining rates and densities.
+3. **BIPM.** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication](https://www.bipm.org/en/si-brochure-9). Used for unit expression and dimensional consistency when defining rates and densities.
 
 **Source register:** `SM-SRC-000020`, `SM-SRC-000021`, `SM-SRC-000022`.
 
