@@ -334,7 +334,7 @@ A posterior may be narrow because the prior is strong, not because the data are 
 - [Sampling designs and sampling distributions](sampling-designs-and-sampling-distributions.md): the sampling frame and design remain central to the likelihood.
 - [Spatial cross-validation](../../methods/spatial-cross-validation.md): validation under spatial structure.
 - [Forecast verification](../../methods/forecast-verification.md): evaluation of predictive distributions.
-- Next: [Statistical diagnostics, calibration and model criticism](README.md) — Module 08.
+- Next: [Statistical diagnostics, calibration and model criticism](statistical-diagnostics-calibration-and-model-criticism.md) — Module 08.
 
 ## References
 
