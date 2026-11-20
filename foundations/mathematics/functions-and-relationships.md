@@ -413,15 +413,15 @@ Show your reasoning and state the domain, units and assumptions for each functio
 
 ### Exercise 1 — Domain, codomain and range
 
-A function maps a non-negative distance M in centimetres to ground distance G in metres using a map scale of 1:50,000:
+A function maps a non-negative distance $M$ in centimetres to ground distance $G$ in metres using a map scale of 1:50,000:
 $$
 f(M)=500M.
 $$
 
-1. State a reasonable domain.
-2. State a reasonable codomain.
+1. State a reasonable domain for $M$.
+2. State a reasonable codomain for $G$.
 3. State the range if the domain is all non-negative real values.
-4. Calculate f(3.5).
+4. Calculate $f(3.5)$.
 
 ### Exercise 2 — Invertibility
 
@@ -430,7 +430,7 @@ $$
 f(x)=x^2.
 $$
 
-1. Explain why it is not one-to-one on all real numbers.
+1. Explain why $f$ is not one-to-one on all real numbers.
 2. Restrict its domain so that it has an inverse with non-negative outputs.
 3. Write the inverse.
 4. Explain why the domain restriction is necessary.
@@ -453,16 +453,16 @@ $$
 
 where x and y are local horizontal offsets in metres and z is elevation in metres.
 
-1. Calculate elevation at $100,200$.
+1. Calculate elevation at $(100,200)$. 
 2. State the units of the coefficients.
 3. Explain why the surface is planar.
 4. Give two reasons a real terrain surface may not follow this model.
 
 ### Exercise 5 — Distance function
 
-A facility is at $300,400$ in a suitable local planar coordinate system. Define the Euclidean distance function from this facility.
+A facility is at $(300,400)$ in a suitable local planar coordinate system. Define the Euclidean distance function from this facility.
 
-1. Calculate the distance to point $600,800$.
+1. Calculate the distance to point $(600,800)$. 
 2. State the units if coordinates are metres.
 3. Write the inequality describing locations within 250 m.
 4. Describe the geometric shape of this set.
@@ -474,7 +474,7 @@ $$
 T(x,y)=(x+100,y-50).
 $$
 
-1. Transform $250,300$.
+1. Transform $(250,300)$. 
 2. Derive the inverse mapping.
 3. Apply the inverse to your transformed coordinate.
 4. Explain why this is a change of coordinate representation rather than physical movement.
