@@ -21,7 +21,8 @@ The sequence below moves from mathematical language toward structures and method
 | 07 | [Vectors and vector operations](vectors-and-vector-operations.md) | Displacement, direction, velocity, gradients and 3D geometry |
 | 08 | [Sequences, series and approximation](sequences-series-and-approximation.md) | Iterative algorithms, discretisation and convergence |
 | 09 | [Mathematical modelling and dimensional analysis](mathematical-modelling-and-dimensional-analysis.md) | Model construction, assumptions, units, scaling, sensitivity and plausibility checks |
-| 10 | [Trigonometry for spatial science](trigonometry-for-spatial-science.md) | Angles, radians, trigonometric functions, bearings, azimuths, slopes and planar geometry |\n| 11 | Introductory discrete mathematics and logic *(planned)* | Sets, relations, graphs, Boolean operations and spatial predicates |
+| 10 | [Trigonometry for spatial science](trigonometry-for-spatial-science.md) | Angles, radians, trigonometric functions, bearings, azimuths, slopes and planar geometry |
+| 11 | [Introductory discrete mathematics and logic](discrete-mathematics-and-logic-for-spatial-science.md) | Sets, relations, functions, propositions, Boolean logic, proofs and introductory graphs |
 
 ## Coverage audit
 
