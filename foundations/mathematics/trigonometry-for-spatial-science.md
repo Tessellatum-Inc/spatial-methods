@@ -247,6 +247,72 @@ $$
 
 Both increments are positive, and northing is larger than easting. These are local planar components, not a geodetic coordinate solution.
 
+### Worked example 4 — update a local coordinate through a two-leg traverse
+
+A local engineering grid has east and north coordinates. The starting point is:
+
+$
+E_0=5000.000\text{ m},\qquad N_0=10000.000\text{ m}
+$
+
+Travel 120 m on an azimuth of 35° clockwise from north, then 80 m on an azimuth of 110° clockwise from north. Assume both distances are horizontal, both azimuths use the same local east-north frame, and the area is treated as planar.
+
+For each leg, use:
+
+$
+\Delta E=d\sin A,\qquad \Delta N=d\cos A
+$
+
+**Leg 1:**
+
+$
+\Delta E_1=120\sin35^\circ\approx68.829\text{ m}
+$
+
+$
+\Delta N_1=120\cos35^\circ\approx98.298\text{ m}
+$
+
+The first point is approximately:
+
+$
+E_1=5068.829\text{ m},\qquad N_1=10098.298\text{ m}
+$
+
+**Leg 2:**
+
+$
+\Delta E_2=80\sin110^\circ\approx75.175\text{ m}
+$
+
+$
+\Delta N_2=80\cos110^\circ\approx-27.362\text{ m}
+$
+
+The second leg increases easting and decreases northing because its azimuth is southeast.
+
+Add the two increments to the starting coordinate:
+
+$
+E_2=5000.000+68.829+75.175
+\approx5144.005\text{ m}
+$
+
+$
+N_2=10000.000+98.298-27.362
+\approx10070.937\text{ m}
+$
+
+The final coordinate is approximately (5144.005 m, 10070.937 m). The total travelled distance is 200 m, while the straight-line displacement from start to finish is approximately 160.528 m. Path length and displacement are different quantities.
+
+**Checks and limitations:**
+- Both legs have positive easting increments; the second has a negative northing increment. This agrees with the stated quadrants.
+- The second azimuth is between 90° and 180°, so it points southeast in this convention.
+- The final coordinates retain the starting coordinate's frame and units.
+- Rounding intermediate values can create small differences; retain full precision until reporting.
+- This is a local planar calculation. It does not adjust a traverse, assess closure, model observation uncertainty, apply grid convergence or produce geodetic coordinates.
+
+
 ## 7. Slope, grade and vertical angle
 
 Slope is vertical change divided by horizontal run:
