@@ -107,7 +107,7 @@ The script does not transform coordinates, account for reference-survey uncertai
 python -m unittest -v
 ```
 
-Tests cover project validation and command construction without running Docker, plus checkpoint metrics, validation and JSON output. A successful unit test is not a test of ODM, image quality or a real photogrammetric project.
+Tests cover project validation and command construction without running Docker, checkpoint metrics, validation and JSON output, image inventory/hash behaviour, and acquisition-manifest hashing and metadata. A successful unit test is not a test of ODM, image quality or a real photogrammetric project.
 
 ## Dataset inventory and image audit
 
