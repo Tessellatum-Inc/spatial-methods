@@ -33,6 +33,8 @@ From this directory:
 
 ```bash
 python area_adjusted_accuracy.py sample.csv --area-weights '{"forest":0.6,"other":0.4}' --total-area 125000 --json-out report.json
+python area_adjusted_accuracy.py sample.csv --area-weights '{"forest":0.6,"other":0.4}' --stratum-population-sizes '{"forest":10000,"other":20000}'
+python fiji_case_study.py --json-out fiji-case-report.json
 python -m unittest -v
 ```
 
@@ -70,7 +72,7 @@ A raw count-based confusion matrix is not an area-proportion error matrix when t
 
 The reference labels are treated as correct for this estimator. If interpretation uncertainty, temporal mismatch, positional mismatch or ambiguous classes matter, they need an explicit response-design and uncertainty treatment.
 
-The Wald intervals are simple normal approximations, not universally reliable small-sample intervals. No finite-population correction is applied because stratum population sizes are not supplied. Variance in the mapped-class area weights is not included.
+The Wald intervals are simple normal approximations, not universally reliable small-sample intervals. If valid stratum population sizes are supplied, the implementation applies the SRS-without-replacement finite-population correction to the within-stratum variance contributions. If population sizes are not supplied, no correction is applied. Variance in the mapped-class area weights is not included.
 
 This is an educational and analytical baseline, not a regulatory or certification tool. A defensible assessment still requires a complete sampling frame, a probability selection protocol, suitable reference data, documented interpretation rules, and an analysis consistent with the actual design.
 
@@ -79,7 +81,7 @@ This is an educational and analytical baseline, not a regulatory or certificatio
 - Olofsson, P., Foody, G. M., Herold, M., Stehman, S. V., Woodcock, C. E., & Wulder, M. A. (2014). Good practices for estimating area and assessing accuracy of land change. *Remote Sensing of Environment*, 148, 42–57. https://doi.org/10.1016/j.rse.2014.02.015
 - Olofsson, P., Foody, G. M., Stehman, S. V., & Woodcock, C. E. (2013). Making better use of accuracy data in land change studies: Estimating accuracy and area and quantifying uncertainty using stratified estimation. *Remote Sensing of Environment*, 129, 122–131. https://doi.org/10.1016/j.rse.2012.10.031
 
-No real map or reference sample has been analysed here. The accompanying tests use synthetic fixtures only.
+A real public-data example is documented in [Fiji 2021 land-cover map accuracy](fiji-case-study.md). The case script downloads a pinned GeoJSON snapshot, verifies its Git blob identity and applies the supported estimator. The raw dataset is not redistributed in this repository.
 
 ## Learning materials
 
@@ -87,6 +89,9 @@ No real map or reference sample has been analysed here. The accompanying tests u
 - [Advanced three-class disproportionate-sampling exercise](advanced-exercise.md)
 - [Advanced exercise sample CSV](advanced-sample.csv)
 - [Assessment report template](report-template.md)
+- [Fiji 2021 real-data case study](fiji-case-study.md)
+- [Fiji case reproduction script](fiji_case_study.py)
+- [Fiji case script tests](test_fiji_case_study.py)
 - [Introductory synthetic sample CSV](sample.csv)
 
-The test suite includes a synthetic three-class regression case and checks that producer's accuracy is reported as undefined when a reference class has zero estimated area. Passing tests does not establish performance on a real map or support for other sampling designs.
+The test suite includes synthetic regression cases, finite-population correction checks and a structural fixture for the Fiji case script. The Fiji script itself analyses the pinned public dataset when run with network access; its test fixture does not substitute for a live download. Passing tests does not establish support for other sampling designs.
