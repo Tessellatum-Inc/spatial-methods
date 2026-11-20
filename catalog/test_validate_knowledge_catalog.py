@@ -40,7 +40,7 @@ class KnowledgeCatalogTests(unittest.TestCase):
             self.build_fixture(root)
             self.assertEqual(validate_catalog(root), [])
 
-    def test_unknown_subject_fails(self):
+    def test_review_kind_is_supported(self):\n        with tempfile.TemporaryDirectory() as directory:\n            root = Path(directory)\n            self.build_fixture(root)\n            record_path = root / "catalog" / "knowledge-records.jsonl"\n            record = json.loads(record_path.read_text(encoding="utf-8"))\n            record["kind"] = "review"\n            record_path.write_text(json.dumps(record) + "\\n", encoding="utf-8")\n            self.assertEqual(validate_catalog(root), [])\n\n    def test_unknown_subject_fails(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             self.build_fixture(root)
