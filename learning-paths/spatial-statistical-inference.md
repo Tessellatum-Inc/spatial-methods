@@ -110,7 +110,7 @@ Start with data integrity and the observation process, then explore both statist
 An unusual value may be a data error, a real extreme event or a meaningful local condition. Investigate it before excluding it. A normal-looking histogram does not establish independence, and exploratory patterns do not by themselves establish a causal explanation.
 
 **Methods to explore:**
-- [Spatial autocorrelation and hotspots](global-spatial-autocorrelation.md)
+- [Spatial autocorrelation and hotspots](global-spatial-autorrelation.md)
 - [Point-pattern foundations](point-pattern-foundations.md)
 - [Empirical semivariogram](../methods/empirical-semivariogram.md)
 
@@ -233,9 +233,9 @@ Start with [Measurement science and survey adjustment](measurement-science-and-s
 6. Examine classwise calibration if the map provides probabilities.
 7. Report sampling uncertainty, class imbalance, reference limitations and geographic variation.
 
-Use [Module 04 — sampling designs](../foundations/probability-and-statistics/sampling-designs-and-sampling-distributions.md), the [count-based accuracy-assessment metrics](../implementations/python/accuracy-assessment/README.md), the new [area-adjusted map accuracy method](../methods/area-adjusted-map-accuracy.md) and its [Python implementation and tests](../implementations/python/area-adjusted-accuracy/README.md), plus [spatial cross-validation](../methods/spatial-cross-validation.md). Complete the [learner exercise](../implementations/python/area-adjusted-accuracy/exercise.md) and use the [assessment report template](../implementations/python/area-adjusted-accuracy/report-template.md) to communicate the result.
+Use [Module 04 — sampling designs](../foundations/probability-and-statistics/sampling-designs-and-sampling-distributions.md), the [count-based accuracy-assessment metrics](../implementations/python/accuracy-assessment/README.md), the [area-adjusted map accuracy method](../methods/area-adjusted-map-accuracy.md) and its [Python implementation and tests](../implementations/python/area-adjusted-accuracy/README.md), plus [spatial cross-validation](../methods/spatial-cross-validation.md). Complete the [introductory learner exercise](../implementations/python/area-adjusted-accuracy/exercise.md) and [advanced three-class exercise](../implementations/python/area-adjusted-accuracy/advanced-exercise.md), inspect its [synthetic sample CSV](../implementations/python/area-adjusted-accuracy/advanced-sample.csv), and use the [assessment report template](../implementations/python/area-adjusted-accuracy/report-template.md).
 
-**Evidence boundary:** the new implementation supports only independent simple random sampling within mapped-class strata. It does not support arbitrary unequal-probability, cluster, general systematic or spatially balanced designs. Its reference labels are treated as correct, and its intervals are normal-approximation teaching baselines.
+**Evidence boundary:** the implementation supports only independent simple random sampling within mapped-class strata. It does not support arbitrary unequal-probability, cluster, general systematic or spatially balanced designs. Its reference labels are treated as correct, and its intervals are normal-approximation teaching baselines. The advanced case is synthetic and illustrates why sample counts and mapped-area weights answer different questions.
 
 ### Route C — Spatial prediction and environmental patterns
 
@@ -251,7 +251,7 @@ Use [Module 04 — sampling designs](../foundations/probability-and-statistics/s
 
 Choose the relevant branch:
 - [Interpolation and geostatistics](interpolation-and-geostatistics.md) for continuous values and unsampled locations.
-- [Spatial autocorrelation and hotspots](global-spatial-autocorrelation.md) for areal patterns and neighbourhood relationships.
+- [Spatial autocorrelation and hotspots](global-spatial-autorrelation.md) for areal patterns and neighbourhood relationships.
 - [Point-pattern foundations](point-pattern-foundations.md) for event locations and spatial intensity.
 - [Forecast verification](../methods/forecast-verification.md) for probabilistic and time-indexed predictions.
 
