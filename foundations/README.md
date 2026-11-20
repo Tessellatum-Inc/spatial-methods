@@ -26,7 +26,7 @@ The subject IDs below are stable identifiers from the [Geoinformatics master sub
 | SM-FND-001 | Mathematics for spatial science | Initial collection; review required | Mathematical language, functions, vectors, coordinate geometry, proof and modelling |
 | SM-FND-002 | Linear algebra and matrix methods | Initial ten-module sequence published; desk audit completed; independent review and learner testing pending | Vectors, matrices, linear systems, rank, eigenvalues, decompositions, covariance and multivariate structure |
 | SM-FND-003 | Calculus and differential methods | Planned | Derivatives, gradients, integrals, multivariable calculus, differential equations and fields |
-| SM-FND-004 | Probability and statistical inference | Initial module published; domain in development | Probability models, distributions, sampling, estimation, testing and Bayesian reasoning |
+| SM-FND-004 | Probability and statistical inference | Initial eight-module sequence and applied pathway published; review and learner testing pending | Probability models, distributions, sampling, estimation, testing and Bayesian reasoning |
 | SM-FND-005 | Spatial statistics and stochastic processes | Planned | Random fields, spatial dependence, point processes, spatial sampling and spatiotemporal processes |
 | SM-FND-006 | Geometry and computational geometry theory | Planned | Euclidean, affine and projective geometry; metric spaces; geometric constructions |
 | SM-FND-007 | Topology and spatial relations | Planned | Topological spaces, continuity, connectedness, boundaries and spatial relations |
