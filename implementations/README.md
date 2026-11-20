@@ -18,6 +18,7 @@ Each implementation should state:
 ### Photogrammetry and survey planning
 
 - [Photogrammetric flight-design calculations](python/photogrammetric-flight-design/README.md): nadir GSD, image footprint and overlap-constrained line/exposure spacing.
+- [OpenDroneMap processing and checkpoint QA](python/photogrammetry-odm/README.md): Docker-based ODM runner plus independent 3D checkpoint residual statistics, with standard-library tests.
 
 ### Compositional statistics
 
