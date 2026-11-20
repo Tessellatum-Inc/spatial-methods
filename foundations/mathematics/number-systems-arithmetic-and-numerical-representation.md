@@ -52,7 +52,7 @@ $$
 
 Examples include:
 $$
-rac{1}{2}=0.5,\qquad rac{3}{4}=0.75,\qquad rac{1}{3}=0.333\ldots
+\frac{1}{2}=0.5,\qquad \frac{3}{4}=0.75,\qquad \frac{1}{3}=0.333\ldots
 $$
 
 Rational numbers include terminating and repeating decimal expansions. They are useful for exact fractions, proportions and ratios.
@@ -149,7 +149,7 @@ $$
 For a conversion:
 $$
 2{,}000 \mathrm{m^2}\times
-rac{1 \mathrm{ha}}{10{,}000 \mathrm{m^2}}
+\frac{1 \mathrm{ha}}{10{,}000 \mathrm{m^2}}
 =0.2 \mathrm{ha}
 $$
 
@@ -173,7 +173,7 @@ Always establish what the sign means. A negative residual may mean observed minu
 
 A fraction expresses a part relative to a whole. A decimal is one way of writing a number in base ten. A percentage expresses a ratio per hundred.
 $$
-rac{3}{5}=0.6=60%
+\frac{3}{5}=0.6=60%
 $$
 
 These forms are mathematically equivalent, but the choice of representation affects readability and can hide the denominator or reference population.
@@ -182,7 +182,7 @@ These forms are mathematically equivalent, but the choice of representation affe
 
 Suppose a hypothetical land-cover assessment correctly classifies 840 of 1,000 reference samples.
 $$
-\text{Proportion correct}=rac{840}{1000}=0.84
+\text{Proportion correct}=\frac{840}{1000}=0.84
 $$
 $$
 \text{Percentage correct}=0.84\times100=84%
@@ -234,7 +234,7 @@ Quantisation introduces finite resolution. Its effect depends on the quantisatio
 
 For example:
 
-- 12.30 has two decimal places? No: it has two digits after the decimal point and four significant figures.
+- 12.30 has two decimal places and four significant figures.
 - 0.00450 has five decimal places and three significant figures.
 - 4,500 may be ambiguous without a convention or scientific notation.
 
@@ -354,7 +354,7 @@ This example is illustrative. Actual raster products may use different scaling, 
 
 A study area contains 7,250 mapped building footprints within an area of 2.5 km².
 $$
-D=rac{7250}{2.5}=2900 \mathrm{buildings/km^2}
+D=\frac{7250}{2.5}=2900 \mathrm{buildings/km^2}
 $$
 
 This is a count density of mapped building footprints, not a population density or a measure of building floor area. It depends on the feature definition, completeness of the building dataset and study boundary.
