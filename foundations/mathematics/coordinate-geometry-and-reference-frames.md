@@ -530,3 +530,14 @@ These topics have dedicated homes in the neighbouring foundations and algorithm 
 ## 20. Further development
 
 The next module introduces vectors and vector operations: displacement, magnitude, direction, components, dot and cross products, and their spatial interpretations. Matrix methods and formal coordinate transformation models will be developed in the linear algebra foundation.
+
+
+## References and further reading
+
+The explanations and worked examples are original Spatial Methods teaching material. These references support the analytic geometry and applied coordinate-reference discussion.
+
+1. **OpenStax.** *Algebra and Trigonometry 2e*. [Section 2.1: The Rectangular Coordinate Systems and Graphs](https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-1-the-rectangular-coordinate-systems-and-graphs) and [Chapter 12: Analytic Geometry](https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-introduction-to-analytic-geometry). Used for Cartesian coordinates, lines, circles and elementary geometric loci.
+2. **Esri.** [Coordinate systems, map projections, and transformations](https://doc.esri.com/en/arcgis-pro/latest/help/mapping/properties/coordinate-systems-and-projections.html). Used for the distinction between geographic, projected and local coordinate systems, their units and projection transformations. This is product documentation, not a geodetic standard.
+3. **BIPM.** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication](https://www.bipm.org/en/si-brochure-9). Used for the expression of coordinate quantities and units.
+
+**Limitations:** Euclidean plane and three-dimensional formulae are not substitutes for geodesic distance, ellipsoidal geometry, map-projection theory or datum transformation methods. Those subjects have dedicated Spatial Methods foundations.
