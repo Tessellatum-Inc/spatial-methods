@@ -20,7 +20,8 @@ A **source entry** is an item as it appears in the supplied compendium. A **cano
 | standard | A published specification, format, protocol or agreed convention | GeoJSON; OGC API Features; GTFS |
 | implementation | A particular software package, library, class, API or concrete realisation of a method | GEOS OverlayNG; Shapely; a PostGIS function |
 | dataset | A named collection of observations, features, imagery or other data product | A satellite scene collection; a published building-footprint dataset |
-| application | A domain-specific analytical use or solution pattern | Transit accessibility analysis; flood exposure assessment |\n| review | A structured assessment of coverage, evidence, quality or readiness for a defined scope | Application coverage audit; source review; implementation review |
+| application | A domain-specific analytical use or solution pattern | Transit accessibility analysis; flood exposure assessment |
+| review | A structured assessment of coverage, evidence, quality or readiness for a defined scope | Application coverage audit; source review; implementation review |
 | foundation | A foundational body of theory or scientific knowledge supporting methods and applications | Measurement science; geodesy; radiometry |
 
 Choose the kind that best describes the subject of the record itself, not every kind of thing it depends on. Use related-record links and tags for secondary relationships.
@@ -41,7 +42,8 @@ Ask these questions in order:
 10. Is it a named computational action? Use **operation**.
 11. Is it a reproducible procedure with explicit steps? Use **algorithm**.
 12. Is it a foundational body of theory or scientific knowledge? Use **foundation**.
-13. Is it a structured assessment of coverage, evidence, quality or readiness? Use **review**.\n14. Is it a wider analytical technique or domain solution? Use **method** or **application**, choosing the one that best captures the record's purpose.
+13. Is it a structured assessment of coverage, evidence, quality or readiness? Use **review**.
+14. Is it a wider analytical technique or domain solution? Use **method** or **application**, choosing the one that best captures the record's purpose.
 
 These questions guide classification; they are not a reason to split one concept into unnecessary pages.
 
