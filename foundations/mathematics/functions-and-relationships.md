@@ -30,7 +30,7 @@ f:X\rightarrow Y.
 - **Codomain** Y: the declared set in which outputs lie.
 - **Range** (or image): the subset of Y that the function actually produces.
 
-For every x in X, there is exactly one output f(x) in Y. Different inputs may have the same output unless the function has additional properties.
+For every x in X, there is exactly one output f\(x\) in Y. Different inputs may have the same output unless the function has additional properties.
 
 ### Example: converting map distance to ground distance
 
@@ -40,7 +40,7 @@ For a map with representative fraction 1:s, define:
 f(M)=sM,
 \]
 
-where M is map distance and f(M) is represented ground distance, with both distances expressed in compatible units.
+where M is map distance and f\(M\) is represented ground distance, with both distances expressed in compatible units.
 
 If M is measured in centimetres and s = 25,000, then:
 
@@ -103,7 +103,7 @@ z(x,y)=100+0.02x-0.01y,
 
 where x and y are horizontal offsets in metres from a local origin and z is elevation in metres relative to a stated vertical datum.
 
-At (x,y) = (100,200):
+At \(x,y\) = \(100,200\):
 
 \[
 z(100,200)=100+0.02(100)-0.01(200)=100\;\mathrm{m}.
@@ -131,7 +131,7 @@ Every admissible input produces the same output. A constant elevation surface is
 
 ### 6.2 Linear and affine functions
 
-A linear function in one real variable has the form f(x) = ax and passes through the origin. An affine function has the form:
+A linear function in one real variable has the form f\(x\) = ax and passes through the origin. An affine function has the form:
 
 \[
 f(x)=ax+b.
@@ -203,7 +203,7 @@ A category code is not automatically a numerical measurement. Arithmetic on clas
 
 These properties describe how a function relates its inputs to outputs.
 
-- **Injective (one-to-one):** different inputs always produce different outputs.
+- **Injective \(one-to-one\):** different inputs always produce different outputs.
 - **Surjective (onto):** every element of the declared codomain is produced by at least one input.
 - **Bijective:** both injective and surjective; each codomain element corresponds to exactly one input.
 
@@ -311,7 +311,7 @@ The composed mapping is:
 (g\circ f)(m)=\frac{25{,}000(100m)}{100}=25{,}000m.
 \]
 
-For m = 0.04 m:
+\[For m = 0.04 m:\]
 
 \[
 (g\circ f)(0.04)=1{,}000\;\mathrm{m}.
@@ -349,7 +349,7 @@ A location is not the same thing as a measured value at that location. The coord
 
 ### 10.1 Distance as a function
 
-For a fixed point (a,b), planar Euclidean distance from a variable point (x,y) is:
+For a fixed point \(a,b\), planar Euclidean distance from a variable point \(x,y\) is:
 
 \[
 d(x,y)=\sqrt{(x-a)^2+(y-b)^2}.
@@ -357,7 +357,7 @@ d(x,y)=\sqrt{(x-a)^2+(y-b)^2}.
 
 The function maps a two-dimensional location to a non-negative scalar distance. Its units are the same as the coordinate units, assuming a suitable planar metric coordinate system.
 
-The function's level set d(x,y) = r describes a circle of radius r around (a,b). The set d(x,y) ≤ r describes a closed disk. This connects functions to geometric loci and spatial selection.
+The function's level set d\(x,y\) = r describes a circle of radius r around \(a,b\). The set d\(x,y\) ≤ r describes a closed disk. This connects functions to geometric loci and spatial selection.
 
 ### 10.2 Terrain as a surface
 
@@ -405,7 +405,7 @@ A stochastic model represents uncertainty or variability. One notation is:
 Y=f(X)+\varepsilon,
 \]
 
-where X is an input, f(X) is a modelled component and ε represents an error or stochastic component under a specified model.
+where X is an input, f\(X\) is a modelled component and ε represents an error or stochastic component under a specified model.
 
 This is only a general pattern. The distribution, dependence, bias, covariance and interpretation of ε must be specified for a real analysis. A random variable is not the same thing as an unknown but fixed value, and not every discrepancy should be treated as random noise.
 
@@ -492,16 +492,16 @@ z(x,y)=250+0.04x+0.03y,
 
 where x and y are local horizontal offsets in metres and z is elevation in metres.
 
-1. Calculate elevation at (100,200).
+1. Calculate elevation at \(100,200\).
 2. State the units of the coefficients.
 3. Explain why the surface is planar.
 4. Give two reasons a real terrain surface may not follow this model.
 
 ### Exercise 5 — Distance function
 
-A facility is at (300,400) in a suitable local planar coordinate system. Define the Euclidean distance function from this facility.
+A facility is at \(300,400\) in a suitable local planar coordinate system. Define the Euclidean distance function from this facility.
 
-1. Calculate the distance to point (600,800).
+1. Calculate the distance to point \(600,800\).
 2. State the units if coordinates are metres.
 3. Write the inequality describing locations within 250 m.
 4. Describe the geometric shape of this set.
@@ -514,7 +514,7 @@ A simplified mapping is:
 T(x,y)=(x+100,y-50).
 \]
 
-1. Transform (250,300).
+1. Transform \(250,300\).
 2. Derive the inverse mapping.
 3. Apply the inverse to your transformed coordinate.
 4. Explain why this is a change of coordinate representation rather than physical movement.
@@ -530,11 +530,11 @@ A team fits a function to observed temperatures and location coordinates.
 ## 16. Answers and checks
 
 1. **Map-scale function:** domain M ≥ 0 cm; codomain G ≥ 0 m; range [0,∞) m. f(3.5) = 1,750 m.
-2. **Invertibility:** f(2) = f(−2) = 4, so the function is not injective on all real numbers. Restrict domain to x ≥ 0; inverse is f⁻¹(y) = √y for y ≥ 0.
-3. **Composition:** first h(mm) = mm/1,000 metres; then g(m) = 10,000m. Composition gives 10 × mm metres. For 85 mm, output is 850 m. Omitting conversion gives a result 1,000 times too large.
-4. **Terrain:** z(100,200) = 250 + 4 + 6 = 260 m. Coefficients are dimensionless for metre inputs and metre output. The expression is affine in x and y, so equal increments in either coordinate produce constant elevation increments. Real terrain has curvature, local features, discontinuities and measurement/interpolation error.
-5. **Distance:** d(x,y) = √((x−300)²+(y−400)²). At (600,800), d = √(300²+400²) = 500 m. Within 250 m: (x−300)²+(y−400)² ≤ 250², a closed disk in the assumed plane.
-6. **Mapping:** T(250,300) = (350,250). Inverse T⁻¹(x',y') = (x'−100,y'+50). Applying it returns (250,300). The mapping changes coordinate values under a stated convention, not the point's physical location.
+2. **Invertibility:** f(2) = f(−2) = 4, so the function is not injective on all real numbers. Restrict domain to x ≥ 0; inverse is f⁻¹\(y\) = √y for y ≥ 0.
+3. **Composition:** first h(mm) = mm/1,000 metres; then g\(m\) = 10,000m. Composition gives 10 × mm metres. For 85 mm, output is 850 m. Omitting conversion gives a result 1,000 times too large.
+4. **Terrain:** z\(100,200\) = 250 + 4 + 6 = 260 m. Coefficients are dimensionless for metre inputs and metre output. The expression is affine in x and y, so equal increments in either coordinate produce constant elevation increments. Real terrain has curvature, local features, discontinuities and measurement/interpolation error.
+5. **Distance:** d\(x,y\) = √((x−300)²+(y−400)²). At \(600,800\), d = √\(300²+400²\) = 500 m. Within 250 m: (x−300)²+(y−400)² ≤ 250², a closed disk in the assumed plane.
+6. **Mapping:** T\(250,300\) = \(350,250\). Inverse T⁻¹(x',y') = \(x'−100,y'+50\). Applying it returns \(250,300\). The mapping changes coordinate values under a stated convention, not the point's physical location.
 7. **Models:** an analytical model is specified from an assumed relationship; an empirical model is estimated from observations. Check data coverage and sampling, residual structure and independent predictive performance; also inspect uncertainty and extrapolation. A spatial association alone does not identify a causal process.
 
 ## 17. Connections across Spatial Methods
@@ -542,7 +542,7 @@ A team fits a function to observed temperatures and location coordinates.
 - **Spatial algorithms:** coordinate transformations, raster evaluation, interpolation, distance functions, surface fitting, reclassification and model prediction.
 - **Spatial data collection:** sensor response functions, calibration curves, observation models and sampling of spatial fields.
 - **Spatial recipes:** terrain modelling, proximity analysis, environmental surface estimation, unit conversion and coordinate processing.
-- **Theoretical foundations:** linear algebra and matrix methods (SM-FND-002), calculus and differential methods (SM-FND-003), probability and statistical inference (SM-FND-004), geometry (SM-FND-006), geodesy and reference systems (SM-FND-008), measurement science (SM-FND-011) and numerical analysis (SM-FND-016).
+- **Theoretical foundations:** linear algebra and matrix methods \(SM-FND-002\), calculus and differential methods \(SM-FND-003\), probability and statistical inference \(SM-FND-004\), geometry \(SM-FND-006\), geodesy and reference systems \(SM-FND-008\), measurement science \(SM-FND-011\) and numerical analysis \(SM-FND-016\).
 
 ## 18. Scope and limitations
 
