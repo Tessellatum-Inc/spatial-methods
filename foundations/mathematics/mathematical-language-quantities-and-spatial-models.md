@@ -52,8 +52,8 @@ Dimensions help us check whether a mathematical expression is meaningful. Units 
 
 For instance, if a vehicle travels 12 kilometres in 20 minutes, its average speed is:
 $$
-v = rac{d}{t}
-  = rac{12 \mathrm{km}}{20 \mathrm{min}}
+v = \frac{d}{t}
+  = \frac{12 \mathrm{km}}{20 \mathrm{min}}
   = 0.6 \mathrm{km/min}
 $$
 
@@ -185,12 +185,12 @@ This is a scale relationship, not a guarantee that every map distance equals the
 
 A density is another rate:
 $$
-ho=rac{N}{A}
+\rho=\frac{N}{A}
 $$
 
 If 12,000 people are associated with an area of $3\,\mathrm{km}^2$, the average density is:
 $$
-ho=rac{12{,}000}{3}=4{,}000 \mathrm{people\,km^{-2}}
+\rho=\frac{12{,}000}{3}=4{,}000 \mathrm{people\,km^{-2}}
 $$
 
 The result depends on the population definition, the spatial boundary and the time to which the count applies. An average density does not imply that people are uniformly distributed.
@@ -294,11 +294,11 @@ Define:
 
 - $N=18{,}000$ residents, for a specified population reference date;
 - $A=4.5\,\mathrm{km}^2$, for a defined study boundary;
-- (ho=N/A), mean population density.
+- (\rho=N/A), mean population density.
 
 Then:
 $$
-ho=rac{18{,}000}{4.5}
+\rho=\frac{18{,}000}{4.5}
 =4{,}000 \mathrm{residents\,km^{-2}}
 $$
 
