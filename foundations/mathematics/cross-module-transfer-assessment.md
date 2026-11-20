@@ -1,7 +1,7 @@
 # Cross-module transfer assessment: selecting a temporary field hub
 
 **Foundation domain:** Mathematics for spatial science  
-**Subject ID:** \`SM-FND-001\`  
+**Subject ID:** `SM-FND-001`  
 **Assessment type:** Integrated, open-response case study  
 **Status:** Initial public learning resource; independent technical review and learner testing required  
 **Prerequisites:** Modules 01–11. The assessment is designed to test selection and transfer, not mastery of every specialist subject.
