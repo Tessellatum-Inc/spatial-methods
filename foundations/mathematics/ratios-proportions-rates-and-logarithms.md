@@ -159,7 +159,7 @@ $$
 
 If cell width is halved, each cell has one quarter of the area, so approximately four times as many cells are required to cover the same area.
 
-This relationship assumes square cells, a consistent grid and a suitable planar area calculation. For non-square cells, use $A_c=\Delta x\,\Delta y$. For geographic coordinates in angular units, degree differences cannot be treated as constant ground lengths or areas without an appropriate geodetic or projection treatment.
+This relationship assumes square cells, a consistent grid and a suitable planar area calculation. For non-square cells, use $A_c=\Delta x\,\Delta y$. For geographic coordinates in angular units, degree differences cannot be treated as constant ground lengths or areas without an appropriate geodetic or projection treatment. Module 08's [raster-resolution worked example](sequences-series-and-approximation.md#81-worked-example-grid-refinement-and-resampling) combines this area relationship with a concrete grid-size comparison and a discussion of resampling.
 
 ## 6. Rates
 
