@@ -31,7 +31,8 @@ class AreaAdjustedAccuracyTests(unittest.TestCase):
         forest = result["reference_class_area_proportions"]["forest"]
         self.assertAlmostEqual(forest["estimate"], 0.55)
         self.assertAlmostEqual(forest["estimated_area"], 550.0)
-        self.assertLessEqual(forest["estimated_area_ci95_wald"][0], forest["estimated_area"])\n        self.assertGreaterEqual(forest["estimated_area_ci95_wald"][1], forest["estimated_area"])
+        self.assertLessEqual(forest["estimated_area_ci95_wald"][0], forest["estimated_area"])
+        self.assertGreaterEqual(forest["estimated_area_ci95_wald"][1], forest["estimated_area"])
 
     def test_users_accuracy_uses_mapped_stratum(self):
         result = estimate_stratified_accuracy(self.rows, self.weights)
