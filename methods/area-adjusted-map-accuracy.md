@@ -45,23 +45,23 @@ For total mapped area (A), the estimated reference-class area is (Ahat P_j). Thi
 
 ## Uncertainty under the supported design
 
-For independent simple random samples without replacement within mapped-class strata, let (N_i) be the number of eligible population units in stratum (i). When these population sizes are known, the finite-population correction is (f_i=1-n_i/N_i). An estimator of overall-accuracy variance is
+For independent simple random samples without replacement within mapped-class strata, let \(N_i\) be the number of eligible population units in stratum \(i\). When these population sizes are known, the finite-population correction is \(f_i=1-n_i/N_i\). An estimator of overall-accuracy variance is
 
-[
-widehat{operatorname{Var}}(widehat{OA})=
-sum_i W_i^2rac{hat U_i(1-hat U_i)}{n_i-1},
-qquad hat U_i=n_{ii}/n_i.
-]
+\[
+\widehat{\operatorname{Var}}(\widehat{OA})=
+\sum_i W_i^2\frac{\hat U_i(1-\hat U_i)}{n_i-1}f_i,
+\qquad \hat U_i=n_{ii}/n_i.
+\]
 
 For a reference-class area proportion, the estimated variance is the sum of the independent stratum contributions,
 
-[
-widehat{operatorname{Var}}(hat P_j)=
-sum_i W_i^2rac{hat p_{ij}^{(s)}(1-hat p_{ij}^{(s)})}{n_i-1},
-qquad hat p_{ij}^{(s)}=n_{ij}/n_i.
-]
+\[
+\widehat{\operatorname{Var}}(\hat P_j)=
+\sum_i W_i^2\frac{\hat p_{ij}^{(s)}(1-\hat p_{ij}^{(s)})}{n_i-1}f_i,
+\qquad \hat p_{ij}^{(s)}=n_{ij}/n_i.
+\]
 
-When population sizes (N_i) are unavailable, the implementation uses (f_i=1), i.e. no finite-population correction. When valid stratum population sizes are supplied, it applies the correction to the within-stratum variance contributions. The implementation uses a delta-method approximation for producer's-accuracy uncertainty and normal-approximation Wald intervals. These are teaching baselines; small samples and estimates near zero or one require more careful interval methods.
+When population sizes \(N_i\) are unavailable, the implementation uses \(f_i=1\), i.e. no finite-population correction. When valid stratum population sizes are supplied, it applies the correction to the within-stratum variance contributions. The implementation uses a delta-method approximation for producer's-accuracy uncertainty and normal-approximation Wald intervals. These are teaching baselines; small samples and estimates near zero or one require more careful interval methods.
 
 ## Design and response protocol
 
