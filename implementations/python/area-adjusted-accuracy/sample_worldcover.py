@@ -95,42 +95,88 @@ def read_pinned_points(path: str) -> tuple[list[dict], str]:
     return points, actual
 
 
+def sha256_file(path: str | Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def sample_worldcover(
     points: list[dict],
-    raster_path: str,
+    raster_paths: list[str],
     class_names: dict[int, str],
 ) -> tuple[list[dict], dict]:
     try:
         import rasterio
         from rasterio.warp import transform
+        from contextlib import ExitStack
     except ImportError as exc:
         raise RuntimeError(
             "rasterio is required. Install with: pip install -r requirements-worldcover.txt"
         ) from exc
 
+    if not raster_paths:
+        raise ValueError("At least one WorldCover raster tile is required.")
     if not class_names or any(not str(label).strip() for label in class_names.values()):
         raise ValueError("WorldCover class mapping must contain non-empty labels.")
 
     output = []
-    with rasterio.open(raster_path) as src:
-        if src.crs is None:
-            raise ValueError("WorldCover raster has no CRS.")
-        xs, ys = transform(
-            "EPSG:4326",
-            src.crs,
-            [point["longitude"] for point in points],
-            [point["latitude"] for point in points],
-        )
-        coordinates = list(zip(xs, ys))
-        sampled = src.sample(coordinates, indexes=1, masked=True)
+    with ExitStack() as stack:
+        sources = [
+            (path, stack.enter_context(rasterio.open(path)))
+            for path in raster_paths
+        ]
+        for path, src in sources:
+            if src.crs is None:
+                raise ValueError(f"WorldCover raster has no CRS: {path}")
 
-        for point, value in zip(points, sampled):
+        metadata_tiles = []
+        for path, src in sources:
+            metadata_tiles.append({
+                "raster_path_as_supplied": str(Path(path)),
+                "raster_driver": src.driver,
+                "raster_crs": str(src.crs),
+                "raster_width": src.width,
+                "raster_height": src.height,
+                "raster_band": 1,
+                "raster_nodata": src.nodata,
+                "raster_bounds": list(src.bounds),
+                "raster_resolution": list(src.res),
+                "raster_dtype": src.dtypes[0],
+            })
+
+        for point in points:
+            candidates = []
+            for path, src in sources:
+                xs, ys = transform(
+                    "EPSG:4326", src.crs,
+                    [point["longitude"]], [point["latitude"]]
+                )
+                x, y = xs[0], ys[0]
+                row, col = src.index(x, y)
+                if 0 <= row < src.height and 0 <= col < src.width:
+                    candidates.append((path, src, x, y))
+
+            if len(candidates) == 0:
+                raise ValueError(
+                    f"No supplied WorldCover tile covers {point['sample_id']}."
+                )
+            if len(candidates) > 1:
+                raise ValueError(
+                    f"Multiple WorldCover tiles cover {point['sample_id']}; "
+                    "check for overlapping or duplicate tiles."
+                )
+
+            path, src, x, y = candidates[0]
+            value = next(src.sample([(x, y)], indexes=1, masked=True))
             cell = value[0]
             mask = getattr(value, "mask", False)
             is_masked = bool(mask[0]) if hasattr(mask, "__getitem__") else bool(mask)
             if is_masked or str(cell) == "--":
                 raise ValueError(
-                    f"WorldCover raster has nodata/out-of-coverage at {point['sample_id']}."
+                    f"WorldCover raster has nodata at {point['sample_id']} in {path}."
                 )
             numeric = float(cell)
             if not numeric.is_integer():
@@ -151,20 +197,12 @@ def sample_worldcover(
                 "worldcover_code": code,
                 "longitude": point["longitude"],
                 "latitude": point["latitude"],
+                "source_tile": Path(path).name,
             })
 
         metadata = {
             "product": "ESA WorldCover 2021 v200",
-            "raster_path_as_supplied": str(Path(raster_path)),
-            "raster_driver": src.driver,
-            "raster_crs": str(src.crs),
-            "raster_width": src.width,
-            "raster_height": src.height,
-            "raster_band": 1,
-            "raster_nodata": src.nodata,
-            "raster_bounds": list(src.bounds),
-            "raster_resolution": list(src.res),
-            "raster_dtype": src.dtypes[0],
+            "raster_tiles": metadata_tiles,
             "sampling_method": "single-pixel containing each point using rasterio.sample",
             "point_coordinate_crs": "EPSG:4326",
             "point_count": len(output),
@@ -180,7 +218,8 @@ def sample_worldcover(
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--geojson", required=True, help="Pinned Fiji reference-sample GeoJSON")
-    parser.add_argument("--raster", required=True, help="Local WorldCover COG, GeoTIFF or covering VRT")
+    parser.add_argument("--raster", action="append", required=True,
+                        help="Local WorldCover COG/GeoTIFF tile; repeat for every tile covering the sample")
     parser.add_argument("--output", required=True, help="Output CSV path")
     parser.add_argument("--class-names", default=None,
                         help="Optional JSON object mapping WorldCover integer codes to harmonised labels")
@@ -199,10 +238,10 @@ def main() -> int:
             Path(args.geojson).read_bytes()
         ).hexdigest()
         metadata["fiji_geojson_path_as_supplied"] = str(Path(args.geojson))
-        metadata["worldcover_raster_sha256"] = hashlib.sha256(
-            Path(args.raster).read_bytes()
-        ).hexdigest()
-        metadata["worldcover_raster_size_bytes"] = Path(args.raster).stat().st_size
+        for tile in metadata["raster_tiles"]:
+            tile_path = Path(tile["raster_path_as_supplied"])
+            tile["sha256"] = sha256_file(tile_path)
+            tile["size_bytes"] = tile_path.stat().st_size
         output_path = Path(args.output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with output_path.open("w", newline="", encoding="utf-8") as stream:
