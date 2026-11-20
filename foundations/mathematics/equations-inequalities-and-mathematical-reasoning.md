@@ -618,4 +618,6 @@ The explanations and spatial examples are original Spatial Methods teaching mate
 2. **OpenStax.** *Algebra and Trigonometry 2e*. [Chapter 11: Systems of Equations and Inequalities](https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-introduction-to-systems-of-equations-and-inequalities). Used for simultaneous equations and feasible sets.
 3. **BIPM.** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication]\(https://www.bipm.org/en/si-brochure-9\). Used for quantity and unit conventions in dimensional checks.
 
+**Source register:** `SM-SRC-000021`, `SM-SRC-000022`.
+
 **Limitations:** These sources support introductory algebra, not the full treatment of constrained optimisation, linear algebra, numerical solution or formal mathematical proof.
