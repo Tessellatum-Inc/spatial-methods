@@ -134,7 +134,7 @@ In two dimensions:
 P(t)=\big(x_1+t(x_2-x_1),\;y_1+t(y_2-y_1)\big).
 \]
 
-At t=0 the point is A; at t=1 it is B; at t=0.5 it is the midpoint. Values outside [0,1] describe points on the extended line, not on the closed segment.
+At \(t=0\) the point is \(A\); at \(t=1\) it is \(B\); at \(t=0.5\) it is the midpoint. Values outside \([0,1]\) describe points on the extended line, not on the closed segment.
 
 ## 6. Lines in the plane
 
@@ -156,7 +156,7 @@ m=\frac{y_2-y_1}{x_2-x_1}.
 
 A slope of 2 means that y increases by 2 coordinate units for each 1-unit increase in x. The slope is dimensionless when both axes use the same unit; otherwise it has output-units per input-unit.
 
-Vertical lines cannot be represented as y=mx+c because their slope is undefined. Use another representation.
+Vertical lines cannot be represented as \(y=mx+c\) because their slope is undefined. Use another representation.
 
 ### 6.2 Point-slope form
 
@@ -204,7 +204,7 @@ so:
 y=2x-1.
 \]
 
-Substitution verifies both points: when x=2, y=3; when x=6, y=11.
+Substitution verifies both points: when \(x=2\), \(y=3\); when \(x=6\), \(y=11\).
 
 ## 7. Parallel and perpendicular lines
 
@@ -324,7 +324,7 @@ A sphere centred at (a,b,c) with radius r is:
 (x-a)^2+(y-b)^2+(z-c)^2=r^2.
 \]
 
-The corresponding solid ball uses ≤ rather than =. These equations are useful geometric models but do not account for Earth curvature or geodetic distance.
+The corresponding solid ball uses \(\leq\) rather than \(=\). These equations are useful geometric models but do not account for Earth curvature or geodetic distance.
 
 ## 11. Coordinate frames: origin, orientation and scale
 
