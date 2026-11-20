@@ -398,8 +398,8 @@ A hypothetical mapped wetland area changes from 84 km² to 72 km² over 6 years.
 
 ### Exercise 6 — Logarithms
 
-1. Evaluate log₁₀$1,000$.
-2. Evaluate log₂(64).
+1. Evaluate $\log_{10}(1{,}000)$. 
+2. Evaluate $\log_2(64)$. 
 3. Calculate the decibel level for a power ratio of 10.
 4. Calculate the decibel level for an amplitude ratio of 10 when power is proportional to amplitude squared.
 5. Explain why a logarithm should be applied to a ratio against a reference quantity rather than to a dimensional measurement by itself.
