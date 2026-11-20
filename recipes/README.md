@@ -4,6 +4,10 @@ Spatial Recipes are reproducible workflows that combine data, algorithms, tools,
 
 A recipe is not merely a sequence of software clicks. It should explain its purpose, assumptions, inputs, choices, quality controls, outputs, limitations and the evidence needed to trust the result.
 
+## Photogrammetry recipe
+
+- [Photogrammetric mapping: project-to-validated-deliverable recipe](photogrammetric-mapping/README.md) — an end-to-end workflow from requirements and reconnaissance through acquisition, processing, independent validation and delivery. Includes a reusable project record and QA checklist.
+
 ## First integrated recipe
 
 - [Survey-to-spatial-dataset workflow](survey-to-spatial-dataset/README.md) — a design-stage field-to-office workflow connecting measurement science, field acquisition, geodetic computation, quality assurance and spatial data delivery.
