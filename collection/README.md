@@ -1,0 +1,38 @@
+# Spatial Data Collection
+
+Spatial Data Collection explains how information about the world is observed, measured, sampled, sensed, recorded and acquired.
+
+It covers more than sensors or platforms. A collection method includes the physical quantity or phenomenon being observed, the measurement process, sampling geometry, instrument and platform behaviour, calibration, field conditions, metadata, uncertainty and quality control.
+
+## Subject domains
+
+The stable subject identities are defined in the [Geoinformatics master subject index](../catalog/master-subject-index.md).
+
+| Subject | ID | Entry point |
+|---|---|---|
+| Geodetic and engineering surveying | SM-COL-001 | [Measurement science and survey adjustment](../learning-paths/measurement-science-and-survey-adjustment.md) |
+| GNSS, positioning and navigation systems | SM-COL-002 | [GNSS methods and implementations](../catalog/first-curation-cluster-reference-positioning-measurement.md#3-gnss-scope-boundaries-to-preserve) |
+| Satellite and airborne optical remote sensing | SM-COL-004 | [Remote sensing foundations](../foundations/README.md#existing-measurement-science-resources) |
+| Photogrammetry and structure from motion | SM-COL-007 | [Photogrammetric image acquisition](photogrammetry/image-acquisition.md) |
+| UAV platforms, robotics and autonomous acquisition | SM-COL-009 | [Photogrammetric image acquisition](photogrammetry/image-acquisition.md) |
+| Field surveys, sampling and ground truth | SM-COL-011 | [Measurement science and survey adjustment](../learning-paths/measurement-science-and-survey-adjustment.md) |
+
+This is an initial navigation page, not a claim that every collection domain has been comprehensively curated. The subject index remains the complete taxonomy.
+
+## How to investigate a collection method
+
+A good collection account answers:
+
+1. What real-world quantity, object or phenomenon is being observed?
+2. What physical interaction produces the recorded signal?
+3. What does the instrument measure directly, and what is inferred later?
+4. How do platform motion, geometry, environment and sampling design affect observations?
+5. What calibration, control, metadata and quality checks are required?
+6. What uncertainty and blind spots remain?
+7. What downstream products can reasonably be derived?
+
+Connect collection methods to their theoretical foundations, algorithms, reproducible recipes and applications. Do not treat a data product as a transparent copy of reality: every observation is shaped by a measurement system and a collection design.
+
+## Development status
+
+The first focused collection unit is [photogrammetric image acquisition](photogrammetry/image-acquisition.md). It develops a measurement-centred account of image capture, acquisition geometry and quality assurance, with a worked planning implementation and learner exercise. Its examples are educational and do not constitute flight approval, survey certification or field validation.
