@@ -109,6 +109,19 @@ python -m unittest -v
 
 Tests cover project validation and command construction without running Docker, plus checkpoint metrics, validation and JSON output. A successful unit test is not a test of ODM, image quality or a real photogrammetric project.
 
+## Dataset inventory and image audit
+
+Before preparing an ODM project, run the read-only dataset auditor against the extracted dataset directory:
+
+```bash
+python dataset_audit.py /path/to/drone_heig_2019 --expected-images 32 \\
+  --json-out dataset-image-audit.json
+```
+
+The utility inventories supported image files recursively, records file sizes and SHA-256 hashes, and (when Pillow is installed) verifies image readability and reports dimensions, basic camera EXIF and whether GPS metadata is present. It does not expose GPS coordinates. A present GPS tag is not evidence of positional accuracy. Keep the JSON manifest with the processing record; do not commit source imagery or a manifest containing sensitive metadata.
+
+Run the companion tests with `python -m unittest -v`.
+
 ## End-to-end rehearsal
 
 A licensed real-image rehearsal dataset and its processing/validation protocol are documented in [rehearsal-plan.md](rehearsal-plan.md). The selected HEIG-VD dataset contains 32 geotagged images and surveyed ground-point observations under CC BY 4.0. Its coordinate metadata requires explicit treatment of LV95 horizontal coordinates and LN02 heights. The dataset has not yet been downloaded or processed; this environment currently has no Docker executable.
