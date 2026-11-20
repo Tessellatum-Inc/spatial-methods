@@ -26,7 +26,7 @@ The subject IDs below are stable identifiers from the [Geoinformatics master sub
 | SM-FND-001 | Mathematics for spatial science | Initial collection; review required | Mathematical language, functions, vectors, coordinate geometry, proof and modelling |
 | SM-FND-002 | Linear algebra and matrix methods | Initial ten-module sequence published; desk audit completed; independent review and learner testing pending | Vectors, matrices, linear systems, rank, eigenvalues, decompositions, covariance and multivariate structure |
 | SM-FND-003 | Calculus and differential methods | Planned | Derivatives, gradients, integrals, multivariable calculus, differential equations and fields |
-| SM-FND-004 | Probability and statistical inference | Planned | Probability models, distributions, sampling, estimation, testing and Bayesian reasoning |
+| SM-FND-004 | Probability and statistical inference | Initial module published; domain in development | Probability models, distributions, sampling, estimation, testing and Bayesian reasoning |
 | SM-FND-005 | Spatial statistics and stochastic processes | Planned | Random fields, spatial dependence, point processes, spatial sampling and spatiotemporal processes |
 | SM-FND-006 | Geometry and computational geometry theory | Planned | Euclidean, affine and projective geometry; metric spaces; geometric constructions |
 | SM-FND-007 | Topology and spatial relations | Planned | Topological spaces, continuity, connectedness, boundaries and spatial relations |
@@ -52,6 +52,10 @@ The mathematics domain begins with [Mathematical language, quantities and spatia
 
 [Linear algebra and matrix methods](linear-algebra/README.md) now contains an initial ten-module sequence, selected because matrix operations, linear systems, covariance structures and transformations recur throughout the repository's survey adjustment, CRS, PCA, regression, geostatistics and optimisation work. The sequence runs from [vectors, matrices and linear transformations](linear-algebra/vectors-matrices-and-linear-transformations.md) through [covariance matrices and multivariate structure](linear-algebra/covariance-matrices-and-multivariate-structure.md). Its [sequence audit](linear-algebra/sequence-audit.md) records the desk review and the remaining work. Independent technical review and learner testing are still required.
 
+### Probability and statistical inference
+
+[Probability and statistical inference](probability-and-statistics/README.md) is now in development. Its first module, [Probability models, events and conditioning](probability-and-statistics/probability-models-events-and-conditioning.md), establishes event rules, conditional probability, independence and Bayes' theorem through an explicitly synthetic spatial-screening example. The domain roadmap distinguishes general probability from spatial stochastic processes and measurement science; independent technical review and learner testing remain outstanding.
+
 ### Existing measurement-science resources
 
 The first developed foundation domain is measurement science:
@@ -67,7 +71,7 @@ These resources are connected to the [measurement science and survey adjustment 
 
 The [application dependency audit](application-dependency-audit.md) maps existing algorithm, method, implementation and recipe work to the foundations it depends on. It records current starting points, distinguishes existing applied assets from a complete theory collection, and sets a working development order.
 
-The next domain selected is **SM-FND-002 — Linear algebra and matrix methods**, because it supports existing work in measurement adjustment, coordinate transformations, PCA, covariance modelling, regression, kriging and optimisation. Numerical analysis should be developed closely alongside it. This is a practical priority, not a compulsory learning sequence.
+Linear algebra and matrix methods (SM-FND-002) now has an initial ten-module sequence and a desk audit. The next domain selected is **SM-FND-004 — Probability and statistical inference**, because it supports existing work in sampling, classification, geostatistics, prediction, model validation and measurement uncertainty. Numerical analysis (SM-FND-016) remains a close parallel priority. This is a practical development order, not a compulsory learning sequence.
 
 ## How each foundation will be developed
 
