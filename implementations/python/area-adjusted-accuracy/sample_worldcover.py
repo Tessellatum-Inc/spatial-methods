@@ -126,7 +126,9 @@ def sample_worldcover(
 
         for point, value in zip(points, sampled):
             cell = value[0]
-            if getattr(value, "mask", False) is True or str(cell) == "--":
+            mask = getattr(value, "mask", False)
+            is_masked = bool(mask[0]) if hasattr(mask, "__getitem__") else bool(mask)
+            if is_masked or str(cell) == "--":
                 raise ValueError(
                     f"WorldCover raster has nodata/out-of-coverage at {point['sample_id']}."
                 )
