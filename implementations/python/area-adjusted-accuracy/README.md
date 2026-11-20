@@ -65,6 +65,9 @@ The extraction script preserves the original Fiji sample strata, reference label
 
 **Executed result:** the first automated run sampled all 834 Fiji reference points from five official WorldCover 2021 v200 COG tiles. Area-adjusted WorldCover overall accuracy was 74.12% (SE 2.37 percentage points; approximate 95% Wald interval 69.47%–78.76%). A paired comparison against the original Fiji map estimated a difference of −8.39 percentage points (paired SE 1.50; approximate 95% interval −11.32 to −5.45). Results are conditional on the provisional crosswalk and eligible sampling frame; the full raster files were range-read remotely, not downloaded and byte-hashed. See the [executed comparison and limitations](worldcover-comparison.md) and [GitHub Actions artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44696117456).
 
+**Crosswalk sensitivity:** three documented legends were evaluated on the same 834 points. WorldCover OA is 74.12% under strict labels, 74.76% when herbaceous wetland is recoded as grassland, and 76.64% under a broad six-class vegetation grouping. The paired difference versus the original Fiji map remains negative in all three scenarios (−8.39, −7.74 and −8.62 percentage points respectively). The broad scenario changes the target legend; it is not a like-for-like replacement for detailed class accuracy. See the [sensitivity analysis and assumptions](crosswalk-sensitivity.md) and [reproducible script](crosswalk_sensitivity.py).
+
+
 ## Input
 
 CSV with one row per sampled unit:
@@ -149,6 +152,9 @@ A real public-data analysis is documented in [Fiji 2021 land-cover map accuracy]
 - [WorldCover sampling tests](test_sample_worldcover.py)
 - [Paired design-based map comparison](paired_map_comparison.py)
 - [Paired comparison tests](test_paired_map_comparison.py)
+- [Crosswalk sensitivity script](crosswalk_sensitivity.py)
+- [Crosswalk sensitivity tests](test_crosswalk_sensitivity.py)
+- [Crosswalk sensitivity report](crosswalk-sensitivity.md)
 - [Automated Fiji–WorldCover rehearsal workflow](../../../.github/workflows/fiji-worldcover-rehearsal.yml)
 - [WorldCover comparison guide](worldcover-comparison.md)
 - [Optional rasterio requirements](requirements-worldcover.txt)

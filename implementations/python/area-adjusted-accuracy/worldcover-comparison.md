@@ -100,6 +100,21 @@ This is a **provisional analyst-defined crosswalk**, not an authoritative equiva
 
 A custom code-to-label mapping can be supplied to the extraction script. Any alternative must be documented and applied consistently.
 
+### Crosswalk sensitivity results
+
+The [reproducible sensitivity analysis](crosswalk-sensitivity.md) tests three explicit legends on the same 834 points and with the original Fiji sampling weights unchanged:
+
+| Scenario | Original Fiji map OA | WorldCover OA | Paired difference (WorldCover − Fiji) | Approx. 95% paired interval |
+|---|---:|---:|---:|---:|
+| Strict eight-class working labels | 82.51% | 74.12% | −8.39 pp | −11.32 to −5.45 pp |
+| Herbaceous wetland recoded as grassland | 82.51% | 74.76% | −7.74 pp | −10.90 to −4.59 pp |
+| Broad six-class vegetation grouping | 85.26% | 76.64% | −8.62 pp | −11.83 to −5.40 pp |
+
+The broad grouping merges tree and mangrove into woody cover, and grassland, shrubland and herbaceous wetland into open vegetation in both evaluated maps and the reference labels. It changes the target legend, so its OA must not be interpreted as directly interchangeable with the detailed eight-class estimate. The wetland-to-grassland scenario is an analyst-defined sensitivity assumption, not an authoritative class equivalence.
+
+The paired interval remains below zero in all three scenarios. This supports a stable direction of difference under these tested harmonisations, not a universal ranking of the products. The sensitivity script records the input CSV SHA-256 and all scenario-level estimates in JSON; the automated workflow uploads that report with the primary outputs.
+
+
 ### Prepare the raster
 
 ESA WorldCover 2021 v200 is distributed as 10 m Cloud Optimized GeoTIFF tiles in EPSG:4326. Download the tiles covering every Fiji sample point from the official data access page. For multiple tiles, build a virtual raster (VRT) or mosaic that covers the entire sample. Do not sample a rendered WMS/WMTS image: those services are intended for display, not analytical class extraction.

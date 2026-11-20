@@ -9,6 +9,7 @@ on:
       - "implementations/python/area-adjusted-accuracy/sample_worldcover.py"
       - "implementations/python/area-adjusted-accuracy/stratified_accuracy.py"
       - "implementations/python/area-adjusted-accuracy/paired_map_comparison.py"
+      - "implementations/python/area-adjusted-accuracy/crosswalk_sensitivity.py"
       - "implementations/python/area-adjusted-accuracy/requirements-worldcover.txt"
 
 permissions:
@@ -72,6 +73,14 @@ jobs:
             --stratum-population-sizes '{"water":1779768,"mangrove":3549325,"bare_soil_rock":541204,"urban":687659,"agriculture":14279258,"grassland":15115599,"shrubland":4972515,"tree":116131948}' \
             --json-out worldcover-fiji-paired-comparison.json
           python -c "import json; r=json.load(open('worldcover-fiji-paired-comparison.json')); print('Original-map OA:', r['baseline_map_overall_accuracy']); print('WorldCover OA:', r['evaluated_map_overall_accuracy']); print('Paired difference:', r['evaluated_minus_baseline_accuracy_difference'])"
+      - name: Test alternative class crosswalks
+        run: |
+          python crosswalk_sensitivity.py worldcover-fiji-sample.csv \
+            --stratum-area-weights '{"water":0.011331967836,"mangrove":0.022598921173,"bare_soil_rock":0.003445902118,"urban":0.004378396325,"agriculture":0.090917519797,"grassland":0.096242589869,"shrubland":0.031660519822,"tree":0.739424183060}' \
+            --stratum-population-sizes '{"water":1779768,"mangrove":3549325,"bare_soil_rock":541204,"urban":687659,"agriculture":14279258,"grassland":15115599,"shrubland":4972515,"tree":116131948}' \
+            --json-out worldcover-fiji-crosswalk-sensitivity.json
+          python -c "import json; r=json.load(open('worldcover-fiji-crosswalk-sensitivity.json')); [print(s['scenario_id'], s['worldcover_overall_accuracy'], s['worldcover_minus_original_accuracy_difference']) for s in r['scenarios']]"
+
 
       - name: Upload reproducibility outputs
         if: always()
@@ -84,5 +93,6 @@ jobs:
             implementations/python/area-adjusted-accuracy/worldcover-fiji-sample.csv.metadata.json
             implementations/python/area-adjusted-accuracy/worldcover-fiji-accuracy.json
             implementations/python/area-adjusted-accuracy/worldcover-fiji-paired-comparison.json
+            implementations/python/area-adjusted-accuracy/worldcover-fiji-crosswalk-sensitivity.json
           if-no-files-found: ignore
           retention-days: 30
