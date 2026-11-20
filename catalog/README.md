@@ -25,6 +25,7 @@ This directory is the structured index of the project's knowledge inventory. It 
 ## Subject navigation
 
 - [Theoretical foundations collection](../foundations/README.md) — the domain map and development standard for the Foundations pillar.
+- [Probability and statistical inference](../foundations/probability-and-statistics/README.md) — initial foundation roadmap and first probability module.
 - [Spatial Data Collection](../collection/README.md) — the initial domain navigation and first photogrammetry acquisition learning unit.
 
 - [Geoinformatics master subject index](master-subject-index.md) — the canonical map of subject areas, stable IDs, priorities and cross-pillar relationships.
