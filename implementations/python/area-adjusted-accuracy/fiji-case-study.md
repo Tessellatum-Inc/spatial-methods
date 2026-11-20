@@ -133,4 +133,4 @@ The script uses only the Python standard library plus the sibling `area_adjusted
 
 The dataset is external and retains its ODbL terms. The repository stores the reproducibility code and analysis, not a redistributed copy of the GeoJSON.
 
-To reuse this sample to assess a different map rather than the original Fiji map, see the [Fiji–ESA WorldCover comparison workflow](worldcover-comparison.md). It keeps the original sample strata and weights separate from the evaluated map classes; the raster comparison is prepared but not yet executed.
+This sample has now also been used to evaluate ESA WorldCover 2021 v200 at the same 834 points. The area-adjusted WorldCover overall accuracy is 74.12%; a paired comparison estimates −8.39 percentage points versus the original Fiji map (approximate 95% interval −11.32 to −5.45). See the [Fiji–ESA WorldCover comparison and its limitations](worldcover-comparison.md), the [paired estimator](paired_map_comparison.py) and the [successful workflow artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44696117456).

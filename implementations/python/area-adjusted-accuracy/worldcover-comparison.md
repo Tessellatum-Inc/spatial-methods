@@ -1,6 +1,6 @@
 # Comparing a land-cover map with a reference sample stratified by a different map
 
-**Status:** Reusable comparison workflow and extraction code published. ESA WorldCover values have not yet been extracted at the Fiji sample points; no WorldCover accuracy result is claimed.
+**Status:** Executed comparison published. All 834 points were sampled from five ESA WorldCover 2021 v200 COG tiles; design-adjusted accuracy and paired comparison outputs are available. The crosswalk remains provisional, and remote raster files were not downloaded or byte-hashed.
 
 ## Why this matters
 

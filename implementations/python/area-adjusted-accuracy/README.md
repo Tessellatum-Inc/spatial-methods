@@ -132,7 +132,7 @@ This is an educational and analytical baseline, not a regulatory or certificatio
 - Olofsson, P., Foody, G. M., Herold, M., Stehman, S. V., Woodcock, C. E., & Wulder, M. A. (2014). Good practices for estimating area and assessing accuracy of land change. *Remote Sensing of Environment*, 148, 42–57. https://doi.org/10.1016/j.rse.2014.02.015
 - Olofsson, P., Foody, G. M., Stehman, S. V., & Woodcock, C. E. (2013). Making better use of accuracy data in land change studies: Estimating accuracy and area and quantifying uncertainty using stratified estimation. *Remote Sensing of Environment*, 129, 122–131. https://doi.org/10.1016/j.rse.2012.10.031
 
-A real public-data analysis is documented in [Fiji 2021 land-cover map accuracy](fiji-case-study.md). The [Fiji–WorldCover comparison guide](worldcover-comparison.md) is a separate, prepared comparison workflow; its WorldCover extraction remains pending raster acquisition and execution.
+A real public-data analysis is documented in [Fiji 2021 land-cover map accuracy](fiji-case-study.md). The [Fiji–WorldCover comparison](worldcover-comparison.md) evaluates ESA WorldCover 2021 v200 against the same 834-point reference sample and includes a paired comparison with the original Fiji map.
 
 ## Learning materials
 
@@ -154,4 +154,4 @@ A real public-data analysis is documented in [Fiji 2021 land-cover map accuracy]
 - [Optional rasterio requirements](requirements-worldcover.txt)
 - [Introductory synthetic sample CSV](sample.csv)
 
-The earlier mapped-class implementation's 10-test suite passed in the repository CI. The independent-strata estimator, pinned point reader and remote-Cog rehearsal completed successfully in GitHub Actions. The paired-comparison test suite initially exposed a test-fixture variance expectation error; that expectation has been corrected and its CI rerun is pending. The successful data run is not a substitute for review of the provisional class crosswalk or assumptions.
+The complete `area-adjusted-accuracy` package suite, including the independent-strata estimator, pinned point reader and paired map comparison, passed in GitHub Actions: **38 tests**. The separate WorldCover rehearsal workflow also completed successfully, sampling all 834 points and producing accuracy and paired-comparison artifacts. These checks validate the code path and reproducibility run, not the provisional class crosswalk or statistical assumptions.
