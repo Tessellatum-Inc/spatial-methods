@@ -18,7 +18,7 @@
 - Sensor and acquisition date in the collection catalogue: senseFly S.O.D.A. on an eBee; 16 July 2019.
 - Coordinate caution: the dataset README explicitly states LV95 horizontal coordinates and LN02 heights. Preserve these as separate horizontal and vertical reference metadata; do not treat EPSG:2056 alone as a complete 3D CRS. The README describes EXIF GPS as metre-level consumer GNSS, not survey control.
 
-The dataset-specific README and online text exports establish that the observation CSV has 206 image measurements for 30 point labels, and that the OPK file contains Metashape exterior orientations from an adjustment that used the ground points as control. The README says point 100 has no image measurement and shares coordinates with point 206. The rendered GCP coordinate file lists 31 labelled rows, consistent with the README. Point 100 is present but has no image measurement and duplicates point 206's coordinates. Verify this relationship against the downloaded files before splitting points. The OPK file is comparison material only, not independent validation.
+The dataset-specific README and online text exports establish that the observation CSV has 206 image measurements for 30 point labels, and that the OPK file contains Metashape exterior orientations from an adjustment that used the ground points as control. Point 100 is present in the 31-row GCP coordinate file but has no image measurement and duplicates point 206's coordinates. Verify this relationship against the downloaded files before splitting points. The OPK file is comparison material only, not independent validation.
 
 ## Important coordinate and control cautions
 
@@ -35,12 +35,13 @@ The dataset-specific README and online text exports establish that the observati
 ### A. Preserve and inspect
 
 - Run `dataset_audit.py` on the extracted dataset and retain its JSON report outside the source archive.
+- Run `dataset_metadata_audit.py` and retain its JSON report; inspect count matches, point/image mappings, duplicate coordinates, pixel bounds and OPK rotation diagnostics.
 - Confirm the expected 32-image count, valid image decoding, image dimensions, EXIF coverage and SHA-256 manifest. Investigate any mismatch before processing.
 - Download only `datasets/drone_heig_2019/`; do not mirror the entire 10 GB collection.
 - Preserve the downloaded archive and record its retrieval date, source revision, file manifest and checksums.
 - Verify the 32 image files, dimensions, EXIF metadata and image labels.
 - Use the publisher-confirmed files `gcp/GCP_MN95.txt`, `gcp/gcp_obs.csv` and `opk.txt`; the online README identifies their schemas and reference frames.
-- Locally verify the 31 coordinate rows, 206 observation rows and 30 distinct measured point labels.
+- Locally verify the 31 coordinate rows, 206 observation rows, 30 distinct measured point labels and 32 OPK records.
 - Confirm observation image labels (with `EB-02-00761_` prefix and no extension) map unambiguously to the full JPG filenames; confirm OPK short photo IDs map to the same image set.
 - Record the source revision and exact file paths before any coordinate interpretation or point split.
 
