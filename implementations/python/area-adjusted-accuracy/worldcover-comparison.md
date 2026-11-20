@@ -67,7 +67,19 @@ A custom code-to-label mapping can be supplied to the extraction script. Any alt
 
 ESA WorldCover 2021 v200 is distributed as 10 m Cloud Optimized GeoTIFF tiles in EPSG:4326. Download the tiles covering every Fiji sample point from the official data access page. For multiple tiles, build a virtual raster (VRT) or mosaic that covers the entire sample. Do not sample a rendered WMS/WMTS image: those services are intended for display, not analytical class extraction.
 
-The script requires a local GeoTIFF/COG or VRT covering all points. It transforms the GeoJSON EPSG:4326 coordinates to the raster CRS before sampling. It fails on missing coverage, nodata or unrecognised class codes; it does not silently drop points.
+The 834 sample coordinates cross the antimeridian and fall in **five** 3° × 3° tiles: `S18E174`, `S18E177`, `S18W180`, `S21E177` and `S21W180`. This was derived from all 834 coordinates in the pinned GeoJSON; do not assume one Fiji tile covers the sample. The script accepts repeated `--raster` arguments and checks that each point falls in exactly one supplied tile. It transforms the GeoJSON EPSG:4326 coordinates to each raster CRS before sampling. It fails on missing coverage, nodata, overlapping supplied tiles or unrecognised class codes; it does not silently drop points.
+
+The official tile naming convention encodes the lower-left latitude and longitude of each 3° tile. For this sample the five S3 objects are:
+
+```bash
+aws s3 cp --no-sign-request s3://esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18E174_Map.tif .
+aws s3 cp --no-sign-request s3://esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18E177_Map.tif .
+aws s3 cp --no-sign-request s3://esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18W180_Map.tif .
+aws s3 cp --no-sign-request s3://esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_S21E177_Map.tif .
+aws s3 cp --no-sign-request s3://esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_S21W180_Map.tif .
+```
+
+Confirm the five objects exist and inspect their metadata before extraction; this repository has not downloaded or checked their raster bytes yet.
 
 ### Install the optional extraction dependency
 
@@ -80,7 +92,11 @@ python -m pip install -r requirements-worldcover.txt
 \`\`\`bash
 python sample_worldcover.py \\
   --geojson /path/to/fiji-lulc-2021-test-data.geojson \\
-  --raster /path/to/worldcover-2021-fiji.vrt \\
+  --raster /path/to/ESA_WorldCover_10m_2021_v200_S18E174_Map.tif \\
+  --raster /path/to/ESA_WorldCover_10m_2021_v200_S18E177_Map.tif \\
+  --raster /path/to/ESA_WorldCover_10m_2021_v200_S18W180_Map.tif \\
+  --raster /path/to/ESA_WorldCover_10m_2021_v200_S21E177_Map.tif \\
+  --raster /path/to/ESA_WorldCover_10m_2021_v200_S21W180_Map.tif \\
   --output worldcover-fiji-sample.csv
 \`\`\`
 
