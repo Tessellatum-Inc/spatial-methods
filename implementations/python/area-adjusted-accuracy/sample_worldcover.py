@@ -1,8 +1,9 @@
 """Sample ESA WorldCover classes at the pinned Fiji reference points.
 
-Requires rasterio. The raster must be a local GeoTIFF/COG or VRT covering all
-834 points. The output preserves the original Fiji sampling strata and
-reference labels, while adding the evaluated map class.
+Requires rasterio. Supply every local GeoTIFF/COG tile needed to cover the
+834 points using repeated --raster arguments. The output preserves the
+original Fiji sampling strata and reference labels, while adding the evaluated
+map class.
 """
 from __future__ import annotations
 
