@@ -39,7 +39,7 @@ The domain will develop:
 |---|---|---|---|
 | 01 | [Probability models, events and conditioning](probability-models-events-and-conditioning.md) | Screening maps, classification prevalence, spatial sampling units, conditional evidence and Bayes' theorem | Initial public module |
 | 02 | [Random variables, distributions and probability models](random-variables-and-distributions.md) | Measurement outcomes, event counts, detection and classification | Initial module published |
-| 03 | Expectation, variance, covariance and dependence | Measurement uncertainty, correlated observations and multivariate spatial data | Planned |
+| 03 | Joint distributions, covariance and dependence | Correlated measurements, multivariate spatial data and dependence structures | Planned |
 | 04 | Sampling designs and sampling distributions | Field sampling, ground truth, survey design and spatially representative inference | Planned |
 | 05 | Likelihood and statistical estimation | Parameter estimation, regression, geostatistics and model fitting | Planned |
 | 06 | Confidence intervals, hypothesis tests and statistical decisions | Accuracy assessment, change detection and model comparison | Planned |
