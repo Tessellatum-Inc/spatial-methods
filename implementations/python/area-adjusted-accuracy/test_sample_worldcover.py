@@ -65,5 +65,26 @@ class PinnedFijiPointReaderTests(unittest.TestCase):
                     sample_worldcover.read_pinned_points(str(path))
 
 
+
+class RasterSourceTests(unittest.TestCase):
+    def test_https_cog_uses_gdal_vsi_curl(self):
+        url = "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/tile.tif"
+        self.assertEqual(sample_worldcover.rasterio_source(url), "/vsicurl/" + url)
+
+    def test_http_raster_url_is_rejected(self):
+        with self.assertRaises(ValueError):
+            sample_worldcover.rasterio_source("http://example.com/tile.tif")
+
+    def test_source_name_handles_https_url(self):
+        url = "https://example.com/path/ESA_WorldCover_Map.tif?version=1"
+        self.assertEqual(sample_worldcover.source_name(url), "ESA_WorldCover_Map.tif")
+
+    def test_local_path_is_unchanged(self):
+        self.assertEqual(
+            sample_worldcover.rasterio_source("/tmp/worldcover.tif"),
+            "/tmp/worldcover.tif"
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
