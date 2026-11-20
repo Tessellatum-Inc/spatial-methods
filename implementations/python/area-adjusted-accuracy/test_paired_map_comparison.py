@@ -25,7 +25,7 @@ class PairedMapComparisonTests(unittest.TestCase):
         difference = result["evaluated_minus_baseline_accuracy_difference"]
         self.assertAlmostEqual(difference["estimate"], -0.1)
         self.assertAlmostEqual(difference["standard_error"] ** 2, 0.102)
-        self.assertAlmostEqual(difference["ci95_wald"][0], -0.1 - 1.96 * (0.0876 ** 0.5))
+        self.assertAlmostEqual(difference["ci95_wald"][0], -0.1 - 1.96 * (0.102 ** 0.5))
 
     def test_without_population_sizes_uses_no_fpc(self):
         result = compare_maps(self.rows, self.weights, baseline_column="baseline_map_class")
