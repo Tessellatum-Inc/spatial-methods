@@ -58,4 +58,4 @@ Do not conflate a mathematically valid model with a valid spatial interpretation
 
 ## Review status
 
-Modules 01–09 are initial teaching resources. They have not received independent technical review or learner testing. The initial ten-module sequence is now drafted. The collection still requires independent technical review, learner testing, source-to-claim verification and further specialist expansion; publication does not constitute technical certification.
+Modules 01–10 are initial teaching resources. They have not received independent technical review or learner testing. The initial ten-module sequence is now drafted. The collection still requires independent technical review, learner testing, source-to-claim verification and further specialist expansion; publication does not constitute technical certification.
