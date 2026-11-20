@@ -54,15 +54,15 @@ For instance, if a vehicle travels 12 kilometres in 20 minutes, its average spee
 
 \[
 v = rac{d}{t}
-  = rac{12 \\mathrm{km}}{20 \\mathrm{min}}
-  = 0.6 \\mathrm{km/min}
+  = rac{12 \mathrm{km}}{20 \mathrm{min}}
+  = 0.6 \mathrm{km/min}
 \]
 
 Converting minutes to hours:
 
 \[
-0.6 \\mathrm{km/min}\\times60 \\mathrm{min/h}
-=36 \\mathrm{km/h}
+0.6 \mathrm{km/min}\times60 \mathrm{min/h}
+=36 \mathrm{km/h}
 \]
 
 The unit conversion is part of the calculation, not cosmetic formatting.
@@ -79,7 +79,7 @@ This distinction matters whenever coordinates are transformed, compared, measure
 
 ## 3. Variables, parameters and observations
 
-A **variable** is a symbol representing a quantity that can take different values within a model. We often use \\(x\\), \\(y\\), \\(t\\), \\(d\\) or \\(A\\), but notation should be defined rather than assumed.
+A **variable** is a symbol representing a quantity that can take different values within a model. We often use \(x\), \(y\), \(t\), \(d\) or \(A\), but notation should be defined rather than assumed.
 
 A **parameter** is a quantity treated as fixed within a particular model or calculation, even though it may be estimated or changed in another context.
 
@@ -97,7 +97,7 @@ where:
 - (v) is average speed over the interval;
 - (t) is elapsed time.
 
-If \\(v=30\\,\\mathrm{km/h}\\) and \\(t=0.5\\,\\mathrm{h}\\), then \\(d=15\\,\\mathrm{km}\\).
+If \(v=30\,\mathrm{km/h}\) and \(t=0.5\,\mathrm{h}\), then \(d=15\,\mathrm{km}\).
 
 The equation is simple, but its use assumes that the average speed is meaningful for the interval and that distance is the intended quantity. It does not describe the route geometry, stops, acceleration or variation in speed.
 
@@ -111,7 +111,7 @@ An **equation** states that two expressions are equal. For example:
 2x+5=17
 \]
 
-Solving gives \\(x=6\\).
+Solving gives \(x=6\).
 
 A **formula** expresses a general relationship between quantities. For a rectangle:
 
@@ -119,16 +119,16 @@ A **formula** expresses a general relationship between quantities. For a rectang
 A = lw
 \]
 
-where \\(A\\) is area, \\(l\\) is length and \\(w\\) is width.
+where \(A\) is area, \(l\) is length and \(w\) is width.
 
 A **model** is a mathematical representation of some aspect of a system or problem. A formula may form part of a model, but a model also requires definitions, assumptions, scope and an interpretation of its variables.
 
 ### 4.1 The same formula can answer different questions
 
-For a rectangle with length \\(l=40\\,\\mathrm{m}\\) and width \\(w=25\\,\\mathrm{m}\\):
+For a rectangle with length \(l=40\,\mathrm{m}\) and width \(w=25\,\mathrm{m}\):
 
 \[
-A=lw=40\\times25=1000 \\mathrm{m^2}
+A=lw=40\times25=1000 \mathrm{m^2}
 \]
 
 This computes the planar area of the rectangle under the chosen geometry.
@@ -152,7 +152,7 @@ We write:
 y=f(x)
 \]
 
-Here, \\(x\\) is the input, \\(f\\) is the rule and \\(y\\) is the output.
+Here, \(x\) is the input, \(f\) is the rule and \(y\) is the output.
 
 For example:
 
@@ -160,12 +160,12 @@ For example:
 f(x)=2x+3
 \]
 
-If \\(x=4\\), then \\(f(4)=11\\).
+If \(x=4\), then \(f(4)=11\).
 
-A spatial example is a simple planar distance from a fixed point \\((x_0,y_0)\\) to a point \\((x,y)\\):
+A spatial example is a simple planar distance from a fixed point \((x_0,y_0)\) to a point \((x,y)\):
 
 \[
-d(x,y)=sqrt{(x-x_0)^2+(y-y_0)^2}
+d(x,y)=\sqrt{(x-x_0)^2+(y-y_0)^2}
 \]
 
 For this expression to represent a Euclidean planar distance, the coordinates must be in a suitable common Cartesian plane with compatible linear units. Applying it directly to longitude and latitude in degrees does not produce a distance in metres.
@@ -185,10 +185,10 @@ A map scale of 1:50,000 means that one unit of map length represents 50,000 of t
 For example:
 
 \[
-2 \\mathrm{cm}\\times50{,}000
-=100{,}000 \\mathrm{cm}
-=1{,}000 \\mathrm{m}
-=1 \\mathrm{km}
+2 \mathrm{cm}\times50{,}000
+=100{,}000 \mathrm{cm}
+=1{,}000 \mathrm{m}
+=1 \mathrm{km}
 \]
 
 This is a scale relationship, not a guarantee that every map distance equals the corresponding ground distance everywhere. Projection scale distortion and the map's intended scale basis matter.
@@ -199,10 +199,10 @@ A density is another rate:
 ho=rac{N}{A}
 \]
 
-If 12,000 people are associated with an area of \\(3\\,\\mathrm{km}^2\\), the average density is:
+If 12,000 people are associated with an area of \(3\,\mathrm{km}^2\), the average density is:
 
 \[
-ho=rac{12{,}000}{3}=4{,}000 \\mathrm{people/\\mathrm{km}^2}
+ho=rac{12{,}000}{3}=4{,}000 \mathrm{\mathrm{people\,km^{-2}}}
 \]
 
 The result depends on the population definition, the spatial boundary and the time to which the count applies. An average density does not imply that people are uniformly distributed.
@@ -211,15 +211,15 @@ The result depends on the population definition, the spatial boundary and the ti
 
 A **set** is a collection of distinct objects. Sets are useful for describing groups of features, candidate locations, observations or cells.
 
-If \\(A\\) is the set of schools and (B) is the set of health facilities, then:
+If \(A\) is the set of schools and (B) is the set of health facilities, then:
 
-- (\\(A\\cup B\\)) is the union: objects in either set;
-- (\\(A\\cap B\\)) is the intersection: objects in both sets;
-- (\\(A\\setminus B\\)) is the difference: objects in \\(A\\) but not (B).
+- (\(A\cup B\)) is the union: objects in either set;
+- (\(A\cap B\)) is the intersection: objects in both sets;
+- (\(A\setminus B\)) is the difference: objects in \(A\) but not (B).
 
 In a GIS, these ideas appear in selection, overlay, filtering and spatial queries. The mathematical set operation and a particular GIS operation are related, but real data operations also depend on geometry models, topology rules, precision and software behaviour.
 
-A **subset** contains only elements of another set. If every feature in \\(A\\) also belongs to (B), then (\\(A\\subseteq B\\)).
+A **subset** contains only elements of another set. If every feature in \(A\) also belongs to (B), then (\(A\subseteq B\)).
 
 Sets provide a language for defining what is included in an analysis. A spatial query is only as clear as its membership rules.
 
@@ -255,7 +255,7 @@ has dimensions:
 
 which is consistent.
 
-But the expression \\(A=l+w\\) is dimensionally inconsistent if \\(A\\) is area and \\(l,w\\) are lengths.
+But the expression \(A=l+w\) is dimensionally inconsistent if \(A\) is area and \(l,w\) are lengths.
 
 Dimensional consistency is necessary for a physically meaningful equation, but it is not sufficient to prove that the equation is correct.
 
@@ -270,18 +270,18 @@ Useful checks include:
 
 ### Example: area scaling
 
-If both sides of a square are doubled, its perimeter doubles but its area becomes four \\times as large.
+If both sides of a square are doubled, its perimeter doubles but its area becomes four times as large.
 
-For side length \\(s\\):
+For side length \(s\):
 
 \[
-\\(P=4s,\\qquad A=s^2\\)
+\(P=4s,\qquad A=s^2\)
 \]
 
-After scaling by factor \\(k\\):
+After scaling by factor \(k\):
 
 \[
-\\(P'=kP,\\qquad A'=k^2A\\)
+\(P'=kP,\qquad A'=k^2A\)
 \]
 
 This distinction matters when changing map scale, raster resolution, grid dimensions or the size of a study region.
@@ -302,21 +302,21 @@ A disciplined modelling sequence is:
 
 ### Worked example: a simple service-area density
 
-Suppose a hypothetical study area has 18,000 residents and an area of \\(4.5\\,\\mathrm{km}^2\\).
+Suppose a hypothetical study area has 18,000 residents and an area of \(4.5\,\mathrm{km}^2\).
 
 The question is: what is the mean population density over the study area?
 
 Define:
 
-- \\(N=18{,}000\\) residents, for a specified population reference date;
-- \\(A=4.5\\,\\mathrm{km}^2\\), for a defined study boundary;
+- \(N=18{,}000\) residents, for a specified population reference date;
+- \(A=4.5\,\mathrm{km}^2\), for a defined study boundary;
 - (ho=N/A), mean population density.
 
 Then:
 
 \[
 ho=rac{18{,}000}{4.5}
-=4{,}000 \\mathrm{residents/\\mathrm{km}^2}
+=4{,}000 \mathrm{\mathrm{residents\,km^{-2}}}
 \]
 
 Interpretation: the total population divided by the total area is 4,000 residents per square kilometre.
@@ -370,7 +370,7 @@ Two wards have the following hypothetical data:
 
 ### Exercise 4 — Function domain
 
-A simplified planar distance function is defined from a fixed point \\((x_0,y_0)\\).
+A simplified planar distance function is defined from a fixed point \((x_0,y_0)\).
 
 1. Write the function.
 2. State the assumptions needed for the output to be interpreted as a distance in metres.
