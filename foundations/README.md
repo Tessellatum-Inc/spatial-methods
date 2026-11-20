@@ -23,7 +23,7 @@ The subject IDs below are stable identifiers from the [Geoinformatics master sub
 
 | Subject ID | Foundation domain | Collection status | Planned coverage |
 |---|---|---|---|
-| SM-FND-001 | Mathematics for spatial science | Planned | Mathematical language, functions, vectors, coordinate geometry, proof and modelling |
+| SM-FND-001 | Mathematics for spatial science | Initial collection; review required | Mathematical language, functions, vectors, coordinate geometry, proof and modelling |
 | SM-FND-002 | Linear algebra and matrix methods | Planned | Vectors, matrices, linear systems, rank, eigenvalues, decompositions and quadratic forms |
 | SM-FND-003 | Calculus and differential methods | Planned | Derivatives, gradients, integrals, multivariable calculus, differential equations and fields |
 | SM-FND-004 | Probability and statistical inference | Planned | Probability models, distributions, sampling, estimation, testing and Bayesian reasoning |
@@ -33,7 +33,7 @@ The subject IDs below are stable identifiers from the [Geoinformatics master sub
 | SM-FND-008 | Geodesy and reference systems | Existing material; expansion required | Earth figure, datums, reference frames, coordinate systems, gravity and transformations |
 | SM-FND-009 | Earth science, physical geography and geomorphology | Planned | Earth systems, landforms, processes, terrain and spatial environmental variation |
 | SM-FND-010 | Cartographic theory and visual perception | Planned | Scale, visual variables, perception, symbolisation, generalisation and map communication |
-| SM-FND-011 | Measurement science, accuracy and uncertainty | In progress | Measurands, measurement models, uncertainty, covariance, traceability and verification |
+| SM-FND-011 | Measurement science, accuracy and uncertainty | Initial collection; expansion and review required | Measurands, measurement models, uncertainty, covariance, traceability and verification |
 | SM-FND-012 | Remote sensing physics and radiometry | Planned | Electromagnetic radiation, spectra, radiometric quantities, interaction and observation models |
 | SM-FND-013 | Optics, electromagnetism and wave physics | Planned | Geometric optics, wave behaviour, electromagnetic principles and sensor physics |
 | SM-FND-014 | Signal processing and information theory | Planned | Sampling, filtering, transforms, spectral analysis, information and signal detection |
@@ -58,6 +58,12 @@ The first developed foundation domain is measurement science:
 4. [Covariance, correlated observations and generalized least squares](measurement-science/covariance-correlated-observations-and-gls.md)
 
 These resources are connected to the [measurement science and survey adjustment learning path](../learning-paths/measurement-science-and-survey-adjustment.md), synthetic [measurement experiments](../experiments/measurement/) and the [covariance/GLS Python implementation](../implementations/python/covariance-gls/README.md).
+
+## Application-grounded development priorities
+
+The [application dependency audit](application-dependency-audit.md) maps existing algorithm, method, implementation and recipe work to the foundations it depends on. It records current starting points, distinguishes existing applied assets from a complete theory collection, and sets a working development order.
+
+The next domain selected is **SM-FND-002 — Linear algebra and matrix methods**, because it supports existing work in measurement adjustment, coordinate transformations, PCA, covariance modelling, regression, kriging and optimisation. Numerical analysis should be developed closely alongside it. This is a practical priority, not a compulsory learning sequence.
 
 ## How each foundation will be developed
 
