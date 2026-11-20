@@ -9,7 +9,7 @@
 
 Many spatial quantities have both magnitude and direction. A displacement is not fully described by its length; a velocity requires speed and direction; a force has magnitude and orientation; a surface gradient indicates both steepness and direction of greatest increase.
 
-A **scalar** is described by magnitude alone in its mathematical representation. A **vector** is an element of a vector space and can be represented by components relative to a chosen basis. In elementary Euclidean settings, vectors are often drawn as directed arrows, but the abstract concept is broader than an arrow on a map.
+A **scalar** is represented by a single numerical value and its unit, where applicable; unlike a vector, it has no direction components. The value may be signed, depending on the quantity and convention. A **vector** is an element of a vector space and can be represented by components relative to a chosen basis. In elementary Euclidean settings, vectors are often drawn as directed arrows, but the abstract concept is broader than an arrow on a map.
 
 Vectors are used throughout spatial science:
 - displacement between surveyed or mapped points;
@@ -154,12 +154,15 @@ $$
 k\mathbf{v}=\begin{bmatrix}kv_x\\kv_y\\kv_z\end{bmatrix}.
 $$
 
+For a non-zero vector:
 - If k > 1, the magnitude increases.
 - If 0 < k < 1, the magnitude decreases.
+
+For the zero vector, scalar multiplication leaves the vector at zero for every finite scalar k.
 - If k = 0, the result is the zero vector.
 - If k < 0, the direction reverses and the magnitude is multiplied by |k|.
 
-For example, if a displacement vector is $20,10$ m, then 2v=$40,20$ m. The direction is unchanged and the magnitude doubles.
+For example, if a displacement vector is $\mathbf v=(20,10)\,\mathrm{m}$, then $2\mathbf v=(40,20)\,\mathrm{m}$. The direction is unchanged and the magnitude doubles.
 
 ## 7. Unit vectors and direction
 
@@ -317,7 +320,7 @@ A downhill direction is opposite the direction of greatest increase under the us
 
 Vector components depend on the basis used to express them. The same geometric vector can have different component values in different coordinate frames, particularly when axes are rotated or scaled.
 
-For example, a displacement described as $10,0$ in a frame whose x-axis points east may be represented differently in a frame whose axes are rotated. The underlying displacement does not change merely because its coordinate description changes.
+For example, a displacement described by components $(10,0)$ in a frame whose x-axis points east may be represented differently in a frame whose axes are rotated. The underlying displacement does not change merely because its coordinate description changes.
 
 For orthonormal Cartesian bases, the familiar dot product and magnitude formulas apply directly. In non-orthogonal bases or more general coordinate systems, metric information is needed to compute lengths and angles correctly. Formal basis changes, matrices and metric tensors require linear algebra and geometry beyond this introductory module.
 
