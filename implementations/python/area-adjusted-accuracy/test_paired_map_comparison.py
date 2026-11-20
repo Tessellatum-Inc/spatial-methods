@@ -6,10 +6,10 @@ from paired_map_comparison import compare_maps
 class PairedMapComparisonTests(unittest.TestCase):
     def setUp(self):
         self.rows = [
-            {"sampling_stratum": "A", "map_class": "x", "reference_class": "x"},
-            {"sampling_stratum": "A", "map_class": "y", "reference_class": "x"},
-            {"sampling_stratum": "B", "map_class": "x", "reference_class": "x"},
-            {"sampling_stratum": "B", "map_class": "y", "reference_class": "y"},
+            {"sampling_stratum": "A", "map_class": "x", "baseline_map_class": "x", "reference_class": "x"},
+            {"sampling_stratum": "A", "map_class": "y", "baseline_map_class": "x", "reference_class": "x"},
+            {"sampling_stratum": "B", "map_class": "x", "baseline_map_class": "y", "reference_class": "x"},
+            {"sampling_stratum": "B", "map_class": "y", "baseline_map_class": "y", "reference_class": "y"},
         ]
         self.weights = {"A": 0.6, "B": 0.4}
 
@@ -17,6 +17,7 @@ class PairedMapComparisonTests(unittest.TestCase):
         result = compare_maps(
             self.rows,
             self.weights,
+            baseline_column="baseline_map_class",
             stratum_population_sizes={"A": 10, "B": 8},
         )
         self.assertAlmostEqual(result["evaluated_map_overall_accuracy"], 0.7)
@@ -27,7 +28,7 @@ class PairedMapComparisonTests(unittest.TestCase):
         self.assertAlmostEqual(difference["ci95_wald"][0], -0.1 - 1.96 * (0.0876 ** 0.5))
 
     def test_without_population_sizes_uses_no_fpc(self):
-        result = compare_maps(self.rows, self.weights)
+        result = compare_maps(self.rows, self.weights, baseline_column="baseline_map_class")
         self.assertEqual(
             result["stratum_diagnostics"]["A"]["finite_population_correction"], 1.0
         )
@@ -36,7 +37,7 @@ class PairedMapComparisonTests(unittest.TestCase):
         )
 
     def test_custom_baseline_column(self):
-        rows = [dict(row, other_baseline=row["sampling_stratum"]) for row in self.rows]
+        rows = [dict(row, other_baseline=row["baseline_map_class"]) for row in self.rows]
         result = compare_maps(rows, self.weights, baseline_column="other_baseline")
         self.assertAlmostEqual(
             result["evaluated_minus_baseline_accuracy_difference"]["estimate"], -0.1
@@ -51,6 +52,7 @@ class PairedMapComparisonTests(unittest.TestCase):
             compare_maps(
                 self.rows,
                 self.weights,
+                baseline_column="baseline_map_class",
                 stratum_population_sizes={"A": 1, "B": 8},
             )
 
