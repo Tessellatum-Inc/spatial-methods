@@ -316,3 +316,8 @@ The pathway is a connective layer. It does not replace the canonical foundation 
 - Interstate Technology & Regulatory Council (ITRC). *Geospatial Analysis Work Flow Overview*. [Official guidance](https://gro-1.itrcweb.org/geospatial-analysis-work-flow-overview/). Used for the sequence from project goals and exploratory analysis through method selection, model building, validation, results and use.
 
 This is an initial synthesis and navigation pathway, not an independently peer-reviewed course or a completed empirical case study. The linked implementations and examples have different evidence states; follow each item's own limitations. The ITRC material is grounded in environmental-site applications and should not be treated as a universal regulatory standard. The UNECE framework is a process model for geospatially enabled official statistics, not a substitute for study-specific statistical design. No new field data have been collected or analysed for this pathway.
+
+
+## Class-specific map error investigation
+
+The Fiji–WorldCover case now includes a [class-specific error investigation](../implementations/python/area-adjusted-accuracy/class-specific-error-analysis.md). It demonstrates design-weighted confusion matrices, class-specific producer's and user's accuracy, omission and commission contributions, and the importance of interpreting small mapped-class counts cautiously. Error transitions are evidence for targeted review, not causal diagnoses.

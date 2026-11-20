@@ -136,3 +136,10 @@ Neither implementation supports arbitrary unequal-probability, cluster, adaptive
 - Olofsson, P., Foody, G. M., Stehman, S. V., & Woodcock, C. E. (2013). Making better use of accuracy data in land change studies: Estimating accuracy and area and quantifying uncertainty using stratified estimation. *Remote Sensing of Environment*, 129, 122–131. https://doi.org/10.1016/j.rse.2012.10.031
 
 The Fiji case is a secondary analysis of a public reference sample; it is not a new field campaign or independent re-interpretation. The method page is an initial synthesis, not an independent technical review or a universal prescription for all sampling designs.
+
+
+## Class-specific diagnostics for samples stratified by a different map
+
+When the probability sample was stratified by a source map rather than the evaluated map, class-specific accuracy must be derived from the design-weighted error matrix, not from unweighted row or column counts. For each evaluated map class, user's accuracy is the diagonal cell divided by its estimated mapped area. For each reference class, producer's accuracy is the diagonal cell divided by its estimated reference area. These ratios can be unstable for rare or empty mapped classes; a 100% user's accuracy based on a handful of predictions should be reported with its sample count and not treated as strong evidence.
+
+The [Fiji–WorldCover class-specific error investigation](../implementations/python/area-adjusted-accuracy/class-specific-error-analysis.md) demonstrates this decomposition and distinguishes error patterns from causal explanations.

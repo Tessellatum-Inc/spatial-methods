@@ -170,3 +170,12 @@ The Fiji–WorldCover comparison now includes a four-outcome decomposition (both
 - [Spatial disagreement analysis](spatial-disagreement-analysis.md)
 - [Reproducible spatial disagreement script](spatial_disagreement.py)
 - [Spatial disagreement tests](test_spatial_disagreement.py)
+
+
+## Class-specific Fiji–WorldCover error investigation
+
+A further design-weighted analysis decomposes both maps' error matrices by reference and mapped class, compares class-specific producer's accuracy, and ranks weighted omission/commission transitions. It highlights the tree–shrubland and agriculture–grassland/tree transitions while explicitly avoiding causal claims from the sample alone.
+
+- [Class-specific error investigation](class-specific-error-analysis.md)
+- [Reproducible analysis script](class_error_analysis.py)
+- [Unit tests](test_class_error_analysis.py)

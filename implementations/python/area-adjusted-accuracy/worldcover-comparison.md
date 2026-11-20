@@ -241,3 +241,8 @@ Required attribution for the WorldCover product: **© ESA WorldCover project 202
 ## Spatial disagreement analysis
 
 The four-outcome analysis estimates the eligible-domain proportions where both maps are correct, only the Fiji map is correct, only WorldCover is correct, or both are wrong. It also estimates direct map-label disagreement and exports all 834 point outcomes as GeoJSON. See [the analysis and interpretation limits](spatial-disagreement-analysis.md), [the reproducible script](spatial_disagreement.py) and [its tests](test_spatial_disagreement.py). Nearest-neighbour summaries are descriptive only; no spatial-clustering significance claim is made.
+
+
+## Class-specific error investigation
+
+The overall accuracy difference is not evenly distributed across classes. The class-specific analysis identifies the largest omission contributions and map-to-reference transitions, including WorldCover tree at reference shrubland points and WorldCover grassland/tree at reference agriculture points. It also exposes the instability of user's accuracy for classes with very few mapped predictions. See [class-specific error investigation](class-specific-error-analysis.md) and its [reproducible script](class_error_analysis.py). The results describe error patterns; they do not establish causes.

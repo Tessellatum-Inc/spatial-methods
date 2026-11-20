@@ -12,6 +12,8 @@ on:
       - "implementations/python/area-adjusted-accuracy/crosswalk_sensitivity.py"
       - "implementations/python/area-adjusted-accuracy/spatial_disagreement.py"
       - "implementations/python/area-adjusted-accuracy/test_spatial_disagreement.py"
+      - "implementations/python/area-adjusted-accuracy/class_error_analysis.py"
+      - "implementations/python/area-adjusted-accuracy/test_class_error_analysis.py"
       - "implementations/python/area-adjusted-accuracy/requirements-worldcover.txt"
 
 permissions:
@@ -94,6 +96,13 @@ jobs:
             --json-out fiji-worldcover-spatial-disagreement.json \
             --geojson-out fiji-worldcover-spatial-disagreement.geojson
 
+      - name: Test and analyse class-specific errors
+        run: |
+          python -m unittest -v test_class_error_analysis.py
+          python class_error_analysis.py worldcover-fiji-sample.csv \
+            --stratum-area-weights '{"water":0.011331967836,"mangrove":0.022598921173,"bare_soil_rock":0.003445902118,"urban":0.004378396325,"agriculture":0.090917519797,"grassland":0.096242589869,"shrubland":0.031660519822,"tree":0.739424183060}' \
+            --json-out fiji-worldcover-class-error-analysis.json
+
       - name: Upload reproducibility outputs
         if: always()
         uses: actions/upload-artifact@v4
@@ -108,5 +117,6 @@ jobs:
             implementations/python/area-adjusted-accuracy/worldcover-fiji-crosswalk-sensitivity.json
             implementations/python/area-adjusted-accuracy/fiji-worldcover-spatial-disagreement.json
             implementations/python/area-adjusted-accuracy/fiji-worldcover-spatial-disagreement.geojson
+            implementations/python/area-adjusted-accuracy/fiji-worldcover-class-error-analysis.json
           if-no-files-found: ignore
           retention-days: 30
