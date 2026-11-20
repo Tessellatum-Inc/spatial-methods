@@ -540,4 +540,6 @@ The explanations and worked examples are original Spatial Methods teaching mater
 2. **Esri.** [Coordinate systems, map projections, and transformations](https://doc.esri.com/en/arcgis-pro/latest/help/mapping/properties/coordinate-systems-and-projections.html). Used for the distinction between geographic, projected and local coordinate systems, their units and projection transformations. This is product documentation, not a geodetic standard.
 3. **BIPM.** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication]\(https://www.bipm.org/en/si-brochure-9\). Used for the expression of coordinate quantities and units.
 
+**Source register:** `SM-SRC-000021`, `SM-SRC-000022`, `SM-SRC-000024`.
+
 **Limitations:** Euclidean plane and three-dimensional formulae are not substitutes for geodesic distance, ellipsoidal geometry, map-projection theory or datum transformation methods. Those subjects have dedicated Spatial Methods foundations.
