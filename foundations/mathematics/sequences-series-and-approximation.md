@@ -12,9 +12,9 @@ Spatial computation often replaces a continuous or complicated problem with a fi
 These practices rely on ideas from sequences, series, limits and approximation.
 
 A **sequence** is an ordered list of terms indexed by integers, commonly written:
-$
+$$
 a_0,a_1,a_2,\ldots
-$
+$$
 
 A **series** is the sum of terms from a sequence. A **limit** describes the value approached by a sequence or function under a specified process. An **approximation** is a substitute representation or value that is useful for a stated purpose but is not identical to the exact object.
 
@@ -27,41 +27,41 @@ A sequence can be defined by a formula, a recurrence relation or an explicit lis
 ### 2.1 Explicit definition
 
 For example:
-$
+$$
 a_n=2n+1,\qquad n=0,1,2,\ldots
-$
+$$
 
 The terms are 1, 3, 5, 7, and so on.
 
 ### 2.2 Recursive definition
 
 A sequence can instead be defined from an initial value and a rule:
-$
+$$
 a_0=1,\qquad a_{n+1}=a_n+2.
-$
+$$
 
 The same sequence is produced. The recursive form makes the repeated update explicit.
 
 ### 2.3 Spatial example: repeated coordinate update
 
 Suppose an illustrative one-dimensional position estimate is updated by adding a fixed displacement of 5 m:
-$
+$$
 x_0=100\;\mathrm{m},\qquad x_{n+1}=x_n+5\;\mathrm{m}.
-$
+$$
 
 Then $x_1=105\,\mathrm{m}$, $x_2=110\,\mathrm{m}$ and $x_3=115\,\mathrm{m}$. This is a simple deterministic sequence. It does not by itself describe measurement noise, uncertainty or a real moving object's trajectory.
 
 ## 3. Arithmetic and geometric sequences
 
 An arithmetic sequence has a constant difference d between consecutive terms:
-$
+$$
 a_n=a_0+nd.
-$
+$$
 
 A geometric sequence has a constant ratio r between consecutive non-zero terms:
-$
+$$
 a_n=a_0r^n.
-$
+$$
 
 ### Example: arithmetic sequence
 
@@ -70,25 +70,25 @@ A grid coordinate starts at $0\,\mathrm{m}$ and increases by $10\,\mathrm{m}$ at
 ### Example: geometric sequence
 
 A hypothetical raster cell width is repeatedly halved:
-$
+$$
 w_n=100\left(\frac12\right)^n\;\mathrm{m}.
-$
+$$
 
 The first values are 100 m, 50 m, 25 m and 12.5 m. This illustrates a scale refinement sequence. It does not mean that halving cell width always halves computational cost or improves a result by a predictable amount.
 
 ## 4. Limits and convergence
 
 A sequence converges to L if its terms approach L as the index increases:
-$
+$$
 \lim_{n\to\infty}a_n=L.
-$
+$$
 
 Informally, terms can be made as close to $L$ as desired by taking $n$ sufficiently large.
 
 For example:
-$
+$$
 a_n=\frac{1}{n+1}
-$
+$$
 
 converges to zero. Its terms are positive but become smaller.
 
@@ -111,48 +111,48 @@ A useful result in real analysis is that a monotone bounded sequence converges. 
 ## 5. Series and partial sums
 
 A series adds terms of a sequence:
-$
+$$
 \sum_{n=0}^{\infty}a_n.
-$
+$$
 
 An infinite series is studied through its sequence of partial sums:
-$
+$$
 S_N=\sum_{n=0}^{N}a_n.
-$
+$$
 
 The series converges if the partial sums approach a finite limit as $N\to\infty$.
 
 ### 5.1 Finite arithmetic series
 
 For an arithmetic sequence with first term $a_0$ and common difference $d$, the sum of terms from index 0 through index $N$ is:
-$
+$$
 S_N=\frac{N+1}{2}(a_0+a_N).
-$
+$$
 
 ### 5.2 Finite geometric series
 
 For the terms $a_0,a_0r,\ldots,a_0r^N$, where $r\neq 1$:
-$
+$$
 S_N=a_0\frac{1-r^{N+1}}{1-r}.
-$
+$$
 
 If $r=1$, the sum is $(N+1)a_0$.
 
 ### 5.3 Infinite geometric series
 
 For $|r|<1$:
-$
+$$
 \sum_{n=0}^{\infty}a_0r^n=\frac{a_0}{1-r}.
-$
+$$
 
 For $|r|\geq 1$ and $a_0\neq 0$, this geometric series diverges. If $a_0=0$, every term is zero and the series converges to zero.
 
 ### Example
 
 A simplified model assigns successively smaller contributions 1, 0.5, 0.25, 0.125, ... . The infinite sum is:
-$
+$$
 1+0.5+0.25+\cdots=\frac{1}{1-0.5}=2.
-$
+$$
 
 A finite partial sum is less than 2. This example explains a convergent sum; it is not a universal model for spatial influence, error or decay.
 
@@ -161,19 +161,19 @@ A finite partial sum is less than 2. This example explains a convergent sum; it 
 An exact quantity may be replaced by an approximation when exact computation is impossible, unnecessary or too costly.
 
 Let x be the exact value and \hat{x} an approximation. The signed error is:
-$
+$$
 e=\hat{x}-x.
-$
+$$
 
 The absolute error is:
-$
+$$
 |e|=|\hat{x}-x|.
-$
+$$
 
 When $x\neq 0$, relative error is:
-$
+$$
 e_r=\frac{|\hat{x}-x|}{|x|}.
-$
+$$
 
 Relative error is undefined when the exact reference value is zero. A percentage relative error is $100e_r\%$.
 
@@ -203,9 +203,9 @@ These sources should not be merged into one generic “accuracy” figure withou
 ## 8. Raster resolution as discretisation
 
 A raster represents a spatial domain using a finite arrangement of cells. For a regular grid with square cell width h, each cell represents an area:
-$
+$$
 A_{cell}=h^2.
-$
+$$
 
 If $h=10\,\mathrm{m}$, a square cell covers $100\,\mathrm{m}^2$ in the planar grid representation. If $h$ is halved to $5\,\mathrm{m}$, cell area becomes $25\,\mathrm{m}^2$: one quarter of the original area. Over the same region, the number of cells is approximately four times as large, ignoring boundary and alignment effects.
 
@@ -229,9 +229,9 @@ For a smooth curve, sufficiently short segments may provide a close geometric ap
 A circle of radius R can be approximated by a regular polygon with n sides. Each side is a chord. As n increases, the polygon boundary approaches the circle in a geometric sense.
 
 For a circle, the perimeter of an inscribed regular n-gon is:
-$
+$$
 P_n=2nR\sin\left(\frac{\pi}{n}\right).
-$
+$$
 
 The circumference is $2\pi R$. As $n$ increases, $P_n$ approaches $2\pi R$ from below.
 
@@ -240,19 +240,19 @@ This illustrates a convergent geometric approximation. A polygonal approximation
 ## 10. Iterative algorithms and stopping criteria
 
 An iterative method generates a sequence of estimates:
-$
+$$
 x_0,x_1,x_2,\ldots
-$
+$$
 
 A common stopping test checks whether successive estimates have changed by less than a tolerance $\varepsilon$:
-$
+$$
 |x_{n+1}-x_n|<\varepsilon.
-$
+$$
 
 For vector estimates, one may use a norm:
-$
+$$
 \|\mathbf{x}_{n+1}-\mathbf{x}_n\|<\varepsilon.
-$
+$$
 
 The tolerance must be interpreted in context. Its units, scale and relationship to the problem matter.
 
@@ -272,9 +272,9 @@ The difference between consecutive terms decreases, but a real solver should tes
 ## 11. Time discretisation and simulation
 
 A continuous process may be represented at discrete time steps:
-$
+$$
 t_n=t_0+n\Delta t.
-$
+$$
 
 A model then updates its state at each step. The choice of Δt can affect numerical stability, computational cost and the fidelity with which rapid changes are represented.
 
