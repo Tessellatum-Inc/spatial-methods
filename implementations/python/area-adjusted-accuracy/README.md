@@ -51,17 +51,17 @@ The repository now includes an extraction workflow for evaluating ESA WorldCover
 ```bash
 python sample_worldcover.py \
   --geojson /path/to/fiji-lulc-2021-test-data.geojson \
-  --raster /path/to/ESA_WorldCover_10m_2021_v200_S18E174_Map.tif \
-  --raster /path/to/ESA_WorldCover_10m_2021_v200_S18E177_Map.tif \
-  --raster /path/to/ESA_WorldCover_10m_2021_v200_S18W180_Map.tif \
-  --raster /path/to/ESA_WorldCover_10m_2021_v200_S21E177_Map.tif \
-  --raster /path/to/ESA_WorldCover_10m_2021_v200_S21W180_Map.tif \
+  --raster https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18E174_Map.tif \
+  --raster https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18E177_Map.tif \
+  --raster https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18W180_Map.tif \
+  --raster https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S21E177_Map.tif \
+  --raster https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S21W180_Map.tif \
   --output worldcover-fiji-sample.csv
 ```
 
 4. Run `stratified_accuracy.py` using the original Fiji sampling-stratum weights and pixel counts. The full command and class harmonisation discussion are in [the Fiji–WorldCover comparison guide](worldcover-comparison.md).
 
-The extraction script preserves the original Fiji sample strata, reference labels and point order, assigns stable local sample IDs, transforms point coordinates to the raster CRS and fails on nodata or missing coverage. It writes a provenance sidecar with raster metadata and file fingerprints. Its default WorldCover-to-reference label mapping is provisional and must be reviewed for the intended legend before interpreting accuracy.
+The extraction script preserves the original Fiji sample strata, reference labels and point order, assigns stable local sample IDs, transforms point coordinates to the raster CRS and fails on nodata or missing coverage. It accepts local raster files or HTTPS COG URLs; remote URLs are opened through GDAL /vsicurl/ for range reads, so the full tiles need not be downloaded. The provenance sidecar records source URLs and raster metadata. Remote range reads do not yield a whole-file SHA-256; use local files when byte-level raster fingerprints are required. Its default WorldCover-to-reference label mapping is provisional and must be reviewed for the intended legend before interpreting accuracy.
 
 **No WorldCover raster has yet been sampled and no WorldCover comparison result is claimed.**
 
