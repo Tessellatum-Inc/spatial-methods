@@ -29,14 +29,14 @@ A **coordinate system** assigns numerical values to points using a defined set o
 
 A **reference frame** establishes the origin, orientation, scale and convention used to express coordinates. In practical spatial work, a coordinate reference system (CRS) provides a more complete specification for relating coordinates to the Earth or to a defined engineering space.
 
-A two-dimensional Cartesian coordinate system is often written as (x,y). A three-dimensional Cartesian system is written as (x,y,z). The coordinates are measured relative to a selected origin and axes.
+A two-dimensional Cartesian coordinate system is often written as \(x,y\). A three-dimensional Cartesian system is written as (x,y,z). The coordinates are measured relative to a selected origin and axes.
 
 ### 2.1 The origin and axes
 
 In a standard two-dimensional Cartesian plane:
 - the x-axis is horizontal in the conventional diagram;
 - the y-axis is vertical;
-- the axes intersect at the origin (0,0);
+- the axes intersect at the origin \(0,0\);
 - positive and negative directions are defined along each axis.
 
 The drawing convention does not mean that x is always east or y is always north. A local engineering frame may use different axis conventions. A GIS layer may use easting and northing, longitude and latitude, or another axis order. Always inspect the actual CRS and data specification.
@@ -57,11 +57,11 @@ A point in three-dimensional Cartesian space is represented by an ordered triple
 P=(x,y,z).
 \]
 
-The order matters. (10,20) and (20,10) are generally different points. The same numerical tuple can also describe different physical positions if interpreted in different frames, units or coordinate systems.
+The order matters. \(10,20\) and \(20,10\) are generally different points. The same numerical tuple can also describe different physical positions if interpreted in different frames, units or coordinate systems.
 
 ### Example
 
-Let A = (120,80) and B = (170,200), with coordinates in metres in a stated local grid.
+Let A = \(120,80\) and B = \(170,200\), with coordinates in metres in a stated local grid.
 
 The displacement from A to B is described componentwise as:
 
@@ -73,7 +73,7 @@ This describes the coordinate difference in that frame. Whether those values cor
 
 ## 4. Distance between points
 
-For two points A=(x_1,y_1) and B=(x_2,y_2) in a Euclidean plane, the distance is:
+For two points A=\(x_1,y_1\) and B=\(x_2,y_2\) in a Euclidean plane, the distance is:
 
 \[
 d(A,B)=\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}.
@@ -83,7 +83,7 @@ This follows from the Pythagorean theorem: the coordinate differences form the p
 
 ### Worked example
 
-Let A=(120,80) m and B=(170,200) m.
+Let A=\(120,80\) m and B=\(170,200\) m.
 
 \[
 \begin{aligned}
@@ -98,7 +98,7 @@ This is planar Euclidean distance. It is appropriate only when the coordinate va
 
 ### 4.1 Three-dimensional distance
 
-For A=(x_1,y_1,z_1) and B=(x_2,y_2,z_2):
+For A=\(x_1,y_1,z_1\) and B=\(x_2,y_2,z_2\):
 
 \[
 d(A,B)=\sqrt{(x_2-x_1)^2+(y_2-y_1)^2+(z_2-z_1)^2}.
@@ -108,13 +108,13 @@ The three coordinates must be expressed in compatible units and in the same Cart
 
 ## 5. Midpoints and internal division
 
-The midpoint of a line segment joining A=(x_1,y_1) and B=(x_2,y_2) is:
+The midpoint of a line segment joining A=\(x_1,y_1\) and B=\(x_2,y_2\) is:
 
 \[
 M=\left(\frac{x_1+x_2}{2},\frac{y_1+y_2}{2}\right).
 \]
 
-For the previous points A=(120,80) and B=(170,200):
+For the previous points A=\(120,80\) and B=\(170,200\):
 
 \[
 M=(145,140)\;\mathrm{m}.
@@ -160,7 +160,7 @@ Vertical lines cannot be represented as y=mx+c because their slope is undefined.
 
 ### 6.2 Point-slope form
 
-A line through (x_1,y_1) with slope m is:
+A line through \(x_1,y_1\) with slope m is:
 
 \[
 y-y_1=m(x-x_1).
@@ -176,7 +176,7 @@ Here a and b are not both zero. This form represents vertical as well as non-ver
 
 ### 6.4 Parametric form
 
-A line through point P_0=(x_0,y_0) with direction vector (u,v) can be expressed as:
+A line through point P_0=\(x_0,y_0\) with direction vector \(u,v\) can be expressed as:
 
 \[
 (x,y)=(x_0,y_0)+t(u,v),\qquad t\in\mathbb{R}.
@@ -186,7 +186,7 @@ This representation is useful for computing intersections and describing paths. 
 
 ### Worked example: a line through two points
 
-Find the line through A=(2,3) and B=(6,11).
+Find the line through A=\(2,3\) and B=\(6,11\).
 
 \[
 m=\frac{11-3}{6-2}=2.
@@ -242,7 +242,7 @@ At the intersection:
 2x+1=-x+7.
 \]
 
-Therefore x=2 and y=5. The lines intersect at (2,5).
+Therefore x=2 and y=5. The lines intersect at \(2,5\).
 
 Two distinct lines in a plane may intersect once, be parallel and never intersect, or coincide and share every point. The equations and their coefficients determine which case applies.
 
@@ -252,7 +252,7 @@ Intersections are used in boundary construction, network geometry, survey comput
 
 A **locus** is the set of points satisfying a geometric condition.
 
-The circle with centre (a,b) and radius r is:
+The circle with centre \(a,b\) and radius r is:
 
 \[
 (x-a)^2+(y-b)^2=r^2.
@@ -264,7 +264,7 @@ Its interior disk, including the boundary, is:
 (x-a)^2+(y-b)^2\leq r^2.
 \]
 
-For a centre C=(300,400) m and radius 250 m:
+For a centre C=\(300,400\) m and radius 250 m:
 
 \[
 (x-300)^2+(y-400)^2=62{,}500
@@ -345,7 +345,7 @@ Suppose frame B has the same axis orientation and scale as frame A, but its orig
 x_B=x_A-100,\qquad y_B=y_A+50.
 \]
 
-A point with coordinates (250,300) m in A has coordinates (150,350) m in B.
+A point with coordinates \(250,300\) m in A has coordinates \(150,350\) m in B.
 
 The inverse mapping is:
 
@@ -429,7 +429,7 @@ State the coordinate frame and units you assume. Show intermediate calculations.
 
 ### Exercise 1 — Distance and midpoint
 
-In a local Cartesian frame, A=(40,30) m and B=(160,80) m.
+In a local Cartesian frame, A=\(40,30\) m and B=\(160,80\) m.
 
 1. Calculate the planar distance AB.
 2. Calculate the midpoint.
@@ -437,7 +437,7 @@ In a local Cartesian frame, A=(40,30) m and B=(160,80) m.
 
 ### Exercise 2 — Line through two points
 
-Find an equation for the line through P=(−1,4) and Q=(3,12).
+Find an equation for the line through P=(−1,4) and Q=\(3,12\).
 
 1. Calculate its slope.
 2. Write the point-slope equation.
@@ -462,16 +462,16 @@ Explain how substitution verifies the result.
 
 ### Exercise 4 — Circle and spatial threshold
 
-A facility is at C=(500,700) m in a suitable local planar frame. A screening distance is set at 300 m.
+A facility is at C=\(500,700\) m in a suitable local planar frame. A screening distance is set at 300 m.
 
 1. Write the equation for the boundary.
 2. Write the inequality for the area within or on the boundary.
-3. Determine whether P=(680,940) m is inside the disk.
+3. Determine whether P=\(680,940\) m is inside the disk.
 4. State two reasons why a real service-area analysis may require more than this circle.
 
 ### Exercise 5 — Three-dimensional distance
 
-A=(10,20,5) m and B=(40,60,17) m in the same Cartesian 3D frame.
+A=\(10,20,5\) m and B=\(40,60,17\) m in the same Cartesian 3D frame.
 
 1. Calculate the three-dimensional distance.
 2. Calculate the horizontal distance.
@@ -485,7 +485,7 @@ Frame B has the same orientation and scale as frame A, with coordinates related 
 x_B=x_A-250,\qquad y_B=y_A+100.
 \]
 
-1. Transform A-frame point (900,450) m into B.
+1. Transform A-frame point \(900,450\) m into B.
 2. Write the inverse mapping.
 3. Recover the original coordinates.
 4. Explain which frame properties were assumed identical.
@@ -501,12 +501,12 @@ A dataset contains points with pairs such as (36.8, −1.3).
 
 ## 17. Answers and checks
 
-1. **Distance and midpoint:** coordinate differences are (120,50) m. Distance is √(120²+50²) = √16,900 = 130 m. Midpoint is (100,55) m. This is planar Euclidean distance in the assumed local frame, not automatically an ellipsoidal surface distance.
-2. **Line:** slope = (12−4)/(3−(−1)) = 2. Point-slope form: y−4 = 2(x+1). Slope-intercept form: y=2x+6. Substitution gives 4 at x=−1 and 12 at x=3.
+1. **Distance and midpoint:** coordinate differences are \(120,50\) m. Distance is √\(120²+50²\) = √16,900 = 130 m. Midpoint is \(100,55\) m. This is planar Euclidean distance in the assumed local frame, not automatically an ellipsoidal surface distance.
+2. **Line:** slope = (12−4)/(3−(−1)) = 2. Point-slope form: y−4 = 2\(x+1\). Slope-intercept form: y=2x+6. Substitution gives 4 at x=−1 and 12 at x=3.
 3. **Intersection:** from x−y=1, y=x−1. Substitute into 2x+y=11: 3x−1=11, so x=4 and y=3. Check: 2(4)+3=11 and 4−3=1.
-4. **Circle:** boundary (x−500)²+(y−700)²=90,000; disk uses ≤90,000. For P, differences are (180,240), so squared distance is 32,400+57,600=90,000. It lies exactly on the boundary. Real accessibility or travel analysis may depend on barriers, road/path networks, travel time, terrain, entrances and the appropriate Earth-distance model.
-5. **3D distance:** differences are (30,40,12) m. Three-dimensional distance is √(900+1,600+144)=√2,644≈51.42 m. Horizontal distance is √(900+1,600)=50 m. The first includes vertical separation; the second measures only the horizontal plane.
-6. **Translation:** B coordinates are (650,550) m. Inverse: x_A=x_B+250 and y_A=y_B−100. Applying it returns (900,450) m. The frames were assumed to share axis orientation, handedness, scale and units; only their origins differ by the stated offset.
+4. **Circle:** boundary (x−500)²+(y−700)²=90,000; disk uses ≤90,000. For P, differences are \(180,240\), so squared distance is 32,400+57,600=90,000. It lies exactly on the boundary. Real accessibility or travel analysis may depend on barriers, road/path networks, travel time, terrain, entrances and the appropriate Earth-distance model.
+5. **3D distance:** differences are \(30,40,12\) m. Three-dimensional distance is √\(900+1,600+144\)=√2,644≈51.42 m. Horizontal distance is √\(900+1,600\)=50 m. The first includes vertical separation; the second measures only the horizontal plane.
+6. **Translation:** B coordinates are \(650,550\) m. Inverse: x_A=x_B+250 and y_A=y_B−100. Applying it returns \(900,450\) m. The frames were assumed to share axis orientation, handedness, scale and units; only their origins differ by the stated offset.
 7. **Geographic coordinates:** the pair might be longitude 36.8° and latitude −1.3°, or another ordered pair in a different system. Axis order and CRS must be verified. Degrees are angular units and their ground scale varies with location and direction. Use an appropriate ellipsoidal geodesic calculation or a suitable projected/local metric method for the required accuracy and extent.
 
 ## 18. Connections across Spatial Methods
@@ -514,7 +514,7 @@ A dataset contains points with pairs such as (36.8, −1.3).
 - **Spatial algorithms:** geometric distance, line intersection, point-in-region tests, coordinate conversion, buffering and geometric construction.
 - **Spatial data collection:** local control frames, site grids, instrument coordinate systems, sensor trajectories and 3D observations.
 - **Spatial recipes:** field-site layout, proximity screening, boundary construction, route geometry and coordinate QA.
-- **Theoretical foundations:** functions and mappings (SM-FND-001), linear algebra and matrix methods (SM-FND-002), geometry and computational geometry (SM-FND-006), geodesy and reference systems (SM-FND-008), cartographic theory (SM-FND-010), measurement science (SM-FND-011) and numerical analysis (SM-FND-016).
+- **Theoretical foundations:** functions and mappings \(SM-FND-001\), linear algebra and matrix methods \(SM-FND-002\), geometry and computational geometry \(SM-FND-006\), geodesy and reference systems \(SM-FND-008\), cartographic theory \(SM-FND-010\), measurement science \(SM-FND-011\) and numerical analysis \(SM-FND-016\).
 
 ## 19. Scope and limitations
 
@@ -538,6 +538,6 @@ The explanations and worked examples are original Spatial Methods teaching mater
 
 1. **OpenStax.** *Algebra and Trigonometry 2e*. [Section 2.1: The Rectangular Coordinate Systems and Graphs](https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-1-the-rectangular-coordinate-systems-and-graphs) and [Chapter 12: Analytic Geometry](https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-introduction-to-analytic-geometry). Used for Cartesian coordinates, lines, circles and elementary geometric loci.
 2. **Esri.** [Coordinate systems, map projections, and transformations](https://doc.esri.com/en/arcgis-pro/latest/help/mapping/properties/coordinate-systems-and-projections.html). Used for the distinction between geographic, projected and local coordinate systems, their units and projection transformations. This is product documentation, not a geodetic standard.
-3. **BIPM.** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication](https://www.bipm.org/en/si-brochure-9). Used for the expression of coordinate quantities and units.
+3. **BIPM.** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication]\(https://www.bipm.org/en/si-brochure-9\). Used for the expression of coordinate quantities and units.
 
 **Limitations:** Euclidean plane and three-dimensional formulae are not substitutes for geodesic distance, ellipsoidal geometry, map-projection theory or datum transformation methods. Those subjects have dedicated Spatial Methods foundations.
