@@ -85,7 +85,14 @@ A successful run validates only this software/data combination and documented wo
 
 ## Reproduction
 
-Download the dataset from the linked collection and follow the dataset-specific README. Keep imagery outside this repository; store only the provenance, processing record, non-sensitive logs and concise result summaries needed to reproduce the exercise.
+On a network-enabled machine, install the optional download dependency and retrieve only the selected subset:
+
+```bash
+python -m pip install huggingface_hub
+python acquire_rehearsal_dataset.py ./data/heig-vd-scop
+```
+
+The helper resolves the repository's current commit SHA, downloads `datasets/drone_heig_2019/` at that immutable revision, and writes `acquisition-provenance.json` with the revision, retrieval timestamp, client/Python versions, and per-file sizes and SHA-256 checksums. Preserve this manifest. Then inspect the dataset-specific README and run `dataset_audit.py` against `./data/heig-vd-scop/datasets/drone_heig_2019`. Keep imagery outside this repository; store only provenance, processing records, non-sensitive logs and concise result summaries.
 
 ## Current access limitation
 
