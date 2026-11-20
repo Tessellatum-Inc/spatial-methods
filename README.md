@@ -37,6 +37,8 @@ Applications bring these pillars together. Some are general-purpose; others are 
 
 Read the [canonical four-pillar architecture](docs/knowledge-tools-real-world-architecture.md) for definitions, relationships and implementation standards. The [complete knowledge base and AI-readiness architecture](docs/knowledge-base-and-ai-readiness-architecture.md) explains how canonical content, catalogues, Patreon curation and future AI interfaces fit together. Use the [Geoinformatics master subject index](catalog/master-subject-index.md) to navigate the wider subject universe and its cross-pillar connections.
 
+If you're developing or contributing learning material, use the [modular learning-unit templates](templates/learning-unit/README.md). They connect theory, implementation, application and assessment without forcing every topic into the same format.
+
 ## Explore
 
 | If you're interested in… | Start here |
