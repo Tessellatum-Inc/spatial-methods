@@ -51,7 +51,11 @@ The repository now includes an extraction workflow for evaluating ESA WorldCover
 ```bash
 python sample_worldcover.py \
   --geojson /path/to/fiji-lulc-2021-test-data.geojson \
-  --raster /path/to/worldcover-2021-fiji.vrt \
+  --raster /path/to/ESA_WorldCover_10m_2021_v200_S18E174_Map.tif \
+  --raster /path/to/ESA_WorldCover_10m_2021_v200_S18E177_Map.tif \
+  --raster /path/to/ESA_WorldCover_10m_2021_v200_S18W180_Map.tif \
+  --raster /path/to/ESA_WorldCover_10m_2021_v200_S21E177_Map.tif \
+  --raster /path/to/ESA_WorldCover_10m_2021_v200_S21W180_Map.tif \
   --output worldcover-fiji-sample.csv
 ```
 
