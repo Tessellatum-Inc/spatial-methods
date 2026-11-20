@@ -100,6 +100,12 @@ This is a **provisional analyst-defined crosswalk**, not an authoritative equiva
 
 A custom code-to-label mapping can be supplied to the extraction script. Any alternative must be documented and applied consistently.
 
+
+
+### Legend and reference-protocol adjudication
+
+A desk-based comparison of the Fiji reference-label definitions and the WorldCover LCCS rules identifies important semantic differences in tree/shrubland and agriculture/grassland. The analysis has not inspected point-level imagery or relabelled samples. See the [legend and reference-protocol adjudication](legend-and-reference-adjudication.md) for the definition comparison, evidence limits and proposed image-review protocol.
+
 ### Crosswalk sensitivity results
 
 The [reproducible sensitivity analysis](crosswalk-sensitivity.md) tests three explicit legends on the same 834 points and with the original Fiji sampling weights unchanged:
