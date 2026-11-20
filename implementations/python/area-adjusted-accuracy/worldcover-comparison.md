@@ -104,6 +104,12 @@ The script verifies the pinned Fiji GeoJSON Git blob SHA-1 and 834-feature count
 
 The extraction is a single-pixel point sample. It does not apply a majority window, buffer, positional tolerance, or mixed-pixel rule. Those choices would change the response protocol and must be justified before use.
 
+### Automated rehearsal
+
+The repository includes [`.github/workflows/fiji-worldcover-rehearsal.yml`](../../../.github/workflows/fiji-worldcover-rehearsal.yml). It runs on a targeted change to the extraction/estimator files or by manual `workflow_dispatch`. The job retrieves the pinned Fiji GeoJSON, reads the five public COG URLs through GDAL range requests, samples the points, runs the independent-strata estimator and uploads the CSV, provenance sidecar and accuracy JSON as a 30-day workflow artifact. It does not commit source imagery or generated outputs to the repository.
+
+A successful workflow is the first gate for claiming a WorldCover result. Inspect the artifact's sample count, per-tile coverage, raster CRS/resolution/nodata metadata and the class distribution before interpreting the accuracy report. A failed workflow is not a result; inspect the failed step and update the documented source status.
+
 ### Run the design-based comparison
 
 The original eligible stratum pixel counts sum to 157,057,276. Use those as the sampling-stratum population sizes:
@@ -152,7 +158,7 @@ Do not compare maps using separate convenience samples and then attribute differ
 
 - Fiji GeoJSON: pinned source revision and structure audited online; original point features have not been downloaded and hashed locally in this workflow.
 - WorldCover raster: not downloaded locally; remote COG range-read support is implemented but live object access and point extraction have not yet been run.
-- Extraction code: published; local or remote raster execution not performed.
+- Extraction code: published; remote COG workflow is configured to run in GitHub Actions; result status is pending.
 - Generic estimator: published; repository test suite has not yet been executed.
 - Fiji–WorldCover accuracy numbers: **not available yet**.
 
