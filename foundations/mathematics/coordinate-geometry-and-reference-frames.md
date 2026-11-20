@@ -66,7 +66,7 @@ Let A = \(120,80\) and B = \(170,200\), with coordinates in metres in a stated l
 The displacement from A to B is described componentwise as:
 
 \[
-(170-120,\;200-80)=(50,120)\;\mathrm{m}.
+\((170-120,\;200-80)=(50,120)\;\mathrm{m}\).
 \]
 
 This describes the coordinate difference in that frame. Whether those values correspond to east/north displacement depends on how the frame axes were defined.
@@ -117,7 +117,7 @@ M=\left(\frac{x_1+x_2}{2},\frac{y_1+y_2}{2}\right).
 For the previous points A=\(120,80\) and B=\(170,200\):
 
 \[
-M=(145,140)\;\mathrm{m}.
+\(M=(145,140)\;\mathrm{m}\).
 \]
 
 The midpoint is equidistant from the endpoints in the Euclidean plane.
