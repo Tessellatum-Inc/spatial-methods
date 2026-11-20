@@ -110,7 +110,7 @@ Start with data integrity and the observation process, then explore both statist
 An unusual value may be a data error, a real extreme event or a meaningful local condition. Investigate it before excluding it. A normal-looking histogram does not establish independence, and exploratory patterns do not by themselves establish a causal explanation.
 
 **Methods to explore:**
-- [Spatial autocorrelation and hotspots](global-spatial-autorrelation.md)
+- [Spatial autocorrelation and hotspots](global-spatial-autocorrelation.md)
 - [Point-pattern foundations](point-pattern-foundations.md)
 - [Empirical semivariogram](../methods/empirical-semivariogram.md)
 
@@ -251,7 +251,7 @@ Use [Module 04 — sampling designs](../foundations/probability-and-statistics/s
 
 Choose the relevant branch:
 - [Interpolation and geostatistics](interpolation-and-geostatistics.md) for continuous values and unsampled locations.
-- [Spatial autocorrelation and hotspots](global-spatial-autorrelation.md) for areal patterns and neighbourhood relationships.
+- [Spatial autocorrelation and hotspots](global-spatial-autocorrelation.md) for areal patterns and neighbourhood relationships.
 - [Point-pattern foundations](point-pattern-foundations.md) for event locations and spatial intensity.
 - [Forecast verification](../methods/forecast-verification.md) for probabilistic and time-indexed predictions.
 
