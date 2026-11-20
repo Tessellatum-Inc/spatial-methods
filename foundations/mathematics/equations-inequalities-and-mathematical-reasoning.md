@@ -354,7 +354,7 @@ $$
 -500\leq x\leq500.
 $$
 
-Locations more than 500 m away satisfy |x| > 500, giving two separate intervals.
+Locations more than 500 m away satisfy $|x|>500$, giving two separate intervals.
 
 In two dimensions, the Euclidean distance condition for a circular zone centred at (x₀,y₀) is:
 $$
