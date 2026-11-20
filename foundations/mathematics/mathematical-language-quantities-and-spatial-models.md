@@ -259,14 +259,14 @@ Useful checks include:
 If both sides of a square are doubled, its perimeter doubles but its area becomes four times as large.
 
 For side length $s$:
-$$
-$P=4s,\qquad A=s^2$
-$$
+$
+P=4s,\qquad A=s^2
+$
 
 After scaling by factor $k$:
-$$
-$P'=kP,\qquad A'=k^2A$
-$$
+$
+P'=kP,\qquad A'=k^2A
+$
 
 This distinction matters when changing map scale, raster resolution, grid dimensions or the size of a study region.
 
