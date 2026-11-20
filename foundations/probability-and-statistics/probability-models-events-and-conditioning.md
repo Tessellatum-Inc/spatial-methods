@@ -233,7 +233,7 @@ The posterior probability is approximately 48.6%. The result depends on the assu
 - Continue to [random variables and distributions](README.md), where events become numerical quantities with probability distributions.
 - Connect covariance and random vectors to [linear algebra and matrix methods](../linear-algebra/README.md).
 - Connect spatial dependence to the future SM-FND-005 domain and existing [spatial cross-validation](../../methods/spatial-cross-validation.md).
-- Connect uncertainty interpretation to [measurement science](../measurement-science/README.md).
+- Connect uncertainty interpretation to [measurement science](../measurement-science/measurement-principles-and-field-verification.md).
 - Connect screening-layer validation to the [photogrammetric checkpoint QA companion](../../implementations/python/photogrammetry-odm/README.md), while keeping classification validation and coordinate checkpoint assessment distinct.
 
 ## References
