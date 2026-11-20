@@ -25,7 +25,7 @@ The sequence below moves from mathematical language toward structures and method
 
 ## Coverage audit
 
-The eight existing modules have received an initial coverage audit. The [mathematics gap register](gap-register.md) records missing concepts, priorities, dependencies and the recommended treatment for each gap. It deliberately distinguishes material that belongs in this domain from topics that should be developed in specialist foundations. This is an editorial planning review, not independent technical certification.
+Modules 01–11 have received an initial coverage audit. The [mathematics gap register](gap-register.md) records missing concepts, priorities, dependencies and the recommended treatment for each gap. It deliberately distinguishes material that belongs in this domain from topics that should be developed in specialist foundations. This is an editorial planning review, not independent technical certification.
 
 ## What this domain covers—and what it does not
 
@@ -71,4 +71,4 @@ Do not mistake a long list of formulas for a foundation. The aim is to teach how
 
 ## Current status
 
-Modules 01–10 have initial public content and have received notation, source and initial coverage audits. Independent technical review and targeted expansion remain necessary. Module 11 remains planned, not yet written or reviewed. The gap register guides the next work; coverage will expand only when each module has meaningful explanatory content.
+Modules 01–11 now have initial public content and have received notation, source and initial coverage audits. Independent technical review and targeted expansion remain necessary; publication does not imply technical certification. The gap register guides the next work; coverage will expand only when each module has meaningful explanatory content.
