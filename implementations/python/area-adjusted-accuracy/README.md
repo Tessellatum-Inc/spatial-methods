@@ -80,3 +80,10 @@ This is an educational and analytical baseline, not a regulatory or certificatio
 - Olofsson, P., Foody, G. M., Stehman, S. V., & Woodcock, C. E. (2013). Making better use of accuracy data in land change studies: Estimating accuracy and area and quantifying uncertainty using stratified estimation. *Remote Sensing of Environment*, 129, 122–131. https://doi.org/10.1016/j.rse.2012.10.031
 
 No real map or reference sample has been analysed here. The accompanying tests use synthetic fixtures only.
+
+
+## Learning materials
+
+- [Learner exercise and worked solution](exercise.md)
+- [Assessment report template](report-template.md)
+- [Synthetic sample CSV](sample.csv)
