@@ -26,6 +26,31 @@ class AcquisitionManifestTests(unittest.TestCase):
                 revision_snapshot_dir(destination, second),
             )
 
+    def test_manifest_excludes_files_from_other_revision_snapshots(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            destination = Path(tmp)
+            old_revision = "a" * 40
+            new_revision = "b" * 40
+            old_dataset = revision_snapshot_dir(destination, old_revision) / "datasets" / "drone_heig_2019"
+            new_dataset = revision_snapshot_dir(destination, new_revision) / "datasets" / "drone_heig_2019"
+            old_dataset.mkdir(parents=True)
+            new_dataset.mkdir(parents=True)
+            (old_dataset / "stale.txt").write_text("old revision", encoding="utf-8")
+            (new_dataset / "current.txt").write_text("new revision", encoding="utf-8")
+
+            with patch("acquire_rehearsal_dataset.version", return_value="1.2.3"):
+                manifest = build_manifest(
+                    revision_snapshot_dir(destination, new_revision),
+                    new_dataset,
+                    new_revision,
+                )
+
+            self.assertEqual(manifest["file_count"], 1)
+            self.assertEqual(
+                [item["path"] for item in manifest["files"]],
+                ["datasets/drone_heig_2019/current.txt"],
+            )
+
     def test_invalid_revision_is_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaises(ValueError):
