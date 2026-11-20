@@ -124,7 +124,7 @@ Run the companion tests with `python -m unittest -v`.
 
 ## End-to-end rehearsal
 
-A candidate real-image rehearsal dataset and its processing/validation protocol are documented in [rehearsal-plan.md](rehearsal-plan.md). The dataset-specific README states that the subset contains 32 original 5472 × 3648 JPG images, 31 surveyed ground points, 206 image measurements for 30 points, and a Metashape OPK export. It explicitly identifies LV95 horizontal coordinates (EPSG:2056) and LN02 heights in metres. The GCP text currently renders 30 coordinate rows, so this discrepancy must be reconciled locally. See [the source inspection record](dataset-inspection.md) for the detailed evidence boundary and remaining checks.
+A candidate real-image rehearsal dataset and its processing/validation protocol are documented in [rehearsal-plan.md](rehearsal-plan.md). The dataset-specific README states that the subset contains 32 original 5472 × 3648 JPG images, 31 surveyed ground points, 206 image measurements for 30 points, and a Metashape OPK export. It explicitly identifies LV95 horizontal coordinates (EPSG:2056) and LN02 heights in metres. The GCP text renders 31 coordinate rows, consistent with the README; point 100 has no image measurement and duplicates point 206's coordinates. See [the source inspection record](dataset-inspection.md) for the detailed evidence boundary and remaining checks.
 
 To download only this subset on a network-enabled machine, install the optional Hub client and run:
 
