@@ -18,7 +18,7 @@ The sequence below moves from mathematical language toward structures and method
 | 04 | [Equations, inequalities and mathematical reasoning](equations-inequalities-and-mathematical-reasoning.md) | Thresholds, constraints, classification rules and solving spatial problems |
 | 05 | [Functions and relationships](functions-and-relationships.md) | Transformations, distance functions, terrain surfaces and spatial models |
 | 06 | [Coordinate geometry and reference frames](coordinate-geometry-and-reference-frames.md) | Cartesian coordinates, lines, planes, coordinate transformations and geometric interpretation |
-| 07 | Vectors and vector operations | Displacement, direction, velocity, gradients and 3D geometry |
+| 07 | [Vectors and vector operations](vectors-and-vector-operations.md) | Displacement, direction, velocity, gradients and 3D geometry |
 | 08 | Sequences, series and approximation | Iterative algorithms, discretisation and convergence |
 | 09 | Mathematical modelling and dimensional analysis | Model construction, units, scaling and checking plausibility |
 | 10 | Introductory discrete mathematics and logic | Sets, relations, graphs, Boolean operations and spatial predicates |
@@ -63,4 +63,4 @@ Do not mistake a long list of formulas for a foundation. The aim is to teach how
 
 ## Current status
 
-Modules 01–06 have initial public content. They require further technical review and expansion. Modules 07–10 remain planned, not yet written or reviewed. Coverage will expand only when each module has meaningful explanatory content.
+Modules 01–07 have initial public content. They require further technical review and expansion. Modules 08–10 remain planned, not yet written or reviewed. Coverage will expand only when each module has meaningful explanatory content.
