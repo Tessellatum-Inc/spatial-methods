@@ -11,6 +11,9 @@ Many spatial quantities have both magnitude and direction. A displacement is not
 
 A **scalar** is represented by a single numerical value and its unit, where applicable; unlike a vector, it has no direction components. The value may be signed, depending on the quantity and convention. A **vector** is an element of a vector space and can be represented by components relative to a chosen basis. In elementary Euclidean settings, vectors are often drawn as directed arrows, but the abstract concept is broader than an arrow on a map.
 
+For a terrain surface, the gradient vector combines the rates of elevation change in the coordinate directions. Module 10 distinguishes the grade between two points from the local surface gradient and explains why derivatives are needed for the latter. The formal differential treatment belongs in calculus (SM-FND-003); estimating derivatives from DEM samples belongs with numerical analysis (SM-FND-016).
+
+
 Vectors are used throughout spatial science:
 - displacement between surveyed or mapped points;
 - movement and velocity of vehicles, people, water or other objects;
