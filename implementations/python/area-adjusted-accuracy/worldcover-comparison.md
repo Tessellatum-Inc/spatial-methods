@@ -41,6 +41,43 @@ This workflow reuses the 834-point Fiji 2021 LULC test sample, but evaluates ESA
 
 The target is the same eligible sampling domain represented by the Fiji sample and supplied stratum counts. Do not describe the result as a complete national Fiji estimate if the excluded training Tikinas are not in the target frame.
 
+### First executed results
+
+The first successful GitHub Actions run sampled all 834 points from the five listed ESA COG tiles. Each source opened as a 36,000 × 36,000, one-band `uint8` GeoTIFF in EPSG:4326, with 10 m product resolution and zero as nodata. All 834 points were assigned to exactly one tile and returned a valid class value. The run used remote COG range reads; it did not download or hash complete raster files.
+
+**Area-adjusted WorldCover overall accuracy: 74.12%** (standard error 2.37 percentage points; approximate 95% Wald interval 69.47%–78.76%).
+
+The same 834 reference points give an estimated 82.51% overall accuracy for the original Fiji map. A paired, design-based comparison of point-level correctness gives:
+
+- WorldCover overall accuracy: 74.12%.
+- Original Fiji map overall accuracy: 82.51%.
+- WorldCover minus original map: **−8.39 percentage points**.
+- Paired standard error: 1.50 percentage points.
+- Approximate 95% Wald interval for the difference: **−11.32 to −5.45 percentage points**.
+
+The paired estimator uses the within-stratum sample variance of the difference between the two maps' correctness indicators, so it preserves the covariance created by evaluating both maps at the same sampled points. The interval is conditional on the stated stratified-SRS design, source population weights, target frame and class crosswalk; it is not a universal ranking of the two products.
+
+WorldCover classes observed at the 834 sample locations were:
+
+| Evaluated WorldCover class | Sample points | Estimated eligible-domain area |
+|---|---:|---:|
+| Tree | 383 | 81.46% |
+| Grassland | 190 | 11.33% |
+| Water | 110 | 2.31% |
+| Mangrove | 102 | 1.98% |
+| Herbaceous wetland | 12 | 2.49% |
+| Urban / built-up | 28 | 0.21% |
+| Bare / sparse vegetation | 7 | 0.03% |
+| Cropland / agriculture | 2 | 0.18% |
+
+These are design-weighted estimates from the sample, not direct measurements of WorldCover's total mapped area. No sample point received WorldCover codes 20 (shrubland), 70 (snow and ice) or 100 (moss and lichen). Their absence in this sample is not proof that those classes are absent from the target domain; class-specific accuracy for them cannot be estimated from these observations.
+
+**Class-level caution:** the agriculture estimate is based on two sample points, bare/sparse vegetation on seven, and urban/built-up on 28. The herbaceous-wetland observations all disagree with the eight-class Fiji reference legend, producing a zero point estimate for user's accuracy and a degenerate zero estimated variance. Such boundary estimates must not be interpreted as certainty. The paired overall comparison is more stable than these sparse class-specific ratios, but it remains dependent on the provisional crosswalk below.
+
+The source dataset's eligible domain excludes Tikinas used for training. Its stratum population pixel counts are accepted as supplied; the source raster and exclusion mask were not independently reconstructed. Reference labels remain the dataset's visual interpretations. No positional-tolerance or mixed-pixel rule was applied: each point was assigned the class of its containing raster cell.
+
+The [successful automated rehearsal and downloadable outputs](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44695806784) contain the sampled CSV, source/raster metadata, accuracy report and paired comparison report.
+
 ### ESA WorldCover class legend and provisional harmonisation
 
 The extraction script maps WorldCover class codes to working labels:
@@ -122,6 +159,17 @@ python stratified_accuracy.py worldcover-fiji-sample.csv \\
 \`\`\`
 
 The area weights are calculated from the population counts; the displayed decimals are rounded to 12 decimal places. The implementation validates that the weights sum to one within tolerance.
+
+For a paired comparison with the original Fiji map, run:
+
+```bash
+python paired_map_comparison.py worldcover-fiji-sample.csv \
+  --stratum-area-weights '{"water":0.011331967836,"mangrove":0.022598921173,"bare_soil_rock":0.003445902118,"urban":0.004378396325,"agriculture":0.090917519797,"grassland":0.096242589869,"shrubland":0.031660519822,"tree":0.739424183060}' \
+  --stratum-population-sizes '{"water":1779768,"mangrove":3549325,"bare_soil_rock":541204,"urban":687659,"agriculture":14279258,"grassland":15115599,"shrubland":4972515,"tree":116131948}' \
+  --json-out worldcover-fiji-paired-comparison.json
+```
+
+The default baseline column is `sampling_stratum`, valid here because the original Fiji map classes defined the sampling strata. For another baseline map, supply its actual sampled class column using `--baseline-map-column`.
 
 ### What the output means
 
