@@ -67,7 +67,7 @@ OBSERVED_SAMPLE_ALLOCATION = {
 
 
 def git_blob_sha1(data: bytes) -> str:
-    header = b"blob " + str(len(data)).encode("ascii") + b"\\0"
+    header = b"blob " + str(len(data)).encode("ascii") + b"\0"
     return hashlib.sha1(header + data).hexdigest()
 
 
@@ -231,7 +231,7 @@ def main() -> int:
         parser.error(str(exc))
     rendered = json.dumps(report, indent=2, sort_keys=True)
     if args.json_out:
-        Path(args.json_out).write_text(rendered + "\\n", encoding="utf-8")
+        Path(args.json_out).write_text(rendered + "\n", encoding="utf-8")
     print(rendered)
     return 0
 
