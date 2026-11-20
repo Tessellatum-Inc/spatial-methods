@@ -466,7 +466,7 @@ Show the transformations and check each answer in the original statement. Use un
 
 A rectangular field has area $A=2{,}400\,\mathrm{m}^2$ and width $w=40\,\mathrm{m}$.
 
-1. Starting from A = lw, rearrange the equation to make l the subject.
+1. Starting from $A=lw$, rearrange the equation to make $l$ the subject.
 2. Calculate the length.
 3. Check the dimensions and substitute the answer back into the area equation.
 
@@ -474,9 +474,9 @@ A rectangular field has area $A=2{,}400\,\mathrm{m}^2$ and width $w=40\,\mathrm{
 
 A map has representative fraction $1:20{,}000$. A route is represented by a map length $M=6.5\,\mathrm{cm}$.
 
-1. Write an equation for ground distance G in centimetres.
+1. Write an equation for ground distance $G$ in centimetres.
 2. Calculate G in metres.
-3. Rearrange the relationship to make M the subject.
+3. Rearrange the relationship to make $M$ the subject.
 4. Explain why the result does not establish positional accuracy.
 
 ### Exercise 3 — Quadratic solutions
