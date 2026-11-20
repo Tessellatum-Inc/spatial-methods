@@ -109,6 +109,10 @@ python -m unittest -v
 
 Tests cover project validation and command construction without running Docker, plus checkpoint metrics, validation and JSON output. A successful unit test is not a test of ODM, image quality or a real photogrammetric project.
 
+## End-to-end rehearsal
+
+A licensed real-image rehearsal dataset and its processing/validation protocol are documented in [rehearsal-plan.md](rehearsal-plan.md). The selected HEIG-VD dataset contains 32 geotagged images and surveyed ground-point observations under CC BY 4.0. Its coordinate metadata requires explicit treatment of LV95 horizontal coordinates and LN02 heights. The dataset has not yet been downloaded or processed; this environment currently has no Docker executable.
+
 ## Connected Spatial Methods material
 
 - [End-to-end photogrammetric mapping recipe](../../../recipes/photogrammetric-mapping/README.md)
