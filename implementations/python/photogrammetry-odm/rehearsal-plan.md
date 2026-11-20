@@ -23,7 +23,9 @@ The images are a small, real aerial survey rather than synthetic placeholders. T
 
 ## Important coordinate and control cautions
 
-1. LV95 horizontal coordinates and LN02 heights must not be treated as an unexamined single EPSG:2056 three-dimensional coordinate system. Resolve the horizontal CRS, vertical datum and any required transformation before writing an ODM GCP file.
+1. Treat the supplied coordinates as a compound reference specification: LV95 horizontal coordinates plus LN02 heights. EPSG:2056 identifies the projected horizontal CRS; it does not, by itself, document the LN02 vertical datum. Record both components explicitly in every processing and evaluation record. Confirm exactly how the selected ODM release interprets GCP Z values and writes output vertical metadata before using the GCP file.
+2. LN02 remains Switzerland's official height reference. LHN95 is a distinct, rigorous orthometric height system. Swisstopo states that an exact LN02–LHN95 transformation is not possible; available approximations can be at decimetric level because the systems differ in nature and LN02 contains distortions. Do not transform LN02 checkpoints to LHN95 and claim centimetric equivalence. If a conversion is necessary, use the official swisstopo REFRAME/HTRANS workflow, record its method and limitations, and retain the original LN02 values.
+3. Keep horizontal and vertical transformations separate and explicit. The swisstopo REFRAME services support Swiss horizontal frames and height systems, but the service cannot verify that the input frame label supplied by the operator is correct.
 2. The source says point 100 has no image measurement and shares coordinates with point 206. Do not treat these as two independent points.
 3. The 30 measured ground points must be partitioned before processing into adjustment control points and withheld independent checkpoints. Record the split and rationale. Never use a withheld checkpoint as an ODM GCP.
 4. The published Metashape exterior orientations and reference outputs are comparison material, not ODM inputs or independent validation.
