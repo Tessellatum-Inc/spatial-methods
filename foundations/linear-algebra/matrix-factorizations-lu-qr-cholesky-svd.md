@@ -398,7 +398,7 @@ Which factorization is a common choice for a full-column-rank overdetermined lea
 - **Module 06 — Least squares and constrained systems:** provides the estimation problem solved using QR and related methods.
 - **Module 07 — Symmetric matrices, quadratic forms and definiteness:** establishes the SPD structure needed for Cholesky.
 - **Module 08 — Eigenvalues, eigenvectors and spectral structure:** connects to SVD, PCA and rank.
-- **Module 10 — Covariance matrices and multivariate structure:** will consolidate covariance, correlation, propagation and multivariate models.
+- **Module 10 — [Covariance matrices and multivariate structure](covariance-matrices-and-multivariate-structure.md):** develops covariance, correlation, propagation and multivariate models.
 - [Covariance and generalized least squares implementation](../../implementations/python/covariance-gls/README.md) documents Cholesky-based covariance handling and solver assumptions.
 - [PCA method](../../algorithms/statistics/pca.md) and [PCA implementation](../../implementations/python/pca-transform/README.md) connect spectral methods to multiband spatial data.
 - [Measurement science and survey adjustment learning path](../../learning-paths/measurement-science-and-survey-adjustment.md) connects rank, datum and estimation to synthetic network exercises.
