@@ -511,4 +511,6 @@ The explanations and spatial examples in this module are original Spatial Method
 2. **IEEE Standards Association.** (2019). *IEEE Standard for Floating-Point Arithmetic*, IEEE Std 754-2019. [Standard catalogue record](https://standards.ieee.org/ieee/754/6210/). The public catalogue describes the scope of binary and decimal floating-point formats and operations. The normative standard text was not accessed for this module; no clause-level claims are made.
 3. **Thompson, A. and Taylor, B. N.** (2008). *Guide for the Use of the International System of Units (SI)*, NIST Special Publication 811. [NIST publication record](https://doi.org/10.6028/NIST.SP.811e2008). A practical guide to SI usage; consult the current BIPM brochure where later updates matter.
 
+**Source register:** `SM-SRC-000022`, `SM-SRC-000023`, `SM-SRC-000025`.
+
 **Limitations:** This is an introductory treatment, not a full account of floating-point arithmetic, numerical error analysis or storage-format specifications. IEEE 754 is a technical standard; its public catalogue page does not provide the complete normative text.
