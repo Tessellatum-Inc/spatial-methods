@@ -20,7 +20,7 @@ near-nadir camera and locally planar terrain.
 
 ## Connected learning material
 
-See [Photogrammetric image acquisition](../../../../collection/photogrammetry/image-acquisition.md) for the measurement and acquisition principles behind these calculations, including the distinction between GSD and positional accuracy, image geometry, control and quality assurance.
+See [Photogrammetric image acquisition](../../../collection/photogrammetry/image-acquisition.md) for the measurement and acquisition principles behind these calculations, including the distinction between GSD and positional accuracy, image geometry, control and quality assurance.
 
 ## Limitations
 
