@@ -51,7 +51,7 @@ A learner completing this domain should be able to:
 Each module should include, where relevant:
 
 - clear definitions and consistent mathematical notation;
-- inline mathematics in `\\(...\\)` and display mathematics in `\\[...\\]`, with units typeset upright and symbols defined;
+- inline mathematics in `\(...\)` and display mathematics in `\[...\]`, with units typeset upright and symbols defined;
 - intuitive explanation followed by formal treatment;
 - derivations or justification of important relationships;
 - worked spatial examples with units;
