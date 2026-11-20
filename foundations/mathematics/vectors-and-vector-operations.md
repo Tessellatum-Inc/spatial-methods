@@ -300,7 +300,7 @@ In coordinate estimation, a residual or correction may be represented as a vecto
 
 ## 12. Vector operations and terrain
 
-A terrain surface z=f$x,y$ has directions along which elevation changes. A gradient vector describes the direction of steepest local increase and the rate of increase in a mathematical model:
+A terrain surface is represented by a function $z=f(x,y)$, whose elevation may change with either horizontal coordinate. A gradient vector describes the direction of steepest local increase and the rate of increase in a mathematical model:
 $$
 \nabla f=
 \begin{bmatrix}
