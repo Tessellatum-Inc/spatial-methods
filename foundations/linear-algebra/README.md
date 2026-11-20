@@ -56,6 +56,10 @@ Every module should define its objects and notation, explain the geometric and a
 
 Do not conflate a mathematically valid model with a valid spatial interpretation. Units, coordinate reference, measurement design, data quality and physical meaning remain essential.
 
+## Sequence audit
+
+The [ten-module sequence audit](sequence-audit.md) records the desk review, cross-module consistency checks, corrections and outstanding quality work. It is an editorial review, not independent peer review or learner testing.
+
 ## Review status
 
-Modules 01–10 are initial teaching resources. They have not received independent technical review or learner testing. The initial ten-module sequence is now drafted. The collection still requires independent technical review, learner testing, source-to-claim verification and further specialist expansion; publication does not constitute technical certification.
+Modules 01–10 are initial teaching resources. They have not received independent technical review or learner testing. The initial ten-module sequence is drafted; source-to-claim verification, specialist review, learner testing and further expansion remain outstanding. Publication does not constitute technical certification.
