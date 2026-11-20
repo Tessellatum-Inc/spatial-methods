@@ -39,7 +39,7 @@ The domain will develop:
 |---|---|---|---|
 | 01 | [Probability models, events and conditioning](probability-models-events-and-conditioning.md) | Screening maps, classification prevalence, spatial sampling units, conditional evidence and Bayes' theorem | Initial public module |
 | 02 | [Random variables, distributions and probability models](random-variables-and-distributions.md) | Measurement outcomes, event counts, detection and classification | Initial module published |
-| 03 | Joint distributions, covariance and dependence | Correlated measurements, multivariate spatial data and dependence structures | Planned |
+| 03 | [Joint distributions, covariance and dependence](joint-distributions-covariance-and-dependence.md) | Correlated measurements, multivariate spatial data and dependence structures | Initial module published |
 | 04 | Sampling designs and sampling distributions | Field sampling, ground truth, survey design and spatially representative inference | Planned |
 | 05 | Likelihood and statistical estimation | Parameter estimation, regression, geostatistics and model fitting | Planned |
 | 06 | Confidence intervals, hypothesis tests and statistical decisions | Accuracy assessment, change detection and model comparison | Planned |
@@ -68,4 +68,4 @@ A probability value is not self-explanatory. Record what is random, what populat
 
 ## Review status
 
-This is an initial domain collection. Modules 01 and 02 are researched syntheses based on the cited introductory probability material and original spatial examples. Independent technical review, learner testing and further modules remain outstanding. No publication in this folder constitutes professional statistical certification or validation of a real spatial dataset.
+This is an initial domain collection. Modules 01–03 are researched syntheses based on cited introductory probability and metrology material and original spatial examples. Independent technical review, learner testing and further modules remain outstanding. No publication in this folder constitutes professional statistical certification or validation of a real spatial dataset.
