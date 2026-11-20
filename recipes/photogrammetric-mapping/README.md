@@ -266,7 +266,11 @@ Make clear whether the product is a visual reference, analytical dataset, engine
 
 Use the companion [project record and QA checklist](project-record-template.md) to record the project specification, acquisition, processing, quality decision and handover. Preserve a versioned copy for every project. A completed checklist is evidence of recorded decisions, not proof that the work is technically correct.
 
-## 13. References and connected material
+## 13. Processing implementation
+
+The [OpenDroneMap processing and checkpoint QA companion](../../implementations/python/photogrammetry-odm/README.md) provides a reproducible Docker invocation pattern and a separate checkpoint-statistics utility. It is an implementation companion, not a claim that this recipe has been executed on imagery. Keep the processing image version pinned and record its digest, arguments, environment and output inventory. The checkpoint tool requires independent reference/model coordinate pairs in a common coordinate and vertical reference; it does not transform coordinates or certify standards compliance.
+
+## 14. References and connected material
 
 - Sampath, A., Shrestha, M., While, M. and Scholl, V. M. (2023). *Guidelines for Calibration of Uncrewed Aircraft Systems Imagery*. USGS Open-File Report 2023–1033. [Official report](https://pubs.usgs.gov/publication/ofr20231033/full). UAS-specific guidance on acquisition, calibration, control, tie points and QA; interpret within its stated context.
 - [Photogrammetric image acquisition: geometry, control and quality assurance](../../collection/photogrammetry/image-acquisition.md) — acquisition theory and planning.
@@ -275,7 +279,7 @@ Use the companion [project record and QA checklist](project-record-template.md) 
 - [Measurement principles and field verification](../../foundations/measurement-science/measurement-principles-and-field-verification.md) — measurement quality and independent verification.
 - [Survey-to-spatial-dataset workflow](../survey-to-spatial-dataset/README.md) — broader sensor-neutral field-to-dataset workflow. This photogrammetry recipe is a specialised branch, not a replacement.
 
-## 14. Evidence and review status
+## 15. Evidence and review status
 
 This recipe is a desk-designed workflow assembled from the cited technical material and the repository's existing measurement and acquisition content. It has not been executed as a field campaign, tested against a real client specification, independently reviewed by a photogrammetry specialist or validated for a particular jurisdiction. The USGS source is authoritative for its stated UAS programme but does not establish Kenyan regulatory requirements or universal operating parameters.
 
