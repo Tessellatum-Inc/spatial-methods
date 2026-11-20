@@ -309,7 +309,7 @@ These examples describe evaluation logic, not validated models or operational re
 - [Forecast verification](../../methods/forecast-verification.md): probabilistic and deterministic forecast evaluation.
 - [Classification, regression, retrieval and calibration metrics](../../implementations/python/accuracy-assessment/README.md): existing computational metrics and stated boundaries.
 - [Measurement uncertainty and Type A/Type B evaluation](../measurement-science/standard-uncertainty-type-a-type-b.md): distinguish model prediction uncertainty from measurement uncertainty.
-- [Spatial statistics and stochastic processes](../spatial-statistics/README.md): specialised spatial dependence and stochastic-process models.
+- [Empirical semivariogram](../../methods/empirical-semivariogram.md) and [point-pattern second-order statistics](../../methods/point-pattern-second-order-statistics.md): concrete spatial-dependence diagnostics and model structures.
 
 ## References
 
