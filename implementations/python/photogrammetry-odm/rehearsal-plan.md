@@ -36,6 +36,8 @@ The images are a small, real aerial survey rather than synthetic placeholders. T
 
 ### A. Preserve and inspect
 
+- Run `dataset_audit.py` on the extracted dataset and retain its JSON report outside the source archive.
+- Confirm the expected 32-image count, valid image decoding, image dimensions, EXIF coverage and SHA-256 manifest. Investigate any mismatch before processing.
 - Download only `datasets/drone_heig_2019/`; do not mirror the entire 10 GB collection.
 - Preserve the downloaded archive and record its retrieval date, source revision, file manifest and checksums.
 - Verify the 32 image files, dimensions, EXIF metadata and image labels.
