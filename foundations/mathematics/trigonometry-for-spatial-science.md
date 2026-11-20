@@ -313,40 +313,199 @@ The final coordinate is approximately (5144.005 m, 10070.937 m). The total trave
 - This is a local planar calculation. It does not adjust a traverse, assess closure, model observation uncertainty, apply grid convergence or produce geodetic coordinates.
 
 
-## 7. Slope, grade and vertical angle
+## 7. Slope, grade, vertical angle and terrain gradient
 
-Slope is vertical change divided by horizontal run:
+### 7.1 Slope between two points
+
+For two points with a vertical difference Δz and a horizontal plan distance d_h, the signed grade is:
 
 $$
-\text{grade}=\frac{\Delta z}{\text{horizontal run}}
+g=\frac{\Delta z}{d_h}
 $$
 
 Percentage grade is:
 
 $$
-\text{grade}_{\%}=100\frac{\Delta z}{\text{horizontal run}}
+g_{\%}=100g=100\frac{\Delta z}{d_h}
 $$
 
-For inclination α measured from the horizontal:
+A positive grade rises in the direction from the first point to the second; a negative grade falls. If only steepness is required, report the magnitude and state that the sign has been omitted.
+
+For a straight line inclined at elevation angle α above the horizontal:
 
 $$
-\text{grade}=\tan\alpha
+g=\tan\alpha,\qquad
+\alpha=\tan^{-1}(g)
 $$
 
-A 5% grade has inclination:
+A 5% grade means g = 0.05, not an angle of 5°. Its inclination is:
 
 $$
-\alpha=\tan^{-1}(0.05)\approx2.86^\circ
+\alpha=\tan^{-1}(0.05)\approx2.862^\circ
 $$
 
-Slope distance is not horizontal distance. Given slope distance sd and inclination α in the same vertical plane:
+For example, a 12.5 m rise over a horizontal run of 250 m gives:
 
 $$
-d_h=s_d\cos\alpha,\qquad
-\Delta z=s_d\sin\alpha
+g=\frac{12.5}{250}=0.05
 $$
 
-The vertical-angle reference must be stated: horizontal, zenith, nadir or another convention. Survey instruments may report zenith angles rather than elevation angles. Do not apply these equations to instrument observations until the convention and required corrections are understood.
+The grade is 5%, and the line inclination is approximately 2.862°. This is the average grade between the endpoints; it does not describe every point along a curved road or terrain profile.
+
+### 7.2 Horizontal, slope and vertical angles
+
+Three quantities must not be confused:
+
+- **Horizontal distance** is the length of the horizontal projection between two points.
+- **Slope distance** is the straight-line distance between them in the vertical plane.
+- **Vertical difference** is the signed change in height.
+
+If the elevation angle α is measured from the horizontal and the slope distance is s:
+
+$$
+d_h=s\cos\alpha,\qquad
+\Delta z=s\sin\alpha
+$$
+
+If horizontal distance and vertical difference are known:
+
+$$
+s=\sqrt{d_h^2+(\Delta z)^2}
+$$
+
+and:
+
+$$
+\alpha=\tan^{-1}\left(\frac{\Delta z}{d_h}\right)
+$$
+
+A vertical angle is incomplete unless its reference is defined. An **elevation angle** is measured upward from the horizontal (positive above, negative below). A **zenith angle** Z is conventionally measured down from the upward vertical. In the same vertical plane and under this convention:
+
+$$
+Z=90^\circ-\alpha
+$$
+
+Thus a horizontal sight has α = 0° and Z = 90°. An upward sight has a positive elevation angle and a zenith angle below 90°. A downward sight has a negative elevation angle and a zenith angle above 90°.
+
+Do not assume every instrument, dataset or software package uses the same convention. Confirm whether the reported angle is an elevation, zenith, nadir or another defined quantity before converting it. Instrument observations may also require corrections and a measurement model; these elementary relationships do not provide those procedures.
+
+### 7.3 Terrain gradient: from a line to a surface
+
+A line between two points has one average grade. A terrain surface has a slope that can vary from location to location and by direction.
+
+Represent a smooth surface as:
+
+$$
+z=f(x,y)
+$$
+
+where x and y are horizontal coordinates in a suitable local Cartesian or projected plane, and z is elevation in a compatible vertical unit. The partial derivatives describe local rates of elevation change:
+
+$$
+\frac{\partial z}{\partial x},\qquad
+\frac{\partial z}{\partial y}
+$$
+
+The gradient vector is:
+
+$$
+\nabla z=
+\left(
+\frac{\partial z}{\partial x},
+\frac{\partial z}{\partial y}
+\right)
+$$
+
+It points in the direction of the steepest local increase in elevation. Its magnitude is the maximum local rise per unit horizontal distance:
+
+$$
+\|\nabla z\|=
+\sqrt{
+\left(\frac{\partial z}{\partial x}\right)^2+
+\left(\frac{\partial z}{\partial y}\right)^2
+}
+$$
+
+For a differentiable surface in a planar coordinate system, the local slope magnitude and angle are:
+
+$$
+g=\|\nabla z\|,\qquad
+\alpha=\tan^{-1}(\|\nabla z\|)
+$$
+
+Percentage slope is 100 times the gradient magnitude. The gradient direction is not the same thing as slope magnitude: one describes orientation, the other steepness.
+
+#### Worked example — local gradient and aspect direction
+
+Consider a simple planar terrain surface:
+
+$$
+z(x,y)=100+0.04x-0.03y
+$$
+
+Assume x increases east, y increases north, and all three coordinates use metres. The surface has constant partial derivatives:
+
+$$
+\frac{\partial z}{\partial x}=0.04,\qquad
+\frac{\partial z}{\partial y}=-0.03
+$$
+
+Therefore:
+
+$$
+\nabla z=(0.04,-0.03)
+$$
+
+Its magnitude is:
+
+$$
+\|\nabla z\|=\sqrt{0.04^2+(-0.03)^2}=0.05
+$$
+
+The local slope is 5%, and the inclination is:
+
+$$
+\alpha=\tan^{-1}(0.05)\approx2.862^\circ
+$$
+
+The east component is positive and the north component is negative, so the steepest uphill direction is southeast. Its mathematical angle from east is:
+
+$$
+\theta_m=\operatorname{atan2}(-0.03,0.04)\approx-36.87^\circ
+$$
+
+The corresponding clockwise-from-north azimuth is approximately 126.87°. The steepest downhill direction is the opposite direction, approximately 306.87°.
+
+This example is deliberately a plane, so its gradient is constant everywhere. Real terrain is not generally planar; slope and direction vary across the surface.
+
+### 7.4 From continuous terrain to a raster
+
+A digital elevation model stores elevations at discrete grid locations or cells. It does not directly store the exact derivatives of an unknown continuous terrain surface. A terrain algorithm estimates local derivatives from neighbouring elevation samples, often using finite differences or a fitted local surface.
+
+For a simple regularly spaced grid, a central-difference estimate of the east-west derivative at an interior cell may take the form:
+
+$$
+\frac{\partial z}{\partial x}\approx
+\frac{z_{i+1,j}-z_{i-1,j}}{2\Delta x}
+$$
+
+A corresponding north-south estimate uses the appropriate neighbouring rows and cell spacing. The row direction, axis orientation, cell dimensions, edge handling and NoData policy must be checked. If horizontal and vertical units differ, convert them consistently before calculating slope.
+
+Raster slope therefore depends on more than the formula: it depends on the elevation data, grid spacing and alignment, interpolation or derivative estimator, neighbourhood, surface roughness, noise and processing choices. Different tools can produce different estimates from the same DEM. A smaller cell size alone does not guarantee a more accurate terrain gradient.
+
+The finite-difference expression is an introductory illustration, not a complete terrain-slope algorithm. Detailed stencils, error behaviour, filtering and numerical stability belong in numerical analysis and terrain-processing methods.
+
+### 7.5 Which mathematics is needed?
+
+| Spatial question | Mathematical treatment | Where it belongs |
+|---|---|---|
+| What is the average grade between two known points? | Rise divided by horizontal run; inverse tangent for angle | This module |
+| How do I convert an elevation angle to a zenith angle? | Explicit angular convention and complementary-angle relationship | This module, with instrument conventions checked |
+| What is the steepest local direction on a smooth surface? | Partial derivatives and the gradient vector | Calculus and differential methods, SM-FND-003 |
+| How do I estimate slope from DEM cells? | Finite differences or local surface fitting, with grid and error considerations | Numerical analysis, SM-FND-016, and terrain algorithms |
+| How do I interpret terrain processes and landforms? | Geomorphology and physical terrain context | Earth science and geomorphology, SM-FND-009 |
+
+**Boundary:** elementary trigonometry handles a line or a known local gradient. Calculus defines derivatives and gradients of continuous surfaces. Raster algorithms estimate those derivatives from discrete data. These are connected but not interchangeable tasks.
 
 ## 8. Circular geometry and small-angle approximations
 
