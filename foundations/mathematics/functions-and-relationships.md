@@ -311,7 +311,7 @@ The composed mapping is:
 (g\circ f)(m)=\frac{25{,}000(100m)}{100}=25{,}000m.
 \]
 
-\[For m = 0.04 m:\]
+For \(m=0.04\,\mathrm{m}\):
 
 \[
 (g\circ f)(0.04)=1{,}000\;\mathrm{m}.
