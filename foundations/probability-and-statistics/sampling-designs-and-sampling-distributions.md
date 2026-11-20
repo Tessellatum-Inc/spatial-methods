@@ -292,7 +292,7 @@ Safety, access, permissions, cost, weather and logistics are real design constra
 - [Measurement principles and field verification](../measurement-science/measurement-principles-and-field-verification.md): measurement error is distinct from sampling error.
 - Spatial data collection: design a frame and field protocol that match the target population and observation support.
 - Spatial statistics: spatial dependence affects precision and variance estimation; spatial balance does not mean observations are independent.
-- Next: likelihood and statistical estimation, connecting sampling models to parameter estimation and fitted spatial models.
+- Next: [Likelihood and statistical estimation](likelihood-and-statistical-estimation.md), connecting sampling models to parameter estimation and fitted spatial models.
 
 ## References
 
