@@ -2,7 +2,7 @@
 
 ## Status
 
-**Dataset selected; processing not yet executed.** This record defines the next reproducible rehearsal. The current execution environment has no Docker executable, so it cannot run ODM here. Do not describe this as a successful processing test.
+**Dataset selected; source files not yet acquired or inspected; processing not executed.** The public collection catalogue confirms the dataset name, 32 geotagged images, 31 ground points with image measurements, and the collection-level CC BY 4.0 licence. The dataset-specific README and raw files have not yet been retrieved in this environment. An attempted direct retrieval failed because outbound DNS/network access is unavailable. Therefore, detailed claims about individual file names, point counts, vertical datum, duplicate points and image-observation completeness remain provisional until checked against the actual dataset files. The current execution environment also has no Docker executable, so it cannot run ODM here. Do not describe this as a successful dataset inspection or processing test.
 
 ## Selected dataset
 
@@ -15,22 +15,21 @@
 - Dataset card states the collection's own datasets are CC BY 4.0; the dataset-specific README repeats this licence.
 - Dataset-specific README: https://huggingface.co/datasets/heig-vd-geo/scop-datasets/blob/main/datasets/drone_heig_2019/README.md
 - Download size: approximately 280 MB for the dataset directory.
-- Contents: 32 original geotagged JPG images (5472 × 3648; approximately 268 MB), 31 surveyed ground points, 206 image measurements for 30 points, and a Metashape exterior-orientation export.
-- Sensor: senseFly S.O.D.A. on an eBee; survey date 16 July 2019.
-- Reference coordinates: horizontal LV95 (EPSG:2056), heights LN02; image EXIF positions are WGS84 with consumer-grade GNSS accuracy.
+- Contents confirmed by the collection catalogue: 32 geotagged drone images and 31 ground points (LV95) with image measurements. Exact image dimensions, total size, detailed observation counts, additional exports and vertical-height reference have not been confirmed from the dataset-specific README or files in this environment.
+- Sensor and acquisition date in the collection catalogue: senseFly S.O.D.A. on an eBee; 16 July 2019.
+- Coordinate caution: the catalogue labels ground points LV95. Do not assume that this alone fully specifies the vertical datum or that all image EXIF positions are suitable as control. Confirm these details from the dataset-specific README and raw metadata before preparing GCPs.
 
 The images are a small, real aerial survey rather than synthetic placeholders. The dataset has sufficient image observations and ground-control metadata to design a controlled processing exercise. It is not evidence that ODM will reproduce the original Metashape solution.
 
 ## Important coordinate and control cautions
 
-1. Treat the supplied coordinates as a compound reference specification: LV95 horizontal coordinates plus LN02 heights. EPSG:2056 identifies the projected horizontal CRS; it does not, by itself, document the LN02 vertical datum. Record both components explicitly in every processing and evaluation record. Confirm exactly how the selected ODM release interprets GCP Z values and writes output vertical metadata before using the GCP file.
-2. LN02 remains Switzerland's official height reference. LHN95 is a distinct, rigorous orthometric height system. Swisstopo states that an exact LN02–LHN95 transformation is not possible; available approximations can be at decimetric level because the systems differ in nature and LN02 contains distortions. Do not transform LN02 checkpoints to LHN95 and claim centimetric equivalence. If a conversion is necessary, use the official swisstopo REFRAME/HTRANS workflow, record its method and limitations, and retain the original LN02 values.
-3. Keep horizontal and vertical transformations separate and explicit. The swisstopo REFRAME services support Swiss horizontal frames and height systems, but the service cannot verify that the input frame label supplied by the operator is correct.
-4. The source says point 100 has no image measurement and shares coordinates with point 206. Do not treat these as two independent points.
-5. The 30 measured ground points must be partitioned before processing into adjustment control points and withheld independent checkpoints. Record the split and rationale. Never use a withheld checkpoint as an ODM GCP.
-6. The published Metashape exterior orientations and reference outputs are comparison material, not ODM inputs or independent validation.
-7. EXIF positions are consumer-grade GNSS and should not be presented as survey control.
-8. The dataset was acquired at the HEIG-VD campus in Switzerland. Its metadata and control conventions are specific to that site and survey.
+1. Confirm the horizontal CRS, vertical datum, height type, axis order and units from the dataset-specific README and source files. Do not infer the vertical datum from the LV95 label alone. Record horizontal and vertical reference components separately.
+2. Confirm how the selected ODM release interprets GCP Z values and how the resulting products encode vertical metadata before using any GCP file.
+3. Inspect the actual ground-point and image-observation files. Resolve the point count, duplicate identifiers or coordinates, points without image measurements, and image filename mappings from the source data; do not rely on unverified secondary descriptions.
+4. Partition only verified, image-measured points into adjustment controls and withheld independent checkpoints. Record the split and rationale. Never use a withheld checkpoint as an ODM GCP.
+5. Treat any supplied Metashape exterior orientations or reference outputs as comparison material, not ODM inputs or independent validation.
+6. Do not present image EXIF positions as survey control without evidence of their accuracy and reference system.
+7. The dataset was acquired at the HEIG-VD campus in Switzerland. Its metadata and control conventions are specific to that site and survey.
 
 ## Rehearsal sequence
 
@@ -41,8 +40,9 @@ The images are a small, real aerial survey rather than synthetic placeholders. T
 - Download only `datasets/drone_heig_2019/`; do not mirror the entire 10 GB collection.
 - Preserve the downloaded archive and record its retrieval date, source revision, file manifest and checksums.
 - Verify the 32 image files, dimensions, EXIF metadata and image labels.
-- Read the dataset README and inspect `gcp/GCP_MN95.txt` and `gcp/gcp_obs.csv`.
+- Read the dataset-specific README and inventory the actual delivered ground-control and image-observation files. Previously anticipated filenames such as `GCP_MN95.txt` and `gcp_obs.csv` must be confirmed from the repository tree, not assumed.
 - Confirm the image labels in the observation file map unambiguously to the delivered filenames.
+- Record the source revision and exact file paths before any coordinate interpretation or point split.
 
 ### B. Baseline image-only processing
 
@@ -86,3 +86,7 @@ A successful run validates only this software/data combination and documented wo
 ## Reproduction
 
 Download the dataset from the linked collection and follow the dataset-specific README. Keep imagery outside this repository; store only the provenance, processing record, non-sensitive logs and concise result summaries needed to reproduce the exercise.
+
+## Current access limitation
+
+The dataset catalogue and licence are discoverable online, but direct download and dataset-specific file inspection could not be completed in the current execution environment because outbound DNS/network access is unavailable. The Python audit utility's four unit tests were executed against local test fixtures and passed; the actual dataset has not been audited. No control/checkpoint partition has been created. To continue on a network-enabled machine, retrieve only `datasets/drone_heig_2019/` from the linked Hugging Face dataset repository, then run the image audit and inspect the original ground-point and image-observation files before deciding any split.
