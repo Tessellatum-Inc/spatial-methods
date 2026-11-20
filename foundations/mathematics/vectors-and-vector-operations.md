@@ -29,9 +29,9 @@ A **scalar** is a quantity represented by one value, such as distance, mass, tem
 A **point** identifies a position in a specified coordinate frame. In a Cartesian frame, it may be written $P=(x,y,z)$.
 
 A **vector** represents a directed quantity or displacement. In a Cartesian basis, it may be written:
-$
+$$
 \mathbf{v}=\begin{bmatrix}v_x\\v_y\\v_z\end{bmatrix}.
-$
+$$
 
 The components describe the vector relative to the chosen axes and basis. A point's coordinate tuple and a vector's component tuple may look numerically identical, but they have different meanings:
 - a point locates a position relative to an origin;
@@ -43,24 +43,24 @@ Vectors attached to a particular point, such as a force acting at a location, ma
 ## 3. Components and geometric interpretation
 
 In a two-dimensional Cartesian frame:
-$
+$$
 \mathbf{v}=\begin{bmatrix}v_x\\v_y\end{bmatrix}.
-$
+$$
 
 In a three-dimensional frame:
-$
+$$
 \mathbf{v}=\begin{bmatrix}v_x\\v_y\\v_z\end{bmatrix}.
-$
+$$
 
 If the axes are orthogonal and use the same length unit, the magnitude is:
-$
+$$
 \|\mathbf{v}\|=\sqrt{v_x^2+v_y^2}
-$
+$$
 
 in two dimensions, and:
-$
+$$
 \|\mathbf{v}\|=\sqrt{v_x^2+v_y^2+v_z^2}
-$
+$$
 
 in three dimensions.
 
@@ -69,39 +69,39 @@ Magnitude is non-negative and has the units of the vector components when those 
 ### Example
 
 A displacement has components 30 m east and 40 m north in an orthogonal local frame. Its magnitude is:
-$
+$$
 \|\mathbf{v}\|=\sqrt{30^2+40^2}=50\;\mathrm{m}.
-$
+$$
 
 The magnitude alone does not preserve the direction. Many different vectors have magnitude 50 m.
 
 ## 4. Displacement between two points
 
 For points A=$x_A,y_A$ and B=$x_B,y_B$ in the same Cartesian frame, the displacement from A to B is:
-$
+$$
 \overrightarrow{AB}=B-A=
 \begin{bmatrix}
 x_B-x_A\\
 y_B-y_A
 \end{bmatrix}.
-$
+$$
 
 In three dimensions, include the z-component.
 
 ### Worked example
 
 Let A=$120,80,15$ m and B=$150,120,27$ m.
-$
+$$
 \overrightarrow{AB}=
 \begin{bmatrix}
 30\\40\\12
 \end{bmatrix}\;\mathrm{m}.
-$
+$$
 
 Its three-dimensional magnitude is:
-$
+$$
 \sqrt{30^2+40^2+12^2}=\sqrt{2{,}644}\approx51.42\;\mathrm{m}.
-$
+$$
 
 Its horizontal magnitude is 50 m. These answer different questions: one includes vertical separation and the other does not.
 
@@ -110,49 +110,49 @@ The displacement is only meaningful if both points are expressed in the same com
 ## 5. Vector addition and subtraction
 
 Vectors are added component by component:
-$
+$$
 \mathbf{a}+\mathbf{b}=
 \begin{bmatrix}
 a_x+b_x\\a_y+b_y
 \end{bmatrix}.
-$
+$$
 
 Subtraction is addition of the negative vector:
-$
+$$
 \mathbf{a}-\mathbf{b}=
 \begin{bmatrix}
 a_x-b_x\\a_y-b_y
 \end{bmatrix}.
-$
+$$
 
 ### Example: chained displacement
 
 A field team moves 120 m east and 80 m north, then 30 m west and 20 m south.
 
 Represent the two displacements as:
-$
+$$
 \mathbf{a}=\begin{bmatrix}120\\80\end{bmatrix},\qquad
 \mathbf{b}=\begin{bmatrix}-30\\-20\end{bmatrix}.
-$
+$$
 
 The net displacement is:
-$
+$$
 \mathbf{a}+\mathbf{b}=\begin{bmatrix}90\\60\end{bmatrix}\;\mathrm{m}.
-$
+$$
 
 Its magnitude is:
-$
+$$
 \sqrt{90^2+60^2}\approx108.17\;\mathrm{m}.
-$
+$$
 
 The total distance travelled along the two legs is 250 m, not 108.17 m. Path length and net displacement are different quantities.
 
 ## 6. Scalar multiplication
 
 Multiplying a vector by a scalar changes its magnitude and possibly its direction:
-$
+$$
 k\mathbf{v}=\begin{bmatrix}kv_x\\kv_y\\kv_z\end{bmatrix}.
-$
+$$
 
 - If k > 1, the magnitude increases.
 - If 0 < k < 1, the magnitude decreases.
@@ -164,14 +164,14 @@ For example, if a displacement vector is $20,10$ m, then 2v=$40,20$ m. The direc
 ## 7. Unit vectors and direction
 
 A unit vector has magnitude one. For a non-zero vector v:
-$
+$$
 \hat{\mathbf{v}}=\frac{\mathbf{v}}{\|\mathbf{v}\|}.
-$
+$$
 
 For v=$3,4$, magnitude is 5, so:
-$
+$$
 \hat{\mathbf{v}}=\left(\frac35,\frac45\right).
-$
+$$
 
 A unit vector expresses direction without retaining the original magnitude. It is undefined for the zero vector because division by zero is not defined.
 
@@ -180,44 +180,44 @@ Direction can be represented using components, a unit vector, an angle in a stat
 ## 8. Dot product
 
 For vectors a and b in Euclidean coordinates, the dot product is:
-$
+$$
 \mathbf{a}\cdot\mathbf{b}=a_xb_x+a_yb_y+a_zb_z.
-$
+$$
 
 It is also related to the angle θ between non-zero vectors:
-$
+$$
 \mathbf{a}\cdot\mathbf{b}=\|\mathbf{a}\|\|\mathbf{b}\|\cos\theta.
-$
+$$
 
 Therefore:
-$
+$$
 \cos\theta=\frac{\mathbf{a}\cdot\mathbf{b}}{\|\mathbf{a}\|\|\mathbf{b}\|}.
-$
+$$
 
 The dot product is zero when two non-zero Euclidean vectors are perpendicular. It is positive for an acute angle and negative for an obtuse angle.
 
 ### Worked example
 
 Let a=$3,4$ and b=(4,−3).
-$
+$$
 \mathbf{a}\cdot\mathbf{b}=3(4)+4(-3)=12-12=0.
-$
+$$
 
 The vectors are perpendicular. Their magnitudes are both 5.
 
 ### 8.1 Projection
 
 The scalar projection of a onto a non-zero vector b is:
-$
+$$
 \operatorname{comp}_{\mathbf b}(\mathbf a)=
 \frac{\mathbf a\cdot\mathbf b}{\|\mathbf b\|}.
-$
+$$
 
 The vector projection is:
-$
+$$
 \operatorname{proj}_{\mathbf b}(\mathbf a)=
 \frac{\mathbf a\cdot\mathbf b}{\mathbf b\cdot\mathbf b}\mathbf b.
-$
+$$
 
 Projection decomposes one vector into a component along another direction and a perpendicular remainder. It is useful in analysing movement along a route, resolving forces and interpreting components relative to a line or direction.
 
@@ -226,36 +226,36 @@ If b is the zero vector, these projection formulas are undefined.
 ## 9. Cross product
 
 In three-dimensional Euclidean space, the cross product of a and b is a vector perpendicular to both:
-$
+$$
 \mathbf{a}\times\mathbf{b}=
 \begin{bmatrix}
 a_yb_z-a_zb_y\\
 a_zb_x-a_xb_z\\
 a_xb_y-a_yb_x
 \end{bmatrix}.
-$
+$$
 
 Its magnitude is:
-$
+$$
 \|\mathbf{a}\times\mathbf{b}\|=
 \|\mathbf{a}\|\|\mathbf{b}\|\sin\theta.
-$
+$$
 
 This magnitude equals the area of the parallelogram spanned by the two vectors. Half of it is the area of the corresponding triangle.
 
 The cross product is anti-commutative:
-$
+$$
 \mathbf a\times\mathbf b=-(\mathbf b\times\mathbf a).
-$
+$$
 
 The order determines orientation under the chosen right-handed coordinate convention. The cross product is zero for parallel or anti-parallel vectors, including the case where either vector is zero.
 
 ### Worked example
 
 Let a=$1,0,0$ and b=$0,2,0$. Then:
-$
+$$
 \mathbf a\times\mathbf b=(0,0,2).
-$
+$$
 
 The parallelogram area is 2 square units. The result points along positive z in a right-handed frame.
 
@@ -264,9 +264,9 @@ Cross products are useful for computing surface normals, orientation and areas i
 ## 10. Vector equations of lines
 
 A line through point $\mathbf r_0$ with direction vector $\mathbf v$ can be represented as:
-$
+$$
 \mathbf r(t)=\mathbf r_0+t\mathbf v,\qquad t\in\mathbb R.
-$
+$$
 
 For a finite segment, restrict $t$ to $[0,1]$ when $\mathbf r_0$ is the start point and $\mathbf r_0+\mathbf v$ is the end point.
 
@@ -277,9 +277,9 @@ This representation is useful for describing straight trajectories, survey basel
 ### 11.1 Velocity
 
 Average velocity over a time interval is displacement divided by elapsed time:
-$
+$$
 \mathbf v_{avg}=\frac{\Delta\mathbf r}{\Delta t}.
-$
+$$
 
 If a vehicle's displacement is $600,800$ m over 100 s in a local frame, its average velocity vector is $6,8$ m/s and its speed is 10 m/s.
 
@@ -288,9 +288,9 @@ This is average velocity, not necessarily instantaneous velocity. It also descri
 ### 11.2 Directional fields
 
 A spatial vector field assigns a vector to each location:
-$
+$$
 \mathbf v=\mathbf v(x,y).
-$
+$$
 
 Examples include wind, ocean currents, groundwater flow and movement fields. A field may be sampled at discrete locations or represented by a continuous model. The coordinate frame, units, time reference and measurement method must be known.
 
@@ -301,13 +301,13 @@ In coordinate estimation, a residual or correction may be represented as a vecto
 ## 12. Vector operations and terrain
 
 A terrain surface z=f$x,y$ has directions along which elevation changes. A gradient vector describes the direction of steepest local increase and the rate of increase in a mathematical model:
-$
+$$
 \nabla f=
 \begin{bmatrix}
 \partial f/\partial x\\
 \partial f/\partial y
 \end{bmatrix}.
-$
+$$
 
 This expression is introduced only to connect vectors to calculus. Partial derivatives, gradient derivation, slope/aspect computation and differential operators belong in calculus $SM-FND-003$. The gradient is a vector in the coordinate domain and its components depend on the coordinate units and model.
 
