@@ -370,6 +370,41 @@ $$
 
 The parentheses make clear that the final OR applies only to the photograph and QA conditions. Before implementation, define what counts as “within”, what a missing photograph means, and how NULL values are treated.
 
+### Worked example 4 — evaluate a spatial QA query with missing values
+
+Suppose a feature table has five Boolean fields:
+
+- B: the feature satisfies the project's defined within-boundary predicate;
+- V: the feature is flagged for verification;
+- D: the feature is decommissioned;
+- P: a photograph is present;
+- Q: the positional QA check raised a warning.
+
+The selection rule is:
+
+$
+B\land V\land\neg D\land(\neg P\lor Q)
+$
+
+The project must define the geometry predicate used for B, including its boundary behaviour and coordinate/reference requirements. The expression above only combines the predicate result with attribute conditions.
+
+Consider these records:
+
+| Record | B | V | D | P | Q | Result |
+|---|---|---|---|---|---|---|
+| A | T | T | F | T | F | FALSE — photograph present and no QA warning |
+| B | T | T | F | F | F | TRUE — photograph missing |
+| C | T | T | F | UNKNOWN | T | TRUE — QA warning makes the parenthesised OR true |
+| D | T | T | F | UNKNOWN | F | UNKNOWN — neither photograph nor QA condition can be resolved |
+| E | T | T | T | F | T | FALSE — decommissioned |
+
+In a typical SQL WHERE clause, only rows whose complete condition evaluates to TRUE are retained. FALSE and UNKNOWN are not selected. Thus B and C pass this filter; D is not treated as if its missing photograph were definitely present or definitely absent.
+
+A SQL implementation must use explicit NULL-aware conditions where the business rule requires them. For example, P IS NULL is a test for missingness; P = FALSE is not equivalent when P may be NULL. Exact syntax and behaviour should be checked against the database in use.
+
+**Interpretation:** the logical expression is only as sound as its input definitions. It does not establish whether the geometry predicate is appropriate, whether the QA warning is valid, or whether missing photographs should cause rejection. Those are data-governance and project-rule decisions.
+
+
 ## 10. Introductory graph language
 
 A graph is a structure consisting of vertices (nodes) and edges (links). A simple undirected graph can be written:
