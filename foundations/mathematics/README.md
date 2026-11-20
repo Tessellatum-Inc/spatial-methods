@@ -50,14 +50,16 @@ A learner completing this domain should be able to:
 
 Each module should include, where relevant:
 
-- clear definitions and notation;
+- clear definitions and consistent mathematical notation;
+- inline mathematics in `\\(...\\)` and display mathematics in `\\[...\\]`, with units typeset upright and symbols defined;
 - intuitive explanation followed by formal treatment;
 - derivations or justification of important relationships;
 - worked spatial examples with units;
 - common errors and boundary cases;
 - exercises that require interpretation, not only calculation;
 - connections to algorithms, data collection, recipes and applications;
-- sources and an explicit review state.
+- relevant references for technical claims, linked to stable records in the source register;
+- an explicit evidence/review state and scope limitations.
 
 Do not mistake a long list of formulas for a foundation. The aim is to teach how to select, interpret and question a mathematical model.
 
