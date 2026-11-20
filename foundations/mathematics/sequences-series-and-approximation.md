@@ -53,7 +53,7 @@ Suppose an illustrative one-dimensional position estimate is updated by adding a
 x_0=100\;\mathrm{m},\qquad x_{n+1}=x_n+5\;\mathrm{m}.
 \]
 
-Then x_1=105 m, x_2=110 m and x_3=115 m. This is a simple deterministic sequence. It does not by itself describe measurement noise, uncertainty or a real moving object's trajectory.
+Then \(x_1=105\,\mathrm{m}\), \(x_2=110\,\mathrm{m}\) and \(x_3=115\,\mathrm{m}\). This is a simple deterministic sequence. It does not by itself describe measurement noise, uncertainty or a real moving object's trajectory.
 
 ## 3. Arithmetic and geometric sequences
 
@@ -71,7 +71,7 @@ a_n=a_0r^n.
 
 ### Example: arithmetic sequence
 
-A grid coordinate starts at 0 m and increases by 10 m at each step. The sequence is 0, 10, 20, 30, ... . It can represent regularly spaced sample positions along one axis.
+A grid coordinate starts at \(0\,\\mathrm{m}\) and increases by \(10\,\\mathrm{m}\) at each step. The sequence is \(0,10,20,30,\\ldots\). It can represent regularly spaced sample positions along one axis.
 
 ### Example: geometric sequence
 
@@ -91,7 +91,7 @@ A sequence converges to L if its terms approach L as the index increases:
 \lim_{n\to\infty}a_n=L.
 \]
 
-Informally, terms can be made as close to L as desired by taking n sufficiently large.
+Informally, terms can be made as close to \(L\) as desired by taking \(n\) sufficiently large.
 
 For example:
 
@@ -111,7 +111,7 @@ Likewise, an algorithm can stop because it reached a maximum iteration count wit
 
 ### 4.2 Monotonicity and boundedness
 
-A sequence is monotonically increasing if each term is at least as large as the previous term. It is monotonically decreasing if each term is no larger than the previous term.
+A sequence \((a_n)\) is monotonically increasing if \(a_{n+1}\geq a_n\) for every applicable index. It is monotonically decreasing if \(a_{n+1}\leq a_n\).
 
 A sequence is bounded if all terms lie within some finite interval.
 
@@ -131,11 +131,11 @@ An infinite series is studied through its sequence of partial sums:
 S_N=\sum_{n=0}^{N}a_n.
 \]
 
-The series converges if the partial sums approach a finite limit as N increases.
+The series converges if the partial sums approach a finite limit as \(N\to\infty\).
 
 ### 5.1 Finite arithmetic series
 
-For an arithmetic sequence with first term a_0 and common difference d, the sum of N+1 terms is:
+For an arithmetic sequence with first term \(a_0\) and common difference \(d\), the sum of terms from index 0 through index \(N\) is:
 
 \[
 S_N=\frac{N+1}{2}(a_0+a_N).
@@ -143,23 +143,23 @@ S_N=\frac{N+1}{2}(a_0+a_N).
 
 ### 5.2 Finite geometric series
 
-For a_0, a_0r, ..., a_0r^N and r≠1:
+For the terms \(a_0,a_0r,\ldots,a_0r^N\), where \(r\neq 1\):
 
 \[
 S_N=a_0\frac{1-r^{N+1}}{1-r}.
 \]
 
-If r=1, the sum is (N+1)a_0.
+If \(r=1\), the sum is \((N+1)a_0\).
 
 ### 5.3 Infinite geometric series
 
-For |r|<1:
+For \(|r|<1\):
 
 \[
 \sum_{n=0}^{\infty}a_0r^n=\frac{a_0}{1-r}.
 \]
 
-For |r|≥1, this geometric series does not converge unless the special zero-term case makes every term zero.
+For \(|r|\geq 1\) and \(a_0\neq 0\), this geometric series diverges. If \(a_0=0\), every term is zero and the series converges to zero.
 
 ### Example
 
@@ -187,13 +187,13 @@ The absolute error is:
 |e|=|\hat{x}-x|.
 \]
 
-When x≠0, relative error is:
+When \(x\neq 0\), relative error is:
 
 \[
 e_r=\frac{|\hat{x}-x|}{|x|}.
 \]
 
-Relative error is undefined when the exact reference value is zero. A percentage relative error is 100e_r%.
+Relative error is undefined when the exact reference value is zero. A percentage relative error is \(100e_r\%\).
 
 Error terminology requires care. The difference between an approximation and an exact mathematical value is not automatically the same as measurement error, model error or uncertainty. Those concepts have distinct meanings in measurement science and modelling.
 
@@ -226,7 +226,7 @@ A raster represents a spatial domain using a finite arrangement of cells. For a 
 A_{cell}=h^2.
 \]
 
-If h=10 m, a square cell covers 100 m² in the planar grid representation. If h is halved to 5 m, cell area becomes 25 m²: one quarter of the original area. Over the same region, the number of cells is approximately four times as large, ignoring boundary and alignment effects.
+If \(h=10\,\mathrm{m}\), a square cell covers \(100\,\mathrm{m}^2\) in the planar grid representation. If \(h\) is halved to \(5\,\mathrm{m}\), cell area becomes \(25\,\mathrm{m}^2\): one quarter of the original area. Over the same region, the number of cells is approximately four times as large, ignoring boundary and alignment effects.
 
 This has practical consequences:
 - finer grids can represent smaller spatial variation, if the source data support it;
@@ -265,7 +265,7 @@ An iterative method generates a sequence of estimates:
 x_0,x_1,x_2,\ldots
 \]
 
-A common stopping test checks whether successive estimates have changed by less than a tolerance:
+A common stopping test checks whether successive estimates have changed by less than a tolerance \(\\varepsilon\):
 
 \[
 |x_{n+1}-x_n|<\varepsilon.
@@ -302,7 +302,7 @@ t_n=t_0+n\Delta t.
 
 A model then updates its state at each step. The choice of Δt can affect numerical stability, computational cost and the fidelity with which rapid changes are represented.
 
-For example, a vehicle movement model sampled every second may miss short events that occur between samples. A smaller time step can capture more temporal detail, but it also increases data volume and computation. Whether it improves the model depends on the process and measurement design.
+For example, a vehicle movement model sampled at \(\\Delta t=1\,\\mathrm{s}\) may miss short events that occur between samples. A smaller time step can capture more temporal detail, but it also increases data volume and computation. Whether it improves the model depends on the process and measurement design.
 
 A time step is not the same as the temporal accuracy of the input observations.
 
@@ -427,3 +427,14 @@ All numerical examples are hypothetical teaching illustrations, not evidence fro
 ## 18. Further development
 
 The next module develops mathematical modelling and dimensional analysis: defining system boundaries, selecting variables and parameters, translating assumptions into equations, checking units and evaluating whether model outputs are plausible. Numerical stability and error analysis will be developed further in SM-FND-016.
+
+
+## 19. References and further reading
+
+The explanations and examples in this module are original Spatial Methods teaching material. The following sources support the underlying mathematical definitions and the applied discussion. They are references for further study, not sources of the hypothetical numerical examples.
+
+1. **OpenStax.** *Calculus Volume 2*, Chapter 5, “Sequences and Series,” especially [Section 5.1: Sequences](https://openstax.org/books/calculus-volume-2/pages/5-1-sequences) and [Section 5.2: Infinite Series](https://openstax.org/books/calculus-volume-2/pages/5-2-infinite-series). Used for sequence notation, arithmetic and geometric sequences, limits, monotone convergence, partial sums and geometric-series convergence. Open textbook; consult its published licence before reusing text or figures.
+2. **Wong, J. (2020; edited by Holden Lee).** *Math 361S Lecture Notes: Nonlinear Equations in 1D*. Duke University, 15 January 2020. [Lecture PDF](https://services.math.duke.edu/~holee/math361-2020/lectures/Lec2-NonlinearEquations.pdf). Used for iterative approximations, bisection, convergence assumptions, error bounds, stopping criteria and the limitations of step-size and residual tests. These notes address particular root-finding methods; they are not a general proof for every iterative algorithm.
+3. **Esri.** *Explore imagery – Spatial resolution*. [ArcGIS tutorial](https://learn.arcgis.com/en/projects/explore-imagery-spatial-resolution/). Tutorial last tested 19 May 2026. Used for raster cell interpretation, the relationship between cell size and represented detail, and the trade-offs among resolution, storage and processing. Product-specific examples are illustrative; raster resolution must be selected for the data and application.
+
+**Source-use boundary:** These references support introductory mathematics and selected GIS examples. They do not replace specialist treatments of numerical analysis, computational geometry, remote sensing, sampling theory or measurement science. The sources have different purposes and authority; a software tutorial should not be treated as a universal scientific standard.
