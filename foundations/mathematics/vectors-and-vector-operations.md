@@ -483,4 +483,6 @@ The explanations, worked examples and spatial interpretations are original Spati
 1. **OpenStax.** *Algebra and Trigonometry 2e*, [Section 10.8: Vectors](https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-8-vectors). Used for vector components, magnitude, direction, addition, scalar multiplication, unit vectors and the dot product.
 2. **OpenStax.** *Calculus Volume 3*, Chapter 2: [Vectors in Space]\(https://openstax.org/books/calculus-volume-3/pages/2-introduction\), especially Sections 2.1–2.5. Used for three-dimensional vectors, dot and cross products, and vector equations of lines and planes.
 
+**Source register:** `SM-SRC-000021`, `SM-SRC-000026`.
+
 **Limitations:** These introductory texts do not replace linear algebra for vector spaces and matrix representations, nor geodesy for Earth-centred frames and transformations. The module's numerical vectors are hypothetical examples.
