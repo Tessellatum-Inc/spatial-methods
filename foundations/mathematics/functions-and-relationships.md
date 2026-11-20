@@ -42,7 +42,7 @@ f(M)=sM,
 
 where M is map distance and f\(M\) is represented ground distance, with both distances expressed in compatible units.
 
-If M is measured in centimetres and s = 25,000, then:
+If \(M\) is measured in centimetres and \(s=25{,}000\), then:
 
 \[
 f(2\;\mathrm{cm})=50{,}000\;\mathrm{cm}=500\;\mathrm{m}.
@@ -168,7 +168,7 @@ An exponential function has the variable in the exponent:
 f(x)=ab^x,
 \]
 
-where b > 0. It can describe idealised multiplicative growth or decay. Spatial examples may include simplified models of attenuation, decay or population change, but the functional form must be justified by the relevant process and data.
+where \(b>0\). It can describe idealised multiplicative growth or decay. Spatial examples may include simplified models of attenuation, decay or population change, but the functional form must be justified by the relevant process and data.
 
 ### 6.5 Logarithmic functions
 
@@ -217,7 +217,7 @@ Consider:
 f(x)=x^2.
 \]
 
-On all real numbers, this is not injective because f(2) = f(−2). Its range is non-negative real numbers. If its domain is restricted to x ≥ 0 and its codomain is also non-negative real numbers, it becomes bijective.
+On all real numbers, this is not injective because \(f(2)=f(-2)\). Its range is non-negative real numbers. If its domain is restricted to \(x\geq0\) and its codomain is also non-negative real numbers, it becomes bijective.
 
 The same algebraic rule can therefore have different mapping properties under different domain and codomain choices.
 
