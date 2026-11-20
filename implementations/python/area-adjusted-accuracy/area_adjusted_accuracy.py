@@ -37,6 +37,27 @@ def _validate_weights(weights: Mapping[str, float]) -> dict[str, float]:
     return clean
 
 
+def _validate_population_sizes(
+    population_sizes: Mapping[str, int] | None,
+    weights: Mapping[str, float],
+) -> dict[str, int] | None:
+    if population_sizes is None:
+        return None
+    if set(population_sizes) != set(weights):
+        raise ValueError("Stratum population sizes must be supplied for exactly the mapped classes in area weights.")
+    clean: dict[str, int] = {}
+    for key, value in population_sizes.items():
+        name = str(key).strip()
+        try:
+            number = float(value)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"Population size for {name!r} must be a positive integer.") from exc
+        if not math.isfinite(number) or number < 1 or not number.is_integer():
+            raise ValueError(f"Population size for {name!r} must be a positive integer.")
+        clean[name] = int(number)
+    return clean
+
+
 def _interval(estimate: float, variance: float) -> dict[str, float]:
     se = math.sqrt(max(0.0, variance))
     lo = max(0.0, estimate - Z_975 * se)
@@ -50,6 +71,7 @@ def estimate_stratified_accuracy(
     mapped_class_area_proportions: Mapping[str, float],
     *,
     total_area: float | None = None,
+    stratum_population_sizes: Mapping[str, int] | None = None,
 ) -> dict:
     """Estimate area-adjusted accuracy for SRS samples within mapped classes.
 
@@ -57,6 +79,7 @@ def estimate_stratified_accuracy(
     columns = reference classes. Area weights are proportions of total map area.
     """
     weights = _validate_weights(mapped_class_area_proportions)
+    population_sizes = _validate_population_sizes(stratum_population_sizes, weights)
     rows = list(observations)
     if not rows:
         raise ValueError("At least one labelled sample observation is required.")
@@ -82,6 +105,15 @@ def estimate_stratified_accuracy(
     if missing:
         raise ValueError("At least two observations are required in every mapped-class stratum: "
                          + ", ".join(missing))
+    if population_sizes is not None:
+        undersized = [m for m, n in n_by_stratum.items() if population_sizes[m] < n]
+        if undersized:
+            raise ValueError("Stratum population size cannot be smaller than its sample size: "
+                             + ", ".join(undersized))
+    fpc = {
+        m: (1.0 - n_by_stratum[m] / population_sizes[m]) if population_sizes is not None else 1.0
+        for m in weights
+    }
 
     # Estimated area-proportion error matrix.
     matrix = {}
@@ -94,7 +126,7 @@ def estimate_stratified_accuracy(
     overall_accuracy = sum(matrix[c][c] for c in classes if c in matrix)
     var_oa = sum(
         weights[m] ** 2 * row_proportions[m][m] *
-        (1.0 - row_proportions[m][m]) / (n_by_stratum[m] - 1)
+        (1.0 - row_proportions[m][m]) / (n_by_stratum[m] - 1) * fpc[m]
         for m in weights
     )
     oa = _interval(overall_accuracy, var_oa)
@@ -102,7 +134,7 @@ def estimate_stratified_accuracy(
     users = {}
     for m in weights:
         p = row_proportions[m][m] if m in classes else 0.0
-        users[m] = _interval(p, p * (1.0 - p) / (n_by_stratum[m] - 1))
+        users[m] = _interval(p, p * (1.0 - p) / (n_by_stratum[m] - 1) * fpc[m])
 
     reference_area = {}
     producers = {}
@@ -110,7 +142,7 @@ def estimate_stratified_accuracy(
         estimate = sum(matrix[m][ref] for m in weights)
         variance = sum(
             weights[m] ** 2 * row_proportions[m][ref] *
-            (1.0 - row_proportions[m][ref]) / (n_by_stratum[m] - 1)
+            (1.0 - row_proportions[m][ref]) / (n_by_stratum[m] - 1) * fpc[m]
             for m in weights
         )
         area_result = _interval(estimate, variance)
@@ -132,7 +164,7 @@ def estimate_stratified_accuracy(
         # independent; the numerator is one component of the denominator.
         numerator_var = (
             weights[ref] ** 2 * row_proportions[ref][ref] *
-            (1.0 - row_proportions[ref][ref]) / (n_by_stratum[ref] - 1)
+            (1.0 - row_proportions[ref][ref]) / (n_by_stratum[ref] - 1) * fpc[ref]
             if ref in weights else 0.0
         )
         covariance = numerator_var
@@ -147,6 +179,8 @@ def estimate_stratified_accuracy(
         "design": "stratified simple random sampling within mapped classes",
         "confusion_matrix_orientation": "rows=mapped classes; columns=reference classes",
         "mapped_class_area_proportions": weights,
+        "stratum_population_sizes": population_sizes,
+        "finite_population_correction_by_mapped_class": fpc if population_sizes is not None else None,
         "sample_counts_by_mapped_class": n_by_stratum,
         "sample_size": len(rows),
         "estimated_area_proportion_error_matrix": matrix,
@@ -161,7 +195,7 @@ def estimate_stratified_accuracy(
             "Does not support arbitrary unequal inclusion probabilities, cluster designs, or general systematic/spatially balanced designs.",
             "Reference labels are treated as error-free; reference uncertainty is not propagated.",
             "Wald intervals may perform poorly for small samples or estimates near 0 or 1.",
-            "No finite-population correction is applied because stratum population sizes are not supplied.",
+            "Finite-population correction is applied only when valid stratum population sizes are supplied.",
             "No nonresponse adjustment, variance from map-area weights, or spatial covariance is included.",
             "Area estimates are only as defensible as the sampling frame, response protocol, map-area proportions, and reference interpretation."
         ],
@@ -184,14 +218,20 @@ def main() -> int:
                         help='JSON object, e.g. \'{"forest":0.6,"other":0.4}\'')
     parser.add_argument("--total-area", type=float, default=None,
                         help="Optional total mapped area in stated area units")
+    parser.add_argument("--stratum-population-sizes", default=None,
+                        help='Optional JSON object, e.g. \'{"forest":10000,"other":20000}\'')
     parser.add_argument("--json-out", default=None)
     args = parser.parse_args()
     try:
         weights = json.loads(args.area_weights)
         if not isinstance(weights, dict):
             raise ValueError("--area-weights must decode to a JSON object.")
+        population_sizes = json.loads(args.stratum_population_sizes) if args.stratum_population_sizes else None
+        if population_sizes is not None and not isinstance(population_sizes, dict):
+            raise ValueError("--stratum-population-sizes must decode to a JSON object.")
         report = estimate_stratified_accuracy(
-            read_observations(args.observations_csv), weights, total_area=args.total_area
+            read_observations(args.observations_csv), weights, total_area=args.total_area,
+            stratum_population_sizes=population_sizes
         )
     except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
         parser.error(str(exc))
