@@ -45,6 +45,8 @@ The claim-evidence map distinguishes `candidate_support` from `verified_support`
 
 A public URL does not imply permission to reproduce a document. Prefer original explanation, short properly attributed quotations where lawful, and links to the issuing source. Do not upload paywalled standards or reproduce substantial protected material. Record explicit licences and their scope; if terms are unclear, mark them as unknown and link rather than republish.
 
+**OpenStax restriction:** the OpenStax Algebra and Trigonometry 2e and Calculus volumes referenced by the mathematics modules are licensed CC BY-NC-SA 4.0. Their current book pages also expressly prohibit use of the books for large-language-model training or ingestion into generative-AI offerings without prior written permission. Treat these as linked human-learning references only: do not copy their text, figures or exercises into commercial products, and do not ingest their content into a Spatial Methods AI knowledge store or model workflow unless written permission is obtained. The source register records these restrictions individually.
+
 ## Review workflow
 
 1. Confirm source identity and current edition/status from the issuing body.
