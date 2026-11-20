@@ -109,3 +109,34 @@ class AreaAdjustedAccuracyTests(unittest.TestCase):
         ]
         result = estimate_stratified_accuracy(rows, {"forest": 0.8, "water": 0.2})
         self.assertIsNone(result["producers_accuracy_by_reference_class"]["water"])
+
+    def test_finite_population_correction_reduces_standard_error(self):
+        without_fpc = estimate_stratified_accuracy(self.rows, self.weights)
+        with_fpc = estimate_stratified_accuracy(
+            self.rows, self.weights, stratum_population_sizes={"forest": 40, "other": 40}
+        )
+        self.assertLess(with_fpc["overall_accuracy"]["standard_error"],
+                        without_fpc["overall_accuracy"]["standard_error"])
+        self.assertAlmostEqual(
+            with_fpc["finite_population_correction_by_mapped_class"]["forest"], 0.9
+        )
+
+    def test_population_sizes_must_cover_exactly_the_mapped_strata(self):
+        with self.assertRaises(ValueError):
+            estimate_stratified_accuracy(
+                self.rows, self.weights, stratum_population_sizes={"forest": 40}
+            )
+
+    def test_population_size_cannot_be_smaller_than_sample(self):
+        with self.assertRaises(ValueError):
+            estimate_stratified_accuracy(
+                self.rows, self.weights,
+                stratum_population_sizes={"forest": 3, "other": 40}
+            )
+
+    def test_population_sizes_must_be_positive_integers(self):
+        with self.assertRaises(ValueError):
+            estimate_stratified_accuracy(
+                self.rows, self.weights,
+                stratum_population_sizes={"forest": 40.5, "other": 40}
+            )
