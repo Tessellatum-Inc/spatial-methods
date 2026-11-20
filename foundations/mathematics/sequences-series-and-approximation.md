@@ -218,6 +218,67 @@ This has practical consequences:
 
 Raster cell size is a discretisation choice, not a guarantee of information content.
 
+
+### 8.1 Worked example — grid refinement and resampling
+
+A square study area measures 1,000 m by 1,000 m in a suitable projected planar grid. Its area is:
+
+$
+A_T=1{,}000\times1{,}000=1{,}000{,}000\;\mathrm{m^2}
+=1\;\mathrm{km^2}
+$
+
+Compare three square-cell grids covering the same aligned extent.
+
+| Cell width | Cell area | Cells along each side | Total cells |
+|---:|---:|---:|---:|
+| 20 m | 400 m² | 50 | 2,500 |
+| 10 m | 100 m² | 100 | 10,000 |
+| 5 m | 25 m² | 200 | 40,000 |
+
+For square cells, area is the square of cell width. Halving the width therefore quarters the area of each cell. Over a fixed extent, the number of cells becomes approximately four times as large.
+
+From 10 m to 5 m:
+- cell width is halved;
+- cell area falls from 100 m² to 25 m²;
+- the grid changes from 100 × 100 to 200 × 200 cells;
+- the output cell count rises from 10,000 to 40,000.
+
+These counts are exact for this deliberately aligned, square example. Irregular extents, partial edge cells, grid alignment and NoData areas can change counts in real datasets.
+
+#### Stored value is not cell size
+
+Suppose one source raster cell stores the integer digital number 143. Its product metadata specifies a scale factor of 0.01 and an offset of 0:
+
+$
+x_{physical}=0.01(143)+0=1.43
+$
+
+The value 1.43 is interpreted in the product's documented physical quantity and unit. It is not a cell width, an area or automatically a reflectance; those meanings must come from the product metadata.
+
+The grid geometry and the stored sample value describe different properties:
+- **Cell width and grid alignment** describe the spatial tessellation.
+- **Stored data type and digital number** describe how a sample is encoded.
+- **Scale and offset** describe how a stored value maps to a product-defined quantity.
+- **Spatial resolution** concerns the spatial detail the data can meaningfully distinguish; it is not established by cell spacing alone.
+
+#### What happens when a 10 m raster is resampled to 5 m?
+
+The output grid may contain 40,000 cells, four times the 10,000 source cells. But those additional output cells are not four times as many independent observations.
+
+A resampling method assigns output values from the available source data. Depending on the method, values may be copied from a selected source cell, interpolated from neighbouring values, or aggregated. The resulting 5 m grid is a denser representation, not proof that the source sensor observed new 5 m detail.
+
+Upsampling can be useful for aligning grids or preparing inputs for a workflow, but it cannot recover spatial variation that was never captured. Downsampling also changes the representation and may suppress or aggregate variation. The appropriate method depends on whether the data are categorical or continuous and on the intended analysis.
+
+**Important distinctions:**
+- A smaller output cell is not automatically a more accurate measurement.
+- A finer grid does not automatically have finer effective sensor resolution.
+- A larger cell count is not a larger independent sample size.
+- Resampling is not a substitute for higher-resolution source observations.
+- A scale/offset conversion changes the interpretation of sample values; it does not change the grid geometry.
+
+This example assumes a projected planar square extent and regular square grids. Real raster work must also consider coordinate reference systems, pixel alignment, georeferencing, NoData, sensor characteristics, sampling, interpolation and the product's metadata.
+
 ## 9. Approximating curves and paths
 
 A curved path can be approximated by a sequence of straight line segments. This is common in map rendering, route geometry and numerical integration.
@@ -366,6 +427,17 @@ A square raster cell has width $20\,\mathrm{m}$. A second grid uses $5\,\mathrm{
 3. Estimate the factor by which cell count changes over a fixed region.
 4. Explain why the finer grid does not necessarily contain four times as much observed information.
 
+
+### Exercise 8 — grid size, stored values and resampling
+
+A 2,000 m by 1,000 m rectangular study area is represented by aligned square-cell grids.
+
+1. Calculate the number of cells for 20 m, 10 m and 5 m cell widths.
+2. Calculate the area of one cell at each resolution.
+3. A source raster stores digital number 250. Its metadata specifies scale factor 0.004 and offset −0.1. Calculate the physical value and explain why its unit and meaning cannot be inferred from the number alone.
+4. The 10 m raster is resampled to a 5 m grid. How many output cells are there, and why does this not mean the dataset contains four times as many independent observations?
+5. Explain why a 5 m output cell size does not prove that the source sensor has 5 m effective spatial resolution.
+
 ### Exercise 7 — Iterative stopping
 
 An iterative scalar solver produces estimates $20.0,22.0,23.0,23.5,23.75$.
@@ -383,6 +455,8 @@ An iterative scalar solver produces estimates $20.0,22.0,23.0,23.5,23.75$.
 4. **Series:** $a_0=8$, $r=1/2$. First four terms sum to $8+4+2+1=15$. Infinite sum is $8/(1-1/2)=16$. The formula requires $|r|<1$.
 5. **Error:** signed error is $249.2-250.0=-0.8\,\mathrm{m}$. Absolute error is $0.8\,\mathrm{m}$. Relative error is $0.8/250.0=0.0032=0.32\%$. The difference could reflect rounding, approximation, measurement, model or other effects; the comparison alone does not identify a cause.
 6. **Raster:** $20\,\mathrm{m}$ cells cover $400\,\mathrm{m}^2$; $5\,\mathrm{m}$ cells cover $25\,\mathrm{m}^2$. The cell-area ratio is 16:1. Approximately 16 times as many cells are needed for the same area. Resampling cannot create new observations or recover detail absent from the source.
+
+8. **Grid size, stored values and resampling:** The study area is 2,000,000 m². At 20 m, each cell covers 400 m², giving 5,000 cells (100 × 50). At 10 m, each cell covers 100 m², giving 20,000 cells (200 × 100). At 5 m, each cell covers 25 m², giving 80,000 cells (400 × 200). The areas are respectively 400 m², 100 m² and 25 m². The scaled value is $0.004(250)-0.1=0.9$ in the physical unit defined by the product metadata. Resampling the 10 m grid to 5 m yields 80,000 output cells, four times the 10 m grid's cell count, but the additional values are copied, interpolated or otherwise derived from existing source samples; they are not new independent sensor observations. Output cell spacing does not establish the sensor's effective spatial resolution.
 7. **Iteration:** changes are $2.0,1.0,0.5,0.25$. The sequence appears to approach $24$. The 0.3 successive-change test first passes on the final update (23.5 to 23.75). A residual is needed because small updates can occur away from a solution; also check constraints, stagnation, numerical failure or the maximum-iteration condition.
 
 ## 16. Connections across Spatial Methods
