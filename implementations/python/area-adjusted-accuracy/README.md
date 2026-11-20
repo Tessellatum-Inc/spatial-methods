@@ -143,4 +143,4 @@ A real public-data analysis is documented in [Fiji 2021 land-cover map accuracy]
 - [Optional rasterio requirements](requirements-worldcover.txt)
 - [Introductory synthetic sample CSV](sample.csv)
 
-The tests include synthetic regression cases, finite-population correction checks, a structural fixture for the Fiji case script, and fixtures for the independent sampling-strata estimator and pinned point reader. These tests have not yet been executed in this repository workflow. Passing tests does not establish support for other sampling designs or validate the provisional class crosswalk.
+The earlier mapped-class implementation's 10-test suite was run against a local mirror recreated from fetched repository sources. The new independent-strata estimator and pinned point-reader tests have not yet been executed; no GitHub Actions run has been triggered. Passing tests does not establish support for other sampling designs or validate the provisional class crosswalk.
