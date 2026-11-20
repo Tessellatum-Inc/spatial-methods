@@ -132,3 +132,5 @@ The script uses only the Python standard library plus the sibling `area_adjusted
 - Olofsson, P., Foody, G. M., Herold, M., Stehman, S. V., Woodcock, C. E., & Wulder, M. A. (2014). Good practices for estimating area and assessing accuracy of land change. *Remote Sensing of Environment*, 148, 42–57. https://doi.org/10.1016/j.rse.2014.02.015
 
 The dataset is external and retains its ODbL terms. The repository stores the reproducibility code and analysis, not a redistributed copy of the GeoJSON.
+
+To reuse this sample to assess a different map rather than the original Fiji map, see the [Fiji–ESA WorldCover comparison workflow](worldcover-comparison.md). It keeps the original sample strata and weights separate from the evaluated map classes; the raster comparison is prepared but not yet executed.
