@@ -175,7 +175,7 @@ N=\frac{A_T}{s^2}.
 
 If cell width is halved, each cell has one quarter of the area, so approximately four times as many cells are required to cover the same area.
 
-This relationship assumes square cells, a consistent grid and a suitable planar area calculation. For non-square cells, use A_c = Δx Δy. For geographic coordinates in angular units, degree differences cannot be treated as constant ground lengths or areas without an appropriate geodetic or projection treatment.
+This relationship assumes square cells, a consistent grid and a suitable planar area calculation. For non-square cells, use \(A_c=\Delta x\,\Delta y\). For geographic coordinates in angular units, degree differences cannot be treated as constant ground lengths or areas without an appropriate geodetic or projection treatment.
 
 ## 6. Rates
 
@@ -282,7 +282,7 @@ A logarithm answers the question: to what power must a base be raised to obtain 
 \log_b(x)=y\quad\Longleftrightarrow\quad b^y=x,
 \]
 
-where b > 0, b ≠ 1 and x > 0.
+where \(b>0\), \(b\neq1\) and \(x>0\).
 
 Common bases include base 10 (common logarithm), base e (natural logarithm, ln) and base 2 (binary logarithm).
 
@@ -344,7 +344,7 @@ The decibel value describes a ratio, not an absolute power or amplitude unless a
 
 A logarithmic transformation can make a highly skewed positive variable easier to visualise or model. It may reduce the influence of very large values and turn some multiplicative relationships into additive ones.
 
-For a model of the form y = axᵇ, with positive x and y:
+For a model of the form \(y=ax^b\), with positive \(x\) and \(y\):
 
 \[
 \ln(y)=\ln(a)+b\ln(x).
