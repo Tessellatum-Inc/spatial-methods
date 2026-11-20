@@ -109,8 +109,8 @@ This companion is part of Spatial Methods. Check the repository's licence and at
 
 ## Source material
 
-- [Segment-intersection technical lesson](../../../algorithms/geometry/segment-intersection.md)
-- [Python implementation](../../../implementations/python/segment-intersection/README.md)
-- [Implementation walkthrough](../../../implementations/python/segment-intersection/implementation-walkthrough.md)
+- [Segment-intersection technical lesson](../../algorithms/geometry/segment-intersection.md)
+- [Python implementation](../../implementations/python/segment-intersection/README.md)
+- [Implementation walkthrough](../../implementations/python/segment-intersection/implementation-walkthrough.md)
 - Bentley & Ottmann (1979): https://doi.org/10.1109/TC.1979.1675432
 - Shewchuk (1997): https://doi.org/10.1007/PL00009321
