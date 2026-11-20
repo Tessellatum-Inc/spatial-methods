@@ -19,7 +19,7 @@
 - Sensor and acquisition date in the collection catalogue: senseFly S.O.D.A. on an eBee; 16 July 2019.
 - Coordinate caution: the catalogue labels ground points LV95. Do not assume that this alone fully specifies the vertical datum or that all image EXIF positions are suitable as control. Confirm these details from the dataset-specific README and raw metadata before preparing GCPs.
 
-The images are a small, real aerial survey rather than synthetic placeholders. The dataset has sufficient image observations and ground-control metadata to design a controlled processing exercise. It is not evidence that ODM will reproduce the original Metashape solution.
+The images are a small, real aerial survey rather than synthetic placeholders. The catalogue description makes this a promising candidate for a controlled processing exercise, but suitability for a control/checkpoint split must be established from the actual observation files. It is not evidence that ODM will reproduce the original Metashape solution.
 
 ## Important coordinate and control cautions
 
@@ -89,4 +89,4 @@ Download the dataset from the linked collection and follow the dataset-specific 
 
 ## Current access limitation
 
-The dataset catalogue and licence are discoverable online, but direct download and dataset-specific file inspection could not be completed in the current execution environment because outbound DNS/network access is unavailable. The Python audit utility's four unit tests were executed against local test fixtures and passed; the actual dataset has not been audited. No control/checkpoint partition has been created. To continue on a network-enabled machine, retrieve only `datasets/drone_heig_2019/` from the linked Hugging Face dataset repository, then run the image audit and inspect the original ground-point and image-observation files before deciding any split.
+The dataset catalogue and licence are discoverable online, but direct download and dataset-specific file inspection could not be completed in the current execution environment because outbound DNS/network access is unavailable. The Python audit utility's four unit tests were executed against local test fixtures and passed; the actual dataset has not been audited. No control/checkpoint partition has been created. To continue on a network-enabled machine, run `acquire_rehearsal_dataset.py`, retain its resolved commit SHA, then run the image audit and inspect the original ground-point and image-observation files before deciding any split.
