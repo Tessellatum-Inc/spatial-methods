@@ -5,7 +5,7 @@
 ## Investigation record
 
 - **Question:** What can the backscatter patterns in one Sentinel-1 scene tell us about the observed landscape—and what can they not tell us?
-- **Exploration:** [Radar: a curiosity-led exploration](../README.md)
+- **Exploration:** [Radar: a curiosity-led exploration](../../README.md)
 - **Type:** Guided observation and optional desktop processing
 - **Expected effort:** Approximately 60–120 minutes, depending on data access and whether SNAP is used.
 - **Status:** Practical guide; no scene-specific result is claimed in this document.
