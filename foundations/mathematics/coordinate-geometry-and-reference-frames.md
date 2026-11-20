@@ -46,14 +46,14 @@ In three dimensions, the z-axis adds a third independent coordinate direction. I
 ## 3. Ordered pairs and triples
 
 A point in a two-dimensional Cartesian plane is represented by an ordered pair:
-$
+$$
 P=(x,y).
-$
+$$
 
 A point in three-dimensional Cartesian space is represented by an ordered triple:
-$
+$$
 P=(x,y,z).
-$
+$$
 
 The order matters. $10,20$ and $20,10$ are generally different points. The same numerical tuple can also describe different physical positions if interpreted in different frames, units or coordinate systems.
 
@@ -62,67 +62,67 @@ The order matters. $10,20$ and $20,10$ are generally different points. The same 
 Let A = $120,80$ and B = $170,200$, with coordinates in metres in a stated local grid.
 
 The displacement from A to B is described componentwise as:
-$
+$$
 $(170-120,\;200-80)=(50,120)\;\mathrm{m}$.
-$
+$$
 
 This describes the coordinate difference in that frame. Whether those values correspond to east/north displacement depends on how the frame axes were defined.
 
 ## 4. Distance between points
 
 For two points A=$x_1,y_1$ and B=$x_2,y_2$ in a Euclidean plane, the distance is:
-$
+$$
 d(A,B)=\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}.
-$
+$$
 
 This follows from the Pythagorean theorem: the coordinate differences form the perpendicular sides of a right triangle.
 
 ### Worked example
 
 Let A=$120,80$ m and B=$170,200$ m.
-$
+$$
 \begin{aligned}
 d(A,B)&=\sqrt{(170-120)^2+(200-80)^2}\\
 &=\sqrt{50^2+120^2}\\
 &=\sqrt{16{,}900}\\
 &=130\;\mathrm{m}.
 \end{aligned}
-$
+$$
 
 This is planar Euclidean distance. It is appropriate only when the coordinate values are in a suitable Cartesian metric frame and the required distance is adequately represented by that plane. It is not a universal formula for distances between longitude/latitude pairs or for long distances over the Earth's surface.
 
 ### 4.1 Three-dimensional distance
 
 For A=$x_1,y_1,z_1$ and B=$x_2,y_2,z_2$:
-$
+$$
 d(A,B)=\sqrt{(x_2-x_1)^2+(y_2-y_1)^2+(z_2-z_1)^2}.
-$
+$$
 
 The three coordinates must be expressed in compatible units and in the same Cartesian frame. Combining horizontal coordinates in metres with an unrelated height value, or mixing different vertical references, produces an invalid geometric result.
 
 ## 5. Midpoints and internal division
 
 The midpoint of a line segment joining A=$x_1,y_1$ and B=$x_2,y_2$ is:
-$
+$$
 M=\left(\frac{x_1+x_2}{2},\frac{y_1+y_2}{2}\right).
-$
+$$
 
 For the previous points A=$120,80$ and B=$170,200$:
-$
+$$
 $M=(145,140)\;\mathrm{m}$.
-$
+$$
 
 The midpoint is equidistant from the endpoints in the Euclidean plane.
 
 More generally, a point a fraction t of the way from A to B is:
-$
+$$
 P(t)=A+t(B-A),\qquad 0\leq t\leq1.
-$
+$$
 
 In two dimensions:
-$
+$$
 P(t)=\big(x_1+t(x_2-x_1),\;y_1+t(y_2-y_1)\big).
-$
+$$
 
 At $t=0$ the point is $A$; at $t=1$ it is $B$; at $t=0.5$ it is the midpoint. Values outside $[0,1]$ describe points on the extended line, not on the closed segment.
 
@@ -131,16 +131,16 @@ At $t=0$ the point is $A$; at $t=1$ it is $B$; at $t=0.5$ it is the midpoint. Va
 A straight line can be represented in several equivalent ways, depending on its orientation and the problem.
 
 ### 6.1 Slope-intercept form
-$
+$$
 y=mx+c,
-$
+$$
 
 where m is the slope and c is the y-intercept.
 
 For two distinct points with different x coordinates:
-$
+$$
 m=\frac{y_2-y_1}{x_2-x_1}.
-$
+$$
 
 A slope of 2 means that y increases by 2 coordinate units for each 1-unit increase in x. The slope is dimensionless when both axes use the same unit; otherwise it has output-units per input-unit.
 
@@ -149,42 +149,42 @@ Vertical lines cannot be represented as $y=mx+c$ because their slope is undefine
 ### 6.2 Point-slope form
 
 A line through $x_1,y_1$ with slope m is:
-$
+$$
 y-y_1=m(x-x_1).
-$
+$$
 
 ### 6.3 General form
-$
+$$
 ax+by+c=0.
-$
+$$
 
 Here a and b are not both zero. This form represents vertical as well as non-vertical lines. Multiplying all coefficients by the same non-zero number produces an equivalent line, so the coefficients are not a unique identifier of the line.
 
 ### 6.4 Parametric form
 
 A line through point P_0=$x_0,y_0$ with direction vector $u,v$ can be expressed as:
-$
+$$
 (x,y)=(x_0,y_0)+t(u,v),\qquad t\in\mathbb{R}.
-$
+$$
 
 This representation is useful for computing intersections and describing paths. Vector operations receive a fuller treatment in the next module.
 
 ### Worked example: a line through two points
 
 Find the line through A=$2,3$ and B=$6,11$.
-$
+$$
 m=\frac{11-3}{6-2}=2.
-$
+$$
 
 Using point-slope form:
-$
+$$
 y-3=2(x-2),
-$
+$$
 
 so:
-$
+$$
 y=2x-1.
-$
+$$
 
 Substitution verifies both points: when $x=2$, $y=3$; when $x=6$, $y=11$.
 
@@ -193,9 +193,9 @@ Substitution verifies both points: when $x=2$, $y=3$; when $x=6$, $y=11$.
 Two non-vertical lines are parallel when they have equal slopes. In general form, their normal coefficients are proportional.
 
 Two non-vertical lines are perpendicular when their slopes satisfy:
-$
+$$
 m_1m_2=-1.
-$
+$$
 
 This slope rule requires both slopes to be defined and non-zero. A horizontal line is perpendicular to a vertical line, even though the vertical slope is undefined.
 
@@ -206,19 +206,19 @@ In spatial applications, perpendicularity depends on the metric and coordinate f
 An intersection is a point satisfying the equations of both lines.
 
 Consider:
-$
+$$
 y=2x+1
-$
+$$
 
 and:
-$
+$$
 y=-x+7.
-$
+$$
 
 At the intersection:
-$
+$$
 2x+1=-x+7.
-$
+$$
 
 Therefore x=2 and y=5. The lines intersect at $2,5$.
 
@@ -231,24 +231,24 @@ Intersections are used in boundary construction, network geometry, survey comput
 A **locus** is the set of points satisfying a geometric condition.
 
 The circle with centre $a,b$ and radius r is:
-$
+$$
 (x-a)^2+(y-b)^2=r^2.
-$
+$$
 
 Its interior disk, including the boundary, is:
-$
+$$
 (x-a)^2+(y-b)^2\leq r^2.
-$
+$$
 
 For a centre C=$300,400$ m and radius 250 m:
-$
+$$
 (x-300)^2+(y-400)^2=62{,}500
-$
+$$
 
 describes the circular boundary, while:
-$
+$$
 (x-300)^2+(y-400)^2\leq62{,}500
-$
+$$
 
 describes the disk.
 
@@ -263,9 +263,9 @@ Other loci include:
 ## 10. Planes and three-dimensional geometry
 
 A plane in three-dimensional Cartesian space can be represented as:
-$
+$$
 ax+by+cz+d=0,
-$
+$$
 
 where a, b and c are not all zero.
 
@@ -274,14 +274,14 @@ The coefficients a, b and c describe a normal direction to the plane. The equati
 ### Worked example: a plane
 
 Consider:
-$
+$$
 z=100+0.02x-0.01y.
-$
+$$
 
 Rearrange:
-$
+$$
 0.02x-0.01y-z+100=0.
-$
+$$
 
 This is a plane. If x, y and z are all expressed in metres in one local Cartesian frame, the coefficients of x and y are dimensionless slopes, and the constant has units of metres.
 
@@ -290,9 +290,9 @@ A terrain surface may be approximated locally by a plane, but actual terrain may
 ### 10.1 Sphere
 
 A sphere centred at (a,b,c) with radius r is:
-$
+$$
 (x-a)^2+(y-b)^2+(z-c)^2=r^2.
-$
+$$
 
 The corresponding solid ball uses $\leq$ rather than $=$. These equations are useful geometric models but do not account for Earth curvature or geodetic distance.
 
@@ -310,16 +310,16 @@ A point can have different coordinate tuples in different frames. The physical p
 ### 11.1 A simple translation between local frames
 
 Suppose frame B has the same axis orientation and scale as frame A, but its origin is shifted by (100,−50) m relative to A. Under this explicitly defined convention:
-$
+$$
 x_B=x_A-100,\qquad y_B=y_A+50.
-$
+$$
 
 A point with coordinates $250,300$ m in A has coordinates $150,350$ m in B.
 
 The inverse mapping is:
-$
+$$
 x_A=x_B+100,\qquad y_A=y_B-50.
-$
+$$
 
 This is a simple translation. If the frames also differ in orientation or scale, additional operations are needed. In three dimensions, rotations and translations require careful axis and handedness conventions; matrix methods treat these operations in depth.
 
@@ -415,14 +415,14 @@ Find an equation for the line through P=(−1,4) and Q=$3,12$.
 ### Exercise 3 — Intersection
 
 Find the intersection of:
-$
+$$
 2x+y=11
-$
+$$
 
 and:
-$
+$$
 x-y=1.
-$
+$$
 
 Explain how substitution verifies the result.
 
@@ -446,9 +446,9 @@ A=$10,20,5$ m and B=$40,60,17$ m in the same Cartesian 3D frame.
 ### Exercise 6 — Local frame translation
 
 Frame B has the same orientation and scale as frame A, with coordinates related by:
-$
+$$
 x_B=x_A-250,\qquad y_B=y_A+100.
-$
+$$
 
 1. Transform A-frame point $900,450$ m into B.
 2. Write the inverse mapping.
