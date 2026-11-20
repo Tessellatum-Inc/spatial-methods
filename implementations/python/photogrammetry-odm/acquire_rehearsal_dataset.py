@@ -110,7 +110,7 @@ def main() -> int:
             "Check the repository tree and selected revision."
         )
 
-    manifest = build_manifest(destination, dataset_dir, revision)
+    manifest = build_manifest(snapshot_dir, dataset_dir, revision)
     manifest_path = snapshot_dir / "acquisition-provenance.json"
     manifest_path.write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
