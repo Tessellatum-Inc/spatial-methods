@@ -10,6 +10,8 @@ on:
       - "implementations/python/area-adjusted-accuracy/stratified_accuracy.py"
       - "implementations/python/area-adjusted-accuracy/paired_map_comparison.py"
       - "implementations/python/area-adjusted-accuracy/crosswalk_sensitivity.py"
+      - "implementations/python/area-adjusted-accuracy/spatial_disagreement.py"
+      - "implementations/python/area-adjusted-accuracy/test_spatial_disagreement.py"
       - "implementations/python/area-adjusted-accuracy/requirements-worldcover.txt"
 
 permissions:
@@ -82,6 +84,16 @@ jobs:
           python -c "import json; r=json.load(open('worldcover-fiji-crosswalk-sensitivity.json')); [print(s['scenario_id'], s['worldcover_overall_accuracy'], s['worldcover_minus_original_accuracy_difference']) for s in r['scenarios']]"
 
 
+
+      - name: Test and analyse four-outcome spatial disagreement
+        run: |
+          python -m unittest -v test_spatial_disagreement.py
+          python spatial_disagreement.py worldcover-fiji-sample.csv \
+            --stratum-area-weights '{"water":0.011331967836,"mangrove":0.022598921173,"bare_soil_rock":0.003445902118,"urban":0.004378396325,"agriculture":0.090917519797,"grassland":0.096242589869,"shrubland":0.031660519822,"tree":0.739424183060}' \
+            --stratum-population-sizes '{"water":1779768,"mangrove":3549325,"bare_soil_rock":541204,"urban":687659,"agriculture":14279258,"grassland":15115599,"shrubland":4972515,"tree":116131948}' \
+            --json-out fiji-worldcover-spatial-disagreement.json \
+            --geojson-out fiji-worldcover-spatial-disagreement.geojson
+
       - name: Upload reproducibility outputs
         if: always()
         uses: actions/upload-artifact@v4
@@ -94,5 +106,7 @@ jobs:
             implementations/python/area-adjusted-accuracy/worldcover-fiji-accuracy.json
             implementations/python/area-adjusted-accuracy/worldcover-fiji-paired-comparison.json
             implementations/python/area-adjusted-accuracy/worldcover-fiji-crosswalk-sensitivity.json
+            implementations/python/area-adjusted-accuracy/fiji-worldcover-spatial-disagreement.json
+            implementations/python/area-adjusted-accuracy/fiji-worldcover-spatial-disagreement.geojson
           if-no-files-found: ignore
           retention-days: 30

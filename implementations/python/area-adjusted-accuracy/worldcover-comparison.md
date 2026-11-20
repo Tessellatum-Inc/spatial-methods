@@ -236,3 +236,8 @@ Required attribution for the WorldCover product: **© ESA WorldCover project 202
 - ESA WorldCover Product Validation Report v2.0: https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/docs/WorldCover_PVR_V2.0.pdf
 - Fiji Land Use Land Cover Test Dataset: https://pacific-data.sprep.org/dataset/fiji-land-use-land-cover-test-dataset
 - Olofsson et al. (2014), Good practices for estimating area and assessing accuracy of land change, *Remote Sensing of Environment*, 148, 42–57. https://doi.org/10.1016/j.rse.2014.02.015
+
+
+## Spatial disagreement analysis
+
+The four-outcome analysis estimates the eligible-domain proportions where both maps are correct, only the Fiji map is correct, only WorldCover is correct, or both are wrong. It also estimates direct map-label disagreement and exports all 834 point outcomes as GeoJSON. See [the analysis and interpretation limits](spatial-disagreement-analysis.md), [the reproducible script](spatial_disagreement.py) and [its tests](test_spatial_disagreement.py). Nearest-neighbour summaries are descriptive only; no spatial-clustering significance claim is made.

@@ -161,3 +161,12 @@ A real public-data analysis is documented in [Fiji 2021 land-cover map accuracy]
 - [Introductory synthetic sample CSV](sample.csv)
 
 The complete `area-adjusted-accuracy` package suite, including the independent-strata estimator, pinned point reader, paired map comparison and crosswalk sensitivity, passed in GitHub Actions: **42 tests**. The separate WorldCover rehearsal workflow also completed successfully, sampling all 834 points and producing accuracy, paired-comparison and crosswalk-sensitivity artifacts. These checks validate the code path and reproducibility run, not the provisional class crosswalk or statistical assumptions. See the [latest successful rehearsal and 30-day artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44698503572).
+
+
+## Spatial disagreement analysis
+
+The Fiji–WorldCover comparison now includes a four-outcome decomposition (both correct, Fiji only correct, WorldCover only correct, both wrong) using the original sampling strata, eligible-domain weights and finite-population corrections. It distinguishes direct map-label disagreement from cases where both maps are wrong but predict the same class. Point-level results are exported as GeoJSON for GIS inspection. Nearest-neighbour summaries are exploratory descriptions, not spatial-clustering tests.
+
+- [Spatial disagreement analysis](spatial-disagreement-analysis.md)
+- [Reproducible spatial disagreement script](spatial_disagreement.py)
+- [Spatial disagreement tests](test_spatial_disagreement.py)
