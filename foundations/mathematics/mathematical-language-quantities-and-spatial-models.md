@@ -51,17 +51,17 @@ A **unit** is a defined magnitude used to express a quantity. Metre, second and 
 Dimensions help us check whether a mathematical expression is meaningful. Units help us communicate and calculate actual values.
 
 For instance, if a vehicle travels 12 kilometres in 20 minutes, its average speed is:
-$
+$$
 v = rac{d}{t}
   = rac{12 \mathrm{km}}{20 \mathrm{min}}
   = 0.6 \mathrm{km/min}
-$
+$$
 
 Converting minutes to hours:
-$
+$$
 0.6 \mathrm{km/min}\times60 \mathrm{min/h}
 =36 \mathrm{km/h}
-$
+$$
 
 The unit conversion is part of the calculation, not cosmetic formatting.
 
@@ -84,9 +84,9 @@ A **parameter** is a quantity treated as fixed within a particular model or calc
 An **observation** is a value obtained through an observing or measurement process. It may contain error and uncertainty; it is not automatically identical to the true value of the quantity.
 
 Consider a simple model for travel distance:
-$
+$$
 d = vt
-$
+$$
 
 where:
 
@@ -103,16 +103,16 @@ The equation is simple, but its use assumes that the average speed is meaningful
 An **expression** combines numbers, variables and operations. For example, (2x+5).
 
 An **equation** states that two expressions are equal. For example:
-$
+$$
 2x+5=17
-$
+$$
 
 Solving gives $x=6$.
 
 A **formula** expresses a general relationship between quantities. For a rectangle:
-$
+$$
 A = lw
-$
+$$
 
 where $A$ is area, $l$ is length and $w$ is width.
 
@@ -121,9 +121,9 @@ A **model** is a mathematical representation of some aspect of a system or probl
 ### 4.1 The same formula can answer different questions
 
 For a rectangle with length $l=40\,\mathrm{m}$ and width $w=25\,\mathrm{m}$:
-$
+$$
 A=lw=40\times25=1000 \mathrm{m^2}
-$
+$$
 
 This computes the planar area of the rectangle under the chosen geometry.
 
@@ -141,23 +141,23 @@ The mathematical relationship is exact for an ideal rectangle. Its application t
 A **function** assigns exactly one output to each input in its specified domain.
 
 We write:
-$
+$$
 y=f(x)
-$
+$$
 
 Here, $x$ is the input, $f$ is the rule and $y$ is the output.
 
 For example:
-$
+$$
 f(x)=2x+3
-$
+$$
 
 If $x=4$, then $f(4)=11$.
 
 A spatial example is a simple planar distance from a fixed point $(x_0,y_0)$ to a point $(x,y)$:
-$
+$$
 d(x,y)=\sqrt{(x-x_0)^2+(y-y_0)^2}
-$
+$$
 
 For this expression to represent a Euclidean planar distance, the coordinates must be in a suitable common Cartesian plane with compatible linear units. Applying it directly to longitude and latitude in degrees does not produce a distance in metres.
 
@@ -174,24 +174,24 @@ A **rate** compares quantities with different dimensions, such as distance per u
 A map scale of 1:50,000 means that one unit of map length represents 50,000 of the same units on the represented ground-distance basis, subject to the map projection and scale interpretation.
 
 For example:
-$
+$$
 2 \mathrm{cm}\times50{,}000
 =100{,}000 \mathrm{cm}
 =1{,}000 \mathrm{m}
 =1 \mathrm{km}
-$
+$$
 
 This is a scale relationship, not a guarantee that every map distance equals the corresponding ground distance everywhere. Projection scale distortion and the map's intended scale basis matter.
 
 A density is another rate:
-$
+$$
 ho=rac{N}{A}
-$
+$$
 
 If 12,000 people are associated with an area of $3\,\mathrm{km}^2$, the average density is:
-$
+$$
 ho=rac{12{,}000}{3}=4{,}000 \mathrm{people\,km^{-2}}
-$
+$$
 
 The result depends on the population definition, the spatial boundary and the time to which the count applies. An average density does not imply that people are uniformly distributed.
 
@@ -230,14 +230,14 @@ A representation must not be confused with the phenomenon it represents.
 Dimensional analysis checks whether the dimensions on both sides of a relationship are consistent.
 
 For example:
-$
+$$
 A=lw
-$
+$$
 
 has dimensions:
-$
+$$
 [L^2]=[L][L]
-$
+$$
 
 which is consistent.
 
@@ -259,14 +259,14 @@ Useful checks include:
 If both sides of a square are doubled, its perimeter doubles but its area becomes four times as large.
 
 For side length $s$:
-$
+$$
 $P=4s,\qquad A=s^2$
-$
+$$
 
 After scaling by factor $k$:
-$
+$$
 $P'=kP,\qquad A'=k^2A$
-$
+$$
 
 This distinction matters when changing map scale, raster resolution, grid dimensions or the size of a study region.
 
@@ -297,10 +297,10 @@ Define:
 - (ho=N/A), mean population density.
 
 Then:
-$
+$$
 ho=rac{18{,}000}{4.5}
 =4{,}000 \mathrm{residents\,km^{-2}}
-$
+$$
 
 Interpretation: the total population divided by the total area is 4,000 residents per square kilometre.
 
