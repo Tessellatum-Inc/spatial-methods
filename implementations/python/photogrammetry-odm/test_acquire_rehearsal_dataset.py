@@ -1,0 +1,58 @@
+import hashlib
+from pathlib import Path
+import tempfile
+import unittest
+from unittest.mock import patch
+
+from acquire_rehearsal_dataset import build_manifest, sha256_file
+
+
+class AcquisitionManifestTests(unittest.TestCase):
+    def test_sha256_file_matches_known_digest(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "sample.bin"
+            path.write_bytes(b"spatial methods")
+            self.assertEqual(
+                sha256_file(path),
+                hashlib.sha256(b"spatial methods").hexdigest(),
+            )
+
+    def test_manifest_records_sorted_relative_paths_sizes_and_hashes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            destination = Path(tmp)
+            dataset = destination / "datasets" / "drone_heig_2019"
+            dataset.mkdir(parents=True)
+            (dataset / "z.txt").write_bytes(b"last")
+            (dataset / "a.txt").write_bytes(b"first")
+
+            with patch("acquire_rehearsal_dataset.version", return_value="1.2.3"):
+                manifest = build_manifest(destination, dataset, "abc123")
+
+            self.assertEqual(manifest["resolved_revision"], "abc123")
+            self.assertEqual(manifest["file_count"], 2)
+            self.assertEqual(
+                [item["path"] for item in manifest["files"]],
+                [
+                    "datasets/drone_heig_2019/a.txt",
+                    "datasets/drone_heig_2019/z.txt",
+                ],
+            )
+            self.assertEqual(manifest["files"][0]["size_bytes"], 5)
+            self.assertEqual(
+                manifest["files"][0]["sha256"],
+                hashlib.sha256(b"first").hexdigest(),
+            )
+            self.assertEqual(manifest["huggingface_hub_version"], "1.2.3")
+            self.assertTrue(manifest["retrieved_at_utc"].endswith("+00:00"))
+
+    def test_empty_dataset_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            destination = Path(tmp)
+            dataset = destination / "datasets" / "drone_heig_2019"
+            dataset.mkdir(parents=True)
+            with self.assertRaises(RuntimeError):
+                build_manifest(destination, dataset, "abc123")
+
+
+if __name__ == "__main__":
+    unittest.main()
