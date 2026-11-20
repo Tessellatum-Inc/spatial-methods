@@ -135,7 +135,7 @@ A rectangular survey plot has a stated area of 1,800 m² and a measured length o
 w=\frac{1{,}800\;\mathrm{m^2}}{60\;\mathrm{m}}=30\;\mathrm{m}.
 \]
 
-The dimensional check gives m²/m = m. The answer is mathematically consistent with the model. It does not establish that the real plot is exactly rectangular or that the input area and length are accurate.
+The dimensional check gives \(\mathrm{m}^2/\mathrm{m}=\mathrm{m}\). The answer is mathematically consistent with the model. It does not establish that the real plot is exactly rectangular or that the input area and length are accurate.
 
 ## 5. Equations with units
 
@@ -175,7 +175,7 @@ where a, b and c are fixed coefficients or quantities, and a ≠ 0 for a unique 
 
 ### Example: a distance threshold
 
-Suppose a simplified one-dimensional model places a facility at coordinate x = 0. A point lies at coordinate x along the same axis. Its distance from the facility is:
+Suppose a simplified one-dimensional model places a facility at coordinate \(x=0\). A point lies at coordinate \(x\) along the same axis. Its distance from the facility is:
 
 \[
 d=|x|.
@@ -229,13 +229,13 @@ A circle centred at the origin with radius r satisfies:
 x^2+y^2=r^2.
 \]
 
-On the horizontal axis, y = 0, so:
+On the horizontal axis, \(y=0\), so:
 
 \[
 x^2=r^2.
 \]
 
-For r > 0:
+For \(r>0\):
 
 \[
 x=\pm r.
@@ -339,13 +339,13 @@ This sign reversal is essential.
 
 ### 9.2 Interval notation
 
-The solution x ≤ 7 can be written:
+The solution \(x\leq7\) can be written:
 
 \[
 (-\infty,7].
 \]
 
-The square bracket indicates that 7 is included. A parenthesis indicates an excluded endpoint. For example, 0 < x ≤ 10 is:
+The square bracket indicates that 7 is included. A parenthesis indicates an excluded endpoint. For example, \(0<x\leq10\) is:
 
 \[
 (0,10].
@@ -387,7 +387,7 @@ x\leq-a\quad\text{or}\quad x\geq a.
 
 ### Example: a one-dimensional service zone
 
-A facility is at x = 0. Locations within 500 m satisfy:
+A facility is at \(x=0\). Locations within \(500\,\mathrm{m}\) satisfy:
 
 \[
 |x|\leq500.
@@ -484,7 +484,7 @@ A simplified screening rule retains a candidate when its measured distance d fro
 250\;\mathrm{m}\leq d\leq1{,}000\;\mathrm{m}.
 \]
 
-A candidate with d = 720 m satisfies the numerical condition. A candidate with d = 1,020 m does not.
+A candidate with \(d=720\,\mathrm{m}\) satisfies the numerical condition. A candidate with \(d=1{,}020\,\mathrm{m}\) does not.
 
 Before applying this to real data, the analyst must define:
 - the feature from which distance is measured;
@@ -515,7 +515,7 @@ Show the transformations and check each answer in the original statement. Use un
 
 ### Exercise 1 — Rearranging a spatial formula
 
-A rectangular field has area A = 2,400 m² and width w = 40 m.
+A rectangular field has area \(A=2{,}400\,\mathrm{m}^2\) and width \(w=40\,\mathrm{m}\).
 
 1. Starting from A = lw, rearrange the equation to make l the subject.
 2. Calculate the length.
@@ -523,7 +523,7 @@ A rectangular field has area A = 2,400 m² and width w = 40 m.
 
 ### Exercise 2 — Map-scale equation
 
-A map has representative fraction 1:20,000. A route is represented by a map length M = 6.5 cm.
+A map has representative fraction \(1:20{,}000\). A route is represented by a map length \(M=6.5\,\mathrm{cm}\).
 
 1. Write an equation for ground distance G in centimetres.
 2. Calculate G in metres.
@@ -541,7 +541,7 @@ A circle centred at the origin has radius 12 m.
 
 ### Exercise 4 — Inequality and service range
 
-A simplified one-dimensional facility model is centred at x = 0. A service range includes all locations no more than 750 m away.
+A simplified one-dimensional facility model is centred at \(x=0\). A service range includes all locations no more than \(750\,\mathrm{m}\) away.
 
 1. Express the rule using absolute value.
 2. Express the solution as a double inequality.
@@ -566,7 +566,7 @@ Three candidates have:
 
 ### Exercise 6 — Detecting an invalid transformation
 
-A learner solves x² = 9 by taking the square root and reports only x = 3.
+A learner solves \(x^2=9\) by taking the square root and reports only \(x=3\).
 
 1. Find all real solutions.
 2. Explain what was omitted.
