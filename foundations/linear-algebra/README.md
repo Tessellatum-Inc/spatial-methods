@@ -35,7 +35,7 @@ Numerical analysis owns floating-point error, conditioning, stability, convergen
 | 06 | [Least squares and constrained systems](least-squares-and-constrained-systems.md) | Survey adjustment, regression and exact constraints | Initial public content |
 | 07 | [Symmetric matrices, quadratic forms and definiteness](symmetric-matrices-quadratic-forms-and-definiteness.md) | Covariance, energy functions and optimisation | Initial public content |
 | 08 | [Eigenvalues, eigenvectors and spectral structure](eigenvalues-eigenvectors-and-spectral-structure.md) | PCA, stability, spatial weights and network structure | Initial public content |
-| 09 | Matrix factorizations | Cholesky GLS, QR least squares, SVD and rank diagnosis | Planned |
+| 09 | [Matrix factorizations: LU, QR, Cholesky and singular-value decomposition](matrix-factorizations-lu-qr-cholesky-svd.md) | Cholesky GLS, QR least squares, SVD and rank diagnosis | Initial public content |
 | 10 | Covariance matrices and multivariate structure | Correlated observations, PCA, kriging and uncertainty models | Planned |
 
 The sequence is a suggested route, not a compulsory learning order. Readers may enter through a concrete application and follow its prerequisites.
@@ -58,4 +58,4 @@ Do not conflate a mathematically valid model with a valid spatial interpretation
 
 ## Review status
 
-Modules 01–08 are initial teaching resources. They have not received independent technical review or learner testing. The subject collection is incomplete; publication of a module does not constitute technical certification.
+Modules 01–09 are initial teaching resources. They have not received independent technical review or learner testing. The subject collection is incomplete; publication of a module does not constitute technical certification.
