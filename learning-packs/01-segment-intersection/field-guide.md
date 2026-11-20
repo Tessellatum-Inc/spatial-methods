@@ -136,11 +136,11 @@ Before using segment intersection in an applied workflow, ask:
 
 ## Companion resources
 
-- [Canonical technical lesson](../../../algorithms/geometry/segment-intersection.md)
-- [Python implementation and tests](../../../implementations/python/segment-intersection/README.md)
-- [Implementation walkthrough](../../../implementations/python/segment-intersection/implementation-walkthrough.md)
+- [Canonical technical lesson](../../algorithms/geometry/segment-intersection.md)
+- [Python implementation and tests](../../implementations/python/segment-intersection/README.md)
+- [Implementation walkthrough](../../implementations/python/segment-intersection/implementation-walkthrough.md)
 - [Educator companion](educator-companion.md)
-- [Learning release 01](../../../docs/patreon-first-learning-pack.md)
+- [Learning release 01](../../docs/patreon-first-learning-pack.md)
 
 ---
 
