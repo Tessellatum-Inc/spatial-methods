@@ -1,0 +1,84 @@
+# Mathematics for spatial science — gap register
+
+**Subject ID:** `SM-FND-001`  
+**Review scope:** Mathematics modules 01–08 and the current domain roadmap  
+**Review status:** Initial coverage audit; editorial assessment, not independent peer review  
+**Last reviewed:** 2026-11-20
+
+## Purpose
+
+This register records what the current mathematics collection does not yet teach sufficiently for readers to use mathematics confidently across spatial data collection, spatial algorithms, theoretical foundations and spatial recipes.
+
+A gap is not automatically a request to add another mathematics chapter. Each item is assigned to one of four treatments:
+
+- **Expand:** strengthen an existing module.
+- **New module:** add a coherent topic to this domain.
+- **Cross-link:** teach the subject in its proper specialist foundation and link to it here.
+- **Defer:** useful, but not a prerequisite for the next stage of the domain.
+
+The register is a planning and review instrument. A gap remains open until the relevant material is written, reviewed and linked; mentioning a concept in a paragraph does not count as adequate coverage.
+
+## Priority definitions
+
+- **P1 — Core:** blocks a sound introductory understanding or recurs across several spatial disciplines.
+- **P2 — Important:** needed for substantial practical competence or for progressing into a neighbouring foundation.
+- **P3 — Specialist/enrichment:** valuable for selected methods, but belongs later or in a specialist domain.
+
+## Gap register
+
+| Gap ID | Priority | Topic | Current coverage | Why it matters in spatial science | Dependency / destination | Recommended treatment |
+|---|---|---|---|---|---|---|
+| SM-MATH-GAP-001 | P1 | Mathematical modelling as a disciplined process | Module 01 introduces a simple service-area density model; module 08 introduces approximation. There is no full modelling workflow. | Spatial work requires defining system boundaries, variables, parameters, assumptions, constraints, model purpose, calibration inputs and validation questions before computation. | Builds on modules 01, 04 and 05; connects to all foundations and recipes. | **New module 09.** Develop a complete model-building and critique workflow with more than one spatial example. |
+| SM-MATH-GAP-002 | P1 | Dimensional analysis and unit consistency | Introduced in module 01 and referenced in modules 02–07, but not developed as a reusable method. | Dimensional checks catch invalid equations, unit conversion errors, inconsistent sensor quantities and implausible model outputs. | Modules 01–08; measurement science; remote sensing; physical sciences. | **New module 09.** Include dimensional homogeneity, derived units, conversion factors, dimensionless groups at an introductory level, and limits of dimensional reasoning. |
+| SM-MATH-GAP-003 | P1 | Discrete mathematics, sets, relations and logic | Module 01 briefly introduces sets; module 04 uses logical combinations and feasible sets. No systematic treatment exists. | GIS queries, topology, database filtering, spatial predicates, network representation and algorithm conditions rely on sets, relations and Boolean logic. | Modules 01, 04 and 05; computer science (SM-FND-015); GIScience (SM-FND-018). | **New module 10.** Cover set operations, Cartesian products, relations, functions as mappings, propositions, quantifiers, truth tables, Boolean operations and introductory graph concepts. Keep advanced graph theory in its specialist context. |
+| SM-MATH-GAP-004 | P1 | Trigonometry and angular measurement | Angles occur in coordinate geometry and vectors, but trigonometric functions and identities are not taught systematically. | Bearings, azimuths, slopes, triangulation, rotations, sensor geometry, line-of-sight and coordinate calculations depend on angular relationships. | Modules 06–07; geodesy (SM-FND-008); geometry (SM-FND-006); remote sensing physics (SM-FND-012). | **New module or substantial module 09 prerequisite section.** Teach right-triangle trigonometry, radians, unit circle, sine/cosine/tangent, inverse functions, periodicity and practical angle conventions. Spherical/ellipsoidal trigonometry remains in geodesy. |
+| SM-MATH-GAP-005 | P2 | Mathematical proof, justification and argument | Module 04 introduces reasoning and checking but not proof methods or the distinction between examples and general proof. | Spatial algorithms and scientific claims require more than a few successful examples; learners need to understand definitions, assumptions, counterexamples and why a result follows. | Modules 01–05; discrete mathematics; algorithm correctness (SM-FND-015). | **Expand module 04 or module 10.** Introduce direct reasoning, implication, contrapositive, contradiction, counterexample and induction at an accessible level. |
+| SM-MATH-GAP-006 | P2 | Coordinate geometry beyond elementary Cartesian cases | Module 06 covers points, distances, lines, circles, planes, spheres and simple frame translation. It does not teach conics or polar/parametric representations in depth. | Curves, orbit/sensor geometry, circular buffers, trajectory descriptions and geometric intersections arise throughout spatial work. | Modules 06–07; computational geometry (SM-FND-006); calculus (SM-FND-003). | **Expand module 06 selectively.** Add polar coordinates and parametric curves where useful. Defer conic sections and advanced loci unless a clear application warrants them. |
+| SM-MATH-GAP-007 | P2 | Introductory mathematical modelling of uncertainty | Modules 02 and 08 distinguish numerical approximation from measurement uncertainty; measurement-science foundations cover uncertainty in depth. The mathematics domain does not explain probability as a mathematical language. | Learners must distinguish deterministic values, uncertain quantities, variability and probability before interpreting spatial estimates or simulations. | Probability and statistical inference (SM-FND-004); measurement science (SM-FND-011). | **Cross-link.** Add a short orientation in the mathematics roadmap, then develop probability distributions and random variables in SM-FND-004. Avoid duplicating the uncertainty foundation. |
+| SM-MATH-GAP-008 | P2 | Calculus prerequisites for continuous spatial models | Module 05 introduces multivariable functions; module 07 mentions gradients; module 08 discusses convergence. Derivatives and integrals are intentionally absent. | Terrain gradients, rates of spatial change, accumulation, continuous fields, physical models and optimisation depend on calculus. | Calculus and differential methods (SM-FND-003). | **Cross-link.** Do not insert calculus chapters into this domain. Add explicit prerequisite links when SM-FND-003 is developed. |
+| SM-MATH-GAP-009 | P2 | Linear algebra prerequisites and matrix notation | Module 04 introduces systems of equations; module 07 introduces vectors. Matrices, rank, basis, transformations and eigen concepts are not taught here. | Coordinate transformations, least-squares adjustment, raster operations, networks, dimensionality reduction and many spatial algorithms rely on matrix methods. | Linear algebra and matrix methods (SM-FND-002). | **Cross-link.** Add a concise matrix notation bridge only if needed for module 10 or examples; teach the full subject under SM-FND-002. |
+| SM-MATH-GAP-010 | P2 | Numerical representation, conditioning and stability | Module 02 introduces integer/floating-point storage; module 08 introduces approximation and stopping criteria. Conditioning, stability, error propagation and robust predicates are explicitly excluded. | A mathematically valid formula can produce unreliable computed results. GIS geometry and scientific computation need awareness of finite precision and ill-conditioned problems. | Numerical analysis (SM-FND-016); computational geometry (SM-FND-006); computer science (SM-FND-015). | **Cross-link.** Keep the elementary introduction, then develop the theory and computational consequences in SM-FND-016. |
+| SM-MATH-GAP-011 | P2 | Spatial geometry and metric assumptions | Modules 06–07 use Euclidean Cartesian geometry and state this limitation. There is no systematic comparison of Euclidean, spherical, ellipsoidal, network and other distance concepts. | “Distance”, “straight line”, “area” and “nearest” depend on the space and metric. Confusing them can invalidate spatial analysis. | Geometry (SM-FND-006); geodesy (SM-FND-008); GIScience (SM-FND-018); spatial algorithms. | **Cross-link and expand module 06 with a short conceptual comparison.** Formal metric spaces and Earth-surface geodesics belong in specialist foundations. |
+| SM-MATH-GAP-012 | P3 | Complex numbers | No coverage. | Complex numbers are useful in Fourier analysis, wave physics, signal processing and some transformations, but are not a prerequisite for most introductory spatial workflows. | Signal processing and information theory (SM-FND-014); optics and electromagnetism (SM-FND-013). | **Defer / cross-link.** Introduce when the signal-processing foundation requires them. |
+| SM-MATH-GAP-013 | P3 | Mathematical optimisation beyond elementary constraints | Module 04 introduces feasible sets and inequalities; optimisation is not developed. | Site selection, routing, allocation, interpolation and parameter fitting often involve objective functions and constraints. | Optimisation and operations research (SM-FND-017); calculus and linear algebra. | **Cross-link.** Develop optimisation as its own foundation rather than adding a superficial chapter here. |
+| SM-MATH-GAP-014 | P3 | Advanced series, approximation theory and convergence proofs | Module 08 covers elementary sequences, geometric series, raster discretisation and basic iterative stopping. | Numerical integration, approximation error bounds and solver convergence matter for advanced spatial computation, but need stronger analysis prerequisites. | Calculus (SM-FND-003); numerical analysis (SM-FND-016). | **Cross-link.** Retain module 08 as an accessible introduction; defer rigorous treatment to specialist domains. |
+
+## Review of the current eight modules
+
+This is a coverage assessment, not a claim that the modules are complete.
+
+| Module | What it already establishes | Main unresolved work |
+|---|---|---|
+| 01 — Mathematical language, quantities and spatial models | Quantities, values, units, variables, expressions, functions, sets, discrete/continuous representations and a first model example. | Turn the short modelling introduction into a repeatable modelling process; strengthen dimensional analysis and assumptions. |
+| 02 — Number systems, arithmetic and numerical representation | Number sets, arithmetic, fractions, rounding, quantisation, significant figures, storage and coordinate precision. | Keep numerical-analysis detail in SM-FND-016; strengthen examples that distinguish storage precision, measurement resolution and accuracy without conflating them. |
+| 03 — Ratios, proportions, rates and logarithms | Ratios, proportions, rates, density, growth and logarithmic scales. | Add clearer prerequisite links to trigonometry, probability/statistics and radiometry where these become relevant; avoid implying that a mathematical relationship is automatically a valid process model. |
+| 04 — Equations, inequalities and mathematical reasoning | Algebraic manipulation, equations, systems, inequalities, constraints and elementary verification. | Develop proof/argument and counterexamples; connect systems to matrix methods and constraints to optimisation. |
+| 05 — Functions and relationships | Domains, ranges, function families, inverse/composite functions, multivariable mappings and empirical relationships. | Add explicit links to continuity, calculus, interpolation and statistical model fitting; these are not omissions to solve by overloading this module. |
+| 06 — Coordinate geometry and reference frames | Cartesian 2D/3D geometry, lines, planes, circles, spheres and basic frame concepts. | Add trigonometry and polar/parametric representation; strengthen distinction among Euclidean, projected, geodetic and network distance. |
+| 07 — Vectors and vector operations | Components, displacement, magnitude, dot/cross products, projection and spatial interpretation. | Matrix/basis theory, vector calculus, tensors and Earth-referenced vector fields belong in specialist foundations; link explicitly when those foundations mature. |
+| 08 — Sequences, series and approximation | Elementary sequences/series, convergence, approximation types, raster discretisation and iterative stopping. | Numerical conditioning, floating-point error, stability, rigorous error bounds and solver convergence belong in SM-FND-016. |
+
+## Recommended completion order
+
+The current domain should not grow by adding arbitrary formula collections. Complete the high-value common language first, then connect out to specialist mathematics.
+
+1. **Module 09 — Mathematical modelling and dimensional analysis.** Consolidate the modelling workflow, dimensional reasoning, units, assumptions, plausibility and validation questions. Include the essential trigonometry needed for spatial work, or make trigonometry a clearly scoped companion module if it cannot be taught properly within this one.
+2. **Module 10 — Discrete mathematics and logic.** Build the set, relation, predicate and Boolean reasoning used by GIS, databases and algorithms. Include introductory graph language but point to graph theory and network analysis for depth.
+3. **Targeted revisions to modules 04 and 06.** Add proof/counterexample reasoning and trigonometric/polar-coordinate coverage or explicit links. Do not rewrite already adequate sections merely to make them longer.
+4. **Create cross-domain prerequisite links.** As the linear algebra, calculus, probability/statistics, geometry, geodesy and numerical-analysis foundations are developed, link the mathematics modules to their canonical treatments.
+5. **Reassess the domain against actual spatial tasks.** Use representative tasks from data collection, remote sensing, surveying, raster/vector analysis, spatial statistics, network analysis and modelling. Identify missing prerequisites from task requirements rather than from a generic mathematics syllabus.
+
+## Completion criteria for SM-FND-001
+
+The mathematics domain can be considered an initial coherent foundation when:
+
+- Modules 01–10 provide a connected introduction to quantities, number representation, ratios/rates, algebra, functions, coordinate geometry, vectors, approximation, modelling/dimensional analysis and discrete logic.
+- Trigonometry is taught at a level sufficient for common planar spatial problems, with spherical and ellipsoidal treatment routed to geodesy.
+- Each module states its assumptions, units, limitations and prerequisite links.
+- Readers can formulate and critique a simple spatial model, not only substitute values into formulas.
+- Examples span more than map scale and elementary Cartesian geometry.
+- Specialist topics are linked to their own foundations rather than duplicated.
+- References and claim support are reviewed; examples are clearly identified as synthetic or illustrative.
+- The domain is independently technically reviewed before being labelled mature.
+
+**Important:** Completing SM-FND-001 does not mean completing the theoretical foundations collection. Linear algebra, calculus, probability, geometry, geodesy, measurement science, remote sensing physics, computer science, numerical analysis and other domains remain separate bodies of work.
