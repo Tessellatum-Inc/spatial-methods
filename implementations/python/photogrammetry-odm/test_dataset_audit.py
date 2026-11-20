@@ -26,6 +26,19 @@ class DatasetAuditTests(unittest.TestCase):
             report = inspect_images(root, expected_count=32)
             self.assertFalse(report["image_count_matches_expectation"])
 
+    def test_valid_image_metadata_when_pillow_is_available(self):
+        try:
+            from PIL import Image
+        except ImportError:
+            self.skipTest("Pillow is optional")
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            Image.new("RGB", (7, 5)).save(root / "frame.jpg", format="JPEG")
+            report = inspect_images(root, expected_count=1)
+            self.assertEqual(report["valid_images"], 1)
+            self.assertEqual(report["images"][0]["width_px"], 7)
+            self.assertEqual(report["images"][0]["height_px"], 5)
+
     def test_empty_dataset_is_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaises(ValueError):
