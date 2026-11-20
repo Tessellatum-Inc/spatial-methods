@@ -450,7 +450,7 @@ The next module in the current mathematics roadmap is sequences, series and appr
 The explanations, worked examples and spatial interpretations are original Spatial Methods teaching material. The following open textbooks support the mathematical definitions and operations.
 
 1. **OpenStax.** *Algebra and Trigonometry 2e*, [Section 10.8: Vectors](https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-8-vectors). Used for vector components, magnitude, direction, addition, scalar multiplication, unit vectors and the dot product.
-2. **OpenStax.** *Calculus Volume 3*, Chapter 2: [Vectors in Space]$https://openstax.org/books/calculus-volume-3/pages/2-introduction$, especially Sections 2.1–2.5. Used for three-dimensional vectors, dot and cross products, and vector equations of lines and planes.
+2. **OpenStax.** *Calculus Volume 3*, Chapter 2: [Vectors in Space](https://openstax.org/books/calculus-volume-3/pages/2-introduction), especially Sections 2.1–2.5. Used for three-dimensional vectors, dot and cross products, and vector equations of lines and planes.
 
 **Source register:** `SM-SRC-000021`, `SM-SRC-000026`.
 
