@@ -2,10 +2,12 @@
 
 **Subject ID:** `SM-FND-001`  
 **Review scope:** Mathematics modules 01–11 and the current domain roadmap  
-**Review status:** Initial coverage audit; editorial assessment, not independent peer review  
+**Review status:** Initial module and application coverage audits; editorial assessment, not independent peer review  
 **Last reviewed:** 2026-11-20
 
 ## Purpose
+
+The [application coverage audit](application-coverage-audit.md) assesses Modules 01–11 against eight representative spatial workflows. It identifies which introductory concepts are present, where a workflow depends on specialist foundations, and six targeted revisions. The audit is desk-based and does not establish learner competence, field validation or independent peer review.
 
 This register records what the current mathematics collection does not yet teach sufficiently for readers to use mathematics confidently across spatial data collection, spatial algorithms, theoretical foundations and spatial recipes.
 
@@ -68,6 +70,10 @@ The current domain should not grow by adding arbitrary formula collections. Comp
 4. **Targeted revisions to modules 04 and 06.** Add proof/counterexample reasoning and polar-coordinate coverage or explicit links. Do not rewrite already adequate sections merely to make them longer.
 5. **Create cross-domain prerequisite links.** As the linear algebra, calculus, probability/statistics, geometry, geodesy and numerical-analysis foundations are developed, link the mathematics modules to their canonical treatments.
 6. **Reassess the domain against actual spatial tasks.** Use representative tasks from data collection, remote sensing, surveying, raster/vector analysis, spatial statistics, network analysis and modelling. Identify missing prerequisites from task requirements rather than from a generic mathematics syllabus.
+
+## Application-led revision queue
+
+The application audit defines six revision items: APP-MATH-01 to APP-MATH-06. The current priority is to improve the local traverse example, spatial-query logic and raster-resolution explanation before adding further broad topics. Track implementation and verification in the audit itself; do not mark these revisions complete merely because they have been proposed.
 
 ## Completion criteria for SM-FND-001
 
