@@ -307,7 +307,7 @@ These are connected teaching materials, not interchangeable copies of the same e
 
 - [Spatial cellular automata and Schelling simulation](python/spatial-simulation/README.md): synchronous binary B/S rules, seeded Schelling relocation, site percolation, stochastic forest-fire dynamics, spatial preferential attachment, Watts–Strogatz small-world graphs a discrete-time network SIR model and a first-order categorical Markov land-change baseline, with independent tests and a [walkthrough](python/spatial-simulation/implementation-walkthrough.md).
 
-- [Matrix factorizations: LU, QR, Cholesky and SVD](python/matrix-factorizations/README.md): reproducible NumPy/SciPy examples comparing pivoted LU, QR least squares, Cholesky covariance whitening and SVD/PCA, with tests. An [integrated synthetic spatial case](python/matrix-factorizations/integrated-case.md) connects affine control, terrain-plane estimation, correlated-error GLS and SVD diagnostics.
+- [Matrix factorizations: LU, QR, Cholesky and SVD](python/matrix-factorizations/README.md): reproducible NumPy/SciPy examples comparing pivoted LU, QR least squares, Cholesky covariance whitening and SVD/PCA, with tests. An [integrated synthetic spatial case](python/matrix-factorizations/integrated-case.md) connects affine control, terrain-plane estimation, correlated-error GLS and SVD diagnostics. A companion [learner exercise with worked solution](python/matrix-factorizations/integrated-case-exercise.md) turns it into a staged practical assessment.
 
 ### 3D geometry
 
