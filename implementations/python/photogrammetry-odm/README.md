@@ -133,7 +133,7 @@ python -m pip install huggingface_hub
 python acquire_rehearsal_dataset.py ./data/heig-vd-scop
 ```
 
-The helper resolves the Hub repository's current commit first and downloads `datasets/drone_heig_2019/` at that exact revision. It prints the revision and local directory. Keep the printed revision with the project record. Then run `dataset_audit.py` against the downloaded directory. This helper has not been able to retrieve the dataset in the current network-restricted environment.
+The helper resolves the Hub repository's current commit first and downloads `datasets/drone_heig_2019/` at that exact revision. It writes `acquisition-provenance.json` beside the dataset, recording the immutable repository revision, retrieval time, client/Python versions, and each downloaded file's size and SHA-256. Keep this manifest with the project record. Then run `dataset_audit.py` against the downloaded directory. This helper has not been able to retrieve the dataset in the current network-restricted environment.
 
 ## Connected Spatial Methods material
 
