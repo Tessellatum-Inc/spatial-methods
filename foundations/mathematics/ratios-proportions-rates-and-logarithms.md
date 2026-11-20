@@ -477,3 +477,14 @@ Worked values are hypothetical teaching examples, not observations from a field 
 ## 15. Further development
 
 The next module develops equations, inequalities and mathematical reasoning: rearranging relationships, solving constraints, interpreting solution sets and checking whether a mathematical solution is meaningful in a spatial context.
+
+
+## References and further reading
+
+The explanations and worked spatial examples are original Spatial Methods teaching material. The following sources support the mathematical relationships and selected GIS applications.
+
+1. **OpenStax.** *Algebra and Trigonometry 2e*. [Chapter 4: Linear Functions](https://openstax.org/books/algebra-and-trigonometry-2e/pages/4-introduction-to-linear-functions) and [Chapter 6: Exponential and Logarithmic Functions](https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-introduction-to-exponential-and-logarithmic-functions). Used for proportional relationships, rates, exponential growth and logarithm properties.
+2. **Esri.** [Explore imagery — Spatial resolution](https://learn.arcgis.com/en/projects/explore-imagery-spatial-resolution/). Used for the applied discussion of raster cell size, represented detail and resolution trade-offs. This is a software-vendor tutorial, not a universal resolution standard.
+3. **BIPM.** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication](https://www.bipm.org/en/si-brochure-9). Used for unit expression and dimensional consistency when defining rates and densities.
+
+**Limitations:** A mathematical relationship such as proportionality or exponential growth is not evidence that a particular spatial process follows that model. Model choice requires domain knowledge and appropriate data.
