@@ -146,6 +146,12 @@ The audit does not justify adding another broad mathematics module. It identifie
 | APP-MATH-05 | P2 | Add a concise “which foundation next?” routing table for eight workflow families. | Mathematics README | Each workflow points to the appropriate specialist foundations without duplicating their content. |
 | APP-MATH-06 | P2 | Review module exercises for transfer: include at least one unfamiliar scenario requiring learners to choose concepts from multiple modules. | Modules 01–11 | Exercises assess interpretation, assumption selection and method choice, not just formula substitution. |
 
+### Implementation status — 2026-11-20
+
+- **APP-MATH-01 implemented:** Module 10 now includes a complete two-leg local planar traverse from azimuths and distances through coordinate updates, direction checks, path length versus displacement, and explicit limitations. Independent technical review and learner testing remain outstanding.
+- **APP-MATH-02 implemented:** Module 11 now evaluates a spatial QA predicate across TRUE, FALSE and UNKNOWN cases, explains why UNKNOWN is not selected by a typical SQL WHERE clause, and distinguishes attribute logic from geometry predicate semantics. Database-specific implementation and learner testing remain outstanding.
+- **APP-MATH-03 to APP-MATH-06 remain open.**
+
 ## 6. What this audit does not justify
 
 The audit does **not** justify:
