@@ -44,7 +44,7 @@ $$
 \hat{P}_j = \sum_{i=1}^{n} w_{ij}P_i
 $$
 
-where an estimated population quantity for target area \(j\) is assembled from source-area quantities \(P_i\) using allocation weights \(w_{ij}\).
+where an estimated population quantity for target area $j$ is assembled from source-area quantities $P_i$ using allocation weights $w_{ij}$.
 
 The second expression is not automatically a valid population model. The weights need a defensible interpretation, their construction requires data and assumptions, and the output must be evaluated. The equation only makes the proposed relationship explicit.
 
@@ -99,12 +99,12 @@ A **variable** represents a quantity that may vary within the model.
 
 Examples include:
 
-- \(d\): distance, in metres;
-- \(t\): elapsed time, in seconds;
-- \(v\): speed, in metres per second;
-- \(A\): area, in square metres;
-- \(N\): a count of people or objects;
-- \(z(x,y)\): a spatially varying surface value.
+- $d$: distance, in metres;
+- $t$: elapsed time, in seconds;
+- $v$: speed, in metres per second;
+- $A$: area, in square metres;
+- $N$: a count of people or objects;
+- $z(x,y)$: a spatially varying surface value.
 
 Every variable should have a definition, unit where applicable, reference and valid domain.
 
@@ -178,10 +178,10 @@ Prepare a variable register before calculating.
 
 | Symbol | Meaning | Unit | Source or status |
 |---|---|---|---|
-| \(d\) | Route distance | m | Calculated from a specified network |
-| \(v\) | Assumed average speed | m/s | Scenario parameter |
-| \(t\) | Travel time | s | Model output |
-| \(t_0\) | Reference time | s | Defined scenario input |
+| $d$ | Route distance | m | Calculated from a specified network |
+| $v$ | Assumed average speed | m/s | Scenario parameter |
+| $t$ | Travel time | s | Model output |
+| $t_0$ | Reference time | s | Defined scenario input |
 
 This example assumes a single representative speed. A real journey may require segment-specific speeds, turn delays, waiting time and time-dependent conditions.
 
@@ -242,17 +242,17 @@ Common dimensions include:
 
 | Quantity | Dimension |
 |---|---|
-| Length | \(L\) |
-| Time | \(T\) |
-| Mass | \(M\) |
-| Area | \(L^2\) |
-| Volume | \(L^3\) |
-| Speed | \(LT^{-1}\) |
-| Acceleration | \(LT^{-2}\) |
-| Density by area (count per area) | \(L^{-2}\) for a dimensionless count |
-| Volumetric flow rate | \(L^3T^{-1}\) |
+| Length | $L$ |
+| Time | $T$ |
+| Mass | $M$ |
+| Area | $L^2$ |
+| Volume | $L^3$ |
+| Speed | $LT^{-1}$ |
+| Acceleration | $LT^{-2}$ |
+| Density by area (count per area) | $L^{-2}$ for a dimensionless count |
+| Volumetric flow rate | $L^3T^{-1}$ |
 
-The notation \(L,T,M\) represents dimensions, not specific units. A length may be expressed in metres, kilometres or another compatible length unit.
+The notation $L,T,M$ represents dimensions, not specific units. A length may be expressed in metres, kilometres or another compatible length unit.
 
 ### 6.1 Dimensional homogeneity
 
@@ -304,7 +304,7 @@ $$
 250\,\mathrm{m}+400\,\mathrm{m}=650\,\mathrm{m}
 $$
 
-But adding \(250\,\mathrm{m}\) to \(0.4\,\mathrm{m}^2\) is not meaningful as a length calculation.
+But adding $250\,\mathrm{m}$ to $0.4\,\mathrm{m}^2$ is not meaningful as a length calculation.
 
 Even equal dimensions do not guarantee semantic compatibility. Two quantities may both be lengths but refer to different objects, epochs, paths or measurement bases.
 
@@ -356,7 +356,7 @@ $$
 1\,\mathrm{km}=1000\,\mathrm{m}
 $$
 
-If a route length is \(2.4\,\mathrm{km}\), then:
+If a route length is $2.4\,\mathrm{km}$, then:
 
 $$
 2.4\,\mathrm{km}\times
@@ -370,7 +370,7 @@ The kilometre units cancel, leaving metres.
 
 A conversion factor must preserve the quantity.
 
-For a speed of \(36\,\mathrm{km/h}\):
+For a speed of $36\,\mathrm{km/h}$:
 
 $$
 36\,\frac{\mathrm{km}}{\mathrm{h}}
@@ -411,13 +411,13 @@ Dimensional analysis cannot replace a correct coordinate reference system or geo
 
 Scaling examines how a modelled quantity changes when one or more inputs are multiplied by a factor.
 
-Suppose a square cell has side length \(s\) and area:
+Suppose a square cell has side length $s$ and area:
 
 $$
 A=s^2
 $$
 
-If the cell width is multiplied by \(k\), the area becomes:
+If the cell width is multiplied by $k$, the area becomes:
 
 $$
 A'=(ks)^2=k^2A
@@ -469,9 +469,9 @@ What is the mean population density of a defined study area at a specified popul
 
 Let:
 
-- \(N=18{,}000\) residents;
-- \(A=4.5\,\mathrm{km^2}\);
-- \(\rho\) be mean population density.
+- $N=18{,}000$ residents;
+- $A=4.5\,\mathrm{km^2}$;
+- $\rho$ be mean population density.
 
 The model is:
 
@@ -503,7 +503,7 @@ This is an area-wide average. It does not say that each square kilometre contain
 
 ### 9.6 Sensitivity to the area input
 
-If the same population count were divided by an area of \(5.0\,\mathrm{km^2}\), the estimated density would be:
+If the same population count were divided by an area of $5.0\,\mathrm{km^2}$, the estimated density would be:
 
 $$
 \rho=\frac{18{,}000}{5.0}
@@ -541,7 +541,7 @@ $$
 t=\frac{d}{v}
 $$
 
-if \(d=0\) and \(v>0\), the model gives \(t=0\). If \(v=0\), the expression is undefined. If speed approaches zero while distance remains positive, the calculated time grows without bound.
+if $d=0$ and $v>0$, the model gives $t=0$. If $v=0$, the expression is undefined. If speed approaches zero while distance remains positive, the calculated time grows without bound.
 
 This behaviour is consistent with the simple model's interpretation, but it does not represent all real travel conditions. It also shows why a zero-speed case must be handled explicitly rather than passed blindly into software.
 
@@ -555,7 +555,7 @@ $$
 \rho=\frac{N}{A}
 $$
 
-holding \(N\) fixed, increasing \(A\) decreases \(\rho\). Holding \(A\) fixed, increasing \(N\) increases \(\rho\).
+holding $N$ fixed, increasing $A$ decreases $\rho$. Holding $A$ fixed, increasing $N$ increases $\rho$.
 
 Sensitivity is not the same as uncertainty. Sensitivity describes model response to input changes. Uncertainty describes limited knowledge or variability in quantities and model results. A formal treatment of uncertainty propagation belongs in measurement science and probability/statistics.
 
@@ -614,13 +614,13 @@ $$
 A=lw+vt
 $$
 
-where \(A\) is area, \(l\) and \(w\) are lengths, \(v\) is speed and \(t\) is time.
+where $A$ is area, $l$ and $w$ are lengths, $v$ is speed and $t$ is time.
 
 Is the equation dimensionally consistent as written? Explain.
 
 ### Exercise 3 — Unit conversion
 
-Convert \(54\,\mathrm{km/h}\) to metres per second. Show the conversion factors and unit cancellation.
+Convert $54\,\mathrm{km/h}$ to metres per second. Show the conversion factors and unit cancellation.
 
 ### Exercise 4 — Spatial scaling
 
@@ -639,10 +639,10 @@ List at least five additional pieces of information needed to interpret and asse
 
 ### Exercise 6 — Limiting case
 
-For \(t=d/v\), explain what happens when:
-1. \(d=0\) and \(v>0\);
-2. \(v=0\) and \(d>0\);
-3. both \(d\) and \(v\) are multiplied by the same positive factor.
+For $t=d/v$, explain what happens when:
+1. $d=0$ and $v>0$;
+2. $v=0$ and $d>0$;
+3. both $d$ and $v$ are multiplied by the same positive factor.
 
 State what the model does not represent.
 
@@ -660,7 +660,7 @@ A defensible specification might estimate network travel time from each defined 
 
 ### Exercise 2
 
-No. The first term \(lw\) has dimension \(L^2\), while \(vt\) has dimension \(L\). Quantities of different dimensions cannot be added to produce area. A dimensionally consistent expression would require a different model term with area dimension, but dimensional consistency alone would not establish the correct relationship.
+No. The first term $lw$ has dimension $L^2$, while $vt$ has dimension $L$. Quantities of different dimensions cannot be added to produce area. A dimensionally consistent expression would require a different model term with area dimension, but dimensional consistency alone would not establish the correct relationship.
 
 ### Exercise 3
 
@@ -673,8 +673,8 @@ $$
 
 ### Exercise 4
 
-1. Width ratio: \(10/30=1/3\).
-2. Area ratio: \((1/3)^2=1/9\).
+1. Width ratio: $10/30=1/3$.
+2. Area ratio: $(1/3)^2=1/9$.
 3. Approximately nine times as many cells over the same region, ignoring edge and alignment effects.
 4. No. Cell size describes the grid spacing, not the accuracy, source information content or validity of the represented values.
 
@@ -684,9 +684,9 @@ Possible requirements include the boundary used, population definition, populati
 
 ### Exercise 6
 
-1. The model gives \(t=0\).
+1. The model gives $t=0$.
 2. The expression is undefined; the model does not specify travel at zero speed.
-3. The ratio \(d/v\) is unchanged because the same factor cancels.
+3. The ratio $d/v$ is unchanged because the same factor cancels.
    
 The simple model omits acceleration, waiting, route changes, congestion, access and time-varying speed.
 
