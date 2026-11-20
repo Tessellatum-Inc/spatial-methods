@@ -502,9 +502,10 @@ The next module introduces vectors and vector operations: displacement, magnitud
 The explanations and worked examples are original Spatial Methods teaching material. These references support the analytic geometry and applied coordinate-reference discussion.
 
 1. **OpenStax.** *Algebra and Trigonometry 2e*. [Section 2.1: The Rectangular Coordinate Systems and Graphs](https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-1-the-rectangular-coordinate-systems-and-graphs) and [Chapter 12: Analytic Geometry](https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-introduction-to-analytic-geometry). Used for Cartesian coordinates, lines, circles and elementary geometric loci.
-2. **Esri.** [Coordinate systems, map projections, and transformations](https://doc.esri.com/en/arcgis-pro/latest/help/mapping/properties/coordinate-systems-and-projections.html). Used for the distinction between geographic, projected and local coordinate systems, their units and projection transformations. This is product documentation, not a geodetic standard.
-3. **BIPM.** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication]$https://www.bipm.org/en/si-brochure-9$. Used for the expression of coordinate quantities and units.
+2. **OpenStax.** *Calculus Volume 3*, Chapter 2: [Vectors in Space](https://openstax.org/books/calculus-volume-3/pages/2-introduction). Used for three-dimensional coordinate geometry, planes, spheres and vector equations of lines.
+3. **Esri.** [Coordinate systems, map projections, and transformations](https://doc.esri.com/en/arcgis-pro/latest/help/mapping/properties/coordinate-systems-and-projections.html). Used for the distinction between geographic, projected and local coordinate systems, their units and projection transformations. This is product documentation, not a geodetic standard.
+4. **BIPM.** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication]$https://www.bipm.org/en/si-brochure-9$. Used for the expression of coordinate quantities and units.
 
-**Source register:** `SM-SRC-000021`, `SM-SRC-000022`, `SM-SRC-000024`.
+**Source register:** `SM-SRC-000021`, `SM-SRC-000022`, `SM-SRC-000024`, `SM-SRC-000026`.
 
 **Limitations:** Euclidean plane and three-dimensional formulae are not substitutes for geodesic distance, ellipsoidal geometry, map-projection theory or datum transformation methods. Those subjects have dedicated Spatial Methods foundations.
