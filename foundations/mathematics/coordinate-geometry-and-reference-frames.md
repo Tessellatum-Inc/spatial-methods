@@ -466,13 +466,13 @@ A dataset contains points with pairs such as (36.8, −1.3).
 
 ## 17. Answers and checks
 
-1. **Distance and midpoint:** coordinate differences are $120,50$ m. Distance is √$120²+50²$ = √16,900 = 130 m. Midpoint is $100,55$ m. This is planar Euclidean distance in the assumed local frame, not automatically an ellipsoidal surface distance.
-2. **Line:** slope = (12−4)/(3−(−1)) = 2. Point-slope form: y−4 = 2$x+1$. Slope-intercept form: y=2x+6. Substitution gives 4 at x=−1 and 12 at x=3.
-3. **Intersection:** from x−y=1, y=x−1. Substitute into 2x+y=11: 3x−1=11, so x=4 and y=3. Check: 2(4)+3=11 and 4−3=1.
-4. **Circle:** boundary (x−500)²+(y−700)²=90,000; disk uses ≤90,000. For P, differences are $180,240$, so squared distance is 32,400+57,600=90,000. It lies exactly on the boundary. Real accessibility or travel analysis may depend on barriers, road/path networks, travel time, terrain, entrances and the appropriate Earth-distance model.
-5. **3D distance:** differences are $30,40,12$ m. Three-dimensional distance is √$900+1,600+144$=√2,644≈51.42 m. Horizontal distance is √$900+1,600$=50 m. The first includes vertical separation; the second measures only the horizontal plane.
-6. **Translation:** B coordinates are $650,550$ m. Inverse: x_A=x_B+250 and y_A=y_B−100. Applying it returns $900,450$ m. The frames were assumed to share axis orientation, handedness, scale and units; only their origins differ by the stated offset.
-7. **Geographic coordinates:** the pair might be longitude 36.8° and latitude −1.3°, or another ordered pair in a different system. Axis order and CRS must be verified. Degrees are angular units and their ground scale varies with location and direction. Use an appropriate ellipsoidal geodesic calculation or a suitable projected/local metric method for the required accuracy and extent.
+1. **Distance and midpoint:** coordinate differences are $(120,50)\,\mathrm{m}$. Distance is $\sqrt{120^2+50^2}=\sqrt{16{,}900}=130\,\mathrm{m}$. Midpoint is $(100,55)\,\mathrm{m}$. This is planar Euclidean distance in the assumed local frame, not automatically an ellipsoidal surface distance.
+2. **Line:** slope $=(12-4)/(3-(-1))=2$. Point-slope form: $y-4=2(x+1)$. Slope-intercept form: $y=2x+6$. Substitution gives 4 at $x=-1$ and 12 at $x=3$.
+3. **Intersection:** from $x-y=1$, $y=x-1$. Substitute into $2x+y=11$: $3x-1=11$, so $x=4$ and $y=3$. Check: $2(4)+3=11$ and $4-3=1$.
+4. **Circle:** boundary $(x-500)^2+(y-700)^2=90{,}000$; disk uses $\leq90{,}000$. For P, differences are $(180,240)$, so squared distance is $32{,}400+57{,}600=90{,}000$. It lies exactly on the boundary. Real accessibility or travel analysis may depend on barriers, road/path networks, travel time, terrain, entrances and the appropriate Earth-distance model.
+5. **3D distance:** differences are $(30,40,12)\,\mathrm{m}$. Three-dimensional distance is $\sqrt{900+1{,}600+144}=\sqrt{2{,}644}\approx51.42\,\mathrm{m}$. Horizontal distance is $\sqrt{900+1{,}600}=50\,\mathrm{m}$. The first includes vertical separation; the second measures only the horizontal plane.
+6. **Translation:** B coordinates are $(650,550)\,\mathrm{m}$. Inverse: $x_A=x_B+250$ and $y_A=y_B-100$. Applying it returns $(900,450)\,\mathrm{m}$. The frames were assumed to share axis orientation, handedness, scale and units; only their origins differ by the stated offset.
+7. **Geographic coordinates:** the pair might be longitude $36.8^\circ$ and latitude $-1.3^\circ$, or another ordered pair in a different system. Axis order and CRS must be verified. Degrees are angular units and their ground scale varies with location and direction. Use an appropriate ellipsoidal geodesic calculation or a suitable projected/local metric method for the required accuracy and extent.
 
 ## 18. Connections across Spatial Methods
 
