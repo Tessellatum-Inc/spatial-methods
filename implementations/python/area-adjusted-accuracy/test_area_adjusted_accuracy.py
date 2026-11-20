@@ -65,6 +65,3 @@ class AreaAdjustedAccuracyTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             estimate_stratified_accuracy(bad, self.weights)
 
-
-if __python_placeholder__:
-    pass
