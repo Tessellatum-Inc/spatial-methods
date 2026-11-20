@@ -29,73 +29,9 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Download and fingerprint the HEIG-VD drone 2019 subset."
-    )
-    parser.add_argument(
-        "destination",
-        nargs="?",
-        default="./data/heig-vd-scop",
-        help="Local download directory (default: ./data/heig-vd-scop)",
-    )
-    args = parser.parse_args()
-
-    try:
-        from huggingface_hub import HfApi, snapshot_download
-    except ImportError:
-        parser.error(
-            "Missing optional dependency. Install it with: "
-            "python -m pip install huggingface_hub"
-        )
-
-    destination = Path(args.destination).expanduser().resolve()
-    destination.mkdir(parents=True, exist_ok=True)
-
-    # Resolve the moving default branch once, then download that exact commit.
-    revision = HfApi().repo_info(repo_id=REPO_ID, repo_type=REPO_TYPE).sha
-    if not revision:
-        raise RuntimeError("The Hub did not return a repository commit SHA.")
-
-    snapshot_download(
-        repo_id=REPO_ID,
-        repo_type=REPO_TYPE,
-        revision=revision,
-        allow_patterns=[f"{DATASET_PATH}/**"],
-        local_dir=str(destination),
-        max_workers=4,
-    )
-
-    dataset_dir = destination / DATASET_PATH
-    if not dataset_dir.is_dir():
-        raise RuntimeError(
-            f"Download completed without the expected directory: {dataset_dir}. "
-            "Check the repository tree and selected revision."
-        )
-
-    files = sorted(path for path in dataset_dir.rglob("*") if path.is_file())
-    if not files:
-        raise RuntimeError(f"No files were downloaded under {dataset_dir}.")
-
-    manifest = {
-        "repository": f"https://huggingface.co/datasets/{REPO_ID}",
-        "repository_id": REPO_ID,
-        "repository_type": REPO_TYPE,
-        "resolved_revision": revision,
-        "selected_path": DATASET_PATH,
-        "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
-        "python_version": platform.python_version(),
-        "huggingface_hub_version": version("huggingface_hub"),
-        "file_count": len(files),
-        "files": [
-            {
-                "path": path.relative_to(destination).as_posix(),
-                "size_bytes": path.stat().st_size,
-                "sha256": sha256_file(path),
-            }
-            for path in files
-        ],
-    }
+def build_manifest(destination: Path, dataset_dir: Path, revision: str) -> dict:
+    """Build a deterministic file inventory plus acquisition environment metadata."""
+    manifest = build_manifest(destination, dataset_dir, revision)
 
     manifest_path = destination / "acquisition-provenance.json"
     manifest_path.write_text(
