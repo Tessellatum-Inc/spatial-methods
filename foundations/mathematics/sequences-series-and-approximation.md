@@ -428,6 +428,15 @@ A square raster cell has width $20\,\mathrm{m}$. A second grid uses $5\,\mathrm{
 4. Explain why the finer grid does not necessarily contain four times as much observed information.
 
 
+### Exercise 7 — Iterative stopping
+
+An iterative scalar solver produces estimates $20.0,22.0,23.0,23.5,23.75$.
+
+1. Calculate the successive absolute changes.
+2. Does the sequence appear to converge?
+3. If the stopping tolerance is 0.3 in the same units, at which update would the successive-change test first pass?
+4. Give two reasons why a residual or additional diagnostic may still be needed.
+
 ### Exercise 8 — grid size, stored values and resampling
 
 A 2,000 m by 1,000 m rectangular study area is represented by aligned square-cell grids.
@@ -438,15 +447,6 @@ A 2,000 m by 1,000 m rectangular study area is represented by aligned square-cel
 4. The 10 m raster is resampled to a 5 m grid. How many output cells are there, and why does this not mean the dataset contains four times as many independent observations?
 5. Explain why a 5 m output cell size does not prove that the source sensor has 5 m effective spatial resolution.
 
-### Exercise 7 — Iterative stopping
-
-An iterative scalar solver produces estimates $20.0,22.0,23.0,23.5,23.75$.
-
-1. Calculate the successive absolute changes.
-2. Does the sequence appear to converge?
-3. If the stopping tolerance is 0.3 in the same units, at which update would the successive-change test first pass?
-4. Give two reasons why a residual or additional diagnostic may still be needed.
-
 ## 15. Answers and checks
 
 1. **Sampling sequence:** $x_0=250$ and $x_{n+1}=x_n+15$. Explicitly, $x_n=250+15n$. Thus $x_8=370\,\mathrm{m}$. The formula describes nominal positions only; no stochastic observation or positional uncertainty model is supplied.
@@ -456,9 +456,9 @@ An iterative scalar solver produces estimates $20.0,22.0,23.0,23.5,23.75$.
 5. **Error:** signed error is $249.2-250.0=-0.8\,\mathrm{m}$. Absolute error is $0.8\,\mathrm{m}$. Relative error is $0.8/250.0=0.0032=0.32\%$. The difference could reflect rounding, approximation, measurement, model or other effects; the comparison alone does not identify a cause.
 6. **Raster:** $20\,\mathrm{m}$ cells cover $400\,\mathrm{m}^2$; $5\,\mathrm{m}$ cells cover $25\,\mathrm{m}^2$. The cell-area ratio is 16:1. Approximately 16 times as many cells are needed for the same area. Resampling cannot create new observations or recover detail absent from the source.
 
-8. **Grid size, stored values and resampling:** The study area is 2,000,000 m². At 20 m, each cell covers 400 m², giving 5,000 cells (100 × 50). At 10 m, each cell covers 100 m², giving 20,000 cells (200 × 100). At 5 m, each cell covers 25 m², giving 80,000 cells (400 × 200). The areas are respectively 400 m², 100 m² and 25 m². The scaled value is $0.004(250)-0.1=0.9$ in the physical unit defined by the product metadata. Resampling the 10 m grid to 5 m yields 80,000 output cells, four times the 10 m grid's cell count, but the additional values are copied, interpolated or otherwise derived from existing source samples; they are not new independent sensor observations. Output cell spacing does not establish the sensor's effective spatial resolution.
 7. **Iteration:** changes are $2.0,1.0,0.5,0.25$. The sequence appears to approach $24$. The 0.3 successive-change test first passes on the final update (23.5 to 23.75). A residual is needed because small updates can occur away from a solution; also check constraints, stagnation, numerical failure or the maximum-iteration condition.
 
+8. **Grid size, stored values and resampling:** The study area is 2,000,000 m². At 20 m, each cell covers 400 m², giving 5,000 cells (100 × 50). At 10 m, each cell covers 100 m², giving 20,000 cells (200 × 100). At 5 m, each cell covers 25 m², giving 80,000 cells (400 × 200). The areas are respectively 400 m², 100 m² and 25 m². The scaled value is $0.004(250)-0.1=0.9$ in the physical unit defined by the product metadata. Resampling the 10 m grid to 5 m yields 80,000 output cells, four times the 10 m grid's cell count, but the additional values are copied, interpolated or otherwise derived from existing source samples; they are not new independent sensor observations. Output cell spacing does not establish the sensor's effective spatial resolution.
 ## 16. Connections across Spatial Methods
 
 - **Spatial algorithms:** iterative solvers, rasterisation, curve approximation, numerical integration, simulation and convergence diagnostics.
