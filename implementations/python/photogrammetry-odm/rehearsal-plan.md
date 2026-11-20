@@ -12,7 +12,7 @@
 - Dataset directory: `datasets/drone_heig_2019/`
 - Licence: Creative Commons Attribution 4.0 International (CC BY 4.0).
 - Required attribution: HEIG-VD, Geomatics group (2026), “HEIG-VD drone 2019 (Yverdon campus)”.
-- The collection card states that the collection's datasets are CC BY 4.0. The dataset-specific README has not yet been retrieved in this environment, so dataset-level terms should be checked before redistribution.
+- The dataset-specific README also states CC BY 4.0 and gives the dataset citation. Retain the publisher's required attribution when reusing the data.
 - Dataset-specific README: https://huggingface.co/datasets/heig-vd-geo/scop-datasets/blob/main/datasets/drone_heig_2019/README.md
 - Dataset README: 32 original JPG images at 5472 × 3648 px; 31 surveyed ground points, 206 image measurements for 30 points, and a Metashape OPK export. It explicitly identifies LV95 horizontal coordinates (EPSG:2056) and LN02 heights in metres. The GCP text currently renders 30 coordinate rows, so reconcile this with the README's 31-point description during local parsing.
 - Sensor and acquisition date in the collection catalogue: senseFly S.O.D.A. on an eBee; 16 July 2019.
