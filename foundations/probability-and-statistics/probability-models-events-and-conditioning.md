@@ -230,7 +230,7 @@ The posterior probability is approximately 48.6%. The result depends on the assu
 
 ## 9. Connections and next steps
 
-- Continue to [random variables and distributions](README.md), where events become numerical quantities with probability distributions.
+- Continue to [random variables and distributions](random-variables-and-distributions.md), where events become numerical quantities with probability distributions.
 - Connect covariance and random vectors to [linear algebra and matrix methods](../linear-algebra/README.md).
 - Connect spatial dependence to the future SM-FND-005 domain and existing [spatial cross-validation](../../methods/spatial-cross-validation.md).
 - Connect uncertainty interpretation to [measurement science](../measurement-science/measurement-principles-and-field-verification.md).
