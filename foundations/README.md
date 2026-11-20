@@ -46,7 +46,7 @@ The subject IDs below are stable identifiers from the [Geoinformatics master sub
 
 ### Mathematics for spatial science
 
-The mathematics domain begins with [Mathematical language, quantities and spatial models](mathematics/mathematical-language-quantities-and-spatial-models.md). The [mathematics domain roadmap](mathematics/README.md) defines the planned progression across mathematical language, number systems, ratios, functions, coordinate geometry, vectors, modelling and discrete mathematics.
+The mathematics domain begins with [Mathematical language, quantities and spatial models](mathematics/mathematical-language-quantities-and-spatial-models.md). Its [domain roadmap](mathematics/README.md) tracks the sequence and status of the modules developed so far, including [functions and relationships](mathematics/functions-and-relationships.md), with further coverage planned for coordinate geometry, vectors, modelling and discrete mathematics.
 
 ### Existing measurement-science resources
 
