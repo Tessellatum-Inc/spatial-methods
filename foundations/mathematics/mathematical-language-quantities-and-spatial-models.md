@@ -202,7 +202,7 @@ A density is another rate:
 If 12,000 people are associated with an area of \(3\,\mathrm{km}^2\), the average density is:
 
 \[
-ho=rac{12{,}000}{3}=4{,}000 \mathrm{\mathrm{people\,km^{-2}}}
+ho=rac{12{,}000}{3}=4{,}000 \mathrm{people\,km^{-2}}
 \]
 
 The result depends on the population definition, the spatial boundary and the time to which the count applies. An average density does not imply that people are uniformly distributed.
