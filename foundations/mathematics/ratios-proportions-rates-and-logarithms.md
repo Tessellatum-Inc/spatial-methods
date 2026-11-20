@@ -16,61 +16,61 @@ A ratio compares quantities; a rate compares quantities with a specified denomin
 ## 2. Ratios
 
 A ratio compares two quantities by division. For non-zero b:
-$
+$$
 a:b=\frac{a}{b}.
-$
+$$
 
 The quantities must be identified before the ratio is interpreted. They may be counts, lengths, areas, masses or other compatible quantities. If the numerator and denominator have different dimensions, the result retains a unit.
 
 ### 2.1 Equivalent ratios
 
 Multiplying or dividing both terms of a ratio by the same non-zero number preserves the ratio:
-$
+$$
 \frac{2}{5}=\frac{4}{10}=\frac{40}{100}.
-$
+$$
 
 This is useful when converting a ratio into a convenient form, but it does not change the underlying relationship.
 
 ### 2.2 Ratios with units
 
 Suppose a field team records 18 km of surveyed road over 6 hours of productive observation time:
-$
+$$
 \frac{18\;\mathrm{km}}{6\;\mathrm{h}}
 =3\;\mathrm{km\,h^{-1}}.
-$
+$$
 
 The result has dimensions of length per time. It is an average rate over the stated interval, not a guarantee that the team moved at a constant speed or that every kilometre had equal difficulty.
 
 ### 2.3 Ratios are directional
 
 The ratio of A to B is not generally the same as the ratio of B to A:
-$
+$$
 \frac{A}{B}\ne\frac{B}{A}.
-$
+$$
 
 Always state what is being compared and in which order.
 
 ## 3. Proportions and percentages
 
 A proportion expresses a part relative to a defined whole:
-$
+$$
 p=\frac{\text{part}}{\text{whole}}.
-$
+$$
 
 When the part is included in the whole and both are counted on the same basis, the proportion lies between 0 and 1. A percentage is the proportion multiplied by 100:
-$
+$$
 P=100p\%.
-$
+$$
 
 ### 3.1 Worked example: land-cover composition
 
 Suppose a mapped study area contains 240 km² of woodland within a total mapped area of 800 km².
-$
+$$
 p=\frac{240}{800}=0.30
-$
-$
+$$
+$$
 P=0.30\times100=30\%.
-$
+$$
 
 Woodland occupies 30% of the stated mapped area, under the classification and area-measurement method used. This does not establish that the classification is correct, that the map boundary is complete, or that the area calculation is suitable for a legal or cadastral purpose.
 
@@ -92,18 +92,18 @@ In spatial reporting, specify whether the denominator is total administrative ar
 If a proportion rises from 20% to 25%, the change is 5 percentage points, because 25 − 20 = 5. The relative increase is 25%, because (25 − 20) / 20 = 0.25.
 
 For a quantity changing from an initial value x₀ ≠ 0 to a final value x₁, relative change is:
-$
+$$
 r=\frac{x_1-x_0}{x_0}.
-$
+$$
 
 The percentage change is 100r%. The sign indicates increase or decrease under the chosen convention.
 
 ## 4. Proportional relationships
 
 Two quantities are directly proportional when one is a constant multiple of the other:
-$
+$$
 y=kx,
-$
+$$
 
 where k is a constant of proportionality.
 
@@ -112,25 +112,25 @@ If x doubles, y doubles, provided the model and its conditions remain valid.
 ### Example: map scale
 
 A representative fraction (RF) of 1:50,000 means that one unit on the map represents 50,000 of the same units on the ground, under the map's stated scale model.
-$
+$$
 \text{Ground distance}
 =\text{Map distance}\times50{,}000.
-$
+$$
 
 A map distance of 4 cm represents:
-$
+$$
 4\;\mathrm{cm}\times50{,}000
 =200{,}000\;\mathrm{cm}
 =2{,}000\;\mathrm{m}
 =2\;\mathrm{km}.
-$
+$$
 
 Conversely, a ground distance of 1 km is represented by:
-$
+$$
 \frac{1{,}000\;\mathrm{m}}{50{,}000}
 =0.02\;\mathrm{m}
 =2\;\mathrm{cm}.
-$
+$$
 
 The scale denominator is dimensionless because the numerator and denominator use the same unit before conversion.
 
@@ -139,23 +139,23 @@ The scale denominator is dimensionless because the numerator and denominator use
 ## 5. Inverse proportionality
 
 Two quantities are inversely proportional when their product is constant:
-$
+$$
 y=\frac{k}{x},\qquad x\ne0.
-$
+$$
 
 If x doubles, y halves, all else being equal.
 
 ### Example: pixel count and cell area
 
 For a raster with square cells of side length s, the area of one cell is:
-$
+$$
 A_c=s^2.
-$
+$$
 
 For a fixed total area Aₜ, the approximate number of cells required is:
-$
+$$
 N=\frac{A_T}{s^2}.
-$
+$$
 
 If cell width is halved, each cell has one quarter of the area, so approximately four times as many cells are required to cover the same area.
 
@@ -164,49 +164,49 @@ This relationship assumes square cells, a consistent grid and a suitable planar 
 ## 6. Rates
 
 A rate expresses how one quantity changes or accumulates relative to another quantity. The denominator determines the meaning and units.
-$
+$$
 \text{Average rate}
 =\frac{\text{change in quantity}}{\text{change in reference quantity}}.
-$
+$$
 
 The reference quantity may be time, area, distance, population or another meaningful exposure.
 
 ### 6.1 Temporal rates
 
 If a measured quantity changes from x₀ at time t₀ to x₁ at time t₁, the average rate of change is:
-$
+$$
 \bar r=\frac{x_1-x_0}{t_1-t_0}.
-$
+$$
 
 For a shoreline-position estimate changing by 12 m over 4 years:
-$
+$$
 \bar r=\frac{12\;\mathrm{m}}{4\;\mathrm{yr}}
 =3\;\mathrm{m\,yr^{-1}}.
-$
+$$
 
 This is an average over the interval. It does not prove that the shoreline moved at a constant rate or explain the physical causes. The result also depends on how the shoreline indicator, reference frame, dates, tide or water level, uncertainty and comparison method were defined.
 
 ### 6.2 Spatial density
 
 A density is a quantity divided by an area or volume:
-$
+$$
 D=\frac{Q}{A}.
-$
+$$
 
 If a hypothetical district has 96,000 residents over 120 km²:
-$
+$$
 D=\frac{96{,}000\;\text{people}}{120\;\mathrm{km^2}}
 =800\;\text{people}\,\mathrm{km^{-2}}.
-$
+$$
 
 This is an area-wide average. It does not mean residents are distributed uniformly. Boundary choices, population reference dates, land-area definitions and treatment of uninhabited land can change the result.
 
 ### 6.3 Rates of observation and operational productivity
 
 A field team that captures 150 asset records in 5 hours has a mean capture rate of:
-$
+$$
 30\;\text{records}\,\mathrm{h^{-1}}.
-$
+$$
 
 This rate can help with planning, but it is not a universal productivity benchmark. Travel, access, feature complexity, revisit requirements, quality control and breaks affect the denominator and the meaning of the rate.
 
@@ -219,41 +219,41 @@ If the units do not match the question, the rate is probably not the one needed.
 ## 7. Growth and compounding
 
 A constant absolute increment produces a linear model:
-$
+$$
 x_n=x_0+nd,
-$
+$$
 
 where d is the increment per period.
 
 A constant proportional growth rate produces a compound model:
-$
+$$
 x_n=x_0(1+g)^n,
-$
+$$
 
 where g is the growth rate per period expressed as a decimal and n is the number of periods.
 
 ### Worked example
 
 Suppose a hypothetical mapped asset inventory starts with 1,000 records and grows by 5% per year under a constant proportional-growth assumption:
-$
+$$
 x_3=1{,}000(1.05)^3\approx1{,}157.63.
-$
+$$
 
 A real inventory contains discrete records, so an operational forecast needs an explicit rule for rounding, additions, removals, duplicate resolution and changing coverage. This is a model illustration, not evidence that an inventory will grow at a constant rate.
 
 For a continuously compounded model, the corresponding exponential form is:
-$
+$$
 x(t)=x_0e^{kt},
-$
+$$
 
 where k is a continuous proportional growth parameter per unit time. The discrete and continuous models are related but are not identical for a finite period.
 
 ## 8. Logarithms
 
 A logarithm answers the question: to what power must a base be raised to obtain a given positive number?
-$
+$$
 \log_b(x)=y\quad\Longleftrightarrow\quad b^y=x,
-$
+$$
 
 where $b>0$, $b\neq1$ and $x>0$.
 
@@ -262,18 +262,18 @@ Common bases include base 10 (common logarithm), base e (natural logarithm, ln) 
 ### 8.1 Logarithm rules
 
 For positive x and y and a valid base b:
-$
+$$
 \log_b(xy)=\log_b(x)+\log_b(y)
-$
-$
+$$
+$$
 \log_b\left(\frac{x}{y}\right)=\log_b(x)-\log_b(y)
-$
-$
+$$
+$$
 \log_b(x^a)=a\log_b(x)
-$
-$
+$$
+$$
 \log_b(1)=0,\qquad \log_b(b)=1.
-$
+$$
 
 These identities turn multiplication into addition and powers into multiplication. They are useful for analysing multiplicative processes and quantities spanning several orders of magnitude.
 
@@ -282,26 +282,26 @@ A logarithm is defined only for a positive argument in ordinary real arithmetic.
 ### 8.2 Logarithmic scales and decibels
 
 The decibel expresses a logarithmic ratio. For a power ratio:
-$
+$$
 L_{\mathrm{dB}}=10\log_{10}\left(\frac{P_2}{P_1}\right).
-$
+$$
 
 For an amplitude ratio, when power is proportional to the square of the amplitude under the relevant conditions:
-$
+$$
 L_{\mathrm{dB}}=20\log_{10}\left(\frac{A_2}{A_1}\right).
-$
+$$
 
 The factor is 10 for a power ratio and 20 for an amplitude ratio under that square-law relationship. These formulas must not be mixed without checking what the measured quantity represents.
 
 For a power ratio of 100:
-$
+$$
 10\log_{10}(100)=20\;\mathrm{dB}.
-$
+$$
 
 For an amplitude ratio of 10 under the stated square-law condition:
-$
+$$
 20\log_{10}(10)=20\;\mathrm{dB}.
-$
+$$
 
 The decibel value describes a ratio, not an absolute power or amplitude unless a reference level is specified. This distinction matters in acoustics, radar, communications and sensor systems.
 
@@ -310,9 +310,9 @@ The decibel value describes a ratio, not an absolute power or amplitude unless a
 A logarithmic transformation can make a highly skewed positive variable easier to visualise or model. It may reduce the influence of very large values and turn some multiplicative relationships into additive ones.
 
 For a model of the form $y=ax^b$, with positive $x$ and $y$:
-$
+$$
 \ln(y)=\ln(a)+b\ln(x).
-$
+$$
 
 This is a mathematical transformation, not a guarantee that the transformed relationship is statistically appropriate. Zeros, negative values, measurement error, sampling design and interpretation on the original scale require attention. Adding an arbitrary constant to make zeros loggable changes the model and must be justified.
 
