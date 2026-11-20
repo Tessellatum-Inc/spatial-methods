@@ -67,28 +67,28 @@ When population sizes \(N_i\) are unavailable, the implementation uses \(f_i=1\)
 
 A reference sample may be selected using an existing map, then reused to evaluate a different map at the same locations. In that case, distinguish three labels:
 
-- (h): the **sampling stratum** used to select observations;
-- (i): the **evaluated map class** observed at each sampled location;
-- (j): the **reference class** assigned under the response protocol.
+- \(h\): the **sampling stratum** used to select observations;
+- \(i\): the **evaluated map class** observed at each sampled location;
+- \(j\): the **reference class** assigned under the response protocol.
 
-Let (W_h) be the eligible population area proportion in sampling stratum (h), (n_h) its sample size and (n_{hij}) the count with evaluated map class (i) and reference class (j). The design-based area-proportion error matrix is
+Let \(W_h\) be the eligible population area proportion in sampling stratum \(h\), \(n_h\) its sample size and \(n_{hij}\) the count with evaluated map class \(i\) and reference class \(j\). The design-based area-proportion error matrix is
 
-[
-hat p_{ij}=sum_{h=1}^{H} W_hrac{n_{hij}}{n_h}.
-]
+\[
+\hat p_{ij}=\sum_{h=1}^{H} W_h\frac{n_{hij}}{n_h}.
+\]
 
 The evaluated map's estimated class-area proportions are the row totals; estimated reference-class area proportions are the column totals. Overall accuracy is the diagonal sum. User's and producer's accuracy are ratios of the corresponding diagonal cell to its estimated row and column marginal, respectively.
 
-For a cell indicator within sampling stratum (h), let (hat q_{hij}=n_{hij}/n_h). Under independent SRS without replacement within strata, its variance contribution is
+For a cell indicator within sampling stratum \(h\), let \(\hat q_{hij}=n_{hij}/n_h\). Under independent SRS without replacement within strata, its variance contribution is
 
-[
-widehat{operatorname{Var}}(hat p_{ij})=
-sum_{h=1}^{H}W_h^2
-rac{hat q_{hij}(1-hat q_{hij})}{n_h-1}
-left(1-rac{n_h}{N_h}ight),
-]
+\[
+\widehat{\operatorname{Var}}(\hat p_{ij})=
+\sum_{h=1}^{H}W_h^2
+\frac{\hat q_{hij}(1-\hat q_{hij})}{n_h-1}
+\left(1-\frac{n_h}{N_h}\right),
+\]
 
-where (N_h) is the eligible population size in sampling stratum (h). Set the finite-population correction to one when (N_h) is unavailable. Variances for overall accuracy and the row/column marginals use the corresponding within-stratum indicator proportions. The ratio accuracy measures require covariance-aware delta-method approximations.
+where \(N_h\) is the eligible population size in sampling stratum \(h\). Set the finite-population correction to one when \(N_h\) is unavailable. Variances for overall accuracy and the row/column marginals use the corresponding within-stratum indicator proportions. The ratio accuracy measures require covariance-aware delta-method approximations.
 
 This extension does **not** remove the need for a common, defensible class legend. If evaluated-map classes and reference classes are not harmonised, the diagonal does not represent meaningful agreement. Classes present only in one legend remain disagreements; do not silently collapse them.
 
