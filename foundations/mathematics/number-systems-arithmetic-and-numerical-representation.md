@@ -47,8 +47,7 @@ An integer count cannot represent half a building, but a density or estimated po
 
 A rational number can be expressed as a ratio of two integers, with a non-zero denominator:
 $$
-\mathbb{Q}=\left\{rac{p}{q}:p,q\in\mathbb{Z},\ q\neq0\right\}
-e0ight}
+\mathbb{Q}=\left\{\frac{p}{q}:p,q\in\mathbb{Z},\ q\neq0\right\}
 $$
 
 Examples include:
