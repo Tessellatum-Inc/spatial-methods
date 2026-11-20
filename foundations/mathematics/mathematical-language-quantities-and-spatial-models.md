@@ -421,4 +421,6 @@ The explanations, spatial examples and exercises in this module are original Spa
 2. **OpenStax.** *Algebra and Trigonometry 2e*. [Chapter 2: Equations and Inequalities](https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-introduction-to-equations-and-inequalities); [Chapter 3: Functions](https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-introduction-to-functions); [Chapter 12: Analytic Geometry](https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-introduction-to-analytic-geometry). Used for elementary algebraic language, functions and coordinate geometry.
 3. **Esri.** [Coordinate systems, map projections, and transformations](https://doc.esri.com/en/arcgis-pro/latest/help/mapping/properties/coordinate-systems-and-projections.html). Used as applied GIS documentation for coordinate reference frames, geographic versus projected coordinates and projection distortion. It is product documentation, not a substitute for geodetic standards.
 
+**Source register:** `SM-SRC-000021`, `SM-SRC-000022`, `SM-SRC-000024`.
+
 **Limitations:** The sources above do not establish the legal or geodetic status of any particular national coordinate reference system. Coordinate examples in this module are illustrative and should not be treated as operational CRS definitions.
