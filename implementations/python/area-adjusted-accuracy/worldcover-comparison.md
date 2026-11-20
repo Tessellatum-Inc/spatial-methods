@@ -204,15 +204,19 @@ Do not compare maps using separate convenience samples and then attribute differ
 
 ## Current execution status
 
-- Fiji GeoJSON: pinned source revision and structure audited online; original point features have not been downloaded and hashed locally in this workflow.
-- WorldCover raster: not downloaded locally; remote COG range-read support is implemented but live object access and point extraction have not yet been run.
-- Extraction code: published; remote COG workflow is configured to run in GitHub Actions; result status is pending.
-- Generic estimator: published; repository test suite has not yet been executed.
-- Fiji–WorldCover accuracy numbers: **not available yet**.
+- Fiji GeoJSON: retrieved by the successful workflow and verified against its pinned Git blob SHA-1; SHA-256 is recorded in the provenance sidecar.
+- WorldCover raster: all five official COG objects opened successfully over HTTPS; dimensions, bounds, CRS, resolution, nodata and source URLs were recorded. Full raster files were not downloaded or SHA-256 hashed.
+- Extraction: all 834 reference points were sampled successfully, with no missing coverage, overlap or nodata failures.
+- WorldCover design-adjusted overall accuracy: 74.12% (SE 2.37 percentage points; approximate 95% Wald interval 69.47%–78.76%).
+- Paired comparison against the original Fiji map: −8.39 percentage points (paired SE 1.50; approximate 95% Wald interval −11.32 to −5.45).
+- Reproducibility outputs: [successful GitHub Actions run and 30-day artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44695806784).
 
 ## Sources
 
 - ESA WorldCover data access and licence: https://esa-worldcover.org/en/data-access
+
+
+Required attribution for the WorldCover product: **© ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium.** The product is provided under CC BY 4.0. Citation: Zanaga et al. (2022), *ESA WorldCover 10 m 2021 v200*, https://doi.org/10.5281/zenodo.7254221.
 - ESA WorldCover 2021 v200 Product User Manual: https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/docs/WorldCover_PUM_V2.0.pdf
 - ESA WorldCover Product Validation Report v2.0: https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/docs/WorldCover_PVR_V2.0.pdf
 - Fiji Land Use Land Cover Test Dataset: https://pacific-data.sprep.org/dataset/fiji-land-use-land-cover-test-dataset
