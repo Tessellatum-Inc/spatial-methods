@@ -59,6 +59,7 @@ If you're developing or contributing learning material, use the [modular learnin
 | Navigating the wider Geoinformatics subject universe | [Master subject index](catalog/master-subject-index.md) |
 | Checking the source coverage | [Coverage matrix](catalog/coverage-matrix.md) |
 | Learning at your own pace | [Learning paths](learning-paths/README.md) |
+| Connecting statistical inference to spatial studies | [Spatial statistical inference](learning-paths/spatial-statistical-inference.md) |
 | Finding patterns in spatial data | [Spatial autocorrelation and hotspots](learning-paths/global-spatial-autocorrelation.md), [point-pattern analysis](learning-paths/point-pattern-foundations.md) and [spatial clustering](learning-paths/spatial-clustering-foundations.md) |
 | Estimating values between observations | [Spatial interpolation foundations](learning-paths/geostatistics-foundations.md) and [interpolation and geostatistics path](learning-paths/interpolation-and-geostatistics.md) |
 | Working with raster distances | [Raster distance foundations](learning-paths/raster-distance-foundations.md) |
