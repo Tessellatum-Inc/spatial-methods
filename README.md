@@ -50,6 +50,7 @@ If you're developing or contributing learning material, use the [modular learnin
 | The building blocks of GIS | [Core GIS and geometry](learning-paths/README.md#start-with-a-problem) |
 | How spatial algorithms work | [Algorithm collection](algorithms/README.md) |
 | Working examples and code | [Implementations](implementations/README.md) |
+| How spatial information is collected and measured | [Spatial Data Collection](collection/README.md) |
 | Following an end-to-end spatial workflow | [Spatial Recipes](recipes/README.md) and the [survey-to-spatial-dataset capstone](recipes/survey-to-spatial-dataset/README.md) |
 | Testing speed and accuracy | [Benchmarks](benchmarks/README.md) |
 | Practising with exercises | [Exercises](exercises/README.md) |
