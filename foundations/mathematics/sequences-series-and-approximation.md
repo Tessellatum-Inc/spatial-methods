@@ -253,7 +253,7 @@ For a circle, the perimeter of an inscribed regular n-gon is:
 P_n=2nR\sin\left(\frac{\pi}{n}\right).
 \]
 
-The circumference is 2πR. As n increases, P_n approaches 2πR from below.
+The circumference is \(2\pi R\). As \(n\) increases, \(P_n\) approaches \(2\pi R\) from below.
 
 This illustrates a convergent geometric approximation. A polygonal approximation is not the exact curve, and the number of segments needed depends on the required tolerance.
 
