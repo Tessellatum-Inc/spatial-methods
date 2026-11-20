@@ -226,7 +226,7 @@ $$
 
 The physical unit and interpretation must come from the product metadata. The number 143 alone is not a reflectance, temperature or elevation.
 
-Quantisation introduces finite resolution. Its effect depends on the quantisation interval, encoding rule and processing chain. It should not be confused with all other sources of sensor or measurement uncertainty.
+Quantisation introduces finite resolution. Its effect depends on the quantisation interval, encoding rule and processing chain. It should not be confused with all other sources of sensor or measurement uncertainty. The distinction between stored values and spatial grid dimensions is developed in Module 08's [raster-resolution worked example](sequences-series-and-approximation.md#81-worked-example-grid-refinement-and-resampling).
 
 ## 7. Significant figures and decimal places
 
