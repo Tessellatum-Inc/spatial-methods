@@ -30,10 +30,9 @@ A number system defines the values available for counting, measuring or calculat
 Natural numbers are commonly used for counting: 1, 2, 3, and so on. Some conventions include zero in the natural numbers; others begin at one. State the convention when it matters.
 
 Integers include negative whole numbers, zero and positive whole numbers:
-
-\[
+$
 \mathbb{Z}={\ldots,-3,-2,-1,0,1,2,3,\ldots}
-\]
+$
 
 Spatial examples include:
 
@@ -47,17 +46,15 @@ An integer count cannot represent half a building, but a density or estimated po
 ### 2.2 Rational numbers
 
 A rational number can be expressed as a ratio of two integers, with a non-zero denominator:
-
-\[
+$
 \mathbb{Q}=\left\{rac{p}{q}:p,q\in\mathbb{Z},\ q\neq0\right\}
 e0ight}
-\]
+$
 
 Examples include:
-
-\[
+$
 rac{1}{2}=0.5,\qquad rac{3}{4}=0.75,\qquad rac{1}{3}=0.333\ldots
-\]
+$
 
 Rational numbers include terminating and repeating decimal expansions. They are useful for exact fractions, proportions and ratios.
 
@@ -65,9 +62,9 @@ A decimal that terminates in base ten is not necessarily represented exactly in 
 
 ### 2.3 Irrational and real numbers
 
-An irrational number cannot be expressed as a ratio of integers. Its decimal expansion neither terminates nor repeats. Examples include \(\sqrt{2}\) and \(\pi\).
+An irrational number cannot be expressed as a ratio of integers. Its decimal expansion neither terminates nor repeats. Examples include $\sqrt{2}$ and $\pi$.
 
-The real numbers, \(\mathbb{R}\), include both rational and irrational numbers. They provide the usual mathematical setting for continuous quantities such as idealised lengths, angles and surface values.
+The real numbers, $\mathbb{R}$, include both rational and irrational numbers. They provide the usual mathematical setting for continuous quantities such as idealised lengths, angles and surface values.
 
 In practical computation, real numbers are represented with finite storage. A computer does not store every real number exactly. It stores values from a finite representable set, usually using integer or floating-point formats.
 
@@ -89,18 +86,16 @@ An exact calculation using uncertain inputs does not produce an exact knowledge 
 Our everyday decimal system uses base ten. Each digit's position represents a power of ten.
 
 For example:
-
-\[
+$
 4{,}207.35 =
 4(10^3)+2(10^2)+0(10^1)+7(10^0)
 +3(10^{-1})+5(10^{-2})
-\]
+$
 
 Computers commonly use binary (base two), whose digits are 0 and 1. Each position represents a power of two.
-
-\[
+$
 1011_2=1(2^3)+0(2^2)+1(2^1)+1(2^0)=11_{10}
-\]
+$
 
 Hexadecimal (base sixteen) is also widely used in computing. It provides a compact way to express binary values because each hexadecimal digit corresponds to four binary bits.
 
@@ -126,16 +121,14 @@ The conventional order of operations is:
 4. Addition and subtraction, evaluated from left to right.
 
 For example:
-
-\[
+$
 3+4\times2=3+8=11
-\]
+$
 
 whereas:
-
-\[
+$
 (3+4)\times2=7\times2=14
-\]
+$
 
 In spatial workflows, a missing pair of parentheses can change an area calculation, a coordinate offset, a map-scale conversion or a raster expression. Make precedence explicit in code and technical documentation.
 
@@ -144,25 +137,22 @@ In spatial workflows, a missing pair of parentheses can change an area calculati
 Units should be carried through calculations.
 
 For a rectangular area:
-
-\[
+$
 A=lw
-\]
+$
 
-If \(l=80\,\mathrm{m}\) and \(w=25\,\mathrm{m}\):
-
-\[
+If $l=80\,\mathrm{m}$ and $w=25\,\mathrm{m}$:
+$
 A=80 \mathrm{m}\times25 \mathrm{m}
 =2{,}000 \mathrm{m^2}
-\]
+$
 
 For a conversion:
-
-\[
+$
 2{,}000 \mathrm{m^2}\times
 rac{1 \mathrm{ha}}{10{,}000 \mathrm{m^2}}
 =0.2 \mathrm{ha}
-\]
+$
 
 The square-metre units cancel, leaving hectares. Treating units as part of the expression helps catch errors.
 
@@ -183,24 +173,21 @@ Always establish what the sign means. A negative residual may mean observed minu
 ## 5. Fractions, decimals and percentages
 
 A fraction expresses a part relative to a whole. A decimal is one way of writing a number in base ten. A percentage expresses a ratio per hundred.
-
-\[
+$
 rac{3}{5}=0.6=60%
-\]
+$
 
 These forms are mathematically equivalent, but the choice of representation affects readability and can hide the denominator or reference population.
 
 ### Example: classification accuracy
 
 Suppose a hypothetical land-cover assessment correctly classifies 840 of 1,000 reference samples.
-
-\[
+$
 \text{Proportion correct}=rac{840}{1000}=0.84
-\]
-
-\[
+$
+$
 \text{Percentage correct}=0.84\times100=84%
-\]
+$
 
 The percentage is meaningful only with the assessment design and class distribution. It does not, by itself, describe the accuracy of every class or the quality of the reference labels.
 
@@ -227,18 +214,16 @@ Choose reporting precision in relation to the purpose, uncertainty, data specifi
 ### 6.2 Quantisation in raster and sensor data
 
 A sensor or raster data product may store measurements using discrete integer levels. A scale factor and offset can map stored integers to physical values:
-
-\[
+$
 x_{\text{physical}}=s\,x_{\text{stored}}+o
-\]
+$
 
 where (s) is the scale factor and (o) is the offset.
 
 For illustration, if a stored value is 143, the scale factor is 0.01 and the offset is 0:
-
-\[
+$
 x_{\text{physical}}=0.01(143)+0=1.43
-\]
+$
 
 The physical unit and interpretation must come from the product metadata. The number 143 alone is not a reflectance, temperature or elevation.
 
@@ -255,16 +240,14 @@ For example:
 - 4,500 may be ambiguous without a convention or scientific notation.
 
 Scientific notation helps remove ambiguity:
-
-\[
+$
 4.5\times10^3
-\]
+$
 
 has two significant figures, while:
-
-\[
+$
 4.500\times10^3
-\]
+$
 
 has four significant figures.
 
@@ -275,18 +258,16 @@ Significant figures are a communication convention, not a complete uncertainty m
 A result and its uncertainty should be rounded and presented consistently. The exact convention depends on the applicable discipline or reporting standard.
 
 For example, if an illustrative result is:
-
-\[
+$
 x=125.4837 \mathrm{m},\qquad u=0.78 \mathrm{m}
-\]
+$
 
 one possible presentation is:
-
-\[
+$
 x=(125.5\pm0.8) \mathrm{m}
-\]
+$
 
-where the uncertainty is a standard uncertainty, not necessarily an expanded interval. The report must state what the \(\pm\) quantity represents.
+where the uncertainty is a standard uncertainty, not necessarily an expanded interval. The report must state what the $\pm$ quantity represents.
 
 Do not round intermediate calculations prematurely if that can affect the final result. Retain suitable internal precision, then round the reported result according to the reporting convention.
 
@@ -333,20 +314,17 @@ The deeper theory of floating-point arithmetic, cancellation, conditioning, erro
 Coordinate values may be large because of the chosen coordinate system and origin. A small local displacement can be represented as the difference between two large coordinate values.
 
 For example, consider two projected easting values:
-
-\[
+$
 E_1=500{,}000.000 \mathrm{m}
-\]
-
-\[
+$
+$
 E_2=500{,}000.025 \mathrm{m}
-\]
+$
 
 Their difference is:
-
-\[
+$
 \Delta E=E_2-E_1=0.025 \mathrm{m}
-\]
+$
 
 The difference is 25 mm. The number of decimal places displayed does not establish that the positions are known to 1 mm, nor does it establish that the coordinate values were stored or processed without numerical effects.
 
@@ -365,10 +343,9 @@ These terms are related but not interchangeable. A coordinate field with many de
 ### Example A — Raster storage and scale factor
 
 A hypothetical elevation raster stores the integer value 2,347. Its metadata specifies a scale factor of 0.1 and an offset of 0.
-
-\[
+$
 z=0.1(2347)+0=234.7
-\]
+$
 
 If the metadata specifies metres, the decoded value is 234.7 m. Without the scale factor and unit, reporting 2,347 m would be incorrect.
 
@@ -377,10 +354,9 @@ This example is illustrative. Actual raster products may use different scaling, 
 ### Example B — Converting a count to density
 
 A study area contains 7,250 mapped building footprints within an area of 2.5 km².
-
-\[
+$
 D=rac{7250}{2.5}=2900 \mathrm{buildings/km^2}
-\]
+$
 
 This is a count density of mapped building footprints, not a population density or a measure of building floor area. It depends on the feature definition, completeness of the building dataset and study boundary.
 
@@ -427,8 +403,8 @@ When receiving or publishing a spatial dataset, ask:
 Classify each item as an integer, rational number, irrational number or approximate digital representation. More than one description may apply depending on context.
 
 1. The count of 87 road segments.
-2. The fraction \(1/3\).
-3. The value \(\pi\) used in a circular-area formula.
+2. The fraction $1/3$.
+3. The value $\pi$ used in a circular-area formula.
 4. A sensor value stored as an unsigned 16-bit integer.
 5. A coordinate stored in a floating-point field.
 
