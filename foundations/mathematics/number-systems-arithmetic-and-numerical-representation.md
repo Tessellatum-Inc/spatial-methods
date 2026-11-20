@@ -7,7 +7,7 @@
 
 ## 1. Why number representation matters in spatial work
 
-Spatial datasets are full of numbers: coordinates, elevations, distances, areas, pixel values, population counts, \\timestamps, probabilities, spectral measurements and model outputs.
+Spatial datasets are full of numbers: coordinates, elevations, distances, areas, pixel values, population counts, timestamps, probabilities, spectral measurements and model outputs.
 
 Yet a number in a file or on a map is not the quantity itself. It is a representation produced by choices about units, scale, storage type, rounding and measurement. Those choices can affect what can be represented, what information is retained and what conclusions are justified.
 
@@ -32,7 +32,7 @@ Natural numbers are commonly used for counting: 1, 2, 3, and so on. Some convent
 Integers include negative whole numbers, zero and positive whole numbers:
 
 \[
-\\mathbb{Z}={\\ldots,-3,-2,-1,0,1,2,3,\\ldots}
+\mathbb{Z}={\ldots,-3,-2,-1,0,1,2,3,\ldots}
 \]
 
 Spatial examples include:
@@ -49,14 +49,14 @@ An integer count cannot represent half a building, but a density or estimated po
 A rational number can be expressed as a ratio of two integers, with a non-zero denominator:
 
 \[
-\\mathbb{Q}=\\left\\{rac{p}{q}:p,qin\\mathbb{Z},q
+\mathbb{Q}=\left\{rac{p}{q}:p,q\in\mathbb{Z},\ q\neq0\right\}
 e0ight}
 \]
 
 Examples include:
 
 \[
-rac{1}{2}=0.5,\\qquad rac{3}{4}=0.75,\\qquad rac{1}{3}=0.333\\ldots
+rac{1}{2}=0.5,\qquad rac{3}{4}=0.75,\qquad rac{1}{3}=0.333\ldots
 \]
 
 Rational numbers include terminating and repeating decimal expansions. They are useful for exact fractions, proportions and ratios.
@@ -65,9 +65,9 @@ A decimal that terminates in base ten is not necessarily represented exactly in 
 
 ### 2.3 Irrational and real numbers
 
-An irrational number cannot be expressed as a ratio of integers. Its decimal expansion neither terminates nor repeats. Examples include (sqrt{2}) and \\(\\pi\\).
+An irrational number cannot be expressed as a ratio of integers. Its decimal expansion neither terminates nor repeats. Examples include \(\sqrt{2}\) and \(\pi\).
 
-The real numbers, (\\mathbb{R}), include both rational and irrational numbers. They provide the usual mathematical setting for continuous quantities such as idealised lengths, angles and surface values.
+The real numbers, \(\mathbb{R}\), include both rational and irrational numbers. They provide the usual mathematical setting for continuous quantities such as idealised lengths, angles and surface values.
 
 In practical computation, real numbers are represented with finite storage. A computer does not store every real number exactly. It stores values from a finite representable set, usually using integer or floating-point formats.
 
@@ -149,19 +149,19 @@ For a rectangular area:
 A=lw
 \]
 
-If \\(l=80\\,\\mathrm{m}\\) and \\(w=25\\,\\mathrm{m}\\):
+If \(l=80\,\mathrm{m}\) and \(w=25\,\mathrm{m}\):
 
 \[
-A=80 \\mathrm{m}	imes25 \\mathrm{m}
-=2{,}000 \\mathrm{m^2}
+A=80 \mathrm{m}	imes25 \mathrm{m}
+=2{,}000 \mathrm{m^2}
 \]
 
 For a conversion:
 
 \[
-2{,}000 \\mathrm{m^2}	imes
-rac{1 \\mathrm{ha}}{10{,}000 \\mathrm{m^2}}
-=0.2 \\mathrm{ha}
+2{,}000 \mathrm{m^2}	imes
+rac{1 \mathrm{ha}}{10{,}000 \mathrm{m^2}}
+=0.2 \mathrm{ha}
 \]
 
 The square-metre units cancel, leaving hectares. Treating units as part of the expression helps catch errors.
@@ -277,16 +277,16 @@ A result and its uncertainty should be rounded and presented consistently. The e
 For example, if an illustrative result is:
 
 \[
-x=125.4837 \\mathrm{m},\\qquad u=0.78 \\mathrm{m}
+x=125.4837 \mathrm{m},\qquad u=0.78 \mathrm{m}
 \]
 
 one possible presentation is:
 
 \[
-x=(125.5\\pm0.8) \\mathrm{m}
+x=(125.5\pm0.8) \mathrm{m}
 \]
 
-where the uncertainty is a standard uncertainty, not necessarily an expanded interval. The report must state what the (\\pm) quantity represents.
+where the uncertainty is a standard uncertainty, not necessarily an expanded interval. The report must state what the \(\pm\) quantity represents.
 
 Do not round intermediate calculations prematurely if that can affect the final result. Retain suitable internal precision, then round the reported result according to the reporting convention.
 
@@ -335,17 +335,17 @@ Coordinate values may be large because of the chosen coordinate system and origi
 For example, consider two projected easting values:
 
 \[
-E_1=500{,}000.000 \\mathrm{m}
+E_1=500{,}000.000 \mathrm{m}
 \]
 
 \[
-E_2=500{,}000.025 \\mathrm{m}
+E_2=500{,}000.025 \mathrm{m}
 \]
 
 Their difference is:
 
 \[
-\\Delta E=E_2-E_1=0.025 \\mathrm{m}
+\Delta E=E_2-E_1=0.025 \mathrm{m}
 \]
 
 The difference is 25 mm. The number of decimal places displayed does not establish that the positions are known to 1 mm, nor does it establish that the coordinate values were stored or processed without numerical effects.
@@ -379,7 +379,7 @@ This example is illustrative. Actual raster products may use different scaling, 
 A study area contains 7,250 mapped building footprints within an area of 2.5 km².
 
 \[
-D=rac{7250}{2.5}=2900 \\mathrm{buildings/km^2}
+D=rac{7250}{2.5}=2900 \mathrm{buildings/km^2}
 \]
 
 This is a count density of mapped building footprints, not a population density or a measure of building floor area. It depends on the feature definition, completeness of the building dataset and study boundary.
@@ -427,8 +427,8 @@ When receiving or publishing a spatial dataset, ask:
 Classify each item as an integer, rational number, irrational number or approximate digital representation. More than one description may apply depending on context.
 
 1. The count of 87 road segments.
-2. The fraction \\(1/3\\).
-3. The value \\(\\pi\\) used in a circular-area formula.
+2. The fraction \(1/3\).
+3. The value \(\pi\) used in a circular-area formula.
 4. A sensor value stored as an unsigned 16-bit integer.
 5. A coordinate stored in a floating-point field.
 
