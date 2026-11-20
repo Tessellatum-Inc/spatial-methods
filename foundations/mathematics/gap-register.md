@@ -73,7 +73,7 @@ The current domain should not grow by adding arbitrary formula collections. Comp
 
 ## Application-led revision queue
 
-The application audit defines six revision items: APP-MATH-01 to APP-MATH-06. APP-MATH-01 (two-leg local traverse) and APP-MATH-02 (NULL-aware GIS QA logic) have initial examples in Modules 10 and 11. Both remain pending independent technical review and learner testing. APP-MATH-03 to APP-MATH-06 remain open. Do not mark a revision technically validated merely because an example has been added.
+The application audit defines six revision items: APP-MATH-01 to APP-MATH-06. APP-MATH-01 (two-leg local traverse) and APP-MATH-02 (NULL-aware GIS QA logic) have initial examples in Modules 10 and 11. Both remain pending independent technical review and learner testing. APP-MATH-03 (raster resolution and resampling) now has a worked example in Module 08, with cross-links from Modules 02 and 03. The example is pending independent technical review and learner testing. APP-MATH-04 to APP-MATH-06 remain open. Do not mark a revision technically validated merely because an example has been added.
 
 ## Completion criteria for SM-FND-001
 
