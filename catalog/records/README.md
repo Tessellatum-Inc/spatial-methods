@@ -11,7 +11,7 @@ Subject IDs such as `SM-FND-011` identify subject territories; record IDs identi
 ## Catalogue rules
 
 - One JSON object per line; UTF-8; no enclosing JSON array.
-- The schema validates metadata shape and controlled values, not technical correctness.
+- The schema validates metadata shape and controlled values, not technical correctness. Primary kinds include review records for structured assessments of coverage, evidence, quality or readiness.
 - Every canonical path must resolve to a repository file.
 - Every subject ID must exist in the master subject index.
 - Every relationship target must resolve to a subject ID or canonical record ID; external targets require a stable resolvable identifier and explicit source handling.
