@@ -566,6 +566,7 @@ Retain units and explain at least one reasonableness check.
 7. Explain why arctan(ΔN/ΔE) alone can return an ambiguous direction and how atan2 helps.
 8. A GIS layer stores angles in degrees, while a software function expects radians. Describe the error and conversion.
 9. A dataset contains azimuths 359.8° and 0.2°. Explain why their arithmetic mean is misleading and suggest a direction-aware approach.
+10. A local terrain surface is approximated by z(x,y) = 80 + 0.06x + 0.08y, where x increases east, y increases north, and all coordinates are in metres. Find the gradient vector, percentage slope, inclination and clockwise-from-north direction of steepest ascent. Explain why a DEM-derived gradient is an estimate rather than an exact derivative of the unknown terrain.
 
 ## 12. Exercise answers
 
@@ -578,6 +579,7 @@ Retain units and explain at least one reasonableness check.
 7. A ratio loses quadrant information and division by zero is possible. A two-argument arctangent uses both signed components; confirm its argument order and output range.
 8. Convert degrees to radians by multiplying by π/180. Otherwise the software interprets the degree number as radians.
 9. The directions are close across the 0° boundary, but their arithmetic mean is 180°, the opposite direction. Use circular statistics or average unit direction vectors, then recover direction with an appropriate two-argument arctangent. Weighted or uncertain directions require a method consistent with the observation model.
+10. The gradient is (0.06, 0.08), so its magnitude is √(0.06² + 0.08²) = 0.10. The percentage slope is 10%, and the inclination is arctan(0.10) ≈ 5.71°. The steepest ascent direction is atan2(0.06, 0.08) ≈ 36.87° clockwise from north, so it points northeast. A DEM contains discrete samples; a derivative estimator uses neighbouring values and a numerical approximation. The result depends on grid spacing, neighbourhood, data quality and the estimator, so it is not the exact derivative of an unknown continuous surface.
 
 ## 13. Boundaries and connections
 
