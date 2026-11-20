@@ -351,7 +351,7 @@ If windows differ in exposure \(e_i\), a rate model may instead use \(Y_i\sim\op
 - [Linear algebra and matrix methods](../linear-algebra/README.md): least squares, QR/SVD, covariance matrices and information matrices.
 - [Covariance, correlated observations and generalized least squares](../measurement-science/covariance-correlated-observations-and-gls.md): a measurement-focused treatment of GLS and stochastic models.
 - [Spatial cross-validation](../../methods/spatial-cross-validation.md): spatially structured validation and limits of random splits.
-- Next: [Confidence intervals, hypothesis tests and statistical decisions](README.md), Module 06.
+- Next: Module 06 — Confidence intervals, hypothesis tests and statistical decisions (see the domain roadmap).
 
 ## References
 
