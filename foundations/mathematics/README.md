@@ -28,6 +28,10 @@ The sequence below moves from mathematical language toward structures and method
 
 Modules 01–11 have received an initial editorial coverage review. The [application coverage audit](application-coverage-audit.md) tests the sequence against eight representative spatial workflows, identifies where introductory mathematics is sufficient, and routes deeper requirements to specialist foundations. The [mathematics gap register](gap-register.md) tracks individual content gaps and revisions. Neither audit is independent technical certification or evidence of learner competence.
 
+## Cross-module transfer assessment
+
+The [cross-module transfer assessment](cross-module-transfer-assessment.md) is an integrated case study that asks learners to define a spatial model, select and combine mathematics from Modules 01–11, evaluate constraints and communicate limitations. It includes synthetic data, worked guidance and an assessment rubric. It is a self-study resource, not a validated measure of learner competence.
+
 ## Which foundation should I study next?
 
 Use this guide when a spatial task crosses beyond introductory mathematics. It is a **routing guide, not a compulsory sequence**: start from the problem you need to solve, follow the relevant mathematical foothold, then study the specialist theory that explains the method. A workflow may require several foundations at once.
