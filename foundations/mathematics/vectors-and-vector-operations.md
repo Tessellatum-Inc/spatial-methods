@@ -417,13 +417,13 @@ A line starts at r_0=$10,20,5$ m and has direction vector v=(2,−1,0.5) m.
 
 ## 17. Answers and checks
 
-1. **Displacement:** B−A=$60,80$ m. Magnitude = √$60²+80²$=100 m. Unit vector=(0.6,0.8).
-2. **Path:** first $80,60$ m, second (−20,−10) m. Net=$60,50$ m, magnitude=√6,100≈78.10 m. Path length=80+60+20+10=170 m. The path length sums travelled legs; displacement is the direct change from start to finish.
-3. **Dot product:** a·b=2+2+4=8. Both magnitudes are 3. cos θ=8/9≈0.8889, so θ≈27°.
-4. **Projection:** a·b=18 and ||b||=3. Scalar projection=6. Vector projection=$6,0$. Perpendicular component=$0,4$.
-5. **Cross product:** a×b=$0,0,6$ m². Parallelogram area=6 m²; triangle area=3 m². Reversing order gives (0,0,−6) m².
-6. **Velocity:** displacement=$600,800$ m. Average velocity=$3,4$ m/s. Magnitude is 5 m/s. This is net displacement divided by time; actual path length may be longer and therefore imply a higher average path speed.
-7. **Line:** r$t$=$10,20,5$+t(2,−1,0.5). At t=3 the point is (16,17,6.5) m. The interval [0,1] parameterises only the segment between the start and end points. Rotating or otherwise changing the coordinate basis changes component descriptions, although the geometric line and vector remain the same.
+1. **Displacement:** $B-A=(60,80)\,\mathrm{m}$. Magnitude $=\sqrt{60^2+80^2}=100\,\mathrm{m}$. Unit vector $=(0.6,0.8)$.
+2. **Path:** first displacement $(80,60)\,\mathrm{m}$, second $(-20,-10)\,\mathrm{m}$. Net displacement $=(60,50)\,\mathrm{m}$, magnitude $=\sqrt{6{,}100}\approx78.10\,\mathrm{m}$. Path length $=80+60+20+10=170\,\mathrm{m}$. The path length sums travelled legs; displacement is the direct change from start to finish.
+3. **Dot product:** $\mathbf a\cdot\mathbf b=2+2+4=8$. Both magnitudes are 3. $\cos\theta=8/9\approx0.8889$, so $\theta\approx27^\circ$.
+4. **Projection:** $\mathbf a\cdot\mathbf b=18$ and $\|\mathbf b\|=3$. Scalar projection $=6$. Vector projection $=(6,0)$. Perpendicular component $=(0,4)$.
+5. **Cross product:** $\mathbf a\times\mathbf b=(0,0,6)\,\mathrm{m}^2$. Parallelogram area $=6\,\mathrm{m}^2$; triangle area $=3\,\mathrm{m}^2$. Reversing order gives $(0,0,-6)\,\mathrm{m}^2$.
+6. **Velocity:** displacement $=(600,800)\,\mathrm{m}$. Average velocity $=(3,4)\,\mathrm{m\,s^{-1}}$. Magnitude is $5\,\mathrm{m\,s^{-1}}$. This is net displacement divided by time; actual path length may be longer and therefore imply a higher average path speed.
+7. **Line:** $\mathbf r(t)=(10,20,5)+t(2,-1,0.5)$. At $t=3$ the point is $(16,17,6.5)\,\mathrm{m}$. The interval $[0,1]$ parameterises only the segment between the start and end points. Rotating or otherwise changing the coordinate basis changes component descriptions, although the geometric line and vector remain the same.
 
 ## 18. Connections across Spatial Methods
 
