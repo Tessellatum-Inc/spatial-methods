@@ -163,13 +163,17 @@ This relationship assumes square cells, a consistent grid and a suitable planar 
 
 ## 6. Rates
 
-A rate expresses how one quantity changes or accumulates relative to another quantity. The denominator determines the meaning and units.
-$$
-\text{Average rate}
-=\frac{\text{change in quantity}}{\text{change in reference quantity}}.
-$$
+A rate expresses a quantity, or a change in a quantity, relative to a stated reference quantity. The denominator determines the meaning and units. For a general quantity-per-reference rate:
+$
+R=\frac{Q}{B},
+$
 
-The reference quantity may be time, area, distance, population or another meaningful exposure.
+where $Q$ is the quantity of interest and $B$ is the reference or exposure quantity. For an average rate of change over an interval, both quantities change:
+$
+\bar r=\frac{Q_1-Q_0}{B_1-B_0},
+$
+
+provided $B_1\ne B_0$. A temporal rate is a common special case; a density such as people per square kilometre is a quantity divided by an area, not necessarily a change in population divided by a change in area. The reference may be time, area, distance, population or another meaningful exposure.
 
 ### 6.1 Temporal rates
 
@@ -212,7 +216,7 @@ This rate can help with planning, but it is not a universal productivity benchma
 
 ### 6.4 Units reveal the rate's meaning
 
-Examples include metres per second (speed), square kilometres per year $area-change rate$, people per square kilometre (population density), observations per site (sampling intensity) and bytes per second (data throughput).
+Examples include metres per second (speed), square kilometres per year (area-change rate), people per square kilometre (population density), observations per site (sampling intensity) and bytes per second (data throughput).
 
 If the units do not match the question, the rate is probably not the one needed.
 
