@@ -36,7 +36,7 @@ is not.
 
 Symmetry is a structural property, not a statement that the matrix is positive, invertible, a covariance matrix or physically meaningful. A symmetric matrix may be positive definite, positive semidefinite, negative definite, indefinite or singular.
 
-For real symmetric matrices, eigenvalues are real and the matrix admits an orthonormal eigenbasis. This spectral structure is central to the next module.
+For real symmetric matrices, eigenvalues are real and the matrix admits an orthonormal eigenbasis. This spectral structure is developed further in [Module 08 — Eigenvalues, eigenvectors and spectral structure](eigenvalues-eigenvectors-and-spectral-structure.md).
 
 ## 3. Quadratic forms
 
