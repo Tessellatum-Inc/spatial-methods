@@ -63,7 +63,7 @@ python sample_worldcover.py \
 
 The extraction script preserves the original Fiji sample strata, reference labels and point order, assigns stable local sample IDs, transforms point coordinates to the raster CRS and fails on nodata or missing coverage. It accepts local raster files or HTTPS COG URLs; remote URLs are opened through GDAL /vsicurl/ for range reads, so the full tiles need not be downloaded. The provenance sidecar records source URLs and raster metadata. Remote range reads do not yield a whole-file SHA-256; use local files when byte-level raster fingerprints are required. Its default WorldCover-to-reference label mapping is provisional and must be reviewed for the intended legend before interpreting accuracy.
 
-**No WorldCover raster has yet been sampled and no WorldCover comparison result is claimed.**
+**Executed result:** the first automated run sampled all 834 Fiji reference points from five official WorldCover 2021 v200 COG tiles. Area-adjusted WorldCover overall accuracy was 74.12% (SE 2.37 percentage points; approximate 95% Wald interval 69.47%–78.76%). A paired comparison against the original Fiji map estimated a difference of −8.39 percentage points (paired SE 1.50; approximate 95% interval −11.32 to −5.45). Results are conditional on the provisional crosswalk and eligible sampling frame; the full raster files were range-read remotely, not downloaded and byte-hashed. See the [executed comparison and limitations](worldcover-comparison.md) and [GitHub Actions artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44695806784).
 
 ## Input
 
@@ -147,8 +147,11 @@ A real public-data analysis is documented in [Fiji 2021 land-cover map accuracy]
 - [Tests for the independent-strata estimator](test_stratified_accuracy.py)
 - [ESA WorldCover point-sampling script](sample_worldcover.py)
 - [WorldCover sampling tests](test_sample_worldcover.py)
+- [Paired design-based map comparison](paired_map_comparison.py)
+- [Paired comparison tests](test_paired_map_comparison.py)
+- [Automated Fiji–WorldCover rehearsal workflow](../../../.github/workflows/fiji-worldcover-rehearsal.yml)
 - [WorldCover comparison guide](worldcover-comparison.md)
 - [Optional rasterio requirements](requirements-worldcover.txt)
 - [Introductory synthetic sample CSV](sample.csv)
 
-The earlier mapped-class implementation's 10-test suite was run against a local mirror recreated from fetched repository sources. The new independent-strata estimator and pinned point-reader tests have not yet been executed; no GitHub Actions run has been triggered. Passing tests does not establish support for other sampling designs or validate the provisional class crosswalk.
+The earlier mapped-class implementation's 10-test suite passed in the repository CI. The independent-strata estimator, pinned point reader and remote-Cog rehearsal completed successfully in GitHub Actions. The paired-comparison test suite initially exposed a test-fixture variance expectation error; that expectation has been corrected and its CI rerun is pending. The successful data run is not a substitute for review of the provisional class crosswalk or assumptions.
