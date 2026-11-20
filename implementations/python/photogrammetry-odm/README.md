@@ -124,7 +124,7 @@ Run the companion tests with `python -m unittest -v`.
 
 ## End-to-end rehearsal
 
-A candidate real-image rehearsal dataset and its processing/validation protocol are documented in [rehearsal-plan.md](rehearsal-plan.md). The collection catalogue describes the HEIG-VD subset as 32 geotagged images and 31 ground points with image measurements, under the collection's CC BY 4.0 licence. The catalogue labels the ground-point horizontal reference LV95; the vertical reference, height type and detailed file contents still require inspection. Do not assume LN02 or any other vertical datum until verified from the dataset files.
+A candidate real-image rehearsal dataset and its processing/validation protocol are documented in [rehearsal-plan.md](rehearsal-plan.md). The dataset-specific README states that the subset contains 32 original 5472 × 3648 JPG images, 31 surveyed ground points, 206 image measurements for 30 points, and a Metashape OPK export. It explicitly identifies LV95 horizontal coordinates (EPSG:2056) and LN02 heights in metres. The GCP text currently renders 30 coordinate rows, so this discrepancy must be reconciled locally. See [the source inspection record](dataset-inspection.md) for the detailed evidence boundary and remaining checks.
 
 To download only this subset on a network-enabled machine, install the optional Hub client and run:
 
@@ -133,7 +133,7 @@ python -m pip install huggingface_hub
 python acquire_rehearsal_dataset.py ./data/heig-vd-scop
 ```
 
-The helper resolves the Hub repository's current commit first and downloads `datasets/drone_heig_2019/` at that exact revision. It writes into `snapshots/<commit-sha>/`, with `acquisition-provenance.json` in that revision-specific directory. Each immutable revision therefore has an isolated dataset tree and manifest; repeat downloads cannot silently mix files left by a different revision. Existing snapshots are not deleted. The manifest records the immutable repository revision, retrieval time, client/Python versions, and each downloaded file's size and SHA-256. Keep this manifest with the project record. Then run `dataset_audit.py` against the downloaded directory. This helper has not been able to retrieve the dataset in the current network-restricted environment.
+The helper resolves the Hub repository's current commit first and downloads `datasets/drone_heig_2019/` at that exact revision. It writes into `snapshots/<commit-sha>/`, with `acquisition-provenance.json` in that revision-specific directory. Each immutable revision therefore has an isolated dataset tree and manifest; repeat downloads cannot silently mix files left by a different revision. Existing snapshots are not deleted. The manifest records the immutable repository revision, retrieval time, client/Python versions, and each downloaded file's size and SHA-256. Keep this manifest with the project record. Then run `dataset_audit.py` against the downloaded directory. The dataset's README and text exports have been inspected online, but the helper has not acquired the real files in this runtime; local image-byte and metadata auditing remain outstanding.
 
 ## Connected Spatial Methods material
 
