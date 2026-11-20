@@ -485,8 +485,9 @@ The explanations and spatial examples in this module are original Spatial Method
 
 1. **Bureau International des Poids et Mesures (BIPM).** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication](https://www.bipm.org/en/si-brochure-9). Relevant sections: 2.3.3–2.3.4 and 5.4, including the expression of quantity values, units and uncertainty.
 2. **IEEE Standards Association.** (2019). *IEEE Standard for Floating-Point Arithmetic*, IEEE Std 754-2019. [Standard catalogue record](https://standards.ieee.org/ieee/754/6210/). The public catalogue describes the scope of binary and decimal floating-point formats and operations. The normative standard text was not accessed for this module; no clause-level claims are made.
-3. **Thompson, A. and Taylor, B. N.** (2008). *Guide for the Use of the International System of Units (SI)*, NIST Special Publication 811. [NIST publication record](https://doi.org/10.6028/NIST.SP.811e2008). A practical guide to SI usage; consult the current BIPM brochure where later updates matter.
+3. **Goldberg, D.** (1991). “What Every Computer Scientist Should Know About Floating-Point Arithmetic.” *ACM Computing Surveys*, 23(1), 5–48. [Oracle-hosted reprint](https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html). Used for finite binary representation and rounding behaviour. Copyright remains with ACM; this is a link-only reference.
+4. **Thompson, A. and Taylor, B. N.** (2008). *Guide for the Use of the International System of Units (SI)*, NIST Special Publication 811. [NIST publication record](https://doi.org/10.6028/NIST.SP.811e2008). A practical guide to SI usage; consult the current BIPM brochure where later updates matter.
 
-**Source register:** `SM-SRC-000022`, `SM-SRC-000023`, `SM-SRC-000025`.
+**Source register:** `SM-SRC-000022`, `SM-SRC-000023`, `SM-SRC-000025`, `SM-SRC-000027`.
 
 **Limitations:** This is an introductory treatment, not a full account of floating-point arithmetic, numerical error analysis or storage-format specifications. IEEE 754 is a technical standard; its public catalogue page does not provide the complete normative text.
