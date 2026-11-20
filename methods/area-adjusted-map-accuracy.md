@@ -45,7 +45,7 @@ For total mapped area (A), the estimated reference-class area is (Ahat P_j). Thi
 
 ## Uncertainty under the supported design
 
-For independent simple random samples within mapped-class strata, an estimator of overall-accuracy variance is
+For independent simple random samples without replacement within mapped-class strata, let (N_i) be the number of eligible population units in stratum (i). When these population sizes are known, the finite-population correction is (f_i=1-n_i/N_i). An estimator of overall-accuracy variance is
 
 [
 widehat{operatorname{Var}}(widehat{OA})=
@@ -61,7 +61,7 @@ sum_i W_i^2rac{hat p_{ij}^{(s)}(1-hat p_{ij}^{(s)})}{n_i-1},
 qquad hat p_{ij}^{(s)}=n_{ij}/n_i.
 ]
 
-The accompanying implementation uses a delta-method approximation for producer's-accuracy uncertainty and normal-approximation Wald intervals. These are teaching baselines; small samples and estimates near zero or one require more careful interval methods.
+When population sizes (N_i) are unavailable, the implementation uses (f_i=1), i.e. no finite-population correction. When valid stratum population sizes are supplied, it applies the correction to the within-stratum variance contributions. The implementation uses a delta-method approximation for producer's-accuracy uncertainty and normal-approximation Wald intervals. These are teaching baselines; small samples and estimates near zero or one require more careful interval methods.
 
 ## Design and response protocol
 
@@ -95,7 +95,7 @@ Estimated reference forest area proportion is (0.45+0.10=0.55). For a hypothetic
 
 ## Implementation
 
-The [Python implementation](../implementations/python/area-adjusted-accuracy/README.md) supports this mapped-class-stratified SRS design and reports the area-proportion matrix, overall accuracy, user's and producer's accuracy, reference-class area and uncertainty summaries.
+The [Python implementation](../implementations/python/area-adjusted-accuracy/README.md) supports this mapped-class-stratified SRS design and reports the area-proportion matrix, overall accuracy, user's and producer's accuracy, reference-class area and uncertainty summaries. It optionally applies the finite-population correction when the eligible stratum population sizes are supplied. A real-data example using the public [Fiji 2021 land-cover test sample](../implementations/python/area-adjusted-accuracy/fiji-case-study.md) demonstrates the workflow and explicitly records a sample-allocation discrepancy in the source documentation.
 
 It does not support arbitrary unequal-probability, cluster, adaptive or general systematic/spatially balanced designs. It does not propagate uncertainty in map-area weights or reference interpretation, apply nonresponse adjustments, or certify a map.
 
@@ -104,4 +104,4 @@ It does not support arbitrary unequal-probability, cluster, adaptive or general 
 - Olofsson, P., Foody, G. M., Herold, M., Stehman, S. V., Woodcock, C. E., & Wulder, M. A. (2014). Good practices for estimating area and assessing accuracy of land change. *Remote Sensing of Environment*, 148, 42–57. https://doi.org/10.1016/j.rse.2014.02.015
 - Olofsson, P., Foody, G. M., Stehman, S. V., & Woodcock, C. E. (2013). Making better use of accuracy data in land change studies: Estimating accuracy and area and quantifying uncertainty using stratified estimation. *Remote Sensing of Environment*, 129, 122–131. https://doi.org/10.1016/j.rse.2012.10.031
 
-No real map, reference labels or field observations have been analysed. The method page is an initial synthesis, not an independent technical review or a universal prescription for all sampling designs.
+The Fiji case is a secondary analysis of a public reference sample; it is not a new field campaign or independent re-interpretation. The method page is an initial synthesis, not an independent technical review or a universal prescription for all sampling designs.
