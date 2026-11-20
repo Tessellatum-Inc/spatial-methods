@@ -304,6 +304,7 @@ Safety, access, permissions, cost, weather and logistics are real design constra
 
 ## References
 
+- Diez, D. M., Çetinkaya-Rundel, M., and Barr, C. D. (2019). *OpenIntro Statistics*, 4th ed., Chapter 5. [OpenIntro book and companion resources](https://openintro.org/book/os/). Used for the law of large numbers, sampling distributions and the central limit theorem; this module provides original spatial interpretation and examples.
 - U.S. Environmental Protection Agency. [Selecting a Sampling Design](https://www.epa.gov/quality/selecting-sampling-design). Used for a practical comparison of simple random, stratified, systematic/grid, ranked-set and adaptive cluster designs. This guidance is not a substitute for a study-specific statistical design.
 - Dumelle, M., Kincaid, T., Olsen, A. R., and Weber, M. (2023). “spsurvey: Spatial Sampling Design and Analysis in R.” *Journal of Statistical Software*, 105(3), 1–29. [https://doi.org/10.18637/jss.v105.i03](https://doi.org/10.18637/jss.v105.i03). Used for design-based spatial probability sampling, GRTS and inclusion-probability concepts.
 - [EPA spsurvey spatially balanced sampling vignette](https://usepa.github.io/spsurvey/articles/sampling.html). Used for GRTS design features, stratification and spatial sampling-frame concepts.
@@ -312,4 +313,4 @@ The examples and calculations in this module are original synthetic teaching ill
 
 ## Evidence and review boundary
 
-The EPA sampling-design guidance was inspected for its descriptions and use cases for common designs. The 2023 spsurvey paper and official vignette were inspected for GRTS, design-based inference and spatial balance relative to the sampling frame. This is an introductory synthesis, not a complete survey-design manual. Variance estimators for unequal-probability, clustered, adaptive and spatially balanced samples require design-specific treatment beyond the simple formulas shown here. A real project should be designed and reviewed by a competent statistician and domain specialist.
+The OpenIntro fourth-edition discussion of the law of large numbers and sampling distributions was checked. The EPA sampling-design guidance was inspected for its descriptions and use cases for common designs. The 2023 spsurvey paper and official vignette were inspected for GRTS, design-based inference and spatial balance relative to the sampling frame. This is an introductory synthesis, not a complete survey-design manual. Variance estimators for unequal-probability, clustered, adaptive and spatially balanced samples require design-specific treatment beyond the simple formulas shown here. A real project should be designed and reviewed by a competent statistician and domain specialist.
