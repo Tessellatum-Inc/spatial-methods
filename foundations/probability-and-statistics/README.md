@@ -48,6 +48,10 @@ The domain will develop:
 
 The sequence is a suggested route, not a compulsory order. Readers may enter through a concrete application and follow its prerequisites.
 
+## Apply the sequence
+
+Use the [Spatial statistical inference pathway](../../learning-paths/spatial-statistical-inference.md) to connect these eight modules to field measurements, map accuracy assessment and spatial prediction. It guides study definition, collection and sampling design, exploratory analysis, model choice, validation and reporting without duplicating the canonical foundation material.
+
 ## Application anchors already in the repository
 
 - [Spatial cross-validation](../../methods/spatial-cross-validation.md)
