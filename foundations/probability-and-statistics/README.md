@@ -41,7 +41,7 @@ The domain will develop:
 | 02 | [Random variables, distributions and probability models](random-variables-and-distributions.md) | Measurement outcomes, event counts, detection and classification | Initial module published |
 | 03 | [Joint distributions, covariance and dependence](joint-distributions-covariance-and-dependence.md) | Correlated measurements, multivariate spatial data and dependence structures | Initial module published |
 | 04 | [Sampling designs and sampling distributions](sampling-designs-and-sampling-distributions.md) | Field sampling, ground truth, survey design and spatially representative inference | Initial module published |
-| 05 | Likelihood and statistical estimation | Parameter estimation, regression, geostatistics and model fitting | Planned |
+| 05 | [Likelihood and statistical estimation](likelihood-and-statistical-estimation.md) | Parameter estimation, regression, geostatistics and model fitting | Initial module published |
 | 06 | Confidence intervals, hypothesis tests and statistical decisions | Accuracy assessment, change detection and model comparison | Planned |
 | 07 | Bayesian inference and predictive distributions | Evidence updating, risk mapping and probabilistic prediction | Planned |
 | 08 | Statistical diagnostics, calibration and model criticism | Prediction validation, classification calibration and uncertainty communication | Planned |
@@ -68,4 +68,4 @@ A probability value is not self-explanatory. Record what is random, what populat
 
 ## Review status
 
-This is an initial domain collection. Modules 01–04 are researched syntheses based on cited probability, metrology and sampling-design material and original spatial examples. Independent technical review, learner testing and further modules remain outstanding. No publication in this folder constitutes professional statistical certification or validation of a real spatial dataset.
+This is an initial domain collection. Modules 01–05 are researched syntheses based on cited probability, metrology and sampling-design material and original spatial examples. Independent technical review, learner testing and further modules remain outstanding. No publication in this folder constitutes professional statistical certification or validation of a real spatial dataset.
