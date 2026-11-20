@@ -355,7 +355,7 @@ Use a stated Cartesian frame and show the component calculations.
 
 ### Exercise 1 — Displacement and magnitude
 
-A=$100,250$ m and B=$160,330$ m.
+$A=(100,250)\,\mathrm{m}$ and $B=(160,330)\,\mathrm{m}$. 
 
 1. Find the displacement vector from A to B.
 2. Calculate its magnitude.
@@ -373,7 +373,7 @@ A field worker walks 80 m east and 60 m north, then 20 m west and 10 m south.
 
 ### Exercise 3 — Dot product and angle
 
-Let a=$2,1,2$ and b=$1,2,2$.
+Let $\mathbf a=(2,1,2)$ and $\mathbf b=(1,2,2)$. 
 
 1. Calculate the dot product.
 2. Calculate both magnitudes.
@@ -382,24 +382,24 @@ Let a=$2,1,2$ and b=$1,2,2$.
 
 ### Exercise 4 — Projection
 
-Let a=$6,4$ and b=$3,0$.
+Let $\mathbf a=(6,4)$ and $\mathbf b=(3,0)$. 
 
 1. Calculate the scalar projection of a onto b.
 2. Calculate the vector projection.
-3. Calculate the perpendicular component a−proj_b$a$.
+3. Calculate the perpendicular component $\mathbf a-\operatorname{proj}_{\mathbf b}(\mathbf a)$. 
 
 ### Exercise 5 — Cross product and area
 
-Let a=$2,0,0$ m and b=$0,3,0$ m.
+Let $\mathbf a=(2,0,0)\,\mathrm{m}$ and $\mathbf b=(0,3,0)\,\mathrm{m}$. 
 
-1. Calculate a×b.
+1. Calculate $\mathbf a\times\mathbf b$.
 2. Find the parallelogram area.
 3. Find the triangle area.
 4. State how the cross-product direction changes if the order is reversed.
 
 ### Exercise 6 — Average velocity
 
-An object moves from $1,000,2,000$ m to $1,600,2,800$ m in 200 s.
+An object moves from $(1{,}000,2{,}000)\,\mathrm{m}$ to $(1{,}600,2{,}800)\,\mathrm{m}$ in $200\,\mathrm{s}$.
 
 1. Calculate the displacement vector.
 2. Calculate average velocity.
@@ -408,10 +408,10 @@ An object moves from $1,000,2,000$ m to $1,600,2,800$ m in 200 s.
 
 ### Exercise 7 — Line and frame interpretation
 
-A line starts at r_0=$10,20,5$ m and has direction vector v=(2,−1,0.5) m.
+A line starts at $\mathbf r_0=(10,20,5)\,\mathrm{m}$ and has direction vector $\mathbf v=(2,-1,0.5)\,\mathrm{m}$.
 
 1. Write its parametric vector equation.
-2. Find the point at t=3.
+2. Find the point at $t=3$.
 3. Explain why t must be restricted to [0,1] if the expression is intended to represent only the segment from r_0 to r_0+v.
 4. Explain why the component values depend on the coordinate frame.
 
