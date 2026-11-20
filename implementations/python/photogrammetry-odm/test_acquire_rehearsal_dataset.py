@@ -4,10 +4,33 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from acquire_rehearsal_dataset import build_manifest, sha256_file
+from acquire_rehearsal_dataset import (
+    build_manifest,
+    revision_snapshot_dir,
+    sha256_file,
+)
 
 
 class AcquisitionManifestTests(unittest.TestCase):
+    def test_each_revision_uses_an_isolated_snapshot_directory(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            destination = Path(tmp)
+            first = "a" * 40
+            second = "b" * 40
+            self.assertEqual(
+                revision_snapshot_dir(destination, first),
+                destination / "snapshots" / first,
+            )
+            self.assertNotEqual(
+                revision_snapshot_dir(destination, first),
+                revision_snapshot_dir(destination, second),
+            )
+
+    def test_invalid_revision_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(ValueError):
+                revision_snapshot_dir(Path(tmp), "../../stale")
+
     def test_sha256_file_matches_known_digest(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "sample.bin"
