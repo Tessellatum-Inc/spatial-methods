@@ -18,6 +18,10 @@ All lengths must use consistent units. Height is above local ground, not
 necessarily above mean sea level. The pinhole approximation assumes a
 near-nadir camera and locally planar terrain.
 
+## Connected learning material
+
+See [Photogrammetric image acquisition](../../../../collection/photogrammetry/image-acquisition.md) for the measurement and acquisition principles behind these calculations, including the distinction between GSD and positional accuracy, image geometry, control and quality assurance.
+
 ## Limitations
 
 The package does not design terrain-following paths, account for relief
