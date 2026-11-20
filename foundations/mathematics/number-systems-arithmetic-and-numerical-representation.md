@@ -218,7 +218,7 @@ $$
 x_{\text{physical}}=s\,x_{\text{stored}}+o
 $$
 
-where (s) is the scale factor and (o) is the offset.
+where $s$ is the scale factor and $o$ is the offset.
 
 For illustration, if a stored value is 143, the scale factor is 0.01 and the offset is 0:
 $$
