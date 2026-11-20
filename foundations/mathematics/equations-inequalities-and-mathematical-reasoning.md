@@ -533,13 +533,13 @@ For each question, decide whether an equation, inequality or system is the most 
 
 ## 16. Answers and checks
 
-1. **Rectangular field:** l = A/w = 2,400 m² / 40 m = 60 m. Check: 60 m × 40 m = 2,400 m².
-2. **Map scale:** G = 6.5 cm × 20,000 = 130,000 cm = 1,300 m. M = G/20,000 when G is expressed in the same length unit. Scale conversion does not validate the source geometry or positional accuracy.
-3. **Circle:** x² + y² = 144 m². On the x-axis y = 0, so x² = 144 and x = −12 m or +12 m. Both points lie on the circle.
-4. **Service range:** |x| ≤ 750 m; equivalently −750 m ≤ x ≤ 750 m; interval [−750,750] m. In two dimensions the Euclidean disk condition is (x−x₀)² + (y−y₀)² ≤ 750², subject to an appropriate planar coordinate model.
-5. **Screening:** A ≥ 3 ha, D ≥ 400 m, S ≤ 8%. Candidate A satisfies all three. B fails the distance condition; C fails the area condition. This is only a simplified screen, not a complete suitability or approval assessment.
-6. **Invalidly incomplete root:** x = −3 and x = +3. Both square to 9; reporting only the principal square root omits the negative solution.
-7. **Representation:** (1) equation, L = 12 km; (2) inequality, reading < maximum; (3) system, A₁ + A₂ = total and A₁ = 2A₂; (4) equation, |x| = 500 m; (5) system of inequalities, because all constraints must hold together.
+1. **Rectangular field:** $l=A/w=2{,}400\,\mathrm{m}^2/40\,\mathrm{m}=60\,\mathrm{m}$. Check: $60\,\mathrm{m}\times40\,\mathrm{m}=2{,}400\,\mathrm{m}^2$.
+2. **Map scale:** $G=6.5\,\mathrm{cm}\times20{,}000=130{,}000\,\mathrm{cm}=1{,}300\,\mathrm{m}$. $M=G/20{,}000$ when $G$ is expressed in the same length unit. Scale conversion does not validate the source geometry or positional accuracy.
+3. **Circle:** $x^2+y^2=144\,\mathrm{m}^2$. On the x-axis $y=0$, so $x^2=144$ and $x=-12\,\mathrm{m}$ or $x=+12\,\mathrm{m}$. Both points lie on the circle.
+4. **Service range:** $|x|\leq750\,\mathrm{m}$; equivalently $-750\,\mathrm{m}\leq x\leq750\,\mathrm{m}$; interval $[-750,750]\,\mathrm{m}$. In two dimensions the Euclidean disk condition is $(x-x_0)^2+(y-y_0)^2\leq750^2$, subject to an appropriate planar coordinate model.
+5. **Screening:** $A\geq3\,\mathrm{ha}$, $D\geq400\,\mathrm{m}$, $S\leq8\%$. Candidate A satisfies all three. B fails the distance condition; C fails the area condition. This is only a simplified screen, not a complete suitability or approval assessment.
+6. **Invalidly incomplete root:** $x=-3$ and $x=+3$. Both square to 9; reporting only the principal square root omits the negative solution.
+7. **Representation:** (1) equation, $L=12\,\mathrm{km}$; (2) inequality, reading below the maximum; (3) system, $A_1+A_2=A_{\mathrm{total}}$ and $A_1=2A_2$; (4) equation, $|x|=500\,\mathrm{m}$; (5) system of inequalities, because all constraints must hold together.
 
 ## 17. Connections across Spatial Methods
 
