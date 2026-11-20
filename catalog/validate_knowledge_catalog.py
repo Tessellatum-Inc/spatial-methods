@@ -16,7 +16,7 @@ RELATIONSHIPS = {
 KINDS = {
     "foundation", "algorithm", "operation", "data_structure", "model",
     "statistic", "metric", "method", "workflow", "system", "standard",
-    "implementation", "dataset", "application",
+    "implementation", "dataset", "application", "review",
 }
 STATUSES = {
     "captured", "mapped", "sourced", "curated", "researched",
