@@ -397,7 +397,7 @@ State the coordinate frame and units you assume. Show intermediate calculations.
 
 ### Exercise 1 — Distance and midpoint
 
-In a local Cartesian frame, A=$40,30$ m and B=$160,80$ m.
+In a local Cartesian frame, $A=(40,30)\,\mathrm{m}$ and $B=(160,80)\,\mathrm{m}$. 
 
 1. Calculate the planar distance AB.
 2. Calculate the midpoint.
@@ -405,7 +405,7 @@ In a local Cartesian frame, A=$40,30$ m and B=$160,80$ m.
 
 ### Exercise 2 — Line through two points
 
-Find an equation for the line through P=(−1,4) and Q=$3,12$.
+Find an equation for the line through $P=(-1,4)$ and $Q=(3,12)$. 
 
 1. Calculate its slope.
 2. Write the point-slope equation.
@@ -428,16 +428,16 @@ Explain how substitution verifies the result.
 
 ### Exercise 4 — Circle and spatial threshold
 
-A facility is at C=$500,700$ m in a suitable local planar frame. A screening distance is set at 300 m.
+A facility is at $C=(500,700)\,\mathrm{m}$ in a suitable local planar frame. A screening distance is set at 300 m.
 
 1. Write the equation for the boundary.
 2. Write the inequality for the area within or on the boundary.
-3. Determine whether P=$680,940$ m is inside the disk.
+3. Determine whether $P=(680,940)\,\mathrm{m}$ is inside the disk.
 4. State two reasons why a real service-area analysis may require more than this circle.
 
 ### Exercise 5 — Three-dimensional distance
 
-A=$10,20,5$ m and B=$40,60,17$ m in the same Cartesian 3D frame.
+$A=(10,20,5)\,\mathrm{m}$ and $B=(40,60,17)\,\mathrm{m}$ in the same Cartesian 3D frame.
 
 1. Calculate the three-dimensional distance.
 2. Calculate the horizontal distance.
@@ -450,7 +450,7 @@ $$
 x_B=x_A-250,\qquad y_B=y_A+100.
 $$
 
-1. Transform A-frame point $900,450$ m into B.
+1. Transform A-frame point $(900,450)\,\mathrm{m}$ into B.
 2. Write the inverse mapping.
 3. Recover the original coordinates.
 4. Explain which frame properties were assumed identical.
