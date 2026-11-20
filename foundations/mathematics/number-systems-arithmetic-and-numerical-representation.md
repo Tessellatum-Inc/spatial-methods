@@ -128,13 +128,13 @@ The conventional order of operations is:
 For example:
 
 \[
-3+4	imes2=3+8=11
+3+4\times2=3+8=11
 \]
 
 whereas:
 
 \[
-(3+4)	imes2=7	imes2=14
+(3+4)\times2=7\times2=14
 \]
 
 In spatial workflows, a missing pair of parentheses can change an area calculation, a coordinate offset, a map-scale conversion or a raster expression. Make precedence explicit in code and technical documentation.
@@ -152,14 +152,14 @@ A=lw
 If \(l=80\,\mathrm{m}\) and \(w=25\,\mathrm{m}\):
 
 \[
-A=80 \mathrm{m}	imes25 \mathrm{m}
+A=80 \mathrm{m}\times25 \mathrm{m}
 =2{,}000 \mathrm{m^2}
 \]
 
 For a conversion:
 
 \[
-2{,}000 \mathrm{m^2}	imes
+2{,}000 \mathrm{m^2}\times
 rac{1 \mathrm{ha}}{10{,}000 \mathrm{m^2}}
 =0.2 \mathrm{ha}
 \]
@@ -195,11 +195,11 @@ These forms are mathematically equivalent, but the choice of representation affe
 Suppose a hypothetical land-cover assessment correctly classifies 840 of 1,000 reference samples.
 
 \[
-	ext{Proportion correct}=rac{840}{1000}=0.84
+\text{Proportion correct}=rac{840}{1000}=0.84
 \]
 
 \[
-	ext{Percentage correct}=0.84	imes100=84%
+\text{Percentage correct}=0.84\times100=84%
 \]
 
 The percentage is meaningful only with the assessment design and class distribution. It does not, by itself, describe the accuracy of every class or the quality of the reference labels.
@@ -229,7 +229,7 @@ Choose reporting precision in relation to the purpose, uncertainty, data specifi
 A sensor or raster data product may store measurements using discrete integer levels. A scale factor and offset can map stored integers to physical values:
 
 \[
-x_{	ext{physical}}=s,x_{	ext{stored}}+o
+x_{\text{physical}}=s\,x_{\text{stored}}+o
 \]
 
 where (s) is the scale factor and (o) is the offset.
@@ -237,7 +237,7 @@ where (s) is the scale factor and (o) is the offset.
 For illustration, if a stored value is 143, the scale factor is 0.01 and the offset is 0:
 
 \[
-x_{	ext{physical}}=0.01(143)+0=1.43
+x_{\text{physical}}=0.01(143)+0=1.43
 \]
 
 The physical unit and interpretation must come from the product metadata. The number 143 alone is not a reflectance, temperature or elevation.
@@ -257,13 +257,13 @@ For example:
 Scientific notation helps remove ambiguity:
 
 \[
-4.5	imes10^3
+4.5\times10^3
 \]
 
 has two significant figures, while:
 
 \[
-4.500	imes10^3
+4.500\times10^3
 \]
 
 has four significant figures.
