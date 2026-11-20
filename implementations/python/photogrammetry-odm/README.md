@@ -124,7 +124,7 @@ Run the companion tests with `python -m unittest -v`.
 
 ## End-to-end rehearsal
 
-A licensed real-image rehearsal dataset and its processing/validation protocol are documented in [rehearsal-plan.md](rehearsal-plan.md). The selected HEIG-VD dataset contains 32 geotagged images and surveyed ground-point observations under CC BY 4.0. Its coordinate metadata requires explicit treatment of LV95 horizontal coordinates and LN02 heights. The dataset has not yet been downloaded or processed; this environment currently has no Docker executable.
+A candidate real-image rehearsal dataset and its processing/validation protocol are documented in [rehearsal-plan.md](rehearsal-plan.md). The collection catalogue describes the HEIG-VD subset as 32 geotagged images and 31 ground points with image measurements, under the collection's CC BY 4.0 licence. The catalogue labels the ground-point horizontal reference LV95; the vertical reference, height type and detailed file contents still require inspection. Do not assume LN02 or any other vertical datum until verified from the dataset files.\n\nTo download only this subset on a network-enabled machine, install the optional Hub client and run:\n\n```bash\npython -m pip install huggingface_hub\npython acquire_rehearsal_dataset.py ./data/heig-vd-scop\n```\n\nThe helper resolves the Hub repository's current commit first and downloads `datasets/drone_heig_2019/` at that exact revision. It prints the revision and local directory. Keep the printed revision with the project record. Then run `dataset_audit.py` against the downloaded directory. This helper has not been able to retrieve the dataset in the current network-restricted environment.
 
 ## Connected Spatial Methods material
 
