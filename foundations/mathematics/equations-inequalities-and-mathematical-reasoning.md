@@ -189,9 +189,9 @@ $$
 \Delta=b^2-4ac.
 $$
 
-- If Δ > 0, there are two distinct real roots.
-- If Δ = 0, there is one repeated real root.
-- If Δ < 0, there are no real roots.
+- If $\Delta>0$, there are two distinct real roots.
+- If $\Delta=0$, there is one repeated real root.
+- If $\Delta<0$, there are no real roots.
 
 The quadratic formula is:
 $$
