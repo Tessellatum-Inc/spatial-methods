@@ -55,22 +55,22 @@ $$
 P=(x,y,z).
 $$
 
-The order matters. $10,20$ and $20,10$ are generally different points. The same numerical tuple can also describe different physical positions if interpreted in different frames, units or coordinate systems.
+The order matters. $(10,20)$ and $(20,10)$ are generally different points. The same numerical tuple can also describe different physical positions if interpreted in different frames, units or coordinate systems.
 
 ### Example
 
-Let A = $120,80$ and B = $170,200$, with coordinates in metres in a stated local grid.
+Let $A=(120,80)$ and $B=(170,200)$, with coordinates in metres in a stated local grid.
 
 The displacement from A to B is described componentwise as:
-$$
-$(170-120,\;200-80)=(50,120)\;\mathrm{m}$.
-$$
+$
+(170-120,\;200-80)=(50,120)\;\mathrm{m}.
+$
 
 This describes the coordinate difference in that frame. Whether those values correspond to east/north displacement depends on how the frame axes were defined.
 
 ## 4. Distance between points
 
-For two points A=$x_1,y_1$ and B=$x_2,y_2$ in a Euclidean plane, the distance is:
+For two points $A=(x_1,y_1)$ and $B=(x_2,y_2)$ in a Euclidean plane, the distance is:
 $$
 d(A,B)=\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}.
 $$
@@ -79,7 +79,7 @@ This follows from the Pythagorean theorem: the coordinate differences form the p
 
 ### Worked example
 
-Let A=$120,80$ m and B=$170,200$ m.
+Let $A=(120,80)\,\mathrm{m}$ and $B=(170,200)\,\mathrm{m}$.
 $$
 \begin{aligned}
 d(A,B)&=\sqrt{(170-120)^2+(200-80)^2}\\
@@ -93,7 +93,7 @@ This is planar Euclidean distance. It is appropriate only when the coordinate va
 
 ### 4.1 Three-dimensional distance
 
-For A=$x_1,y_1,z_1$ and B=$x_2,y_2,z_2$:
+For $A=(x_1,y_1,z_1)$ and $B=(x_2,y_2,z_2)$:
 $$
 d(A,B)=\sqrt{(x_2-x_1)^2+(y_2-y_1)^2+(z_2-z_1)^2}.
 $$
@@ -102,15 +102,15 @@ The three coordinates must be expressed in compatible units and in the same Cart
 
 ## 5. Midpoints and internal division
 
-The midpoint of a line segment joining A=$x_1,y_1$ and B=$x_2,y_2$ is:
+The midpoint of a line segment joining $A=(x_1,y_1)$ and $B=(x_2,y_2)$ is:
 $$
 M=\left(\frac{x_1+x_2}{2},\frac{y_1+y_2}{2}\right).
 $$
 
-For the previous points A=$120,80$ and B=$170,200$:
-$$
-$M=(145,140)\;\mathrm{m}$.
-$$
+For the previous points $A=(120,80)$ and $B=(170,200)$:
+$
+M=(145,140)\;\mathrm{m}.
+$
 
 The midpoint is equidistant from the endpoints in the Euclidean plane.
 
