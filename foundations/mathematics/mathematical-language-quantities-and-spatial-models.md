@@ -316,7 +316,7 @@ Then:
 
 \[
 ho=rac{18{,}000}{4.5}
-=4{,}000 \mathrm{\mathrm{residents\,km^{-2}}}
+=4{,}000 \mathrm{residents\,km^{-2}}
 \]
 
 Interpretation: the total population divided by the total area is 4,000 residents per square kilometre.
