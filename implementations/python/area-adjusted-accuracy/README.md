@@ -1,18 +1,22 @@
 # Design-based, area-adjusted map accuracy
 
-This small Python companion estimates map accuracy and reference-class area from a probability sample stratified by mapped class.
+This Python companion contains two design-based estimators for map accuracy and reference-class area: one for a sample stratified by the evaluated map, and one for a sample stratified independently of the evaluated map.
 
 It fills a deliberately separate gap in the shared [accuracy-assessment metrics package](../accuracy-assessment/README.md). That package provides count-based classification metrics; this companion accounts for mapped-class area proportions and the stated sampling design.
 
-## Supported design
+## Supported designs
 
-- The map classes are the sampling strata.
+**Original estimator — `area_adjusted_accuracy.py`**
+- The evaluated map classes are also the sampling strata.
 - Within each mapped-class stratum, units are selected by simple random sampling.
-- Each sampled unit receives a reference class under a documented response protocol.
-- The mapped-class area proportions are known and sum to one.
-- Samples from different strata are treated as independent.
+- Mapped-class area proportions are known and sum to one.
 
-The original `area_adjusted_accuracy.py` estimator is for the special case where the evaluated map classes are also the sampling strata. A second estimator, `stratified_accuracy.py`, supports a different evaluated map while retaining the original sample strata and their area weights. Both require independent simple random sampling within the supplied strata; neither is a generic engine for cluster, arbitrary unequal-probability, adaptive, general systematic or spatially balanced samples.
+**Independent-strata estimator — `stratified_accuracy.py`**
+- The sample is selected within supplied sampling strata that may differ from the evaluated map classes.
+- The eligible population area proportions of the sampling strata are known and sum to one.
+- Each sampled unit has both an evaluated map class and a reference class.
+
+Both estimators assume independent simple random sampling without replacement within strata. Neither is a generic engine for cluster, arbitrary unequal-probability, adaptive, general systematic or spatially balanced samples. The target population and response protocol must remain appropriate for the map being evaluated.
 
 ## When sampling strata differ from the evaluated map
 
@@ -40,7 +44,7 @@ The general estimator constructs each map/reference cell by weighting its within
 
 The repository now includes an extraction workflow for evaluating ESA WorldCover against the Fiji reference sample without pretending that WorldCover classes were the sampling strata.
 
-1. Download the official WorldCover 2021 v200 10 m COG tiles covering all Fiji sample points and create a covering VRT/mosaic. Use analytical raster data, not a rendered WMS/WMTS.
+1. Download the five official WorldCover 2021 v200 10 m COG tiles covering the Fiji sample points. You can pass all five as repeated `--raster` arguments or build a VRT. Use analytical raster data, not a rendered WMS/WMTS.
 2. Install the optional `rasterio` dependency: `python -m pip install -r requirements-worldcover.txt`.
 3. Sample the WorldCover raster at the pinned 834 Fiji reference points:
 
