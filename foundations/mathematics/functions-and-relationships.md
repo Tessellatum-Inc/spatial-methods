@@ -38,12 +38,12 @@ $$
 f(M)=sM,
 $$
 
-where M is map distance and f$M$ is represented ground distance, with both distances expressed in compatible units.
+where $M$ is map distance and $f(M)$ is represented ground distance, with both distances expressed in compatible units.
 
 If $M$ is measured in centimetres and $s=25{,}000$, then:
-$$
-$f(2\;\mathrm{cm})=50{,}000\;\mathrm{cm}=500\;\mathrm{m}$.
-$$
+$
+f(2\;\mathrm{cm})=50{,}000\;\mathrm{cm}=500\;\mathrm{m}.
+$
 
 A reasonable domain might be non-negative map distances for a particular map. The output is non-negative ground distance under this simplified scale model. The formula does not establish map accuracy or account for local projection scale variation.
 
@@ -96,10 +96,10 @@ $$
 
 where x and y are horizontal offsets in metres from a local origin and z is elevation in metres relative to a stated vertical datum.
 
-At $x,y$ = $100,200$:
-$$
-$z(100,200)=100+0.02(100)-0.01(200)=100\;\mathrm{m}$.
-$$
+At $(x,y)=(100,200)$:
+$
+z(100,200)=100+0.02(100)-0.01(200)=100\;\mathrm{m}.
+$
 
 This is a simple plane, not a realistic terrain model. Its coefficients represent constant slopes in the x and y directions under the chosen local coordinate convention. A real terrain surface is more complex and requires observations, interpolation or another modelling method.
 
@@ -286,9 +286,9 @@ $$
 $$
 
 For $m=0.04\,\mathrm{m}$:
-$$
-$(g\circ f)(0.04)=1{,}000\;\mathrm{m}$.
-$$
+$
+(g\circ f)(0.04)=1{,}000\;\mathrm{m}.
+$
 
 This example makes units and sequence explicit. A software pipeline that silently assumes a different input unit would produce a result wrong by a scale factor.
 
