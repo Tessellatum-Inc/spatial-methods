@@ -608,3 +608,14 @@ All numerical scenarios are hypothetical teaching examples. The screening thresh
 ## 19. Further development
 
 The next module develops functions and relationships: inputs and outputs, domains and ranges, linear and nonlinear models, inverse functions, composition and the interpretation of spatial phenomena as mathematical mappings.
+
+
+## References and further reading
+
+The explanations and spatial examples are original Spatial Methods teaching material. These sources support the introductory algebraic methods used in this module.
+
+1. **OpenStax.** *Algebra and Trigonometry 2e*. [Chapter 2: Equations and Inequalities](https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-introduction-to-equations-and-inequalities), including linear and quadratic equations, absolute-value inequalities and applications.
+2. **OpenStax.** *Algebra and Trigonometry 2e*. [Chapter 11: Systems of Equations and Inequalities](https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-introduction-to-systems-of-equations-and-inequalities). Used for simultaneous equations and feasible sets.
+3. **BIPM.** (2026). *The International System of Units (SI Brochure)*, 9th edition, version 4.01. [Official publication](https://www.bipm.org/en/si-brochure-9). Used for quantity and unit conventions in dimensional checks.
+
+**Limitations:** These sources support introductory algebra, not the full treatment of constrained optimisation, linear algebra, numerical solution or formal mathematical proof.
