@@ -56,7 +56,7 @@ jobs:
           SNAPSHOT="$(find data/heig-vd-scop/snapshots -mindepth 1 -maxdepth 1 -type d | sort | head -n 1)"
           DATASET="$SNAPSHOT/datasets/drone_heig_2019"
           python implementations/python/photogrammetry-odm/dataset_audit.py \
-            "$DATASET" --json-out reports/heig-vd/dataset-audit.json
+            "$DATASET" --expected-images 32 --json-out reports/heig-vd/dataset-audit.json
 
       - name: Run GCP, image-observation and OPK consistency audit
         shell: bash
@@ -83,6 +83,15 @@ jobs:
               done
             fi
           fi
+          if [ -n "${SNAPSHOT:-}" ]; then
+            DATASET="$SNAPSHOT/datasets/drone_heig_2019"
+            for source_file in README.md gcp/GCP_MN95.txt gcp/gcp_obs.csv opk.txt; do
+              if [ -f "$DATASET/$source_file" ]; then
+                mkdir -p "reports/heig-vd/source/$(dirname "$source_file")"
+                cp "$DATASET/$source_file" "reports/heig-vd/source/$source_file"
+              fi
+            done
+          fi
           cat > reports/heig-vd/README.md <<'EOF'
           # HEIG-VD real-data acquisition and audit
 
@@ -91,7 +100,8 @@ jobs:
           Licence: CC BY 4.0
           Attribution: HEIG-VD, Geomatics group (2026), Photogrammetry and LiDAR datasets.
 
-          This artifact contains provenance and audit reports, not the source imagery.
+          This artifact contains provenance, audit reports and small source metadata files
+          (README, GCP coordinates, image observations and OPK text), not source imagery.
           Acquisition hashes establish local byte agreement with the recorded manifest;
           they do not establish publisher authenticity, licence compliance, coordinate
           reference correctness, photogrammetric suitability or product accuracy.
