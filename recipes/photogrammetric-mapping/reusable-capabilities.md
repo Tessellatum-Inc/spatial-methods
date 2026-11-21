@@ -290,9 +290,40 @@ This adapter establishes structural evidence only. It does not verify that a CRS
 | Output inventory and expected-file checks | Implemented |
 | GeoTIFF structural inspection | Implemented when Rasterio is installed |
 | Point-cloud and mesh inspection | Pending |
-| Independent checkpoint acceptance workflow | Existing statistics; integration pending |
+| Independent checkpoint residual statistics | Implemented |\n| Project-level validation evidence and human decision record | Implemented; evidence completeness is explicit |
 | Reproducible delivery package | Pending |
 
 ### Next integration milestone
 
-Connect independent checkpoint evidence and acceptance criteria to the processing-run and output records. Keep reference uncertainty, sample design, residual statistics and acceptance decisions explicit. The final delivery package should then assemble source provenance, processing provenance, output inspection, independent validation and unresolved limitations without conflating these distinct forms of evidence.
+Assemble source provenance, processing provenance, output inspection, independent validation and unresolved limitations into a reviewable delivery package. Keep these distinct forms of evidence separate.
+
+
+## 12. Integration update — independent checkpoint evidence
+
+The project-level evidence adapter is now implemented as `validation_evidence.py`, reusing the existing transparent residual calculations in `checkpoint_qa.py`.
+
+- Requires a separately supplied checkpoint CSV and explicit project context.
+- Records project/run identifiers, horizontal CRS, vertical reference, coordinate units, reference uncertainty, sample design and whether checkpoint independence is confirmed.
+- Hashes the checkpoint CSV and any linked processing-run/output-inspection JSON records.
+- Checks the supplied processing-run identifier against the run record when that identifier is present.
+- Reports residual statistics separately from evidence completeness and the human acceptance decision.
+- Missing required context or unconfirmed checkpoint independence produces `not_assessable`; no generic threshold is invented.
+- Acceptance defaults to `pending`. A non-pending decision requires a named reviewer and written rationale.
+
+Tests cover the pending/assessable distinction, missing reference metadata, non-independent checkpoints, human decision traceability and linked run-record identity.
+
+### Important boundaries
+
+The adapter does not prove checkpoint independence or sample representativeness, transform coordinates, validate CRS compatibility, propagate reference uncertainty, calculate confidence intervals or determine standards compliance. The descriptive radial P95 is not CE95. GCPs, training points and AI-assisted interpretations are not independent checkpoints. A single reviewer decision must not be described as independent multi-reviewer validation.
+
+### Updated integration status
+
+| Integration component | Status |
+|---|---|
+| Project manifest, image audit and preflight | Implemented |
+| Explicit processing-run provenance | Implemented |
+| Output inventory and GeoTIFF structural inspection | Implemented when Rasterio is installed |
+| Independent checkpoint residual statistics | Implemented |
+| Project-level validation evidence and human decision record | Implemented; evidence completeness explicit |
+| Point-cloud and mesh semantic inspection | Pending |
+| Reproducible delivery package | Next integration milestone |
