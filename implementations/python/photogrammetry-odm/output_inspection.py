@@ -73,6 +73,11 @@ def inspect_point_cloud(path: Path) -> dict:
             observed_count = 0
             non_finite_coordinates = 0
             sample = []
+            observed_mins = [math.inf, math.inf, math.inf]
+            observed_maxs = [-math.inf, -math.inf, -math.inf]
+            points_outside_header_bounds = 0
+            scales = [float(value) for value in header.scales]
+            tolerances = [max(abs(value) * 1.5, 1e-9) for value in scales]
             for points in reader.chunk_iterator(100_000):
                 xs, ys, zs = points.x, points.y, points.z
                 classes = points.classification
@@ -82,8 +87,17 @@ def inspect_point_cloud(path: Path) -> dict:
                     xyz = [float(x), float(y), float(z)]
                     if not all(math.isfinite(value) for value in xyz):
                         non_finite_coordinates += 1
-                    elif len(sample) < 5:
-                        sample.append({"x": xyz[0], "y": xyz[1], "z": xyz[2]})
+                    else:
+                        if len(sample) < 5:
+                            sample.append({"x": xyz[0], "y": xyz[1], "z": xyz[2]})
+                        outside = False
+                        for axis, value in enumerate(xyz):
+                            observed_mins[axis] = min(observed_mins[axis], value)
+                            observed_maxs[axis] = max(observed_maxs[axis], value)
+                            if value < mins[axis] - tolerances[axis] or value > maxs[axis] + tolerances[axis]:
+                                outside = True
+                        if outside:
+                            points_outside_header_bounds += 1
                     class_key = str(int(classes[index]))
                     class_counts[class_key] = class_counts.get(class_key, 0) + 1
                     intensity = int(intensities[index])
@@ -93,6 +107,7 @@ def inspect_point_cloud(path: Path) -> dict:
             valid = (
                 declared_count > 0 and count_matches and finite_extent
                 and ordered_extent and non_finite_coordinates == 0
+                and points_outside_header_bounds == 0
             )
             return {
                 "path": str(path),
@@ -102,10 +117,14 @@ def inspect_point_cloud(path: Path) -> dict:
                 "point_count_matches_header": count_matches,
                 "point_format_id": int(header.point_format.id),
                 "version": str(header.version),
-                "scales": [float(value) for value in header.scales],
+                "scales": scales,
                 "offsets": [float(value) for value in header.offsets],
                 "header_mins": mins,
                 "header_maxs": maxs,
+                "observed_mins": observed_mins if observed_count else None,
+                "observed_maxs": observed_maxs if observed_count else None,
+                "points_outside_header_bounds": points_outside_header_bounds,
+                "header_bounds_tolerance": tolerances,
                 "crs": str(header.parse_crs()) if header.parse_crs() else None,
                 "classification_counts": class_counts,
                 "intensity_range": [intensity_min, intensity_max],
