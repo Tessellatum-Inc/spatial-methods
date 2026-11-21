@@ -65,10 +65,17 @@ class MultispectralRasterTests(unittest.TestCase):
                        side_effect=lambda href: (href, rasterio.Env())):
                 result = read_multispectral_windows(
                     item, lon, lat, bands=("B04", "B08", "B11", "SCL"),
-                    window_pixels=32,
+                    window_pixels=16,
                 )
         self.assertEqual(result["native_grids"], ["10m", "20m"])
         self.assertEqual(result["bands"]["B04"].shape, (32, 32))
+        self.assertEqual(result["bands"]["B08"].shape, (32, 32))
+        self.assertEqual(result["bands"]["B11"].shape, (16, 16))
+        self.assertEqual(result["bands"]["SCL"].shape, (16, 16))
+        np.testing.assert_allclose(
+            result["band_metadata"]["B04"]["window_bounds"],
+            result["band_metadata"]["SCL"]["window_bounds"],
+        )
         self.assertAlmostEqual(float(np.nanmean(result["bands"]["B04"])), 0.4, places=5)
         self.assertAlmostEqual(float(np.nanmean(result["bands"]["B08"])), 0.6, places=5)
         self.assertEqual(float(np.nanmean(result["bands"]["B11"])), 2000.0)
