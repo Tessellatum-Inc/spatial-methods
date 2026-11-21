@@ -171,7 +171,7 @@ A proposed split (8 controls, 19 checkpoints, 3 low-observation points withheld)
 **Do not call this an end-to-end ODM rehearsal yet.** ODM has not been executed, checkpoint residuals have not been computed, and no validation or release decision exists. The next gate is locked human review, followed by a pinned-container baseline and approved GCP run.
 
 
-The role-blind point review packet is available as a separate artifact from [workflow run 44899394199](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899394199/artifacts/14705840263). It contains the per-point image crops and blank 206-row review worksheet without the control/checkpoint role key. Artifact SHA-256: `b00f477d590ec0d5601853dd7d2cf86e9beff9e42808ab9a2c3bf8f86dfcdf49`.
+The role-blind point review packet is available as a separate artifact from [workflow run 44899394199](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899394199/artifacts/14705840263). It contains the per-point image crops and blank 206-row review worksheet without the control/checkpoint role key. Artifact SHA-256: `2dec5ba1ef6b2f27de87281aab427ec687ba3dd50807092017e455a1b62ac4b2`.
 
 
 ## 10. Locking role-blind observation decisions
