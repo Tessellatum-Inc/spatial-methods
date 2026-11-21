@@ -1,5 +1,9 @@
 # Algorithm collection
 
+## Connect methods to complete workflows
+
+Use the [cross-pillar pathway index](../learning-paths/cross-pillar-pathways.md) to see how algorithms connect to their theoretical foundations, collection methods and end-to-end recipes.
+
 ## Optimisation
 
 - [Metaheuristics for spatial optimisation](optimization/metaheuristics.md) — a source-linked taxonomy of evolutionary, trajectory, swarm, memory-based, multi-start and mathematical-programming hybrid search families.
