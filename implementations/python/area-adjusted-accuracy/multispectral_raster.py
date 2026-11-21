@@ -44,10 +44,11 @@ def asset_for_band(item: dict[str, Any], band: str) -> tuple[str, dict[str, Any]
         raise ValueError(f"Unsupported Sentinel-2 band: {band}")
     assets = item.get("assets", {})
     for alias in BAND_ALIASES[band]:
+        accepted_names = {alias.lower(), f"{alias.lower()}-jp2"}
         matches = [
             (name, asset)
             for name, asset in assets.items()
-            if name.lower() == alias.lower() and asset.get("href")
+            if name.lower() in accepted_names and asset.get("href")
         ]
         if not matches:
             continue
