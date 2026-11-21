@@ -39,6 +39,10 @@ Read the [canonical four-pillar architecture](docs/knowledge-tools-real-world-ar
 
 If you're developing or contributing learning material, use the [modular learning-unit templates](templates/learning-unit/README.md). They connect theory, implementation, application and assessment without forcing every topic into the same format.
 
+## Follow a connected pathway
+
+The [cross-pillar pathway index](learning-paths/cross-pillar-pathways.md) connects foundations, collection methods, algorithms and recipes around practical work. It also makes clear which routes are synthetic, design-stage or supported by public-data processing, and where validation remains open.
+
 ## Explore
 
 | If you're interested in… | Start here |
