@@ -63,7 +63,7 @@ The split remains `proposed_not_locked`. The source image picks are Metashape me
 6. Inspect outputs, produce validation evidence and assemble the acquisition-bound dossier. A successful processing exit code is not an accuracy or release decision.
 
 
-The role-blind review packet is published separately from the technical audit artifact: [download from workflow run 44900546224](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44900546224/artifacts/14705763024). It contains 30 per-point sheets, 206 observation rows in the blank decision worksheet and no role mapping. Artifact SHA-256: `2dec5ba1ef6b2f27de87281aab427ec687ba3dd50807092017e455a1b62ac4b2`.
+The role-blind review packet is published separately from the technical audit artifact: [download from workflow run 44900854170](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44900854170/artifacts/14705374556). It contains 30 per-point sheets, 206 observation rows in the blank decision worksheet and no role mapping. Artifact SHA-256: `d9744c9f8d05019f8915b7d63f140f7f01143bc4cabe9f62a098737516e8f117`.
 
 
 ## 16. Locking the human image-observation review
