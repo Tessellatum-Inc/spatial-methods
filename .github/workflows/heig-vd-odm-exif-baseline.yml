@@ -21,7 +21,7 @@ jobs:
     env:
       HF_HUB_DISABLE_TELEMETRY: "1"
       PYTHONUNBUFFERED: "1"
-      ODM_TAG: "opendronemap/odm:3.6.0"
+      ODM_TAG: "opendronemap/odm:3.6.2"
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
