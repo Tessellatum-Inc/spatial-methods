@@ -63,6 +63,8 @@ jobs:
 
       - name: Test catalogue dashboard checker
         run: python -m unittest discover -s scripts -p "test_check_catalogue_dashboard.py"
+      - name: Test Nairobi ASF Sentinel-1 query client
+        run: python -m unittest discover -s scripts -p "test_query_asf_sentinel1.py"
       - name: Test Python CI package sharding
         run: python -m unittest discover -s scripts -p "test_run_python_package_tests.py"
       - name: Test CI coverage audit
