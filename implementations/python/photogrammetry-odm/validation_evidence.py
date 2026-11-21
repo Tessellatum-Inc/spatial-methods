@@ -72,7 +72,7 @@ def build_validation_record(
     if decision not in allowed:
         raise ValueError("acceptance_decision must be pending, accepted, rejected or not_assessable.")
     rationale = context.get("acceptance_rationale")
-    if decision != "pending" and not (isinstance(rationale, str) and rationale.strip()):
+    if decision == "accepted" and missing:\n        raise ValueError("Cannot record accepted while required evidence is missing or checkpoint independence is unconfirmed.")\n    if decision != "pending" and not (isinstance(rationale, str) and rationale.strip()):
         raise ValueError("A non-pending human acceptance decision requires acceptance_rationale.")
     reviewer = context.get("reviewer")
     if decision != "pending" and not (isinstance(reviewer, str) and reviewer.strip()):
