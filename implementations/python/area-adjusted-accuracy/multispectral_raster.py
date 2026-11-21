@@ -11,7 +11,7 @@ from typing import Any
 import numpy as np
 import rasterio
 from rasterio.warp import transform as transform_coordinates
-from rasterio.windows import Window
+from rasterio.windows import Window, bounds as window_bounds, from_bounds
 
 from stac_imagery_review import rasterio_source
 
@@ -111,8 +111,19 @@ def read_multispectral_windows(
     metadata: dict[str, dict[str, Any]] = {}
     signatures: dict[str, tuple[str, tuple[float, ...], int, int]] = {}
     missing: list[str] = []
+    reference_bounds = None
+    reference_crs = None
+    reference_window = None
 
-    for band in bands:
+    # Read the 20 m grid first so every 10 m band uses the same ground
+    # footprint rather than an equal pixel count covering twice the area.
+    ordered_bands = [
+        band for _, band in sorted(
+            enumerate(bands),
+            key=lambda pair: (0 if BAND_GRID[pair[1]] == "20m" else 1, pair[0]),
+        )
+    ]
+    for band in ordered_bands:
         selected = asset_for_band(item, band)
         if selected is None:
             missing.append(band)
@@ -141,10 +152,49 @@ def read_multispectral_windows(
                     )
                 signatures[grid_group] = signature
 
-                half = window_pixels // 2
-                window = Window(
-                    col - half, row - half, window_pixels, window_pixels
-                )
+                if grid_group == "20m":
+                    half = window_pixels // 2
+                    window = Window(
+                        col - half, row - half, window_pixels, window_pixels
+                    )
+                    if reference_bounds is None:
+                        reference_bounds = window_bounds(window, src.transform)
+                        reference_crs = src.crs
+                        reference_window = window
+                elif reference_bounds is not None:
+                    if src.crs != reference_crs:
+                        raise RuntimeError(
+                            "10m and 20m bands use different CRSs; "
+                            "refusing an implicit cross-CRS window transform"
+                        )
+                    candidate = from_bounds(*reference_bounds, transform=src.transform)
+                    offsets = (
+                        candidate.col_off, candidate.row_off,
+                        candidate.width, candidate.height,
+                    )
+                    rounded = tuple(round(value) for value in offsets)
+                    if any(abs(value - nearest) > 1e-6
+                           for value, nearest in zip(offsets, rounded)):
+                        raise RuntimeError(
+                            "10m grid is not exactly aligned to the 20m reference footprint"
+                        )
+                    window = Window(*rounded)
+                    reference_resolution = abs(
+                        (reference_bounds[2] - reference_bounds[0]) / reference_window.width
+                    )
+                    native_resolution = abs(src.transform.a)
+                    expected_width = int(round(
+                        reference_window.width * reference_resolution / native_resolution
+                    ))
+                    if window.width != expected_width or window.height != expected_width:
+                        raise RuntimeError(
+                            "10m/20m native grids do not have the expected 2:1 pixel ratio"
+                        )
+                else:
+                    half = window_pixels // 2
+                    window = Window(
+                        col - half, row - half, window_pixels, window_pixels
+                    )
                 masked = src.read(1, window=window, boundless=True, masked=True)
                 values = np.asarray(
                     masked.astype(np.float32).filled(np.nan), dtype=np.float32
@@ -163,6 +213,7 @@ def read_multispectral_windows(
                     "unit": unit,
                     "nodata": src.nodata,
                     "window_shape": list(values.shape),
+                    "window_bounds": list(window_bounds(window, src.transform)),
                     "grid_signature": {
                         "transform": list(src.transform),
                         "width": src.width,
