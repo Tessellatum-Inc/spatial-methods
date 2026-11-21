@@ -409,6 +409,33 @@ The utility refuses incomplete decisions, duplicate or missing observations, alt
 
 One reviewer is recorded as `single_reviewer_adjudication_locked`, never independent validation. Multiple reviewer names are also not proof of independent review. The output explicitly keeps `unblinded: false` and `independent_validation: false`.
 
+
+## Real ODM EXIF-only baseline — executed and structurally inspected
+
+The first real processing run completed with exit code 0 using OpenDroneMap 3.6.2, pinned by resolved image digest:
+
+`opendronemap/odm@sha256:a96f56dbc4f775e352fb2b3acc472bb59f456c0948a699eb1c433659dccfbdf7`
+
+- Processing run: [GitHub Actions run 44899855412](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899855412)
+- Post-run structural inspection: [GitHub Actions run 44901305912](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44901305912)
+- [Baseline evidence and product artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44901305912/artifacts/14706410333), SHA-256 `4b8dd02763a957acb9e3aa29a8bea1526197659af7552a50c1c84f1bea35e0c6`
+
+The run was deliberately EXIF-only: no GCP file, no source OPK adjustment and no checkpoint observations were supplied. The processing-run record is `succeeded`; the independent output-inspection report is `inspected`, with no blockers or warnings.
+
+| Product | Structural result |
+|---|---|
+| Orthophoto | Readable GeoTIFF; 9172 × 7801; 0.05 m pixel size; EPSG:32632 |
+| DSM | Readable GeoTIFF; 9172 × 7801; 0.05 m pixel size; EPSG:32632 |
+| Georeferenced LAZ | Readable; 1,963,721 points; LAS 1.4 / point format 7; finite coordinates; observed count matches header; no points outside header bounds |
+
+The raster bounds are approximately E 321126.492–321585.092 m and N 5183084.691–5183474.741 m. The point cloud's parsed WKT has unnamed CRS elements and no explicit EPSG authority identifier; its Transverse Mercator parameters are consistent with UTM zone 32N, while the rasters explicitly declare EPSG:32632. Reconcile this metadata before treating the point-cloud CRS as authoritative.
+
+The point cloud has only class 0 and an intensity range of 0–0. These are recorded output properties, not classification or intensity QA. Structural readability and a 5 cm pixel size do not establish positional accuracy, completeness, suitability or acceptance. Camera EXIF GPS is not independent surveyed control; the vertical reference of the camera altitudes remains unresolved.
+
+The first combined workflow's inspection step was blocked because `pyproj` was not installed. The products and successful processing-run record were preserved. A separate post-run inspection installed `pyproj` and completed the full raster/LAZ structural inspection. The baseline workflow now includes `pyproj` for future manual reruns.
+
+**Current state:** a real EXIF-only processing baseline and structural output inspection are complete. The approved control-GCP variant, independent checkpoint evidence, positional accuracy assessment and release decision remain pending.
+
 ## Synthetic pipeline integration test
 
 Run the package tests from this directory:

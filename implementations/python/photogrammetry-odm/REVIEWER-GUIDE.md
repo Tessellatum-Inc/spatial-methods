@@ -168,7 +168,7 @@ Known source structure must not be misclassified:
 
 A proposed split (8 controls, 19 checkpoints, 3 low-observation points withheld) is stored separately and remains `proposed_not_locked`. The 51-row GCP candidate contains controls only. A role-blind review packet provides per-point crops and a blank observation decision worksheet. The image picks are publisher-provided Metashape measurements, not independent remeasurements.
 
-**Do not call this an end-to-end ODM rehearsal yet.** ODM has not been executed, checkpoint residuals have not been computed, and no validation or release decision exists. The next gate is locked human review, followed by a pinned-container baseline and approved GCP run.
+A real EXIF-only ODM baseline has now been executed and structurally inspected. This establishes that the processing and output-inspection chain runs on actual data; it does not establish accuracy. The GCP-controlled variant, independent checkpoint evidence, checkpoint residuals, validation and release decision remain pending. The next gate is locked role-blind human review, followed by the approved control-GCP run.
 
 
 The role-blind point review packet is available as a separate artifact from [workflow run 44900854170](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44900854170/artifacts/14705374556). It contains the per-point image crops and blank 206-row review worksheet without the control/checkpoint role key. Artifact SHA-256: `d9744c9f8d05019f8915b7d63f140f7f01143bc4cabe9f62a098737516e8f117`.
@@ -179,3 +179,14 @@ The role-blind point review packet is available as a separate artifact from [wor
 Use `lock_visual_review.py` after completing the role-blind 206-row worksheet. It validates that every source observation is present exactly once, the original point/image/pixel coordinates are unchanged, decisions and rationales are complete, timestamps include timezone offsets, and the source revision matches the acquisition manifest. It records hashes of the worksheet, visual summary, acquisition manifest and source-observation index.
 
 The lock utility does not read the split key or unblind roles. It marks one reviewer as single-reviewer adjudication and does not claim independent validation. Multiple reviewer names do not prove independent review. Preserve the locked JSON record before any separate unblinding or checkpoint analysis.
+
+
+## 11. Real EXIF-only ODM baseline — processing and structural inspection complete
+
+The processing record reports success using OpenDroneMap 3.6.2 at digest `sha256:a96f56dbc4f775e352fb2b3acc472bb59f456c0948a699eb1c433659dccfbdf7`. A separate post-run inspection reports `inspected` with no blockers or warnings.
+
+The orthophoto and DSM are readable GeoTIFFs, each 9172 × 7801 at 0.05 m pixels and EPSG:32632. The LAZ is readable with 1,963,721 points; LAS 1.4 / point format 7; finite coordinates; observed point count matches the header; no points fall outside header bounds. The LAZ WKT has no explicit EPSG authority identifier even though its Transverse Mercator parameters are consistent with UTM 32N; reconcile this with the raster EPSG:32632 metadata before authoritative use.
+
+This baseline used EXIF camera positions only. It did not use GCPs, OPK or checkpoints. The point cloud has only class 0 and intensity range 0–0. No positional accuracy or product acceptance is established. See [processing run 44899855412](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899855412), [output inspection run 44901305912](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44901305912), and [the evidence/product artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44901305912/artifacts/14706410333).
+
+The first inspection attempt lacked pyproj; the preserved products were re-inspected in a separate workflow with pyproj installed. Future manual baseline executions now include pyproj in the inspection environment.

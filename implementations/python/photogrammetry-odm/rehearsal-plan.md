@@ -57,10 +57,12 @@ The split remains `proposed_not_locked`. The source image picks are Metashape me
 
 1. Complete and lock the role-blind image-observation review.
 2. Confirm the control/checkpoint split and the separate horizontal EPSG:2056 / vertical LN02 treatment.
-3. Resolve and pin an ODM container digest; record the exact execution environment.
-4. Run a no-GCP EXIF baseline, then the approved control-GCP variant. Keep all checkpoint observations out of adjustment and tuning.
-5. Independently establish checkpoint image positions or document the limitations of reusing source Metashape picks.
-6. Inspect outputs, produce validation evidence and assemble the acquisition-bound dossier. A successful processing exit code is not an accuracy or release decision.
+3. Completed: resolve and pin ODM 3.6.2 by digest and execute the no-GCP EXIF baseline. The processing record reports success.
+4. Completed: structurally inspect the orthophoto, DSM and LAZ. The report is `inspected` with no blockers or warnings; see workflow run 44901305912.
+5. Complete and lock the role-blind observation review, then confirm the control/checkpoint partition and vertical reference.
+6. Run the approved control-GCP variant. Keep all checkpoints out of adjustment and tuning.
+7. Independently establish checkpoint image positions or document the limitations of reusing source Metashape picks.
+8. Produce validation evidence and assemble the acquisition-bound dossier. A successful processing exit code is not an accuracy or release decision.
 
 
 The role-blind review packet is published separately from the technical audit artifact: [download from workflow run 44900854170](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44900854170/artifacts/14705374556). It contains 30 per-point sheets, 206 observation rows in the blank decision worksheet and no role mapping. Artifact SHA-256: `d9744c9f8d05019f8915b7d63f140f7f01143bc4cabe9f62a098737516e8f117`.
@@ -71,3 +73,20 @@ The role-blind review packet is published separately from the technical audit ar
 The role-blind review packet contains 206 observation rows. Reviewers must record target visibility, identity, centring, blur, occlusion, ambiguity, a decision and a rationale for every row. `lock_visual_review.py` validates complete coverage, exact source pixel coordinates, timezone-aware review timestamps and the acquisition revision; it hashes all source evidence and produces a locked review record without reading the split key.
 
 The lock record must remain `unblinded: false`. A single reviewer is explicitly labelled single-reviewer adjudication, not independent validation. Multiple names do not prove independent review. Do not inspect the proposed control/checkpoint mapping until the review record is locked.
+
+
+## 17. EXIF-only baseline execution and output inspection
+
+A real ODM baseline was executed on the verified 32-image source copy with no GCP file and no OPK adjustment. OpenDroneMap 3.6.2 was resolved to image digest `sha256:a96f56dbc4f775e352fb2b3acc472bb59f456c0948a699eb1c433659dccfbdf7`. The processing record reports `succeeded` with exit code 0.
+
+A separate post-run inspection using Rasterio, laspy, lazrs and pyproj reports `inspected`, with no blockers or warnings:
+
+- Orthophoto: 9172 × 7801, 0.05 m pixels, EPSG:32632.
+- DSM: 9172 × 7801, 0.05 m pixels, EPSG:32632.
+- LAZ: 1,963,721 points; LAS 1.4, point format 7; finite coordinates; header count and observed count match; no points outside header bounds.
+- LAZ class counts contain only class 0; intensity range is 0–0.
+- LAZ CRS WKT parses but has no explicit EPSG authority identifier; its Transverse Mercator parameters are consistent with UTM 32N. Raster products explicitly declare EPSG:32632.
+
+The initial combined workflow's output inspection was blocked by a missing optional `pyproj` dependency. The processing outputs and run record were preserved; the separate post-run inspection workflow installed pyproj and completed successfully. Future manual baseline runs now install pyproj before output inspection.
+
+This is a successful real processing and structural-inspection baseline, not an accuracy assessment. The run used camera EXIF positions only. No surveyed GCPs or independent checkpoints were used; the camera altitude reference remains unresolved. The GCP-controlled run must wait until the role-blind human observation review is locked.

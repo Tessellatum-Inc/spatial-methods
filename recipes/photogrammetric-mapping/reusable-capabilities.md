@@ -404,15 +404,20 @@ The HEIG-VD drone 2019 source was acquired and structurally audited at revision 
 | Known source exception handling | Point 100 duplicate/unobserved record documented; image 0075 without GCP observations reported |
 | Control-only ODM GCP preparation | Implemented and run provisionally; 8 controls, 51 image-observation rows, 29 images |
 | Role-blind human review preparation | Implemented; 30 point sheets with 640 × 640 crops and blank observation-decision worksheet |
-| Actual ODM execution on this dataset | Pending |
+| Real ODM EXIF-only baseline execution | Completed; processing record succeeded with pinned ODM 3.6.2 image digest |
+| Structural output inspection | Completed; orthophoto, DSM and LAZ readable; no blockers/warnings |
+| GCP-controlled ODM variant | Pending; proposed split remains unreviewed/unlocked |
 | Independent checkpoint remeasurement and accuracy assessment | Pending |
 | Project-specific acceptance and release | External human/project process |
 
-The proposed split is `proposed_not_locked`; no ODM processing has been run with it. The source Metashape image picks are not independent human remeasurements, and the supplied OPK solution is not independent validation.
+The proposed split is `proposed_not_locked`; the EXIF-only baseline did not use it. The source Metashape image picks are not independent human remeasurements, and the supplied OPK solution is not independent validation. The baseline products have 0.05 m raster pixels and a structurally readable 1,963,721-point LAZ, but no positional accuracy has been established.
 
 ### Next integration milestone
 
-Complete and lock the role-blind observation review, confirm the control/checkpoint partition and vertical reference, then run a pinned ODM baseline and approved control-GCP variant. Preserve all checkpoints outside adjustment and tuning. Only after actual outputs and independently established checkpoint evidence exist should the workflow be described as end-to-end rehearsed or accuracy-assessed.
+Complete and lock the role-blind observation review, confirm the control/checkpoint partition and vertical reference, then run the approved control-GCP variant. Preserve all checkpoints outside adjustment and tuning. Only after independently established checkpoint evidence exists should the workflow be described as accuracy-assessed.
 
 
 The role-blind point review packet is preserved separately from the technical audit artifact in [workflow run 44900854170](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44900854170/artifacts/14705374556). It contains 30 point sheets and a blank 206-row observation decision worksheet; no control/checkpoint role mapping is included.
+
+
+The real EXIF-only baseline processing and structural inspection are complete. See [processing run 44899855412](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899855412) and [output inspection run 44901305912](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44901305912). The evidence/product artifact is [available here](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44901305912/artifacts/14706410333). The initial inspection lacked pyproj; a separate post-run inspection with pyproj succeeded. Future manual baseline runs install pyproj.
