@@ -326,7 +326,8 @@ The adapter does not prove checkpoint independence or sample representativeness,
 | Output inventory and GeoTIFF structural inspection | Implemented when Rasterio is installed |
 | Independent checkpoint residual statistics | Implemented |
 | Project-level validation evidence and human decision record | Implemented; evidence completeness explicit |
-| Point-cloud and mesh semantic inspection | Pending |
+| LAS/LAZ header inspection | Implemented when laspy is installed; header-only |
+| Point-cloud content/classification and mesh semantic inspection | Pending |
 | Reproducible evidence delivery dossier | Implemented; release authorization remains external |
 
 
@@ -369,4 +370,4 @@ Tests cover successful assembly, pending acceptance, run-identity mismatch and m
 
 ### Next integration milestone
 
-Run a controlled rehearsal on a documented, non-sensitive dataset with real outputs and independently surveyed checkpoints. Close remaining structural gaps (including point-cloud/mesh inspection where deliverables require them), test the complete handoff from manifest to dossier, and record every unavailable or unverified capability rather than filling gaps with assumptions.
+Run a controlled rehearsal on a documented, non-sensitive dataset with real outputs and independently surveyed checkpoints. Close remaining structural gaps (point-cloud content/classification and mesh inspection where deliverables require them), test the complete handoff from manifest to dossier, and record every unavailable or unverified capability rather than filling gaps with assumptions.
