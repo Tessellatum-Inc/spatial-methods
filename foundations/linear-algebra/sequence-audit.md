@@ -110,14 +110,9 @@ Add complete answer keys or instructor guidance as appropriate, without turning 
 
 ### Priority 4 — computational companions
 
-The foundation currently links to PCA and covariance-GLS implementations, but it does not yet provide a compact computational companion that compares:
-- direct solve versus LU;
-- normal equations versus QR;
-- Cholesky whitening for GLS;
-- SVD-based numerical rank and minimum-norm solution;
-- covariance propagation by matrix multiplication.
+An initial [linear algebra computational companion lab](../../notebooks/linear-algebra-computational-companion-lab.ipynb) is now published. It compares normal equations and QR, performs covariance-aware GLS through Cholesky whitening, inspects SVD rank diagnostics and propagates covariance through a linear transformation using synthetic data. It uses NumPy and includes assertions and explicit interpretation limits.
 
-A single reproducible notebook or small standard-library/NumPy companion with carefully chosen examples would improve transfer from theory to implementation. It should explain numerical limitations rather than imply that code output validates a model.
+Remaining work: add a carefully bounded LU comparison; extend the SVD example to a minimum-norm solution; add a more realistic spatial design example; and independently review the mathematics and numerical claims. Notebook execution is necessary but does not establish technical correctness or application fitness.
 
 ### Priority 5 — broaden spatial examples
 
