@@ -125,30 +125,22 @@ jobs:
           # Role-blind point review packet
 
           This packet intentionally omits the control/checkpoint role mapping.
-          Review the point sheets before consulting the split key. For each point,
-          assess target identity, centring, visibility, occlusion, blur, ambiguity
-          and marker-to-target correspondence. Use decision values accepted,
-          questioned or rejected; complete every field, including reviewer and
-          timezone-aware timestamp. Record a rationale for every row, then lock
-          the review record before unblinding roles.
+          Follow the repository's reviewer-handoff.md for the complete operating
+          procedure, exact source-revision acquisition command, original-image
+          access, worksheet completion, lock command and submission requirements.
 
-          The yellow ring marks the publisher-provided Metashape image pick.
-          These are not independent remeasurements and do not establish survey
-          accuracy or checkpoint independence.
+          The packet contains annotated/cropped review derivatives and metadata,
+          but NOT the original full-resolution imagery. Acquire the original
+          dataset at revision e0dfeba2b6ed94ea1ae2bf773e742c39fb437b71 and verify
+          it against its acquisition manifest before reviewing ambiguous targets.
+          The yellow ring marks a publisher-provided Metashape image pick; it is
+          not an independent measurement and does not establish accuracy.
 
-          After completing every row, run from the repository root:
-
-          ```bash
-          python implementations/python/photogrammetry-odm/lock_visual_review.py \
-            /path/to/review-packet/review-decisions-template.csv \
-            /path/to/review-packet/visual-review-summary.json \
-            /path/to/review-packet/acquisition-provenance.json \
-            /path/to/review-packet/locked-review.json
-          ```
-
-          The lock utility verifies all source point/image/pixel records, requires
-          complete decisions and timezone-aware timestamps, and keeps roles
-          blinded. A single reviewer is not independent validation.
+          Complete all 206 rows with accepted, questioned or rejected decisions,
+          all required observations, reviewer identity, timezone-aware timestamp
+          and rationale. Lock the final worksheet while roles remain blinded.
+          A structurally valid lock is not evidence of reviewer independence,
+          target identity or survey accuracy.
           EOF
           cat > reports/heig-vd/README.md <<'EOF'
           # HEIG-VD real-data acquisition and audit
