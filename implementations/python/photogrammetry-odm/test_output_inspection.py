@@ -211,5 +211,15 @@ class OutputInspectionTests(unittest.TestCase):
         report = inspect_outputs(self.project, ["negative.obj"])
         self.assertEqual(report["meshes"][0]["status"], "readable")
 
+
+    def test_obj_small_scale_valid_triangle_is_not_rejected(self):
+        (self.project / "small-scale.obj").write_text(
+            "v 0 0 0\\nv 0.0000001 0 0\\nv 0 0.0000001 0\\nf 1 2 3\\n",
+            encoding="utf-8",
+        )
+        report = inspect_outputs(self.project, ["small-scale.obj"])
+        self.assertEqual(report["meshes"][0]["status"], "readable")
+        self.assertEqual(report["meshes"][0]["zero_area_face_count"], 0)
+
 if __name__ == "__main__":
     unittest.main()
