@@ -123,8 +123,8 @@ jobs:
           This packet intentionally omits the control/checkpoint role mapping.
           Review the point sheets before consulting the split key. For each point,
           assess target identity, centring, visibility, occlusion, blur, ambiguity
-          and marker-to-target correspondence. Record a decision and rationale,
-          then lock the review record before unblinding roles.
+          and marker-to-target correspondence. Record a decision and rationale in
+          review-decisions-template.csv, then lock the review record before unblinding roles.
 
           The yellow ring marks the publisher-provided Metashape image pick.
           These are not independent remeasurements and do not establish survey
