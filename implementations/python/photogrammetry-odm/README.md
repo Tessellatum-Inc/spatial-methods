@@ -184,3 +184,26 @@ The report distinguishes:
 “Ready” is not an approval to fly, survey, process or deliver. The utility does not assess image quality, site safety, legal permissions, CRS correctness, coverage, camera calibration, control quality or product accuracy. It does not invoke Docker or modify data. An operator must review the report and project specification before proceeding.
 
 The manifest and preflight utility establish a common handoff contract that can later be reused by other Spatial Recipes, while domain-specific checks remain separate.
+
+
+## Integrated read-only preflight
+
+The manifest-only check validates the project record:
+
+```bash
+python project_manifest.py /path/to/project-manifest.json --json-out manifest-preflight.json
+```
+
+For the integrated check, run:
+
+```bash
+python project_preflight.py /path/to/project-manifest.json --json-out preflight-report.json
+```
+
+The integrated report combines manifest checks, project and image-directory checks, image inventory and SHA-256 hashes, image decoding/dimensions when Pillow is installed, expected-versus-observed image counts, and a constructed ODM Docker command for operator review.
+
+The report distinguishes `blocked`, `review_required` and `ready_for_operator_review`. Missing or unreadable images block the handoff; incomplete validation configuration and count mismatches require review. If Pillow is unavailable, inventory is still produced but decoding checks are explicitly marked unavailable.
+
+The command is a dry-run handoff only. It does not invoke Docker, alter source images, assess image sharpness or overlap, validate CRS or control, assess product accuracy, or authorise flight, survey, processing or delivery. The HEIG-VD-specific metadata auditor remains separate because its GCP/observation/OPK assumptions are not generic to all photogrammetry projects.
+
+The integrated preflight is a first domain-level orchestration pattern. Its manifest, severity model and report structure are candidates for reuse in other Spatial Recipes; image and ODM checks remain domain adapters. Tests are in `test_project_preflight.py`.
