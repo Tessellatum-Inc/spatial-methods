@@ -4,6 +4,10 @@ Spatial Recipes are reproducible workflows that combine data, algorithms, tools,
 
 A recipe is not merely a sequence of software clicks. It should explain its purpose, assumptions, inputs, choices, quality controls, outputs, limitations and the evidence needed to trust the result.
 
+## Explore the four-pillar connections
+
+The [cross-pillar pathway index](../learning-paths/cross-pillar-pathways.md) explains the foundations, acquisition methods and algorithms behind selected end-to-end workflows, including their current validation limits.
+
 ## Photogrammetry recipe
 
 - [Photogrammetric mapping: project-to-validated-deliverable recipe](photogrammetric-mapping/README.md) — an end-to-end workflow from requirements and reconnaissance through acquisition, processing, independent validation and delivery. Includes a reusable project record and QA checklist.
