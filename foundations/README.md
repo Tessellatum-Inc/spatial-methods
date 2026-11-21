@@ -11,6 +11,10 @@ It is one of the four permanent Spatial Methods pillars:
 
 These pillars are connected, not a prescribed learning sequence. A reader may enter through a practical problem, a measurement technology, an algorithm or a theoretical question.
 
+## Follow the theory into practice
+
+The [cross-pillar pathway index](../learning-paths/cross-pillar-pathways.md) connects foundational concepts to collection methods, computational algorithms and practical recipes, with evidence limits stated for each route.
+
 ## What belongs here
 
 A foundation should explain the underlying concepts and reasoning, not merely document how to operate a software package. It should establish definitions, mathematical or physical models, assumptions, derivations where useful, examples, limitations and connections to other subjects.
