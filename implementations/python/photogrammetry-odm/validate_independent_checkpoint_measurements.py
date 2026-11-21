@@ -205,6 +205,16 @@ def validate_measurements(
             "Every approved checkpoint must have at least one measured image observation; missing: "
             + ", ".join(missing_points)
         )
+    expected_checkpoint_pairs = {
+        pair for pair in allowed_pairs if pair[0] in checkpoint_ids
+    }
+    missing_pairs = sorted(expected_checkpoint_pairs - seen)
+    if missing_pairs:
+        rendered = ", ".join(f"{point}/{image}" for point, image in missing_pairs)
+        raise ValueError(
+            "Measurement register must account for every checkpoint source observation "
+            "(measured or explicitly unmeasurable); missing: " + rendered
+        )
 
     report = {
         "schema_version": "1.0",
