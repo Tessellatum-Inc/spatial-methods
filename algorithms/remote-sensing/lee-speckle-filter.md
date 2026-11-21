@@ -1,5 +1,7 @@
 # Lee local-statistics speckle filter
 
+**Physical context:** [Radar scattering and SAR signal formation](../../foundations/remote-sensing-physics/radar-scattering-and-sar-signal-formation.md) explains why coherent summation produces speckle and why filtering trades variance reduction against spatial detail. The [SAR acquisition method](../../collection/sar-acquisition-and-observation-design.md) defines the product, calibration and processing provenance that must be checked before filtering.
+
 The Lee filter is an adaptive local estimator. It preserves values in
 high-variance neighbourhoods and pulls values toward a local mean in
 low-variance neighbourhoods. For centre observation z, local mean m,
@@ -26,6 +28,9 @@ smoothing estimator, not a universal denoiser.
   log-domain treatment, or distribution-aware estimator may be required.
 - Directional Refined Lee, polarimetric covariance filtering, multi-looking,
   sensor-specific calibration and validation are separate methods.
+- Filtering does not restore information lost through layover, radar shadow,
+  insufficient resolution or an unsuitable acquisition geometry. Preserve
+  an unfiltered reference and document the effect on the target feature.
 
 ## Reference implementation
 
