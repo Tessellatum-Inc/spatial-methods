@@ -40,12 +40,31 @@ def image_stem(label: str) -> str:
     return label if label.startswith(IMAGE_PREFIX) else IMAGE_PREFIX + label
 
 
-def generate(dataset: Path, split_path: Path, output: Path) -> dict:
+def generate(
+    dataset: Path,
+    split_path: Path,
+    output: Path,
+    acquisition_manifest_path: Path | None = None,
+) -> dict:
     from PIL import Image, ImageDraw, ImageFont
 
     dataset = dataset.resolve()
     output.mkdir(parents=True, exist_ok=True)
     roles = load_split(split_path)
+    split_data = json.loads(split_path.read_text(encoding="utf-8"))
+    source_revision = None
+    selected_path = None
+    if acquisition_manifest_path is not None:
+        acquisition_manifest = json.loads(
+            acquisition_manifest_path.read_text(encoding="utf-8")
+        )
+        source_revision = acquisition_manifest.get("resolved_revision")
+        selected_path = acquisition_manifest.get("selected_path")
+        split_dataset = split_data.get("dataset", {})
+        if source_revision != split_dataset.get("resolved_revision"):
+            raise ValueError("Acquisition manifest revision does not match the review split")
+        if selected_path != split_dataset.get("selected_path"):
+            raise ValueError("Acquisition manifest selected_path does not match the review split")
     observations: dict[str, list[dict]] = {}
     with (dataset / "gcp" / "gcp_obs.csv").open(encoding="utf-8-sig") as stream:
         for line_number, line in enumerate(stream, 1):
@@ -132,6 +151,20 @@ def generate(dataset: Path, split_path: Path, output: Path) -> dict:
             observations_by_point.setdefault(item["point_id"], []).append({
                 **item, "image_path": image_by_stem[stem]
             })
+
+    source_observations = [
+        {
+            "point_id": point_id,
+            "image_name": item["image_path"].name,
+            "pixel_x": round(item["x"], 3),
+            "pixel_y": round(item["y"], 3),
+        }
+        for point_id in sorted(observations_by_point)
+        for item in sorted(
+            observations_by_point[point_id],
+            key=lambda value: value["image_path"].name,
+        )
+    ]
 
     decisions_path = output / "review-decisions-template.csv"
     decision_fields = [
@@ -259,10 +292,13 @@ def generate(dataset: Path, split_path: Path, output: Path) -> dict:
 
     report = {
         "status": "role_blind_visual_review_material_prepared_not_human_approved",
+        "source_revision": source_revision,
+        "selected_dataset_path": selected_path,
         "source_image_count": len(images),
         "observation_count": sum(len(v) for v in observations.values()),
         "images_with_observations": len(observations),
         "unique_observed_point_count": len({o["point_id"] for rows in observations.values() for o in rows}),
+        "source_observations": source_observations,
         "point_review_sheet_count": len(point_review_summaries),
         "point_review_crop_size_px": crop_size,
         "review_decision_template": str(decisions_path.relative_to(output)),
@@ -285,8 +321,12 @@ def main() -> int:
     parser.add_argument("dataset_root", type=Path)
     parser.add_argument("split_json", type=Path)
     parser.add_argument("output_dir", type=Path)
+    parser.add_argument("--acquisition-manifest", type=Path)
     args = parser.parse_args()
-    report = generate(args.dataset_root, args.split_json, args.output_dir)
+    report = generate(
+        args.dataset_root, args.split_json, args.output_dir,
+        args.acquisition_manifest,
+    )
     print(json.dumps({k: v for k, v in report.items() if k != "image_summaries"}, indent=2))
     return 0
 
