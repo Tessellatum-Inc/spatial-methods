@@ -6,6 +6,7 @@ Source images remain in the acquired snapshot and are never modified.
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import math
 from pathlib import Path
@@ -214,6 +215,26 @@ def generate(dataset: Path, split_path: Path, output: Path) -> dict:
             "observation_count": len(point_rows),
             "review_sheet": str(point_path.relative_to(output)),
         })
+
+    # Machine-readable blank register for a role-blind review of every source pick.
+    review_register = output / "observation-review-register.csv"
+    with review_register.open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.writer(stream)
+        writer.writerow([
+            "point_id", "image", "source_pixel_x", "source_pixel_y",
+            "visibility", "target_identity", "centring", "occlusion",
+            "sharpness", "ambiguity", "cross_image_correspondence",
+            "decision", "reason", "reviewer", "reviewed_at",
+        ])
+        for stem in sorted(observations):
+            image_name = image_by_stem.get(stem)
+            if image_name is None:
+                raise ValueError(f"Observation image is missing: {stem}")
+            for item in sorted(observations[stem], key=lambda row: row["point_id"]):
+                writer.writerow([
+                    item["point_id"], image_name, f'{item["x"]:.3f}', f'{item["y"]:.3f}',
+                    "", "", "", "", "", "", "", "", "", "", "",
+                ])
 
     instructions = """# Role-blind point review
 
