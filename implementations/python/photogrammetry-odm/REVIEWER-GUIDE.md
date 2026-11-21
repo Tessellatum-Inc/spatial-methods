@@ -123,12 +123,13 @@ Do not collapse these statuses into a single pass/fail score.
 
 - No live Docker/ODM execution has been demonstrated in this repository environment.
 - The HEIG-VD rehearsal imagery has not yet been acquired, byte-audited and processed locally.
-- LAS/LAZ point records are streamed when `laspy` is installed; count reconciliation, finite coordinates, classification counts, intensity range and a bounded coordinate sample are recorded. Classification correctness, density suitability and positional accuracy remain unassessed.
-- Mesh semantic and topology inspection is not implemented.
+- LAS/LAZ point records are streamed when `laspy` is installed; declared/observed count reconciliation, finite coordinates, observed/header extent reconciliation (using a tolerance derived from coordinate scales), classification counts, intensity range and a bounded coordinate sample are recorded. Classification correctness, density suitability and positional accuracy remain unassessed.
+- Wavefront OBJ syntax and vertex-index structure are inspected. Manifoldness, self-intersections, texture completeness, normal quality and geometric accuracy remain unassessed.
 - Raster inspection is conditional on Rasterio; image readability checks are conditional on Pillow.
 - Checkpoint independence, sample representativeness, reference uncertainty and CRS correctness are declarations/evidence for human review, not independently established by these scripts.
 - No universal accuracy threshold is encoded. Acceptance must cite the project's own specification.
 - The delivery ZIP packages evidence records, not source imagery or complete products.
+- A synthetic acquisition-to-dossier integration test now exercises the evidence handoff and verifies that unexecuted processing and unresolved checkpoint evidence remain open. It is not a live ODM rehearsal.
 - The workflow has not been independently specialist-reviewed or field-tested.
 
 ## 7. How to record a review finding
@@ -147,6 +148,6 @@ Do not silently edit historical evidence records. Correct the implementation, cr
 
 ## 8. Current milestone and next gate
 
-The current milestone is **integrated evidence pipeline implementation**. The next substantive gate is a controlled real-dataset rehearsal on a network-enabled machine with a pinned ODM image, verified source bytes, documented control/checkpoint partition, real outputs and independently surveyed checkpoints. Reviewers should require the complete handoff from manifest through dossier and a documented disposition of every warning before describing the workflow as rehearsed.
+The current milestone is **synthetic integrated evidence handoff tested; real execution not yet rehearsed**. The next substantive gate is a controlled real-dataset rehearsal on a network-enabled machine with a pinned ODM image, verified source bytes, documented control/checkpoint partition, real outputs and independently surveyed checkpoints. Reviewers should require the complete handoff from manifest through dossier and a documented disposition of every warning before describing the workflow as rehearsed.
 
 Last updated: 2026-11-21.
