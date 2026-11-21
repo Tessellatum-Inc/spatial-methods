@@ -1,7 +1,13 @@
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import Mock, patch
 
+import numpy as np
+import rasterio
 import requests
+from rasterio.transform import from_origin
+from rasterio.warp import transform as transform_coordinates
 
 from stac_imagery_review import (
     acquisition,
@@ -85,6 +91,45 @@ class StacReviewTests(unittest.TestCase):
     def test_search_page_limit_must_be_positive(self):
         with self.assertRaises(ValueError):
             post_search("https://catalogue.test/search", "sentinel", 0, 0, max_pages=0)
+
+    def _write_rgb_assets(self, folder, lon, lat, misalign_blue=False):
+        x, y = transform_coordinates("EPSG:4326", "EPSG:32760", [lon], [lat])
+        transform = from_origin(x[0] - 2560, y[0] + 2560, 10, 10)
+        assets = {}
+        for band, value in (("B04_10m", 3000), ("B03_10m", 2000), ("B02_10m", 1000)):
+            band_transform = transform
+            if misalign_blue and band == "B02_10m":
+                band_transform = from_origin(x[0] - 2550, y[0] + 2560, 10, 10)
+            path = Path(folder) / f"{band}.tif"
+            with rasterio.open(
+                path, "w", driver="GTiff", width=512, height=512, count=1,
+                dtype="uint16", crs="EPSG:32760", transform=band_transform,
+            ) as dataset:
+                dataset.write(np.full((512, 512), value, dtype=np.uint16), 1)
+            assets[band] = {"href": str(path)}
+        return {"assets": assets, "properties": {"datetime": "2021-06-01T00:00:00Z"}}
+
+    def test_chip_reprojects_wgs84_point_to_raster_crs(self):
+        from stac_imagery_review import render_chip
+        lon, lat = 179.9, -18.1
+        with tempfile.TemporaryDirectory() as folder:
+            item = self._write_rgb_assets(folder, lon, lat)
+            with patch("stac_imagery_review.rasterio_source",
+                       side_effect=lambda href: (href, rasterio.Env())):
+                result = render_chip(item, lon, lat, Path(folder) / "chip.png", 64)
+        self.assertEqual(result["chip_width"], 64)
+        self.assertEqual(result["chip_height"], 64)
+        self.assertEqual(result["assets"], '{"blue": "B02_10m", "green": "B03_10m", "red": "B04_10m"}')
+
+    def test_chip_rejects_misaligned_rgb_assets(self):
+        from stac_imagery_review import render_chip
+        lon, lat = 179.9, -18.1
+        with tempfile.TemporaryDirectory() as folder:
+            item = self._write_rgb_assets(folder, lon, lat, misalign_blue=True)
+            with patch("stac_imagery_review.rasterio_source",
+                       side_effect=lambda href: (href, rasterio.Env())):
+                with self.assertRaisesRegex(RuntimeError, "not on the same grid"):
+                    render_chip(item, lon, lat, Path(folder) / "chip.png", 64)
 
 
 if __name__ == "__main__":
