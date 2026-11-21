@@ -81,6 +81,32 @@ class MultispectralRasterTests(unittest.TestCase):
         self.assertEqual(float(np.nanmean(result["bands"]["B11"])), 2000.0)
         self.assertEqual(float(np.nanmean(result["bands"]["SCL"])), 4.0)
 
+    def test_rejects_misaligned_10m_and_20m_native_grids(self):
+        lon, lat = 179.9, -18.1
+        with tempfile.TemporaryDirectory() as folder:
+            b04 = self._write_asset(folder, "b04", lon, lat, 4000, 10)
+            b11 = self._write_asset(folder, "b11", lon, lat, 2000, 20)
+            scl = self._write_asset(folder, "scl", lon, lat, 4, 20)
+            x, y = transform_coordinates("EPSG:4326", "EPSG:32760", [lon], [lat])
+            shifted = from_origin(x[0] - 255.5 * 10, y[0] + 256 * 10, 10, 10)
+            with rasterio.open(
+                b04, "w", driver="GTiff", width=512, height=512, count=1,
+                dtype="uint16", crs="EPSG:32760", transform=shifted, nodata=0,
+            ) as dataset:
+                dataset.write(np.full((512, 512), 4000, dtype=np.uint16), 1)
+            item = {"assets": {
+                "B04_10m": {"href": b04},
+                "B11_20m": {"href": b11},
+                "SCL_20m": {"href": scl},
+            }}
+            with patch("multispectral_raster.rasterio_source",
+                       side_effect=lambda href: (href, rasterio.Env())):
+                with self.assertRaisesRegex(RuntimeError, "not exactly aligned"):
+                    read_multispectral_windows(
+                        item, lon, lat, bands=("B04", "B11", "SCL"),
+                        window_pixels=16,
+                    )
+
     def test_rejects_misaligned_bands_within_same_native_grid(self):
         lon, lat = 179.9, -18.1
         with tempfile.TemporaryDirectory() as folder:
