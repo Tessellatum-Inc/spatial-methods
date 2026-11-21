@@ -314,3 +314,14 @@ The ZIP bundles evidence records, not raw imagery or the complete processing out
 ## Reviewer guide
 
 Before reviewing or reusing this pipeline, read [REVIEWER-GUIDE.md](REVIEWER-GUIDE.md). It defines the evidence handoff, status meanings, reviewer questions, known gaps and the distinction between an assembled dossier and release authorization.
+
+
+## Verify an acquired source snapshot
+
+Before image or metadata auditing, verify the acquired files against the saved provenance manifest:
+
+```bash
+python verify_acquisition.py ./data/heig-vd-scop/snapshots/<commit-sha>/acquisition-provenance.json --json-out ./data/heig-vd-scop/acquisition-verification.json
+```
+
+The verifier checks each declared file's size and SHA-256, rejects unsafe manifest paths, and reports missing, modified, symbolic-link and unmanifested files. Continue only when the report status is `verified`. This means local bytes match the saved acquisition manifest; it does not establish publisher authenticity, licence compliance, image readability or dataset suitability.
