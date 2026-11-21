@@ -325,3 +325,14 @@ python verify_acquisition.py ./data/heig-vd-scop/snapshots/<commit-sha>/acquisit
 ```
 
 The verifier checks each declared file's size and SHA-256, rejects unsafe manifest paths, and reports missing, modified, symbolic-link and unmanifested files. Continue only when the report status is `verified`. This means local bytes match the saved acquisition manifest; it does not establish publisher authenticity, licence compliance, image readability or dataset suitability.
+
+
+## Synthetic pipeline integration test
+
+Run the package tests from this directory:
+
+```bash
+python -m pytest -q
+```
+
+`test_pipeline_integration.py` exercises the evidence handoff from a locally acquired snapshot through integrity verification, a separate working copy, read-only preflight, dry-run processing provenance, output inspection, checkpoint evidence and ZIP dossier assembly. It uses synthetic bytes and mocked image-audit output. It deliberately leaves ODM unexecuted, checkpoint independence unconfirmed, validation not assessable and dossier release authorization false. This is an integration test of evidence flow and gate preservation, not a real-data rehearsal, photogrammetric processing test or accuracy validation.
