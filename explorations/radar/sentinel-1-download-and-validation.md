@@ -111,3 +111,34 @@ Offline tests:
 ```bash
 python -m unittest discover -s scripts -p "test_audit_sentinel1_safe_metadata.py"
 ```
+
+
+## Reconcile evidence into a processing-readiness record
+
+Once the candidate manifest, downloader sidecar and SAFE audit JSON exist, reconcile them by product UUID and archive identity:
+
+```bash
+python explorations/radar/build_sentinel1_processing_readiness.py \
+  --stack-manifest explorations/radar/nairobi-sentinel-1-stack-manifest.json \
+  --download-sidecar data/copernicus/nairobi/sentinel1_8ffa5641-c404-4189-b0fb-ed805b077d71.SAFE.zip.metadata.json \
+  --safe-audit data/copernicus/nairobi/sentinel1_8ffa5641-c404-4189-b0fb-ed805b077d71.preflight.json \
+  --output data/copernicus/nairobi/sentinel1_8ffa5641-c404-4189-b0fb-ed805b077d71.readiness.json
+```
+
+The reconciler requires exactly one matching catalogue candidate, a successful
+download validation, matching archive filenames and SHA-256 checksums, a
+passing dual-polarisation structural gate, all reported audit checks passing,
+and a SAFE root name matching the catalogue product name. Any mismatch blocks
+the structural preflight record and is named explicitly.
+
+**A passed structural preflight does not authorize scientific processing.**
+The record keeps `processing_authorized: false` and lists the remaining gates:
+required datatake/slice coverage, locked software and parameters, radiometric
+and geometric QA, and independent review. This is deliberate; no SNAP graph
+or scientific result should be inferred from file-presence checks alone.
+
+Offline tests:
+
+```bash
+python -m unittest discover -s scripts -p "test_build_sentinel1_processing_readiness.py"
+```
