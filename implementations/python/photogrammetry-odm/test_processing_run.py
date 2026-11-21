@@ -60,6 +60,16 @@ class ProcessingRunTests(unittest.TestCase):
         self.assertTrue(any("orthophoto.tif" in item["path"] for item in record["outputs"]))
         self.assertEqual((self.run_dir / "stdout.log").read_text(), "complete")
 
+    @patch("processing_run.docker_image_metadata", return_value={"available": False, "reason": "Docker executable not found"})
+    @patch("processing_run.shutil.which", return_value=None)
+    def test_missing_docker_is_recorded_without_starting_processing(self, which, inspect):
+        record = create_run_record(self.project, self.image, [], self.run_dir, execute=True)
+        self.assertEqual(record["status"], "not_started")
+        self.assertFalse(record["processing"]["executed"])
+        self.assertIn("Docker executable not found", record["processing"]["execution_error"])
+        saved = __import__("json").loads((self.run_dir / "processing-run.json").read_text())
+        self.assertEqual(saved["status"], "not_started")
+
     @patch("processing_run.subprocess.run")
     @patch("processing_run.docker_image_metadata", return_value={"available": False})
     @patch("processing_run.shutil.which", return_value="/usr/bin/docker")
