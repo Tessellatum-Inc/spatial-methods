@@ -257,11 +257,14 @@ def inspect_obj_mesh(path: Path) -> dict:
                         repeated_vertex_faces += 1
                     else:
                         referenced_vertices.update(face_refs)
-                        area_vector = polygon_area_vector([vertices[index] for index in face_refs])
-                        extent = max(
-                            maxs[axis] - mins[axis] for axis in range(3)
+                        face_points = [vertices[index] for index in face_refs]
+                        area_vector = polygon_area_vector(face_points)
+                        face_extent = max(
+                            max(point[axis] for point in face_points)
+                            - min(point[axis] for point in face_points)
+                            for axis in range(3)
                         )
-                        tolerance = max(1.0, extent * extent) * 1e-12
+                        tolerance = max(1.0, face_extent * face_extent) * 1e-12
                         if math.sqrt(sum(value * value for value in area_vector)) <= tolerance:
                             zero_area_faces += 1
 
