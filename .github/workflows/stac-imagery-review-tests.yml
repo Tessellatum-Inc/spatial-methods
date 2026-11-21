@@ -401,10 +401,10 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements-stac-imagery.txt
         working-directory: implementations/python/area-adjusted-accuracy
-      - name: Run bounded five-point public multispectral pilot
+      - name: Run geographically dispersed five-point public multispectral pilot
         run: |
           python fiji_multispectral_pilot.py \
-            --input data/fiji-worldcover-legend-adjudication-blind-review.csv \
+            --input data/fiji-worldcover-legend-adjudication-blind-review-spatial-pilot.csv \
             --output-dir /tmp/fiji-multispectral-pilot \
             --points 5 \
             --items-per-point 3 \
