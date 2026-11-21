@@ -22,18 +22,17 @@ The proposed split remains `proposed_not_locked`. The annotated sheets are a rev
 
 ### Next gates
 
-Before any GCP-controlled ODM run, follow the [LV95/LN02 coordinate-reference handling decision record](coordinate-reference-handling.md). The current GCP exporter carries LN02 numeric heights unchanged under a horizontal EPSG:2056 declaration; this does not encode or transform the vertical reference.
+The EXIF-only baseline and structural product inspection are complete. The following gates remain before a controlled-GCP reconstruction or any positional-accuracy assessment:
 
+1. Complete the 206-observation role-blind visual review. Record visibility, target identity, centring, blur, occlusion, ambiguity, decision and rationale for every observation.
+2. Validate and lock the complete review worksheet with `lock_visual_review.py`. Keep the resulting record `unblinded: false` until the role-blind review is locked.
+3. Only after locking the review, unblind the proposed partition, reassess point-level suitability, control/checkpoint geometry and image coverage, and formally approve or revise the split. Keep checkpoints out of adjustment and tuning.
+4. Independently remeasure checkpoint image coordinates from original, unannotated images, following [the independent measurement protocol](independent-checkpoint-measurement-protocol.md). Do not consult or copy the publisher's Metashape picks, annotated overlays or supplied OPK solution. Preserve reviewer, method, timestamp and source-image hash.
+5. Resolve horizontal LV95 (EPSG:2056) and vertical LN02 handling explicitly using [the coordinate-reference decision record](coordinate-reference-handling.md). The current GCP exporter passes LN02 numeric heights unchanged under a horizontal EPSG:2056 declaration; that is not a vertical transformation or a complete vertical CRS declaration.
+6. Regenerate and audit a control-only GCP file from the approved controls, then run the controlled-GCP ODM variant using the pinned engine image.
+7. Evaluate withheld checkpoints using independent image measurements and reference coordinates with compatible horizontal and vertical reference systems. Report reference uncertainty, sample design, residuals and limitations before making any acceptance decision.
 
-1. Complete a point-by-point, role-blind visual review of the annotated images and record explicit accept/reject/uncertain decisions with reasons.
-2. Independently remeasure candidate checkpoint image coordinates without consulting the source Metashape picks. Preserve reviewer identity, method and measurement provenance.
-3. After role-blind visual decisions are locked, independently remeasure checkpoint image coordinates using the separate [measurement protocol](independent-checkpoint-measurement-protocol.md) and [blank CSV template](independent-checkpoint-measurements.template.csv). Never copy the Metashape source picks into this record.
-4. Reassess control/checkpoint geometry and image coverage; only then lock the partition and regenerate the control-only ODM GCP file.
-5. Explicitly resolve the horizontal LV95 (EPSG:2056) and vertical LN02 handling before interpreting ODM outputs.
-6. The EXIF-only image baseline is complete. After the preceding review, split and coordinate-reference gates are satisfied, run a control-constrained ODM reconstruction; evaluate withheld checkpoints using independent observations. Do not use the supplied OPK solution as independent truth.
-
-No ODM reconstruction or accuracy claim is authorised by the current evidence.
-
+The existing EXIF-only reconstruction is not a controlled-GCP experiment. Its successful execution and structurally readable products do not establish positional accuracy, and no controlled-GCP reconstruction or accuracy claim is authorised by the current evidence.
 
 ## 15. First real-data acquisition and audit results
 
