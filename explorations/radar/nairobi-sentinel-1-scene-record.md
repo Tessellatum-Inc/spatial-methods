@@ -157,3 +157,16 @@ repository's Python CI.
 
 
 The processing design is documented in the [Sentinel-1 IW GRD backscatter preparation recipe](../../recipes/remote-sensing/sentinel-1-grd-backscatter.md). It defines a gated SNAP workflow and QA criteria, but is not yet executed on any Nairobi product.
+
+### Reproducible candidate-stack manifest
+
+The catalogue inventory can now be reconciled into a machine-readable candidate manifest:
+
+```bash
+python explorations/radar/build_sentinel1_stack_manifest.py
+python -m unittest scripts/test_build_sentinel1_stack_manifest.py
+```
+
+The builder verifies required fields, UUIDs, UTC acquisition timestamps, boolean flags, duplicate identifiers and integer slice metadata. It selects only records that meet the documented Sentinel-1C / IW GRD / descending relative-orbit-79 / VV+VH / online / full-AOI criteria, while preserving excluded records and their reasons. It records acquisition intervals, download-location formats, source-inventory SHA-256 and the slice number/total.
+
+The output is `explorations/radar/nairobi-sentinel-1-stack-manifest.json`. The Python CI workflow builds and uploads it as the `nairobi-sentinel1-stack-manifest` artifact. **This is a catalogue candidate manifest, not a processing manifest:** every candidate is explicitly marked `analysis_ready: false` until its archive, SAFE metadata, measurement channels, processing and QA gates pass.
