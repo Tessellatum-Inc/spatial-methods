@@ -4,7 +4,13 @@ import tempfile
 import unittest
 import zipfile
 
-from explorations.radar.audit_sentinel1_safe_metadata import audit_archive
+import importlib.util
+
+MODULE_PATH = Path(__file__).resolve().parents[1] / "explorations" / "radar" / "audit_sentinel1_safe_metadata.py"
+SPEC = importlib.util.spec_from_file_location("audit_sentinel1_safe_metadata", MODULE_PATH)
+AUDITOR = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(AUDITOR)
+audit_archive = AUDITOR.audit_archive
 
 
 ROOT = "S1C_IW_GRDH_1SDV_20261102T031112_20261102T031137_010152_01443B_5D46.SAFE"
