@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
-"""Create point-centred RGB contact sheets and deduplicate catalogue aliases for blind review."""
+"""Create blind-review contact sheets with broad context and a scale-matched centre crop."""
 from __future__ import annotations
 import argparse, csv, json
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 from PIL import Image, ImageDraw
-
-def read_rows(path):
-    with Path(path).open(newline="",encoding="utf-8-sig") as f:
-        return list(csv.DictReader(f)), csv.DictReader
 
 def parse_dt(value):
     try: return datetime.fromisoformat(str(value).replace("Z","+00:00"))
@@ -36,6 +32,28 @@ def add_center_marker(image):
     draw.line((x,y-10,x,y+10),fill=(255,255,255),width=1)
     return image
 
+def zoom_crop(image, source_grid, target_ground_metres=320):
+    """Return a nearest-neighbour display of the central ~320 m at the source pixel size."""
+    resolution=None
+    try:
+        grid=json.loads(source_grid) if isinstance(source_grid,str) else source_grid
+        values=[grid[b]["resolution"][0] for b in ("red","green","blue")]
+        if max(values)-min(values)<1e-6: resolution=float(values[0])
+    except (TypeError,ValueError,KeyError,IndexError):
+        pass
+    if resolution and resolution>0:
+        pixels=max(1,round(target_ground_metres/resolution))
+        extent=pixels*resolution
+        label=f"Centre crop: {extent:g} m at {resolution:g} m pixels"
+    else:
+        pixels=32; label="Centre crop: 32 px; ground extent unverified"
+    pixels=min(pixels,image.width,image.height)
+    x0=(image.width-pixels)//2; y0=(image.height-pixels)//2
+    crop=image.crop((x0,y0,x0+pixels,y0+pixels))
+    zoom=crop.resize((256,256),Image.Resampling.NEAREST)
+    zoom=add_center_marker(zoom)
+    return zoom,label
+
 def build(worksheet_path,provenance_path,chips_dir,output_dir):
     with Path(worksheet_path).open(newline="",encoding="utf-8-sig") as f:
         reader=csv.DictReader(f); fields=list(reader.fieldnames or []); worksheet=list(reader)
@@ -51,44 +69,43 @@ def build(worksheet_path,provenance_path,chips_dir,output_dir):
     for row in provenance:
         if row.get("status")=="chip_created" and row.get("chip_file"):
             by_point[row["sample_id"]].append(row)
-    out=Path(output_dir); out.mkdir(parents=True,exist_ok=True)
-    chips=Path(chips_dir)
+    out=Path(output_dir); out.mkdir(parents=True,exist_ok=True); chips=Path(chips_dir)
     summaries=[]
     for point in worksheet:
-        sample=point["sample_id"]
-        groups=deduplicate(by_point.get(sample,[]))
-        inventory=[]; tiles=[]
+        sample=point["sample_id"]; groups=deduplicate(by_point.get(sample,[]))
+        inventory=[]; panels=[]
         for aliases in groups:
-            row=aliases[0]
-            filename=Path(row["chip_file"]).name
-            chip=chips/filename
-            if not chip.exists():
-                raise FileNotFoundError(f"Missing RGB chip for {sample}: {chip}")
+            row=aliases[0]; filename=Path(row["chip_file"]).name; chip=chips/filename
+            if not chip.exists(): raise FileNotFoundError(f"Missing RGB chip for {sample}: {chip}")
             with Image.open(chip) as source:
-                image=add_center_marker(source.copy())
+                context=add_center_marker(source.copy())
+                zoom,zoom_label=zoom_crop(source.copy(),row.get("source_grid","{}"))
             inventory.append({
                 "chip_file":"chips/"+filename,"datetime":row.get("datetime",""),
                 "platform":row.get("platform",""),"item_ids":[r.get("item_id","") for r in aliases],
-                "collections":[r.get("collection","") for r in aliases],
-                "catalogue_alias_count":len(aliases),"cloud_cover_percent":row.get("cloud_cover_percent",""),
-                "sha256":row.get("chip_sha256",""),"source_grid":row.get("source_grid",""),
-                "display_stretch":row.get("stretch",""),
+                "collections":[r.get("collection","") for r in aliases],"catalogue_alias_count":len(aliases),
+                "cloud_cover_percent":row.get("cloud_cover_percent",""),"sha256":row.get("chip_sha256",""),
+                "source_grid":row.get("source_grid",""),"display_stretch":row.get("stretch",""),
+                "context_chip_extent":"256 pixels; inspect source-grid resolution for ground extent",
+                "zoom_crop_extent":zoom_label,
             })
-            tiles.append((image,row))
-        width=256; header=30; footer=18
-        sheet=Image.new("RGB",(max(1,len(tiles))*width,header+(tiles[0][0].height if tiles else 1)+footer),(245,245,245))
+            panels.append((context,zoom,row,zoom_label))
+        header=34; row_height=286; panel_width=512
+        sheet=Image.new("RGB",(panel_width,max(1,header+row_height*len(panels))),(245,245,245))
         draw=ImageDraw.Draw(sheet)
-        for index,(image,row) in enumerate(tiles):
-            x=index*width; sheet.paste(image,(x,header))
-            draw.text((x+5,7),f'{row.get("datetime","")[:10]} | {row.get("platform","")}',fill=(0,0,0))
+        for index,(context,zoom,row,zoom_label) in enumerate(panels):
+            y=header+index*row_height
+            sheet.paste(context,(0,y)); sheet.paste(zoom,(256,y))
             try: cloud=f'{float(row.get("cloud_cover_percent","")):.1f}%'
             except (TypeError,ValueError): cloud=row.get("cloud_cover_percent","")
-            draw.text((x+5,header+image.height+2),f"Scene cloud metadata: {cloud}",fill=(0,0,0))
-        contact=out/f"{sample}_contact.png"
-        sheet.save(contact,optimize=True)
+            draw.text((5,y-22),f'{row.get("datetime","")[:10]} | {row.get("platform","")} | scene cloud metadata: {cloud}',fill=(0,0,0))
+            draw.text((5,y+258),"Context: full 256 x 256 chip",fill=(0,0,0))
+            draw.text((261,y+258),zoom_label+" (nearest-neighbour display)",fill=(0,0,0))
+        contact=out/f"{sample}_contact.png"; sheet.save(contact,optimize=True)
         point["rgb_chip_inventory"]=json.dumps(inventory,sort_keys=True)
         point["review_contact_sheet"]="review-chips/"+contact.name
-        summaries.append({"sample_id":sample,"unique_rgb_acquisitions":len(groups),"source_chip_records":sum(len(g) for g in groups)})
+        summaries.append({"sample_id":sample,"unique_rgb_acquisitions":len(groups),
+                          "source_chip_records":sum(len(g) for g in groups)})
     with Path(worksheet_path).open("w",newline="",encoding="utf-8") as f:
         writer=csv.DictWriter(f,fieldnames=fields); writer.writeheader(); writer.writerows(worksheet)
     return {"points":len(worksheet),"contact_sheets":len(summaries),
