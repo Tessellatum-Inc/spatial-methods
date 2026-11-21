@@ -39,7 +39,7 @@ The public HEIG-VD dataset has an executed EXIF-only OpenDroneMap baseline and s
 | Pillar | Canonical route | Why it belongs |
 |---|---|---|
 | Theoretical Foundations | [Measurement science and survey adjustment](measurement-science-and-survey-adjustment.md); [measurement-science foundations](../foundations/README.md) | Defines measurands, observation models, uncertainty, covariance, datum and estimation. |
-| Spatial Data Collection | [Spatial Data Collection subject map](../collection/README.md); [surveying and field measurement source map](../catalog/surveying-field-measurement-source-map.md) | Helps select observation methods and identify instrument, control, sampling, field verification and provenance requirements. |
+| Spatial Data Collection | [Spatial observation and sampling design](../collection/spatial-observation-and-sampling-design.md); [sampling-design exercise](../collection/spatial-observation-sampling-exercise.md); [surveying and field measurement source map](../catalog/surveying-field-measurement-source-map.md) | Defines the frame, measurand, spatial support, selection design, technology choice and field evidence before acquisition. |
 | Spatial Algorithms | [Covariance and GLS implementation](../implementations/python/covariance-gls/README.md); [coordinate transformation](../algorithms/geodesy/crs-transformation.md) | Provides reproducible computational components for adjustment and reference handling. Other algorithms should be selected from the actual feature and delivery requirements. |
 | Spatial Recipes | [Survey-to-spatial-dataset workflow](../recipes/survey-to-spatial-dataset/README.md) | Connects requirements, reference, acquisition, adjustment, independent checks, dataset construction and delivery. |
 
