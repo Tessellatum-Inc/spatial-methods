@@ -7,11 +7,35 @@ from unittest.mock import patch
 from acquire_rehearsal_dataset import (
     build_manifest,
     revision_snapshot_dir,
+    resolve_revision,
     sha256_file,
 )
 
 
 class AcquisitionManifestTests(unittest.TestCase):
+    def test_pinned_revision_is_used_without_resolving_default_branch(self):
+        class NeverCalledApi:
+            def repo_info(self, **kwargs):
+                raise AssertionError("pinned revision must not query moving branch")
+
+        revision = "E" * 40
+        self.assertEqual(resolve_revision(NeverCalledApi(), revision), "e" * 40)
+
+    def test_invalid_pinned_revision_is_rejected(self):
+        class NeverCalledApi:
+            def repo_info(self, **kwargs):
+                raise AssertionError("invalid pin must fail before network lookup")
+
+        with self.assertRaises(ValueError):
+            resolve_revision(NeverCalledApi(), "not-a-commit")
+
+    def test_default_branch_revision_is_validated_and_normalized(self):
+        class Api:
+            def repo_info(self, **kwargs):
+                return type("Info", (), {"sha": "F" * 40})()
+
+        self.assertEqual(resolve_revision(Api(), None), "f" * 40)
+
     def test_each_revision_uses_an_isolated_snapshot_directory(self):
         with tempfile.TemporaryDirectory() as tmp:
             destination = Path(tmp)
