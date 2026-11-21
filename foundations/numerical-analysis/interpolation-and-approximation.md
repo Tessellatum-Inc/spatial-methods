@@ -298,7 +298,7 @@ Explain why interpolating point measurements to a grid does not automatically pr
 
 - Philip J. Davis, *Interpolation and Approximation*, Dover Publications, 1975.
 - Carl de Boor, *A Practical Guide to Splines*, revised edition, Springer, 2001.
-- T. J. C. (Tim) Heaton and colleagues' work on spatial cross-validation and predictive assessment should be consulted alongside domain-specific validation literature; the validation design must match the intended spatial prediction task.
+- Roberts, D. R., Bahn, V., Ciuti, S., Boyce, M. S., Elith, J., Guillera-Arroita, G., Hauenstein, S., Lahoz-Monfort, J. J., Schröder, B., Thuiller, W., Warton, D. I., Wintle, B. A., Hartig, F. and Dormann, C. F. (2017). “Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure.” *Ecography*, 40(8), 913–929.
 - Noel A. C. Cressie, *Statistics for Spatial Data*, revised edition, Wiley, 1993.
 
 These references are starting points for technical review, not claim-by-claim citations. The module remains an initial teaching resource pending independent review and learner testing.
