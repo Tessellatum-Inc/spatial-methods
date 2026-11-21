@@ -9,12 +9,12 @@ This is the single release-gate record. It distinguishes a maintainable engineer
 
 ## Current engineering checkpoint
 
-- PR #3 (compendium foundation), PR #4 (Patreon launch foundation), and PR #6 (Spatial Methods identity) are merged.
-- PR #5 was superseded by PR #6. PR #2's Bowyer–Watson work was completed within the compendium foundation; do not reopen the stale branch.
-- The README is restored to its original welcoming Spatial Analysis text with only the heading renamed to Spatial Methods. Standalone logo removed. Its navigation and links remain.
-- Latest main workflow [44278892636](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44278892636) completed successfully on 18 November 2026, following the latest main commit. It verifies the configured Python examples workflow; it does not replace the broader full-workflow evidence recorded below.
+- PR #3 (source compendium foundation), PR #4 (Patreon launch foundation) and PR #6 (Spatial Methods identity) are merged. PR #5 was superseded by PR #6; PR #2's Bowyer–Watson work was completed within the compendium foundation. Do not reopen the stale branches.
+- The repository's current public identity is Spatial Methods. The four-pillar architecture is authoritative; the engineering foundation release remains a bounded milestone rather than a claim that every pillar or subject is complete.
+- The foundation release notes were reconciled on 21 November 2026 to reflect the current identity, four-pillar direction, merged foundation PRs and exact-head validation requirement.
+- The latest known main head before the release-note reconciliation was `8f1306a7b962161b5098937387f12b2e9c1f0841`. Photogrammetry ODM package tests passed on that head ([run 44921406757](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44921406757)); the Python examples workflow was queued ([run 44921406761](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44921406761)). The release-note and ledger updates trigger a fresh workflow cycle; final status must be checked against the resulting exact main head before tagging.
 - Patreon pathway is updated to the current Spatial Methods URL in the README and issue-template contact configuration.
-- The earlier 58/59-job CI result and link/anchor integrity checks remain historical evidence for the prior candidate, not a fresh count for this commit.
+- The historical 58/59-job result and earlier link/anchor integrity checks are evidence for prior candidates only, not a substitute for exact-head validation.
 
 ## Source-review checkpoint
 
@@ -41,7 +41,7 @@ See [licensing and reuse](licensing-and-reuse.md), [licensing decision record](l
 
 ## Release candidate notes
 
-Draft versioned notes: [Engineering Foundation 0.1.0](releases/engineering-foundation-0.1.0.md). This is scope documentation, not a published release or tag.
+Draft versioned notes: [Spatial Methods Engineering Foundation 0.1.0](releases/engineering-foundation-0.1.0.md). This is scope documentation, not a published release or tag.
 
 ## Closeout
 
