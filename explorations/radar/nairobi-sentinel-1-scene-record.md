@@ -132,3 +132,26 @@ The workflow **Copernicus Sentinel-1 Nairobi catalogue capture** runs the live q
 3. Only after that validation, acquire the other three same-orbit candidates and check temporal consistency, processing baseline, incidence-angle variation, and any missing slices needed for the study boundary.
 4. Run the GRD processing recipe and record every calibration, terrain-correction, resampling and radiometric choice before interpreting backscatter.
 
+
+### Secure download client and validation gate
+
+A standard-library-only downloader is now available at
+[`download_copernicus_sentinel1.py`](download_copernicus_sentinel1.py).
+Its procedure is documented in
+[`sentinel-1-download-and-validation.md`](sentinel-1-download-and-validation.md).
+
+The client:
+- accepts only a canonical Copernicus product UUID;
+- reads credentials from `CDSE_USERNAME` and `CDSE_PASSWORD` environment variables, never CLI arguments;
+- obtains a short-lived access token and restricts authenticated redirects to Copernicus Data Space hosts;
+- streams one extracted product to a temporary file before renaming it;
+- checks ZIP CRC integrity, one `manifest.safe`, measurement GeoTIFFs and annotation XML;
+- writes an immutable-download SHA-256 and provenance sidecar.
+
+The first validation target is the 2 November candidate
+`8ffa5641-c404-4189-b0fb-ed805b077d71`. **No download has been performed yet**:
+credentials are not available to this work session. The offline tests exercise
+UUID validation, redirect restrictions, valid/incomplete ZIP structures and
+missing credentials without contacting Copernicus. They are included in the
+repository's Python CI.
+
