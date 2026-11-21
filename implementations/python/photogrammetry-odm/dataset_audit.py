@@ -17,13 +17,18 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def inspect_images(root: Path, expected_count: int | None = None) -> dict:
+def inspect_images(
+    root: Path,
+    expected_count: int | None = None,
+    supported_suffixes: set[str] | None = None,
+) -> dict:
     root = root.expanduser().resolve()
     if not root.is_dir():
         raise ValueError(f"Dataset directory does not exist: {root}")
+    suffixes = IMAGE_SUFFIXES if supported_suffixes is None else {s.lower() for s in supported_suffixes}
     files = sorted(
         p for p in root.rglob("*")
-        if p.is_file() and p.suffix.lower() in IMAGE_SUFFIXES
+        if p.is_file() and p.suffix.lower() in suffixes
     )
     if not files:
         raise ValueError(f"No supported image files found under: {root}")
