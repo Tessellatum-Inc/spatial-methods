@@ -326,8 +326,8 @@ The adapter does not prove checkpoint independence or sample representativeness,
 | Output inventory and GeoTIFF structural inspection | Implemented when Rasterio is installed |
 | Independent checkpoint residual statistics | Implemented |
 | Project-level validation evidence and human decision record | Implemented; evidence completeness explicit |
-| LAS/LAZ header inspection | Implemented when laspy is installed; header-only |
-| Point-cloud content/classification and mesh semantic inspection | Pending |
+| LAS/LAZ point-cloud structural inspection | Implemented when laspy is installed; streamed count/coordinate/classification/intensity summaries |
+| Point-cloud classification correctness, density and positional QA; mesh semantic inspection | Pending |
 | Reproducible evidence delivery dossier | Implemented; release authorization remains external |
 
 
