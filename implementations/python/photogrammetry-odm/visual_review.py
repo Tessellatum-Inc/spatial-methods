@@ -133,6 +133,29 @@ def generate(dataset: Path, split_path: Path, output: Path) -> dict:
                 **item, "image_path": image_by_stem[stem]
             })
 
+    decisions_path = output / "review-decisions-template.csv"
+    decision_fields = [
+        "point_id", "image_name", "pixel_x", "pixel_y",
+        "target_visible", "target_identity_clear", "marker_centred",
+        "blur", "occlusion", "ambiguity", "decision", "rationale",
+        "reviewer", "reviewed_at",
+    ]
+    with decisions_path.open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=decision_fields)
+        writer.writeheader()
+        for point_id in sorted(observations_by_point):
+            for item in sorted(
+                observations_by_point[point_id],
+                key=lambda value: value["image_path"].name,
+            ):
+                writer.writerow({
+                    "point_id": point_id,
+                    "image_name": item["image_path"].name,
+                    "pixel_x": f"{item['x']:.3f}",
+                    "pixel_y": f"{item['y']:.3f}",
+                    **{field: "" for field in decision_fields[4:]},
+                })
+
     crop_size = 640
     crop_header = 36
     crop_tile_height = crop_size + crop_header
@@ -262,6 +285,7 @@ def generate(dataset: Path, split_path: Path, output: Path) -> dict:
         "unique_observed_point_count": len({o["point_id"] for rows in observations.values() for o in rows}),
         "point_review_sheet_count": len(point_review_summaries),
         "point_review_crop_size_px": crop_size,
+        "review_decision_template": str(decisions_path.relative_to(output)),
         "point_review_sheets": point_review_summaries,
         "image_summaries": image_summaries,
         "limitations": [
