@@ -88,7 +88,7 @@ def load_inventory(path: Path) -> tuple[list[dict], str]:
     return rows, digest
 
 
-def build_manifest(rows: list[dict], source_sha256: str) -> dict:
+def build_manifest(rows: list[dict], source_sha256: str, source_inventory: str = str(DEFAULT_INPUT)) -> dict:
     criteria = {
         "product_family": "Sentinel-1 IW GRD",
         "platform": "C",
@@ -156,7 +156,7 @@ def build_manifest(rows: list[dict], source_sha256: str) -> dict:
     return {
         "manifest_schema": "tessellatum.sentinel1.stack-manifest.v1",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
-        "source_inventory": str(DEFAULT_INPUT.as_posix()),
+        "source_inventory": source_inventory,
         "source_inventory_sha256": source_sha256,
         "study_area": "Nairobi rectangular discovery AOI; see scene record for coordinates and limitations",
         "selection_criteria": criteria,
@@ -185,7 +185,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         rows, digest = load_inventory(args.input)
-        manifest = build_manifest(rows, digest)
+        manifest = build_manifest(rows, digest, args.input.as_posix())
     except (OSError, ValueError) as exc:
         print(f"Cannot build Sentinel-1 stack manifest: {exc}", file=sys.stderr)
         return 2
