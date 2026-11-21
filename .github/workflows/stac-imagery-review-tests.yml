@@ -396,7 +396,7 @@ jobs:
             --output-dir /tmp/fiji-multispectral-pilot \
             --points 5 \
             --items-per-point 3 \
-            --window-pixels 32
+            --window-pixels 16
         working-directory: implementations/python/area-adjusted-accuracy
       - name: Upload multispectral provenance and summaries
         if: always()
@@ -430,7 +430,7 @@ jobs:
             --output-dir /tmp/fiji-25-point-multispectral \
             --points 25 \
             --items-per-point 3 \
-            --window-pixels 32
+            --window-pixels 16
         working-directory: implementations/python/area-adjusted-accuracy
       - name: Summarise 25-point multispectral coverage
         if: always()
