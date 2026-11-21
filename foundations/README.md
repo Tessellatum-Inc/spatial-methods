@@ -38,7 +38,7 @@ The subject IDs below are stable identifiers from the [Geoinformatics master sub
 | SM-FND-009 | Earth science, physical geography and geomorphology | Planned | Earth systems, landforms, processes, terrain and spatial environmental variation |
 | SM-FND-010 | Cartographic theory and visual perception | Planned | Scale, visual variables, perception, symbolisation, generalisation and map communication |
 | SM-FND-011 | Measurement science, accuracy and uncertainty | Initial collection; expansion and review required | Measurands, measurement models, uncertainty, covariance, traceability and verification |
-| SM-FND-012 | Remote sensing physics and radiometry | Planned | Electromagnetic radiation, spectra, radiometric quantities, interaction and observation models |
+| SM-FND-012 | Remote sensing physics and radiometry | Initial module published; technical review and learner testing pending | Electromagnetic radiation, spectra, radiometric quantities, interaction and observation models |
 | SM-FND-013 | Optics, electromagnetism and wave physics | Planned | Geometric optics, wave behaviour, electromagnetic principles and sensor physics |
 | SM-FND-014 | Signal processing and information theory | Planned | Sampling, filtering, transforms, spectral analysis, information and signal detection |
 | SM-FND-015 | Computer science, algorithms and complexity | Planned | Computation models, data structures, algorithm analysis, logic and computability |
@@ -59,6 +59,10 @@ The mathematics domain begins with [Mathematical language, quantities and spatia
 ### Probability and statistical inference
 
 [Probability and statistical inference](probability-and-statistics/README.md) is now in development. Its first module, [Probability models, events and conditioning](probability-and-statistics/probability-models-events-and-conditioning.md), establishes event rules, conditional probability, independence and Bayes' theorem through an explicitly synthetic spatial-screening example. The domain roadmap distinguishes general probability from spatial stochastic processes and measurement science; independent technical review and learner testing remain outstanding.
+
+### Remote sensing physics and radiometry
+
+The initial module, [Electromagnetic observations and radiometric quantities](remote-sensing-physics/electromagnetic-observations-and-radiometric-quantities.md), establishes the shared electromagnetic vocabulary and distinguishes passive optical measurements from active radar backscatter. It covers radiance, irradiance, reflectance, SAR normalisation conventions, scale factors, decibels, product metadata and interpretation limits. It is an introductory foundation only: detailed optical radiative transfer and SAR signal formation remain separate future modules. Technical review and learner testing are pending.
 
 ### Existing measurement-science resources
 
