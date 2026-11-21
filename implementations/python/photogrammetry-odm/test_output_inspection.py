@@ -47,7 +47,7 @@ class OutputInspectionTests(unittest.TestCase):
         header = SimpleNamespace(
             mins=[1.0, 2.0, 3.0],
             maxs=[4.0, 5.0, 6.0],
-            point_count=123,
+            point_count=2,
             point_format=SimpleNamespace(id=6),
             version="1.4",
             scales=[0.001, 0.001, 0.001],
@@ -56,12 +56,18 @@ class OutputInspectionTests(unittest.TestCase):
         )
         reader = MagicMock()
         reader.__enter__.return_value.header = header
+        reader.chunk_iterator.return_value = [SimpleNamespace(
+            x=[1.5, 2.5], y=[3.5, 4.5], z=[5.5, 6.5],
+            classification=[2, 5], intensity=[100, 250],
+        )]
         fake_laspy = SimpleNamespace(open=lambda path: reader)
         with patch.dict("sys.modules", {"laspy": fake_laspy}):
             report = inspect_outputs(self.project)
         point_cloud = report["point_clouds"][0]
         self.assertEqual(point_cloud["status"], "readable")
-        self.assertEqual(point_cloud["point_count"], 123)
+        self.assertEqual(point_cloud["observed_point_count"], 2)
+        self.assertEqual(point_cloud["classification_counts"], {"2": 1, "5": 1})
+        self.assertEqual(point_cloud["intensity_range"], [100, 250])
         self.assertEqual(point_cloud["mins"], [1.0, 2.0, 3.0])
 
     def test_empty_point_cloud_is_not_reported_as_readable(self):
@@ -74,6 +80,7 @@ class OutputInspectionTests(unittest.TestCase):
         )
         reader = MagicMock()
         reader.__enter__.return_value.header = header
+        reader.chunk_iterator.return_value = []
         with patch.dict("sys.modules", {"laspy": SimpleNamespace(open=lambda path: reader)}):
             report = inspect_outputs(self.project)
         self.assertEqual(report["point_clouds"][0]["status"], "invalid")
