@@ -64,6 +64,16 @@ class OutputInspectionTests(unittest.TestCase):
         self.assertEqual(point_cloud["point_count"], 123)
         self.assertEqual(point_cloud["mins"], [1.0, 2.0, 3.0])
 
+    def test_missing_laz_backend_is_not_misreported_as_corrupt_data(self):
+        (self.project / "cloud.laz").write_bytes(b"synthetic compressed point cloud")
+        fake_laspy = SimpleNamespace(
+            open=lambda path: (_ for _ in ()).throw(RuntimeError("No LazBackend selected; install lazrs"))
+        )
+        with patch.dict("sys.modules", {"laspy": fake_laspy}):
+            report = inspect_outputs(self.project)
+        self.assertEqual(report["point_clouds"][0]["status"], "not_inspected")
+        self.assertIn("backend unavailable", report["point_clouds"][0]["reason"])
+
     def test_inventory_records_project_relative_files(self):
         report = inspect_outputs(self.project)
         self.assertEqual(report["file_inventory"][0]["path"], "odm_orthophoto/orthophoto.tif")
