@@ -22,12 +22,17 @@ class IndependentCheckpointMeasurementValidationTests(unittest.TestCase):
         self.image = self.root / "frame.JPG"
         self.image.write_bytes(b"original source image bytes")
         self.image_hash = hashlib.sha256(self.image.read_bytes()).hexdigest()
+        self.image2 = self.root / "frame2.JPG"
+        self.image2.write_bytes(b"second original source image bytes")
+        self.image2_hash = hashlib.sha256(self.image2.read_bytes()).hexdigest()
         self.manifest = self.root / "acquisition.json"
         self.manifest.write_text(json.dumps({
             "resolved_revision": "a" * 40,
             "selected_path": "datasets/example",
             "files": [{"path": "datasets/example/images/frame.JPG",
-                       "sha256": self.image_hash, "size_bytes": self.image.stat().st_size}],
+                       "sha256": self.image_hash, "size_bytes": self.image.stat().st_size},
+                      {"path": "datasets/example/images/frame2.JPG",
+                       "sha256": self.image2_hash, "size_bytes": self.image2.stat().st_size}],
         }), encoding="utf-8")
         self.split = self.root / "approved-split.json"
         self.split.write_text(json.dumps({
@@ -43,6 +48,7 @@ class IndependentCheckpointMeasurementValidationTests(unittest.TestCase):
             "source_observations": [
                 {"point_id": "P1", "image_name": "frame.JPG"},
                 {"point_id": "P2", "image_name": "frame.JPG"},
+                {"point_id": "P1", "image_name": "frame2.JPG"},
             ],
         }), encoding="utf-8")
         self.csv = self.root / "measurements.csv"
@@ -114,7 +120,8 @@ class IndependentCheckpointMeasurementValidationTests(unittest.TestCase):
 
     def test_unmeasurable_record_requires_reason_and_blank_coordinates(self):
         self.write_rows([
-            self.row("P1", "", "", measurement_status="unmeasurable",
+            self.row("P1", "", "", image="frame2.JPG", source_image_sha256=self.image2_hash,
+                     measurement_status="unmeasurable",
                      measurement_notes="Target fully occluded in this view."),
             self.row("P1", "12", "22"),
             self.row("P2", "30", "40"),
