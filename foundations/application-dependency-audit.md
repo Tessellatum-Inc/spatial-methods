@@ -109,7 +109,7 @@ Develop this alongside linear algebra where the topics naturally meet, while ret
 
 ### Numerical analysis and scientific computing
 
-SM-FND-016 now has an initial domain roadmap and a first module on floating-point representation, rounding, cancellation, error measures, conditioning and algorithmic stability. This is a starting point, not completion of the numerical-analysis domain. Further development should cover stable numerical solution, convergence, approximation and tolerance selection, using repository applications as anchors. Independent specialist review and learner testing remain outstanding.
+SM-FND-016 now has an initial domain roadmap and two modules: floating-point representation, rounding, cancellation and error measures; and sensitivity and perturbation analysis using Jacobians, condition numbers, distance bounds and affine transformations. This is a starting point, not completion of the numerical-analysis domain. Further development should cover stable numerical solution, convergence, approximation and tolerance selection, using repository applications as anchors. Independent specialist review and learner testing remain outstanding.
 
 ### Priority 4 — Geometry and computational geometry (SM-FND-006), then topology and spatial relations (SM-FND-007)
 

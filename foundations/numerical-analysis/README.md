@@ -32,6 +32,7 @@ The domain will cover:
 | Module | Topic | Spatial connections | Status |
 |---|---|---|---|
 | 01 | [Floating-point numbers, rounding and computational error](floating-point-numbers-rounding-and-computational-error.md) | Coordinate arithmetic, distance calculations, raster values, geodetic computation and reproducibility | Initial public teaching resource |
+| 02 | [Sensitivity and perturbation analysis](sensitivity-and-perturbation-analysis.md) | Coordinate differences, distance sensitivity, affine transformations and error propagation | Initial public teaching resource |
 
 The sequence is intentionally small at first. Further modules should be added when their prerequisites, examples and validation requirements are clear.
 

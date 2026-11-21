@@ -62,7 +62,7 @@ The mathematics domain begins with [Mathematical language, quantities and spatia
 
 ### Numerical analysis and scientific computing
 
-[Numerical analysis and scientific computing](numerical-analysis/README.md) now has an initial domain roadmap and a first module on [floating-point numbers, rounding and computational error](numerical-analysis/floating-point-numbers-rounding-and-computational-error.md). It distinguishes representation error, problem conditioning, algorithmic stability and measurement uncertainty, with examples tied to coordinate arithmetic and spatial computation. The subject remains incomplete; independent numerical-analysis review and learner testing are pending.
+[Numerical analysis and scientific computing](numerical-analysis/README.md) now has an initial domain roadmap and two teaching modules: [floating-point numbers, rounding and computational error](numerical-analysis/floating-point-numbers-rounding-and-computational-error.md), and [sensitivity and perturbation analysis](numerical-analysis/sensitivity-and-perturbation-analysis.md). Together they distinguish representation error, input sensitivity, conditioning, algorithmic stability and measurement uncertainty, with examples tied to coordinate arithmetic and spatial computation. The subject remains incomplete; independent numerical-analysis review and learner testing are pending.
 
 ### Remote sensing physics and radiometry
 
