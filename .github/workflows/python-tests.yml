@@ -24,6 +24,7 @@ on:
       - "implementations/python/**"
       - "notebooks/**"
       - "scripts/**"
+      - "explorations/radar/*.py"
       - "**.md"
       - "catalog/**"
       - "source-inventory/**"
@@ -70,6 +71,8 @@ jobs:
         run: python -m unittest discover -s scripts -p "test_query_copernicus_sentinel1.py"
       - name: Test Copernicus Sentinel-1 SAFE downloader
         run: python -m unittest discover -s scripts -p "test_download_copernicus_sentinel1.py"
+      - name: Test Sentinel-1 stack manifest builder
+        run: python -m unittest discover -s scripts -p "test_build_sentinel1_stack_manifest.py"
       - name: Test Python CI package sharding
         run: python -m unittest discover -s scripts -p "test_run_python_package_tests.py"
       - name: Test CI coverage audit
