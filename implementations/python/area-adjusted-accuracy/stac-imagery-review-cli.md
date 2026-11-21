@@ -81,3 +81,21 @@ The CLI queries each point independently. This avoids a single Fiji-wide boundin
 ## Validation status
 
 The unit tests cover cloud metadata handling, RGB asset selection, STAC pagination/deduplication, and partial collection failures. Passing those tests does not validate live catalogue availability, CDSE credentials, remote COG/S3 reads, or visual suitability. Those require a run in an environment with network access and (for CDSE S3 assets) the user's own credentials.
+
+
+## Multispectral blind-review pilot
+
+The separate runner retrieves native Sentinel-2 bands and writes numeric summaries only:
+
+```bash
+python fiji_multispectral_pilot.py \
+  --input data/fiji-worldcover-legend-adjudication-blind-review.csv \
+  --output-dir /tmp/fiji-multispectral-pilot \
+  --points 25 \
+  --items-per-point 3 \
+  --window-pixels 16
+```
+
+For multispectral extraction, `--window-pixels` is the width on the 20 m reference grid when 20 m bands are available. The 10 m window is derived from the same map bounds; 16 × 16 pixels at 20 m and 32 × 32 pixels at 10 m both cover 320 m × 320 m. The reader rejects non-aligned grids rather than resampling. If no 20 m band is available, the requested pixel count applies to the available native grid.
+
+The output preserves per-band native grids, exact window bounds, band summaries, index summaries, SCL class fractions and provenance. NDVI is reported unmasked on its 10 m grid. NDRE is reported both unmasked and with the native 20 m SCL validity mask. SCL is not silently mapped onto the 10 m NDVI grid. These metrics are evidence for review, not class predictions or reference labels.
