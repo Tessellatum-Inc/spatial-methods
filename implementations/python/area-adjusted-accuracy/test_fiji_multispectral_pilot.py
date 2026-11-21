@@ -49,14 +49,18 @@ class FijiMultispectralPilotTests(unittest.TestCase):
                 "item_id": "scene-1", "collection": "sentinel-2-c1-l2a",
                 "datetime": "2021-06-01T00:00:00Z",
                 "bands": {
+                    "B02": np.full((4, 4), 0.1),
+                    "B03": np.full((4, 4), 0.2),
                     "B04": np.full((4, 4), 0.2),
                     "B08": np.full((4, 4), 0.6),
                 },
                 "band_metadata": {
+                    "B02": {"href": "https://example.test/blue.tif", "crs": "EPSG:32760"},
+                    "B03": {"href": "https://example.test/green.tif", "crs": "EPSG:32760"},
                     "B04": {"href": "https://example.test/red.tif", "crs": "EPSG:32760"},
                     "B08": {"href": "https://example.test/nir.tif", "crs": "EPSG:32760"},
                 },
-                "missing_bands": ["B02", "B03", "B05", "B06", "B07", "B8A", "B11", "B12", "SCL"],
+                "missing_bands": ["B05", "B06", "B07", "B8A", "B11", "B12", "SCL"],
                 "native_grids": ["10m"],
             }
             with patch("fiji_multispectral_pilot.search_catalogue",
@@ -73,7 +77,7 @@ class FijiMultispectralPilotTests(unittest.TestCase):
             ) as stream:
                 rows = list(csv.DictReader(stream))
             self.assertEqual(len(rows), 5)
-            self.assertEqual(rows[0]["status"], "windows_read")
+            self.assertEqual(rows[0]["status"], "core_bands_read")
             self.assertNotIn("label", ",".join(rows[0].keys()).lower())
             self.assertNotIn("transition", ",".join(rows[0].keys()).lower())
 
