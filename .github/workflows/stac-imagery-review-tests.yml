@@ -488,3 +488,52 @@ jobs:
           path: /tmp/fiji-25-point-multispectral/
           if-no-files-found: warn
           retention-days: 14
+
+  fiji-blind-review-packet:
+    runs-on: ubuntu-latest
+    needs:
+      - fiji-25-point-multispectral-pilot
+      - full-pilot-public-cog-chip-retrieval
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Download multispectral evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: fiji-25-point-multispectral-pilot
+          path: /tmp/fiji-multispectral
+      - name: Download RGB review chips and provenance
+        uses: actions/download-artifact@v4
+        with:
+          name: fiji-full-25-point-public-cog-chips
+          path: /tmp/fiji-rgb
+      - name: Prepare label-blind review packet
+        run: |
+          python implementations/python/area-adjusted-accuracy/prepare_fiji_blind_review.py \
+            --multispectral /tmp/fiji-multispectral/fiji-multispectral-pilot.csv \
+            --blind-points implementations/python/area-adjusted-accuracy/data/fiji-worldcover-legend-adjudication-blind-review.csv \
+            --rgb-provenance /tmp/fiji-rgb/stac-imagery-provenance.csv \
+            --output-dir /tmp/fiji-blind-review
+          mkdir -p /tmp/fiji-blind-review/chips
+          cp /tmp/fiji-rgb/*.png /tmp/fiji-blind-review/chips/ 2>/dev/null || true
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          root = Path("/tmp/fiji-blind-review")
+          with (root / "fiji-blind-review-worksheet.csv").open(newline="", encoding="utf-8") as stream:
+              rows = list(csv.DictReader(stream))
+          missing = [r["sample_id"] for r in rows if r["primary_rgb_chip_file"] and not (root / r["primary_rgb_chip_file"]).exists()]
+          if missing:
+              raise SystemExit(f"Primary RGB chip references missing for: {missing}")
+          print(f"Review worksheet rows: {len(rows)}; primary RGB chips present: {len(rows)-len(missing)}")
+          PY
+        working-directory: .
+      - name: Upload label-blind Fiji review packet
+        uses: actions/upload-artifact@v4
+        with:
+          name: fiji-label-blind-review-packet
+          path: /tmp/fiji-blind-review/
+          if-no-files-found: error
+          retention-days: 14
