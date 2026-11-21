@@ -15,6 +15,8 @@ from typing import Any
 
 
 ARTIFACTS = (
+    ("acquisition_manifest", "acquisition-provenance.json"),
+    ("acquisition_verification", "acquisition-verification.json"),
     ("project_manifest", "project-manifest.json"),
     ("preflight", "preflight-report.json"),
     ("processing_run", "processing-run.json"),
@@ -42,6 +44,8 @@ def _hash(path: Path) -> str:
 
 
 def build_dossier(
+    acquisition_manifest_path: str | Path,
+    acquisition_verification_path: str | Path,
     manifest_path: str | Path,
     preflight_path: str | Path,
     run_path: str | Path,
@@ -49,6 +53,8 @@ def build_dossier(
     validation_path: str | Path,
 ) -> tuple[dict, dict[str, Path]]:
     supplied = {
+        "acquisition_manifest": Path(acquisition_manifest_path).expanduser().resolve(),
+        "acquisition_verification": Path(acquisition_verification_path).expanduser().resolve(),
         "project_manifest": Path(manifest_path).expanduser().resolve(),
         "preflight": Path(preflight_path).expanduser().resolve(),
         "processing_run": Path(run_path).expanduser().resolve(),
@@ -61,6 +67,8 @@ def build_dossier(
             raise ValueError(f"Required evidence file is missing: {key} ({path})")
         records[key] = _read_json(path, key)
 
+    acquisition_manifest = records["acquisition_manifest"]
+    acquisition_verification = records["acquisition_verification"]
     manifest = records["project_manifest"]
     preflight = records["preflight"]
     run = records["processing_run"]
@@ -72,6 +80,16 @@ def build_dossier(
         raise ValueError("Project manifest must declare a non-empty project_id.")
 
     mismatches = []
+    if acquisition_verification.get("resolved_revision") != acquisition_manifest.get("resolved_revision"):
+        mismatches.append("Acquisition verification revision does not match acquisition manifest.")
+    if acquisition_verification.get("selected_path") != acquisition_manifest.get("selected_path"):
+        mismatches.append("Acquisition verification selected_path does not match acquisition manifest.")
+    if acquisition_verification.get("declared_file_count") != acquisition_manifest.get("file_count"):
+        mismatches.append("Acquisition verification file count does not match acquisition manifest.")
+    if acquisition_verification.get("manifest_sha256"):
+        if acquisition_verification["manifest_sha256"] != _hash(supplied["acquisition_manifest"]):
+            mismatches.append("Acquisition verification manifest_sha256 does not match the supplied acquisition manifest.")
+
     for label, value in (
         ("preflight", preflight.get("project_id")),
         ("validation evidence", validation.get("project_id")),
@@ -87,6 +105,13 @@ def build_dossier(
         )
 
     warnings = []
+    if acquisition_verification.get("status") != "verified":
+        warnings.append(f"Acquisition verification status is {acquisition_verification.get('status', 'unspecified')}.")
+    if not acquisition_verification.get("manifest_sha256"):
+        warnings.append("Acquisition verification does not bind the exact acquisition manifest hash.")
+    if acquisition_verification.get("verified_file_count") != acquisition_manifest.get("file_count"):
+        warnings.append("Verified acquisition file count does not match the acquisition manifest file count.")
+
     if not preflight.get("project_id"):
         warnings.append("Preflight report does not carry a project_id for identity cross-checking.")
     if not validation.get("project_id"):
@@ -133,6 +158,7 @@ def build_dossier(
         "release_authorization_note": "Dossier assembly never authorizes delivery; use the project-specific release process.",
         "artifacts": artifacts,
         "observed_statuses": {
+            "acquisition_verification": acquisition_verification.get("status"),
             "preflight": preflight.get("status"),
             "processing_run": run.get("status"),
             "output_inspection": outputs.get("status"),
@@ -142,7 +168,7 @@ def build_dossier(
         "warnings": warnings,
         "consistency_errors": mismatches,
         "scope": {
-            "included": "The five named JSON evidence records and this dossier index.",
+            "included": "The acquisition provenance manifest, its verification report, five project/processing/validation evidence records, and this dossier index.",
             "not_included": "Raw imagery, full processing outputs, Docker images, logs not embedded in the run record, and external reference datasets.",
             "verification": "SHA-256 hashes identify the exact evidence files copied into the archive.",
         },
@@ -158,6 +184,8 @@ def build_dossier(
 
 
 def create_delivery_bundle(
+    acquisition_manifest_path: str | Path,
+    acquisition_verification_path: str | Path,
     manifest_path: str | Path,
     preflight_path: str | Path,
     run_path: str | Path,
@@ -166,7 +194,8 @@ def create_delivery_bundle(
     destination: str | Path,
 ) -> dict:
     dossier, supplied = build_dossier(
-        manifest_path, preflight_path, run_path, output_inspection_path, validation_path
+        acquisition_manifest_path, acquisition_verification_path, manifest_path,
+        preflight_path, run_path, output_inspection_path, validation_path
     )
     destination = Path(destination).expanduser().resolve()
     if destination in supplied.values():
@@ -195,6 +224,8 @@ def create_delivery_bundle(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Bundle photogrammetry project evidence into a reviewable ZIP dossier.")
+    parser.add_argument("--acquisition-manifest", required=True, type=Path)
+    parser.add_argument("--acquisition-verification", required=True, type=Path)
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--preflight", required=True, type=Path)
     parser.add_argument("--run-record", required=True, type=Path)
@@ -204,7 +235,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         result = create_delivery_bundle(
-            args.manifest, args.preflight, args.run_record, args.output_inspection,
+            args.acquisition_manifest, args.acquisition_verification, args.manifest,
+            args.preflight, args.run_record, args.output_inspection,
             args.validation_evidence, args.output,
         )
     except (OSError, ValueError) as exc:
