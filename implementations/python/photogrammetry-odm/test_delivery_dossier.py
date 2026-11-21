@@ -72,6 +72,9 @@ class DeliveryDossierTests(unittest.TestCase):
         self.assertEqual(result["dossier"]["status"], "inconsistent")
         self.assertTrue(result["dossier"]["consistency_errors"])
 
+    def test_destination_cannot_overwrite_source_evidence(self):
+        with self.assertRaisesRegex(ValueError, "must not overwrite"):
+            self.bundle(self.files["manifest"])
     def test_missing_required_artifact_is_rejected(self):
         self.files["outputs"].unlink()
         with self.assertRaisesRegex(ValueError, "Required evidence file is missing"):
