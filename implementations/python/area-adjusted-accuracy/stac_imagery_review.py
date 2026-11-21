@@ -33,6 +33,14 @@ BAND_ALIASES = {
 }
 REQUEST_TIMEOUT = 60
 
+PROVENANCE_FIELDS = (
+    "sample_id", "catalogue", "item_id", "collection", "datetime",
+    "cloud_cover_percent", "platform", "assets_available", "assets",
+    "source_grid", "longitude", "latitude", "status", "chip_file",
+    "chip_width", "chip_height", "chip_bytes", "chip_sha256",
+    "read_method", "stretch", "notes",
+)
+
 
 def _request_page(method: str, href: str, body: dict[str, Any] | None = None,
                   headers: dict[str, str] | None = None) -> dict[str, Any]:
@@ -104,6 +112,17 @@ def search_catalogue(endpoint: str, collections: tuple[str, ...],
             errors.append(f"{collection}: {type(exc).__name__}: {exc}")
     return list(found.values()), errors
 
+
+def write_provenance(path: Path, rows: list[dict[str, Any]]) -> None:
+    """Write discovery and chip rows using one stable CSV schema."""
+    if not rows:
+        path.unlink(missing_ok=True)
+        return
+    with open(path, "w", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=PROVENANCE_FIELDS, extrasaction="ignore")
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({field: row.get(field, "") for field in PROVENANCE_FIELDS})
 
 def item_cloud(item: dict[str, Any]) -> float:
     props = item.get("properties", {})
@@ -186,6 +205,8 @@ def render_chip(item: dict[str, Any], lon: float, lat: float,
                     raise RuntimeError(f"{asset_name} asset has no CRS")
                 x, y = transform_coordinates("EPSG:4326", src.crs, [lon], [lat])
                 row, col = src.index(x[0], y[0])
+                if not (0 <= row < src.height and 0 <= col < src.width):
+                    raise RuntimeError(f"Sample point falls outside {asset_name} raster bounds")
                 half = chip_pixels // 2
                 window = Window(col - half, row - half, chip_pixels, chip_pixels)
                 signature = (src.crs.to_string(), src.transform, src.width, src.height)
@@ -345,13 +366,7 @@ def main() -> int:
                     "notes": "No 2021 items returned; this is not proof of no imagery.",
                 })
 
-    if rows:
-        with open(provenance_path, "w", newline="", encoding="utf-8") as stream:
-            writer = csv.DictWriter(stream, fieldnames=list(rows[0].keys()))
-            writer.writeheader()
-            writer.writerows(rows)
-    elif provenance_path.exists():
-        provenance_path.unlink()
+    write_provenance(provenance_path, rows)
 
     if errors:
         with open(errors_path, "w", newline="", encoding="utf-8") as stream:
