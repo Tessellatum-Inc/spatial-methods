@@ -21,6 +21,10 @@ The supplied image observations were measured in Metashape. They are not indepen
 The proposed split remains `proposed_not_locked`. The annotated sheets are a review aid, not a human approval record. Reviewers must inspect target visibility, centring, occlusion, blur, ambiguity and image-to-target correspondence; checkpoints must then be independently remeasured before they can support an accuracy assessment.
 
 ### Next gates
+### Next gates
+
+Before any ODM run, follow the [LV95/LN02 coordinate-reference handling decision record](coordinate-reference-handling.md). The current GCP exporter carries LN02 numeric heights unchanged under a horizontal EPSG:2056 declaration; this does not encode or transform the vertical reference.
+
 
 1. Complete a point-by-point, role-blind visual review of the annotated images and record explicit accept/reject/uncertain decisions with reasons.
 2. Independently remeasure candidate checkpoint image coordinates without consulting the source Metashape picks. Preserve reviewer identity, method and measurement provenance.
