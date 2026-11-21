@@ -43,27 +43,40 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements-stac-imagery.txt
         working-directory: implementations/python/area-adjusted-accuracy
-      - name: Select one blind point per disagreement type
+      - name: Select five geographically dispersed blind points
         run: |
           python - <<'PY'
           import csv
+          import math
           from pathlib import Path
           source = Path("data/fiji-worldcover-legend-adjudication-blind-review.csv")
           with source.open(newline="", encoding="utf-8-sig") as stream:
               rows = list(csv.DictReader(stream))
-          selected = {}
-          for row in rows:
-              key = row.get("transition") or "all"
-              selected.setdefault(key, row)
-          sample = list(selected.values())[:5]
-          if not sample:
+          if not rows:
               raise SystemExit("No blind review points found")
+          def unit_vector(row):
+              lon, lat = math.radians(float(row["longitude"])), math.radians(float(row["latitude"]))
+              return (math.cos(lat) * math.cos(lon), math.cos(lat) * math.sin(lon), math.sin(lat))
+          vectors = [unit_vector(row) for row in rows]
+          chosen = [0]
+          while len(chosen) < min(5, len(rows)):
+              remaining = []
+              for i, vector in enumerate(vectors):
+                  if i in chosen:
+                      continue
+                  nearest = min(
+                      math.acos(max(-1.0, min(1.0, sum(a*b for a, b in zip(vector, vectors[j])))))
+                      for j in chosen
+                  )
+                  remaining.append((nearest, i))
+              chosen.append(max(remaining)[1])
+          sample = [rows[i] for i in chosen]
           target = Path("/tmp/fiji-stac-smoke-input.csv")
           with target.open("w", newline="", encoding="utf-8") as stream:
               writer = csv.DictWriter(stream, fieldnames=list(sample[0]))
               writer.writeheader()
               writer.writerows(sample)
-          print(f"Selected {len(sample)} points across {len(selected)} disagreement types")
+          print(f"Selected {len(sample)} maximin points on the sphere")
           PY
         working-directory: implementations/python/area-adjusted-accuracy
       - name: Query public STAC catalogues (metadata only)
@@ -71,6 +84,7 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p /tmp/fiji-stac-smoke
+          set +e
           python stac_imagery_review.py \
             --input /tmp/fiji-stac-smoke-input.csv \
             --output-dir /tmp/fiji-stac-smoke \
