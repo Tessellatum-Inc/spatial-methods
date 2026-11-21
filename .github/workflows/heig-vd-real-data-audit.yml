@@ -116,6 +116,20 @@ jobs:
               fi
             done
           fi
+          mkdir -p reports/heig-vd/visual-review
+          cat > reports/heig-vd/visual-review/README.md <<'EOF'
+          # Role-blind point review packet
+
+          This packet intentionally omits the control/checkpoint role mapping.
+          Review the point sheets before consulting the split key. For each point,
+          assess target identity, centring, visibility, occlusion, blur, ambiguity
+          and marker-to-target correspondence. Record a decision and rationale,
+          then lock the review record before unblinding roles.
+
+          The yellow ring marks the publisher-provided Metashape image pick.
+          These are not independent remeasurements and do not establish survey
+          accuracy or checkpoint independence.
+          EOF
           cat > reports/heig-vd/README.md <<'EOF'
           # HEIG-VD real-data acquisition and audit
 
@@ -126,8 +140,8 @@ jobs:
 
           This artifact contains provenance, audit reports, small source metadata files
           (README, GCP coordinates, image observations and OPK text), a provisional
-          ODM GCP list, and annotated review sheets built from source image picks,
-          not the source imagery itself.
+          ODM GCP list, and role-blind image annotations/cropped review excerpts.
+          Full-resolution source imagery is not included.
           The proposed split is not human-locked and the GCP list has not been processed by ODM.
           Acquisition hashes establish local byte agreement with the recorded manifest;
           they do not establish publisher authenticity, licence compliance, coordinate
@@ -136,11 +150,20 @@ jobs:
           ground points as control and are not independent validation.
           EOF
 
-      - name: Upload audit evidence (no source imagery)
+      - name: Upload technical audit evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: heig-vd-real-data-audit
+          name: heig-vd-audit-evidence
           path: reports/heig-vd/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload separate role-blind review packet
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: heig-vd-role-blind-review
+          path: reports/heig-vd/visual-review/
           if-no-files-found: warn
           retention-days: 30
