@@ -14,6 +14,12 @@ from textwrap import dedent
 
 
 IMAGE_PREFIX = "EB-02-00761_"
+DECISION_FIELDS = (
+    "point_id", "image_name", "pixel_x", "pixel_y",
+    "target_visible", "target_identity_clear", "marker_centred",
+    "blur", "occlusion", "ambiguity", "decision", "rationale",
+    "reviewer", "reviewed_at",
+)
 MARKER_COLOR = (245, 190, 35)
 
 
@@ -167,12 +173,7 @@ def generate(
     ]
 
     decisions_path = output / "review-decisions-template.csv"
-    decision_fields = [
-        "point_id", "image_name", "pixel_x", "pixel_y",
-        "target_visible", "target_identity_clear", "marker_centred",
-        "blur", "occlusion", "ambiguity", "decision", "rationale",
-        "reviewer", "reviewed_at",
-    ]
+    decision_fields = list(DECISION_FIELDS)
     with decisions_path.open("w", newline="", encoding="utf-8") as stream:
         writer = csv.DictWriter(stream, fieldnames=decision_fields)
         writer.writeheader()
