@@ -248,6 +248,8 @@ python output_inspection.py /absolute/path/to/datasets/campus_block \
 
 Expected paths are project-relative and may be repeated. Missing declared files are blockers. The utility inventories all project files and, when Rasterio is installed, checks GeoTIFF readability and records dimensions, band count, data types, CRS, affine transform, bounds, pixel size and nodata. It attempts a small read from the first band. If Rasterio is unavailable, the file remains inventoried but structural raster inspection is explicitly marked unavailable. LAS/LAZ point-cloud headers are inspected when `laspy` (and a compatible LAZ backend for compressed files) is installed; the report records point count, point format, version, scales, offsets, bounds and parsed CRS where available. Missing `laspy` is a warning, not a silent pass.
 
+For optional inspection support, install `rasterio` for GeoTIFF structure and `laspy` for LAS headers. LAZ compression additionally needs a compatible backend such as `lazrs` (for example, `python -m pip install rasterio laspy lazrs`). These are optional inspection dependencies; the scripts report unavailable checks rather than silently treating them as passed.
+
 This is a structural inspection stage, not an accuracy assessment. A present CRS may still be wrong; plausible bounds and pixel sizes do not establish georeferencing correctness. LAS/LAZ header inspection is included when `laspy` is available, but point records, classifications and positional quality are not assessed. Mesh semantic/topology inspection is not yet included. Compare products with independent reference data and project acceptance criteria before delivery.
 
 
