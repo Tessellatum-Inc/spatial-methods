@@ -255,7 +255,7 @@ This is a structural inspection stage, not an accuracy assessment. A present CRS
 
 The statistics-only utility is useful for transparent residual summaries. To turn those summaries into a project-level evidence record, use `validation_evidence.py` with a context JSON file. The CSV must contain the seven fields documented by `checkpoint_qa.py`: `point_id,ref_x,ref_y,ref_z,model_x,model_y,model_z`.
 
-Example context (replace every value with project facts; do not copy the illustrative values as evidence):
+Start from [validation-context.template.json](validation-context.template.json), then replace every placeholder with project facts. The template deliberately leaves checkpoint independence unconfirmed and acceptance pending. Required context includes the project-specific acceptance criteria reference.
 
 ```json
 {
@@ -266,7 +266,8 @@ Example context (replace every value with project facts; do not copy the illustr
   "coordinate_units": "metres",
   "reference_uncertainty": "describe source, method and uncertainty",
   "sample_design": "describe selection frame, design and exclusions",
-  "checkpoint_independence": true,
+  "checkpoint_independence": false,
+  "acceptance_criteria": "cite project-specific acceptance specification and version",
   "acceptance_decision": "pending"
 }
 ```
