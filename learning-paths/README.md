@@ -6,6 +6,10 @@ You might be starting from the basics. You might have a project to finish and ne
 
 Start with what matters to you. Follow a path when it helps. Take a detour whenever something catches your attention.
 
+## Cross-pillar pathways
+
+For routes that deliberately connect Theoretical Foundations, Spatial Data Collection, Spatial Algorithms and Spatial Recipes around a practical question, use the [cross-pillar pathway index](cross-pillar-pathways.md). It currently documents photogrammetric mapping, survey-to-spatial-dataset delivery and measurement-network adjustment, with evidence boundaries and unfinished connections made explicit.
+
 ## Start with a problem
 
 These are starting points, not locked courses.
