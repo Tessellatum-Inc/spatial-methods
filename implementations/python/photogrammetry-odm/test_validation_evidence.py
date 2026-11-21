@@ -13,11 +13,8 @@ class ValidationEvidenceTests(unittest.TestCase):
         self.root = Path(self.tmp.name)
         self.csv = self.root / "checkpoints.csv"
         self.csv.write_text(
-            "point_id,ref_x,ref_y,ref_z,model_x,model_y,model_z
-"
-            "A,0,0,0,1,2,3
-B,10,10,10,11,12,13
-",
+            "point_id,ref_x,ref_y,ref_z,model_x,model_y,model_z\n"
+            "A,0,0,0,1,2,3\nB,10,10,10,11,12,13\n",
             encoding="utf-8",
         )
         self.context = {
