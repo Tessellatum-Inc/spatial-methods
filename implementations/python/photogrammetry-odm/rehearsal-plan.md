@@ -61,3 +61,6 @@ The split remains `proposed_not_locked`. The source image picks are Metashape me
 4. Run a no-GCP EXIF baseline, then the approved control-GCP variant. Keep all checkpoint observations out of adjustment and tuning.
 5. Independently establish checkpoint image positions or document the limitations of reusing source Metashape picks.
 6. Inspect outputs, produce validation evidence and assemble the acquisition-bound dossier. A successful processing exit code is not an accuracy or release decision.
+
+
+The role-blind review packet is published separately from the technical audit artifact: [download from workflow run 44899394199](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899394199/artifacts/14705840263). It contains 30 per-point sheets, 206 observation rows in the blank decision worksheet and no role mapping. Artifact SHA-256: `b00f477d590ec0d5601853dd7d2cf86e9beff9e42808ab9a2c3bf8f86dfcdf49`.

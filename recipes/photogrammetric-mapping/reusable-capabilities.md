@@ -413,3 +413,6 @@ The proposed split is `proposed_not_locked`; no ODM processing has been run with
 ### Next integration milestone
 
 Complete and lock the role-blind observation review, confirm the control/checkpoint partition and vertical reference, then run a pinned ODM baseline and approved control-GCP variant. Preserve all checkpoints outside adjustment and tuning. Only after actual outputs and independently established checkpoint evidence exist should the workflow be described as end-to-end rehearsed or accuracy-assessed.
+
+
+The role-blind point review packet is preserved separately from the technical audit artifact in [workflow run 44899394199](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899394199/artifacts/14705840263). It contains 30 point sheets and a blank 206-row observation decision worksheet; no control/checkpoint role mapping is included.

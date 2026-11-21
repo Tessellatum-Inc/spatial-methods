@@ -169,3 +169,6 @@ Known source structure must not be misclassified:
 A proposed split (8 controls, 19 checkpoints, 3 low-observation points withheld) is stored separately and remains `proposed_not_locked`. The 51-row GCP candidate contains controls only. A role-blind review packet provides per-point crops and a blank observation decision worksheet. The image picks are publisher-provided Metashape measurements, not independent remeasurements.
 
 **Do not call this an end-to-end ODM rehearsal yet.** ODM has not been executed, checkpoint residuals have not been computed, and no validation or release decision exists. The next gate is locked human review, followed by a pinned-container baseline and approved GCP run.
+
+
+The role-blind point review packet is available as a separate artifact from [workflow run 44899394199](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899394199/artifacts/14705840263). It contains the per-point image crops and blank 206-row review worksheet without the control/checkpoint role key. Artifact SHA-256: `b00f477d590ec0d5601853dd7d2cf86e9beff9e42808ab9a2c3bf8f86dfcdf49`.

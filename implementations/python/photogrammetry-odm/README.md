@@ -372,7 +372,7 @@ The candidate split is stored in `rehearsal-control-checkpoint-split.proposed.js
 
 The control-only ODM GCP preparation adapter verifies the source revision and source-file hashes, checks coordinate uniqueness and pixel bounds, and exports only the selected controls. The provisional file contains 51 image-observation rows across 29 images. Its first line declares horizontal CRS `EPSG:2056`; source heights are in `LN02` and that vertical reference remains separate metadata. The format follows the [ODM GCP file specification](https://docs.opendronemap.org/gcp/).
 
-The split remains `proposed_not_locked`. The source-provided Metashape image picks have not been independently remeasured or human-adjudicated. The OPK adjustment is not used. No ODM processing run or accuracy assessment has yet been completed. The real-data audit workflow is available at [GitHub Actions run 44899184473](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899184473).
+The split remains `proposed_not_locked`. The source-provided Metashape image picks have not been independently remeasured or human-adjudicated. The OPK adjustment is not used. No ODM processing run or accuracy assessment has yet been completed. The real-data audit workflow is available at [GitHub Actions run 44899184473](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899394199).
 
 ### Prepare a provisional control-only GCP list
 
