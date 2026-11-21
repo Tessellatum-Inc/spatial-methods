@@ -24,7 +24,7 @@ The following distinctions are mandatory:
 1. Read [the implementation README](README.md) for prerequisites, commands and component boundaries.
 2. Read [the end-to-end rehearsal plan](rehearsal-plan.md) and [dataset inspection record](dataset-inspection.md) before interpreting the HEIG-VD example.
 3. Inspect the versioned manifest and context templates. Confirm placeholders are not mistaken for project facts.
-4. Verify any acquired source snapshot with `verify_acquisition.py` before image or metadata audits; inspect the file-level results, not only the summary status.
+4. Verify any acquired source snapshot with `verify_acquisition.py` before image or metadata audits; inspect the file-level results, symlink report and manifest hash, not only the summary status.
 5. Review the implementation in this order:
    - `project_manifest.py` — project contract and manifest validation;
    - `verify_acquisition.py` — verify the acquired source snapshot against its immutable file manifest;
@@ -124,7 +124,7 @@ Do not collapse these statuses into a single pass/fail score.
 - No live Docker/ODM execution has been demonstrated in this repository environment.
 - The HEIG-VD rehearsal imagery has not yet been acquired, byte-audited and processed locally.
 - LAS/LAZ point records are streamed when `laspy` is installed; declared/observed count reconciliation, finite coordinates, observed/header extent reconciliation (using a tolerance derived from coordinate scales), classification counts, intensity range and a bounded coordinate sample are recorded. Classification correctness, density suitability and positional accuracy remain unassessed.
-- Wavefront OBJ syntax and vertex-index structure are inspected. Manifoldness, self-intersections, texture completeness, normal quality and geometric accuracy remain unassessed.
+- Wavefront OBJ vertex, texture-coordinate and normal records are checked for finite values; face vertex/texture/normal indices and repeated-index/zero-area faces are checked. Manifoldness, self-intersections, texture-file availability, normal quality and geometric accuracy remain unassessed.
 - Raster inspection is conditional on Rasterio; image readability checks are conditional on Pillow.
 - Checkpoint independence, sample representativeness, reference uncertainty and CRS correctness are declarations/evidence for human review, not independently established by these scripts.
 - No universal accuracy threshold is encoded. Acceptance must cite the project's own specification.
