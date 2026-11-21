@@ -73,6 +73,14 @@ jobs:
         run: python -m unittest discover -s scripts -p "test_download_copernicus_sentinel1.py"
       - name: Test Sentinel-1 stack manifest builder
         run: python -m unittest discover -s scripts -p "test_build_sentinel1_stack_manifest.py"
+      - name: Build Nairobi Sentinel-1 candidate manifest
+        run: python explorations/radar/build_sentinel1_stack_manifest.py
+      - name: Upload Nairobi Sentinel-1 candidate manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: nairobi-sentinel1-stack-manifest
+          path: explorations/radar/nairobi-sentinel-1-stack-manifest.json
+          if-no-files-found: error
       - name: Test Python CI package sharding
         run: python -m unittest discover -s scripts -p "test_run_python_package_tests.py"
       - name: Test CI coverage audit
