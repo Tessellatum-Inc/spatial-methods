@@ -95,10 +95,9 @@ def read_multispectral_windows(
     """Read requested bands around a WGS84 point, preserving native grids.
 
     Returns float32 arrays with nodata represented as NaN, plus per-band source
-    metadata. Explicit STAC scale/offset metadata is applied. Bands in the same
-    nominal grid group must have exactly matching CRS, affine transform and
-    raster dimensions. The 10 m and 20 m groups are deliberately not compared
-    or resampled against each other.
+    metadata. Explicit STAC scale/offset metadata is applied. The 20 m grid
+    anchors the footprint when present; 10 m windows are derived from the same
+    map bounds and must align exactly. No resampling is performed.
     """
     if window_pixels < 1 or window_pixels > 512:
         raise ValueError("window_pixels must be between 1 and 512")
@@ -222,6 +221,7 @@ def read_multispectral_windows(
                     },
                 }
 
+    missing.sort(key=bands.index)
     return {
         "item_id": item.get("id", ""),
         "collection": item.get("collection", ""),
