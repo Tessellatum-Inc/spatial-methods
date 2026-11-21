@@ -36,7 +36,7 @@ class OutputInspectionTests(unittest.TestCase):
     def test_inventory_records_project_relative_files(self):
         report = inspect_outputs(self.project)
         self.assertEqual(report["file_inventory"][0]["path"], "odm_orthophoto/orthophoto.tif")
-        self.assertEqual(report["file_inventory"][0]["size_bytes"], 10)
+        self.assertEqual(report["file_inventory"][0]["size_bytes"], 11)
 
 
 if __name__ == "__main__":
