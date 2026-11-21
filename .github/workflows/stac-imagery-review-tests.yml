@@ -192,3 +192,64 @@ jobs:
           path: /tmp/fiji-cog-smoke/
           if-no-files-found: warn
           retention-days: 7
+
+  full-pilot-catalogue-discovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      STAC_REQUEST_TIMEOUT: 20
+      STAC_MAX_PAGES: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: implementations/python/area-adjusted-accuracy/requirements-stac-imagery.txt
+      - name: Install dependencies
+        run: python -m pip install -r requirements-stac-imagery.txt
+        working-directory: implementations/python/area-adjusted-accuracy
+      - name: Discover 2021 imagery for all 25 blind-review points
+        run: |
+          python stac_imagery_review.py \
+            --input data/fiji-worldcover-legend-adjudication-blind-review.csv \
+            --output-dir /tmp/fiji-full-pilot-discovery \
+            --catalogues both \
+            --limit-per-point 3 \
+            --metadata-only
+        working-directory: implementations/python/area-adjusted-accuracy
+      - name: Summarise catalogue coverage
+        if: always()
+        run: |
+          python - <<'PY'
+          import csv
+          from collections import Counter
+          from pathlib import Path
+          path = Path("/tmp/fiji-full-pilot-discovery/stac-imagery-provenance.csv")
+          if not path.exists():
+              raise SystemExit("No provenance CSV was produced")
+          with path.open(newline="", encoding="utf-8") as stream:
+              rows = list(csv.DictReader(stream))
+          statuses = Counter(row.get("status", "") for row in rows)
+          catalogues = Counter(row.get("catalogue", "") for row in rows)
+          points = {row.get("sample_id") for row in rows}
+          print(f"Points represented: {len(points)}")
+          print(f"Candidate/status rows: {len(rows)}")
+          print(f"Statuses: {dict(statuses)}")
+          print(f"Catalogue rows: {dict(catalogues)}")
+          with open("$GITHUB_STEP_SUMMARY", "a", encoding="utf-8") as report:
+              report.write("## Full 25-point Fiji STAC discovery\\n\\n")
+              report.write(f"- Points represented: {len(points)}\\n")
+              report.write(f"- Candidate/status rows: {len(rows)}\\n")
+              report.write(f"- Statuses: {dict(statuses)}\\n")
+              report.write(f"- Catalogue rows: {dict(catalogues)}\\n")
+          PY
+        working-directory: implementations/python/area-adjusted-accuracy
+      - name: Upload full pilot discovery report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fiji-full-25-point-stac-discovery
+          path: /tmp/fiji-full-pilot-discovery/
+          if-no-files-found: warn
+          retention-days: 14
