@@ -162,3 +162,25 @@ The helper resolves the Hub repository's current commit first and downloads `dat
 - OpenDroneMap documentation. [Command-line arguments](https://docs.opendronemap.org/arguments/).
 
 Verify documentation and options against the exact software release used. This implementation has not yet been run against a live Docker engine or real imagery.
+
+## Project manifest and preflight
+
+Use [project-manifest.template.json](project-manifest.template.json) as a starting point for a new project. Copy it into the project record, replace every placeholder, and keep site-sensitive values or credentials out of the public repository.
+
+The manifest makes intended use, data sources, local project directory, processing engine/configuration, coordinate and vertical references, independent-checkpoint status, reference uncertainty, acceptance criteria and deliverables explicit.
+
+Run a read-only preflight:
+
+```bash
+python project_manifest.py /path/to/project-manifest.json \\\
+  --json-out preflight-report.json
+```
+
+The report distinguishes:
+- **blocked:** required local project structure or imagery is missing;
+- **review_required:** the local structure exists, but configuration or validation details need attention;
+- **ready_for_operator_review:** no configured checks raised a blocker or warning.
+
+“Ready” is not an approval to fly, survey, process or deliver. The utility does not assess image quality, site safety, legal permissions, CRS correctness, coverage, camera calibration, control quality or product accuracy. It does not invoke Docker or modify data. An operator must review the report and project specification before proceeding.
+
+The manifest and preflight utility establish a common handoff contract that can later be reused by other Spatial Recipes, while domain-specific checks remain separate.
