@@ -36,6 +36,10 @@ By default, chips are deleted after their provenance rows are written. Use `--ke
 
 The script transforms each WGS84 sample coordinate into the raster asset's own CRS before calculating the pixel window. It prefers explicit 10 m RGB assets and refuses to stack bands whose CRS, affine transform or raster dimensions do not match. The visual stretch is independent per band (2nd–98th percentile); it is for interpretation, not radiometric analysis.
 
+## Public Earth Search S3 assets
+
+The legacy Earth Search Sentinel-2 L2A collection can expose RGB COGs through the public `s3://sentinel-cogs` bucket. These reads use unsigned AWS S3 access in the `us-west-2` region and do not require Copernicus credentials. The script handles this bucket separately from CDSE S3 assets. The AWS Open Data Registry documents the bucket and explicitly shows `--no-sign-request` access.
+
 ## CDSE S3 credentials
 
 CDSE STAC discovery can work independently of S3 image access. To read CDSE `s3://eodata/...` assets, first create S3 credentials in your Copernicus Data Space account and export them in the shell:
