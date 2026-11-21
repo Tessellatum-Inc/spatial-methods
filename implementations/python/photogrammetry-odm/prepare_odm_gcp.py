@@ -129,6 +129,9 @@ def prepare_gcp_list(
     observations = _read_observations(observations_path)
     image_width, image_height = _read_image_dimensions(readme_path)
 
+    if dataset_root == output_file or dataset_root in output_file.parents:
+        raise ValueError("ODM GCP output must be outside the immutable source dataset directory")
+
     image_root = dataset_root / "images"
     image_files = [
         path for path in image_root.iterdir()
@@ -143,7 +146,10 @@ def prepare_gcp_list(
     control_ids = selection.get("control_points")
     if not isinstance(control_ids, list) or not control_ids or len(set(control_ids)) != len(control_ids):
         raise ValueError("Split must contain a non-empty unique control_points list")
-    minimum = minimum_observations or selection.get("minimum_image_observations_per_point", 5)
+    minimum = (
+        selection.get("minimum_image_observations_per_point", 5)
+        if minimum_observations is None else minimum_observations
+    )
     if not isinstance(minimum, int) or minimum < 1:
         raise ValueError("minimum_observations must be a positive integer")
 
