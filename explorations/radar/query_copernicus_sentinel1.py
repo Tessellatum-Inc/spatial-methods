@@ -185,10 +185,15 @@ def main(argv: list[str] | None = None) -> int:
     stamp = retrieved.strftime("%Y%m%dT%H%M%S%fZ")
     args.output_dir.mkdir(parents=True, exist_ok=True)
     response_path = args.output_dir / f"copernicus_sentinel1_nairobi_{stamp}.json"
+    enriched_path = args.output_dir / f"copernicus_sentinel1_nairobi_{stamp}.with_locations.json"
     metadata_path = args.output_dir / f"copernicus_sentinel1_nairobi_{stamp}.metadata.json"
-    response_path.write_bytes(raw)
     products = payload["value"]
     location_errors = attach_product_locations(products, args.timeout)
+    enriched_bytes = (
+        json.dumps(payload, indent=2, ensure_ascii=False) + "\\n"
+    ).encode("utf-8")
+    response_path.write_bytes(raw)
+    enriched_path.write_bytes(enriched_bytes)
     metadata = {
         "source": API_URL,
         "query_url": query_url,
@@ -196,6 +201,8 @@ def main(argv: list[str] | None = None) -> int:
         "retrieved_at_utc": retrieved_at,
         "response_file": response_path.name,
         "response_sha256": hashlib.sha256(raw).hexdigest(),
+        "enriched_response_file": enriched_path.name,
+        "enriched_response_sha256": hashlib.sha256(enriched_bytes).hexdigest(),
         "product_count": len(products),
         "locations_requested": len(products),
         "locations_retrieved": sum(p.get("LocationsRetrieved") is True for p in products),
@@ -223,7 +230,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     if location_errors:
         print(f"Warning: location metadata failed for {len(location_errors)} products.")
-    print(f"Response: {response_path}")
+    print(f"Raw response: {response_path}")
+    print(f"Enriched response: {enriched_path}")
     print(f"Metadata: {metadata_path}")
     print(f"SHA-256: {metadata['response_sha256']}")
     if metadata["next_link_present"]:
