@@ -13,8 +13,6 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import re
-import sys
 import time
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urlparse
@@ -185,7 +183,7 @@ def main(argv: list[str] | None = None) -> int:
             ],
         }
         sidecar = archive_path.with_suffix(archive_path.suffix + ".metadata.json")
-        sidecar.write_text(json.dumps(manifest, indent=2) + "\\n", encoding="utf-8")
+        sidecar.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     except (ValueError, RuntimeError, OSError) as exc:
         parser.error(str(exc))
     print(f"Downloaded: {archive_path}")
