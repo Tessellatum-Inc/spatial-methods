@@ -65,3 +65,9 @@ def test_estimator_rejects_misaligned_and_oversized_samples():
         stratified_total_estimate([10, 20], [2], [1], [1])
     with pytest.raises(ValueError):
         stratified_total_estimate([10], [11], [1], [1])
+
+
+def test_stratified_estimator_accepts_signed_means():
+    result = stratified_total_estimate([10, 10], [5, 5], [-2, 1], [1, 1])
+    assert result.total_estimate == pytest.approx(-10)
+    assert result.mean_estimate == pytest.approx(-0.5)
