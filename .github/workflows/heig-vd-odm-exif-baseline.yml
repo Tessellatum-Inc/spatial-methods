@@ -70,6 +70,7 @@ jobs:
       - name: Create explicit EXIF-baseline project manifest
         shell: bash
         run: |
+          SOURCE_REVISION="$(python -c 'import json; print(json.load(open("data/heig-vd-scop/snapshots/" + __import__("os").listdir("data/heig-vd-scop/snapshots")[0] + "/acquisition-provenance.json"))["resolved_revision"])')"
           cat > rehearsal/project-manifest.json <<EOF
           {
             "schema_version": "1.0",
@@ -82,7 +83,7 @@ jobs:
                 "description": "HEIG-VD Geomatics group drone photogrammetry dataset, selected drone_heig_2019 subset.",
                 "uri": "https://huggingface.co/datasets/heig-vd-geo/scop-datasets",
                 "licence": "CC BY 4.0; attribution required.",
-                "resolved_version": "$(cat rehearsal/reports/odm-image-reference.txt | tr -d '\n') / source revision recorded in acquisition-provenance.json"
+                "resolved_version": "$SOURCE_REVISION"
               }
             ],
             "dataset": {
