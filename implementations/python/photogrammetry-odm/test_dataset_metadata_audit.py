@@ -90,8 +90,8 @@ class DatasetMetadataAuditTests(unittest.TestCase):
             write_fixture(root)
             path = root / "gcp" / "gcp_obs.csv"
             path.write_text(
-                "# gcp_label image_label x y\\n"
-                "206 EB-02-00761_0101_0031 100.0 200.0\\n",
+                "# gcp_label image_label x y\n"
+                "206 EB-02-00761_0101_0031 100.0 200.0\n",
                 encoding="utf-8",
             )
             report = audit_dataset(
