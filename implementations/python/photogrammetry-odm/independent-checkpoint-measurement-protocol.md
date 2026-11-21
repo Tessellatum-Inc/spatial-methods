@@ -27,3 +27,21 @@ The image SHA-256 must refer to the original source image, not an annotated deri
 These measurements establish image-coordinate observations only. They do not themselves establish surveyed ground-coordinate accuracy or product accuracy. The checkpoint reference coordinates, their horizontal/vertical reference systems, uncertainties and provenance must be separately documented before comparing a reconstructed product with them.
 
 Do not pass a checkpoint into the ODM GCP file. Do not use the supplied source OPK orientations as independent truth.
+
+
+## Validate the measurement register
+
+After the partition has been formally approved/locked, validate the completed CSV against that approved split, the immutable acquisition manifest and the role-blind visual-review summary:
+
+```bash
+python validate_independent_checkpoint_measurements.py \\
+  independent-checkpoint-measurements.csv \\
+  approved-control-checkpoint-split.json \\
+  acquisition-provenance.json \\
+  visual-review-summary.json \\
+  --json-out independent-measurement-validation.json
+```
+
+The approved split must declare `status` as `approved`, `locked` or `approved_locked`, with `dataset.resolved_revision`, `dataset.selected_path` and `selection.checkpoint_points` / `selection.control_points`. If present, `dataset.acquisition_manifest_sha256` must match the supplied manifest. The validator checks that each row is a checkpoint-only point/image pair present in the source observation index, each image hash matches the immutable acquisition manifest, timestamps are UTC, coordinates are finite/non-negative, and each checkpoint has at least one measured view. An explicitly `unmeasurable` row may leave both coordinates blank but must state a reason; it does not satisfy the per-checkpoint measured-view requirement.
+
+The validator does not read or copy publisher pixel coordinates. Source observation keys are used only to establish that a point/image pair belongs to the acquired dataset. A successful report means record structure and provenance checks passed; it does not prove reviewer independence, target identity, measurement quality, ground-coordinate accuracy or product acceptance.
