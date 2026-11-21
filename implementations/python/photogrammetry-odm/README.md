@@ -296,6 +296,8 @@ Once the five evidence records exist, assemble them into a reviewable ZIP dossie
 
 ```bash
 python delivery_dossier.py \
+  --acquisition-manifest /path/to/acquisition-provenance.json \\
+  --acquisition-verification /path/to/acquisition-verification.json \\
   --manifest /path/to/project-manifest.json \
   --preflight /path/to/preflight-report.json \
   --run-record /path/to/processing-run.json \
@@ -304,7 +306,7 @@ python delivery_dossier.py \
   --output /path/to/delivery-dossier.zip
 ```
 
-The archive contains the project manifest, preflight report, processing-run record, output-inspection report, checkpoint-validation evidence and a `delivery-dossier.json` index. The index records SHA-256 hashes, byte sizes, observed statuses, project/run identity checks, warnings and consistency errors.
+The archive contains the acquisition provenance manifest and its verification report, project manifest, preflight report, processing-run record, output-inspection report, checkpoint-validation evidence and a `delivery-dossier.json` index. The dossier cross-checks the verified revision, selected dataset path, declared file count and exact acquisition-manifest SHA-256 before it can be considered consistent. The index records SHA-256 hashes, byte sizes, observed statuses, project/run identity checks, warnings and consistency errors.
 
 The dossier is `inconsistent` when declared project or run identities conflict, `review_required` when evidence is incomplete in quality or its recorded decisions remain unresolved, and `assembled` when the supplied records are internally consistent and report the expected positive statuses. Even an `assembled` dossier has `release_authorized: false`: packaging evidence never substitutes for project-specific professional, contractual, legal or safety release decisions.
 
