@@ -245,4 +245,4 @@ The first worked study now has a staged, evidence-preserving toolchain. These to
 5. [Processing-readiness reconciler](build_sentinel1_processing_readiness.py) joins catalogue, download and audit evidence by product UUID and archive checksum. It blocks mismatches and never authorizes processing by itself.
 6. The [download, validation and readiness guide](sentinel-1-download-and-validation.md) documents commands, evidence requirements and the remaining scientific gates.
 
-The workflow is intentionally not represented as a completed Nairobi analysis. No SAFE product has yet been downloaded in this environment; the actual archive, full-datatake coverage, raster values, calibration and geolocation still require inspection and QA.
+The workflow is intentionally not represented as a completed Nairobi analysis. No SAFE product has yet been downloaded in this environment; the actual archive, full-datatake coverage, raster values, calibration and geolocation still require inspection and QA. The structural readiness record is an evidence ledger, not a scientific processing approval.
