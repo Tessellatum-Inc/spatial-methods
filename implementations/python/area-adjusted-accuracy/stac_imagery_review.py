@@ -93,27 +93,30 @@ def asset_for(item: dict[str, Any], band: str) -> tuple[str, str] | None:
     return None
 
 
-def open_raster_href(href: str):
+def rasterio_source(href: str):
+    """Return (GDAL path, rasterio.Env); enter the environment before opening."""
     import rasterio
     if href.startswith("s3://"):
-        # CDSE S3 endpoint. Credentials must be exported by the user.
         parsed = urlparse(href)
         bucket_key = parsed.netloc + parsed.path
         vsi_path = "/vsis3/" + bucket_key.lstrip("/")
-        env = {
-            "AWS_S3_ENDPOINT": os.getenv("CDSE_S3_ENDPOINT", "eodata.dataspace.copernicus.eu"),
-            "AWS_HTTPS": "YES",
-            "AWS_VIRTUAL_HOSTING": "FALSE",
-            "AWS_REGION": os.getenv("AWS_DEFAULT_REGION", "default"),
-            "AWS_ACCESS_KEY_ID": os.environ["AWS_ACCESS_KEY_ID"],
-            "AWS_SECRET_ACCESS_KEY": os.environ["AWS_SECRET_ACCESS_KEY"],
-        }
-        return rasterio.open(vsi_path), rasterio.Env(**env)
+        if not os.getenv("AWS_ACCESS_KEY_ID") or not os.getenv("AWS_SECRET_ACCESS_KEY"):
+            raise RuntimeError(
+                "CDSE S3 asset requires AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY "
+                "from your Copernicus Data Space S3 credentials."
+            )
+        env = rasterio.Env(
+            AWS_S3_ENDPOINT=os.getenv("CDSE_S3_ENDPOINT", "eodata.dataspace.copernicus.eu"),
+            AWS_HTTPS="YES",
+            AWS_VIRTUAL_HOSTING="FALSE",
+            AWS_REGION=os.getenv("AWS_DEFAULT_REGION", "default"),
+            AWS_ACCESS_KEY_ID=os.environ["AWS_ACCESS_KEY_ID"],
+            AWS_SECRET_ACCESS_KEY=os.environ["AWS_SECRET_ACCESS_KEY"],
+        )
+        return vsi_path, env
     if href.startswith("https://") or href.startswith("http://"):
-        # GDAL /vsicurl/ uses HTTP range requests for COG windows.
-        return rasterio.open(href), rasterio.Env()
+        return href, rasterio.Env()
     raise ValueError(f"Unsupported asset href scheme: {href}")
-
 
 def render_chip(item: dict[str, Any], lon: float, lat: float,
                 output: Path, chip_pixels: int = 256) -> dict[str, Any]:
@@ -131,24 +134,17 @@ def render_chip(item: dict[str, Any], lon: float, lat: float,
     bytes_note = "HTTP range/S3 window reads; exact transferred bytes are not exposed by rasterio"
     for band in ("red", "green", "blue"):
         asset_name, href = selected[band]
-        src, env = open_raster_href(href)
-        try:
-            with env:
-                with src:
-                    row, col = src.index(lon, lat)
-                    half = chip_pixels // 2
-                    window = Window(col - half, row - half, chip_pixels, chip_pixels)
-                    data = src.read(1, window=window, boundless=True, fill_value=0)
-                    mask = src.read_masks(1, window=window, boundless=True)
-                    arrays.append((data, mask))
-                    dimensions = list(data.shape)
-                    asset_names[band] = asset_name
-        except Exception:
-            try:
-                src.close()
-            except Exception:
-                pass
-            raise
+        raster_path, env = rasterio_source(href)
+        with env:
+            with rasterio.open(raster_path) as src:
+                row, col = src.index(lon, lat)
+                half = chip_pixels // 2
+                window = Window(col - half, row - half, chip_pixels, chip_pixels)
+                data = src.read(1, window=window, boundless=True, fill_value=0)
+                mask = src.read_masks(1, window=window, boundless=True)
+                arrays.append((data, mask))
+                dimensions = list(data.shape)
+                asset_names[band] = asset_name
 
     rgb = []
     for data, mask in arrays:
