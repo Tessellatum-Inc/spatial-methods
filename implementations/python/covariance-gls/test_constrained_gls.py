@@ -30,7 +30,7 @@ class ConstrainedGLSTests(unittest.TestCase):
         a = [[-1.0, 1.0, 0.0], [0.0, -1.0, 1.0]]
         with self.assertRaisesRegex(ValueError, "singular"):
             constrained_gls(a, [1.0, 1.0], [[1.0, 0.0], [0.0, 1.0]],
-                            [[1.0, 0.0, 0.0]], [0.0])
+                            [[1.0, -1.0, 0.0]], [0.0])
 
     def test_rejects_singular_observation_covariance(self):
         a = [[-1.0, 1.0, 0.0], [0.0, -1.0, 1.0]]
