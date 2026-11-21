@@ -38,7 +38,7 @@ The public HEIG-VD dataset has an executed EXIF-only OpenDroneMap baseline and s
 
 | Pillar | Canonical route | Why it belongs |
 |---|---|---|
-| Theoretical Foundations | [Measurement science and survey adjustment](measurement-science-and-survey-adjustment.md); [measurement-science foundations](../foundations/README.md#existing-measurement-science-resources) | Defines measurands, observation models, uncertainty, covariance, datum and estimation. |
+| Theoretical Foundations | [Measurement science and survey adjustment](measurement-science-and-survey-adjustment.md); [measurement-science foundations](../foundations/README.md) | Defines measurands, observation models, uncertainty, covariance, datum and estimation. |
 | Spatial Data Collection | [Spatial Data Collection subject map](../collection/README.md); [surveying and field measurement source map](../catalog/surveying-field-measurement-source-map.md) | Helps select observation methods and identify instrument, control, sampling, field verification and provenance requirements. |
 | Spatial Algorithms | [Covariance and GLS implementation](../implementations/python/covariance-gls/README.md); [coordinate transformation](../algorithms/geodesy/crs-transformation.md) | Provides reproducible computational components for adjustment and reference handling. Other algorithms should be selected from the actual feature and delivery requirements. |
 | Spatial Recipes | [Survey-to-spatial-dataset workflow](../recipes/survey-to-spatial-dataset/README.md) | Connects requirements, reference, acquisition, adjustment, independent checks, dataset construction and delivery. |
@@ -76,13 +76,13 @@ Exercises A–O use synthetic data or simulated scenarios. They support reproduc
 
 This is a partial pathway and gap map, not a claim that remote sensing is now a complete four-pillar route. It links the existing [remote-sensing indices path](remote-sensing-indices.md), [Radar exploration](../explorations/radar/README.md), the [Fiji multispectral pilot](../implementations/python/area-adjusted-accuracy/fiji-multispectral-pilot-spec.md), and the [Nairobi Sentinel-1 scene specification](../explorations/radar/nairobi-sentinel-1-scene-record.md).
 
-The optical branch has a broad algorithm catalogue, an initial electromagnetic/radiometric foundation module, an initial optical satellite acquisition method and a bounded live-data retrieval pilot; detailed optical physics, technical review and application validation remain incomplete. The SAR branch has a guided backscatter investigation and scoped algorithms, but the Nairobi scene has not yet been selected or processed. Neither branch has a mature, independently validated end-to-end recipe. The pathway records these gaps rather than filling them with superficial links.
+The optical branch has a broad algorithm catalogue, an initial electromagnetic/radiometric foundation module, an initial optical satellite acquisition method and a bounded live-data retrieval pilot; detailed optical physics, technical review and application validation remain incomplete. The SAR branch now has an initial acquisition method, a guided backscatter investigation and scoped algorithms, but the Nairobi scene has not yet been selected or processed. Neither branch has a mature, independently validated end-to-end recipe. The pathway records these gaps rather than filling them with superficial links.
 
 ## What is not yet represented
 
 This index is deliberately selective. It does not imply that every subject has a complete cross-pillar route. In particular:
 
-- Remote sensing now has a partial cross-pillar pathway and explicit optical/SAR branches. The route still needs reviewed sensor-physics foundations, canonical acquisition methods and executed, independently validated end-to-end recipes.
+- Remote sensing now has a partial cross-pillar pathway and explicit optical/SAR branches. The route still needs reviewed sensor-physics foundations, executed acquisition methods and end-to-end validated recipes.
 - Spatial statistics has substantial methods and learning paths, but the data-generation and study-design choices should be made more explicit in future integrated routes.
 - Transport, hydrology, environmental monitoring and other application families should receive pathways when their collection, theoretical, algorithmic and recipe records are sufficiently developed to support honest hand-offs.
 
