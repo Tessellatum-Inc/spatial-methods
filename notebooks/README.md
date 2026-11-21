@@ -190,3 +190,7 @@ These notebooks are learning materials. For production analysis, check the input
 ### Clustering labs
 
 - [K-medoids and CLARA](k-medoids-clara-lab.ipynb) — compare PAM medoids with repeated sample-based CLARA on a reproducible synthetic point pattern.
+
+### Radar and synthetic aperture radar
+
+- [SAR signal and scattering computational companion](sar-signal-scattering-companion-lab.ipynb) — synthetic NumPy exercises covering ideal range resolution, two-way travel time, complex I/Q samples, coherent scattering and speckle, multilooking, interferometric coherence, phase sensitivity and slant-to-ground range. The notebook is a conceptual companion to the [radar scattering and SAR signal-formation foundation](../foundations/remote-sensing-physics/radar-scattering-and-sar-signal-formation.md); it does not process satellite data or emulate a complete SAR processor.
