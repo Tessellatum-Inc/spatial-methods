@@ -16,7 +16,7 @@ This is a human visual quality-control exercise. It is not a survey-coordinate v
 - Immutable dataset revision: `e0dfeba2b6ed94ea1ae2bf773e742c39fb437b71`
 - Licence: CC BY 4.0; preserve attribution to HEIG-VD Geomatics group.
 - Source image dimensions: 5472 × 3648 pixels.
-- Review packet: download the `heig-vd-role-blind-review` artifact from [the acquisition/audit workflow run](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44903003891).
+- Review packet: download the `heig-vd-role-blind-review` artifact from [the acquisition/audit workflow run](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44916839984/artifacts/14712292151).
 
 The artifact contains review derivatives, the blank decision worksheet, a visual-review summary and acquisition provenance. It does **not** contain the original full-resolution source imagery. The reviewer must acquire the original dataset separately at the exact revision above.
 
