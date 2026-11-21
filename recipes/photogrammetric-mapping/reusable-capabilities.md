@@ -260,3 +260,39 @@ The recorder documents the wrapper-observable processing event. It is not yet a 
 ### Next integration milestone
 
 Create output inspection adapters that understand the actual geospatial products rather than merely listing files. At minimum, inspect raster readability, dimensions, band count, CRS, affine transform, pixel size, nodata and bounds; inspect point-cloud metadata where supported; and compare observed outputs against declared deliverables. Preserve warnings for missing or unexpected products. Keep semantic QA distinct from geometric accuracy acceptance.
+
+
+## 11. Integration update — output inspection
+
+The first output-inspection adapter is now available as `output_inspection.py`.
+
+It:
+- inventories generated project files with relative paths and sizes;
+- checks explicitly declared expected outputs and blocks when they are missing;
+- inspects GeoTIFF readability and records dimensions, bands, data types, CRS, transform, bounds, pixel size and nodata when Rasterio is installed;
+- reports unavailable raster inspection as a warning rather than silently treating file presence as validation;
+- rejects expected paths that escape the project directory.
+
+Tests cover missing declared outputs, absent Rasterio, path traversal and relative inventory.
+
+### Capability boundary
+
+This adapter establishes structural evidence only. It does not verify that a CRS is correct, compare geospatial outputs to independent control, assess orthophoto seamlines or radiometry, or inspect point-cloud/mesh semantics. Those require dedicated adapters and explicit acceptance criteria.
+
+### Updated integration status
+
+| Integration component | Status |
+|---|---|
+| Project manifest and validation | Implemented |
+| Image inventory, hashes and readability | Integrated |
+| ODM command construction and dry-run handoff | Integrated |
+| Explicit processing-run record, logs and checksums | Implemented |
+| Output inventory and expected-file checks | Implemented |
+| GeoTIFF structural inspection | Implemented when Rasterio is installed |
+| Point-cloud and mesh inspection | Pending |
+| Independent checkpoint acceptance workflow | Existing statistics; integration pending |
+| Reproducible delivery package | Pending |
+
+### Next integration milestone
+
+Connect independent checkpoint evidence and acceptance criteria to the processing-run and output records. Keep reference uncertainty, sample design, residual statistics and acceptance decisions explicit. The final delivery package should then assemble source provenance, processing provenance, output inspection, independent validation and unresolved limitations without conflating these distinct forms of evidence.
