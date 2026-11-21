@@ -9,7 +9,6 @@ import argparse
 import json
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
 
 ROLES = {
     "control": (230, 126, 34),
@@ -17,6 +16,7 @@ ROLES = {
     "excluded": (245, 205, 48),
 }
 IMAGE_PREFIX = "EB-02-00761_"
+MARKER_COLOR = (245, 190, 35)
 
 
 def load_split(path: Path) -> dict[str, str]:
@@ -43,6 +43,8 @@ def image_stem(label: str) -> str:
 
 
 def generate(dataset: Path, split_path: Path, output: Path) -> dict:
+    from PIL import Image, ImageDraw, ImageFont
+
     dataset = dataset.resolve()
     output.mkdir(parents=True, exist_ok=True)
     roles = load_split(split_path)
@@ -84,16 +86,17 @@ def generate(dataset: Path, split_path: Path, output: Path) -> dict:
             draw = ImageDraw.Draw(canvas)
             draw.text((12, 10), image_path.name, fill=(20, 20, 20), font=font)
             rows = observations.get(image_path.stem, [])
-            counts = {"control": 0, "checkpoint": 0, "excluded": 0}
+            unique_points = set()
             ox = (tile_w - resized.width) // 2
             oy = header_h + 6
             for item in rows:
-                role = roles[item["point_id"]]
-                counts[role] += 1
+                # Validate membership, but intentionally do not reveal the role.
+                roles[item["point_id"]]
+                unique_points.add(item["point_id"])
                 x = ox + item["x"] * scale
                 y = oy + item["y"] * scale
-                color = ROLES[role]
-                radius = 11 if role != "excluded" else 9
+                color = MARKER_COLOR
+                radius = 10
                 draw.ellipse((x-radius, y-radius, x+radius, y+radius), outline=(0,0,0), width=4)
                 draw.ellipse((x-radius+2, y-radius+2, x+radius-2, y+radius-2), outline=color, width=5)
                 label = item["point_id"]
@@ -102,34 +105,35 @@ def generate(dataset: Path, split_path: Path, output: Path) -> dict:
                 lx, ly = x + 12, y - th // 2
                 draw.rectangle((lx-2, ly-1, lx+tw+3, ly+th+2), fill=(255,255,255))
                 draw.text((lx, ly), label, fill=color, font=font)
-            footer = f"observations: {len(rows)} | controls: {counts['control']} | checkpoints: {counts['checkpoint']} | excluded: {counts['excluded']}"
+            footer = f"observations: {len(rows)} | unique points: {len(unique_points)}"
             draw.text((12, tile_h - 18), footer, fill=(25,25,25), font=font)
             annotated = output / "images" / f"{image_path.stem}-annotated.jpg"
             annotated.parent.mkdir(parents=True, exist_ok=True)
             canvas.save(annotated, quality=88, optimize=True)
             annotated_paths.append(annotated)
-            image_summaries.append({"image": image_path.name, "observations": len(rows), **counts})
+            image_summaries.append({"image": image_path.name, "observations": len(rows), "unique_points": len(unique_points)})
 
     # Two 4x4 sheets; each tile preserves readable image context and point labels.
     for page in range(2):
         sheet = Image.new("RGB", (tile_w * 4, tile_h * 4 + 72), (235, 235, 235))
         draw = ImageDraw.Draw(sheet)
         draw.text((18, 14), "HEIG-VD drone 2019 - annotated image observations", fill=(20,20,20), font=ImageFont.load_default())
-        draw.text((18, 38), "Orange = proposed control | Blue = withheld checkpoint | Yellow = excluded low-observation point. Markers show publisher-provided Metashape picks.", fill=(20,20,20), font=ImageFont.load_default())
+        draw.text((18, 38), "Yellow markers = publisher-provided Metashape image picks. Control/checkpoint roles are intentionally hidden in this review aid.", fill=(20,20,20), font=ImageFont.load_default())
         for index, path in enumerate(annotated_paths[page*16:(page+1)*16]):
             with Image.open(path) as tile:
                 sheet.paste(tile, ((index % 4) * tile_w, 72 + (index // 4) * tile_h))
         sheet.save(output / f"contact-sheet-{page+1}.jpg", quality=88, optimize=True)
 
     report = {
-        "status": "visual_review_material_prepared_not_human_approved",
+        "status": "role_blind_visual_review_material_prepared_not_human_approved",
         "source_image_count": len(images),
         "observation_count": sum(len(v) for v in observations.values()),
         "images_with_observations": len(observations),
-        "point_role_counts": {role: sum(value == role for value in roles.values()) for role in ROLES},
+        "unique_observed_point_count": len({o["point_id"] for rows in observations.values() for o in rows}),
         "image_summaries": image_summaries,
         "limitations": [
             "Markers reproduce source-provided Metashape image picks; they are not independently remeasured.",
+            "Control/checkpoint role assignments are intentionally omitted from the review sheets; keep reviewer decisions locked before consulting the split key.",
             "A visible marker does not establish target-centre quality, survey quality or independent checkpoint status.",
             "Human review must inspect target visibility, centring, occlusion, blur, ambiguity and marker-to-target correspondence.",
         ],
