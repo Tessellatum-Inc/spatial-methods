@@ -95,7 +95,7 @@ def parse_feature_collection(raw: bytes) -> dict:
         if geometry.get("type") not in {"Polygon", "MultiPolygon"}:
             raise ValueError(
                 f"Feature at index {index} has unsupported footprint geometry "
-                f"{geometry.get("type")!r}."
+                f"{geometry.get('type')!r}."
             )
         if not isinstance(geometry.get("coordinates"), list) or not geometry["coordinates"]:
             raise ValueError(f"Feature at index {index} has empty footprint coordinates.")
