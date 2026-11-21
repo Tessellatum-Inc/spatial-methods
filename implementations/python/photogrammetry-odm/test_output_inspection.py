@@ -102,5 +102,29 @@ class OutputInspectionTests(unittest.TestCase):
         self.assertEqual(report["file_inventory"][0]["size_bytes"], 11)
 
 
+
+    def test_obj_mesh_reports_vertices_faces_and_valid_indices(self):
+        (self.project / "model.obj").write_text("v 0 0 0\nv 1 0 0\nv 0 1 0\nf 1 2 3\n", encoding="utf-8")
+        mesh = inspect_outputs(self.project)["meshes"][0]
+        self.assertEqual(mesh["status"], "readable")
+        self.assertEqual(mesh["vertex_count"], 3)
+        self.assertEqual(mesh["face_count"], 1)
+
+    def test_obj_mesh_rejects_out_of_range_and_zero_indices(self):
+        (self.project / "bad.obj").write_text("v 0 0 0\nv 1 0 0\nv 0 1 0\nf 1 2 4\nf 0 2 3\n", encoding="utf-8")
+        mesh = inspect_outputs(self.project)["meshes"][0]
+        self.assertEqual(mesh["status"], "invalid")
+        self.assertEqual(mesh["invalid_line_count"], 2)
+
+    def test_obj_mesh_supports_negative_relative_indices(self):
+        (self.project / "relative.obj").write_text("v 0 0 0\nv 1 0 0\nv 0 1 0\nf -3 -2 -1\n", encoding="utf-8")
+        self.assertEqual(inspect_outputs(self.project)["meshes"][0]["status"], "readable")
+
+    def test_obj_mesh_rejects_degenerate_face_and_non_finite_vertex(self):
+        (self.project / "bad.obj").write_text("v 0 0 0\nv 1 0 0\nv nan 1 0\nf 1 1 2\n", encoding="utf-8")
+        mesh = inspect_outputs(self.project)["meshes"][0]
+        self.assertEqual(mesh["status"], "invalid")
+        self.assertEqual(mesh["degenerate_face_count"], 1)
+
 if __name__ == "__main__":
     unittest.main()
