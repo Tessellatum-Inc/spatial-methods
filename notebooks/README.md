@@ -4,6 +4,10 @@ Notebooks are used when changing values, inspecting intermediate calculations or
 
 ## Available labs
 
+### Linear algebra and numerical methods
+
+- [Linear algebra computational companion lab](linear-algebra-computational-companion-lab.ipynb): compare normal equations and QR, whiten correlated observations with Cholesky, inspect SVD rank diagnostics and propagate covariance through a linear transformation using synthetic data.
+
 ### Forecast verification
 
 - [Forecast verification lab](forecast-verification-lab.ipynb): work through contingency tables, probability calibration, Brier scores and ROC AUC.
