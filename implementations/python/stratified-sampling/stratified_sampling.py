@@ -33,16 +33,17 @@ def _positive_ints(values: Sequence[int], name: str) -> list[int]:
     return result
 
 
-def _finite_nonnegative(values: Sequence[float], name: str) -> list[float]:
+def _finite_numbers(values: Sequence[float], name: str, *, nonnegative: bool = False) -> list[float]:
     if isinstance(values, (str, bytes)) or not values:
         raise ValueError(f"{name} must be a non-empty sequence")
     result = []
     for value in values:
         if isinstance(value, bool) or not isinstance(value, Real):
-            raise ValueError(f"{name} must contain finite non-negative numbers")
+            raise ValueError(f"{name} must contain finite numeric values")
         number = float(value)
-        if not math.isfinite(number) or number < 0:
-            raise ValueError(f"{name} must contain finite non-negative numbers")
+        if not math.isfinite(number) or (nonnegative and number < 0):
+            qualifier = " non-negative" if nonnegative else ""
+            raise ValueError(f"{name} must contain finite{qualifier} numeric values")
         result.append(number)
     return result
 
@@ -64,7 +65,7 @@ def neyman_allocation(
     planning inputs, not evidence about the realised sample.
     """
     sizes = _positive_ints(population_sizes, "population_sizes")
-    spreads = _finite_nonnegative(standard_deviations, "standard_deviations")
+    spreads = _finite_numbers(standard_deviations, "standard_deviations", nonnegative=True)
     if len(sizes) != len(spreads):
         raise ValueError("population_sizes and standard_deviations must align")
     if isinstance(sample_size, bool) or not isinstance(sample_size, Integral):
@@ -133,8 +134,8 @@ def stratified_total_estimate(
     """
     sizes = _positive_ints(population_sizes, "population_sizes")
     counts = _positive_ints(sample_sizes, "sample_sizes")
-    means = _finite_nonnegative(sample_means, "sample_means")
-    spreads = _finite_nonnegative(sample_standard_deviations, "sample_standard_deviations")
+    means = _finite_numbers(sample_means, "sample_means")
+    spreads = _finite_numbers(sample_standard_deviations, "sample_standard_deviations", nonnegative=True)
     if not (len(sizes) == len(counts) == len(means) == len(spreads)):
         raise ValueError("all stratum input sequences must have equal length")
     if any(n > N for N, n in zip(sizes, counts)):
