@@ -145,24 +145,26 @@ def asset_for(item: dict[str, Any], band: str) -> tuple[str, str] | None:
     if band not in BAND_ALIASES:
         raise ValueError(f"Unsupported RGB band: {band}")
     assets = item.get("assets", {})
-    aliases = []
+    # Preserve the configured alias preference (especially explicit 10 m bands),
+    # while preferring HTTP(S) over S3 for each matching alias.
     for name in BAND_ALIASES[band]:
-        aliases.extend((name.lower(), f"{name.lower()}-jp2"))
-    alias_set = set(aliases)
-    candidates = [
-        (key, asset.get("href", ""))
-        for key, asset in assets.items()
-        if key.lower() in alias_set and asset.get("href")
-    ]
-    if not candidates:
-        return None
-
-    # Earth Search may expose an S3 alias alongside an HTTPS JP2 asset.
-    # Prefer HTTPS so public retrieval does not unnecessarily require CDSE S3 credentials.
-    https = [(key, href) for key, href in candidates if href.startswith(("https://", "http://"))]
-    if https:
-        return https[0]
-    return candidates[0]
+        for alias in (name.lower(), f"{name.lower()}-jp2"):
+            matches = [
+                (key, asset.get("href", ""))
+                for key, asset in assets.items()
+                if key.lower() == alias and asset.get("href")
+            ]
+            if not matches:
+                continue
+            public = [
+                (key, href)
+                for key, href in matches
+                if href.startswith(("https://", "http://"))
+            ]
+            if public:
+                return public[0]
+            return matches[0]
+    return None
 
 
 def rasterio_source(href: str):
