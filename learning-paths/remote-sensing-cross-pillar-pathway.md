@@ -82,7 +82,7 @@ Use the pilot to study source discovery, asset accessibility, native-grid handli
 
 ### Theoretical Foundations
 
-A SAR foundation must cover electromagnetic propagation and scattering, pulse/range concepts, Doppler and platform motion, coherent signal processing, phase, polarisation, speckle, radiometry, incidence geometry and measurement uncertainty. The shared electromagnetic/radiometric introduction is now available, but radar-specific foundations for scattering, radar measurement and signal processing remain incomplete. The Radar exploration is an orientation and investigation resource, not a substitute for those canonical foundations.
+A SAR foundation must cover electromagnetic propagation and scattering, pulse/range concepts, Doppler and platform motion, coherent signal processing, phase, polarisation, speckle, radiometry, incidence geometry and measurement uncertainty. The shared electromagnetic/radiometric introduction and an initial [radar scattering and SAR signal formation foundation](../foundations/remote-sensing-physics/radar-scattering-and-sar-signal-formation.md) are now available. They establish core concepts but remain pending technical review and learner testing; advanced radar signal processing and detailed scattering models remain incomplete. The Radar exploration is an orientation and investigation resource, not a substitute for those canonical foundations.
 
 ### Spatial Data Collection
 
@@ -136,7 +136,7 @@ Evidence at one level does not automatically establish the next.
 
 | Pillar | Optical multispectral | SAR / Sentinel-1 |
 |---|---|---|
-| Theoretical Foundations | Initial electromagnetic/radiometric module published; technical review and learner testing remain open | Shared electromagnetic introduction published; radar scattering, measurement and signal-processing foundations remain incomplete |
+| Theoretical Foundations | Initial electromagnetic/radiometric module published; technical review and learner testing remain open | Shared electromagnetic introduction and initial radar scattering/SAR signal-formation module published; technical review and advanced signal-processing foundations remain outstanding |
 | Spatial Data Collection | Initial optical satellite acquisition method published; technical review and application testing pending; Fiji pilot documents a bounded Level-2A/STAC workflow | Initial SAR acquisition method published; technical review and scene execution pending |
 | Spatial Algorithms | Broad catalogue and multiple tested implementations; sensor-aware preprocessing and validation remain uneven | Lee filter, CFAR and local coherence notes exist; no complete sensor-to-product processing chain |
 | Spatial Recipes | No mature integrated optical recipe yet; Fiji pilot is an evidence workflow, not one | Guided backscatter investigation exists; no executed Nairobi recipe or validated application |
