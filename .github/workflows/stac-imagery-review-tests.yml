@@ -534,10 +534,17 @@ jobs:
           root = Path("/tmp/fiji-blind-review")
           with (root / "fiji-blind-review-worksheet.csv").open(newline="", encoding="utf-8") as stream:
               rows = list(csv.DictReader(stream))
+          import json
           missing = [r["sample_id"] for r in rows if r["primary_rgb_chip_file"] and not (root / r["primary_rgb_chip_file"]).exists()]
-          if missing:
-              raise SystemExit(f"Primary RGB chip references missing for: {missing}")
-          print(f"Review worksheet rows: {len(rows)}; primary RGB chips present: {len(rows)-len(missing)}")
+          missing_contacts = [r["sample_id"] for r in rows if not r["review_contact_sheet"] or not (root / r["review_contact_sheet"]).exists()]
+          missing_inventory = []
+          for row in rows:
+              for chip in json.loads(row.get("rgb_chip_inventory") or "[]"):
+                  if not (root / chip["chip_file"]).exists():
+                      missing_inventory.append((row["sample_id"], chip["chip_file"]))
+          if missing or missing_contacts or missing_inventory:
+              raise SystemExit(f"Missing primary chips={missing}; contact sheets={missing_contacts}; inventory chips={missing_inventory}")
+          print(f"Review worksheet rows: {len(rows)}; contact sheets: {len(rows)}; primary same-acquisition RGB chips: {sum(bool(r['primary_rgb_chip_file']) for r in rows)}")
           PY
         working-directory: .
       - name: Upload label-blind Fiji review packet
