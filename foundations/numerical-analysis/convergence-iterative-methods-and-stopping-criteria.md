@@ -1,6 +1,6 @@
 # Convergence, iterative methods and stopping criteria
 
-**Subject identity:** \`SM-FND-016\` — Numerical analysis and scientific computing  
+**Subject identity:** `SM-FND-016` — Numerical analysis and scientific computing  
 **Module:** 04  
 **Status:** Initial public teaching resource; independent numerical-analysis review and learner testing outstanding.
 
