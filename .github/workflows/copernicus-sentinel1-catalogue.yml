@@ -22,6 +22,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/copernicus-sentinel1-catalogue.yml"
+      - "explorations/radar/query_copernicus_sentinel1.py"
 
 permissions:
   contents: read
