@@ -21,6 +21,7 @@ A source being authoritative for one task does not make it authoritative for eve
 | [NASA / ASF Introduction to SAR](https://asf.alaska.edu/trainings/arset-an-introduction-to-synthetic-aperture-radar-sar-and-its-applications/) | Accessible introduction to SAR and Earth-observation applications. | Introductory material; follow primary technical sources for detailed processing or quantitative claims. |
 | [ASF SAR learning resources](https://asf.alaska.edu/learn/) | Conceptual and practical SAR learning material, including interpretation and applications. | Individual resources may have different dates and product assumptions. Check the specific lesson. |
 | [ESA SNAP SAR training resource](https://knowledge-hub-gda.esa.int/training_resource/working-with-sar-data-snap/) | Practical orientation to processing SAR data in SNAP. | Interface and operator details can change. Match the lesson to the exact product and installed SNAP version. |
+| [ASF Search API keywords and endpoints](https://docs.asf.alaska.edu/api/keywords/) | Defines machine-queryable Sentinel-1 dataset, beam mode, processing level, polarisation, temporal and spatial filters, and GeoJSON output. Useful for reproducible scene discovery. | Catalogue discovery only. A returned intersection is not proof of full AOI coverage, successful download, correct product contents or scientific suitability. |
 | [ASF Vertex](https://search.asf.alaska.edu/) | Data discovery and access to Sentinel-1 scenes and available derived products. | A portal is a discovery/access tool, not independent validation of the scientific interpretation. |
 
 ## Claims checked for the first practical investigation
@@ -47,6 +48,7 @@ Backscatter depends on the surface and acquisition geometry, including roughness
 
 ## What is not yet established
 
+- The Nairobi study now has a reproducible ASF Search API query specification, but its live response has not been retrieved in this review environment. No scene candidate, asset access, or scene-specific processing is established.
 - No scene-specific Sentinel-1 data have been downloaded and processed as part of this documentation pass.
 - No backscatter values, classification accuracy, flood extent or deformation result is claimed.
 - The weather radar, radar engineering, maritime, automotive and advanced PolSAR/InSAR branches are mapped at orientation level only; each needs its own curated evidence set and practical test before being presented as a developed pathway.
