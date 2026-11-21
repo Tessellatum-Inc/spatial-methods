@@ -148,22 +148,22 @@ def asset_for(item: dict[str, Any], band: str) -> tuple[str, str] | None:
     # Preserve the configured alias preference (especially explicit 10 m bands),
     # while preferring HTTP(S) over S3 for each matching alias.
     for name in BAND_ALIASES[band]:
-        for alias in (name.lower(), f"{name.lower()}-jp2"):
-            matches = [
-                (key, asset.get("href", ""))
-                for key, asset in assets.items()
-                if key.lower() == alias and asset.get("href")
-            ]
-            if not matches:
-                continue
-            public = [
-                (key, href)
-                for key, href in matches
-                if href.startswith(("https://", "http://"))
-            ]
-            if public:
-                return public[0]
-            return matches[0]
+        aliases = {name.lower(), f"{name.lower()}-jp2"}
+        matches = [
+            (key, asset.get("href", ""))
+            for key, asset in assets.items()
+            if key.lower() in aliases and asset.get("href")
+        ]
+        if not matches:
+            continue
+        public = [
+            (key, href)
+            for key, href in matches
+            if href.startswith(("https://", "http://"))
+        ]
+        if public:
+            return public[0]
+        return matches[0]
     return None
 
 
