@@ -20,7 +20,7 @@
   "processing": {
     "engine": "OpenDroneMap",
     "container_image": "opendronemap/odm:PINNED_VERSION",
-    "arguments": ["--dsm"]
+    "arguments": []
   },
   "validation": {
     "horizontal_crs": "REQUIRED: specify CRS and relevant realisation/epoch.",
