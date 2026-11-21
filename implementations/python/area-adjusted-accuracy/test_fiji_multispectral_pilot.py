@@ -38,6 +38,10 @@ class FijiMultispectralPilotTests(unittest.TestCase):
                     "platform": "sentinel-2b",
                     "datetime": "2021-07-07T22:20:45.769000Z",
                 },
+                "assets": {
+                    "B04_10m": {"href": "s3://sentinel-s2-l2a/private/red.tif"},
+                    "B08_10m": {"href": "s3://sentinel-s2-l2a/private/nir.tif"},
+                },
             },
             {
                 "id": "c1",
@@ -45,6 +49,10 @@ class FijiMultispectralPilotTests(unittest.TestCase):
                 "properties": {
                     "platform": "sentinel-2b",
                     "datetime": "2021-07-07T22:20:45.770000Z",
+                },
+                "assets": {
+                    "B04_10m": {"href": "https://example.test/red.tif"},
+                    "B08_10m": {"href": "https://example.test/nir.tif"},
                 },
             },
             {
@@ -56,7 +64,7 @@ class FijiMultispectralPilotTests(unittest.TestCase):
             },
         ]
         unique = deduplicate_acquisitions(items)
-        self.assertEqual([item["id"] for item in unique], ["legacy", "next-pass"])
+        self.assertEqual([item["id"] for item in unique], ["c1", "next-pass"])
 
     def test_ndre_exposes_unmasked_and_native_scl_screened_summaries(self):
         bands = {
