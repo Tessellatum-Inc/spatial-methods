@@ -18,6 +18,7 @@ This page is the operational status record for the real-data photogrammetry rehe
 | Python examples tests | Passed | [Run 44918456981](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44918456981) |
 | Reviewer handoff and pinned acquisition instructions | Published | [Reviewer handoff](reviewer-handoff.md) |
 | External reviewer invitation brief | Published | [Reviewer invitation](reviewer-invitation.md) |
+| Reviewer recruitment, independence and intake protocol | Published | [Recruitment and intake](reviewer-recruitment-and-intake.md) |
 | Human review of all 206 observations | **Pending** | No completed reviewer worksheet or review lock recorded |
 | Role-blind review lock | **Pending** | Must follow completed human review |
 | Control/checkpoint split approval | **Pending** | Proposed split is not approved |
