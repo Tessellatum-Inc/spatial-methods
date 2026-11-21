@@ -2,7 +2,7 @@
 
 ## Status
 
-**Dataset acquisition, structural audit and role-blind visual-review material generation are complete. The real-data EXIF-only ODM baseline is currently executing; output inspection has not yet begun. Human target review and independent checkpoint remeasurement remain outstanding.**
+**Dataset acquisition, structural audit, role-blind review-material generation, the real-data EXIF-only ODM run and structural inspection of its principal products are complete. Human target review, independent checkpoint remeasurement and approval of the control/checkpoint split remain outstanding.**
 
 ### Verified evidence
 
@@ -22,7 +22,7 @@ The proposed split remains `proposed_not_locked`. The annotated sheets are a rev
 
 ### Next gates
 
-Before any ODM run, follow the [LV95/LN02 coordinate-reference handling decision record](coordinate-reference-handling.md). The current GCP exporter carries LN02 numeric heights unchanged under a horizontal EPSG:2056 declaration; this does not encode or transform the vertical reference.
+Before any GCP-controlled ODM run, follow the [LV95/LN02 coordinate-reference handling decision record](coordinate-reference-handling.md). The current GCP exporter carries LN02 numeric heights unchanged under a horizontal EPSG:2056 declaration; this does not encode or transform the vertical reference.
 
 
 1. Complete a point-by-point, role-blind visual review of the annotated images and record explicit accept/reject/uncertain decisions with reasons.
@@ -30,7 +30,7 @@ Before any ODM run, follow the [LV95/LN02 coordinate-reference handling decision
 3. After role-blind visual decisions are locked, independently remeasure checkpoint image coordinates using the separate [measurement protocol](independent-checkpoint-measurement-protocol.md) and [blank CSV template](independent-checkpoint-measurements.template.csv). Never copy the Metashape source picks into this record.
 4. Reassess control/checkpoint geometry and image coverage; only then lock the partition and regenerate the control-only ODM GCP file.
 5. Explicitly resolve the horizontal LV95 (EPSG:2056) and vertical LN02 handling before interpreting ODM outputs.
-6. Run a documented image-only baseline and a control-constrained ODM reconstruction; evaluate withheld checkpoints using independent observations. Do not use the supplied OPK solution as independent truth.
+6. The EXIF-only image baseline is complete. After the preceding review, split and coordinate-reference gates are satisfied, run a control-constrained ODM reconstruction; evaluate withheld checkpoints using independent observations. Do not use the supplied OPK solution as independent truth.
 
 No ODM reconstruction or accuracy claim is authorised by the current evidence.
 
@@ -51,7 +51,7 @@ A proposed deterministic partition is recorded in `rehearsal-control-checkpoint-
 
 The split remains `proposed_not_locked`. The source image picks are Metashape measurements and have not been independently remeasured or human-adjudicated. A role-blind visual-review packet now provides per-point 640 × 640 pixel crops across all available views and a blank 206-row decision worksheet. Review target identity, centring, visibility, blur, occlusion and ambiguity; lock decisions before unblinding roles.
 
-**Current processing state:** the separate EXIF-only ODM baseline has been launched without GCP control. At the latest recorded check, its real ODM execution step remained in progress; product inspection and artifact publication had not started. The GCP candidate has not been used in processing. No checkpoint residuals, positional accuracy statistics or acceptance decision exist.
+**Current processing state:** the EXIF-only ODM baseline completed with exit code 0, and a separate post-run inspection completed with status `inspected`, no blockers and no warnings. The initial combined workflow's inspection step failed because `pyproj` was missing; the outputs and run record were preserved, then successfully inspected in a follow-up workflow with the dependency installed. The GCP candidate has not been used in processing. No checkpoint residuals, positional accuracy statistics or acceptance decision exist.
 
 ### Next gate
 
