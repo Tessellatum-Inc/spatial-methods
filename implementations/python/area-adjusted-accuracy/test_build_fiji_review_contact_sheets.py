@@ -23,6 +23,9 @@ class ContactSheetTests(unittest.TestCase):
    inventory=json.loads(row["rgb_chip_inventory"])
    self.assertEqual(inventory[0]["catalogue_alias_count"],2)
    self.assertTrue((root/"review"/"P1_contact.png").exists())
+   with Image.open(root/"review"/"P1_contact.png") as contact:
+    self.assertEqual(contact.size,(512,320))
+   self.assertIn("320 m",inventory[0]["zoom_crop_extent"])
  def test_distinct_dates_remain_distinct(self):
   rows=[{"platform":"S2","datetime":"2021-01-01T00:00:00Z"},{"platform":"S2","datetime":"2021-01-03T00:00:00Z"}]
   self.assertEqual(len(deduplicate(rows)),2)
