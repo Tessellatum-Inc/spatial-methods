@@ -59,16 +59,36 @@ def _acquisition_key(item: dict[str, Any]) -> tuple[str, str]:
     return (platform, normalized)
 
 
+def _asset_access_score(item: dict[str, Any]) -> tuple[int, int, int]:
+    """Prefer representations with usable public band assets over private S3 aliases."""
+    https = 0
+    public_cogs = 0
+    restricted_s3 = 0
+    for asset in item.get("assets", {}).values():
+        href = str(asset.get("href", ""))
+        if href.startswith(("https://", "http://")):
+            https += 1
+        elif href.startswith("s3://sentinel-cogs/"):
+            public_cogs += 1
+        elif href.startswith("s3://"):
+            restricted_s3 += 1
+    return (https + public_cogs, https, -restricted_s3)
+
+
 def deduplicate_acquisitions(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Keep one best-ranked STAC representation per platform acquisition."""
-    unique: list[dict[str, Any]] = []
-    seen: set[tuple[str, str]] = set()
+    """Keep the most publicly readable STAC representation per platform acquisition.
+
+    Different catalogues can describe the same overpass but expose different
+    asset URLs. Prefer the representation with the most HTTP(S) or known-public
+    sentinel-cogs assets so deduplication does not discard the usable copy.
+    """
+    unique_by_key: dict[tuple[str, str], dict[str, Any]] = {}
     for item in items:
         key = _acquisition_key(item)
-        if key not in seen:
-            seen.add(key)
-            unique.append(item)
-    return unique
+        current = unique_by_key.get(key)
+        if current is None or _asset_access_score(item) > _asset_access_score(current):
+            unique_by_key[key] = item
+    return list(unique_by_key.values())
 
 
 def _index_summaries(bands: dict[str, np.ndarray]) -> dict[str, dict[str, Any]]:
