@@ -114,7 +114,7 @@ Tests cover project validation and command construction without running Docker, 
 Before preparing an ODM project, run the read-only dataset auditor against the extracted dataset directory:
 
 ```bash
-python dataset_audit.py /path/to/drone_heig_2019 --expected-images 32 \\
+python dataset_audit.py /path/to/drone_heig_2019 --expected-images 32 \
   --json-out dataset-image-audit.json
 ```
 
@@ -127,7 +127,7 @@ Run the companion tests with `python -m unittest -v`.
 After acquiring the HEIG-VD dataset, run the structural auditor:
 
 ```bash
-python dataset_metadata_audit.py /path/to/drone_heig_2019 \\
+python dataset_metadata_audit.py /path/to/drone_heig_2019 \
   --json-out dataset-metadata-audit.json
 ```
 
@@ -172,7 +172,7 @@ The manifest makes intended use, data sources, local project directory, processi
 Run a read-only preflight:
 
 ```bash
-python project_manifest.py /path/to/project-manifest.json \\\
+python project_manifest.py /path/to/project-manifest.json \\
   --json-out preflight-report.json
 ```
 
@@ -277,9 +277,9 @@ Start from [validation-context.template.json](validation-context.template.json),
 Generate the report and link the run/output records where available:
 
 ```bash
-python validation_evidence.py checkpoints.csv validation-context.json \\
-  --run-record /path/to/processing-run.json \\
-  --output-inspection /path/to/output-inspection.json \\
+python validation_evidence.py checkpoints.csv validation-context.json \
+  --run-record /path/to/processing-run.json \
+  --output-inspection /path/to/output-inspection.json \
   --json-out validation-evidence.json
 ```
 
@@ -292,12 +292,12 @@ This is an evidence adapter, not a full survey-design auditor. It records rather
 
 ## Reproducible evidence delivery dossier
 
-Once the five evidence records exist, assemble them into a reviewable ZIP dossier:
+Once the seven evidence records exist, assemble them into a reviewable ZIP dossier:
 
 ```bash
 python delivery_dossier.py \
-  --acquisition-manifest /path/to/acquisition-provenance.json \\
-  --acquisition-verification /path/to/acquisition-verification.json \\
+  --acquisition-manifest /path/to/acquisition-provenance.json \
+  --acquisition-verification /path/to/acquisition-verification.json \
   --manifest /path/to/project-manifest.json \
   --preflight /path/to/preflight-report.json \
   --run-record /path/to/processing-run.json \
