@@ -2,9 +2,6 @@ name: HEIG-VD ODM EXIF baseline
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/heig-vd-odm-exif-baseline.yml"
 
 permissions:
   contents: read
@@ -32,7 +29,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install acquisition and output-inspection dependencies
-        run: python -m pip install "huggingface_hub>=0.30,<2" "Pillow>=10,<13" "rasterio>=1.4,<2" "laspy>=2.5,<3" "lazrs>=0.6,<1"
+        run: python -m pip install "huggingface_hub>=0.30,<2" "Pillow>=10,<13" "rasterio>=1.4,<2" "laspy>=2.5,<3" "lazrs>=0.6,<1" "pyproj>=3.7,<4"
 
       - name: Acquire immutable HEIG-VD snapshot
         working-directory: implementations/python/photogrammetry-odm
