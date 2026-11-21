@@ -7,10 +7,10 @@ This is deliberately **not** a photogrammetry engine. ODM performs image alignme
 ## Scope and evidence status
 
 - Open-source engine: OpenDroneMap, executed in a Docker container.
-- Local utilities: Python standard library only.
+- Core orchestration utilities use the Python standard library. Optional structural inspection uses Pillow (image decoding), Rasterio (GeoTIFF inspection), laspy plus a compatible LAZ backend (point-cloud inspection), and no external mesh library for the current Wavefront OBJ checks.
 - The runner validates a project folder and constructs a Docker command. It does not install Docker, fetch images, select processing parameters or interpret the resulting products.
 - Checkpoint assessment expects coordinates independently extracted/measured for the same named points in the model and reference survey.
-- The included tests use synthetic values. No imagery has been processed and no real-world positional accuracy has been established.
+- The included tests use synthetic values. The HEIG-VD source has not yet been acquired and processed end to end in the current environment; no real-world positional accuracy has been established.
 - This is a UAS/aerial imagery workflow. Terrestrial, close-range, multisensor and non-UAS use cases need their own acquisition and processing design.
 
 ## Project layout
@@ -328,6 +328,34 @@ python verify_acquisition.py ./data/heig-vd-scop/snapshots/<commit-sha>/acquisit
 
 The verifier checks each declared file's size and SHA-256, rejects unsafe manifest paths, and reports missing, modified, symbolic-link and unmanifested files. Continue only when the report status is `verified`. This means local bytes match the saved acquisition manifest; it does not establish publisher authenticity, licence compliance, image readability or dataset suitability.
 
+
+
+## Acquire and verify the public rehearsal dataset
+
+Install the optional acquisition dependency and download only the selected dataset directory at a resolved immutable repository revision:
+
+```bash
+python -m pip install huggingface_hub
+python acquire_rehearsal_dataset.py ./data/heig-vd-scop
+```
+
+The helper writes the acquired files beneath `snapshots/<resolved-commit-sha>/` and creates `acquisition-provenance.json` beside the dataset snapshot. Verify the exact snapshot before auditing or copying it:
+
+```bash
+python verify_acquisition.py ./data/heig-vd-scop/snapshots/<commit-sha>/acquisition-provenance.json \
+  --json-out ./data/heig-vd-scop/snapshots/<commit-sha>/acquisition-verification.json
+```
+
+Continue only if the report says `verified`. Then run the generic image audit and dataset-specific metadata audit against the verified dataset directory. Preserve the snapshot unchanged; make a separate working copy for ODM. Do not copy the acquisition manifest into the ODM project as a substitute for keeping the raw snapshot.
+
+```bash
+python dataset_audit.py ./data/heig-vd-scop/snapshots/<commit-sha>/datasets/drone_heig_2019 \
+  --json-out ./data/heig-vd-scop/dataset-audit.json
+python dataset_metadata_audit.py ./data/heig-vd-scop/snapshots/<commit-sha>/datasets/drone_heig_2019 \
+  --json-out ./data/heig-vd-scop/dataset-metadata-audit.json
+```
+
+The acquisition helper requires network access and the verifier is offline. A verified result establishes local byte agreement with the saved manifest only; it does not establish publisher authenticity, licence compliance, semantic correctness, image readability or photogrammetric suitability.
 
 ## Synthetic pipeline integration test
 
