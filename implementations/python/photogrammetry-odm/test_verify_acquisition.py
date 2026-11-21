@@ -80,5 +80,31 @@ class AcquisitionVerificationTests(unittest.TestCase):
             verify_manifest(self.manifest)
 
 
+
+    def test_symlinked_manifest_path_component_is_rejected(self):
+        real_dir = self.root / "real"
+        real_dir.mkdir()
+        target = real_dir / "payload.txt"
+        target.write_text("source bytes", encoding="utf-8")
+        link_dir = self.dataset / "linked"
+        link_dir.symlink_to(real_dir, target_is_directory=True)
+        self.write_manifest([{
+            "path": "datasets/drone_heig_2019/linked/payload.txt",
+            "size_bytes": target.stat().st_size,
+            "sha256": hashlib.sha256(target.read_bytes()).hexdigest(),
+        }])
+        report = verify_manifest(self.manifest)
+        self.assertEqual(report["status"], "integrity_error")
+        self.assertEqual(report["files"][0]["status"], "invalid")
+
+    def test_unmanifested_symlink_directory_is_reported(self):
+        target = self.root / "external"
+        target.mkdir()
+        (target / "payload.txt").write_text("outside", encoding="utf-8")
+        (self.dataset / "linked").symlink_to(target, target_is_directory=True)
+        report = verify_manifest(self.manifest)
+        self.assertEqual(report["status"], "integrity_error")
+        self.assertEqual(report["symbolic_link_paths"], ["datasets/drone_heig_2019/linked"])
+
 if __name__ == "__main__":
     unittest.main()
