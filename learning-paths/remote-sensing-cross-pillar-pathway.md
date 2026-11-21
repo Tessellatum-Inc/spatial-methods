@@ -41,7 +41,7 @@ Until those foundations are developed and reviewed, use the existing algorithm n
 
 ### Spatial Data Collection
 
-The collection subject map identifies satellite and airborne optical remote sensing (SM-COL-004), but a dedicated canonical acquisition record is still missing. The Fiji Sentinel-2 pilot documents a concrete acquisition workflow using Level-2A surface reflectance, STAC discovery, asset-access checks, acquisition metadata, native band resolutions and scene classification. It is an application-specific evidence workflow, not yet a general collection-method chapter.
+An initial [optical satellite imagery acquisition method](../collection/optical-satellite-imagery-acquisition.md) now documents observation design, sensor/product selection, STAC/catalogue discovery, quality screening, asset access, native-resolution handling and provenance. It uses Sentinel-2 as a bounded reference, not a universal sensor template. Technical review and application testing remain pending. The Fiji Sentinel-2 pilot supplies a separate application-specific evidence workflow.
 
 Relevant records:
 - [Spatial Data Collection subject map](../collection/README.md)
@@ -134,7 +134,7 @@ Evidence at one level does not automatically establish the next.
 | Pillar | Optical multispectral | SAR / Sentinel-1 |
 |---|---|---|
 | Theoretical Foundations | Initial electromagnetic/radiometric module published; detailed optical radiative transfer, technical review and learner testing remain open | Shared electromagnetic introduction published; radar scattering, measurement and signal-processing foundations remain incomplete |
-| Spatial Data Collection | Subject identified; Fiji pilot documents a bounded Level-2A/STAC workflow; general acquisition chapter missing | Radar exploration and Nairobi scene specification exist; no completed scene acquisition record |
+| Spatial Data Collection | Initial optical satellite acquisition method published; technical review and application testing pending; Fiji pilot documents a bounded Level-2A/STAC workflow | Radar exploration and Nairobi scene specification exist; no completed scene acquisition record |
 | Spatial Algorithms | Broad catalogue and multiple tested implementations; sensor-aware preprocessing and validation remain uneven | Lee filter, CFAR and local coherence notes exist; no complete sensor-to-product processing chain |
 | Spatial Recipes | No mature integrated optical recipe yet; Fiji pilot is an evidence workflow, not one | Guided backscatter investigation exists; no executed Nairobi recipe or validated application |
 
@@ -143,7 +143,7 @@ This table is a gap map, not a maturity score. It deliberately leaves incomplete
 ## 6. Recommended development sequence
 
 1. **Extend and review the foundation:** technically review the initial electromagnetic/radiometric module, then develop separate optical radiative-transfer and radar scattering/signal-formation modules.
-2. **Build collection records:** document optical satellite acquisition and SAR acquisition separately, including product families, geometry, metadata, access, calibration and quality controls.
+2. **Extend collection records:** technically review and test the optical acquisition method, then document SAR acquisition separately, including product families, geometry, metadata, access, calibration and quality controls.
 3. **Audit algorithms against inputs:** connect each algorithm to required sensor/product types, band mapping, units, masks, grid, assumptions, failure modes and validation needs.
 4. **Complete one bounded optical execution:** finish the Fiji multispectral quality-control gates, preserve its blind-review boundaries, and report exactly which live processing stages have passed.
 5. **Execute the Nairobi SAR study:** select and archive a suitable Sentinel-1 scene, process it reproducibly, record observations and independent contextual evidence, and do not promote it to a recipe until the hand-offs and validation are reviewed.
