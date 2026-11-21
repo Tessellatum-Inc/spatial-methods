@@ -1,6 +1,6 @@
 # Sensitivity and perturbation analysis
 
-**Subject identity:** \`SM-FND-016\` — Numerical analysis and scientific computing  
+**Subject identity:** `SM-FND-016` — Numerical analysis and scientific computing  
 **Module:** 02  
 **Status:** Initial public teaching resource; independent numerical-analysis review and learner testing outstanding.
 
