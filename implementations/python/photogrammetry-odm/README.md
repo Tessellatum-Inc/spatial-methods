@@ -80,6 +80,13 @@ Depending on options and successful processing, ODM can produce georeferenced or
 Do not assume every product exists. Confirm the actual output tree, inspect processing logs and open geospatial products in appropriate software such as QGIS or CloudCompare.
 
 
+
+## Formal control/checkpoint split approval
+
+The proposed split remains `proposed_not_locked`. Do not change its status manually. Once the 206-observation role-blind review has been locked, complete [the human approval template](control-checkpoint-split-approval.template.json) after assessing point suitability, spatial geometry, image coverage, separation and checkpoint withholding.
+
+Run [`approve_control_checkpoint_split.py`](approve_control_checkpoint_split.py) with the proposed split, completed decision CSV, locked review record and completed human approval JSON. The utility verifies evidence hashes and rejects selected points with questioned/rejected image observations. It creates a separate `approved_locked` file only after explicit human sign-off. It does not assess geometry or accuracy on the approver's behalf, and it does not waive the separate coordinate-reference and processing gates.
+
 ## Independent checkpoint image-measurement register
 
 After the role-blind observation review is locked and the control/checkpoint partition is formally approved, use [the independent measurement protocol](independent-checkpoint-measurement-protocol.md) and [blank CSV template](independent-checkpoint-measurements.template.csv). Record one row per point/image view from the original unannotated source image. Never copy the publisher's Metashape pixel picks.
