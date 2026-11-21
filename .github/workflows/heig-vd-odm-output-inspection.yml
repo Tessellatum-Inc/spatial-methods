@@ -10,6 +10,7 @@ on:
   push:
     paths:
       - ".github/workflows/heig-vd-odm-output-inspection.yml"
+      - "implementations/python/photogrammetry-odm/output_inspection.py"
 
 permissions:
   contents: read
