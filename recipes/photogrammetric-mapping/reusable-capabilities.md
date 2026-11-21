@@ -365,7 +365,7 @@ Tests cover successful assembly, pending acceptance, run-identity mismatch and m
 | Independent checkpoint residual statistics | Implemented |
 | Project-level validation evidence and human decision record | Implemented |
 | Evidence ZIP dossier with checksums and consistency checks | Implemented |
-| LAS/LAZ streamed structural inspection | Implemented when laspy and a compatible LAZ backend are installed; point counts, finite coordinates, classification/intensity summaries and bounded sample |
+| LAS/LAZ streamed structural inspection | Implemented when laspy and a compatible LAZ backend are installed; point counts, finite coordinates, observed/header extent reconciliation, classification/intensity summaries and bounded sample |
 | Point-cloud classification correctness, density and positional QA | Pending |
 | Wavefront OBJ syntax and vertex-index inspection | Implemented; topology, self-intersections, texture completeness, normal quality and geometric accuracy remain unverified |
 | Real-dataset end-to-end rehearsal | Pending |
