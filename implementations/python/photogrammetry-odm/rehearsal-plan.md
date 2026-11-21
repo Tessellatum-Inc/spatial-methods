@@ -2,7 +2,7 @@
 
 ## Status
 
-**Dataset acquisition, structural audit and role-blind visual-review material generation are complete. Human target review, independent checkpoint remeasurement and ODM processing remain outstanding.**
+**Dataset acquisition, structural audit and role-blind visual-review material generation are complete. The real-data EXIF-only ODM baseline is currently executing; output inspection has not yet begun. Human target review and independent checkpoint remeasurement remain outstanding.**
 
 ### Verified evidence
 
@@ -51,7 +51,7 @@ A proposed deterministic partition is recorded in `rehearsal-control-checkpoint-
 
 The split remains `proposed_not_locked`. The source image picks are Metashape measurements and have not been independently remeasured or human-adjudicated. A role-blind visual-review packet now provides per-point 640 × 640 pixel crops across all available views and a blank 206-row decision worksheet. Review target identity, centring, visibility, blur, occlusion and ambiguity; lock decisions before unblinding roles.
 
-**What has not happened:** ODM has not yet been executed on this dataset. The GCP candidate has not been used in processing. No checkpoint residuals, positional accuracy statistics or acceptance decision exist.
+**Current processing state:** the separate EXIF-only ODM baseline has been launched without GCP control. At the latest recorded check, its real ODM execution step remained in progress; product inspection and artifact publication had not started. The GCP candidate has not been used in processing. No checkpoint residuals, positional accuracy statistics or acceptance decision exist.
 
 ### Next gate
 
