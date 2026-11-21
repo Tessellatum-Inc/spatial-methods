@@ -79,8 +79,7 @@ def create_run_record(
     command = build_command(project, image, arguments)
     inputs = inventory_files(project / "images", IMAGE_SUFFIXES)
     started = datetime.now(timezone.utc)
-    metadata = (\n        docker_image_metadata(image) if execute\n        else {"available": False, "reason": "Not inspected during dry-run"}\n    )
-    record = {
+    metadata = (\n        docker_image_metadata(image) if execute\n        else {"available": False, "reason": "Not inspected during dry-run"}\n    )\n    record = {
         "schema_version": "1.0",
         "run_id": started.strftime("%Y%m%dT%H%M%S%fZ"),
         "status": "prepared" if not execute else "running",
