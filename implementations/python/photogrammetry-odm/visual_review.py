@@ -10,6 +10,7 @@ import csv
 import json
 import math
 from pathlib import Path
+from textwrap import dedent
 
 
 IMAGE_PREFIX = "EB-02-00761_"
@@ -236,7 +237,7 @@ def generate(dataset: Path, split_path: Path, output: Path) -> dict:
                     "", "", "", "", "", "", "", "", "", "", "",
                 ])
 
-    instructions = """# Role-blind point review
+    instructions = dedent("""# Role-blind point review
 
     Review the point sheets before consulting the control/checkpoint split key.
 
@@ -250,7 +251,7 @@ def generate(dataset: Path, split_path: Path, output: Path) -> dict:
     observations have not been independently remeasured. A visible marker does not
     establish survey accuracy or checkpoint independence. Keep reviewer decisions
     and rationale locked before unblinding control/checkpoint roles.
-    """
+    """).strip() + "\n"
     (point_review_dir / "README.md").write_text(instructions, encoding="utf-8")
 
     report = {
