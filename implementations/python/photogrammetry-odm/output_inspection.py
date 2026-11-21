@@ -49,6 +49,28 @@ def inspect_raster(path: Path) -> dict:
 
 
 
+def identify_crs(crs_value) -> dict:
+    """Resolve CRS authority metadata when optional pyproj is available."""
+    if crs_value is None:
+        return {"status": "not_present"}
+    try:
+        from pyproj import CRS
+    except ImportError:
+        return {"status": "not_inspected", "reason": "pyproj is not installed"}
+    try:
+        parsed = CRS.from_user_input(crs_value)
+        authority = parsed.to_authority()
+        return {
+            "status": "identified",
+            "name": parsed.name,
+            "authority": list(authority) if authority else None,
+            "epsg": parsed.to_epsg(),
+            "utm_zone": parsed.utm_zone,
+        }
+    except Exception as exc:
+        return {"status": "unresolved", "error": str(exc)}
+
+
 def inspect_point_cloud(path: Path) -> dict:
     """Stream LAS/LAZ point records and summarize structural content, not accuracy."""
     try:
@@ -109,6 +131,7 @@ def inspect_point_cloud(path: Path) -> dict:
                 and ordered_extent and non_finite_coordinates == 0
                 and points_outside_header_bounds == 0
             )
+            parsed_crs = header.parse_crs()
             return {
                 "path": str(path),
                 "status": "readable" if valid else "invalid",
@@ -125,7 +148,8 @@ def inspect_point_cloud(path: Path) -> dict:
                 "observed_maxs": observed_maxs if observed_count else None,
                 "points_outside_header_bounds": points_outside_header_bounds,
                 "header_bounds_tolerance": tolerances,
-                "crs": str(header.parse_crs()) if header.parse_crs() else None,
+                "crs": str(parsed_crs) if parsed_crs else None,
+                "crs_identification": identify_crs(parsed_crs),
                 "classification_counts": class_counts,
                 "intensity_range": [intensity_min, intensity_max],
                 "non_finite_coordinate_count": non_finite_coordinates,
