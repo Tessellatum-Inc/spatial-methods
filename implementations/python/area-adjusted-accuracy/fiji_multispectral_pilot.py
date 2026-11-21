@@ -20,6 +20,7 @@ from multispectral_metrics import (
     apply_valid_mask,
     index_stack,
     scl_valid_mask,
+    scl_quality_summary,
     summarize_window,
 )
 from multispectral_raster import BAND_ALIASES, BAND_GRID, read_multispectral_windows
@@ -49,16 +50,19 @@ def _index_summaries(bands: dict[str, np.ndarray]) -> dict[str, dict[str, Any]]:
         try:
             ndvi = index_stack({"B04": bands["B04"], "B08": bands["B08"]}).get("NDVI")
             if ndvi is not None:
-                summaries["NDVI_10m"] = summarize_window(ndvi)
+                summaries["NDVI_10m_unmasked"] = summarize_window(ndvi)
         except (ValueError, TypeError):
             pass
     if "B05" in bands and "B8A" in bands:
         try:
             ndre = index_stack({"B05": bands["B05"], "B8A": bands["B8A"]}).get("NDRE")
             if ndre is not None:
+                summaries["NDRE_20m_unmasked"] = summarize_window(ndre)
                 if "SCL" in bands:
-                    ndre = apply_valid_mask(ndre, scl_valid_mask(bands["SCL"]))
-                summaries["NDRE_20m"] = summarize_window(ndre)
+                    ndre_scl = apply_valid_mask(ndre, scl_valid_mask(bands["SCL"]))
+                    summaries["NDRE_20m_scl_valid"] = summarize_window(ndre_scl)
+                else:
+                    summaries["NDRE_20m_scl_valid"] = {"status": "not_available_no_scl"}
         except (ValueError, TypeError):
             pass
     return summaries
@@ -130,6 +134,8 @@ def run_pilot(input_csv: Path, output_dir: Path, *, point_limit: int = 5,
                     for band, array in result["bands"].items()
                 }
                 index_summaries = _index_summaries(result["bands"])
+                if "SCL" in result["bands"]:
+                    index_summaries["SCL_QA_20m"] = scl_quality_summary(result["bands"]["SCL"])
                 # Hash a canonical summary/provenance payload; no raster pixels
                 # or signed asset query parameters are written to the report.
                 provenance = {
