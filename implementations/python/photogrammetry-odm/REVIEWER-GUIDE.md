@@ -34,6 +34,7 @@ The following distinctions are mandatory:
    - `processing_run.py` — explicit execution boundary and provenance capture;
    - `prepare_odm_gcp.py` — source-bound control-only ODM GCP export;
    - `visual_review.py` and `lock_visual_review.py` — role-blind observation review material and decision lock;
+   - `independent-checkpoint-measurement-protocol.md` and its CSV template — independent image-coordinate measurement after the split is locked;
    - `output_inspection.py` — read-only output inventory and GeoTIFF structure;
    - `checkpoint_qa.py` — residual definitions and statistics;
    - `validation_evidence.py` — evidence completeness and human decision record;
@@ -123,8 +124,8 @@ Do not collapse these statuses into a single pass/fail score.
 
 ## 6. Known gaps at this stage
 
-- No live Docker/ODM execution has been demonstrated in this repository environment.
-- The HEIG-VD rehearsal imagery has been acquired and byte-audited; an EXIF-only ODM baseline has been processed and structurally inspected. The GCP-controlled variant and independent checkpoint validation remain pending.
+- A live Docker/ODM execution has been demonstrated on the HEIG-VD imagery in CI using the pinned ODM 3.6.2 image. This was an EXIF-only baseline without GCPs; it is not a controlled-GCP experiment.
+- The HEIG-VD rehearsal imagery has been acquired and byte-audited; the EXIF-only outputs have been structurally inspected. The GCP-controlled variant and independent checkpoint validation remain pending.
 - LAS/LAZ point records are streamed when `laspy` is installed; declared/observed count reconciliation, finite coordinates, observed/header extent reconciliation (using a tolerance derived from coordinate scales), classification counts, intensity range and a bounded coordinate sample are recorded. Classification correctness, density suitability and positional accuracy remain unassessed.
 - Wavefront OBJ vertex, texture-coordinate and normal records are checked for finite values; face vertex/texture/normal indices and repeated-index/zero-area faces are checked. Manifoldness, self-intersections, texture-file availability, normal quality and geometric accuracy remain unassessed.
 - Raster inspection is conditional on Rasterio; image readability checks are conditional on Pillow.
@@ -149,12 +150,11 @@ For each finding, record:
 Do not silently edit historical evidence records. Correct the implementation, create a new run/evidence record, and retain the old record as part of the audit trail where appropriate.
 
 ## 8. Current milestone and next gate
-## 8. Current milestone and next gate
 
 The HEIG-VD reference-system gate is documented in [coordinate-reference-handling.md](coordinate-reference-handling.md). The source has LV95 horizontal coordinates and LN02 heights; a two-dimensional EPSG:2056 header is not evidence that ODM output encodes LN02 vertical semantics.
 
 
-The current milestone is **real EXIF-only baseline processed and structurally inspected; GCP-controlled and independent validation stages pending**. Reviewers should require the locked role-blind observation review, documented control/checkpoint partition, GCP-controlled processing, independently established checkpoints and complete evidence handoff before describing the workflow as accuracy-assessed.
+The current milestone is **real EXIF-only baseline processed and structurally inspected; GCP-controlled and independent validation stages pending**. Reviewers should require the locked role-blind observation review; post-lock unblinding and approval of the control/checkpoint partition; independent checkpoint image remeasurement from original unannotated images; explicit horizontal/vertical reference handling; control-only GCP processing; and compatible reference coordinates plus validation evidence before describing the workflow as accuracy-assessed.
 
 Last updated: 2026-11-21.
 
@@ -170,7 +170,7 @@ Known source structure must not be misclassified:
 
 A proposed split (8 controls, 19 checkpoints, 3 low-observation points withheld) is stored separately and remains `proposed_not_locked`. The 51-row GCP candidate contains controls only. A role-blind review packet provides per-point crops and a blank observation decision worksheet. The image picks are publisher-provided Metashape measurements, not independent remeasurements.
 
-A real EXIF-only ODM baseline has now been executed and structurally inspected. This establishes that the processing and output-inspection chain runs on actual data; it does not establish accuracy. The GCP-controlled variant, independent checkpoint evidence, checkpoint residuals, validation and release decision remain pending. The next gate is locked role-blind human review, followed by the approved control-GCP run.
+A real EXIF-only ODM baseline has now been executed and structurally inspected. This establishes that the processing and output-inspection chain runs on actual data; it does not establish accuracy. The GCP-controlled variant, independent checkpoint evidence, checkpoint residuals, validation and release decision remain pending. Follow the authoritative seven-step sequence in [the rehearsal plan](rehearsal-plan.md): lock role-blind review before unblinding; approve the split; independently remeasure checkpoint image coordinates from original images; resolve horizontal and vertical references; then prepare the control-only GCP run and assess withheld checkpoints.
 
 
 The role-blind point review packet is available as a separate artifact from [workflow run 44900854170](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44900854170/artifacts/14705374556). It contains the per-point image crops and blank 206-row review worksheet without the control/checkpoint role key. Artifact SHA-256: `d9744c9f8d05019f8915b7d63f140f7f01143bc4cabe9f62a098737516e8f117`.
