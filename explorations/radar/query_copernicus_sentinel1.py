@@ -81,6 +81,52 @@ def retrieve(url: str, timeout: int) -> bytes:
         return response.read()
 
 
+def build_location_query(product_id: str) -> str:
+    """Build a separate OData query for one product's available locations."""
+    if not isinstance(product_id, str) or not product_id:
+        raise ValueError("Product ID must be a non-empty string.")
+    params = {
+        "$filter": f"Id eq '{product_id}'",
+        "$expand": "Locations",
+    }
+    return f"{API_URL}?{urlencode(params)}"
+
+
+def attach_product_locations(products: list[dict], timeout: int) -> list[dict]:
+    """Attach Locations to catalogue records, preserving per-product failures."""
+    errors = []
+    for product in products:
+        query_url = build_location_query(product["Id"])
+        try:
+            raw = retrieve(query_url, timeout)
+            payload = json.loads(raw)
+            matches = payload.get("value") if isinstance(payload, dict) else None
+            if not isinstance(matches, list):
+                raise ValueError("Location response has no valid 'value' array.")
+            match = next(
+                (item for item in matches
+                 if isinstance(item, dict) and item.get("Id") == product["Id"]),
+                None,
+            )
+            if match is None:
+                raise ValueError("Location response did not contain the requested product.")
+            locations = match.get("Locations")
+            if not isinstance(locations, list):
+                raise ValueError("Location response has no valid 'Locations' array.")
+            product["Locations"] = locations
+            product["LocationsRetrieved"] = True
+        except (HTTPError, URLError, TimeoutError, OSError, ValueError) as exc:
+            message = f"{type(exc).__name__}: {exc}"
+            product["LocationsRetrieved"] = False
+            product["LocationsFetchError"] = message
+            errors.append({
+                "product_id": product["Id"],
+                "product_name": product["Name"],
+                "error": message,
+            })
+    return errors
+
+
 def parse_catalogue_response(raw: bytes) -> dict:
     try:
         payload = json.loads(raw)
@@ -142,6 +188,7 @@ def main(argv: list[str] | None = None) -> int:
     metadata_path = args.output_dir / f"copernicus_sentinel1_nairobi_{stamp}.metadata.json"
     response_path.write_bytes(raw)
     products = payload["value"]
+    location_errors = attach_product_locations(products, args.timeout)
     metadata = {
         "source": API_URL,
         "query_url": query_url,
@@ -150,8 +197,15 @@ def main(argv: list[str] | None = None) -> int:
         "response_file": response_path.name,
         "response_sha256": hashlib.sha256(raw).hexdigest(),
         "product_count": len(products),
+        "locations_requested": len(products),
+        "locations_retrieved": sum(p.get("LocationsRetrieved") is True for p in products),
+        "locations_errors": location_errors,
         "next_link_present": isinstance(payload.get("@odata.nextLink"), str),
-        "status": "catalogue_response_saved",
+        "status": (
+            "catalogue_response_saved"
+            if not location_errors
+            else "catalogue_response_saved_with_location_errors"
+        ),
         "interpretation_limit": (
             "Spatial intersection does not establish full AOI coverage. "
             "Product metadata does not establish asset access, full polarisation "
@@ -163,6 +217,12 @@ def main(argv: list[str] | None = None) -> int:
         encoding="utf-8",
     )
     print(f"Saved {len(products)} catalogue product records.")
+    print(
+        f"Retrieved locations for {metadata['locations_retrieved']}/"
+        f"{metadata['locations_requested']} products."
+    )
+    if location_errors:
+        print(f"Warning: location metadata failed for {len(location_errors)} products.")
     print(f"Response: {response_path}")
     print(f"Metadata: {metadata_path}")
     print(f"SHA-256: {metadata['response_sha256']}")
