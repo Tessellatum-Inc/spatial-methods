@@ -20,6 +20,26 @@ The supplied image observations were measured in Metashape. They are not indepen
 
 The proposed split remains `proposed_not_locked`. The annotated sheets are a review aid, not a human approval record. Reviewers must inspect target visibility, centring, occlusion, blur, ambiguity and image-to-target correspondence; checkpoints must then be independently remeasured before they can support an accuracy assessment.
 
+
+## Formal control/checkpoint split approval
+
+The proposed partition is not an approved split. After the complete 206-row role-blind review is locked, a human reviewer must inspect the proposed control/checkpoint geometry, image coverage, point suitability and withholding boundary. Complete `control-checkpoint-split-approval.template.json` only after that assessment.
+
+The approval record must explicitly identify the approver and UTC approval time, bind itself to the exact locked-review and decision-CSV SHA-256 hashes, mark geometry and coverage acceptable, confirm control/checkpoint separation and checkpoint withholding, state the coordinate-reference review disposition, and provide a rationale. The approval utility also rejects any selected control/checkpoint point with questioned or rejected image observations. Revise or exclude such points before approval; do not override the observation decisions in the approval record.
+
+Run:
+
+```bash
+python approve_control_checkpoint_split.py \\
+  rehearsal-control-checkpoint-split.proposed.json \\
+  review-decisions.completed.csv \\
+  locked-visual-review.json \\
+  control-checkpoint-split-approval.json \\
+  approved-control-checkpoint-split.json
+```
+
+The utility emits `status: approved_locked` only when the human approval record and linked evidence pass validation. It does not independently assess geometry, prove reviewer independence, establish survey accuracy or authorize processing. The coordinate-reference and controlled-GCP implementation gates in this plan remain in force. Never edit the proposed file into an approved file manually; preserve both records and their hashes.
+
 ### Next gates
 
 The EXIF-only baseline and structural product inspection are complete. The following gates remain before a controlled-GCP reconstruction or any positional-accuracy assessment:
