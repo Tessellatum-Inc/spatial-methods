@@ -125,7 +125,7 @@ This note is your first artefact. It is more valuable than ticking off five vide
 
 ## First worked study area
 
-The [Nairobi Sentinel-1 scene record](nairobi-sentinel-1-scene-record.md) defines the first study window, scene-selection rule and evidence record.
+The [Nairobi Sentinel-1 scene record](nairobi-sentinel-1-scene-record.md) defines the first study window, scene-selection rule and evidence record. A reproducible ASF Search API client is provided in [query_asf_sentinel1.py](query_asf_sentinel1.py). Run it from the repository root:\n\n```bash\npython explorations/radar/query_asf_sentinel1.py\n```\n\nThe default query uses Sentinel-1 IW `GRD_HD`, `VV+VH`, the documented Nairobi search polygon and the date interval in the scene record. It saves the exact GeoJSON response and a metadata sidecar (query parameters, retrieval time, feature count and SHA-256 digest) under `data/asf/nairobi/`. To run a separate VV-only fallback, use `--polarization VV`; retain the resulting output as a separate query rather than overwriting or silently substituting it. The client validates the response structure but does not download assets, establish full AOI coverage or select a scientifically suitable scene. Inspect the complete footprint and metadata before proceeding. Network access and successful retrieval are required; no live response is implied by the presence of this script.
 
 ## What to explore next
 
