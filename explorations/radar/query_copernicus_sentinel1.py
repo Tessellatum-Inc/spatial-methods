@@ -30,7 +30,7 @@ def _utc_timestamp(value: str, label: str) -> datetime:
         parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
     except ValueError as exc:
         raise ValueError(f"{label} must be an ISO 8601 timestamp.") from exc
-    if parsed.tzinfo is None or parsed.utcoffset().total_seconds() != 0:
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
         raise ValueError(f"{label} must include an explicit UTC offset.")
     return parsed.astimezone(timezone.utc)
 
