@@ -56,4 +56,4 @@ Each module should define its numerical model and notation, distinguish mathemat
 
 ## Review status
 
-Modules 01–05 are initial teaching resources. It has not received independent numerical-analysis review or learner testing. The subject collection is not complete, and publication does not constitute technical certification.
+Modules 01–05 are initial teaching resources. They have not received independent numerical-analysis review or learner testing. The subject collection is not complete, and publication does not constitute technical certification.

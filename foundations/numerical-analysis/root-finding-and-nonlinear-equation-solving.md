@@ -1,6 +1,6 @@
 # Root finding and nonlinear equation solving
 
-**Subject identity:** \`SM-FND-016\` — Numerical analysis and scientific computing  
+**Subject identity:** `SM-FND-016` — Numerical analysis and scientific computing  
 **Module:** 05  
 **Status:** Initial public teaching resource; independent numerical-analysis review and learner testing outstanding.
 
