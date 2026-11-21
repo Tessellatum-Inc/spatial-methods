@@ -290,7 +290,8 @@ This adapter establishes structural evidence only. It does not verify that a CRS
 | Output inventory and expected-file checks | Implemented |
 | GeoTIFF structural inspection | Implemented when Rasterio is installed |
 | Point-cloud and mesh inspection | Pending |
-| Independent checkpoint residual statistics | Implemented |\n| Project-level validation evidence and human decision record | Implemented; evidence completeness is explicit |
+| Independent checkpoint residual statistics | Implemented |
+| Project-level validation evidence and human decision record | Implemented; evidence completeness is explicit |
 | Reproducible delivery package | Pending |
 
 ### Next integration milestone
