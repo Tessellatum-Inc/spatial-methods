@@ -207,3 +207,29 @@ The report distinguishes `blocked`, `review_required` and `ready_for_operator_re
 The command is a dry-run handoff only. It does not invoke Docker, alter source images, assess image sharpness or overlap, validate CRS or control, assess product accuracy, or authorise flight, survey, processing or delivery. The HEIG-VD-specific metadata auditor remains separate because its GCP/observation/OPK assumptions are not generic to all photogrammetry projects.
 
 The integrated preflight is a first domain-level orchestration pattern. Its manifest, severity model and report structure are candidates for reuse in other Spatial Recipes; image and ODM checks remain domain adapters. Tests are in `test_project_preflight.py`.
+
+
+## Processing-run provenance
+
+The integrated preflight prepares a command but does not execute it. When an operator is ready to run ODM, use the run recorder to capture input identity, container metadata (when inspectable), execution details, logs and output inventory.
+
+Prepare a provenance record without invoking Docker:
+
+```bash
+python processing_run.py /absolute/path/to/datasets/campus_block \
+  --image opendronemap/odm:<PINNED_VERSION> \
+  --run-directory /absolute/path/to/run-records/campus-block-run-001
+```
+
+Actual processing requires the explicit `--execute` switch:
+
+```bash
+python processing_run.py /absolute/path/to/datasets/campus_block \
+  --image opendronemap/odm:<PINNED_VERSION> \
+  --run-directory /absolute/path/to/run-records/campus-block-run-001 \
+  --execute
+```
+
+The run directory must be outside the ODM project directory. The recorder hashes supported source images before execution, captures stdout/stderr, records the process exit code and inventories project files after execution. It also attempts to record the local Docker image ID, repository digests, OS and architecture. Dry-run does not invoke Docker at all.
+
+The record is evidence of what the wrapper observed, not a complete execution attestation. It does not yet capture all host hardware/runtime details, guarantee bit-for-bit deterministic reconstruction, validate output CRS or raster contents, or establish product accuracy. A zero exit code is not an acceptance decision. Preserve the run directory alongside (but separately from) the raw source archive.
