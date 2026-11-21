@@ -31,7 +31,8 @@ BAND_ALIASES = {
     "green": ("B03_10m", "green", "B03", "B03_20m"),
     "red": ("B04_10m", "red", "B04", "B04_20m"),
 }
-REQUEST_TIMEOUT = 60
+REQUEST_TIMEOUT = float(os.getenv("STAC_REQUEST_TIMEOUT", "60"))
+MAX_PAGES = int(os.getenv("STAC_MAX_PAGES", "10"))
 
 PROVENANCE_FIELDS = (
     "sample_id", "catalogue", "item_id", "collection", "datetime",
@@ -61,7 +62,7 @@ def _request_page(method: str, href: str, body: dict[str, Any] | None = None,
 
 
 def post_search(endpoint: str, collection: str, lon: float, lat: float,
-                limit: int = 100, max_pages: int = 10) -> list[dict[str, Any]]:
+                limit: int = 100, max_pages: int = MAX_PAGES) -> list[dict[str, Any]]:
     """Search one collection and follow STAC next links up to max_pages."""
     if limit < 1 or max_pages < 1:
         raise ValueError("limit and max_pages must be positive")
