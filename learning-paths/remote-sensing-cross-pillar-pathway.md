@@ -28,7 +28,7 @@ Choose the route that matches the observation and intended claim.
 
 ### Theoretical Foundations
 
-The necessary physics and radiometry are not yet a mature canonical foundation in this repository. The Foundations subject map explicitly lists remote-sensing physics and radiometry as planned coverage. A defensible optical route ultimately needs to explain:
+An initial shared module, [Electromagnetic observations and radiometric quantities](../foundations/remote-sensing-physics/electromagnetic-observations-and-radiometric-quantities.md), is now published. It establishes core terminology and product interpretation, but technical review and learner testing remain pending. A defensible optical route ultimately needs deeper treatment of:
 
 - electromagnetic spectrum, wavelength and spectral response functions;
 - solar irradiance, atmospheric transmission and surface reflectance;
@@ -81,7 +81,7 @@ Use the pilot to study source discovery, asset accessibility, native-grid handli
 
 ### Theoretical Foundations
 
-A SAR foundation must cover electromagnetic propagation and scattering, pulse/range concepts, Doppler and platform motion, coherent signal processing, phase, polarisation, speckle, radiometry, incidence geometry and measurement uncertainty. The shared foundations for electromagnetics, signal processing and remote-sensing physics are still planned or incomplete. The Radar exploration is an orientation and investigation resource, not a substitute for those canonical foundations.
+A SAR foundation must cover electromagnetic propagation and scattering, pulse/range concepts, Doppler and platform motion, coherent signal processing, phase, polarisation, speckle, radiometry, incidence geometry and measurement uncertainty. The shared electromagnetic/radiometric introduction is now available, but radar-specific foundations for scattering, radar measurement and signal processing remain incomplete. The Radar exploration is an orientation and investigation resource, not a substitute for those canonical foundations.
 
 ### Spatial Data Collection
 
@@ -133,7 +133,7 @@ Evidence at one level does not automatically establish the next.
 
 | Pillar | Optical multispectral | SAR / Sentinel-1 |
 |---|---|---|
-| Theoretical Foundations | Remote-sensing physics and radiometry remain planned; selected index mathematics is documented | Electromagnetics, radar measurement and signal-processing foundations remain incomplete |
+| Theoretical Foundations | Initial electromagnetic/radiometric module published; detailed optical radiative transfer, technical review and learner testing remain open | Shared electromagnetic introduction published; radar scattering, measurement and signal-processing foundations remain incomplete |
 | Spatial Data Collection | Subject identified; Fiji pilot documents a bounded Level-2A/STAC workflow; general acquisition chapter missing | Radar exploration and Nairobi scene specification exist; no completed scene acquisition record |
 | Spatial Algorithms | Broad catalogue and multiple tested implementations; sensor-aware preprocessing and validation remain uneven | Lee filter, CFAR and local coherence notes exist; no complete sensor-to-product processing chain |
 | Spatial Recipes | No mature integrated optical recipe yet; Fiji pilot is an evidence workflow, not one | Guided backscatter investigation exists; no executed Nairobi recipe or validated application |
@@ -142,7 +142,7 @@ This table is a gap map, not a maturity score. It deliberately leaves incomplete
 
 ## 6. Recommended development sequence
 
-1. **Build the foundations first:** publish and review a practical radiometry and electromagnetic-observation foundation that distinguishes optical reflectance from radar backscatter.
+1. **Extend and review the foundation:** technically review the initial electromagnetic/radiometric module, then develop separate optical radiative-transfer and radar scattering/signal-formation modules.
 2. **Build collection records:** document optical satellite acquisition and SAR acquisition separately, including product families, geometry, metadata, access, calibration and quality controls.
 3. **Audit algorithms against inputs:** connect each algorithm to required sensor/product types, band mapping, units, masks, grid, assumptions, failure modes and validation needs.
 4. **Complete one bounded optical execution:** finish the Fiji multispectral quality-control gates, preserve its blind-review boundaries, and report exactly which live processing stages have passed.
