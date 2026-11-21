@@ -22,6 +22,10 @@ class CopernicusQueryTests(unittest.TestCase):
         self.assertEqual(params["$top"], "100")
         self.assertEqual(params["$expand"], "Attributes")
 
+    def test_location_query_rejects_empty_product_id(self):
+        with self.assertRaisesRegex(ValueError, "non-empty string"):
+            QUERY.build_location_query("")
+
     def test_location_query_expands_locations_for_exact_product(self):
         url = QUERY.build_location_query("abc-123")
         self.assertIn("Id+eq+%27abc-123%27", url)
