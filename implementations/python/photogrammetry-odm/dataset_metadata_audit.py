@@ -143,6 +143,7 @@ def audit_dataset(
     observed_images = sorted({item["image_label"] for item in observations})
     unknown_gcp_labels = sorted(set(observed_labels) - set(gcp_labels))
     missing_image_labels = sorted(set(observed_images) - image_stems)
+    images_without_ground_point_observations = sorted(image_stems - set(observed_images))
     out_of_bounds = [
         {"point_label": item["point_label"], "image_label": item["image_label"],
          "x": item["x"], "y": item["y"]}
@@ -197,6 +198,7 @@ def audit_dataset(
         "duplicate_coordinate_groups_within_1e-6_m": duplicate_coordinate_groups,
         "observation_labels_without_gcp": unknown_gcp_labels,
         "observation_images_missing_from_images_directory": missing_image_labels,
+        "images_without_ground_point_observations": images_without_ground_point_observations,
         "observation_pixels_outside_readme_dimensions": out_of_bounds,
         "opk_photo_ids_without_matching_image": opk_unmatched_images,
         "observation_images_without_matching_opk": observed_opk_unmatched,
@@ -205,7 +207,8 @@ def audit_dataset(
         "interpretation_notes": [
             "Image dimensions 5472x3648 are taken from the dataset README; actual image bytes must be checked separately.",
             "Pixel bounds are checked against the README dimensions, not dimensions decoded from each image.",
-            "Duplicate coordinates are reported, not automatically treated as a file error or independent points.",
+            "The publisher README documents point 100 as having no image measurement and sharing coordinates with point 206; that duplicate/unobserved record is an expected source exception, not a second independent point.",
+            "Images without ground-point observations are reported as coverage information; an image does not need to contain a surveyed target to contribute tie points to the reconstruction.",
             "The supplied OPK orientations came from a Metashape adjustment using the ground points as control; they are not independent validation.",
             "The audit checks structure and consistency only. It does not transform coordinates, validate survey accuracy, or determine a control/checkpoint split.",
         ],
