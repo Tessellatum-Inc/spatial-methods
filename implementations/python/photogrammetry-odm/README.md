@@ -85,6 +85,8 @@ Do not assume every product exists. Confirm the actual output tree, inspect proc
 
 Use [the reviewer invitation](reviewer-invitation.md) when approaching qualified external reviewers. It is a ready-to-adapt brief describing the task, independence boundaries, materials and submission bundle; it does not send invitations or disclose the proposed split. Pair it with [the operational reviewer handoff](reviewer-handoff.md) for the detailed procedure.
 
+Use [the reviewer recruitment and intake protocol](reviewer-recruitment-and-intake.md) to select reviewers, record prior exposure and conflicts, preserve independent submissions and manage adjudication without exposing point roles.
+
 ## Role-blind reviewer handoff
 
 Use [the operational reviewer handoff](reviewer-handoff.md) to distribute the role-blind packet, acquire the exact immutable source revision, complete the 206-row worksheet and submit the locked evidence. The handoff distinguishes packet derivatives from the original full-resolution images and defines the submission bundle. The current split key must remain undisclosed until the review is locked.
