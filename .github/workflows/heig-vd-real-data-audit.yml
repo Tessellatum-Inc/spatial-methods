@@ -1,0 +1,109 @@
+name: HEIG-VD real-data acquisition audit
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/heig-vd-real-data-audit.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: heig-vd-real-data-audit
+  cancel-in-progress: false
+
+jobs:
+  acquire-and-audit:
+    name: Acquire, verify and audit HEIG-VD drone dataset
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install acquisition and image-audit dependencies
+        run: python -m pip install "huggingface_hub>=0.30,<2" "Pillow>=10,<13"
+
+      - name: Acquire immutable dataset snapshot
+        working-directory: implementations/python/photogrammetry-odm
+        run: python acquire_rehearsal_dataset.py "$GITHUB_WORKSPACE/data/heig-vd-scop"
+
+      - name: Verify acquired source bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          SNAPSHOT="$(find data/heig-vd-scop/snapshots -mindepth 1 -maxdepth 1 -type d | sort | head -n 1)"
+          test -n "$SNAPSHOT"
+          python implementations/python/photogrammetry-odm/verify_acquisition.py \
+            "$SNAPSHOT/acquisition-provenance.json" \
+            --json-out "$SNAPSHOT/acquisition-verification.json"
+
+      - name: Run image inventory and readability audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p reports/heig-vd
+          SNAPSHOT="$(find data/heig-vd-scop/snapshots -mindepth 1 -maxdepth 1 -type d | sort | head -n 1)"
+          DATASET="$SNAPSHOT/datasets/drone_heig_2019"
+          python implementations/python/photogrammetry-odm/dataset_audit.py \
+            "$DATASET" --json-out reports/heig-vd/dataset-audit.json
+
+      - name: Run GCP, image-observation and OPK consistency audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          SNAPSHOT="$(find data/heig-vd-scop/snapshots -mindepth 1 -maxdepth 1 -type d | sort | head -n 1)"
+          DATASET="$SNAPSHOT/datasets/drone_heig_2019"
+          python implementations/python/photogrammetry-odm/dataset_metadata_audit.py \
+            "$DATASET" --json-out reports/heig-vd/dataset-metadata-audit.json
+
+      - name: Preserve acquisition and audit evidence
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p reports/heig-vd
+          SNAPSHOT_ROOT="data/heig-vd-scop/snapshots"
+          if [ -d "$SNAPSHOT_ROOT" ]; then
+            SNAPSHOT="$(find "$SNAPSHOT_ROOT" -mindepth 1 -maxdepth 1 -type d | sort | head -n 1 || true)"
+            if [ -n "$SNAPSHOT" ]; then
+              for file in acquisition-provenance.json acquisition-verification.json; do
+                if [ -f "$SNAPSHOT/$file" ]; then
+                  cp "$SNAPSHOT/$file" "reports/heig-vd/$file"
+                fi
+              done
+            fi
+          fi
+          cat > reports/heig-vd/README.md <<'EOF'
+          # HEIG-VD real-data acquisition and audit
+
+          Source: https://huggingface.co/datasets/heig-vd-geo/scop-datasets
+          Selected dataset: datasets/drone_heig_2019
+          Licence: CC BY 4.0
+          Attribution: HEIG-VD, Geomatics group (2026), Photogrammetry and LiDAR datasets.
+
+          This artifact contains provenance and audit reports, not the source imagery.
+          Acquisition hashes establish local byte agreement with the recorded manifest;
+          they do not establish publisher authenticity, licence compliance, coordinate
+          reference correctness, photogrammetric suitability or product accuracy.
+          The supplied OPK orientations derive from a Metashape adjustment using
+          ground points as control and are not independent validation.
+          EOF
+
+      - name: Upload audit evidence (no source imagery)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: heig-vd-real-data-audit
+          path: reports/heig-vd/
+          if-no-files-found: warn
+          retention-days: 30
