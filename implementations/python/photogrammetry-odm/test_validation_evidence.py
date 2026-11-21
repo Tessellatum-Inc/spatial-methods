@@ -49,6 +49,12 @@ B,10,10,10,11,12,13
         self.assertEqual(report["evidence_status"], "not_assessable")
         self.assertIn("reference_uncertainty", report["missing_evidence"])
 
+    def test_missing_acceptance_criteria_is_not_assessable(self):
+        context = dict(self.context)
+        context.pop("acceptance_criteria")
+        report = build_validation_record(self.csv, context)
+        self.assertEqual(report["evidence_status"], "not_assessable")
+        self.assertIn("acceptance_criteria", report["missing_evidence"])
     def test_non_independent_points_are_not_assessable(self):
         context = dict(self.context, checkpoint_independence=False)
         report = build_validation_record(self.csv, context)
