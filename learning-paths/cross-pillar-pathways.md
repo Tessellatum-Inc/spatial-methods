@@ -76,7 +76,7 @@ Exercises A–O use synthetic data or simulated scenarios. They support reproduc
 
 This is a partial pathway and gap map, not a claim that remote sensing is now a complete four-pillar route. It links the existing [remote-sensing indices path](remote-sensing-indices.md), [Radar exploration](../explorations/radar/README.md), the [Fiji multispectral pilot](../implementations/python/area-adjusted-accuracy/fiji-multispectral-pilot-spec.md), and the [Nairobi Sentinel-1 scene specification](../explorations/radar/nairobi-sentinel-1-scene-record.md).
 
-The optical branch has a broad algorithm catalogue and a bounded live-data retrieval pilot, but remote-sensing physics/radiometry and a general optical collection chapter remain planned or incomplete. The SAR branch has a guided backscatter investigation and scoped algorithms, but the Nairobi scene has not yet been selected or processed. Neither branch has a mature, independently validated end-to-end recipe. The pathway records these gaps rather than filling them with superficial links.
+The optical branch has a broad algorithm catalogue, a bounded live-data retrieval pilot and an initial electromagnetic/radiometric foundation module; detailed optical physics and a general optical collection chapter remain incomplete. The SAR branch has a guided backscatter investigation and scoped algorithms, but the Nairobi scene has not yet been selected or processed. Neither branch has a mature, independently validated end-to-end recipe. The pathway records these gaps rather than filling them with superficial links.
 
 ## What is not yet represented
 
