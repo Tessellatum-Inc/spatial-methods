@@ -30,3 +30,60 @@ jobs:
       - name: Run unit tests
         run: python -m unittest -v test_stac_imagery_review.py
         working-directory: implementations/python/area-adjusted-accuracy
+
+  catalogue-smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: implementations/python/area-adjusted-accuracy/requirements-stac-imagery.txt
+      - name: Install dependencies
+        run: python -m pip install -r requirements-stac-imagery.txt
+        working-directory: implementations/python/area-adjusted-accuracy
+      - name: Select one blind point per disagreement type
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          source = Path("data/fiji-worldcover-legend-adjudication-blind-review.csv")
+          with source.open(newline="", encoding="utf-8-sig") as stream:
+              rows = list(csv.DictReader(stream))
+          selected = {}
+          for row in rows:
+              key = row.get("transition") or "all"
+              selected.setdefault(key, row)
+          sample = list(selected.values())[:5]
+          if not sample:
+              raise SystemExit("No blind review points found")
+          target = Path("/tmp/fiji-stac-smoke-input.csv")
+          with target.open("w", newline="", encoding="utf-8") as stream:
+              writer = csv.DictWriter(stream, fieldnames=list(sample[0]))
+              writer.writeheader()
+              writer.writerows(sample)
+          print(f"Selected {len(sample)} points across {len(selected)} disagreement types")
+          PY
+        working-directory: implementations/python/area-adjusted-accuracy
+      - name: Query public STAC catalogues (metadata only)
+        id: discovery
+        continue-on-error: true
+        run: |
+          mkdir -p /tmp/fiji-stac-smoke
+          python stac_imagery_review.py \
+            --input /tmp/fiji-stac-smoke-input.csv \
+            --output-dir /tmp/fiji-stac-smoke \
+            --metadata-only
+          code=$?
+          echo "cli_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+        working-directory: implementations/python/area-adjusted-accuracy
+      - name: Upload catalogue discovery report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fiji-stac-catalogue-smoke-test
+          path: /tmp/fiji-stac-smoke/
+          if-no-files-found: warn
+          retention-days: 7
