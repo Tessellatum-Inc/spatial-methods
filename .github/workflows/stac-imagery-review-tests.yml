@@ -33,6 +33,10 @@ jobs:
 
   catalogue-smoke-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      STAC_REQUEST_TIMEOUT: 15
+      STAC_MAX_PAGES: 2
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -105,6 +109,9 @@ jobs:
   public-cog-window-smoke-test:
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    env:
+      STAC_REQUEST_TIMEOUT: 20
+      STAC_MAX_PAGES: 2
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
