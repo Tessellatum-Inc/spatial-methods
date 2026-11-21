@@ -286,3 +286,24 @@ The architecture is working when:
 - one foundation can connect multiple fields without erasing their differences;
 - practical work has observable outputs, limitations and reproducibility details;
 - the existing spatial archive fits naturally without dictating the entire scope.
+
+## 11. Applications as capability-building testbeds
+
+Applications bring the four pillars together and test whether their knowledge, data pathways, algorithms and recipes work under real constraints. They must also feed reusable improvements back into the repository.
+
+An application investigation should therefore produce two kinds of value:
+
+1. **Application value:** a useful analysis, prototype, experiment, dataset, decision aid or operationally relevant result.
+2. **Methods value:** reusable data-discovery routes, acquisition procedures, processing components, validation patterns, automation, foundations or recipes.
+
+The application remains a context, not a fifth pillar or a new organising silo. Its findings should be decomposed and promoted to the canonical home of each reusable capability. Keep domain-specific components with their domain where appropriate; do not generalise a one-off project configuration into a universal method.
+
+The operating cycle is:
+
+**application need → workflow decomposition → capability extraction → canonical method → improved application**
+
+Use the [Application-to-Methods Feedback Loop](application-to-methods-feedback-loop.md) as the operating standard. The [photogrammetric reusable-capability register](../recipes/photogrammetric-mapping/reusable-capabilities.md) demonstrates how an existing application can expose reusable data acquisition, dataset auditing, processing provenance, orchestration and independent-validation patterns.
+
+The governing question at every major application milestone is:
+
+**What reusable capability did this application contribute to Spatial Methods, and where is that capability maintained and verified?**
