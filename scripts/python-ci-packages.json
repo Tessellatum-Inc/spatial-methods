@@ -1148,6 +1148,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/stratified-sampling",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/stream-order",
     "pythonpath": ""
   },
