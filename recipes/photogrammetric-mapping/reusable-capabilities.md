@@ -4,7 +4,7 @@
 **Status:** Real EXIF-only baseline executed; controlled validation pending  
 **Purpose:** Make the reusable contributions of the photogrammetry application visible and prevent its work from becoming a disconnected project-specific toolchain.
 
-This register is an integration map, not a claim that a complete end-to-end photogrammetry platform exists. It distinguishes existing repository components from the handoffs and automation still to be built or verified.
+This register is an integration map, not a claim that a complete end-to-end photogrammetry platform exists. It distinguishes implemented components, real-data baseline evidence and the controlled validation stages still to be completed. Historical milestone tables below record status at the time; Section 15 is the current consolidated status.
 
 ## 1. Why this application is useful to Spatial Methods
 
@@ -216,15 +216,15 @@ This is a meaningful integration milestone, not completion of the full workflow.
 | Image readability/dimensions | Connected when Pillow is installed |
 | ODM command construction | Existing component; connected as dry-run only |
 | Unified machine-readable preflight | Implemented |
-| Dataset-specific GCP/observation/OPK audit | Separate, not yet integrated |
-| Processing execution and run provenance | Not yet integrated |
-| Output product inventory and inspection | Not yet implemented |
-| Independent checkpoint acceptance workflow | Statistics exist; project-level handoff not yet integrated |
-| Reproducible delivery package | Not yet implemented |
+| Dataset-specific GCP/observation/OPK audit | Implemented; real HEIG-VD audit completed |
+| Processing execution and run provenance | Implemented; EXIF-only baseline run succeeded |
+| Output product inventory and inspection | Implemented; GeoTIFF/LAZ structural inspection succeeded |
+| Independent checkpoint acceptance workflow | Evidence and decision-record adapters implemented; independent checkpoint data pending |
+| Reproducible delivery package | Builder implemented; real validation dossier pending |
 
 ### Next integration milestone
 
-Build a processing-run record that captures the exact input inventory, image digest, ODM arguments, runtime environment, execution timestamps, exit status, logs and output inventory. Keep execution explicitly operator-triggered. Then add output-product inspection as a separate read-only stage. Only after these interfaces are stable should the workflow move toward automated end-to-end execution.
+Processing-run provenance and read-only output inspection are now implemented and exercised on the EXIF-only baseline. The next integration milestone is to complete and lock the role-blind observation review, confirm the control/checkpoint partition and vertical reference, then run the approved GCP-controlled variant and independent checkpoint assessment.
 
 
 ## 10. Integration update — processing-run provenance
@@ -257,13 +257,13 @@ The recorder documents the wrapper-observable processing event. It is not yet a 
 | Execution logs and exit status | Implemented |
 | Container image metadata capture | Best-effort |
 | Dataset-specific metadata audit | Separate |
-| Output semantic/geospatial inspection | Next |
+| Output semantic/geospatial inspection | Basic GeoTIFF, LAS/LAZ and OBJ structural checks implemented; advanced semantic/geometric QA pending |
 | Independent checkpoint acceptance workflow | Existing statistics; project-level integration pending |
 | Reproducible delivery package | Pending |
 
 ### Next integration milestone
 
-Create output inspection adapters that understand the actual geospatial products rather than merely listing files. At minimum, inspect raster readability, dimensions, band count, CRS, affine transform, pixel size, nodata and bounds; inspect point-cloud metadata where supported; and compare observed outputs against declared deliverables. Preserve warnings for missing or unexpected products. Keep semantic QA distinct from geometric accuracy acceptance.
+Basic output inspection now covers GeoTIFF structure, streamed LAS/LAZ point records and initial Wavefront OBJ structure, and has been exercised on real baseline products. Remaining work is advanced point-cloud classification/density/positional QA, mesh topology/semantics, independent checkpoint evidence and project-specific acceptance. Keep structural QA distinct from geometric accuracy acceptance.
 
 
 ## 11. Integration update — output inspection
@@ -293,7 +293,7 @@ This adapter establishes structural evidence only. It does not verify that a CRS
 | Explicit processing-run record, logs and checksums | Implemented |
 | Output inventory and expected-file checks | Implemented |
 | GeoTIFF structural inspection | Implemented when Rasterio is installed |
-| Point-cloud and mesh inspection | Pending |
+| Point-cloud and mesh inspection | LAS/LAZ streamed structure and initial OBJ structure implemented; advanced semantic/topology QA pending |
 | Independent checkpoint residual statistics | Implemented |
 | Project-level validation evidence and human decision record | Implemented; evidence completeness is explicit |
 | Reproducible delivery package | Pending |
@@ -372,7 +372,7 @@ Tests cover successful assembly, pending acceptance, run-identity mismatch and m
 | LAS/LAZ streamed structural inspection | Implemented when laspy and a compatible LAZ backend are installed; point counts, finite coordinates, observed/header extent reconciliation, classification/intensity summaries and bounded sample |
 | Point-cloud classification correctness, density and positional QA | Pending |
 | Wavefront OBJ syntax and vertex-index inspection | Implemented; topology, self-intersections, texture completeness, normal quality and geometric accuracy remain unverified |
-| Real-dataset end-to-end rehearsal | Pending |
+| Real-dataset EXIF-only baseline and structural output inspection | Completed; controlled GCP and independent-validation stages pending |
 | Independent multi-reviewer validation and project-specific release | External human/project process |
 
 ### Next integration milestone

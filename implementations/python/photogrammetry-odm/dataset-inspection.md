@@ -2,7 +2,7 @@
 
 ## Review status
 
-**Publisher-source inspection, acquisition/integrity audit, metadata audit and EXIF-only ODM baseline completed; role-blind human visual review remains in progress; no positional-accuracy assessment has been performed.** The immutable dataset snapshot was acquired and audited in GitHub Actions run [44899272147](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899272147), resolved to publisher revision `e0dfeba2b6ed94ea1ae2bf773e742c39fb437b71`. All 36 manifest files passed size/SHA-256 verification; all 32 source images decoded at 5472 × 3648 px. The metadata audit reconciled 31 GCP records, 206 observations across 30 points, and 32 OPK records, with no missing image references or out-of-bounds observations. The workflow generated 32 annotated image derivatives, two contact sheets, 30 point-level review sheets and a blank 206-row review-decision template. The role-blind packet includes the acquisition manifest and verification report but not the split key or full source imagery. Selected point sheets have received preliminary visual triage, but no full point-level approval register has been completed. A real EXIF-only ODM baseline has since been processed and structurally inspected; no GCP-controlled run or positional-accuracy assessment has been performed.
+**Publisher-source inspection, acquisition/integrity audit, metadata audit and EXIF-only ODM baseline completed; role-blind human visual review remains in progress; no positional-accuracy assessment has been performed.** The immutable dataset snapshot was acquired and audited in GitHub Actions run [44900854170](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44900854170), resolved to publisher revision `e0dfeba2b6ed94ea1ae2bf773e742c39fb437b71`. All 36 manifest files passed size/SHA-256 verification; all 32 source images decoded at 5472 × 3648 px. The metadata audit reconciled 31 GCP records, 206 observations across 30 points, and 32 OPK records, with no missing image references or out-of-bounds observations. The workflow generated 32 annotated image derivatives, two contact sheets, 30 point-level review sheets and a blank 206-row review-decision template. The role-blind packet includes the acquisition manifest and verification report but not the split key or full source imagery. Selected point sheets have received preliminary visual triage, but no full point-level approval register has been completed. A real EXIF-only ODM baseline has since been processed and structurally inspected; no GCP-controlled run or positional-accuracy assessment has been performed.
 
 - Dataset: [HEIG-VD drone 2019 (Yverdon campus)](https://huggingface.co/datasets/heig-vd-geo/scop-datasets/tree/main/datasets/drone_heig_2019)
 - Publisher: HEIG-VD, Geomatics group.
@@ -41,6 +41,22 @@ The OPK README description says its rotations are world-to-camera and specifies 
 4. The supplied OPK orientations originate from a Metashape adjustment that used the ground points as control. They are useful comparison material but are not independent truth and must not be used as an independent accuracy check.
 5. Point 100 is explicitly described as having no image measurement and duplicate coordinates with point 206. It cannot serve as a separately measured image checkpoint. Avoid counting coincident records as independent spatial evidence.
 6. A future control/checkpoint split must be defined from verified coordinate geometry, observation coverage and project objectives. Do not assign points by ID alone or use the supplied Metashape OPK as a validation reference.
+
+
+
+## EXIF-only ODM baseline and structural output inspection
+
+The first real ODM run used the verified 32-image working copy, without a GCP file, OPK adjustment or checkpoint observations. Processing completed with exit code 0 using ODM 3.6.2 at digest `sha256:a96f56dbc4f775e352fb2b3acc472bb59f456c0948a699eb1c433659dccfbdf7`. The processing run is [44899855412](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899855412).
+
+The separate post-run output inspection completed with status `inspected`, no blockers and no warnings: [run 44901305912](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44901305912). The evidence and selected products are in [artifact 14706410333](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44901305912/artifacts/14706410333).
+
+- Orthophoto: 9172 × 7801 pixels, 0.05 m pixel size, EPSG:32632.
+- DSM: 9172 × 7801 pixels, 0.05 m pixel size, EPSG:32632.
+- LAZ: 1,963,721 points, LAS 1.4 / point format 7; all coordinates finite; observed count matches header; no points outside header bounds.
+- LAZ classification counts contain only class 0 and intensity range is 0–0.
+- The LAZ WKT parses but has no explicit EPSG authority identifier; its Transverse Mercator parameters are consistent with UTM zone 32N. Raster products explicitly declare EPSG:32632. Reconcile this before treating the point-cloud CRS as authoritative.
+
+This is a structural processing baseline, not positional-accuracy validation. EXIF GPS is not independent survey control, camera altitude reference is unresolved, and no checkpoint residuals or acceptance decision exist. The initial inspection attempt lacked `pyproj`; the products were preserved and inspected successfully in a separate workflow with `pyproj` installed. Future manual baseline runs include the dependency.
 
 ## Remaining verification gates
 

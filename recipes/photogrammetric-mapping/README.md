@@ -7,6 +7,8 @@
 
 > This recipe describes a defensible workflow structure, not an approved flight plan, survey specification, safety case, regulatory authorisation or guarantee of accuracy. An EXIF-only baseline has been run on the public HEIG-VD dataset, but this is not a field campaign or accuracy assessment. Project requirements, competent personnel, jurisdictional rules and professional responsibilities take precedence.
 
+> **Implementation note:** The repository has completed an EXIF-only ODM baseline on the public HEIG-VD dataset and structurally inspected its orthophoto, DSM and LAZ. This demonstrates the processing chain on one dataset only; it is not a field campaign, GCP-controlled run or positional-accuracy assessment.
+
 ## 1. Purpose and outcome
 
 Turn a defined mapping requirement into an acquired, processed, independently assessed and documented photogrammetric dataset.
