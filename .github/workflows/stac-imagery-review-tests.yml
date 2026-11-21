@@ -234,16 +234,34 @@ jobs:
           statuses = Counter(row.get("status", "") for row in rows)
           catalogues = Counter(row.get("catalogue", "") for row in rows)
           points = {row.get("sample_id") for row in rows}
-          print(f"Points represented: {len(points)}")
-          print(f"Candidate/status rows: {len(rows)}")
-          print(f"Statuses: {dict(statuses)}")
-          print(f"Catalogue rows: {dict(catalogues)}")
+          grouped = {}
+          for row in rows:
+              grouped.setdefault((row.get("sample_id", ""), row.get("catalogue", "")), []).append(row)
+          lines = [
+              "## Full 25-point Fiji STAC discovery\\n\\n",
+              f"- Points represented: {len(points)}\\n",
+              f"- Candidate/status rows: {len(rows)}\\n",
+              f"- Statuses: {dict(statuses)}\\n",
+              f"- Catalogue rows: {dict(catalogues)}\\n\\n",
+              "| Sample | Catalogue | Best item | Acquisition | Cloud % | Status |\\n",
+              "|---|---|---|---|---:|---|\\n",
+          ]
+          for (sample_id, catalogue), candidates in sorted(grouped.items()):
+              def cloud(row):
+                  try:
+                      return float(row.get("cloud_cover_percent") or 100)
+                  except ValueError:
+                      return 100.0
+              best = min(candidates, key=cloud)
+              lines.append(
+                  f"| {sample_id} | {catalogue} | {best.get('item_id','')} | "
+                  f"{best.get('datetime','')} | {best.get('cloud_cover_percent','')} | "
+                  f"{best.get('status','')} |\\n"
+              )
+          report_text = "".join(lines)
+          print(report_text)
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as report:
-              report.write("## Full 25-point Fiji STAC discovery\\n\\n")
-              report.write(f"- Points represented: {len(points)}\\n")
-              report.write(f"- Candidate/status rows: {len(rows)}\\n")
-              report.write(f"- Statuses: {dict(statuses)}\\n")
-              report.write(f"- Catalogue rows: {dict(catalogues)}\\n")
+              report.write(report_text)
           PY
         working-directory: implementations/python/area-adjusted-accuracy
       - name: Upload full pilot discovery report
