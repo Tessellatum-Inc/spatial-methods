@@ -175,8 +175,11 @@ jobs:
                       f"{row.get('chip_sha256','')} |\\n"
                   )
           with open("/tmp/fiji-cog-smoke-summary.md", encoding="utf-8") as report:
-              with open(Path("/tmp/fiji-cog-smoke-summary.md"), encoding="utf-8") as source:
-                  print(source.read())
+              content = report.read()
+          print(content)
+          import os
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as target:
+              target.write(content)
           if not created:
               raise SystemExit("No public COG window read succeeded")
           PY
