@@ -119,7 +119,7 @@ def create_run_record(
             record["processing"]["execution_error"] = "Docker executable not found; processing was not started."
             record["finished_at"] = datetime.now(timezone.utc).isoformat()
             record_path = run_directory / "processing-run.json"
-            record_path.write_text(json.dumps(record, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+            record_path.write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
             return record
         completed = subprocess.run(command, capture_output=True, text=True, check=False)
         (run_directory / "stdout.log").write_text(completed.stdout, encoding="utf-8")
