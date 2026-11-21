@@ -79,6 +79,24 @@ Depending on options and successful processing, ODM can produce georeferenced or
 
 Do not assume every product exists. Confirm the actual output tree, inspect processing logs and open geospatial products in appropriate software such as QGIS or CloudCompare.
 
+
+## Independent checkpoint image-measurement register
+
+After the role-blind observation review is locked and the control/checkpoint partition is formally approved, use [the independent measurement protocol](independent-checkpoint-measurement-protocol.md) and [blank CSV template](independent-checkpoint-measurements.template.csv). Record one row per point/image view from the original unannotated source image. Never copy the publisher's Metashape pixel picks.
+
+Validate the completed register before using its coordinates in any later checkpoint workflow:
+
+```bash
+python validate_independent_checkpoint_measurements.py \\
+  independent-checkpoint-measurements.csv \\
+  approved-control-checkpoint-split.json \\
+  acquisition-provenance.json \\
+  visual-review-summary.json \\
+  --json-out independent-measurement-validation.json
+```
+
+The validator requires an explicitly approved/locked split and checks checkpoint-only point membership, source observation-key membership, original-image SHA-256 values, UTC timestamps, coordinate validity, duplicate point/image rows and at least one measured view per checkpoint. It never reads source pixel coordinates. It validates record structure and provenance only; reviewer independence, target identity, measurement quality and geospatial accuracy remain human/evidence questions.
+
 ## Independent checkpoint assessment
 
 Prepare a CSV containing **independent check points** measured in the reference survey and extracted from the final model. Required columns:
