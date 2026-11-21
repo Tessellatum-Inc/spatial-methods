@@ -33,6 +33,14 @@ The first discovery pass is defined as an ASF Search API query over the study wi
 
 **Execution status:** The query has been specified and its parameter meanings checked against the ASF Search API documentation. The executable client in [query_asf_sentinel1.py](query_asf_sentinel1.py) constructs the closed WKT polygon with the required nested parentheses and archives the exact response with a SHA-256 digest. The query parameter names and accepted values are checked against the [official ASF Search API keyword reference](https://docs.asf.alaska.edu/api/keywords/), including the closed WKT `intersectsWith` predicate and GeoJSON output. The live API response could not be retrieved in this review environment. Therefore this is not evidence that the query returned zero or any particular number of scenes, and no candidate product is selected yet.
 
+A second, independent catalogue route is now implemented using the [Copernicus Data Space OData API](https://documentation.dataspace.copernicus.eu/APIs/OData.html). Run it from the repository root:
+
+```bash
+python explorations/radar/query_copernicus_sentinel1.py
+```
+
+The client filters the Sentinel-1 collection, the documented IW GRD product type, the same closed EPSG:4326 study polygon and an explicit UTC interval. It requests expanded product attributes and archives the exact JSON response with query parameters, retrieval time, response SHA-256 and pagination status under `data/copernicus/nairobi/`. The query does not assume a dual-polarisation result: inspect each product's returned attributes and product name to establish its channels. If an OData `nextLink` is present, the saved first page is incomplete and must not be treated as an exhaustive search. The client does not download products or establish full AOI coverage.
+
 When executing the query, preserve the raw GeoJSON response and query timestamp. Inspect each candidate's full footprint, acquisition time, product identifier, platform, pass direction, relative orbit, polarisation, processing level, and downloadable asset. Confirm full coverage of the intended analysis sub-area rather than relying only on polygon intersection.
 
 If the dual-polarisation query yields no suitable candidate, run and document a second query with `polarization=VV`; do not silently substitute a single-polarisation scene. If the time window must be widened, record the new interval and reason. Select a scene only after comparing candidates and confirming asset access.
