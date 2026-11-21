@@ -287,7 +287,7 @@ def main() -> int:
     parser.add_argument("--output-dir", default="/tmp/fiji-multispectral-pilot")
     parser.add_argument("--points", type=int, default=5)
     parser.add_argument("--items-per-point", type=int, default=3)
-    parser.add_argument("--window-pixels", type=int, default=32)
+    parser.add_argument("--window-pixels", type=int, default=16)
     args = parser.parse_args()
     result = run_pilot(
         Path(args.input), Path(args.output_dir),
