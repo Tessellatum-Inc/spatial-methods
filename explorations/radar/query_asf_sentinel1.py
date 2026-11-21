@@ -31,6 +31,17 @@ def build_query(start: str, end: str, polarization: str, max_results: int) -> di
         raise ValueError("Both --start and --end are required.")
     if max_results < 1:
         raise ValueError("--max-results must be at least 1.")
+    try:
+        start_dt = datetime.fromisoformat(start.replace("Z", "+00:00"))
+        end_dt = datetime.fromisoformat(end.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ValueError("Start and end must be ISO 8601 timestamps with UTC offsets.") from exc
+    if start_dt.tzinfo is None or end_dt.tzinfo is None:
+        raise ValueError("Start and end timestamps must include an explicit UTC offset.")
+    if start_dt.utcoffset().total_seconds() != 0 or end_dt.utcoffset().total_seconds() != 0:
+        raise ValueError("This investigation requires UTC timestamps (Z or +00:00).")
+    if start_dt > end_dt:
+        raise ValueError("Start timestamp must not be later than end timestamp.")
     return {
         "dataset": "SENTINEL-1",
         "beamMode": "IW",
@@ -115,7 +126,7 @@ def main(argv: list[str] | None = None) -> int:
         return 3
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     stem = f"asf_sentinel1_nairobi_{stamp}"
     geojson_path = args.output_dir / f"{stem}.geojson"
     metadata_path = args.output_dir / f"{stem}.metadata.json"
