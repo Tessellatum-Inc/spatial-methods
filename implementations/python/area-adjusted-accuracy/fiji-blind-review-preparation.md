@@ -37,3 +37,24 @@ The RGB provenance file is optional. Keep generated chips and worksheets outside
 
 ## Quality limitations
 SCL is a 20 m scene-classification layer, not a perfect cloud mask or field observation. High local valid fraction does not guarantee interpretability; shadows, haze, mixed pixels, seasonal change and geolocation uncertainty still require human judgement. RGB chips use independent per-band display stretches and are for visual context, not quantitative radiometry.
+
+## Reviewer coding guide
+
+Use the existing reference legend as the controlled vocabulary for independent interpretation, without consulting the original map class or transition:
+- water
+- mangrove
+- bare earth/rock
+- urban/impervious
+- agriculture
+- grassland
+- shrubland
+- tree
+
+Confidence is an ordinal judgement:
+- 1 — very low: evidence is weak or conflicting
+- 2 — low: a plausible class, but substantial ambiguity remains
+- 3 — moderate: more likely than alternatives, with meaningful uncertainty
+- 4 — high: clear supporting evidence, limited ambiguity
+- 5 — very high: strong, consistent evidence across available context
+
+Do not interpret these values as calibrated probabilities. Use the ambiguity flag when a plausible alternative remains; record that alternative rather than forcing certainty. Use `decision_status` to distinguish `provisional`, `locked`, and `needs_second_review`. A decision is locked only after the reviewer has recorded their interpretation and evidence without access to map labels/transitions.
