@@ -138,8 +138,10 @@ jobs:
 
           ```bash
           python implementations/python/photogrammetry-odm/lock_visual_review.py \
-            review-decisions-template.csv visual-review-summary.json \
-            acquisition-provenance.json locked-review.json
+            /path/to/review-packet/review-decisions-template.csv \
+            /path/to/review-packet/visual-review-summary.json \
+            /path/to/review-packet/acquisition-provenance.json \
+            /path/to/review-packet/locked-review.json
           ```
 
           The lock utility verifies all source point/image/pixel records, requires
