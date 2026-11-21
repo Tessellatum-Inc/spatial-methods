@@ -98,3 +98,44 @@ The helper resolves the repository's current commit SHA and downloads `datasets/
 ## Current access limitation
 
 The dataset-specific README, repository listings and rendered GCP/observation/OPK text exports have now been inspected online. The real image bytes have not been acquired or audited locally; no local checksums, EXIF audit, OPK matrix validation or control/checkpoint partition exist yet. The image-audit and acquisition-helper tests were run only against local fixtures/mirrored source. The next gate is to run `acquire_rehearsal_dataset.py` on a network-enabled machine, retain its resolved commit SHA, then perform the local byte-level and structural checks specified in [dataset-inspection.md](dataset-inspection.md).
+
+
+## Operator run sheet — first real-data rehearsal
+
+This run sheet is intentionally gated. It does not claim that the data has already been downloaded or that the environment has Docker/GPU resources.
+
+1. Install the acquisition dependency and run `acquire_rehearsal_dataset.py` as documented in the implementation README.
+2. Record the resolved 40-character repository revision. Preserve the resulting snapshot directory unchanged.
+3. Run `verify_acquisition.py`; stop unless the result is `verified`. Retain the complete JSON report and exact manifest SHA-256.
+4. Run `dataset_audit.py` and `dataset_metadata_audit.py` on the verified snapshot. Reconcile the actual image count, dimensions, image labels, GCP rows, image-observation rows, OPK rows, duplicate coordinate records and all parser warnings against the publisher's dataset documentation.
+5. Review licence and attribution terms from the publisher. Preserve the stated CC BY 4.0 attribution in any derived public material; the checksum does not establish licence compliance.
+6. Create a separate working copy from the verified source files. Record the copy operation and source manifest hash. Never edit the immutable snapshot.
+7. Resolve the vertical reference and GCP Z interpretation before generating a GCP file. Do not infer a vertical CRS from the horizontal EPSG code.
+8. Predeclare which surveyed, image-measured points are adjustment controls and which are withheld checkpoints. Preserve the split rationale. The supplied Metashape OPK adjustment is not independent validation.
+9. Confirm Docker availability and available storage, memory and compute. Pin an ODM release and resolve the exact image digest before processing. A dry-run is not a processing run.
+10. Run a baseline without GCPs, inspect outputs, then run a controlled variant only after the control/checkpoint split is approved. Keep withheld checkpoints out of adjustment and parameter tuning.
+11. Extract withheld checkpoint coordinates using a documented method; harmonize horizontal and vertical references and units; record reference uncertainty and sample limitations.
+12. Generate validation evidence and assemble the dossier using the original acquisition manifest and its verification report. Inspect every warning and consistency check. Release authorization remains a separate human/project decision.
+
+### Stop conditions
+
+Stop and document the blocker if the publisher revision cannot be resolved, the integrity report is not `verified`, any expected source file is absent or altered, the metadata audit exposes unresolved coordinate/identifier ambiguity, Docker or storage is insufficient, the vertical reference is unresolved, or independent checkpoints cannot be protected from processing. Do not fill a missing fact with an assumption to keep the workflow moving.
+
+## 14. Integration update — hardened acquisition and mesh structure checks
+
+The acquisition verifier now rejects symlinks anywhere in a manifest path, detects symlink entries within the selected dataset tree, and reports their paths. This prevents a manifest from silently resolving a file through a symlinked directory and treats symlinked dataset content as an integrity issue.
+
+The OBJ inspector now checks:
+- finite vertex, texture-coordinate and normal records;
+- positive and negative face indices for vertices, texture coordinates and normals;
+- repeated vertex references within a face;
+- zero-area polygon faces using a Newell area-vector check;
+- referenced and unreferenced vertex counts.
+
+This remains a lightweight structural check, not a topology or geometric-quality validator. It does not establish manifoldness, self-intersection freedom, texture-file completeness, normal correctness, watertightness or positional accuracy.
+
+New tests cover symlinked path components, unmanifested symlink directories, invalid OBJ texture references, zero-area faces and valid negative relative indices.
+
+### Current gate
+
+The repository now has a stronger synthetic acquisition-to-dossier handoff, but the documented HEIG-VD dataset still needs a real local acquisition, image and metadata audit, controlled ODM run and independent checkpoint evaluation. No test fixture or structural parser should be described as a substitute for that rehearsal.
