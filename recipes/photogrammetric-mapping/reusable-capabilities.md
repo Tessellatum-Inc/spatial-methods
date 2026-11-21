@@ -326,4 +326,46 @@ The adapter does not prove checkpoint independence or sample representativeness,
 | Independent checkpoint residual statistics | Implemented |
 | Project-level validation evidence and human decision record | Implemented; evidence completeness explicit |
 | Point-cloud and mesh semantic inspection | Pending |
-| Reproducible delivery package | Next integration milestone |
+| Reproducible evidence delivery dossier | Implemented; release authorization remains external |
+
+
+## 13. Integration update — reproducible evidence delivery dossier
+
+The first delivery-dossier builder is now available as `delivery_dossier.py`.
+
+It assembles five existing evidence records into a ZIP archive:
+- project manifest;
+- read-only preflight report;
+- processing-run provenance;
+- output inspection report;
+- checkpoint-validation evidence.
+
+The embedded `delivery-dossier.json` records SHA-256 hashes, byte sizes, observed statuses, project/run identity consistency, warnings and limitations. The builder rejects missing or invalid JSON evidence and flags project/run identity conflicts as `inconsistent`.
+
+The dossier status is deliberately not a release decision:
+- `inconsistent`: declared project or processing-run identities conflict;
+- `review_required`: evidence statuses or human acceptance remain unresolved;
+- `assembled`: supplied records are consistent and carry the expected positive statuses.
+
+Even when assembled, `release_authorized` remains false. The archive contains the evidence records, not raw imagery or the complete photogrammetric products; those remain separately preserved and linked by the provenance records.
+
+Tests cover successful assembly, pending acceptance, run-identity mismatch and missing required evidence.
+
+### Current integration status
+
+| Capability | Status |
+|---|---|
+| Project manifest and integrated preflight | Implemented |
+| Input inventory and source hashes | Implemented |
+| Explicit ODM processing-run provenance | Implemented; live Docker execution not yet rehearsed |
+| Output inventory and GeoTIFF structural inspection | Implemented when Rasterio is installed |
+| Independent checkpoint residual statistics | Implemented |
+| Project-level validation evidence and human decision record | Implemented |
+| Evidence ZIP dossier with checksums and consistency checks | Implemented |
+| Point-cloud and mesh semantic inspection | Pending |
+| Real-dataset end-to-end rehearsal | Pending |
+| Independent multi-reviewer validation and project-specific release | External human/project process |
+
+### Next integration milestone
+
+Run a controlled rehearsal on a documented, non-sensitive dataset with real outputs and independently surveyed checkpoints. Close remaining structural gaps (including point-cloud/mesh inspection where deliverables require them), test the complete handoff from manifest to dossier, and record every unavailable or unverified capability rather than filling gaps with assumptions.
