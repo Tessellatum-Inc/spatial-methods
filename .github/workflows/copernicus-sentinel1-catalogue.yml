@@ -23,6 +23,7 @@ on:
     paths:
       - ".github/workflows/copernicus-sentinel1-catalogue.yml"
       - "explorations/radar/query_copernicus_sentinel1.py"
+      - "explorations/radar/audit_copernicus_sentinel1_coverage.py"
 
 permissions:
   contents: read
@@ -55,6 +56,17 @@ jobs:
             --end "$END" \
             --limit "$LIMIT" \
             --output-dir /tmp/copernicus-nairobi
+
+      - name: Install footprint audit dependency
+        run: python -m pip install "shapely>=2.0,<3"
+
+      - name: Audit product footprints against the complete study AOI
+        run: |
+          enriched_file="$(find /tmp/copernicus-nairobi -maxdepth 1 -name '*.with_locations.json' -print -quit)"
+          test -n "$enriched_file"
+          python explorations/radar/audit_copernicus_sentinel1_coverage.py \
+            --input "$enriched_file" \
+            --output /tmp/copernicus-nairobi/nairobi-sentinel-1-coverage-audit.json
 
       - name: Upload raw response and provenance sidecar
         if: always()
