@@ -52,16 +52,9 @@ The split remains `proposed_not_locked`. The source image picks are Metashape me
 
 **Current processing state:** the EXIF-only ODM baseline completed with exit code 0, and a separate post-run inspection completed with status `inspected`, no blockers and no warnings. The initial combined workflow's inspection step failed because `pyproj` was missing; the outputs and run record were preserved, then successfully inspected in a follow-up workflow with the dependency installed. The GCP candidate has not been used in processing. No checkpoint residuals, positional accuracy statistics or acceptance decision exist.
 
-### Next gate
+### Historical workflow milestones
 
-1. Complete and lock the role-blind image-observation review.
-2. Confirm the control/checkpoint split and the separate horizontal EPSG:2056 / vertical LN02 treatment.
-3. Completed: resolve and pin ODM 3.6.2 by digest and execute the no-GCP EXIF baseline. The processing record reports success.
-4. Completed: structurally inspect the orthophoto, DSM and LAZ. The report is `inspected` with no blockers or warnings; see workflow run 44901305912.
-5. Complete and lock the role-blind observation review, then confirm the control/checkpoint partition and vertical reference.
-6. Run the approved control-GCP variant. Keep all checkpoints out of adjustment and tuning.
-7. Independently establish checkpoint image positions or document the limitations of reusing source Metashape picks.
-8. Produce validation evidence and assemble the acquisition-bound dossier. A successful processing exit code is not an accuracy or release decision.
+The earlier checklist below is superseded by the single authoritative **Next gates** sequence at the top of this plan. The completed EXIF-only baseline and product-inspection milestones remain recorded in [the dedicated baseline section](#17-exif-only-baseline-execution-and-output-inspection). Do not use this historical section to reorder the remaining gates: role-blind review must be locked before unblinding the proposed split, and checkpoint image coordinates must be independently remeasured from original images before any checkpoint accuracy assessment.
 
 
 The role-blind review packet is published separately from the technical audit artifact: [download from workflow run 44900854170](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44900854170/artifacts/14705374556). It contains 30 per-point sheets, 206 observation rows in the blank decision worksheet and no role mapping. Artifact SHA-256: `d9744c9f8d05019f8915b7d63f140f7f01143bc4cabe9f62a098737516e8f117`.
