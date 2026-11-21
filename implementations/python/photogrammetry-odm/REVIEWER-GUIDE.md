@@ -152,6 +152,8 @@ Do not silently edit historical evidence records. Correct the implementation, cr
 
 ## 8. Current milestone and next gate
 
+The split-approval utility and human approval template now formalize the post-review decision. They do not mean the split has been approved: no completed human review worksheet, locked review record or signed approval record has been supplied.
+
 The HEIG-VD reference-system gate is documented in [coordinate-reference-handling.md](coordinate-reference-handling.md). The source has LV95 horizontal coordinates and LN02 heights; a two-dimensional EPSG:2056 header is not evidence that ODM output encodes LN02 vertical semantics.
 
 
