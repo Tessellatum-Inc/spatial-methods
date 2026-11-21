@@ -175,7 +175,7 @@ def inspect_outputs(project: Path, expected: list[str] | None = None) -> dict:
         for item in rasters if item["status"] == "not_inspected"
     ]
     warnings.extend(
-        f"Point-cloud header not inspected: {item['path']} ({item['reason']})"
+        f"Point-cloud records not inspected: {item['path']} ({item['reason']})"
         for item in point_clouds if item["status"] == "not_inspected"
     )
     if not rasters:
