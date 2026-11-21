@@ -152,8 +152,14 @@ def run_pilot(input_csv: Path, output_dir: Path, *, point_limit: int = 5,
                      "indices": index_summaries},
                     sort_keys=True, default=str,
                 ).encode("utf-8")
+                core_bands = {"B02", "B03", "B04", "B08"}
+                core_complete = core_bands.issubset(result["bands"])
                 base.update({
-                    "status": "windows_read" if result["bands"] else "no_assets_read",
+                    "status": (
+                        "core_bands_read" if core_complete
+                        else "partial_bands_read" if result["bands"]
+                        else "no_assets_read"
+                    ),
                     "bands_read": json.dumps(sorted(result["bands"])),
                     "missing_bands": json.dumps(result["missing_bands"]),
                     "native_grids": json.dumps(result["native_grids"]),
@@ -193,14 +199,14 @@ def run_pilot(input_csv: Path, output_dir: Path, *, point_limit: int = 5,
         errors_path.unlink(missing_ok=True)
 
     statuses = Counter(row["status"] for row in rows)
-    points_with_read = {
+    points_with_core_read = {
         row["sample_id"] for row in rows
-        if row["status"] == "windows_read"
+        if row["status"] == "core_bands_read"
     }
     return {
         "points_requested": len(points),
         "candidate_rows": len(rows),
-        "points_with_at_least_one_multispectral_read": len(points_with_read),
+        "points_with_core_10m_bands": len(points_with_core_read),
         "statuses": dict(statuses),
         "search_errors": len(errors),
         "provenance_csv": str(provenance_path),
@@ -225,7 +231,10 @@ def main() -> int:
         window_pixels=args.window_pixels,
     )
     print(json.dumps(result, indent=2))
-    return 0
+    # A green run means all requested blind points had at least one candidate
+    # with the four co-registered 10 m visible/NIR bands. Partial evidence is
+    # still retained as an artifact for diagnosis.
+    return 0 if result["points_with_core_10m_bands"] == result["points_requested"] else 2
 
 
 if __name__ == "__main__":
