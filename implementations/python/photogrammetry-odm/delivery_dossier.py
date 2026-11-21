@@ -87,6 +87,14 @@ def build_dossier(
         )
 
     warnings = []
+    if not preflight.get("project_id"):
+        warnings.append("Preflight report does not carry a project_id for identity cross-checking.")
+    if not validation.get("project_id"):
+        warnings.append("Validation evidence does not carry a project_id for identity cross-checking.")
+    if not run_id:
+        warnings.append("Processing-run record does not declare a run identifier.")
+    if not validation_run_id:
+        warnings.append("Validation evidence does not declare the processing_run_id it assesses.")
     if preflight.get("status") not in {"ready_for_operator_review"}:
         warnings.append(f"Preflight status is {preflight.get('status', 'unspecified')}.")
     if run.get("status") != "succeeded":
@@ -161,6 +169,8 @@ def create_delivery_bundle(
         manifest_path, preflight_path, run_path, output_inspection_path, validation_path
     )
     destination = Path(destination).expanduser().resolve()
+    if destination in supplied.values():
+        raise ValueError("Dossier output path must not overwrite one of its source evidence files.")
     destination.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="spatial-delivery-") as temporary:
         staging = Path(temporary)
