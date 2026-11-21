@@ -27,6 +27,7 @@ The following distinctions are mandatory:
 4. Verify any acquired source snapshot with `verify_acquisition.py` before image or metadata audits; inspect the file-level results, not only the summary status.
 5. Review the implementation in this order:
    - `project_manifest.py` — project contract and manifest validation;
+   - `verify_acquisition.py` — verify the acquired source snapshot against its immutable file manifest;
    - `dataset_audit.py` — generic image inventory, hashes and optional readability checks;
    - `project_preflight.py` — read-only integration and severity reporting;
    - `odm_runner.py` — command construction and project checks;
