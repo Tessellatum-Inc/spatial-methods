@@ -107,6 +107,10 @@ The next sequence is a practical development order, not a universal prerequisite
 
 Develop this alongside linear algebra where the topics naturally meet, while retaining a separate subject identity.
 
+### Numerical analysis and scientific computing
+
+SM-FND-016 now has an initial domain roadmap and a first module on floating-point representation, rounding, cancellation, error measures, conditioning and algorithmic stability. This is a starting point, not completion of the numerical-analysis domain. Further development should cover stable numerical solution, convergence, approximation and tolerance selection, using repository applications as anchors. Independent specialist review and learner testing remain outstanding.
+
 ### Priority 4 — Geometry and computational geometry (SM-FND-006), then topology and spatial relations (SM-FND-007)
 
 **Why:** The algorithm catalogue has deep coverage of intersections, predicates, triangulations, overlays, meshes, Voronoi structures and spatial relations. A formal theory layer can connect these algorithms and explain invariants, degeneracy, boundary conventions, precision and topological correctness.
