@@ -27,6 +27,10 @@ class ASFQueryTests(unittest.TestCase):
             "polygon((36.65 -1.45",
         )
 
+    def test_rejects_unsupported_polarization(self):
+        with self.assertRaisesRegex(ValueError, "Polarization must be"):
+            QUERY.build_query(QUERY.DEFAULT_START, QUERY.DEFAULT_END, "HH", 30)
+
     def test_vv_fallback_is_a_separate_parameter_choice(self):
         params = QUERY.build_query("2026-10-01T00:00:00Z", "2026-11-21T23:59:59Z", "VV", 30)
         self.assertEqual(params["polarization"], "VV")
@@ -56,7 +60,7 @@ class ASFQueryTests(unittest.TestCase):
     def test_accepts_well_formed_feature(self):
         raw = (
             b'{"type":"FeatureCollection","features":['
-            b'{"type":"Feature","geometry":{"type":"Point","coordinates":[36.8,-1.3]},'
+            b'{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[36.7,-1.4],[36.9,-1.4],[36.9,-1.2],[36.7,-1.2],[36.7,-1.4]]]},'
             b'"properties":{"fileID":"example"}}]}'
         )
         self.assertEqual(len(QUERY.parse_feature_collection(raw)["features"]), 1)
@@ -67,7 +71,22 @@ class ASFQueryTests(unittest.TestCase):
 
     def test_rejects_malformed_feature(self):
         raw = b'{"type":"FeatureCollection","features":[{"type":"Feature"}]}'
-        with self.assertRaisesRegex(ValueError, "lacks properties or geometry"):
+        with self.assertRaisesRegex(ValueError, "properties object"):
+            QUERY.parse_feature_collection(raw)
+
+    def test_rejects_null_scene_geometry(self):
+        raw = b'{"type":"FeatureCollection","features":[{"type":"Feature","geometry":null,"properties":{}}]}'
+        with self.assertRaisesRegex(ValueError, "scene footprint geometry"):
+            QUERY.parse_feature_collection(raw)
+
+    def test_rejects_non_polygon_scene_geometry(self):
+        raw = b'{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[36.8,-1.3]},"properties":{}}]}'
+        with self.assertRaisesRegex(ValueError, "unsupported footprint geometry"):
+            QUERY.parse_feature_collection(raw)
+
+    def test_rejects_empty_scene_footprint(self):
+        raw = b'{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Polygon","coordinates":[]},"properties":{}}]}'
+        with self.assertRaisesRegex(ValueError, "empty footprint coordinates"):
             QUERY.parse_feature_collection(raw)
 
 
