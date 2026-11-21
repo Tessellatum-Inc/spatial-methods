@@ -2,6 +2,7 @@
 import importlib.util
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 
 MODULE_PATH = Path(__file__).resolve().parents[1] / "explorations" / "radar" / "query_copernicus_sentinel1.py"
 SPEC = importlib.util.spec_from_file_location("query_copernicus_sentinel1", MODULE_PATH)
@@ -19,7 +20,36 @@ class CopernicusQueryTests(unittest.TestCase):
         self.assertIn("36.65 -1.45", query)
         self.assertIn("36.65 -1.45))')", query)
         self.assertEqual(params["$top"], "100")
-        self.assertEqual(params["$expand"], "Attributes,Locations")
+        self.assertEqual(params["$expand"], "Attributes")
+
+    def test_location_query_expands_locations_for_exact_product(self):
+        url = QUERY.build_location_query("abc-123")
+        self.assertIn("Id+eq+%27abc-123%27", url)
+        self.assertIn("%24expand=Locations", url)
+
+    @patch.object(
+        QUERY,
+        "retrieve",
+        return_value=b'{"value":[{"Id":"abc","Locations":[{"Type":"product"}]}]}',
+    )
+    def test_attaches_product_locations(self, mock_retrieve):
+        products = [{"Id": "abc", "Name": "example"}]
+        errors = QUERY.attach_product_locations(products, timeout=10)
+        self.assertEqual(errors, [])
+        self.assertTrue(products[0]["LocationsRetrieved"])
+        self.assertEqual(products[0]["Locations"], [{"Type": "product"}])
+        mock_retrieve.assert_called_once()
+
+    @patch.object(QUERY, "retrieve", side_effect=QUERY.URLError("offline"))
+    def test_records_location_lookup_failure_without_losing_product(self, mock_retrieve):
+        products = [{"Id": "abc", "Name": "example"}]
+        errors = QUERY.attach_product_locations(products, timeout=10)
+        self.assertEqual(len(errors), 1)
+        self.assertFalse(products[0]["LocationsRetrieved"])
+        self.assertEqual(products[0]["Id"], "abc")
+        self.assertIn("offline", products[0]["LocationsFetchError"])
+        mock_retrieve.assert_called_once()
+
 
     def test_normalizes_timestamp_to_utc(self):
         params = QUERY.build_query("2026-10-01T03:00:00+03:00", "2026-11-22T03:00:00+03:00", 10)
