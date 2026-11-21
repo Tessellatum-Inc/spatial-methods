@@ -1,10 +1,11 @@
 from pathlib import Path
+import importlib.util
 import tempfile
 import unittest
 from unittest.mock import MagicMock, patch
 from types import SimpleNamespace
 
-from output_inspection import inspect_outputs
+from output_inspection import identify_crs, inspect_outputs
 
 
 class OutputInspectionTests(unittest.TestCase):
@@ -220,6 +221,22 @@ class OutputInspectionTests(unittest.TestCase):
         report = inspect_outputs(self.project, ["small-scale.obj"])
         self.assertEqual(report["meshes"][0]["status"], "readable")
         self.assertEqual(report["meshes"][0]["zero_area_face_count"], 0)
+
+    @unittest.skipUnless(importlib.util.find_spec("pyproj"), "pyproj is optional")
+    def test_point_cloud_crs_identification_resolves_utm_32n(self):
+        from pyproj import CRS
+        result = identify_crs(CRS.from_epsg(32632).to_wkt())
+        self.assertEqual(result["status"], "identified")
+        self.assertEqual(result["epsg"], 32632)
+        self.assertEqual(result["authority"], ["EPSG", "32632"])
+        self.assertEqual(result["utm_zone"], "32N")
+
+    def test_point_cloud_crs_identification_is_transparent_without_pyproj(self):
+        with patch.dict("sys.modules", {"pyproj": None}):
+            result = identify_crs("not-a-crs")
+        self.assertEqual(result["status"], "not_inspected")
+        self.assertIn("pyproj", result["reason"])
+
 
 if __name__ == "__main__":
     unittest.main()
