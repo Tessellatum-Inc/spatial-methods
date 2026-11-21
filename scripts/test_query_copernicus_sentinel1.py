@@ -19,7 +19,7 @@ class CopernicusQueryTests(unittest.TestCase):
         self.assertIn("36.65 -1.45", query)
         self.assertIn("36.65 -1.45))')", query)
         self.assertEqual(params["$top"], "100")
-        self.assertEqual(params["$expand"], "Attributes")
+        self.assertEqual(params["$expand"], "Attributes,Locations")
 
     def test_normalizes_timestamp_to_utc(self):
         params = QUERY.build_query("2026-10-01T03:00:00+03:00", "2026-11-22T03:00:00+03:00", 10)
