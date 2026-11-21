@@ -35,6 +35,18 @@ class ASFQueryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             QUERY.build_query("start", "end", "VV+VH", 0)
 
+    def test_rejects_naive_timestamps(self):
+        with self.assertRaisesRegex(ValueError, "explicit UTC offset"):
+            QUERY.build_query("2026-10-01T00:00:00", "2026-11-21T00:00:00Z", "VV+VH", 30)
+
+    def test_rejects_non_utc_offsets(self):
+        with self.assertRaisesRegex(ValueError, "requires UTC"):
+            QUERY.build_query("2026-10-01T03:00:00+03:00", "2026-11-21T00:00:00Z", "VV+VH", 30)
+
+    def test_rejects_reversed_date_window(self):
+        with self.assertRaisesRegex(ValueError, "later than end"):
+            QUERY.build_query("2026-11-21T00:00:00Z", "2026-10-01T00:00:00Z", "VV+VH", 30)
+
     def test_accepts_empty_feature_collection(self):
         payload = QUERY.parse_feature_collection(
             b'{"type":"FeatureCollection","features":[]}'
