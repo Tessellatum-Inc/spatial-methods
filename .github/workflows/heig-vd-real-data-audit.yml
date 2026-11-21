@@ -89,10 +89,7 @@ jobs:
           set -euo pipefail
           SNAPSHOT="$(find data/heig-vd-scop/snapshots -mindepth 1 -maxdepth 1 -type d | sort | head -n 1)"
           DATASET="$SNAPSHOT/datasets/drone_heig_2019"
-          python implementations/python/photogrammetry-odm/visual_review.py \\
-            "$DATASET" \\
-            implementations/python/photogrammetry-odm/rehearsal-control-checkpoint-split.proposed.json \\
-            reports/heig-vd/visual-review
+          python implementations/python/photogrammetry-odm/visual_review.py "$DATASET" implementations/python/photogrammetry-odm/rehearsal-control-checkpoint-split.proposed.json reports/heig-vd/visual-review
 
       - name: Preserve acquisition and audit evidence
         if: always()
@@ -128,8 +125,9 @@ jobs:
           Attribution: HEIG-VD, Geomatics group (2026), Photogrammetry and LiDAR datasets.
 
           This artifact contains provenance, audit reports, small source metadata files
-          (README, GCP coordinates, image observations and OPK text), and a provisional
-          ODM GCP list built from the proposed control-only split, not source imagery.
+          (README, GCP coordinates, image observations and OPK text), a provisional
+          ODM GCP list, and annotated review sheets built from source image picks,
+          not the source imagery itself.
           The proposed split is not human-locked and the GCP list has not been processed by ODM.
           Acquisition hashes establish local byte agreement with the recorded manifest;
           they do not establish publisher authenticity, licence compliance, coordinate
