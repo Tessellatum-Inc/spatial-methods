@@ -22,7 +22,7 @@ For every one of the 206 source observations, record:
 - **Ambiguity:** Could the marker plausibly refer to another nearby feature?
 - **Correspondence:** Is the same physical target recognisable across the images in which it is observed?
 
-Use `review-decisions-template.csv` to record the assessment for every source observation. Use one decision per observation: `accept`, `reject`, or `uncertain`. Add a short reason for every rejection or uncertain decision. The source pixel columns identify the publisher's pick being reviewed; they are not independent remeasurements. Do not infer a pass from the fact that a marker is visible.
+Use `review-decisions-template.csv` to record the assessment for every source observation. Use the lock utility's exact decision values: `accepted`, `questioned`, or `rejected`. Complete every required field, including reviewer identity and an ISO 8601 review timestamp with timezone. Provide a concise rationale for every row; explain all `questioned` and `rejected` decisions explicitly. The `target_visible`, `target_identity_clear`, and `marker_centred` fields must each be `yes`, `no`, or `uncertain`. The source pixel columns identify the publisher's pick being reviewed; they are not independent remeasurements. Do not infer a pass from the fact that a marker is visible.
 
 ## Point-level disposition
 
