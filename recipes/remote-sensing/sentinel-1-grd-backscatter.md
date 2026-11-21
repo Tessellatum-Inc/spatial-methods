@@ -1,8 +1,6 @@
 # Sentinel-1 IW GRD backscatter preparation
 
-<text>
-Status: workflow specification and validation plan. This recipe is not yet executed on the Nairobi products; its first execution depends on a downloaded SAFE archive and a recorded SNAP version.
-</text>
+**Status:** Workflow specification and validation plan. Not yet executed on the Nairobi products; first execution depends on a downloaded SAFE archive and a recorded SNAP version.
 
 ## Purpose
 
