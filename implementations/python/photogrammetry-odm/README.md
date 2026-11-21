@@ -307,3 +307,8 @@ The archive contains the project manifest, preflight report, processing-run reco
 The dossier is `inconsistent` when declared project or run identities conflict, `review_required` when evidence is incomplete in quality or its recorded decisions remain unresolved, and `assembled` when the supplied records are internally consistent and report the expected positive statuses. Even an `assembled` dossier has `release_authorized: false`: packaging evidence never substitutes for project-specific professional, contractual, legal or safety release decisions.
 
 The ZIP bundles evidence records, not raw imagery or the complete processing outputs. Preserve those source and product files separately, using the recorded hashes to identify the exact evidence versions. The archive's own SHA-256 is printed after creation.
+
+
+## Reviewer guide
+
+Before reviewing or reusing this pipeline, read [REVIEWER-GUIDE.md](REVIEWER-GUIDE.md). It defines the evidence handoff, status meanings, reviewer questions, known gaps and the distinction between an assembled dossier and release authorization.
