@@ -10,7 +10,7 @@ This is deliberately **not** a photogrammetry engine. ODM performs image alignme
 - Core orchestration utilities use the Python standard library. Optional structural inspection uses Pillow (image decoding), Rasterio (GeoTIFF inspection), laspy plus a compatible LAZ backend (point-cloud inspection), and no external mesh library for the current Wavefront OBJ checks.
 - The runner validates a project folder and constructs a Docker command. It does not install Docker, fetch images, select processing parameters or interpret the resulting products.
 - Checkpoint assessment expects coordinates independently extracted/measured for the same named points in the model and reference survey.
-- The included tests use synthetic values. The HEIG-VD source has not yet been acquired and processed end to end in the current environment; no real-world positional accuracy has been established.
+- The included tests use synthetic values. The HEIG-VD source has also been acquired, byte-verified and processed in a real EXIF-only ODM baseline; no real-world positional accuracy has been established.
 - This is a UAS/aerial imagery workflow. Terrestrial, close-range, multisensor and non-UAS use cases need their own acquisition and processing design.
 
 ## Project layout
@@ -161,7 +161,7 @@ The helper resolves the Hub repository's current commit first and downloads `dat
 - OpenDroneMap documentation. [Ground Control Points](https://docs.opendronemap.org/gcp/).
 - OpenDroneMap documentation. [Command-line arguments](https://docs.opendronemap.org/arguments/).
 
-Verify documentation and options against the exact software release used. This implementation has not yet been run against a live Docker engine or real imagery.
+Verify documentation and options against the exact software release used. This implementation has been run against live Docker/ODM 3.6.2 on the HEIG-VD 32-image subset using EXIF-only camera positions. The controlled-GCP variant and independent checkpoint validation remain pending.
 
 ## Project manifest and preflight
 

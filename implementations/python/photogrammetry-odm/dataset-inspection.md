@@ -2,7 +2,7 @@
 
 ## Review status
 
-**Publisher-source inspection and CI acquisition/structural audit completed; human visual review is in progress; no ODM processing has been performed.** The immutable dataset snapshot was acquired and audited in GitHub Actions run [44899272147](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899272147), resolved to publisher revision `e0dfeba2b6ed94ea1ae2bf773e742c39fb437b71`. All 36 manifest files passed size/SHA-256 verification; all 32 source images decoded at 5472 × 3648 px. The metadata audit reconciled 31 GCP records, 206 observations across 30 points, and 32 OPK records, with no missing image references or out-of-bounds observations. The workflow generated 32 annotated image derivatives, two contact sheets, 30 point-level review sheets and a blank 206-row review-decision template. The original imagery is retained in the CI acquisition snapshot, not copied into this repository or artifact. Selected point sheets have received preliminary visual triage, but no full point-level approval register has been completed. No ODM processing or positional-accuracy assessment has been performed.
+**Publisher-source inspection, acquisition/integrity audit, metadata audit and EXIF-only ODM baseline completed; role-blind human visual review remains in progress; no positional-accuracy assessment has been performed.** The immutable dataset snapshot was acquired and audited in GitHub Actions run [44899272147](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899272147), resolved to publisher revision `e0dfeba2b6ed94ea1ae2bf773e742c39fb437b71`. All 36 manifest files passed size/SHA-256 verification; all 32 source images decoded at 5472 × 3648 px. The metadata audit reconciled 31 GCP records, 206 observations across 30 points, and 32 OPK records, with no missing image references or out-of-bounds observations. The workflow generated 32 annotated image derivatives, two contact sheets, 30 point-level review sheets and a blank 206-row review-decision template. The role-blind packet includes the acquisition manifest and verification report but not the split key or full source imagery. Selected point sheets have received preliminary visual triage, but no full point-level approval register has been completed. A real EXIF-only ODM baseline has since been processed and structurally inspected; no GCP-controlled run or positional-accuracy assessment has been performed.
 
 - Dataset: [HEIG-VD drone 2019 (Yverdon campus)](https://huggingface.co/datasets/heig-vd-geo/scop-datasets/tree/main/datasets/drone_heig_2019)
 - Publisher: HEIG-VD, Geomatics group.
@@ -14,7 +14,7 @@
 
 ## Local acquisition and structural audit
 
-The completed audit artifact is attached to [workflow run 44899272147](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899272147). Its acquisition manifest records 36 files; all 36 passed byte-size and SHA-256 comparison against the acquired manifest. The image audit decoded all 32 JPEGs and confirmed 5472 × 3648 dimensions. The structural audit found 31 coordinate records, 206 image observations, 30 observed point IDs, 32 OPK records, no missing observation-to-image mappings, no missing OPK-to-image mappings, and no pixel observations outside the declared image bounds.
+The completed acquisition/metadata audit and role-blind review packet are attached to [workflow run 44900854170](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44900854170). The real EXIF-only processing run is [44899855412](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899855412), and the successful post-run output inspection is [44901305912](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44901305912). Its acquisition manifest records 36 files; all 36 passed byte-size and SHA-256 comparison against the acquired manifest. The image audit decoded all 32 JPEGs and confirmed 5472 × 3648 dimensions. The structural audit found 31 coordinate records, 206 image observations, 30 observed point IDs, 32 OPK records, no missing observation-to-image mappings, no missing OPK-to-image mappings, and no pixel observations outside the declared image bounds.
 
 The visual-review output contains role-blind annotated derivatives, point-level 640 × 640 review sheets, two contact sheets and a blank observation-level review-decision CSV template. The register is a review instrument, not a completed assessment. The publisher's Metashape image picks are shown only to guide inspection; they are not independent remeasurements. The proposed control/checkpoint split remains unlocked.
 
@@ -42,15 +42,15 @@ The OPK README description says its rotations are world-to-camera and specifies 
 5. Point 100 is explicitly described as having no image measurement and duplicate coordinates with point 206. It cannot serve as a separately measured image checkpoint. Avoid counting coincident records as independent spatial evidence.
 6. A future control/checkpoint split must be defined from verified coordinate geometry, observation coverage and project objectives. Do not assign points by ID alone or use the supplied Metashape OPK as a validation reference.
 
-## Remaining local verification gates
+## Remaining verification gates
 
-- Acquire the exact dataset revision with `acquire_rehearsal_dataset.py`; preserve the commit SHA and provenance manifest.
-- Verify all 32 image files by SHA-256, dimensions, decoding and EXIF inventory.
-- Parse the complete GCP file and observation CSV; reconcile the 31-versus-30 coordinate-row issue and check unique IDs, coordinate duplicates, observation counts, finite pixel values and image-name mapping.
-- Parse the OPK export; check record count, photo-ID mapping, finite camera centres/angles/matrix values, and approximate rotation orthonormality and determinant.
-- Only then assess control/checkpoint geometry and create a documented split.
-- Run ODM only after the reference-system handling, GCP formatting and split are reviewed.
+- Complete the role-blind 206-row observation review and lock it with `lock_visual_review.py` before consulting the split key.
+- Confirm the proposed control/checkpoint partition and the separate LV95 horizontal / LN02 vertical reference handling.
+- Run the approved control-GCP ODM variant; keep all checkpoints out of adjustment and parameter tuning.
+- Independently establish checkpoint image positions or document the limitations of reusing source Metashape picks.
+- Compare model coordinates with independent checkpoints using predeclared project-specific criteria and uncertainty treatment.
+- Assemble the acquisition-bound evidence dossier and record a human acceptance decision. The EXIF-only baseline is not accuracy validation.
 
 ## Evidence boundary
 
-The statements above are source-document and online text-export findings, not a local byte-level dataset audit. The dataset's declared CC BY 4.0 licence and citation must be retained. No imagery, control coordinates, OPK values or observation rows have been copied into the Spatial Methods repository.
+The record combines publisher documentation with a local immutable snapshot and structural audit. The acquisition manifest verifies 36/36 files; all 32 JPGs decoded; the metadata audit reconciled 31 surveyed-point records, 206 observations and 32 OPK rows. The EXIF-only ODM baseline and output inspection are documented above. The dataset's declared CC BY 4.0 licence and citation must be retained. Full source imagery and raw GCP/OPK source files are not committed to the repository; the separate role-blind review artifact contains derived crops and the observation decision template.

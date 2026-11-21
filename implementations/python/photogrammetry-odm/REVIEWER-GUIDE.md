@@ -5,7 +5,7 @@
 
 ## 1. Start with the claims boundary
 
-This package currently provides a set of tested workflow components and evidence handoffs. It is **not yet a demonstrated end-to-end photogrammetric production workflow**.
+This package now includes a real EXIF-only ODM processing baseline and structural output inspection, in addition to tested workflow components and evidence handoffs. It is **not yet a demonstrated end-to-end accuracy-validated production workflow**.
 
 The following distinctions are mandatory:
 
@@ -32,6 +32,8 @@ The following distinctions are mandatory:
    - `project_preflight.py` — read-only integration and severity reporting;
    - `odm_runner.py` — command construction and project checks;
    - `processing_run.py` — explicit execution boundary and provenance capture;
+   - `prepare_odm_gcp.py` — source-bound control-only ODM GCP export;
+   - `visual_review.py` and `lock_visual_review.py` — role-blind observation review material and decision lock;
    - `output_inspection.py` — read-only output inventory and GeoTIFF structure;
    - `checkpoint_qa.py` — residual definitions and statistics;
    - `validation_evidence.py` — evidence completeness and human decision record;
@@ -122,7 +124,7 @@ Do not collapse these statuses into a single pass/fail score.
 ## 6. Known gaps at this stage
 
 - No live Docker/ODM execution has been demonstrated in this repository environment.
-- The HEIG-VD rehearsal imagery has not yet been acquired, byte-audited and processed locally.
+- The HEIG-VD rehearsal imagery has been acquired and byte-audited; an EXIF-only ODM baseline has been processed and structurally inspected. The GCP-controlled variant and independent checkpoint validation remain pending.
 - LAS/LAZ point records are streamed when `laspy` is installed; declared/observed count reconciliation, finite coordinates, observed/header extent reconciliation (using a tolerance derived from coordinate scales), classification counts, intensity range and a bounded coordinate sample are recorded. Classification correctness, density suitability and positional accuracy remain unassessed.
 - Wavefront OBJ vertex, texture-coordinate and normal records are checked for finite values; face vertex/texture/normal indices and repeated-index/zero-area faces are checked. Manifoldness, self-intersections, texture-file availability, normal quality and geometric accuracy remain unassessed.
 - Raster inspection is conditional on Rasterio; image readability checks are conditional on Pillow.
@@ -152,7 +154,7 @@ Do not silently edit historical evidence records. Correct the implementation, cr
 The HEIG-VD reference-system gate is documented in [coordinate-reference-handling.md](coordinate-reference-handling.md). The source has LV95 horizontal coordinates and LN02 heights; a two-dimensional EPSG:2056 header is not evidence that ODM output encodes LN02 vertical semantics.
 
 
-The current milestone is **synthetic integrated evidence handoff tested; real execution not yet rehearsed**. The next substantive gate is a controlled real-dataset rehearsal on a network-enabled machine with a pinned ODM image, verified source bytes, documented control/checkpoint partition, real outputs and independently surveyed checkpoints. Reviewers should require the complete handoff from manifest through dossier and a documented disposition of every warning before describing the workflow as rehearsed.
+The current milestone is **real EXIF-only baseline processed and structurally inspected; GCP-controlled and independent validation stages pending**. Reviewers should require the locked role-blind observation review, documented control/checkpoint partition, GCP-controlled processing, independently established checkpoints and complete evidence handoff before describing the workflow as accuracy-assessed.
 
 Last updated: 2026-11-21.
 

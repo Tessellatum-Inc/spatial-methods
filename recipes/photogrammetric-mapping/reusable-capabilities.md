@@ -1,7 +1,7 @@
 # Photogrammetric mapping — reusable capability register
 
 **Application / recipe:** SM-REC-007  
-**Status:** Integration and automation planning  
+**Status:** Real EXIF-only baseline executed; controlled validation pending  
 **Purpose:** Make the reusable contributions of the photogrammetry application visible and prevent its work from becoming a disconnected project-specific toolchain.
 
 This register is an integration map, not a claim that a complete end-to-end photogrammetry platform exists. It distinguishes existing repository components from the handoffs and automation still to be built or verified.
@@ -25,15 +25,19 @@ It therefore tests whether the four pillars connect in practice, and it exposes 
 
 | Capability | Current canonical location | What it contributes | Current boundary |
 |---|---|---|---|
-| End-to-end project method | `recipes/photogrammetric-mapping/README.md` | Requirements, feasibility, acquisition, processing, validation and delivery gates | Desk-designed; not field-tested or independently specialist-reviewed |
+| End-to-end project method | `recipes/photogrammetric-mapping/README.md` | Requirements, feasibility, acquisition, processing, validation and delivery gates | EXIF-only public-dataset baseline executed; full project/field validation and specialist review pending |
 | Project record and QA checklist | `recipes/photogrammetric-mapping/project-record-template.md` | Reusable project decisions, evidence and sign-off record | Template; does not itself verify compliance |
 | Image acquisition principles | `collection/photogrammetry/image-acquisition.md` | Acquisition geometry, camera and field considerations | Method guidance, not a flight authorisation |
 | Flight-design calculations | `implementations/python/photogrammetric-flight-design/` | Bounded GSD, footprint and image-spacing calculations with tests | Calculation companion, not a mission planner |
-| Rehearsal dataset acquisition | `implementations/python/photogrammetry-odm/acquire_rehearsal_dataset.py` | Retrieves a defined dataset at a resolved immutable repository revision | Specific to the documented public rehearsal dataset |
-| Image dataset audit | `implementations/python/photogrammetry-odm/dataset_audit.py` | File inventory, checksums, readability, dimensions and selected EXIF checks | Structural audit; GPS presence is not positional validation |
-| Dataset metadata audit | `implementations/python/photogrammetry-odm/dataset_metadata_audit.py` | Checks known GCP, image observation and OPK export structure and consistency | Dataset-specific structural checks; not a survey or CRS validation |
-| ODM invocation | `implementations/python/photogrammetry-odm/odm_runner.py` | Validates project layout and constructs a reproducible Docker invocation | Does not choose parameters, install Docker or interpret outputs |
-| Independent checkpoint statistics | `implementations/python/photogrammetry-odm/checkpoint_qa.py` | Computes residual summaries from model and independently observed checkpoint coordinates | Does not design the sample, transform coordinates or decide acceptance |
+| Rehearsal dataset acquisition | `implementations/python/photogrammetry-odm/acquire_rehearsal_dataset.py`, `verify_acquisition.py` | Retrieves a defined dataset at an immutable revision and verifies file sizes/SHA-256 | Specific to the documented public rehearsal dataset; real run verified 36/36 files |
+| Image dataset audit | `implementations/python/photogrammetry-odm/dataset_audit.py` | File inventory, checksums, readability, dimensions and selected EXIF checks | Real run: 32/32 JPGs readable; GPS presence is not positional validation |
+| Dataset metadata audit | `implementations/python/photogrammetry-odm/dataset_metadata_audit.py` | Checks GCP, image observation and OPK export structure and consistency | Real run reconciled 31 surveyed-point records, 206 observations and 32 OPK rows; not a survey or CRS validation |
+| ODM invocation and run provenance | `odm_runner.py`, `processing_run.py` | Validates project layout, constructs Docker invocation and records an explicit processing event | EXIF-only real run completed on pinned ODM 3.6.2; does not establish accuracy |
+| Independent checkpoint statistics | `implementations/python/photogrammetry-odm/checkpoint_qa.py` | Computes residual summaries from model and independently observed checkpoint coordinates | Implemented; no real independent checkpoint residuals computed yet |
+| Control-only ODM GCP preparation | `prepare_odm_gcp.py` | Verifies source hashes and exports only proposed control observations | Provisional split; not used in the EXIF baseline |
+| Role-blind observation review and lock | `visual_review.py`, `lock_visual_review.py` | Produces point crops and validates/locks human decisions without unblinding roles | 206-row review still awaiting completion |
+| Output product inspection | `output_inspection.py` | Inventories products and inspects GeoTIFF/LAZ structure | Real EXIF baseline inspected; no accuracy assessment |
+| Evidence delivery dossier | `delivery_dossier.py` | Packages acquisition, processing, output and validation evidence with hashes | Builder implemented; real validation evidence still pending |
 
 These components are already useful contributions. The opportunity now is to make their interfaces and handoffs coherent.
 
@@ -46,8 +50,8 @@ These components are already useful contributions. The opportunity now is to mak
 | Acquire data | Select immutable source revision and subset | Revision-pinned acquisition helper and hashes | Standard acquisition manifest schema, resumable transfer and integrity verification |
 | Inspect data | Decide whether files and metadata are fit for processing | Image and metadata auditors | Unified audit report, explicit severity levels and machine-readable pass/warn/fail results |
 | Design acquisition | Select geometry and control/check layout | Flight-design calculation companion; recipe guidance | Connect project requirements to calculation inputs and preserve calculation provenance |
-| Process imagery | Select software/version and justified parameters | ODM runner | Preflight validation, pinned engine image, configuration record and captured execution logs |
-| Inspect products | Assess completeness, artefacts, CRS, resolution and metadata | Some structural QA is described in recipe | Product inventory and format/metadata checks before positional acceptance |
+| Process imagery | Select software/version and justified parameters | ODM runner and processing-run recorder; EXIF-only baseline executed | Preflight validation, pinned engine image, configuration record and captured execution logs |
+| Inspect products | Assess completeness, artefacts, CRS, resolution and metadata | Read-only GeoTIFF and LAZ structural inspection run on baseline products | Product inventory and format/metadata checks before positional acceptance |
 | Validate accuracy | Define independent check design and acceptance | Checkpoint residual statistics | Predeclared acceptance rules, reference-uncertainty record and report generation |
 | Package delivery | Decide what the recipient needs and what limitations must be disclosed | Project record template | Reproducible delivery manifest linking raw data, processing, checks, outputs and reports |
 

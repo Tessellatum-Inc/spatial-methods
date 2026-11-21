@@ -2,10 +2,10 @@
 
 **Recipe ID:** SM-REC-007  
 **Connected subjects:** SM-COL-007, SM-COL-004, SM-COL-009, SM-FND-011  
-**Status:** Desk-designed workflow; not field-tested or independently specialist-reviewed  
+**Status:** Desk-designed workflow; EXIF-only public-dataset baseline executed; field validation and independent specialist review pending  
 **Audience:** Intermediate learners, researchers and practitioners planning a bounded photogrammetric mapping project
 
-> This recipe describes a defensible workflow structure, not an approved flight plan, survey specification, safety case, regulatory authorisation or guarantee of accuracy. Project requirements, competent personnel, jurisdictional rules and professional responsibilities take precedence.
+> This recipe describes a defensible workflow structure, not an approved flight plan, survey specification, safety case, regulatory authorisation or guarantee of accuracy. An EXIF-only baseline has been run on the public HEIG-VD dataset, but this is not a field campaign or accuracy assessment. Project requirements, competent personnel, jurisdictional rules and professional responsibilities take precedence.
 
 ## 1. Purpose and outcome
 
