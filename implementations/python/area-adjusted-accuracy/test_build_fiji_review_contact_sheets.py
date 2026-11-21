@@ -15,7 +15,7 @@ class ContactSheetTests(unittest.TestCase):
     fields=["sample_id","platform","datetime","status","chip_file","item_id","collection","cloud_cover_percent","chip_sha256","source_grid","stretch"]
     w=csv.DictWriter(f,fieldnames=fields); w.writeheader()
     for item,collection,time in [("alias1","old","2021-06-01T00:00:00Z"),("alias2","new","2021-06-01T00:00:01Z")]:
-     w.writerow({"sample_id":"P1","platform":"sentinel-2a","datetime":time,"status":"chip_created","chip_file":"/tmp/one.png","item_id":item,"collection":collection,"cloud_cover_percent":"1","chip_sha256":"abc","source_grid":"{}","stretch":"test"})
+     w.writerow({"sample_id":"P1","platform":"sentinel-2a","datetime":time,"status":"chip_created","chip_file":"/tmp/one.png","item_id":item,"collection":collection,"cloud_cover_percent":"1","chip_sha256":"abc","source_grid":json.dumps({"red":{"resolution":[10.0,10.0]},"green":{"resolution":[10.0,10.0]},"blue":{"resolution":[10.0,10.0]}}),"stretch":"test"})
    result=build(worksheet,prov,chips,root/"review")
    self.assertEqual(result["contact_sheets"],1)
    self.assertEqual(result["unique_rgb_acquisitions"],1)
