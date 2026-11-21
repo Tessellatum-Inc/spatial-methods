@@ -75,7 +75,7 @@ class StacReviewTests(unittest.TestCase):
         )
 
     def test_public_sentinel_cogs_s3_asset_uses_unsigned_access(self):
-        with patch("rasterio.Env") as env:
+        with patch.dict("os.environ", {}, clear=True), patch("rasterio.Env") as env:
             path, _ = rasterio_source("s3://sentinel-cogs/sentinel-s2-l2a/example.tif")
         self.assertEqual(path, "/vsis3/sentinel-cogs/sentinel-s2-l2a/example.tif")
         env.assert_called_once_with(
