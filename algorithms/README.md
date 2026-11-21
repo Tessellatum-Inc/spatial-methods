@@ -47,7 +47,7 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 ## Sampling and experimental design
 
-- [Space-filling sampling designs](statistics/space-filling-sampling.md) — Latin hypercube, centered LHS, multi-start maximin selection and k-means coverage for bounded continuous domains.
+- [Space-filling sampling designs](statistics/space-filling-sampling.md) — Latin hypercube, centered LHS, multi-start maximin selection and k-means coverage for bounded continuous domains.\n- [Neyman allocation and stratified estimation](statistics/neyman-allocation-stratified-estimator.md) — equal-cost allocation across finite-population strata, weighted total/mean estimation and finite-population variance.
 
 ## Interpolation and geostatistics
 
