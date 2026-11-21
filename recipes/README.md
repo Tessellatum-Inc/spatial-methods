@@ -12,6 +12,10 @@ The [cross-pillar pathway index](../learning-paths/cross-pillar-pathways.md) exp
 
 - [Photogrammetric mapping: project-to-validated-deliverable recipe](photogrammetric-mapping/README.md) — an end-to-end workflow from requirements and reconnaissance through acquisition, processing, independent validation and delivery. Includes a reusable project record and QA checklist.
 
+## Remote-sensing recipe
+
+- [Sentinel-1 IW GRD backscatter preparation](remote-sensing/sentinel-1-grd-backscatter.md) — a gated workflow from SAFE inspection through orbit, noise, calibration, optional speckle treatment, terrain correction, dB conversion and temporal quality checks. Current status: design documented; Nairobi processing not yet executed.
+
 ## First integrated recipe
 
 - [Survey-to-spatial-dataset workflow](survey-to-spatial-dataset/README.md) — a design-stage field-to-office workflow connecting measurement science, field acquisition, geodetic computation, quality assurance and spatial data delivery.
