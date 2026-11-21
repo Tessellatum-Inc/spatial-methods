@@ -179,7 +179,7 @@ def rasterio_source(href: str):
         if parsed.netloc == "sentinel-cogs":
             env = rasterio.Env(
                 AWS_NO_SIGN_REQUEST="YES",
-                AWS_REGION=os.getenv("AWS_DEFAULT_REGION", "us-west-2"),
+                AWS_REGION="us-west-2",
             )
             return vsi_path, env
 
