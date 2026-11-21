@@ -155,3 +155,5 @@ UUID validation, redirect restrictions, valid/incomplete ZIP structures and
 missing credentials without contacting Copernicus. They are included in the
 repository's Python CI.
 
+
+The processing design is documented in the [Sentinel-1 IW GRD backscatter preparation recipe](../../recipes/remote-sensing/sentinel-1-grd-backscatter.md). It defines a gated SNAP workflow and QA criteria, but is not yet executed on any Nairobi product.
