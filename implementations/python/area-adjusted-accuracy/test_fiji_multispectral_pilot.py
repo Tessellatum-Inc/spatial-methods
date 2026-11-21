@@ -24,7 +24,9 @@ class FijiMultispectralPilotTests(unittest.TestCase):
         result = _index_summaries(bands)
         self.assertIn("NDVI_10m_unmasked", result)
         self.assertIn("NDRE_20m_unmasked", result)
-        self.assertNotIn("NDRE_20m_scl_valid", result)
+        self.assertEqual(
+            result["NDRE_20m_scl_valid"]["status"], "not_available_no_scl"
+        )
         self.assertIn("NDVI_10m_unmasked", result)
         self.assertNotIn("MNDWI", result)
         self.assertNotIn("NDBI", result)
