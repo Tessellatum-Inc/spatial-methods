@@ -1,9 +1,9 @@
 # Release readiness and completion ledger
 
-**Snapshot:** 18 November 2026  
+**Snapshot:** 21 November 2026  
 **Repository:** `Tessellatum-Inc/spatial-methods`  
 **Integration target:** `main`  
-**Latest main commit:** `335ee479a0b6f9cc088da9a29c1fbea641dd0503` — Fix broken global autocorrelation links
+**Main head at this checkpoint:** `c6054597cf5aeed3653e408e6aeff09d25707d30` — Make release validation checkpoint commit-independent
 
 This is the single release-gate record. It distinguishes a maintainable engineering foundation from complete source-entry verification. Closeout is focused on concrete release blockers, not repeated broad audits.
 
@@ -12,7 +12,7 @@ This is the single release-gate record. It distinguishes a maintainable engineer
 - PR #3 (source compendium foundation), PR #4 (Patreon launch foundation) and PR #6 (Spatial Methods identity) are merged. PR #5 was superseded by PR #6; PR #2's Bowyer–Watson work was completed within the compendium foundation. Do not reopen the stale branches.
 - The repository's current public identity is Spatial Methods. The four-pillar architecture is authoritative; the engineering foundation release remains a bounded milestone rather than a claim that every pillar or subject is complete.
 - The foundation release notes were reconciled on 21 November 2026 to reflect the current identity, four-pillar direction, merged foundation PRs and exact-head validation requirement.
-- The latest known main head before the release-note reconciliation was `8f1306a7b962161b5098937387f12b2e9c1f0841`. Photogrammetry ODM package tests passed on that head ([run 44921406757](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44921406757)); the Python examples workflow was queued ([run 44921406761](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44921406761)). The release-note and ledger updates trigger a fresh workflow cycle; final status must be checked against the resulting exact main head before tagging.
+- At the recorded checkpoint, main pointed to `c6054597cf5aeed3653e408e6aeff09d25707d30`. The Python examples workflow was pending ([run 44921693628](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44921693628)); the most recent successful Photogrammetry ODM package tests were on the earlier code-bearing head `8f1306a7b962161b5098937387f12b2e9c1f0841` ([run 44921406757](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44921406757)). This ledger refresh creates another main commit and triggers a fresh docs-inclusive workflow cycle. Recheck the resulting exact main head and its runs before any tag; do not treat a pending or cancelled run as a pass.
 - Patreon pathway is updated to the current Spatial Methods URL in the README and issue-template contact configuration.
 - The historical 58/59-job result and earlier link/anchor integrity checks are evidence for prior candidates only, not a substitute for exact-head validation.
 
