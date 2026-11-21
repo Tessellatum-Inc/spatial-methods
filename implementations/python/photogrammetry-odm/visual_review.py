@@ -6,7 +6,6 @@ Source images remain in the acquired snapshot and are never modified.
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 from pathlib import Path
 
@@ -48,13 +47,15 @@ def generate(dataset: Path, split_path: Path, output: Path) -> dict:
     output.mkdir(parents=True, exist_ok=True)
     roles = load_split(split_path)
     observations: dict[str, list[dict]] = {}
-    with (dataset / "gcp" / "gcp_obs.csv").open(newline="", encoding="utf-8-sig") as stream:
-        for row in csv.reader(line for line in stream if not line.lstrip().startswith("#")):
-            if not row:
+    with (dataset / "gcp" / "gcp_obs.csv").open(encoding="utf-8-sig") as stream:
+        for line_number, line in enumerate(stream, 1):
+            if not line.strip() or line.lstrip().startswith("#"):
                 continue
+            # The publisher's .csv export is whitespace-delimited, not comma-delimited.
+            row = line.split()
             if len(row) != 4:
-                raise ValueError(f"Unexpected observation row: {row}")
-            point_id, label, x, y = (v.strip() for v in row)
+                raise ValueError(f"Observation line {line_number}: expected 4 fields, got {len(row)}")
+            point_id, label, x, y = row
             observations.setdefault(image_stem(label), []).append(
                 {"point_id": point_id, "x": float(x), "y": float(y)}
             )
