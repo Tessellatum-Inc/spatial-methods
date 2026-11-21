@@ -370,10 +370,15 @@ def main() -> int:
                     "sample_id": sample_id, "catalogue": label, "item_id": "",
                     "collection": "", "datetime": "", "cloud_cover_percent": "",
                     "platform": "", "assets_available": "", "longitude": lon,
-                    "latitude": lat, "status": "no_items", "chip_file": "",
-                    "chip_width": "", "chip_height": "", "chip_bytes": "",
-                    "chip_sha256": "",
-                    "notes": "No 2021 items returned; this is not proof of no imagery.",
+                    "latitude": lat,
+                    "status": "search_failed" if collection_errors else "no_items",
+                    "chip_file": "", "chip_width": "", "chip_height": "",
+                    "chip_bytes": "", "chip_sha256": "",
+                    "notes": (
+                        "Catalogue search failed; no conclusion about imagery coverage is possible."
+                        if collection_errors
+                        else "No 2021 items returned; this is not proof of no imagery."
+                    ),
                 })
 
     write_provenance(provenance_path, rows)
