@@ -14,6 +14,7 @@ from stac_imagery_review import (
     asset_for,
     item_cloud,
     post_search,
+    rasterio_source,
     search_catalogue,
     write_provenance,
 )
@@ -72,6 +73,20 @@ class StacReviewTests(unittest.TestCase):
             asset_for(item, "red"),
             ("B04_10m-jp2", "https://example.test/red-10m.jp2"),
         )
+
+    def test_public_sentinel_cogs_s3_asset_uses_unsigned_access(self):
+        with patch("rasterio.Env") as env:
+            path, _ = rasterio_source("s3://sentinel-cogs/sentinel-s2-l2a/example.tif")
+        self.assertEqual(path, "/vsis3/sentinel-cogs/sentinel-s2-l2a/example.tif")
+        env.assert_called_once_with(
+            AWS_NO_SIGN_REQUEST="YES",
+            AWS_REGION="us-west-2",
+        )
+
+    def test_non_public_s3_asset_requires_explicit_credentials(self):
+        with patch.dict("os.environ", {}, clear=True):
+            with self.assertRaisesRegex(RuntimeError, "bucket 'eodata'"):
+                rasterio_source("s3://eodata/path/example.tif")
 
     def test_missing_asset_is_none(self):
         self.assertIsNone(asset_for({"assets": {}}, "blue"))
