@@ -67,6 +67,21 @@ jobs:
           python implementations/python/photogrammetry-odm/dataset_metadata_audit.py \
             "$DATASET" --json-out reports/heig-vd/dataset-metadata-audit.json
 
+      - name: Prepare provisional ODM control-point list
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p reports/heig-vd
+          SNAPSHOT="$(find data/heig-vd-scop/snapshots -mindepth 1 -maxdepth 1 -type d | sort | head -n 1)"
+          DATASET="$SNAPSHOT/datasets/drone_heig_2019"
+          python implementations/python/photogrammetry-odm/prepare_odm_gcp.py \
+            "$DATASET" \
+            implementations/python/photogrammetry-odm/rehearsal-control-checkpoint-split.proposed.json \
+            "$SNAPSHOT/acquisition-provenance.json" \
+            reports/heig-vd/gcp_list.proposed.txt \
+            --allow-proposed \
+            --json-out reports/heig-vd/gcp-preparation-report.json
+
       - name: Preserve acquisition and audit evidence
         if: always()
         shell: bash
@@ -100,8 +115,10 @@ jobs:
           Licence: CC BY 4.0
           Attribution: HEIG-VD, Geomatics group (2026), Photogrammetry and LiDAR datasets.
 
-          This artifact contains provenance, audit reports and small source metadata files
-          (README, GCP coordinates, image observations and OPK text), not source imagery.
+          This artifact contains provenance, audit reports, small source metadata files
+          (README, GCP coordinates, image observations and OPK text), and a provisional
+          ODM GCP list built from the proposed control-only split, not source imagery.
+          The proposed split is not human-locked and the GCP list has not been processed by ODM.
           Acquisition hashes establish local byte agreement with the recorded manifest;
           they do not establish publisher authenticity, licence compliance, coordinate
           reference correctness, photogrammetric suitability or product accuracy.
