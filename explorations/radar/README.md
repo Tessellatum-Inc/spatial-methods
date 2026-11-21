@@ -232,3 +232,17 @@ Your next question may take you deeper into radar, or sideways into mathematics,
 ---
 
 *Spatial Methods does not replace the excellent public training, datasets and software maintained by NASA, ESA, ASF and the wider research community. Our job is to help you navigate them intelligently, understand how the pieces fit, identify what is worth your time, and turn exploration into practical capability.*
+
+
+## Reproducible Nairobi Sentinel-1 workflow
+
+The first worked study now has a staged, evidence-preserving toolchain. These tools separate catalogue discovery from archive inspection and scientific processing:
+
+1. [Catalogue query clients](query_asf_sentinel1.py) and [Copernicus OData query client](query_copernicus_sentinel1.py) preserve discovery parameters and source responses.
+2. [Candidate stack manifest builder](build_sentinel1_stack_manifest.py) selects matching catalogue records while retaining exclusions and slice metadata. Candidate status is not analysis readiness.
+3. [Secure SAFE downloader](download_copernicus_sentinel1.py) retrieves a product using environment-provided credentials and records archive provenance.
+4. [SAFE metadata preflight auditor](audit_sentinel1_safe_metadata.py) checks archive integrity and the structural VV/VH file sets without extracting or modifying the archive.
+5. [Processing-readiness reconciler](build_sentinel1_processing_readiness.py) joins catalogue, download and audit evidence by product UUID and archive checksum. It blocks mismatches and never authorizes processing by itself.
+6. The [download, validation and readiness guide](sentinel-1-download-and-validation.md) documents commands, evidence requirements and the remaining scientific gates.
+
+The workflow is intentionally not represented as a completed Nairobi analysis. No SAFE product has yet been downloaded in this environment; the actual archive, full-datatake coverage, raster values, calibration and geolocation still require inspection and QA.
