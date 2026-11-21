@@ -43,6 +43,8 @@ class SyntheticPipelineIntegrationTests(unittest.TestCase):
             acquisition_path.write_text(json.dumps(acquisition_manifest), encoding="utf-8")
             acquisition_report = verify_manifest(acquisition_path)
             self.assertEqual(acquisition_report["status"], "verified")
+            acquisition_report_path = snapshot / "acquisition-verification.json"
+            acquisition_report_path.write_text(json.dumps(acquisition_report), encoding="utf-8")
 
             # Work on a separate copy: the acquired snapshot remains unchanged.
             project = root / "working-project"
@@ -136,8 +138,8 @@ class SyntheticPipelineIntegrationTests(unittest.TestCase):
 
             archive = root / "delivery-dossier.zip"
             bundled = create_delivery_bundle(
-                manifest_path, preflight_path, run_path, output_path,
-                validation_path, archive,
+                acquisition_path, acquisition_report_path, manifest_path,
+                preflight_path, run_path, output_path, validation_path, archive,
             )
             self.assertEqual(bundled["dossier"]["status"], "review_required")
             self.assertFalse(bundled["dossier"]["release_authorized"])
