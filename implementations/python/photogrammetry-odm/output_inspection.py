@@ -264,7 +264,7 @@ def inspect_obj_mesh(path: Path) -> dict:
                             - min(point[axis] for point in face_points)
                             for axis in range(3)
                         )
-                        tolerance = max(1.0, face_extent * face_extent) * 1e-12
+                        tolerance = face_extent * face_extent * 1e-12
                         if math.sqrt(sum(value * value for value in area_vector)) <= tolerance:
                             zero_area_faces += 1
 
