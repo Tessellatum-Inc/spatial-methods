@@ -52,6 +52,27 @@ class StacReviewTests(unittest.TestCase):
         item = {"assets": {"blue": {"href": "blue.tif"}}}
         self.assertEqual(asset_for(item, "blue"), ("blue", "blue.tif"))
 
+    def test_rgb_asset_prefers_https_jp2_over_s3_alias(self):
+        item = {"assets": {
+            "blue": {"href": "s3://bucket/blue.tif"},
+            "blue-jp2": {"href": "https://example.test/blue.jp2"},
+        }}
+        self.assertEqual(
+            asset_for(item, "blue"),
+            ("blue-jp2", "https://example.test/blue.jp2"),
+        )
+
+    def test_rgb_asset_preserves_explicit_10m_preference(self):
+        item = {"assets": {
+            "B04": {"href": "https://example.test/red-generic.tif"},
+            "B04_10m": {"href": "s3://bucket/red-10m.tif"},
+            "B04_10m-jp2": {"href": "https://example.test/red-10m.jp2"},
+        }}
+        self.assertEqual(
+            asset_for(item, "red"),
+            ("B04_10m-jp2", "https://example.test/red-10m.jp2"),
+        )
+
     def test_missing_asset_is_none(self):
         self.assertIsNone(asset_for({"assets": {}}, "blue"))
 
