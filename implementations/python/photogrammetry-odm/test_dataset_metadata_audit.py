@@ -51,6 +51,7 @@ class DatasetMetadataAuditTests(unittest.TestCase):
             self.assertEqual(report["ground_points_without_image_observations"], ["100"])
             self.assertEqual(report["duplicate_coordinate_groups_within_1e-6_m"], [["100", "206"]])
             self.assertEqual(report["observation_images_missing_from_images_directory"], [])
+            self.assertEqual(report["images_without_ground_point_observations"], [])
             self.assertEqual(report["opk_photo_ids_without_matching_image"], [])
             self.assertEqual(report["observation_images_without_matching_opk"], [])
             self.assertAlmostEqual(report["opk_rotation_max_orthogonality_error"], 0.0)
@@ -81,6 +82,30 @@ class DatasetMetadataAuditTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 audit_dataset(root)
 
+
+
+    def test_reports_images_without_ground_point_observations(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            write_fixture(root)
+            path = root / "gcp" / "gcp_obs.csv"
+            path.write_text(
+                "# gcp_label image_label x y\\n"
+                "206 EB-02-00761_0101_0031 100.0 200.0\\n",
+                encoding="utf-8",
+            )
+            report = audit_dataset(
+                root,
+                expected_images=2,
+                expected_ground_points=2,
+                expected_observations=1,
+                expected_observed_points=1,
+                expected_orientations=2,
+            )
+            self.assertEqual(
+                report["images_without_ground_point_observations"],
+                ["EB-02-00761_0101_0032"],
+            )
 
 if __name__ == "__main__":
     unittest.main()
