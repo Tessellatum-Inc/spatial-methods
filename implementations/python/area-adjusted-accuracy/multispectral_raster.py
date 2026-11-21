@@ -146,7 +146,9 @@ def read_multispectral_windows(
                     col - half, row - half, window_pixels, window_pixels
                 )
                 masked = src.read(1, window=window, boundless=True, masked=True)
-                values = np.asarray(masked.filled(np.nan), dtype=np.float32)
+                values = np.asarray(
+                    masked.astype(np.float32).filled(np.nan), dtype=np.float32
+                )
                 scale, offset, unit = _asset_scale_offset(asset)
                 values = values * np.float32(scale) + np.float32(offset)
                 arrays[band] = values
