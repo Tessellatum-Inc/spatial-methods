@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: heig-vd-odm-exif-baseline
+  cancel-in-progress: true
+
 jobs:
   exif-baseline:
     name: Real ODM processing without GCP control
