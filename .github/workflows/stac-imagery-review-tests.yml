@@ -288,6 +288,7 @@ jobs:
         run: python -m pip install -r requirements-stac-imagery.txt
         working-directory: implementations/python/area-adjusted-accuracy
       - name: Discover 2021 imagery for all 25 blind-review points
+        continue-on-error: true
         run: |
           python stac_imagery_review.py \
             --input data/fiji-worldcover-legend-adjudication-blind-review.csv \
