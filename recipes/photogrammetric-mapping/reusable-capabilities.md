@@ -188,3 +188,36 @@ The integration is ready for a first end-to-end rehearsal when a competent user 
 - package provenance and limitations for another person to review.
 
 Passing this rehearsal would establish a reproducible software workflow for the documented dataset. It would not establish field performance, universal accuracy or operational suitability.
+
+
+## 9. Integration update — manifest and read-only preflight
+
+The first integrated handoff now exists in the implementation:
+
+- `project_manifest.py` validates the versioned project record and reports manifest-level blockers and warnings.
+- `dataset_audit.py` inventories image files, records SHA-256 hashes and checks image readability/dimensions when Pillow is available.
+- `odm_runner.py` constructs the Docker invocation from the project directory and explicit image/arguments.
+- `project_preflight.py` connects those components into one machine-readable report and includes the constructed processing command without executing it.
+- `test_project_preflight.py` covers the read-only handoff, missing imagery, expected-count mismatch and non-execution boundary.
+
+This is a meaningful integration milestone, not completion of the full workflow. The preflight does not yet run the HEIG-VD-specific GCP/observation/OPK metadata audit, inspect generated ODM products, execute processing, or evaluate checkpoint acceptance criteria. Those checks remain separate until their inputs and domain boundaries can be connected safely.
+
+### Current status
+
+| Integration component | Status |
+|---|---|
+| Versioned project manifest | Implemented |
+| Manifest validation | Implemented |
+| Generic image inventory and integrity audit | Existing component; connected |
+| Image readability/dimensions | Connected when Pillow is installed |
+| ODM command construction | Existing component; connected as dry-run only |
+| Unified machine-readable preflight | Implemented |
+| Dataset-specific GCP/observation/OPK audit | Separate, not yet integrated |
+| Processing execution and run provenance | Not yet integrated |
+| Output product inventory and inspection | Not yet implemented |
+| Independent checkpoint acceptance workflow | Statistics exist; project-level handoff not yet integrated |
+| Reproducible delivery package | Not yet implemented |
+
+### Next integration milestone
+
+Build a processing-run record that captures the exact input inventory, image digest, ODM arguments, runtime environment, execution timestamps, exit status, logs and output inventory. Keep execution explicitly operator-triggered. Then add output-product inspection as a separate read-only stage. Only after these interfaces are stable should the workflow move toward automated end-to-end execution.
