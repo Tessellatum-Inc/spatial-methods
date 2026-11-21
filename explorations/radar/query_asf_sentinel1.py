@@ -31,6 +31,8 @@ def build_query(start: str, end: str, polarization: str, max_results: int) -> di
         raise ValueError("Both --start and --end are required.")
     if max_results < 1:
         raise ValueError("--max-results must be at least 1.")
+    if polarization not in {"VV+VH", "VV"}:
+        raise ValueError("Polarization must be VV+VH or the separately documented VV fallback.")
     try:
         start_dt = datetime.fromisoformat(start.replace("Z", "+00:00"))
         end_dt = datetime.fromisoformat(end.replace("Z", "+00:00"))
@@ -84,8 +86,19 @@ def parse_feature_collection(raw: bytes) -> dict:
     for index, feature in enumerate(features):
         if not isinstance(feature, dict) or feature.get("type") != "Feature":
             raise ValueError(f"Feature at index {index} is not a GeoJSON Feature.")
-        if "properties" not in feature or "geometry" not in feature:
-            raise ValueError(f"Feature at index {index} lacks properties or geometry.")
+        properties = feature.get("properties")
+        geometry = feature.get("geometry")
+        if not isinstance(properties, dict):
+            raise ValueError(f"Feature at index {index} has no valid properties object.")
+        if not isinstance(geometry, dict):
+            raise ValueError(f"Feature at index {index} has no usable scene footprint geometry.")
+        if geometry.get("type") not in {"Polygon", "MultiPolygon"}:
+            raise ValueError(
+                f"Feature at index {index} has unsupported footprint geometry "
+                f"{geometry.get(chr(116)+chr(121)+chr(112)+chr(101))!r}."
+            )
+        if not isinstance(geometry.get("coordinates"), list) or not geometry["coordinates"]:
+            raise ValueError(f"Feature at index {index} has empty footprint coordinates.")
     return payload
 
 
@@ -111,7 +124,6 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(str(exc))
 
     query_url = f"{API_URL}?{urlencode(params)}"
-    retrieved_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     try:
         raw = retrieve(query_url, args.timeout)
         collection = parse_feature_collection(raw)
@@ -126,7 +138,9 @@ def main(argv: list[str] | None = None) -> int:
         return 3
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    retrieved = datetime.now(timezone.utc)
+    retrieved_at = retrieved.isoformat(timespec="microseconds").replace("+00:00", "Z")
+    stamp = retrieved.strftime("%Y%m%dT%H%M%S%fZ")
     stem = f"asf_sentinel1_nairobi_{stamp}"
     geojson_path = args.output_dir / f"{stem}.geojson"
     metadata_path = args.output_dir / f"{stem}.metadata.json"
