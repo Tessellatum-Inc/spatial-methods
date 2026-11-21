@@ -18,6 +18,8 @@ on:
       - "implementations/python/area-adjusted-accuracy/requirements-stac-imagery.txt"
       - "implementations/python/area-adjusted-accuracy/multispectral_metrics.py"
       - "implementations/python/area-adjusted-accuracy/test_multispectral_metrics.py"
+      - "implementations/python/area-adjusted-accuracy/multispectral_raster.py"
+      - "implementations/python/area-adjusted-accuracy/test_multispectral_raster.py"
       - ".github/workflows/stac-imagery-review-tests.yml"
 
 jobs:
