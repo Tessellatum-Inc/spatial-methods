@@ -68,11 +68,21 @@ Exercises A–O use synthetic data or simulated scenarios. They support reproduc
 
 **Useful outcome:** Be able to formulate an observation model, explain the stochastic assumptions, reproduce an adjustment and distinguish internal diagnostics from independent external validation.
 
+## Pathway 4 — From sensor measurements to remote-sensing evidence
+
+**Application context:** Understand how optical multispectral and radar observations become interpretable spatial evidence, while keeping their sensor physics and processing chains distinct.
+
+**Best entry point:** [Remote sensing cross-pillar pathway](remote-sensing-cross-pillar-pathway.md).
+
+This is a partial pathway and gap map, not a claim that remote sensing is now a complete four-pillar route. It links the existing [remote-sensing indices path](remote-sensing-indices.md), [Radar exploration](../explorations/radar/README.md), the [Fiji multispectral pilot](../implementations/python/area-adjusted-accuracy/fiji-multispectral-pilot-spec.md), and the [Nairobi Sentinel-1 scene specification](../explorations/radar/nairobi-sentinel-1-scene-record.md).
+
+The optical branch has a broad algorithm catalogue and a bounded live-data retrieval pilot, but remote-sensing physics/radiometry and a general optical collection chapter remain planned or incomplete. The SAR branch has a guided backscatter investigation and scoped algorithms, but the Nairobi scene has not yet been selected or processed. Neither branch has a mature, independently validated end-to-end recipe. The pathway records these gaps rather than filling them with superficial links.
+
 ## What is not yet represented
 
 This index is deliberately selective. It does not imply that every subject has a complete cross-pillar route. In particular:
 
-- Remote sensing has algorithms, notebooks and a growing Radar exploration, but a mature end-to-end route connecting sensor physics, acquisition, processing, validation and an applied recipe still needs to be assembled.
+- Remote sensing now has a partial cross-pillar pathway and explicit optical/SAR branches. The route still needs reviewed sensor-physics foundations, canonical acquisition methods and executed, independently validated end-to-end recipes.
 - Spatial statistics has substantial methods and learning paths, but the data-generation and study-design choices should be made more explicit in future integrated routes.
 - Transport, hydrology, environmental monitoring and other application families should receive pathways when their collection, theoretical, algorithmic and recipe records are sufficiently developed to support honest hand-offs.
 
