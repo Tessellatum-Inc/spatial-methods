@@ -8,6 +8,8 @@ on:
       - "implementations/python/area-adjusted-accuracy/requirements-stac-imagery.txt"
       - "implementations/python/area-adjusted-accuracy/multispectral_metrics.py"
       - "implementations/python/area-adjusted-accuracy/test_multispectral_metrics.py"
+      - "implementations/python/area-adjusted-accuracy/multispectral_raster.py"
+      - "implementations/python/area-adjusted-accuracy/test_multispectral_raster.py"
       - ".github/workflows/stac-imagery-review-tests.yml"
   pull_request:
     paths:
@@ -36,6 +38,9 @@ jobs:
         working-directory: implementations/python/area-adjusted-accuracy
       - name: Run multispectral numerical tests
         run: python -m unittest -v test_multispectral_metrics.py
+        working-directory: implementations/python/area-adjusted-accuracy
+      - name: Run multispectral raster tests
+        run: python -m unittest -v test_multispectral_raster.py
         working-directory: implementations/python/area-adjusted-accuracy
 
   catalogue-smoke-test:
