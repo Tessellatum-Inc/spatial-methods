@@ -30,6 +30,20 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def resolve_revision(api, revision: str | None) -> str:
+    """Resolve a caller-pinned commit or the repository default branch."""
+    if revision is not None:
+        if not re.fullmatch(r"[0-9a-fA-F]{40}", revision):
+            raise ValueError("--revision must be a 40-character hexadecimal commit SHA.")
+        return revision.lower()
+    resolved = api.repo_info(repo_id=REPO_ID, repo_type=REPO_TYPE).sha
+    if not resolved:
+        raise RuntimeError("The Hub did not return a repository commit SHA.")
+    if not re.fullmatch(r"[0-9a-fA-F]{40}", resolved):
+        raise RuntimeError("The Hub returned an invalid repository commit SHA.")
+    return resolved.lower()
+
+
 def revision_snapshot_dir(destination: Path, revision: str) -> Path:
     """Return an isolated local directory for one immutable Hub revision."""
     if not re.fullmatch(r"[0-9a-fA-F]{40}", revision):
@@ -74,6 +88,11 @@ def main() -> int:
         default="./data/heig-vd-scop",
         help="Local download directory (default: ./data/heig-vd-scop)",
     )
+    parser.add_argument(
+        "--revision",
+        help="Optional immutable 40-character dataset repository commit SHA. "
+             "When omitted, resolve the current default branch once.",
+    )
     args = parser.parse_args()
 
     try:
@@ -87,10 +106,8 @@ def main() -> int:
     destination = Path(args.destination).expanduser().resolve()
     destination.mkdir(parents=True, exist_ok=True)
 
-    # Resolve the moving default branch once, then download that exact commit.
-    revision = HfApi().repo_info(repo_id=REPO_ID, repo_type=REPO_TYPE).sha
-    if not revision:
-        raise RuntimeError("The Hub did not return a repository commit SHA.")
+    # Resolve a pinned commit or the moving default branch exactly once.
+    revision = resolve_revision(HfApi(), args.revision)
     snapshot_dir = revision_snapshot_dir(destination, revision)
     snapshot_dir.mkdir(parents=True, exist_ok=True)
 
