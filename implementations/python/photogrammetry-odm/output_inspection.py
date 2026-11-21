@@ -284,6 +284,8 @@ def inspect_obj_mesh(path: Path) -> dict:
             "unreferenced_vertex_count": max(0, len(vertices) - len(referenced_vertices)),
             "repeated_vertex_face_count": repeated_vertex_faces,
             "zero_area_face_count": zero_area_faces,
+            # Retain the earlier summary field for downstream consumers.
+            "degenerate_face_count": repeated_vertex_faces + zero_area_faces,
             "invalid_line_numbers": invalid_lines[:100],
             "invalid_line_count": len(invalid_lines),
             "bounds": [mins, maxs] if vertices else None,
