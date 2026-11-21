@@ -30,7 +30,7 @@ def make_fixture(root: Path, status: str = "locked"):
     observations = dataset / "gcp" / "gcp_obs.csv"
     observations.write_text(
         "P1 img1 10 20\nP1 img2 30 40\n"
-        "P2 img1 50 60\nP2 img2 70 80\n"
+        "P2 img1 50 60\nP2 img2 70 70\n"
         "P3 img1 90 10\n",
         encoding="utf-8",
     )
