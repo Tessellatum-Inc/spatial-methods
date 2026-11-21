@@ -490,3 +490,8 @@ See [REVIEW-STATUS.md](REVIEW-STATUS.md) for the live gate-by-gate evidence reco
 ## Independent reviewer prospecting
 
 Use [reviewer-prospecting.md](reviewer-prospecting.md) for the public institutional prospect pool and outreach sequence. It prioritises specialist photogrammetry channels in Kenya and Europe, distinguishes technical reviewers from professional circulation networks, and records the independence/conflict screen. This is desk research only; no outreach has been sent and no reviewer has been recruited.
+
+
+## Reviewer outreach pack
+
+The [reviewer outreach pack](reviewer-outreach-pack.md) contains institution-specific first-contact drafts and a response-handling sequence. Public institutional channels are listed only where verified; no outreach has been sent and no reviewer has been recruited.
