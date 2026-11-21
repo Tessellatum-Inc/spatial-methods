@@ -22,7 +22,7 @@ The following distinctions are mandatory:
 ## 2. Recommended review order
 
 1. Read [the implementation README](README.md) for prerequisites, commands and component boundaries.
-2. Read [the end-to-end rehearsal plan](rehearsal-plan.md) and [dataset inspection record](dataset-inspection.md) before interpreting the HEIG-VD example.
+2. Read [the operational HEIG-VD reviewer handoff](reviewer-handoff.md) before conducting or distributing the role-blind review. Read [the end-to-end rehearsal plan](rehearsal-plan.md) and [dataset inspection record](dataset-inspection.md) before interpreting the HEIG-VD example.
 3. Inspect the versioned manifest and context templates. Confirm placeholders are not mistaken for project facts.
 4. Verify any acquired source snapshot with `verify_acquisition.py` before image or metadata audits; inspect the file-level results, symlink report and manifest hash, not only the summary status.
 5. Review the implementation in this order:
@@ -33,7 +33,8 @@ The following distinctions are mandatory:
    - `odm_runner.py` — command construction and project checks;
    - `processing_run.py` — explicit execution boundary and provenance capture;
    - `prepare_odm_gcp.py` — source-bound control-only ODM GCP export;
-   - `visual_review.py` and `lock_visual_review.py` — role-blind observation review material and decision lock;
+   - `reviewer-handoff.md`, `visual-review-protocol.md`, `visual_review.py` and `lock_visual_review.py` — reviewer workflow, role-blind observation material and decision lock;
+   - `approve_control_checkpoint_split.py` — post-review, human-gated split approval;
    - `validate_independent_checkpoint_measurements.py` — post-lock, approved-split-only measurement register and provenance validation;
    - `independent-checkpoint-measurement-protocol.md` and its CSV template — independent image-coordinate measurement after the split is locked;
    - `output_inspection.py` — read-only output inventory and GeoTIFF structure;
