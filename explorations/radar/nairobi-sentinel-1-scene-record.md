@@ -17,6 +17,26 @@ This rectangular window is for scene discovery only. It is not an official admin
 
 How does C-band Sentinel-1 backscatter vary across dense built-up areas, vegetated/open spaces and water-related surfaces in Nairobi, and which patterns may be explained by surface scattering versus acquisition geometry?
 
+## Reproducible catalogue search specification
+
+The first discovery pass is defined as an ASF Search API query over the study window:
+
+- Dataset: `SENTINEL-1`
+- Beam mode: `IW`
+- Processing level: `GRD_HD` (high-resolution detected GRD)
+- Polarisation: `VV+VH`
+- Acquisition interval: 1 October 2026 through 21 November 2026 (UTC)
+- Spatial predicate: the closed WGS 84 polygon defined by the search-window coordinates above
+- Output: GeoJSON; maximum 30 candidate records
+
+[Open the defined ASF catalogue query](https://api.daac.asf.alaska.edu/services/search/param?dataset=SENTINEL-1&beamMode=IW&processingLevel=GRD_HD&polarization=VV%2BVH&start=2026-10-01T00%3A00%3A00Z&end=2026-11-21T23%3A59%3A59Z&intersectsWith=polygon%2836.65%20-1.45%2C37.05%20-1.45%2C37.05%20-1.15%2C36.65%20-1.15%2C36.65%20-1.45%29&output=geojson&maxResults=30)
+
+**Execution status:** The query has been specified and its parameter meanings checked against the ASF Search API documentation. The live API response could not be retrieved in this review environment. Therefore this is not evidence that the query returned zero or any particular number of scenes, and no candidate product is selected yet.
+
+When executing the query, preserve the raw GeoJSON response and query timestamp. Inspect each candidate's full footprint, acquisition time, product identifier, platform, pass direction, relative orbit, polarisation, processing level, and downloadable asset. Confirm full coverage of the intended analysis sub-area rather than relying only on polygon intersection.
+
+If the dual-polarisation query yields no suitable candidate, run and document a second query with `polarization=VV`; do not silently substitute a single-polarisation scene. If the time window must be widened, record the new interval and reason. Select a scene only after comparing candidates and confirming asset access.
+
 ## Candidate scene selection
 
 Select the latest suitable Sentinel-1 IW GRD scene intersecting the AOI, preferably with VV and VH polarisation. If the latest scene does not provide complete coverage or the required channels, select the next suitable candidate and document the reason.
