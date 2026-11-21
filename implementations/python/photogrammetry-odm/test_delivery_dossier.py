@@ -13,6 +13,25 @@ class DeliveryDossierTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
         self.files = {}
+        acquisition_payload = {
+            "resolved_revision": "a" * 40,
+            "selected_path": "datasets/drone_heig_2019",
+            "file_count": 1,
+            "files": [{"path": "datasets/drone_heig_2019/images/frame.jpg", "size_bytes": 1, "sha256": "b" * 64}],
+        }
+        acquisition_path = self.root / "acquisition-provenance.json"
+        acquisition_path.write_text(json.dumps(acquisition_payload), encoding="utf-8")
+        import hashlib
+        verification_payload = {
+            "status": "verified", "resolved_revision": "a" * 40,
+            "selected_path": "datasets/drone_heig_2019",
+            "declared_file_count": 1, "verified_file_count": 1,
+            "manifest_sha256": hashlib.sha256(acquisition_path.read_bytes()).hexdigest(),
+        }
+        verification_path = self.root / "acquisition-verification.json"
+        verification_path.write_text(json.dumps(verification_payload), encoding="utf-8")
+        self.files["acquisition_manifest"] = acquisition_path
+        self.files["acquisition_verification"] = verification_path
         payloads = {
             "manifest": {"project_id": "demo"},
             "preflight": {"project_id": "demo", "status": "ready_for_operator_review"},
@@ -34,6 +53,7 @@ class DeliveryDossierTests(unittest.TestCase):
 
     def bundle(self, destination):
         return create_delivery_bundle(
+            self.files["acquisition_manifest"], self.files["acquisition_verification"],
             self.files["manifest"], self.files["preflight"], self.files["run"],
             self.files["outputs"], self.files["validation"], destination,
         )
@@ -49,7 +69,8 @@ class DeliveryDossierTests(unittest.TestCase):
             self.assertIn("evidence/project-manifest.json", names)
             dossier = json.loads(archive.read("delivery-dossier.json"))
             self.assertEqual(dossier["project_id"], "demo")
-            self.assertEqual(len(dossier["artifacts"]), 5)
+            self.assertEqual(len(dossier["artifacts"]), 7)
+            self.assertEqual(dossier["observed_statuses"]["acquisition_verification"], "verified")
         second_archive = self.root / "delivery-repeat.zip"
         self.bundle(second_archive)
         self.assertEqual(archive_path.read_bytes(), second_archive.read_bytes())
@@ -80,6 +101,24 @@ class DeliveryDossierTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Required evidence file is missing"):
             self.bundle(self.root / "missing.zip")
 
+
+
+    def test_acquisition_manifest_hash_mismatch_is_inconsistent(self):
+        self.files["acquisition_manifest"].write_text(
+            json.dumps({"resolved_revision": "a" * 40, "selected_path": "datasets/drone_heig_2019", "file_count": 1, "files": []}),
+            encoding="utf-8",
+        )
+        result = self.bundle(self.root / "acquisition-mismatch.zip")
+        self.assertEqual(result["dossier"]["status"], "inconsistent")
+        self.assertTrue(any("manifest_sha256" in item for item in result["dossier"]["consistency_errors"]))
+
+    def test_unverified_acquisition_requires_review(self):
+        verification = json.loads(self.files["acquisition_verification"].read_text())
+        verification["status"] = "integrity_error"
+        self.files["acquisition_verification"].write_text(json.dumps(verification), encoding="utf-8")
+        result = self.bundle(self.root / "unverified-acquisition.zip")
+        self.assertEqual(result["dossier"]["status"], "review_required")
+        self.assertTrue(any("Acquisition verification status" in item for item in result["dossier"]["warnings"]))
 
 if __name__ == "__main__":
     unittest.main()
