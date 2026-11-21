@@ -100,6 +100,8 @@ def verify_manifest(manifest_path: str | Path) -> dict:
         "schema_version": "1.0",
         "status": status,
         "manifest_path": str(manifest_file),
+        "manifest_sha256": sha256_file(manifest_file),
+        "manifest_size_bytes": manifest_file.stat().st_size,
         "repository_id": manifest.get("repository_id"),
         "resolved_revision": revision.lower(),
         "selected_path": selected_path,
