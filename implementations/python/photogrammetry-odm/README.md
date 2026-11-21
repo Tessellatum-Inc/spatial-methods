@@ -233,3 +233,19 @@ python processing_run.py /absolute/path/to/datasets/campus_block \
 The run directory must be outside the ODM project directory. The recorder hashes supported source images before execution, captures stdout/stderr, records the process exit code and inventories project files after execution. It also attempts to record the local Docker image ID, repository digests, OS and architecture. Dry-run does not invoke Docker at all.
 
 The record is evidence of what the wrapper observed, not a complete execution attestation. It does not yet capture all host hardware/runtime details, guarantee bit-for-bit deterministic reconstruction, validate output CRS or raster contents, or establish product accuracy. A zero exit code is not an acceptance decision. Preserve the run directory alongside (but separately from) the raw source archive.
+
+
+## Output inventory and geospatial inspection
+
+After a processing run, inspect the resulting project tree:
+
+```bash
+python output_inspection.py /absolute/path/to/datasets/campus_block \
+  --expect odm_orthophoto/odm_orthophoto.tif \
+  --expect odm_dem/dsm.tif \
+  --json-out output-inspection.json
+```
+
+Expected paths are project-relative and may be repeated. Missing declared files are blockers. The utility inventories all project files and, when Rasterio is installed, checks GeoTIFF readability and records dimensions, band count, data types, CRS, affine transform, bounds, pixel size and nodata. It attempts a small read from the first band. If Rasterio is unavailable, the file remains inventoried but structural raster inspection is explicitly marked unavailable.
+
+This is a structural inspection stage, not an accuracy assessment. A present CRS may still be wrong; plausible bounds and pixel sizes do not establish georeferencing correctness. Point-cloud and mesh semantic inspection is not yet included. Compare products with independent reference data and project acceptance criteria before delivery.
