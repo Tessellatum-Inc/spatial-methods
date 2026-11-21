@@ -175,7 +175,11 @@ def create_delivery_bundle(
         with zipfile.ZipFile(destination, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             for path in sorted(staging.rglob("*")):
                 if path.is_file():
-                    archive.write(path, path.relative_to(staging).as_posix())
+                    info = zipfile.ZipInfo(path.relative_to(staging).as_posix())
+                    info.date_time = (1980, 1, 1, 0, 0, 0)
+                    info.compress_type = zipfile.ZIP_DEFLATED
+                    info.external_attr = 0o100644 << 16
+                    archive.writestr(info, path.read_bytes())
     return {"archive": str(destination), "sha256": _hash(destination), "size_bytes": destination.stat().st_size, "dossier": dossier}
 
 
