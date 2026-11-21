@@ -249,3 +249,39 @@ python output_inspection.py /absolute/path/to/datasets/campus_block \
 Expected paths are project-relative and may be repeated. Missing declared files are blockers. The utility inventories all project files and, when Rasterio is installed, checks GeoTIFF readability and records dimensions, band count, data types, CRS, affine transform, bounds, pixel size and nodata. It attempts a small read from the first band. If Rasterio is unavailable, the file remains inventoried but structural raster inspection is explicitly marked unavailable.
 
 This is a structural inspection stage, not an accuracy assessment. A present CRS may still be wrong; plausible bounds and pixel sizes do not establish georeferencing correctness. Point-cloud and mesh semantic inspection is not yet included. Compare products with independent reference data and project acceptance criteria before delivery.
+
+
+## Independent checkpoint validation evidence
+
+The statistics-only utility is useful for transparent residual summaries. To turn those summaries into a project-level evidence record, use `validation_evidence.py` with a context JSON file. The CSV must contain the seven fields documented by `checkpoint_qa.py`: `point_id,ref_x,ref_y,ref_z,model_x,model_y,model_z`.
+
+Example context (replace every value with project facts; do not copy the illustrative values as evidence):
+
+```json
+{
+  "project_id": "replace-with-project-id",
+  "processing_run_id": "replace-with-run-id",
+  "horizontal_crs": "EPSG:XXXX",
+  "vertical_reference": "declare the vertical datum/reference",
+  "coordinate_units": "metres",
+  "reference_uncertainty": "describe source, method and uncertainty",
+  "sample_design": "describe selection frame, design and exclusions",
+  "checkpoint_independence": true,
+  "acceptance_decision": "pending"
+}
+```
+
+Generate the report and link the run/output records where available:
+
+```bash
+python validation_evidence.py checkpoints.csv validation-context.json \\
+  --run-record /path/to/processing-run.json \\
+  --output-inspection /path/to/output-inspection.json \\
+  --json-out validation-evidence.json
+```
+
+The adapter hashes the checkpoint CSV and linked JSON evidence, checks the processing-run identifier when present, and reports residual statistics alongside declared CRS, vertical reference, units, reference uncertainty and sample design. Missing context or unconfirmed checkpoint independence yields `not_assessable`; it is not converted into a pass or a failed product.
+
+Acceptance is deliberately separate. The default decision is `pending`. A human may supply `accepted`, `rejected` or `not_assessable`, but a non-pending decision requires both a named reviewer and a written rationale. The tool does not invent generic thresholds, infer compliance, or automatically accept based on RMSE/P95.
+
+This is an evidence adapter, not a full survey-design auditor. It records rather than independently proves checkpoint independence, sample representativeness, CRS compatibility or reference uncertainty. It does not propagate reference uncertainty, transform coordinates, calculate confidence intervals, or establish CE95. A single reviewer decision is not independent multi-reviewer validation. GCPs, training points and AI-assisted interpretations must not be represented as independent checkpoints.
