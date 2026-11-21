@@ -62,7 +62,7 @@ The mathematics domain begins with [Mathematical language, quantities and spatia
 
 ### Remote sensing physics and radiometry
 
-The initial module, [Electromagnetic observations and radiometric quantities](remote-sensing-physics/electromagnetic-observations-and-radiometric-quantities.md), establishes the shared electromagnetic vocabulary and distinguishes passive optical measurements from active radar backscatter. It covers radiance, irradiance, reflectance, SAR normalisation conventions, scale factors, decibels, product metadata and interpretation limits. It is an introductory foundation only: detailed optical radiative transfer and SAR signal formation remain separate future modules. Technical review and learner testing are pending.
+The initial module, [Electromagnetic observations and radiometric quantities](remote-sensing-physics/electromagnetic-observations-and-radiometric-quantities.md), establishes shared electromagnetic vocabulary and radiometric distinctions. The new [Radar scattering and SAR signal formation](remote-sensing-physics/radar-scattering-and-sar-signal-formation.md) module develops wave geometry, range and azimuth formation, complex signal representation, scattering mechanisms, polarisation, speckle, terrain distortion, phase and coherence. Both are initial modules; technical review, numerical verification and learner testing remain pending. Detailed optical radiative transfer and advanced radar signal processing remain open.
 
 ### Existing measurement-science resources
 
