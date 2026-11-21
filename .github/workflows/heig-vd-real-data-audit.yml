@@ -117,6 +117,10 @@ jobs:
             done
           fi
           mkdir -p reports/heig-vd/visual-review
+          if [ -n "${SNAPSHOT:-}" ]; then
+            cp "$SNAPSHOT/acquisition-provenance.json" reports/heig-vd/visual-review/ 2>/dev/null
+            cp "$SNAPSHOT/acquisition-verification.json" reports/heig-vd/visual-review/ 2>/dev/null
+          fi
           cat > reports/heig-vd/visual-review/README.md <<'EOF'
           # Role-blind point review packet
 
@@ -129,6 +133,18 @@ jobs:
           The yellow ring marks the publisher-provided Metashape image pick.
           These are not independent remeasurements and do not establish survey
           accuracy or checkpoint independence.
+
+          After completing every row, run from the repository root:
+
+          ```bash
+          python implementations/python/photogrammetry-odm/lock_visual_review.py \
+            review-decisions-template.csv visual-review-summary.json \
+            acquisition-provenance.json locked-review.json
+          ```
+
+          The lock utility verifies all source point/image/pixel records, requires
+          complete decisions and timezone-aware timestamps, and keeps roles
+          unblinded. A single reviewer is not independent validation.
           EOF
           cat > reports/heig-vd/README.md <<'EOF'
           # HEIG-VD real-data acquisition and audit
