@@ -66,6 +66,7 @@ Produce:
 ## Temporal and spatial protocol
 
 - Search the full 2021 calendar year; record all candidate observations.
+- Deduplicate cross-catalogue representations of the same platform acquisition (normalized acquisition timestamp and platform) before selecting a bounded number of scenes. Record how many catalogue items were collapsed into unique acquisitions.
 - Do not select a scene using scene-wide cloud cover alone. Apply SCL screening and inspect point/neighbourhood valid-pixel fractions.
 - Use a shared ground footprint across native grids. The extraction reader anchors the footprint on the 20 m grid; the 10 m window is derived from those exact map bounds and must align to twice the pixel dimensions. For example, a 16 × 16 window on the 20 m grid corresponds to 32 × 32 pixels on the 10 m grid (320 m × 320 m). Report bounds, CRS, native pixel size and valid-pixel count.
 - Distinguish stable spectral patterns from seasonal/temporal variability. Where evidence changes across dates, flag the point as temporally ambiguous.
@@ -99,7 +100,7 @@ The 25 disagreement points are purposive. They help diagnose selected disagreeme
 
 ## Current implementation status
 
-The bounded 25-point public Earth Search multispectral run completed successfully on 2026-11-21. It attempted 75 candidate scenes: 61 complete reads and 14 failures caused by an S3 asset bucket requiring AWS credentials. Every one of the 25 points had at least one successful candidate with all four core 10 m bands and the complete requested 11-band set including SCL. Successful records span 22 distinct acquisition timestamps across the sample. These counts describe retrieval, not cloud-free coverage or independent temporal observations; duplicate acquisitions across STAC collections still require deduplication before temporal interpretation.
+The bounded 25-point public Earth Search multispectral run completed successfully on 2026-11-21. It attempted 75 candidate scenes: 61 complete reads and 14 failures caused by an S3 asset bucket requiring AWS credentials. Every one of the 25 points had at least one successful candidate with all four core 10 m bands and the complete requested 11-band set including SCL. Successful records span 22 distinct acquisition timestamps across the sample. The first run retained duplicate representations of the same overpass from different STAC collections; the runner is being updated to deduplicate platform acquisitions before selecting scenes. These counts describe retrieval, not cloud-free coverage or independent temporal observations.
 
 The repository now has three distinct layers:
 
