@@ -23,6 +23,10 @@ The stable subject identities are defined in the [Geoinformatics master subject 
 
 This is an initial navigation page, not a claim that every collection domain has been comprehensively curated. The subject index remains the complete taxonomy.
 
+## Remote-sensing collection route
+
+Satellite and airborne optical remote sensing (SM-COL-004) is identified in the subject map, but its general collection-method record is still to be developed. The current [remote-sensing cross-pillar pathway](../learning-paths/remote-sensing-cross-pillar-pathway.md) distinguishes optical multispectral acquisition from SAR and records the existing Fiji and Nairobi evidence without treating either as a completed collection chapter.
+
 ## How to investigate a collection method
 
 A good collection account answers:
