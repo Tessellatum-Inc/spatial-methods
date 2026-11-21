@@ -528,6 +528,9 @@ jobs:
             --output-dir /tmp/fiji-blind-review
           mkdir -p /tmp/fiji-blind-review/chips
           cp /tmp/fiji-rgb/*.png /tmp/fiji-blind-review/chips/ 2>/dev/null || true
+          mkdir -p /tmp/fiji-blind-review/multispectral-visuals
+          cp -r /tmp/fiji-multispectral/visuals/. /tmp/fiji-blind-review/multispectral-visuals/ 2>/dev/null || true
+          cp /tmp/fiji-multispectral/fiji-multispectral-visual-manifest.json /tmp/fiji-blind-review/ 2>/dev/null || true
           python implementations/python/area-adjusted-accuracy/build_fiji_review_contact_sheets.py \
             --worksheet /tmp/fiji-blind-review/fiji-blind-review-worksheet.csv \
             --rgb-provenance /tmp/fiji-rgb/stac-imagery-provenance.csv \
