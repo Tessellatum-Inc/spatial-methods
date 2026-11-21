@@ -127,6 +127,68 @@ def inspect_point_cloud(path: Path) -> dict:
         return {"path": str(path), "status": "invalid", "error": message}
 
 
+def inspect_obj_mesh(path: Path) -> dict:
+    """Validate OBJ syntax and face indices, not geometric quality."""
+    vertices = faces = 0
+    invalid = []
+    degenerate = 0
+    referenced = set()
+    mins = [math.inf, math.inf, math.inf]
+    maxs = [-math.inf, -math.inf, -math.inf]
+
+    def index_ok(token: str, count: int) -> bool:
+        try:
+            value = int(token)
+        except ValueError:
+            return False
+        resolved = value - 1 if value > 0 else count + value
+        return value != 0 and 0 <= resolved < count
+
+    try:
+        with path.open("r", encoding="utf-8", errors="strict") as stream:
+            for line_no, raw in enumerate(stream, 1):
+                fields = raw.partition("#")[0].split()
+                if not fields:
+                    continue
+                kind, values = fields[0], fields[1:]
+                if kind == "v":
+                    if len(values) < 3:
+                        invalid.append(line_no)
+                        continue
+                    try:
+                        xyz = [float(v) for v in values[:3]]
+                    except ValueError:
+                        invalid.append(line_no)
+                        continue
+                    if not all(math.isfinite(v) for v in xyz):
+                        invalid.append(line_no)
+                        continue
+                    vertices += 1
+                    for axis in range(3):
+                        mins[axis] = min(mins[axis], xyz[axis])
+                        maxs[axis] = max(maxs[axis], xyz[axis])
+                elif kind == "f":
+                    faces += 1
+                    if len(values) < 3:
+                        invalid.append(line_no)
+                        continue
+                    refs = []
+                    for token in values:
+                        part = token.split("/")[0]
+                        if not index_ok(part, vertices):
+                            invalid.append(line_no)
+                        else:
+                            n = int(part)
+                            refs.append(n - 1 if n > 0 else vertices + n)
+                    if len(set(refs)) < 3:
+                        degenerate += 1
+                    referenced.update(refs)
+        ok = vertices > 0 and faces > 0 and not invalid and degenerate == 0
+        return {"path": str(path), "status": "readable" if ok else "invalid", "format": "Wavefront OBJ", "vertex_count": vertices, "face_count": faces, "referenced_vertex_count": len(referenced), "unreferenced_vertex_count": max(0, vertices-len(referenced)), "degenerate_face_count": degenerate, "invalid_line_numbers": invalid[:100], "invalid_line_count": len(invalid), "bounds": [mins, maxs] if vertices else None}
+    except Exception as exc:
+        return {"path": str(path), "status": "invalid", "error": str(exc)}
+
+
 def inspect_outputs(project: Path, expected: list[str] | None = None) -> dict:
     project = project.expanduser().resolve()
     if not project.is_dir():
@@ -158,6 +220,7 @@ def inspect_outputs(project: Path, expected: list[str] | None = None) -> dict:
         inspect_point_cloud(path) for path in files
         if path.suffix.lower() in POINT_CLOUD_SUFFIXES
     ]
+    meshes = [inspect_obj_mesh(path) for path in files if path.suffix.lower() == ".obj"]
     blockers = [
         f"Declared output is missing: {item['path']}"
         for item in expected_results if not item["exists"]
@@ -178,6 +241,7 @@ def inspect_outputs(project: Path, expected: list[str] | None = None) -> dict:
         f"Point-cloud records not inspected: {item['path']} ({item['reason']})"
         for item in point_clouds if item["status"] == "not_inspected"
     )
+    blockers.extend(["OBJ mesh structure is invalid: " + item["path"] for item in meshes if item["status"] == "invalid"])
     if not rasters:
         warnings.append("No GeoTIFF outputs were found for raster inspection.")
     status = "blocked" if blockers else ("review_required" if warnings else "inspected")
@@ -189,14 +253,15 @@ def inspect_outputs(project: Path, expected: list[str] | None = None) -> dict:
         "file_inventory": inventory,
         "rasters": rasters,
         "point_clouds": point_clouds,
+        "meshes": meshes,
         "blockers": blockers,
         "warnings": warnings,
         "limitations": [
             "Structural readability is not thematic or positional accuracy.",
             "CRS presence does not establish that the CRS is correct for the project.",
             "Pixel size and bounds are descriptive; no independent reference comparison is performed.",
-            "Point-cloud inspection is limited to LAS/LAZ header metadata; point content, classification quality and positional accuracy are not assessed.",
-            "Mesh semantic and topology inspection is not implemented in this adapter.",
+            "Point-cloud records are scanned for structural summaries; classification correctness, density suitability and positional accuracy are not assessed.",
+            "OBJ inspection checks syntax and vertex indices only; manifoldness, self-intersections, texture completeness, normal quality and geometric accuracy are not assessed.",
         ],
     }
 
