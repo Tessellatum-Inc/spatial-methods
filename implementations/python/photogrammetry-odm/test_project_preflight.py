@@ -56,7 +56,8 @@ class IntegratedProjectPreflightTests(unittest.TestCase):
         self.assertEqual(report["project"]["image_count"], 1)
         self.assertIsNotNone(report["processing_handoff"]["command"])
         self.assertFalse(report["processing_handoff"]["executed"])
-        self.assertIn("docker", report["processing_handoff"]["command"][0])\n        self.assertEqual(report["processing_handoff"]["command"].count("--dsm"), 1)
+        self.assertIn("docker", report["processing_handoff"]["command"][0])
+        self.assertEqual(report["processing_handoff"]["command"].count("--dsm"), 1)
 
     def test_missing_images_is_reported_as_blocked_not_exception(self):
         (self.project / "images" / "one.jpg").unlink()
