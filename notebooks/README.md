@@ -52,6 +52,7 @@ Notebooks are used when changing values, inspecting intermediate calculations or
 ### Remote sensing
 
 - [NDVI lab](ndvi-lab.ipynb): calculate a synthetic vegetation index and inspect NoData, non-finite values and quality masking.
+- [SAR signal and scattering computational companion](sar-signal-scattering-companion-lab.ipynb): explore range resolution, complex I/Q, coherent speckle, multilooking, coherence and phase sensitivity using synthetic data.
 
 ### Raster analysis
 
