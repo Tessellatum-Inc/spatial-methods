@@ -15,6 +15,7 @@ from stac_imagery_review import (
     item_cloud,
     post_search,
     search_catalogue,
+    write_provenance,
 )
 
 
@@ -91,6 +92,31 @@ class StacReviewTests(unittest.TestCase):
     def test_search_page_limit_must_be_positive(self):
         with self.assertRaises(ValueError):
             post_search("https://catalogue.test/search", "sentinel", 0, 0, max_pages=0)
+
+
+    def test_provenance_writer_handles_mixed_discovery_and_chip_rows(self):
+        with tempfile.TemporaryDirectory() as folder:
+            output = Path(folder) / "provenance.csv"
+            rows = [
+                {"sample_id": "p1", "status": "no_items", "notes": "none"},
+                {"sample_id": "p2", "status": "chip_created", "assets": '{"red": "B04_10m"}',
+                 "source_grid": "{}", "read_method": "window"},
+            ]
+            write_provenance(output, rows)
+            import csv
+            with open(output, newline="", encoding="utf-8") as stream:
+                records = list(csv.DictReader(stream))
+            self.assertEqual(len(records), 2)
+            self.assertEqual(records[0]["assets"], "")
+            self.assertEqual(records[1]["assets"], '{"red": "B04_10m"}')
+            self.assertEqual(records[1]["read_method"], "window")
+
+    def test_provenance_writer_removes_stale_output_for_empty_run(self):
+        with tempfile.TemporaryDirectory() as folder:
+            output = Path(folder) / "provenance.csv"
+            output.write_text("stale", encoding="utf-8")
+            write_provenance(output, [])
+            self.assertFalse(output.exists())
 
     def _write_rgb_assets(self, folder, lon, lat, misalign_blue=False):
         x, y = transform_coordinates("EPSG:4326", "EPSG:32760", [lon], [lat])
