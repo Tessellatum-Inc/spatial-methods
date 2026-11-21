@@ -1,0 +1,183 @@
+name: HEIG-VD ODM EXIF baseline
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/heig-vd-odm-exif-baseline.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  exif-baseline:
+    name: Real ODM processing without GCP control
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      PYTHONUNBUFFERED: "1"
+      ODM_TAG: "opendronemap/odm:3.6.0"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install acquisition and output-inspection dependencies
+        run: python -m pip install "huggingface_hub>=0.30,<2" "Pillow>=10,<13" "rasterio>=1.4,<2" "laspy>=2.5,<3" "lazrs>=0.6,<1"
+
+      - name: Acquire immutable HEIG-VD snapshot
+        working-directory: implementations/python/photogrammetry-odm
+        run: python acquire_rehearsal_dataset.py "$GITHUB_WORKSPACE/data/heig-vd-scop"
+
+      - name: Verify immutable source bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          SNAPSHOT="$(find data/heig-vd-scop/snapshots -mindepth 1 -maxdepth 1 -type d | sort | head -n 1)"
+          python implementations/python/photogrammetry-odm/verify_acquisition.py \
+            "$SNAPSHOT/acquisition-provenance.json" \
+            --json-out "$SNAPSHOT/acquisition-verification.json"
+
+      - name: Prepare isolated EXIF-only ODM project
+        shell: bash
+        run: |
+          set -euo pipefail
+          SNAPSHOT="$(find data/heig-vd-scop/snapshots -mindepth 1 -maxdepth 1 -type d | sort | head -n 1)"
+          DATASET="$SNAPSHOT/datasets/drone_heig_2019"
+          WORK="$GITHUB_WORKSPACE/rehearsal"
+          mkdir -p "$WORK/project/images" "$WORK/run" "$WORK/reports"
+          cp "$DATASET"/images/* "$WORK/project/images/"
+          test "$(find "$WORK/project/images" -maxdepth 1 -type f | wc -l)" -eq 32
+
+      - name: Pull ODM and resolve immutable container digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker info
+          docker pull "$ODM_TAG"
+          IMAGE_REF="$(docker image inspect --format='{{index .RepoDigests 0}}' "$ODM_TAG")"
+          test -n "$IMAGE_REF"
+          echo "ODM_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          docker image inspect "$ODM_TAG" > rehearsal/reports/docker-image-inspect.json
+          printf '%s\n' "$IMAGE_REF" > rehearsal/reports/odm-image-reference.txt
+          df -h "$GITHUB_WORKSPACE"
+
+      - name: Create explicit EXIF-baseline project manifest
+        shell: bash
+        run: |
+          cat > rehearsal/project-manifest.json <<EOF
+          {
+            "schema_version": "1.0",
+            "project_id": "heig-vd-drone-2019-exif-baseline",
+            "title": "HEIG-VD drone 2019 EXIF-only structural baseline",
+            "intended_use": "Exercise the real ODM acquisition-to-output workflow without surveyed GCP control or accuracy claims.",
+            "data_sources": [
+              {
+                "source_id": "HEIG-VD-SCOP-DRONE-2019",
+                "description": "HEIG-VD Geomatics group drone photogrammetry dataset, selected drone_heig_2019 subset.",
+                "uri": "https://huggingface.co/datasets/heig-vd-geo/scop-datasets",
+                "licence": "CC BY 4.0; attribution required.",
+                "resolved_version": "$(cat rehearsal/reports/odm-image-reference.txt | tr -d '\n') / source revision recorded in acquisition-provenance.json"
+              }
+            ],
+            "dataset": {
+              "project_directory": "./project",
+              "expected_image_count": 32,
+              "raw_data_location": "Immutable source snapshot is separately preserved under data/heig-vd-scop/snapshots; project/images is a working copy."
+            },
+            "processing": {
+              "engine": "OpenDroneMap",
+              "container_image": "$ODM_IMAGE",
+              "arguments": ["--pc-las"]
+            },
+            "validation": {
+              "horizontal_crs": "Input camera EXIF geotags are WGS84 longitude/latitude; output CRS must be read from product metadata and independently checked.",
+              "vertical_reference": "No surveyed vertical control is applied in this EXIF-only baseline; camera altitude reference is not assumed.",
+              "coordinate_units": "Input EXIF longitude/latitude in degrees; product units and CRS are recorded from output metadata.",
+              "independent_checkpoints": false,
+              "reference_uncertainty": "No independent surveyed checkpoint reference is used in this baseline; EXIF GPS uncertainty is not established.",
+              "acceptance_criteria": "Structural processing rehearsal only. No positional accuracy acceptance criterion or release decision is applied."
+            },
+            "deliverables": [
+              "odm_orthophoto/odm_orthophoto.tif",
+              "odm_dem/dsm.tif",
+              "odm_georeferencing/odm_georeferenced_model.laz"
+            ]
+          }
+          EOF
+
+      - name: Run read-only project preflight
+        working-directory: implementations/python/photogrammetry-odm
+        run: python project_preflight.py "$GITHUB_WORKSPACE/rehearsal/project-manifest.json" --json-out "$GITHUB_WORKSPACE/rehearsal/reports/preflight-report.json"
+
+      - name: Execute real ODM EXIF baseline
+        working-directory: implementations/python/photogrammetry-odm
+        run: python processing_run.py "$GITHUB_WORKSPACE/rehearsal/project" --image "$ODM_IMAGE" --run-directory "$GITHUB_WORKSPACE/rehearsal/run" --odm-arg=--pc-las --execute
+
+      - name: Inspect declared ODM products
+        working-directory: implementations/python/photogrammetry-odm
+        run: |
+          python output_inspection.py "$GITHUB_WORKSPACE/rehearsal/project" \
+            --expect odm_orthophoto/odm_orthophoto.tif \
+            --expect odm_dem/dsm.tif \
+            --expect odm_georeferencing/odm_georeferenced_model.laz \
+            --json-out "$GITHUB_WORKSPACE/rehearsal/reports/output-inspection.json"
+
+      - name: Preserve run evidence and derived products
+        if: always()
+        shell: bash
+        run: |
+          set +e
+          mkdir -p rehearsal/reports
+          SNAPSHOT_ROOT="data/heig-vd-scop/snapshots"
+          SNAPSHOT="$(find "$SNAPSHOT_ROOT" -mindepth 1 -maxdepth 1 -type d | sort | head -n 1)"
+          if [ -n "$SNAPSHOT" ]; then
+            cp "$SNAPSHOT/acquisition-provenance.json" rehearsal/reports/ 2>/dev/null
+            cp "$SNAPSHOT/acquisition-verification.json" rehearsal/reports/ 2>/dev/null
+          fi
+          cp rehearsal/project-manifest.json rehearsal/reports/ 2>/dev/null
+          cp -a rehearsal/run/. rehearsal/reports/run-records/ 2>/dev/null
+          if [ -d rehearsal/project/odm_orthophoto ]; then
+            mkdir -p rehearsal/products/odm_orthophoto
+            cp rehearsal/project/odm_orthophoto/odm_orthophoto.tif rehearsal/products/odm_orthophoto/ 2>/dev/null
+          fi
+          if [ -d rehearsal/project/odm_dem ]; then
+            mkdir -p rehearsal/products/odm_dem
+            cp rehearsal/project/odm_dem/dsm.tif rehearsal/products/odm_dem/ 2>/dev/null
+          fi
+          if [ -d rehearsal/project/odm_georeferencing ]; then
+            mkdir -p rehearsal/products/odm_georeferencing
+            cp rehearsal/project/odm_georeferencing/odm_georeferenced_model.laz rehearsal/products/odm_georeferencing/ 2>/dev/null
+          fi
+          cat > rehearsal/reports/BASELINE-LIMITATIONS.md <<'EOF'
+          # EXIF-only baseline limitations
+
+          This is a real ODM execution without GCP control. It is a structural
+          processing baseline only. It does not use the proposed control/checkpoint
+          split, the source OPK adjustment, or the supplied GCP observations.
+
+          EXIF GPS positions are not independent survey control. The source camera
+          altitude reference and its uncertainty are not established here. Output
+          CRS and vertical interpretation must be read from product metadata and
+          separately reconciled before any accuracy statement.
+
+          A successful ODM exit code or readable product does not establish
+          positional accuracy, completeness, suitability or release readiness.
+          No checkpoint residuals or acceptance decision are produced by this run.
+          EOF
+
+      - name: Upload EXIF baseline evidence and selected products
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: heig-vd-odm-exif-baseline
+          path: |
+            rehearsal/reports/
+            rehearsal/products/
+          if-no-files-found: warn
+          retention-days: 30
