@@ -4,6 +4,10 @@ Spatial Data Collection explains how information about the world is observed, me
 
 It covers more than sensors or platforms. A collection method includes the physical quantity or phenomenon being observed, the measurement process, sampling geometry, instrument and platform behaviour, calibration, field conditions, metadata, uncertainty and quality control.
 
+## Connect collection to analysis and application
+
+The [cross-pillar pathway index](../learning-paths/cross-pillar-pathways.md) shows how observations and measurement systems connect to their theoretical basis, computational methods and reproducible workflows.
+
 ## Subject domains
 
 The stable subject identities are defined in the [Geoinformatics master subject index](../catalog/master-subject-index.md).
