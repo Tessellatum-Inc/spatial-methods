@@ -18,7 +18,7 @@ from checkpoint_qa import assess_checkpoints, read_checkpoints
 REQUIRED_CONTEXT = (
     "project_id", "processing_run_id", "horizontal_crs",
     "vertical_reference", "coordinate_units", "reference_uncertainty",
-    "sample_design", "checkpoint_independence",
+    "sample_design", "checkpoint_independence", "acceptance_criteria",
 )
 
 
@@ -101,6 +101,7 @@ def build_validation_record(
             "reference_uncertainty": context.get("reference_uncertainty"),
         },
         "sample_design": context.get("sample_design"),
+        "acceptance_criteria": context.get("acceptance_criteria"),
         "residual_statistics": stats,
         "linked_evidence": links,
         "acceptance": {
