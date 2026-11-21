@@ -24,7 +24,8 @@ The following distinctions are mandatory:
 1. Read [the implementation README](README.md) for prerequisites, commands and component boundaries.
 2. Read [the end-to-end rehearsal plan](rehearsal-plan.md) and [dataset inspection record](dataset-inspection.md) before interpreting the HEIG-VD example.
 3. Inspect the versioned manifest and context templates. Confirm placeholders are not mistaken for project facts.
-4. Review the implementation in this order:
+4. Verify any acquired source snapshot with `verify_acquisition.py` before image or metadata audits; inspect the file-level results, not only the summary status.
+5. Review the implementation in this order:
    - `project_manifest.py` — project contract and manifest validation;
    - `dataset_audit.py` — generic image inventory, hashes and optional readability checks;
    - `project_preflight.py` — read-only integration and severity reporting;
@@ -34,7 +35,7 @@ The following distinctions are mandatory:
    - `checkpoint_qa.py` — residual definitions and statistics;
    - `validation_evidence.py` — evidence completeness and human decision record;
    - `delivery_dossier.py` — checksummed evidence packaging.
-5. Run the package tests from this directory:
+6. Run the package tests from this directory:
    ```bash
    python -m pytest -q
    ```
@@ -42,8 +43,8 @@ The following distinctions are mandatory:
    ```bash
    python -m unittest -v
    ```
-6. Review the latest GitHub Actions run for the exact commit being examined. Do not infer green CI from an earlier commit or from selected successful shards.
-7. For any proposed real-data claim, require the acquisition manifest, input hashes, exact engine digest, logs, output inspection, independent checkpoint evidence and project-specific acceptance specification.
+7. Review the latest GitHub Actions run for the exact commit being examined. Do not infer green CI from an earlier commit or from selected successful shards.
+8. For any proposed real-data claim, require the acquisition manifest, input hashes, exact engine digest, logs, output inspection, independent checkpoint evidence and project-specific acceptance specification.
 
 ## 3. Evidence handoff map
 
