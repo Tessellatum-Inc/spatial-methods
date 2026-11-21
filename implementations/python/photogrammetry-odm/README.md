@@ -285,3 +285,24 @@ The adapter hashes the checkpoint CSV and linked JSON evidence, checks the proce
 Acceptance is deliberately separate. The default decision is `pending`. A human may supply `accepted`, `rejected` or `not_assessable`, but a non-pending decision requires both a named reviewer and a written rationale. The tool does not invent generic thresholds, infer compliance, or automatically accept based on RMSE/P95.
 
 This is an evidence adapter, not a full survey-design auditor. It records rather than independently proves checkpoint independence, sample representativeness, CRS compatibility or reference uncertainty. It does not propagate reference uncertainty, transform coordinates, calculate confidence intervals, or establish CE95. A single reviewer decision is not independent multi-reviewer validation. GCPs, training points and AI-assisted interpretations must not be represented as independent checkpoints.
+
+
+## Reproducible evidence delivery dossier
+
+Once the five evidence records exist, assemble them into a reviewable ZIP dossier:
+
+```bash
+python delivery_dossier.py \
+  --manifest /path/to/project-manifest.json \
+  --preflight /path/to/preflight-report.json \
+  --run-record /path/to/processing-run.json \
+  --output-inspection /path/to/output-inspection.json \
+  --validation-evidence /path/to/validation-evidence.json \
+  --output /path/to/delivery-dossier.zip
+```
+
+The archive contains the project manifest, preflight report, processing-run record, output-inspection report, checkpoint-validation evidence and a `delivery-dossier.json` index. The index records SHA-256 hashes, byte sizes, observed statuses, project/run identity checks, warnings and consistency errors.
+
+The dossier is `inconsistent` when declared project or run identities conflict, `review_required` when evidence is incomplete in quality or its recorded decisions remain unresolved, and `assembled` when the supplied records are internally consistent and report the expected positive statuses. Even an `assembled` dossier has `release_authorized: false`: packaging evidence never substitutes for project-specific professional, contractual, legal or safety release decisions.
+
+The ZIP bundles evidence records, not raw imagery or the complete processing outputs. Preserve those source and product files separately, using the recorded hashes to identify the exact evidence versions. The archive's own SHA-256 is printed after creation.
