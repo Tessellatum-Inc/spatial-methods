@@ -19,10 +19,15 @@ def build_preflight(manifest: dict, manifest_path: str | Path) -> dict:
     base_report = validate_manifest(manifest, manifest_path)
     project_dir = Path(base_report["project_directory"])
     expected_count = manifest["dataset"].get("expected_image_count")
-    image_report = inspect_images(project_dir / "images", expected_count)
-
     blockers = list(base_report["blockers"])
     warnings = list(base_report["warnings"])
+
+    try:
+        image_report = inspect_images(project_dir / "images", expected_count)
+    except (OSError, ValueError) as exc:
+        image_report = {"status": "not_run", "error": str(exc)}
+        blockers.append(f"Image audit could not run: {exc}")
+
     if image_report.get("invalid_images"):
         blockers.append(
             f"{image_report['invalid_images']} image file(s) failed image decoding."
@@ -31,7 +36,7 @@ def build_preflight(manifest: dict, manifest_path: str | Path) -> dict:
         warnings.append(
             f"Expected {expected_count} images but audited {image_report['image_count']}."
         )
-    if not image_report.get("pillow_available"):
+    if image_report.get("pillow_available") is False:
         warnings.append(
             "Pillow is unavailable; image inventory and hashes were produced, "
             "but image decoding and dimensions were not checked."
@@ -43,11 +48,15 @@ def build_preflight(manifest: dict, manifest_path: str | Path) -> dict:
         isinstance(value, str) and value.strip() for value in arguments
     ):
         raise ValueError("processing.arguments must contain non-empty strings.")
-    command = build_command(
-        project_dir,
-        processing["container_image"],
-        arguments,
-    )
+    try:
+        command = build_command(
+            project_dir,
+            processing["container_image"],
+            arguments,
+        )
+    except ValueError as exc:
+        command = None
+        blockers.append(f"Processing handoff could not be constructed: {exc}")
 
     status = "blocked" if blockers else (
         "review_required" if warnings else "ready_for_operator_review"
@@ -58,7 +67,7 @@ def build_preflight(manifest: dict, manifest_path: str | Path) -> dict:
         "status": status,
         "project": {
             "directory": str(project_dir),
-            "image_count": image_report["image_count"],
+            "image_count": image_report.get("image_count", 0),
             "expected_image_count": expected_count,
         },
         "checks": {
@@ -98,7 +107,7 @@ def main(argv: list[str] | None = None) -> int:
     rendered = json.dumps(report, indent=2, sort_keys=True)
     print(rendered)
     if args.json_out:
-        args.json_out.write_text(rendered + "\n", encoding="utf-8")
+        args.json_out.write_text(rendered + "\\n", encoding="utf-8")
     return 2 if report["status"] == "blocked" else 0
 
 
