@@ -66,7 +66,7 @@ def prepare(multispectral_csv, blind_points_csv, output_dir, rgb_csv=None):
         "cloud_shadow_fraction":"" if shadow is None else shadow,
         "analysis_valid_pixels":scl.get("analysis_valid_pixel_count","") if scl_ok else "",
         "scl_pixels":scl.get("pixel_count","") if scl_ok else "",
-        "missing_bands":json.dumps(missing),"rgb_chip_file":chip.get("chip_file",""),
+        "missing_bands":json.dumps(missing),"rgb_chip_file":("chips/" + Path(chip.get("chip_file","")).name) if chip.get("chip_file") else "",
         "rgb_chip_sha256":chip.get("chip_sha256",""),
         "_sort":(not core,not scl_ok,-(valid if valid is not None else -1),
         shadow if shadow is not None else 2,len(missing) if isinstance(missing,list) else 99,
