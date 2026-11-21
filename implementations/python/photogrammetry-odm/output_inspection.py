@@ -50,7 +50,7 @@ def inspect_raster(path: Path) -> dict:
 
 
 def inspect_point_cloud(path: Path) -> dict:
-    """Inspect LAS/LAZ header metadata when laspy and a LAZ backend are available."""
+    """Stream LAS/LAZ point records and summarize structural content, not accuracy."""
     try:
         import laspy
     except ImportError:
@@ -66,19 +66,52 @@ def inspect_point_cloud(path: Path) -> dict:
             maxs = [float(value) for value in header.maxs]
             finite_extent = all(math.isfinite(value) for value in mins + maxs)
             ordered_extent = all(low <= high for low, high in zip(mins, maxs))
-            point_count = int(header.point_count)
-            parsed_crs = header.parse_crs()
+            declared_count = int(header.point_count)
+            class_counts: dict[str, int] = {}
+            intensity_min = None
+            intensity_max = None
+            observed_count = 0
+            non_finite_coordinates = 0
+            sample = []
+            for points in reader.chunk_iterator(100_000):
+                xs, ys, zs = points.x, points.y, points.z
+                classes = points.classification
+                intensities = points.intensity
+                for index, (x, y, z) in enumerate(zip(xs, ys, zs)):
+                    observed_count += 1
+                    xyz = [float(x), float(y), float(z)]
+                    if not all(math.isfinite(value) for value in xyz):
+                        non_finite_coordinates += 1
+                    elif len(sample) < 5:
+                        sample.append({"x": xyz[0], "y": xyz[1], "z": xyz[2]})
+                    class_key = str(int(classes[index]))
+                    class_counts[class_key] = class_counts.get(class_key, 0) + 1
+                    intensity = int(intensities[index])
+                    intensity_min = intensity if intensity_min is None else min(intensity_min, intensity)
+                    intensity_max = intensity if intensity_max is None else max(intensity_max, intensity)
+            count_matches = observed_count == declared_count
+            valid = (
+                declared_count > 0 and count_matches and finite_extent
+                and ordered_extent and non_finite_coordinates == 0
+            )
             return {
                 "path": str(path),
-                "status": "readable" if point_count > 0 and finite_extent and ordered_extent else "invalid",
-                "point_count": point_count,
+                "status": "readable" if valid else "invalid",
+                "declared_point_count": declared_count,
+                "observed_point_count": observed_count,
+                "point_count_matches_header": count_matches,
                 "point_format_id": int(header.point_format.id),
                 "version": str(header.version),
                 "scales": [float(value) for value in header.scales],
                 "offsets": [float(value) for value in header.offsets],
-                "mins": mins,
-                "maxs": maxs,
-                "crs": str(parsed_crs) if parsed_crs else None,
+                "header_mins": mins,
+                "header_maxs": maxs,
+                "crs": str(header.parse_crs()) if header.parse_crs() else None,
+                "classification_counts": class_counts,
+                "intensity_range": [intensity_min, intensity_max],
+                "non_finite_coordinate_count": non_finite_coordinates,
+                "first_five_finite_points": sample,
+                "inspection_method": "streamed point-record scan in chunks of 100000",
             }
     except Exception as exc:
         message = str(exc)
