@@ -56,7 +56,7 @@ class OutputInspectionTests(unittest.TestCase):
         )
         reader = MagicMock()
         reader.__enter__.return_value.header = header
-        reader.chunk_iterator.return_value = [SimpleNamespace(
+        reader.__enter__.return_value.chunk_iterator.return_value = [SimpleNamespace(
             x=[1.5, 2.5], y=[3.5, 4.5], z=[5.5, 6.5],
             classification=[2, 5], intensity=[100, 250],
         )]
@@ -80,7 +80,7 @@ class OutputInspectionTests(unittest.TestCase):
         )
         reader = MagicMock()
         reader.__enter__.return_value.header = header
-        reader.chunk_iterator.return_value = []
+        reader.__enter__.return_value.chunk_iterator.return_value = []
         with patch.dict("sys.modules", {"laspy": SimpleNamespace(open=lambda path: reader)}):
             report = inspect_outputs(self.project)
         self.assertEqual(report["point_clouds"][0]["status"], "invalid")
@@ -137,7 +137,7 @@ class OutputInspectionTests(unittest.TestCase):
         )
         reader = MagicMock()
         reader.__enter__.return_value.header = header
-        reader.chunk_iterator.return_value = [SimpleNamespace(
+        reader.__enter__.return_value.chunk_iterator.return_value = [SimpleNamespace(
             x=[2.0], y=[3.0], z=[9.0], classification=[2], intensity=[100],
         )]
         with patch.dict("sys.modules", {"laspy": SimpleNamespace(open=lambda path: reader)}):
@@ -156,7 +156,7 @@ class OutputInspectionTests(unittest.TestCase):
         )
         reader = MagicMock()
         reader.__enter__.return_value.header = header
-        reader.chunk_iterator.return_value = [SimpleNamespace(
+        reader.__enter__.return_value.chunk_iterator.return_value = [SimpleNamespace(
             x=[1.0], y=[1.0], z=[1.0], classification=[2], intensity=[100],
         )]
         with patch.dict("sys.modules", {"laspy": SimpleNamespace(open=lambda path: reader)}):
