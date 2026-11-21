@@ -81,6 +81,10 @@ Do not assume every product exists. Confirm the actual output tree, inspect proc
 
 
 
+## Role-blind reviewer handoff
+
+Use [the operational reviewer handoff](reviewer-handoff.md) to distribute the role-blind packet, acquire the exact immutable source revision, complete the 206-row worksheet and submit the locked evidence. The handoff distinguishes packet derivatives from the original full-resolution images and defines the submission bundle. The current split key must remain undisclosed until the review is locked.
+
 ## Formal control/checkpoint split approval
 
 The proposed split remains `proposed_not_locked`. Do not change its status manually. Once the 206-observation role-blind review has been locked, complete [the human approval template](control-checkpoint-split-approval.template.json) after assessing point suitability, spatial geometry, image coverage, separation and checkpoint withholding.
