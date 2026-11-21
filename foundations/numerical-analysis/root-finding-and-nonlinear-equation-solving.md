@@ -249,7 +249,6 @@ A continuous spatial profile has a known interval with opposite signs at its end
 - [Convergence, iterative methods and stopping criteria](convergence-iterative-methods-and-stopping-criteria.md) develops general convergence concepts and solver diagnostics.
 - [Sensitivity and perturbation analysis](sensitivity-and-perturbation-analysis.md) explains how perturbations affect computed quantities.
 - [Numerical stability and backward error](numerical-stability-and-backward-error.md) distinguishes residuals, backward error and forward accuracy.
-- [Calculus and differential methods](../calculus-and-differential-methods/README.md) is the broader mathematical home for derivatives and local function behaviour; this link is a planned domain destination.
 - [Coordinate transformation and CRS axis order](../../algorithms/geodesy/crs-transformation.md) provides an applied computational context where transformation direction and model assumptions matter.
 
 ## 12. Further reading

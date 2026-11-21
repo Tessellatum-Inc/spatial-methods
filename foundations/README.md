@@ -42,7 +42,7 @@ The subject IDs below are stable identifiers from the [Geoinformatics master sub
 | SM-FND-013 | Optics, electromagnetism and wave physics | Planned | Geometric optics, wave behaviour, electromagnetic principles and sensor physics |
 | SM-FND-014 | Signal processing and information theory | Planned | Sampling, filtering, transforms, spectral analysis, information and signal detection |
 | SM-FND-015 | Computer science, algorithms and complexity | Planned | Computation models, data structures, algorithm analysis, logic and computability |
-| SM-FND-016 | Numerical analysis and scientific computing | Initial domain roadmap and three modules published; technical review and learner testing pending | Floating-point arithmetic, sensitivity, conditioning, stability, approximation and numerical solution |
+| SM-FND-016 | Numerical analysis and scientific computing | Initial domain roadmap and five modules published; technical review and learner testing pending | Floating-point arithmetic, sensitivity, conditioning, stability, approximation and numerical solution |
 | SM-FND-017 | Optimisation and operations research | Planned | Linear/nonlinear optimisation, constrained problems, graph optimisation and decision theory |
 | SM-FND-018 | Geographic information science and spatial thinking | Planned | Geographic concepts, spatial cognition, representation, scale, ontology and GIScience theory |
 | SM-FND-019 | Systems theory, complexity and emergence | Planned | Systems, feedback, networks, dynamical systems, complexity and emergence |
