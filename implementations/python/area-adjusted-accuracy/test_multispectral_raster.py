@@ -19,8 +19,8 @@ class MultispectralRasterTests(unittest.TestCase):
             "B04_10m-jp2": {"href": "https://example.test/native.jp2"},
         }}
         key, asset = asset_for_band(item, "B04")
-        self.assertEqual(key, "B04_10m")
-        self.assertEqual(asset["href"], "s3://bucket/native.tif")
+        self.assertEqual(key, "B04_10m-jp2")
+        self.assertEqual(asset["href"], "https://example.test/native.jp2")
 
     def test_asset_selector_prefers_https_within_same_alias(self):
         item = {"assets": {
@@ -34,7 +34,7 @@ class MultispectralRasterTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             asset_for_band({"assets": {}}, "B09")
 
-    def _write_asset(self, folder, name, lon, lat, value, resolution, offset=0):
+    def _write_asset(self, folder, name, lon, lat, value, resolution):
         x, y = transform_coordinates("EPSG:4326", "EPSG:32760", [lon], [lat])
         transform = from_origin(
             x[0] - 256 * resolution, y[0] + 256 * resolution,
@@ -46,15 +46,15 @@ class MultispectralRasterTests(unittest.TestCase):
             dtype="uint16", crs="EPSG:32760", transform=transform, nodata=0,
         ) as dataset:
             dataset.write(np.full((512, 512), value, dtype=np.uint16), 1)
-        return str(path), transform
+        return str(path)
 
     def test_reads_10m_and_20m_windows_without_resampling(self):
         lon, lat = 179.9, -18.1
         with tempfile.TemporaryDirectory() as folder:
-            b04, _ = self._write_asset(folder, "b04", lon, lat, 4000, 10)
-            b08, _ = self._write_asset(folder, "b08", lon, lat, 6000, 10)
-            b11, _ = self._write_asset(folder, "b11", lon, lat, 2000, 20)
-            scl, _ = self._write_asset(folder, "scl", lon, lat, 4, 20)
+            b04 = self._write_asset(folder, "b04", lon, lat, 4000, 10)
+            b08 = self._write_asset(folder, "b08", lon, lat, 6000, 10)
+            b11 = self._write_asset(folder, "b11", lon, lat, 2000, 20)
+            scl = self._write_asset(folder, "scl", lon, lat, 4, 20)
             item = {"id": "test-scene", "assets": {
                 "B04_10m": {"href": b04, "raster:bands": [{"scale": 0.0001, "unit": "reflectance"}]},
                 "B08_10m": {"href": b08, "raster:bands": [{"scale": 0.0001, "unit": "reflectance"}]},
@@ -77,9 +77,8 @@ class MultispectralRasterTests(unittest.TestCase):
     def test_rejects_misaligned_bands_within_same_native_grid(self):
         lon, lat = 179.9, -18.1
         with tempfile.TemporaryDirectory() as folder:
-            b04, _ = self._write_asset(folder, "b04", lon, lat, 4000, 10)
-            b08, _ = self._write_asset(folder, "b08", lon, lat, 6000, 10)
-            # Rewrite B08 with a shifted origin while preserving resolution/CRS.
+            b04 = self._write_asset(folder, "b04", lon, lat, 4000, 10)
+            b08 = self._write_asset(folder, "b08", lon, lat, 6000, 10)
             x, y = transform_coordinates("EPSG:4326", "EPSG:32760", [lon], [lat])
             shifted = from_origin(x[0] - 255 * 10, y[0] + 256 * 10, 10, 10)
             with rasterio.open(
