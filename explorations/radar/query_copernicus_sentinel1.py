@@ -65,7 +65,7 @@ def build_query(start: str, end: str, limit: int) -> dict[str, str]:
         "$filter": filters,
         "$orderby": "ContentDate/Start asc",
         "$top": str(limit),
-        "\u0024expand": "Attributes,Locations",
+        "\u0024expand": "Attributes",
     }
 
 
