@@ -68,7 +68,7 @@ class OutputInspectionTests(unittest.TestCase):
         self.assertEqual(point_cloud["observed_point_count"], 2)
         self.assertEqual(point_cloud["classification_counts"], {"2": 1, "5": 1})
         self.assertEqual(point_cloud["intensity_range"], [100, 250])
-        self.assertEqual(point_cloud["mins"], [1.0, 2.0, 3.0])
+        self.assertEqual(point_cloud["header_mins"], [1.0, 2.0, 3.0])
 
     def test_empty_point_cloud_is_not_reported_as_readable(self):
         (self.project / "empty.las").write_bytes(b"synthetic empty point cloud")
