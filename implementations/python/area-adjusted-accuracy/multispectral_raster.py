@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Grid-safe Sentinel-2 multispectral point-window extraction.
 
-Reads small per-band windows from STAC assets. Native 10 m and 20 m grids are
-kept separate: this module never silently resamples 20 m data to 10 m.
+Reads bounded windows from STAC assets. Native 10 m and 20 m grids are kept
+separate, but share one exact ground footprint when both are available.
+No silent resampling is performed.
 """
 from __future__ import annotations
 
