@@ -50,6 +50,9 @@ class DeliveryDossierTests(unittest.TestCase):
             dossier = json.loads(archive.read("delivery-dossier.json"))
             self.assertEqual(dossier["project_id"], "demo")
             self.assertEqual(len(dossier["artifacts"]), 5)
+        second_archive = self.root / "delivery-repeat.zip"
+        self.bundle(second_archive)
+        self.assertEqual(archive_path.read_bytes(), second_archive.read_bytes())
 
     def test_pending_acceptance_requires_review_not_auto_approval(self):
         self.files["validation"].write_text(json.dumps({
