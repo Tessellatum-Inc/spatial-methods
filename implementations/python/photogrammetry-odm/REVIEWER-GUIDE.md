@@ -147,6 +147,10 @@ For each finding, record:
 Do not silently edit historical evidence records. Correct the implementation, create a new run/evidence record, and retain the old record as part of the audit trail where appropriate.
 
 ## 8. Current milestone and next gate
+## 8. Current milestone and next gate
+
+The HEIG-VD reference-system gate is documented in [coordinate-reference-handling.md](coordinate-reference-handling.md). The source has LV95 horizontal coordinates and LN02 heights; a two-dimensional EPSG:2056 header is not evidence that ODM output encodes LN02 vertical semantics.
+
 
 The current milestone is **synthetic integrated evidence handoff tested; real execution not yet rehearsed**. The next substantive gate is a controlled real-dataset rehearsal on a network-enabled machine with a pinned ODM image, verified source bytes, documented control/checkpoint partition, real outputs and independently surveyed checkpoints. Reviewers should require the complete handoff from manifest through dossier and a documented disposition of every warning before describing the workflow as rehearsed.
 
