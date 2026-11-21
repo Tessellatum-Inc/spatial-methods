@@ -55,6 +55,9 @@ class IndependentCheckpointMeasurementValidationTests(unittest.TestCase):
         self.write_rows([
             self.row("P1", "10.25", "20.5"),
             self.row("P2", "30", "40"),
+            self.row("P1", "", "", image="frame2.JPG", source_image_sha256=self.image2_hash,
+                     measurement_status="unmeasurable",
+                     measurement_notes="Target not identifiable in this view."),
         ])
 
     def tearDown(self):
@@ -80,7 +83,7 @@ class IndependentCheckpointMeasurementValidationTests(unittest.TestCase):
     def test_validates_structure_and_provenance_without_claiming_independence(self):
         report = validate_measurements(self.csv, self.split, self.manifest, self.summary)
         self.assertEqual(report["status"], "record_structure_and_provenance_validated")
-        self.assertEqual(report["measurement_row_count"], 2)
+        self.assertEqual(report["measurement_row_count"], 3)
         self.assertFalse(report["independent_measurement_independence_proven"])
         self.assertFalse(report["accuracy_assessment_performed"])
 
