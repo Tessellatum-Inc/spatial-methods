@@ -256,7 +256,7 @@ def generate(dataset: Path, split_path: Path, output: Path) -> dict:
                 raise ValueError(f"Observation image is missing: {stem}")
             for item in sorted(observations[stem], key=lambda row: row["point_id"]):
                 writer.writerow([
-                    item["point_id"], image_name, f'{item["x"]:.3f}', f'{item["y"]:.3f}',
+                    item["point_id"], Path(image_name).name, f'{item["x"]:.3f}', f'{item["y"]:.3f}',
                     "", "", "", "", "", "", "", "", "", "", "",
                 ])
 
