@@ -474,3 +474,8 @@ python -m pytest -q
 ```
 
 `test_pipeline_integration.py` exercises the evidence handoff from a locally acquired snapshot through integrity verification, a separate working copy, read-only preflight, dry-run processing provenance, output inspection, checkpoint evidence and ZIP dossier assembly. It uses synthetic bytes and mocked image-audit output. It deliberately leaves ODM unexecuted, checkpoint independence unconfirmed, validation not assessable and dossier release authorization false. This is an integration test of evidence flow and gate preservation, not a real-data rehearsal, photogrammetric processing test or accuracy validation.
+
+
+## Current rehearsal status
+
+See [REVIEW-STATUS.md](REVIEW-STATUS.md) for the live gate-by-gate evidence record, pending human decisions and next required actions.
