@@ -29,9 +29,9 @@ The first discovery pass is defined as an ASF Search API query over the study wi
 - Spatial predicate: the closed WGS 84 polygon defined by the search-window coordinates above
 - Output: GeoJSON; maximum 30 candidate records
 
-[Open the defined ASF catalogue query](https://api.daac.asf.alaska.edu/services/search/param?dataset=SENTINEL-1&beamMode=IW&processingLevel=GRD_HD&polarization=VV%2BVH&start=2026-10-01T00%3A00%3A00Z&end=2026-11-21T23%3A59%3A59Z&intersectsWith=polygon%2836.65%20-1.45%2C37.05%20-1.45%2C37.05%20-1.15%2C36.65%20-1.15%2C36.65%20-1.45%29&output=geojson&maxResults=30)
+[Open the defined ASF catalogue query](https://api.daac.asf.alaska.edu/services/search/param?dataset=SENTINEL-1&beamMode=IW&processingLevel=GRD_HD&polarization=VV%2BVH&start=2026-10-01T00%3A00%3A00Z&end=2026-11-21T23%3A59%3A59Z&intersectsWith=polygon%28%2836.65%20-1.45%2C37.05%20-1.45%2C37.05%20-1.15%2C36.65%20-1.15%2C36.65%20-1.45%29%29&output=geojson&maxResults=30)
 
-**Execution status:** The query has been specified and its parameter meanings checked against the ASF Search API documentation. The live API response could not be retrieved in this review environment. Therefore this is not evidence that the query returned zero or any particular number of scenes, and no candidate product is selected yet.
+**Execution status:** The query has been specified and its parameter meanings checked against the ASF Search API documentation. The executable client in [query_asf_sentinel1.py](query_asf_sentinel1.py) constructs the closed WKT polygon with the required nested parentheses and archives the exact response with a SHA-256 digest. The live API response could not be retrieved in this review environment. Therefore this is not evidence that the query returned zero or any particular number of scenes, and no candidate product is selected yet.
 
 When executing the query, preserve the raw GeoJSON response and query timestamp. Inspect each candidate's full footprint, acquisition time, product identifier, platform, pass direction, relative orbit, polarisation, processing level, and downloadable asset. Confirm full coverage of the intended analysis sub-area rather than relying only on polygon intersection.
 
