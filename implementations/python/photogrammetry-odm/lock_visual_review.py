@@ -59,6 +59,26 @@ def lock_review(
     expected_count = summary.get("observation_count")
     if not isinstance(expected_count, int) or expected_count < 1:
         raise ValueError("Visual-review summary must declare a positive observation_count")
+    if not str(summary.get("status", "")).startswith("role_blind_"):
+        raise ValueError("Review summary is not marked as role-blind")
+    if summary.get("source_revision") != manifest.get("resolved_revision"):
+        raise ValueError("Review summary source revision does not match acquisition manifest")
+    if summary.get("selected_dataset_path") != manifest.get("selected_path"):
+        raise ValueError("Review summary selected dataset path does not match acquisition manifest")
+    source_observations = summary.get("source_observations")
+    if not isinstance(source_observations, list) or len(source_observations) != expected_count:
+        raise ValueError("Review summary must include the complete source_observations index")
+    expected_observations = {}
+    for item in source_observations:
+        key = (str(item.get("point_id", "")), str(item.get("image_name", "")))
+        if not all(key) or key in expected_observations:
+            raise ValueError("Source observation index contains blank or duplicate point/image keys")
+        expected_observations[key] = (
+            float(item["pixel_x"]), float(item["pixel_y"])
+        )
+
+    if output_path in {decisions_path, summary_path, manifest_path}:
+        raise ValueError("Locked review output must not overwrite an input evidence file")
 
     with decisions_path.open("r", newline="", encoding="utf-8-sig") as stream:
         reader = csv.DictReader(stream)
@@ -93,6 +113,10 @@ def lock_review(
             raise ValueError(
                 f"Row {row_number}: duplicate observation decision for {point_id}/{image_name}"
             )
+        if key not in expected_observations:
+            raise ValueError(
+                f"Row {row_number}: point/image pair is absent from source observation index"
+            )
         seen.add(key)
         try:
             pixel_x, pixel_y = float(row["pixel_x"]), float(row["pixel_y"])
@@ -100,6 +124,9 @@ def lock_review(
             raise ValueError(f"Row {row_number}: pixel coordinates must be numeric") from exc
         if not all(math.isfinite(value) and value >= 0 for value in (pixel_x, pixel_y)):
             raise ValueError(f"Row {row_number}: pixel coordinates must be finite and non-negative")
+        expected_x, expected_y = expected_observations[key]
+        if abs(pixel_x - expected_x) > 1e-3 or abs(pixel_y - expected_y) > 1e-3:
+            raise ValueError(f"Row {row_number}: source pixel coordinates were altered")
         for field in ("target_visible", "target_identity_clear", "marker_centred"):
             if row[field].strip().lower() not in VALID_YES_NO_UNCERTAIN:
                 raise ValueError(
@@ -115,6 +142,8 @@ def lock_review(
         reviewers.add(row["reviewer"].strip())
         point_ids.add(point_id)
 
+    if seen != set(expected_observations):
+        raise ValueError("Review worksheet does not cover every source observation")
     reviewer_list = sorted(reviewers)
     if len(reviewer_list) == 1:
         adjudication_status = "single_reviewer_adjudication_locked"
@@ -137,6 +166,9 @@ def lock_review(
         "review_decisions_sha256": sha256_file(decisions_path),
         "visual_review_summary_sha256": sha256_file(summary_path),
         "acquisition_manifest_sha256": sha256_file(manifest_path),
+        "source_observation_index_sha256": hashlib.sha256(
+            json.dumps(source_observations, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        ).hexdigest(),
         "unblinded": False,
         "independent_validation": False,
         "limitations": [
