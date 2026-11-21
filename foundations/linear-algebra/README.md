@@ -56,6 +56,10 @@ Every module should define its objects and notation, explain the geometric and a
 
 Do not conflate a mathematically valid model with a valid spatial interpretation. Units, coordinate reference, measurement design, data quality and physical meaning remain essential.
 
+## Computational companion
+
+The [linear algebra computational companion lab](../../notebooks/linear-algebra-computational-companion-lab.ipynb) connects the sequence to executable examples: least-squares solution by normal equations and QR, covariance-aware GLS through Cholesky whitening, SVD-based rank diagnosis and covariance propagation. It uses synthetic data and NumPy. Successful notebook execution is a computational check, not independent technical review or evidence that a model is appropriate for a real dataset.
+
 ## Sequence audit
 
 The [ten-module sequence audit](sequence-audit.md) records the desk review, cross-module consistency checks, corrections and outstanding quality work. It is an editorial review, not independent peer review or learner testing.
