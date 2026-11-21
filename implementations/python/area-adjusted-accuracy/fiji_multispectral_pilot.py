@@ -10,6 +10,7 @@ import argparse
 import csv
 import hashlib
 import json
+from datetime import datetime
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -41,6 +42,33 @@ def _safe_float(value: Any, default: float = 100.0) -> float:
         return result if np.isfinite(result) else default
     except (TypeError, ValueError):
         return default
+
+
+def _acquisition_key(item: dict[str, Any]) -> tuple[str, str]:
+    """Normalize cross-catalogue records for one platform acquisition to seconds."""
+    stamp = acquisition(item)
+    if not stamp:
+        return ("item", str(item.get("id", "")))
+    try:
+        normalized = datetime.fromisoformat(
+            stamp.replace("Z", "+00:00")
+        ).replace(microsecond=0).isoformat()
+    except ValueError:
+        normalized = stamp
+    platform = str(item.get("properties", {}).get("platform", ""))
+    return (platform, normalized)
+
+
+def deduplicate_acquisitions(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Keep one best-ranked STAC representation per platform acquisition."""
+    unique: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    for item in items:
+        key = _acquisition_key(item)
+        if key not in seen:
+            seen.add(key)
+            unique.append(item)
+    return unique
 
 
 def _index_summaries(bands: dict[str, np.ndarray]) -> dict[str, dict[str, Any]]:
@@ -84,6 +112,9 @@ def run_pilot(input_csv: Path, output_dir: Path, *, point_limit: int = 5,
 
     rows: list[dict[str, Any]] = []
     errors: list[dict[str, str]] = []
+    candidate_items_found = 0
+    unique_acquisitions_found = 0
+    duplicate_acquisitions_skipped = 0
     for point in points:
         sample_id = str(point["sample_id"]).strip()
         lon, lat = float(point["longitude"]), float(point["latitude"])
@@ -96,8 +127,12 @@ def run_pilot(input_csv: Path, output_dir: Path, *, point_limit: int = 5,
         )
         for message in search_errors:
             errors.append({"sample_id": sample_id, "error": message})
+        candidate_items_found += len(items)
         items.sort(key=lambda item: (item_cloud(item), acquisition(item)))
-        if not items:
+        unique_items = deduplicate_acquisitions(items)
+        unique_acquisitions_found += len(unique_items)
+        duplicate_acquisitions_skipped += len(items) - len(unique_items)
+        if not unique_items:
             rows.append({
                 "sample_id": sample_id, "item_id": "", "datetime": "",
                 "cloud_cover_percent": "", "status": "no_items",
@@ -107,7 +142,7 @@ def run_pilot(input_csv: Path, output_dir: Path, *, point_limit: int = 5,
             })
             continue
 
-        for rank, item in enumerate(items[:item_limit], start=1):
+        for rank, item in enumerate(unique_items[:item_limit], start=1):
             base: dict[str, Any] = {
                 "sample_id": sample_id,
                 "item_id": item.get("id", ""),
@@ -211,6 +246,9 @@ def run_pilot(input_csv: Path, output_dir: Path, *, point_limit: int = 5,
     }
     return {
         "points_requested": len(points),
+        "candidate_items_found": candidate_items_found,
+        "unique_acquisitions_found": unique_acquisitions_found,
+        "duplicate_acquisitions_skipped": duplicate_acquisitions_skipped,
         "candidate_rows": len(rows),
         "points_with_core_10m_bands": len(points_with_core_read),
         "statuses": dict(statuses),
