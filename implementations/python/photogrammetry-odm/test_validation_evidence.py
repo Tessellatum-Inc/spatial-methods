@@ -29,6 +29,7 @@ B,10,10,10,11,12,13
             "reference_uncertainty": "RTK survey; operator-stated +/- 0.03 m",
             "sample_design": "Independent spatially distributed checkpoints",
             "checkpoint_independence": True,
+            "acceptance_criteria": "Project-specific accuracy requirements documented in signed specification",
         }
 
     def tearDown(self):
