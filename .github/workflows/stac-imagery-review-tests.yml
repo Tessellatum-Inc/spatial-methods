@@ -213,11 +213,11 @@ jobs:
         run: |
           mkdir -p /tmp/fiji-full-public-cog
           set +e
-          python stac_imagery_review.py \\
-            --input data/fiji-worldcover-legend-adjudication-blind-review.csv \\
-            --output-dir /tmp/fiji-full-public-cog \\
-            --catalogues earth-search \\
-            --limit-per-point 3 \\
+          python stac_imagery_review.py \
+            --input data/fiji-worldcover-legend-adjudication-blind-review.csv \
+            --output-dir /tmp/fiji-full-public-cog \
+            --catalogues earth-search \
+            --limit-per-point 3 \
             --keep-chips
           code=$?
           echo "cli_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
@@ -241,20 +241,20 @@ jobs:
           for row in rows:
               points[row.get("sample_id", "")].append(row)
           lines = [
-              "## Fiji full-pilot public COG retrieval\\n\\n",
-              f"- Points represented: {len(points)}\\n",
-              f"- Candidate/window attempts: {len(rows)}\\n",
-              f"- Statuses: {dict(statuses)}\\n",
-              f"- Points with at least one chip: {sum(any(r.get('status') in ('chip_created','chip_created_then_deleted') for r in rs) for rs in points.values())}\\n\\n",
-              "| Sample | Attempts | Chips created | Best successful date | Best successful cloud % |\\n",
-              "|---|---:|---:|---|---:|\\n",
+              "## Fiji full-pilot public COG retrieval\n\n",
+              f"- Points represented: {len(points)}\n",
+              f"- Candidate/window attempts: {len(rows)}\n",
+              f"- Statuses: {dict(statuses)}\n",
+              f"- Points with at least one chip: {sum(any(r.get('status') in ('chip_created','chip_created_then_deleted') for r in rs) for rs in points.values())}\n\n",
+              "| Sample | Attempts | Chips created | Best successful date | Best successful cloud % |\n",
+              "|---|---:|---:|---|---:|\n",
           ]
           for sample_id, candidates in sorted(points.items()):
               good = [r for r in candidates if r.get("status") in ("chip_created", "chip_created_then_deleted")]
               best = min(good, key=lambda r: float(r.get("cloud_cover_percent") or 100)) if good else {}
               lines.append(
                   f"| {sample_id} | {len(candidates)} | {len(good)} | "
-                  f"{best.get('datetime','')} | {best.get('cloud_cover_percent','')} |\\n"
+                  f"{best.get('datetime','')} | {best.get('cloud_cover_percent','')} |\n"
               )
           report_text = "".join(lines)
           print(report_text)
