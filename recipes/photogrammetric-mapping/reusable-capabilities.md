@@ -221,3 +221,42 @@ This is a meaningful integration milestone, not completion of the full workflow.
 ### Next integration milestone
 
 Build a processing-run record that captures the exact input inventory, image digest, ODM arguments, runtime environment, execution timestamps, exit status, logs and output inventory. Keep execution explicitly operator-triggered. Then add output-product inspection as a separate read-only stage. Only after these interfaces are stable should the workflow move toward automated end-to-end execution.
+
+
+## 10. Integration update — processing-run provenance
+
+A separate processing-run recorder now extends the preflight handoff into a traceable execution event.
+
+- `processing_run.py` hashes supported input images before execution.
+- It records the requested container reference and, when explicitly executing, attempts to capture the local image ID, repository digests, OS and architecture.
+- It captures the exact command, Python/platform context, start/finish timestamps, exit code and stdout/stderr logs.
+- It inventories files under the project after execution, recording relative paths, sizes and SHA-256 hashes.
+- Dry-run is the default and does not invoke Docker. Processing requires an explicit `--execute` argument.
+- The run-record directory must be outside the project directory to avoid recursively recording its own evidence.
+
+Automated tests cover dry-run behaviour, input hashing, rejection of an in-project run directory, successful mocked execution and failed mocked execution.
+
+### Capability boundary
+
+The recorder documents the wrapper-observable processing event. It is not yet a full execution attestation, deterministic-build guarantee, output semantic validator or accuracy assessment. It does not currently validate raster CRS, resolution, nodata, footprint, vertical reference, point-cloud integrity or orthophoto content.
+
+### Updated integration status
+
+| Integration component | Status |
+|---|---|
+| Versioned project manifest and validation | Implemented |
+| Generic image inventory, hashes and readability | Integrated |
+| ODM command construction | Integrated |
+| Unified read-only preflight | Implemented |
+| Explicit processing-run record | Implemented |
+| Input and output file checksums | Implemented |
+| Execution logs and exit status | Implemented |
+| Container image metadata capture | Best-effort |
+| Dataset-specific metadata audit | Separate |
+| Output semantic/geospatial inspection | Next |
+| Independent checkpoint acceptance workflow | Existing statistics; project-level integration pending |
+| Reproducible delivery package | Pending |
+
+### Next integration milestone
+
+Create output inspection adapters that understand the actual geospatial products rather than merely listing files. At minimum, inspect raster readability, dimensions, band count, CRS, affine transform, pixel size, nodata and bounds; inspect point-cloud metadata where supported; and compare observed outputs against declared deliverables. Preserve warnings for missing or unexpected products. Keep semantic QA distinct from geometric accuracy acceptance.
