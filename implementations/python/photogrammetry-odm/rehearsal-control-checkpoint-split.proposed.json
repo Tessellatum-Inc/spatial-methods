@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0",
+  "dataset": {
+    "repository_id": "heig-vd-geo/scop-datasets",
+    "selected_path": "datasets/drone_heig_2019",
+    "resolved_revision": "e0dfeba2b6ed94ea1ae2bf773e742c39fb437b71",
+    "acquisition_manifest_sha256": "4039c97f9e81a7d0ab36a182832531235738b0271e842d42ce52e3b6b244562f",
+    "source_files": {
+      "README.md": "199e5349ba6551255d1884694db879cc143b7f040a6f076d7336ded03daec1b3",
+      "gcp/GCP_MN95.txt": "fa088d60d15ac951da6f5da235e1ca3d9453022a9d2abe05a1ed89c12a1f0f83",
+      "gcp/gcp_obs.csv": "6e2f6023b768c7883bd9656bc5f0ddb50ec443f57088f1d2271ffb59f8e2fd23"
+    },
+    "horizontal_crs": "EPSG:2056",
+    "vertical_reference": "LN02",
+    "coordinate_units": "metres"
+  },
+  "status": "proposed_not_locked",
+  "purpose": "Pre-register a candidate control/checkpoint partition for a controlled ODM rehearsal; this is not an accuracy result or release decision.",
+  "selection": {
+    "method": "Greedy farthest-point sampling in horizontal LV95 coordinates among observed points with at least five image observations. Start with the eligible point farthest from the eligible-point centroid; iteratively add the point maximizing its minimum Euclidean distance to the selected controls. Resolve ties by lexicographic point ID.",
+    "minimum_image_observations_per_point": 5,
+    "eligible_observed_point_count": 27,
+    "selected_control_count": 8,
+    "checkpoint_count": 19,
+    "excluded_low_observation_point_count": 3,
+    "control_selection_order": [
+      "209",
+      "108",
+      "305",
+      "201",
+      "401",
+      "302",
+      "107",
+      "106"
+    ],
+    "control_points": [
+      "209",
+      "108",
+      "305",
+      "201",
+      "401",
+      "302",
+      "107",
+      "106"
+    ],
+    "control_observation_counts": {
+      "106": 6,
+      "107": 5,
+      "108": 5,
+      "201": 8,
+      "209": 6,
+      "302": 8,
+      "305": 6,
+      "401": 7
+    },
+    "checkpoint_points": [
+      "101",
+      "103",
+      "104",
+      "105",
+      "203",
+      "204",
+      "205",
+      "206",
+      "207",
+      "208",
+      "210",
+      "300",
+      "301",
+      "304",
+      "400",
+      "402",
+      "403",
+      "404",
+      "405"
+    ],
+    "checkpoint_observation_counts": {
+      "101": 9,
+      "103": 8,
+      "104": 7,
+      "105": 8,
+      "203": 8,
+      "204": 8,
+      "205": 9,
+      "206": 9,
+      "207": 7,
+      "208": 8,
+      "210": 7,
+      "300": 7,
+      "301": 7,
+      "304": 6,
+      "400": 5,
+      "402": 9,
+      "403": 8,
+      "404": 7,
+      "405": 8
+    },
+    "excluded_low_observation_points": {
+      "102": 4,
+      "200": 3,
+      "303": 3
+    },
+    "excluded_source_record": {
+      "point_id": "100",
+      "reason": "No image observation; coordinates duplicate point 206, as explicitly documented by the publisher."
+    },
+    "minimum_nearest_control_spacing_m": 62.41594631149035
+  },
+  "validation_caveats": [
+    "The 8 proposed controls each have observations in at least five images, consistent with ODM guidance for GCP observation coverage.",
+    "The 19 proposed checkpoints have source-provided Metashape image observations. These have not yet been independently remeasured or blind-reviewed; they must not be represented as independent human reference measurements.",
+    "The supplied OPK orientations are from a Metashape adjustment that used ground points as control and are not used as independent reference.",
+    "Point 100 is not a separate independent point because it duplicates point 206 and has no image observation.",
+    "Points 102, 200 and 303 are withheld from this primary split because they have fewer than five image observations; they may be considered in a separately declared sensitivity exercise.",
+    "The horizontal CRS is EPSG:2056 and the source heights are LN02. The ODM GCP file format declares the horizontal projection; vertical reference handling and output height interpretation must be explicitly checked.",
+    "This split remains proposed_not_locked until a human reviewer confirms point visibility, image measurements, spatial coverage and the control/checkpoint separation."
+  ],
+  "provenance": {
+    "acquisition_workflow_run": "https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44898264922",
+    "artifact_sha256": "37d6386a0f2673b11c5596b802be6d8c6a91c05f37f05461e831609cfad0a2b8"
+  }
+}
