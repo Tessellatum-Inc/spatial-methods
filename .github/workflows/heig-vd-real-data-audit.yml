@@ -144,7 +144,7 @@ jobs:
 
           The lock utility verifies all source point/image/pixel records, requires
           complete decisions and timezone-aware timestamps, and keeps roles
-          unblinded. A single reviewer is not independent validation.
+          blinded. A single reviewer is not independent validation.
           EOF
           cat > reports/heig-vd/README.md <<'EOF'
           # HEIG-VD real-data acquisition and audit
