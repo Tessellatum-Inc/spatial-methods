@@ -161,6 +161,22 @@ jobs:
               rows = list(csv.DictReader(stream))
           created = [row for row in rows if row.get("status") == "chip_created"]
           print(f"Candidate rows: {len(rows)}; successful window reads: {len(created)}")
+          summary = Path("/tmp/fiji-cog-smoke-summary.md")
+          with summary.open("w", encoding="utf-8") as report:
+              report.write("## Fiji public COG window smoke test\\n\\n")
+              report.write(f"Candidate rows: {len(rows)}; successful window reads: {len(created)}\\n\\n")
+              report.write("| Sample | Catalogue | Item | Acquired | Cloud % | Status | Chip SHA-256 |\\n")
+              report.write("|---|---|---|---|---:|---|---|\\n")
+              for row in rows:
+                  report.write(
+                      f"| {row.get('sample_id','')} | {row.get('catalogue','')} | "
+                      f"{row.get('item_id','')} | {row.get('datetime','')} | "
+                      f"{row.get('cloud_cover_percent','')} | {row.get('status','')} | "
+                      f"{row.get('chip_sha256','')} |\\n"
+                  )
+          with open("/tmp/fiji-cog-smoke-summary.md", encoding="utf-8") as report:
+              with open(Path("/tmp/fiji-cog-smoke-summary.md"), encoding="utf-8") as source:
+                  print(source.read())
           if not created:
               raise SystemExit("No public COG window read succeeded")
           PY
