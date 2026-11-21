@@ -152,7 +152,7 @@ The immediate objective is not to add more isolated photogrammetry scripts. It i
 ## 6. Boundaries and safeguards
 
 - The current workflow is desk-designed and has not been field-tested or independently specialist-reviewed.
-- The documented rehearsal dataset has not yet been acquired and processed end to end in the current project environment.
+- The documented rehearsal dataset has been acquired, byte-verified and processed in an EXIF-only ODM baseline; the GCP-controlled and independent checkpoint stages remain pending.
 - Synthetic unit tests do not establish the accuracy of a real photogrammetric product.
 - ODM is the processing engine; the repository's runner is orchestration, not an alternative reconstruction engine.
 - Ground control and independent check points must remain distinct.
