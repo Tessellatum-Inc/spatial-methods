@@ -40,7 +40,7 @@ class OutputInspectionTests(unittest.TestCase):
         with patch.dict("sys.modules", {"laspy": None}):
             report = inspect_outputs(self.project)
         self.assertEqual(report["point_clouds"][0]["status"], "not_inspected")
-        self.assertTrue(any("Point-cloud header not inspected" in item for item in report["warnings"]))
+        self.assertTrue(any("Point-cloud records not inspected" in item for item in report["warnings"]))
 
     def test_las_header_metadata_is_recorded_when_laspy_is_available(self):
         (self.project / "cloud.las").write_bytes(b"synthetic point cloud")
