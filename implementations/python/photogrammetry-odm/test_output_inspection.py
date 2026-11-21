@@ -1,7 +1,8 @@
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
+from types import SimpleNamespace
 
 from output_inspection import inspect_outputs
 
@@ -32,6 +33,36 @@ class OutputInspectionTests(unittest.TestCase):
     def test_path_traversal_is_rejected(self):
         with self.assertRaises(ValueError):
             inspect_outputs(self.project, ["../outside.tif"])
+
+    def test_las_without_laspy_is_reported_as_uninspected(self):
+        (self.project / "odm_georeferencing").mkdir()
+        (self.project / "odm_georeferencing" / "cloud.laz").write_bytes(b"synthetic point cloud")
+        with patch.dict("sys.modules", {"laspy": None}):
+            report = inspect_outputs(self.project)
+        self.assertEqual(report["point_clouds"][0]["status"], "not_inspected")
+        self.assertTrue(any("Point-cloud header not inspected" in item for item in report["warnings"]))
+
+    def test_las_header_metadata_is_recorded_when_laspy_is_available(self):
+        (self.project / "cloud.las").write_bytes(b"synthetic point cloud")
+        header = SimpleNamespace(
+            mins=[1.0, 2.0, 3.0],
+            maxs=[4.0, 5.0, 6.0],
+            point_count=123,
+            point_format=SimpleNamespace(id=6),
+            version="1.4",
+            scales=[0.001, 0.001, 0.001],
+            offsets=[0.0, 0.0, 0.0],
+            parse_crs=lambda: None,
+        )
+        reader = MagicMock()
+        reader.__enter__.return_value.header = header
+        fake_laspy = SimpleNamespace(open=lambda path: reader)
+        with patch.dict("sys.modules", {"laspy": fake_laspy}):
+            report = inspect_outputs(self.project)
+        point_cloud = report["point_clouds"][0]
+        self.assertEqual(point_cloud["status"], "readable")
+        self.assertEqual(point_cloud["point_count"], 123)
+        self.assertEqual(point_cloud["mins"], [1.0, 2.0, 3.0])
 
     def test_inventory_records_project_relative_files(self):
         report = inspect_outputs(self.project)
