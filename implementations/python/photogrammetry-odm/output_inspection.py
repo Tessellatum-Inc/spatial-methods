@@ -65,11 +65,12 @@ def inspect_point_cloud(path: Path) -> dict:
             mins = [float(value) for value in header.mins]
             maxs = [float(value) for value in header.maxs]
             finite_extent = all(math.isfinite(value) for value in mins + maxs)
+            ordered_extent = all(low <= high for low, high in zip(mins, maxs))
             point_count = int(header.point_count)
             parsed_crs = header.parse_crs()
             return {
                 "path": str(path),
-                "status": "readable" if point_count >= 0 and finite_extent else "invalid",
+                "status": "readable" if point_count > 0 and finite_extent and ordered_extent else "invalid",
                 "point_count": point_count,
                 "point_format_id": int(header.point_format.id),
                 "version": str(header.version),
