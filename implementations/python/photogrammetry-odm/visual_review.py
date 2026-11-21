@@ -114,7 +114,7 @@ def generate(dataset: Path, split_path: Path, output: Path) -> dict:
     for page in range(2):
         sheet = Image.new("RGB", (tile_w * 4, tile_h * 4 + 72), (235, 235, 235))
         draw = ImageDraw.Draw(sheet)
-        draw.text((18, 14), "HEIG-VD drone 2019 — annotated image observations", fill=(20,20,20), font=ImageFont.load_default())
+        draw.text((18, 14), "HEIG-VD drone 2019 - annotated image observations", fill=(20,20,20), font=ImageFont.load_default())
         draw.text((18, 38), "Orange = proposed control | Blue = withheld checkpoint | Yellow = excluded low-observation point. Markers show publisher-provided Metashape picks.", fill=(20,20,20), font=ImageFont.load_default())
         for index, path in enumerate(annotated_paths[page*16:(page+1)*16]):
             with Image.open(path) as tile:
