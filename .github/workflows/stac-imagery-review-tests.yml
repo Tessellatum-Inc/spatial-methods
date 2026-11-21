@@ -101,3 +101,68 @@ jobs:
           path: /tmp/fiji-stac-smoke/
           if-no-files-found: warn
           retention-days: 7
+
+  public-cog-window-smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: implementations/python/area-adjusted-accuracy/requirements-stac-imagery.txt
+      - name: Install dependencies
+        run: python -m pip install -r requirements-stac-imagery.txt
+        working-directory: implementations/python/area-adjusted-accuracy
+      - name: Select one point on each side of the antimeridian
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          source = Path("data/fiji-worldcover-legend-adjudication-blind-review.csv")
+          with source.open(newline="", encoding="utf-8-sig") as stream:
+              rows = list(csv.DictReader(stream))
+          east = next((r for r in rows if float(r["longitude"]) > 0), None)
+          west = next((r for r in rows if float(r["longitude"]) < 0), None)
+          if east is None or west is None:
+              raise SystemExit("Blind review input must include points on both sides of the antimeridian")
+          sample = [east, west]
+          target = Path("/tmp/fiji-cog-smoke-input.csv")
+          with target.open("w", newline="", encoding="utf-8") as stream:
+              writer = csv.DictWriter(stream, fieldnames=list(sample[0]))
+              writer.writeheader()
+              writer.writerows(sample)
+          print("Selected east and west Fiji points")
+          PY
+        working-directory: implementations/python/area-adjusted-accuracy
+      - name: Read small public Earth Search COG windows
+        run: |
+          python stac_imagery_review.py \
+            --input /tmp/fiji-cog-smoke-input.csv \
+            --output-dir /tmp/fiji-cog-smoke \
+            --catalogues earth-search \
+            --limit-per-point 1 \
+            --keep-chips
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          path = Path("/tmp/fiji-cog-smoke/stac-imagery-provenance.csv")
+          if not path.exists():
+              raise SystemExit("No STAC provenance report was produced")
+          with path.open(newline="", encoding="utf-8") as stream:
+              rows = list(csv.DictReader(stream))
+          created = [row for row in rows if row.get("status") == "chip_created"]
+          print(f"Candidate rows: {len(rows)}; successful window reads: {len(created)}")
+          if not created:
+              raise SystemExit("No public COG window read succeeded")
+          PY
+        working-directory: implementations/python/area-adjusted-accuracy
+      - name: Upload chip and provenance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fiji-public-cog-window-smoke-test
+          path: /tmp/fiji-cog-smoke/
+          if-no-files-found: warn
+          retention-days: 7
