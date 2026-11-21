@@ -147,21 +147,36 @@ def inspect_point_cloud(path: Path) -> dict:
 
 
 def inspect_obj_mesh(path: Path) -> dict:
-    """Validate OBJ syntax and face indices, not geometric quality."""
-    vertices = faces = 0
-    invalid = []
-    degenerate = 0
-    referenced = set()
+    """Validate OBJ record syntax and references, not mesh topology or accuracy."""
+    vertices: list[list[float]] = []
+    texture_coordinates = 0
+    normals = 0
+    faces = 0
+    invalid_lines: list[int] = []
+    repeated_vertex_faces = 0
+    zero_area_faces = 0
+    referenced_vertices: set[int] = set()
     mins = [math.inf, math.inf, math.inf]
     maxs = [-math.inf, -math.inf, -math.inf]
 
-    def index_ok(token: str, count: int) -> bool:
+    def resolve_index(token: str, count: int) -> int | None:
         try:
             value = int(token)
         except ValueError:
-            return False
+            return None
+        if value == 0:
+            return None
         resolved = value - 1 if value > 0 else count + value
-        return value != 0 and 0 <= resolved < count
+        return resolved if 0 <= resolved < count else None
+
+    def polygon_area_vector(points: list[list[float]]) -> list[float]:
+        # Newell's method works for planar polygons with three or more vertices.
+        normal = [0.0, 0.0, 0.0]
+        for current, following in zip(points, points[1:] + points[:1]):
+            normal[0] += (current[1] - following[1]) * (current[2] + following[2])
+            normal[1] += (current[2] - following[2]) * (current[0] + following[0])
+            normal[2] += (current[0] - following[0]) * (current[1] + following[1])
+        return normal
 
     try:
         with path.open("r", encoding="utf-8", errors="strict") as stream:
@@ -172,38 +187,104 @@ def inspect_obj_mesh(path: Path) -> dict:
                 kind, values = fields[0], fields[1:]
                 if kind == "v":
                     if len(values) < 3:
-                        invalid.append(line_no)
+                        invalid_lines.append(line_no)
                         continue
                     try:
-                        xyz = [float(v) for v in values[:3]]
+                        xyz = [float(value) for value in values[:3]]
                     except ValueError:
-                        invalid.append(line_no)
+                        invalid_lines.append(line_no)
                         continue
-                    if not all(math.isfinite(v) for v in xyz):
-                        invalid.append(line_no)
+                    if not all(math.isfinite(value) for value in xyz):
+                        invalid_lines.append(line_no)
                         continue
-                    vertices += 1
-                    for axis in range(3):
-                        mins[axis] = min(mins[axis], xyz[axis])
-                        maxs[axis] = max(maxs[axis], xyz[axis])
+                    vertices.append(xyz)
+                    for axis, value in enumerate(xyz):
+                        mins[axis] = min(mins[axis], value)
+                        maxs[axis] = max(maxs[axis], value)
+                elif kind == "vt":
+                    if not values:
+                        invalid_lines.append(line_no)
+                        continue
+                    try:
+                        coords = [float(value) for value in values]
+                    except ValueError:
+                        invalid_lines.append(line_no)
+                        continue
+                    if not all(math.isfinite(value) for value in coords):
+                        invalid_lines.append(line_no)
+                        continue
+                    texture_coordinates += 1
+                elif kind == "vn":
+                    if len(values) < 3:
+                        invalid_lines.append(line_no)
+                        continue
+                    try:
+                        vector = [float(value) for value in values[:3]]
+                    except ValueError:
+                        invalid_lines.append(line_no)
+                        continue
+                    if not all(math.isfinite(value) for value in vector):
+                        invalid_lines.append(line_no)
+                        continue
+                    normals += 1
                 elif kind == "f":
                     faces += 1
                     if len(values) < 3:
-                        invalid.append(line_no)
+                        invalid_lines.append(line_no)
                         continue
-                    refs = []
+                    face_refs = []
+                    face_valid = True
                     for token in values:
-                        part = token.split("/")[0]
-                        if not index_ok(part, vertices):
-                            invalid.append(line_no)
+                        parts = token.split("/")
+                        if len(parts) > 3 or not parts[0]:
+                            face_valid = False
+                            continue
+                        vertex_index = resolve_index(parts[0], len(vertices))
+                        if vertex_index is None:
+                            face_valid = False
                         else:
-                            n = int(part)
-                            refs.append(n - 1 if n > 0 else vertices + n)
-                    if len(set(refs)) < 3:
-                        degenerate += 1
-                    referenced.update(refs)
-        ok = vertices > 0 and faces > 0 and not invalid and degenerate == 0
-        return {"path": str(path), "status": "readable" if ok else "invalid", "format": "Wavefront OBJ", "vertex_count": vertices, "face_count": faces, "referenced_vertex_count": len(referenced), "unreferenced_vertex_count": max(0, vertices-len(referenced)), "degenerate_face_count": degenerate, "invalid_line_numbers": invalid[:100], "invalid_line_count": len(invalid), "bounds": [mins, maxs] if vertices else None}
+                            face_refs.append(vertex_index)
+                        if len(parts) >= 2 and parts[1]:
+                            if resolve_index(parts[1], texture_coordinates) is None:
+                                face_valid = False
+                        if len(parts) == 3 and parts[2]:
+                            if resolve_index(parts[2], normals) is None:
+                                face_valid = False
+                    if not face_valid or len(face_refs) != len(values):
+                        invalid_lines.append(line_no)
+                        continue
+                    if len(set(face_refs)) < 3:
+                        repeated_vertex_faces += 1
+                    else:
+                        referenced_vertices.update(face_refs)
+                        area_vector = polygon_area_vector([vertices[index] for index in face_refs])
+                        extent = max(
+                            maxs[axis] - mins[axis] for axis in range(3)
+                        )
+                        tolerance = max(1.0, extent * extent) * 1e-12
+                        if math.sqrt(sum(value * value for value in area_vector)) <= tolerance:
+                            zero_area_faces += 1
+
+        ok = (
+            len(vertices) > 0 and faces > 0 and not invalid_lines
+            and repeated_vertex_faces == 0 and zero_area_faces == 0
+        )
+        return {
+            "path": str(path),
+            "status": "readable" if ok else "invalid",
+            "format": "Wavefront OBJ",
+            "vertex_count": len(vertices),
+            "texture_coordinate_count": texture_coordinates,
+            "normal_count": normals,
+            "face_count": faces,
+            "referenced_vertex_count": len(referenced_vertices),
+            "unreferenced_vertex_count": max(0, len(vertices) - len(referenced_vertices)),
+            "repeated_vertex_face_count": repeated_vertex_faces,
+            "zero_area_face_count": zero_area_faces,
+            "invalid_line_numbers": invalid_lines[:100],
+            "invalid_line_count": len(invalid_lines),
+            "bounds": [mins, maxs] if vertices else None,
+        }
     except Exception as exc:
         return {"path": str(path), "status": "invalid", "error": str(exc)}
 
@@ -284,7 +365,7 @@ def inspect_outputs(project: Path, expected: list[str] | None = None) -> dict:
             "CRS presence does not establish that the CRS is correct for the project.",
             "Pixel size and bounds are descriptive; no independent reference comparison is performed.",
             "Point-cloud records are scanned for structural summaries; classification correctness, density suitability and positional accuracy are not assessed.",
-            "OBJ inspection checks syntax and vertex indices only; manifoldness, self-intersections, texture completeness, normal quality and geometric accuracy are not assessed.",
+            "OBJ inspection checks finite vertex/texture/normal records, face index references and zero-area/repeated-index faces; manifoldness, self-intersections, texture-file availability, normal quality and geometric accuracy are not assessed.",
         ],
     }
 
