@@ -190,7 +190,7 @@ def main(argv: list[str] | None = None) -> int:
     products = payload["value"]
     location_errors = attach_product_locations(products, args.timeout)
     enriched_bytes = (
-        json.dumps(payload, indent=2, ensure_ascii=False) + "\\n"
+        json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
     ).encode("utf-8")
     response_path.write_bytes(raw)
     enriched_path.write_bytes(enriched_bytes)
