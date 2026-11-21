@@ -27,6 +27,21 @@ class FijiMultispectralPilotTests(unittest.TestCase):
         self.assertNotIn("MNDWI", result)
         self.assertNotIn("NDBI", result)
 
+    def test_ndre_exposes_unmasked_and_native_scl_screened_summaries(self):
+        bands = {
+            "B05": np.full((4, 4), 0.2, dtype=np.float32),
+            "B8A": np.full((4, 4), 0.5, dtype=np.float32),
+            "SCL": np.array([
+                [4, 4, 8, 8],
+                [4, 5, 9, 10],
+                [4, 4, 4, 4],
+                [4, 4, 4, 4],
+            ], dtype=np.float32),
+        }
+        result = _index_summaries(bands)
+        self.assertEqual(result["NDRE_20m_unmasked"]["valid_pixel_count"], 16)
+        self.assertEqual(result["NDRE_20m_scl_valid"]["valid_pixel_count"], 12)
+
     def test_runner_reads_first_five_rows_and_writes_blind_report(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
