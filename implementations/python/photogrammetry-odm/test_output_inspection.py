@@ -46,7 +46,7 @@ class OutputInspectionTests(unittest.TestCase):
         (self.project / "cloud.las").write_bytes(b"synthetic point cloud")
         header = SimpleNamespace(
             mins=[1.0, 2.0, 3.0],
-            maxs=[4.0, 5.0, 6.0],
+            maxs=[4.0, 5.0, 7.0],
             point_count=2,
             point_format=SimpleNamespace(id=6),
             version="1.4",
@@ -125,6 +125,46 @@ class OutputInspectionTests(unittest.TestCase):
         mesh = inspect_outputs(self.project)["meshes"][0]
         self.assertEqual(mesh["status"], "invalid")
         self.assertEqual(mesh["degenerate_face_count"], 1)
+
+
+    def test_point_cloud_flags_points_outside_declared_header_bounds(self):
+        (self.project / "outside.las").write_bytes(b"synthetic point cloud")
+        header = SimpleNamespace(
+            mins=[1.0, 2.0, 3.0], maxs=[4.0, 5.0, 6.0], point_count=1,
+            point_format=SimpleNamespace(id=6), version="1.4",
+            scales=[0.001, 0.001, 0.001], offsets=[0.0, 0.0, 0.0],
+            parse_crs=lambda: None,
+        )
+        reader = MagicMock()
+        reader.__enter__.return_value.header = header
+        reader.chunk_iterator.return_value = [SimpleNamespace(
+            x=[2.0], y=[3.0], z=[9.0], classification=[2], intensity=[100],
+        )]
+        with patch.dict("sys.modules", {"laspy": SimpleNamespace(open=lambda path: reader)}):
+            report = inspect_outputs(self.project)
+        cloud = report["point_clouds"][0]
+        self.assertEqual(cloud["status"], "invalid")
+        self.assertEqual(cloud["points_outside_header_bounds"], 1)
+
+    def test_point_cloud_flags_header_point_count_mismatch(self):
+        (self.project / "mismatch.las").write_bytes(b"synthetic point cloud")
+        header = SimpleNamespace(
+            mins=[0.0, 0.0, 0.0], maxs=[2.0, 2.0, 2.0], point_count=2,
+            point_format=SimpleNamespace(id=6), version="1.4",
+            scales=[0.001, 0.001, 0.001], offsets=[0.0, 0.0, 0.0],
+            parse_crs=lambda: None,
+        )
+        reader = MagicMock()
+        reader.__enter__.return_value.header = header
+        reader.chunk_iterator.return_value = [SimpleNamespace(
+            x=[1.0], y=[1.0], z=[1.0], classification=[2], intensity=[100],
+        )]
+        with patch.dict("sys.modules", {"laspy": SimpleNamespace(open=lambda path: reader)}):
+            report = inspect_outputs(self.project)
+        cloud = report["point_clouds"][0]
+        self.assertFalse(cloud["point_count_matches_header"])
+        self.assertEqual(cloud["status"], "invalid")
+
 
 if __name__ == "__main__":
     unittest.main()
