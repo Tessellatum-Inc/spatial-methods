@@ -144,8 +144,11 @@ def validate_measurements(
     normalized_rows = []
     for row_number, row in enumerate(rows, 2):
         blanks = [field for field in REQUIRED_FIELDS if not (row.get(field) or "").strip()]
-        # Coordinates may be blank only for an explicitly unmeasurable target.
-        blanks = [field for field in blanks if field not in {"independent_pixel_x", "independent_pixel_y"}]
+        # Coordinates and notes may be blank for a measured row; an
+        # unmeasurable row must provide a reason below.
+        blanks = [field for field in blanks if field not in {
+            "independent_pixel_x", "independent_pixel_y", "measurement_notes"
+        }]
         if blanks:
             raise ValueError(f"Row {row_number}: blank required values: " + ", ".join(blanks))
         point_id = row["point_id"].strip()
