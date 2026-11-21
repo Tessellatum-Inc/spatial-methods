@@ -151,3 +151,17 @@ Do not silently edit historical evidence records. Correct the implementation, cr
 The current milestone is **synthetic integrated evidence handoff tested; real execution not yet rehearsed**. The next substantive gate is a controlled real-dataset rehearsal on a network-enabled machine with a pinned ODM image, verified source bytes, documented control/checkpoint partition, real outputs and independently surveyed checkpoints. Reviewers should require the complete handoff from manifest through dossier and a documented disposition of every warning before describing the workflow as rehearsed.
 
 Last updated: 2026-11-21.
+
+
+## 9. Real-data evidence status — HEIG-VD drone 2019
+
+The source dataset has been acquired and structurally audited at immutable revision `e0dfeba2b6ed94ea1ae2bf773e742c39fb437b71`. The saved acquisition manifest verifies 36/36 files. All 32 JPGs decode at 5472 × 3648 pixels and contain GPS metadata. The metadata audit reports 31 surveyed point records, 206 image observations across 30 points, and 32 OPK records.
+
+Known source structure must not be misclassified:
+- point 100 has no image observation and duplicates point 206, as the publisher documents;
+- image `...0075` has no ground-point observation, but may still contribute tie points;
+- the supplied OPK solution used ground points as control and is not independent validation.
+
+A proposed split (8 controls, 19 checkpoints, 3 low-observation points withheld) is stored separately and remains `proposed_not_locked`. The 51-row GCP candidate contains controls only. A role-blind review packet provides per-point crops and a blank observation decision worksheet. The image picks are publisher-provided Metashape measurements, not independent remeasurements.
+
+**Do not call this an end-to-end ODM rehearsal yet.** ODM has not been executed, checkpoint residuals have not been computed, and no validation or release decision exists. The next gate is locked human review, followed by a pinned-container baseline and approved GCP run.

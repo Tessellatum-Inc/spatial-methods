@@ -357,6 +357,41 @@ python dataset_metadata_audit.py ./data/heig-vd-scop/snapshots/<commit-sha>/data
 
 The acquisition helper requires network access and the verifier is offline. A verified result establishes local byte agreement with the saved manifest only; it does not establish publisher authenticity, licence compliance, semantic correctness, image readability or photogrammetric suitability.
 
+## First real-data audit and provisional GCP preparation
+
+The HEIG-VD `drone_heig_2019` source has now been acquired on a hosted runner at resolved revision `e0dfeba2b6ed94ea1ae2bf773e742c39fb437b71`. The acquisition manifest and verifier confirmed all 36 selected files against SHA-256, with no missing, modified, unmanifested or symlinked files. The image audit decoded 32/32 JPGs (5472 × 3648 px), all with GPS metadata; camera make/model is senseFly S.O.D.A.
+
+The metadata audit found 31 surveyed-point records, 206 image observations across 30 points, and 32 OPK records. The publisher explicitly documents point 100 as unobserved and coordinate-identical to point 206; it is not a second independent point. One image (`...0075`) has no ground-point observation, which is coverage information rather than a reconstruction blocker. All supplied image observations fall within the documented image dimensions. The OPK rotations are numerically orthogonal, but the OPK file comes from a Metashape adjustment using ground points as control and is not independent validation.
+
+The candidate split is stored in `rehearsal-control-checkpoint-split.proposed.json`:
+
+- 8 proposed controls: `209, 108, 305, 201, 401, 302, 107, 106`;
+- 19 proposed checkpoints: `101, 103, 104, 105, 203, 204, 205, 206, 207, 208, 210, 300, 301, 304, 400, 402, 403, 404, 405`;
+- 3 observed points withheld from the primary split because they have fewer than five image observations: `102, 200, 303`;
+- point `100` excluded because it has no image observation and duplicates point `206`.
+
+The control-only ODM GCP preparation adapter verifies the source revision and source-file hashes, checks coordinate uniqueness and pixel bounds, and exports only the selected controls. The provisional file contains 51 image-observation rows across 29 images. Its first line declares horizontal CRS `EPSG:2056`; source heights are in `LN02` and that vertical reference remains separate metadata. The format follows the [ODM GCP file specification](https://docs.opendronemap.org/gcp/).
+
+The split remains `proposed_not_locked`. The source-provided Metashape image picks have not been independently remeasured or human-adjudicated. The OPK adjustment is not used. No ODM processing run or accuracy assessment has yet been completed. The real-data audit workflow is available at [GitHub Actions run 44899184473](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899184473).
+
+### Prepare a provisional control-only GCP list
+
+```bash
+python prepare_odm_gcp.py \
+  /path/to/snapshot/datasets/drone_heig_2019 \
+  rehearsal-control-checkpoint-split.proposed.json \
+  /path/to/snapshot/acquisition-provenance.json \
+  /path/to/working-copy/gcp_list.txt \
+  --allow-proposed \
+  --json-out /path/to/working-copy/gcp-preparation-report.json
+```
+
+The `--allow-proposed` flag is deliberately explicit. Without it, the adapter refuses to prepare a GCP list from a split that has not been human-locked. Preparing a file is not processing it and does not establish that the source image picks are correct.
+
+### Role-blind image review
+
+`visual_review.py` produces annotated image context sheets and high-resolution per-point crops. Control/checkpoint roles are omitted from the review material. The accompanying `review-decisions-template.csv` is blank and records target visibility, identity, centring, blur, occlusion, ambiguity, decision and rationale. Lock the human review record before consulting the split key. These materials reproduce source-provided Metashape picks; they are not independent measurements.
+
 ## Synthetic pipeline integration test
 
 Run the package tests from this directory:

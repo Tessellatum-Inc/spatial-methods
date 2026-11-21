@@ -29,3 +29,31 @@ The proposed split remains `proposed_not_locked`. The annotated sheets are a rev
 6. Run a documented image-only baseline and a control-constrained ODM reconstruction; evaluate withheld checkpoints using independent observations. Do not use the supplied OPK solution as independent truth.
 
 No ODM reconstruction or accuracy claim is authorised by the current evidence.
+
+
+## 15. First real-data acquisition and audit results
+
+A hosted-runner acquisition and audit was completed against the immutable HEIG-VD revision `e0dfeba2b6ed94ea1ae2bf773e742c39fb437b71`.
+
+- 36/36 selected source files verified against the acquisition manifest; no missing, modified, unmanifested or symlinked entries.
+- 32/32 JPGs readable at 5472 × 3648 pixels; all 32 contain GPS metadata; camera make/model is senseFly S.O.D.A.
+- Metadata: 31 surveyed-point records, 30 observed points, 206 image observations and 32 OPK records.
+- Point 100 has no image observation and duplicates point 206; the publisher documents this exception. It is not a second independent point.
+- Image `EB-02-00761_0101_0075` has no ground-point observation; this is not by itself a processing blocker.
+- All 206 image observations fall within the documented pixel bounds.
+- OPK rotation matrices are numerically orthogonal, but the supplied OPK solution used ground points as control and is not independent validation.
+
+A proposed deterministic partition is recorded in `rehearsal-control-checkpoint-split.proposed.json`: 8 controls, 19 checkpoints and 3 low-observation points withheld from the primary split. The control-only GCP adapter prepared a 51-row candidate file from 8 controls, with observations across 29 images. The GCP file declares horizontal EPSG:2056; source heights are LN02.
+
+The split remains `proposed_not_locked`. The source image picks are Metashape measurements and have not been independently remeasured or human-adjudicated. A role-blind visual-review packet now provides per-point 640 × 640 pixel crops across all available views and a blank 206-row decision worksheet. Review target identity, centring, visibility, blur, occlusion and ambiguity; lock decisions before unblinding roles.
+
+**What has not happened:** ODM has not yet been executed on this dataset. The GCP candidate has not been used in processing. No checkpoint residuals, positional accuracy statistics or acceptance decision exist.
+
+### Next gate
+
+1. Complete and lock the role-blind image-observation review.
+2. Confirm the control/checkpoint split and the separate horizontal EPSG:2056 / vertical LN02 treatment.
+3. Resolve and pin an ODM container digest; record the exact execution environment.
+4. Run a no-GCP EXIF baseline, then the approved control-GCP variant. Keep all checkpoint observations out of adjustment and tuning.
+5. Independently establish checkpoint image positions or document the limitations of reusing source Metashape picks.
+6. Inspect outputs, produce validation evidence and assemble the acquisition-bound dossier. A successful processing exit code is not an accuracy or release decision.

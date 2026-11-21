@@ -390,3 +390,26 @@ The new unit tests exercise symlinked acquisition paths and directories, malform
 ### Real-data gate
 
 The next evidence milestone remains a controlled acquisition and processing rehearsal on the documented HEIG-VD dataset. The operator run sheet is in `implementations/python/photogrammetry-odm/rehearsal-plan.md`. It defines integrity, metadata, coordinate-reference, control/checkpoint, Docker and delivery stop conditions. Until those steps are completed with actual source files and real outputs, the workflow remains synthetically integrated but not end-to-end rehearsed.
+
+
+## 15. Integration update — first real-data acquisition and review preparation
+
+The HEIG-VD drone 2019 source was acquired and structurally audited at revision `e0dfeba2b6ed94ea1ae2bf773e742c39fb437b71`.
+
+| Capability | Status |
+|---|---|
+| Immutable source acquisition and SHA-256 verification | Real run completed; 36/36 selected files verified |
+| Image inventory and decoding | Real run completed; 32/32 JPGs readable, 5472 × 3648 px |
+| Dataset metadata reconciliation | Real run completed; 31 surveyed-point records, 206 image observations, 30 observed points, 32 OPK rows |
+| Known source exception handling | Point 100 duplicate/unobserved record documented; image 0075 without GCP observations reported |
+| Control-only ODM GCP preparation | Implemented and run provisionally; 8 controls, 51 image-observation rows, 29 images |
+| Role-blind human review preparation | Implemented; 30 point sheets with 640 × 640 crops and blank observation-decision worksheet |
+| Actual ODM execution on this dataset | Pending |
+| Independent checkpoint remeasurement and accuracy assessment | Pending |
+| Project-specific acceptance and release | External human/project process |
+
+The proposed split is `proposed_not_locked`; no ODM processing has been run with it. The source Metashape image picks are not independent human remeasurements, and the supplied OPK solution is not independent validation.
+
+### Next integration milestone
+
+Complete and lock the role-blind observation review, confirm the control/checkpoint partition and vertical reference, then run a pinned ODM baseline and approved control-GCP variant. Preserve all checkpoints outside adjustment and tuning. Only after actual outputs and independently established checkpoint evidence exist should the workflow be described as end-to-end rehearsed or accuracy-assessed.
