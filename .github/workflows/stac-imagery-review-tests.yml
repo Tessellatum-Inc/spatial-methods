@@ -504,6 +504,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install review-packet dependencies
+        run: python -m pip install -r implementations/python/area-adjusted-accuracy/requirements-stac-imagery.txt
       - name: Download multispectral evidence
         uses: actions/download-artifact@v4
         with:
