@@ -127,8 +127,10 @@ jobs:
           This packet intentionally omits the control/checkpoint role mapping.
           Review the point sheets before consulting the split key. For each point,
           assess target identity, centring, visibility, occlusion, blur, ambiguity
-          and marker-to-target correspondence. Record a decision and rationale in
-          review-decisions-template.csv, then lock the review record before unblinding roles.
+          and marker-to-target correspondence. Use decision values accepted,
+          questioned or rejected; complete every field, including reviewer and
+          timezone-aware timestamp. Record a rationale for every row, then lock
+          the review record before unblinding roles.
 
           The yellow ring marks the publisher-provided Metashape image pick.
           These are not independent remeasurements and do not establish survey
@@ -160,7 +162,9 @@ jobs:
           (README, GCP coordinates, image observations and OPK text), a provisional
           ODM GCP list, and role-blind image annotations/cropped review excerpts.
           Full-resolution source imagery is not included.
-          The proposed split is not human-locked and the GCP list has not been processed by ODM.
+          The proposed split is not human-locked and the provisional GCP list has not been processed by ODM.
+          A separate EXIF-only ODM baseline has completed and its orthophoto, DSM and LAZ
+          passed structural inspection; no positional accuracy has been established.
           Acquisition hashes establish local byte agreement with the recorded manifest;
           they do not establish publisher authenticity, licence compliance, coordinate
           reference correctness, photogrammetric suitability or product accuracy.
