@@ -172,3 +172,10 @@ A proposed split (8 controls, 19 checkpoints, 3 low-observation points withheld)
 
 
 The role-blind point review packet is available as a separate artifact from [workflow run 44899394199](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899394199/artifacts/14705840263). It contains the per-point image crops and blank 206-row review worksheet without the control/checkpoint role key. Artifact SHA-256: `b00f477d590ec0d5601853dd7d2cf86e9beff9e42808ab9a2c3bf8f86dfcdf49`.
+
+
+## 10. Locking role-blind observation decisions
+
+Use `lock_visual_review.py` after completing the role-blind 206-row worksheet. It validates that every source observation is present exactly once, the original point/image/pixel coordinates are unchanged, decisions and rationales are complete, timestamps include timezone offsets, and the source revision matches the acquisition manifest. It records hashes of the worksheet, visual summary, acquisition manifest and source-observation index.
+
+The lock utility does not read the split key or unblind roles. It marks one reviewer as single-reviewer adjudication and does not claim independent validation. Multiple reviewer names do not prove independent review. Preserve the locked JSON record before any separate unblinding or checkpoint analysis.

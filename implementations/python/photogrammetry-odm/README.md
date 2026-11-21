@@ -392,6 +392,23 @@ The `--allow-proposed` flag is deliberately explicit. Without it, the adapter re
 
 `visual_review.py` produces annotated image context sheets and high-resolution per-point crops. Control/checkpoint roles are omitted from the review material. The accompanying `review-decisions-template.csv` is blank and records target visibility, identity, centring, blur, occlusion, ambiguity, decision and rationale. Lock the human review record before consulting the split key. These materials reproduce source-provided Metashape picks; they are not independent measurements.
 
+
+### Lock a completed role-blind review
+
+After the 206 observation rows have been reviewed, use the lock utility before consulting the control/checkpoint split:
+
+```bash
+python lock_visual_review.py \
+  /path/to/visual-review/review-decisions-template.csv \
+  /path/to/visual-review/visual-review-summary.json \
+  /path/to/snapshot/acquisition-provenance.json \
+  /path/to/locked-review.json
+```
+
+The utility refuses incomplete decisions, duplicate or missing observations, altered source pixel coordinates, invalid timestamps or a mismatched acquisition revision. It hashes the worksheet, summary, acquisition manifest and source-observation index. It does not read the split file and does not unblind roles.
+
+One reviewer is recorded as `single_reviewer_adjudication_locked`, never independent validation. Multiple reviewer names are also not proof of independent review. The output explicitly keeps `unblinded: false` and `independent_validation: false`.
+
 ## Synthetic pipeline integration test
 
 Run the package tests from this directory:

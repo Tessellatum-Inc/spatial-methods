@@ -64,3 +64,10 @@ The split remains `proposed_not_locked`. The source image picks are Metashape me
 
 
 The role-blind review packet is published separately from the technical audit artifact: [download from workflow run 44899394199](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44899394199/artifacts/14705840263). It contains 30 per-point sheets, 206 observation rows in the blank decision worksheet and no role mapping. Artifact SHA-256: `b00f477d590ec0d5601853dd7d2cf86e9beff9e42808ab9a2c3bf8f86dfcdf49`.
+
+
+## 16. Locking the human image-observation review
+
+The role-blind review packet contains 206 observation rows. Reviewers must record target visibility, identity, centring, blur, occlusion, ambiguity, a decision and a rationale for every row. `lock_visual_review.py` validates complete coverage, exact source pixel coordinates, timezone-aware review timestamps and the acquisition revision; it hashes all source evidence and produces a locked review record without reading the split key.
+
+The lock record must remain `unblinded: false`. A single reviewer is explicitly labelled single-reviewer adjudication, not independent validation. Multiple names do not prove independent review. Do not inspect the proposed control/checkpoint mapping until the review record is locked.
