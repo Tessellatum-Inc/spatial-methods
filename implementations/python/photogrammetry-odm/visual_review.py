@@ -240,7 +240,7 @@ def generate(dataset: Path, split_path: Path, output: Path) -> dict:
             "review_sheet": str(point_path.relative_to(output)),
         })
 
-    instructions = dedent("""# Role-blind point review
+    instructions = dedent("""\n    # Role-blind point review
 
     Review the point sheets before consulting the control/checkpoint split key.
 
