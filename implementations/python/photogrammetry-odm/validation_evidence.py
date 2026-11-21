@@ -143,8 +143,7 @@ def main(argv: list[str] | None = None) -> int:
     rendered = json.dumps(report, indent=2, sort_keys=True)
     print(rendered)
     if args.json_out:
-        args.json_out.write_text(rendered + "
-", encoding="utf-8")
+        args.json_out.write_text(rendered + "\\n", encoding="utf-8")
     return 0 if report["evidence_status"] == "assessable" else 2
 
 
