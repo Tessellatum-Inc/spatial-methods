@@ -80,7 +80,17 @@ def inspect_point_cloud(path: Path) -> dict:
                 "crs": str(parsed_crs) if parsed_crs else None,
             }
     except Exception as exc:
-        return {"path": str(path), "status": "invalid", "error": str(exc)}
+        message = str(exc)
+        backend_unavailable = path.suffix.lower() == ".laz" and any(
+            token in message.lower() for token in ("laz backend", "lazrs", "backend is not available")
+        )
+        if backend_unavailable:
+            return {
+                "path": str(path),
+                "status": "not_inspected",
+                "reason": f"LAZ decompression backend unavailable: {message}",
+            }
+        return {"path": str(path), "status": "invalid", "error": message}
 
 
 def inspect_outputs(project: Path, expected: list[str] | None = None) -> dict:
