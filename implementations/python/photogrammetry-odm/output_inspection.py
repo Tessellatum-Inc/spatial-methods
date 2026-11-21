@@ -261,7 +261,11 @@ def inspect_outputs(project: Path, expected: list[str] | None = None) -> dict:
         for item in point_clouds if item["status"] == "not_inspected"
     )
     blockers.extend(["OBJ mesh structure is invalid: " + item["path"] for item in meshes if item["status"] == "invalid"])
-    if not rasters:
+    expected_rasters = [
+        value for value in expected
+        if Path(value).suffix.lower() in RASTER_SUFFIXES
+    ]
+    if not rasters and (not expected or expected_rasters):
         warnings.append("No GeoTIFF outputs were found for raster inspection.")
     status = "blocked" if blockers else ("review_required" if warnings else "inspected")
     return {
