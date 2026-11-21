@@ -223,6 +223,7 @@ jobs:
         run: |
           python - <<'PY'
           import csv
+          import os
           from collections import Counter
           from pathlib import Path
           path = Path("/tmp/fiji-full-pilot-discovery/stac-imagery-provenance.csv")
@@ -237,7 +238,7 @@ jobs:
           print(f"Candidate/status rows: {len(rows)}")
           print(f"Statuses: {dict(statuses)}")
           print(f"Catalogue rows: {dict(catalogues)}")
-          with open("$GITHUB_STEP_SUMMARY", "a", encoding="utf-8") as report:
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as report:
               report.write("## Full 25-point Fiji STAC discovery\\n\\n")
               report.write(f"- Points represented: {len(points)}\\n")
               report.write(f"- Candidate/status rows: {len(rows)}\\n")
