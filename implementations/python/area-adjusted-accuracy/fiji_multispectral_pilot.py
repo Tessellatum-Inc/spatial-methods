@@ -69,7 +69,7 @@ def _index_summaries(bands: dict[str, np.ndarray]) -> dict[str, dict[str, Any]]:
 
 
 def run_pilot(input_csv: Path, output_dir: Path, *, point_limit: int = 5,
-              item_limit: int = 3, window_pixels: int = 32) -> dict[str, Any]:
+              item_limit: int = 3, window_pixels: int = 16) -> dict[str, Any]:
     if point_limit < 1 or item_limit < 1:
         raise ValueError("point_limit and item_limit must be positive")
     with input_csv.open(newline="", encoding="utf-8-sig") as stream:
