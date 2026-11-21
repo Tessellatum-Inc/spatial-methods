@@ -187,7 +187,7 @@ class OutputInspectionTests(unittest.TestCase):
 
     def test_obj_rejects_invalid_texture_coordinate_reference(self):
         (self.project / "bad-texture.obj").write_text(
-            "v 0 0 0\\nv 1 0 0\\nv 0 1 0\\nvt 0 0\\nf 1/2 2/1 3/1\\n",
+            "v 0 0 0\nv 1 0 0\nv 0 1 0\nvt 0 0\nf 1/2 2/1 3/1\n",
             encoding="utf-8",
         )
         report = inspect_outputs(self.project, ["bad-texture.obj"])
@@ -196,7 +196,7 @@ class OutputInspectionTests(unittest.TestCase):
 
     def test_obj_rejects_collinear_zero_area_face(self):
         (self.project / "collinear.obj").write_text(
-            "v 0 0 0\\nv 1 0 0\\nv 2 0 0\\nf 1 2 3\\n",
+            "v 0 0 0\nv 1 0 0\nv 2 0 0\nf 1 2 3\n",
             encoding="utf-8",
         )
         report = inspect_outputs(self.project, ["collinear.obj"])
@@ -205,7 +205,7 @@ class OutputInspectionTests(unittest.TestCase):
 
     def test_obj_accepts_negative_relative_indices(self):
         (self.project / "negative.obj").write_text(
-            "v 0 0 0\\nv 1 0 0\\nv 0 1 0\\nf -3 -2 -1\\n",
+            "v 0 0 0\nv 1 0 0\nv 0 1 0\nf -3 -2 -1\n",
             encoding="utf-8",
         )
         report = inspect_outputs(self.project, ["negative.obj"])
