@@ -3,10 +3,14 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from visual_review import image_stem, load_split
+from lock_visual_review import REQUIRED_FIELDS
+from visual_review import DECISION_FIELDS, image_stem, load_split
 
 
 class VisualReviewTests(unittest.TestCase):
+    def test_decision_template_matches_lock_utility_schema(self):
+        self.assertEqual(DECISION_FIELDS, REQUIRED_FIELDS)
+
     def test_loads_control_checkpoint_and_excluded_roles(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "split.json"
