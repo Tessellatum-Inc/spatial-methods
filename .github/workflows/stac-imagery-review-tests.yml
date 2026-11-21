@@ -26,6 +26,8 @@ on:
       - "implementations/python/area-adjusted-accuracy/test_multispectral_raster.py"
       - "implementations/python/area-adjusted-accuracy/fiji_multispectral_pilot.py"
       - "implementations/python/area-adjusted-accuracy/test_fiji_multispectral_pilot.py"
+      - "implementations/python/area-adjusted-accuracy/prepare_fiji_blind_review.py"
+      - "implementations/python/area-adjusted-accuracy/test_prepare_fiji_blind_review.py"
       - ".github/workflows/stac-imagery-review-tests.yml"
 
 jobs:
