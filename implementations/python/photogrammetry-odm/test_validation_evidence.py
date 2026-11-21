@@ -50,7 +50,7 @@ class ValidationEvidenceTests(unittest.TestCase):
         report = build_validation_record(self.csv, context)
         self.assertEqual(report["evidence_status"], "not_assessable")
 
-    def test_human_decision_requires_reviewer_and_rationale(self):
+    def test_acceptance_is_blocked_when_required_evidence_is_missing(self):\n        context = dict(self.context, reference_uncertainty="", acceptance_decision="accepted",\n                       reviewer="Reviewer A", acceptance_rationale="Looks good")\n        with self.assertRaisesRegex(ValueError, "evidence is missing"):\n            build_validation_record(self.csv, context)\n\n    def test_human_decision_requires_reviewer_and_rationale(self):
         context = dict(self.context, acceptance_decision="accepted")
         with self.assertRaisesRegex(ValueError, "acceptance_rationale"):
             build_validation_record(self.csv, context)
