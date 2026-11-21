@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 
 from dataset_audit import inspect_images
-from odm_runner import build_command
+from odm_runner import IMAGE_SUFFIXES as ODM_IMAGE_SUFFIXES, build_command
 from project_manifest import validate_manifest
 
 
@@ -23,7 +23,9 @@ def build_preflight(manifest: dict, manifest_path: str | Path) -> dict:
     warnings = list(base_report["warnings"])
 
     try:
-        image_report = inspect_images(project_dir / "images", expected_count)
+        image_report = inspect_images(
+            project_dir / "images", expected_count, ODM_IMAGE_SUFFIXES
+        )
     except (OSError, ValueError) as exc:
         image_report = {"status": "not_run", "error": str(exc)}
         blockers.append(f"Image audit could not run: {exc}")
