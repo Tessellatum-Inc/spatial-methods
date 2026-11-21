@@ -42,7 +42,7 @@ The subject IDs below are stable identifiers from the [Geoinformatics master sub
 | SM-FND-013 | Optics, electromagnetism and wave physics | Planned | Geometric optics, wave behaviour, electromagnetic principles and sensor physics |
 | SM-FND-014 | Signal processing and information theory | Planned | Sampling, filtering, transforms, spectral analysis, information and signal detection |
 | SM-FND-015 | Computer science, algorithms and complexity | Planned | Computation models, data structures, algorithm analysis, logic and computability |
-| SM-FND-016 | Numerical analysis and scientific computing | Planned | Floating-point arithmetic, conditioning, stability, approximation and numerical solution |
+| SM-FND-016 | Numerical analysis and scientific computing | Initial domain roadmap and first module published; technical review and learner testing pending | Floating-point arithmetic, conditioning, stability, approximation and numerical solution |
 | SM-FND-017 | Optimisation and operations research | Planned | Linear/nonlinear optimisation, constrained problems, graph optimisation and decision theory |
 | SM-FND-018 | Geographic information science and spatial thinking | Planned | Geographic concepts, spatial cognition, representation, scale, ontology and GIScience theory |
 | SM-FND-019 | Systems theory, complexity and emergence | Planned | Systems, feedback, networks, dynamical systems, complexity and emergence |
@@ -59,6 +59,10 @@ The mathematics domain begins with [Mathematical language, quantities and spatia
 ### Probability and statistical inference
 
 [Probability and statistical inference](probability-and-statistics/README.md) is now in development. Its first module, [Probability models, events and conditioning](probability-and-statistics/probability-models-events-and-conditioning.md), establishes event rules, conditional probability, independence and Bayes' theorem through an explicitly synthetic spatial-screening example. The domain roadmap distinguishes general probability from spatial stochastic processes and measurement science; independent technical review and learner testing remain outstanding.
+
+### Numerical analysis and scientific computing
+
+[Numerical analysis and scientific computing](numerical-analysis/README.md) now has an initial domain roadmap and a first module on [floating-point numbers, rounding and computational error](numerical-analysis/floating-point-numbers-rounding-and-computational-error.md). It distinguishes representation error, problem conditioning, algorithmic stability and measurement uncertainty, with examples tied to coordinate arithmetic and spatial computation. The subject remains incomplete; independent numerical-analysis review and learner testing are pending.
 
 ### Remote sensing physics and radiometry
 
