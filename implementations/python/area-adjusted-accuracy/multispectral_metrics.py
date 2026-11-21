@@ -79,6 +79,38 @@ def scl_valid_mask(scl: Any) -> np.ndarray:
     return np.isfinite(values) & ~np.isin(values, tuple(SCL_INVALID_CLASSES))
 
 
+def scl_quality_summary(scl: Any) -> dict[str, Any]:
+    """Summarize native-grid SCL composition without resampling."""
+    values = np.asarray(scl, dtype=np.float64)
+    if values.ndim == 0:
+        values = values.reshape(1)
+    finite = np.isfinite(values)
+    total = int(values.size)
+    finite_count = int(finite.sum())
+    counts = {
+        str(class_id): int(np.count_nonzero(finite & (values == class_id)))
+        for class_id in range(12)
+    }
+    fractions = {
+        class_id: (count / total if total else float("nan"))
+        for class_id, count in counts.items()
+    }
+    retained = scl_valid_mask(values) & finite
+    cloud_shadow = finite & np.isin(values, (3, 8, 9, 10))
+    return {
+        "pixel_count": total,
+        "finite_pixel_count": finite_count,
+        "finite_fraction": finite_count / total if total else float("nan"),
+        "analysis_valid_pixel_count": int(retained.sum()),
+        "analysis_valid_fraction": float(retained.sum() / total) if total else float("nan"),
+        "cloud_shadow_pixel_count": int(cloud_shadow.sum()),
+        "cloud_shadow_fraction": float(cloud_shadow.sum() / total) if total else float("nan"),
+        "class_counts": counts,
+        "class_fractions": fractions,
+        "mask_resolution": "native SCL 20m",
+    }
+
+
 def apply_valid_mask(values: Any, valid_mask: Any) -> np.ndarray:
     """Apply a boolean validity mask, returning a float array with NaN elsewhere."""
     data = _as_float_array(values)
@@ -149,5 +181,5 @@ def index_stack(
 __all__ = [
     "SCL_INVALID_CLASSES", "safe_normalized_difference", "ndvi",
     "ndwi_mcfeeters", "mndwi", "ndbi", "ndre", "scl_valid_mask",
-    "apply_valid_mask", "summarize_window", "index_stack",
+    "apply_valid_mask", "scl_quality_summary", "summarize_window", "index_stack",
 ]
