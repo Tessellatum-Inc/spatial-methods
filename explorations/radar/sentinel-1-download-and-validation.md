@@ -81,3 +81,33 @@ archives or credentials to the repository.
 ```bash
 python -m unittest scripts/test_download_copernicus_sentinel1.py
 ```
+
+## SAFE metadata preflight audit
+
+After the downloader's ZIP/SAFE structure check passes, run the separate metadata
+preflight against the immutable archive:
+
+```bash
+python explorations/radar/audit_sentinel1_safe_metadata.py \
+  data/copernicus/nairobi/sentinel1_8ffa5641-c404-4189-b0fb-ed805b077d71.SAFE.zip \
+  --expected-product-name S1C_IW_GRDH_1SDV_20261102T031112_20261102T031137_010152_01443B_5D46.SAFE \
+  --output data/copernicus/nairobi/sentinel1_8ffa5641-c404-4189-b0fb-ed805b077d71.preflight.json
+```
+
+This second gate checks ZIP CRCs, a parseable `manifest.safe`, safe member
+paths, and the presence of VV and VH measurement, annotation, calibration and
+noise-annotation file sets based on SAFE member names. It records the archive
+SHA-256 and metadata values exposed by the manifest. It does not extract or
+modify the source archive.
+
+A failed dual-polarisation gate blocks processing. A passing gate is still
+only a structural preflight: it does not inspect raster pixels, validate
+calibration LUT values, verify geolocation, or prove full datatake coverage.
+The actual downloaded product must be inspected before selecting SNAP
+operators or parameter values.
+
+Offline tests:
+
+```bash
+python -m unittest discover -s scripts -p "test_audit_sentinel1_safe_metadata.py"
+```
