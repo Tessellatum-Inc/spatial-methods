@@ -359,15 +359,18 @@ Tests cover successful assembly, pending acceptance, run-identity mismatch and m
 |---|---|
 | Project manifest and integrated preflight | Implemented |
 | Input inventory and source hashes | Implemented |
+| Acquired snapshot integrity verification | Implemented; verifies declared sizes and SHA-256, detects missing/modified/unmanifested files |
 | Explicit ODM processing-run provenance | Implemented; live Docker execution not yet rehearsed |
 | Output inventory and GeoTIFF structural inspection | Implemented when Rasterio is installed |
 | Independent checkpoint residual statistics | Implemented |
 | Project-level validation evidence and human decision record | Implemented |
 | Evidence ZIP dossier with checksums and consistency checks | Implemented |
-| Point-cloud and mesh semantic inspection | Pending |
+| LAS/LAZ streamed structural inspection | Implemented when laspy and a compatible LAZ backend are installed; point counts, finite coordinates, classification/intensity summaries and bounded sample |
+| Point-cloud classification correctness, density and positional QA | Pending |
+| Mesh structural/semantic inspection | Pending |
 | Real-dataset end-to-end rehearsal | Pending |
 | Independent multi-reviewer validation and project-specific release | External human/project process |
 
 ### Next integration milestone
 
-Run a controlled rehearsal on a documented, non-sensitive dataset with real outputs and independently surveyed checkpoints. Close remaining structural gaps (point-cloud content/classification and mesh inspection where deliverables require them), test the complete handoff from manifest to dossier, and record every unavailable or unverified capability rather than filling gaps with assumptions.
+Run a controlled rehearsal on a documented, non-sensitive dataset with real outputs and independently surveyed checkpoints. Close remaining structural gaps (point-cloud classification correctness, density/positional QA and mesh inspection where deliverables require them), test the complete handoff from acquired snapshot through dossier, and record every unavailable or unverified capability rather than filling gaps with assumptions.
