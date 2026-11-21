@@ -20,6 +20,7 @@ This page is the operational status record for the real-data photogrammetry rehe
 | External reviewer invitation brief | Published | [Reviewer invitation](reviewer-invitation.md) |
 | Reviewer recruitment, independence and intake protocol | Published | [Recruitment and intake](reviewer-recruitment-and-intake.md) |
 | Independent reviewer prospecting | Published (desk research only) | [Prospecting list](reviewer-prospecting.md); no outreach sent |
+| Reviewer outreach pack | Prepared for coordinator approval | [Outreach pack](reviewer-outreach-pack.md); no messages sent |
 | Human review of all 206 observations | **Pending** | No completed reviewer worksheet or review lock recorded |
 | Role-blind review lock | **Pending** | Must follow completed human review |
 | Control/checkpoint split approval | **Pending** | Proposed split is not approved |
@@ -68,4 +69,4 @@ When evidence arrives:
 5. Update the table above with the evidence URL, artifact ID/hash and actual status. Never mark a gate complete based only on a workflow being green.
 6. If any observation or point is questioned/rejected, document the disposition and reassess whether the proposed split remains defensible.
 
-**Current next action:** approach the highest-fit institutional channels in [reviewer-prospecting.md](reviewer-prospecting.md), using [reviewer-invitation.md](reviewer-invitation.md). Do not send the packet until each candidate has passed the disclosure and independence intake. Then provide the [reviewer handoff](reviewer-handoff.md) and [role-blind packet](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44916839984/artifacts/14712292151) to eligible reviewers. No automated process should fabricate or infer their decisions.
+**Current next action:** coordinator reviews and, if approved, sends the institution-specific drafts in [reviewer-outreach-pack.md](reviewer-outreach-pack.md). Do not send the review packet until each candidate has passed the disclosure and independence intake. Then provide the [reviewer handoff](reviewer-handoff.md) and [role-blind packet](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44916839984/artifacts/14712292151) to eligible reviewers. No automated process should fabricate or infer their decisions.
