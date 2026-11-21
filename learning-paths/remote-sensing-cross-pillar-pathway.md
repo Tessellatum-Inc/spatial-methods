@@ -22,6 +22,7 @@ Choose the route that matches the observation and intended claim.
 | How do optical bands vary across a landscape? | Sentinel-2 surface-reflectance investigation | Band numbers and spatial resolutions are identical across sensors |
 | Why is a radar surface bright or dark? | [Radar exploration](../explorations/radar/README.md) | Brightness uniquely identifies a land-cover class |
 | What does a Sentinel-1 backscatter product represent? | [Sentinel-1 backscatter investigation](../explorations/radar/sentinel-1-backscatter-investigation.md) | GRD, SLC and RTC products are interchangeable |
+| How should a SAR observation be selected for a study? | [SAR acquisition and observation design](../collection/sar-acquisition-and-observation-design.md) | Same AOI or orbit label guarantees equivalent geometry |
 | Can imagery support a land-cover or change claim? | Define a study design, reference source and validation method first | A visually plausible image or index map proves classification accuracy |
 
 ## 2. Optical multispectral route
@@ -87,7 +88,9 @@ A SAR foundation must cover electromagnetic propagation and scattering, pulse/ra
 
 The [Radar exploration](../explorations/radar/README.md) distinguishes Earth-observation SAR from weather radar, radar systems engineering and other branches. Its [territory map](../explorations/radar/territory-map.md) explains the shared and branch-specific concepts.
 
-The [Nairobi Sentinel-1 scene record](../explorations/radar/nairobi-sentinel-1-scene-record.md) is a study specification only. Scene selection and processing are pending. It correctly requires the product identifier, acquisition time, mode, pass direction, relative orbit, polarisation, coverage, processing source, coefficient, value scale, DEM and filtering history to be recorded before interpretation.
+The initial [SAR acquisition and observation design method](../collection/sar-acquisition-and-observation-design.md) now defines measurand-led product selection, GRD/SLC/RTC distinctions, acquisition geometry, temporal compatibility, catalogue discovery, product metadata, quality gates and an acquisition record. It is a method specification, not an executed acquisition. Technical review and scene testing remain pending.
+
+The [Nairobi Sentinel-1 scene record](../explorations/radar/nairobi-sentinel-1-scene-record.md) remains a study specification only. Scene selection and processing are pending. It correctly requires the product identifier, acquisition time, mode, pass direction, relative orbit, polarisation, coverage, processing source, coefficient, value scale, DEM and filtering history to be recorded before interpretation.
 
 ### Spatial Algorithms
 
@@ -133,8 +136,8 @@ Evidence at one level does not automatically establish the next.
 
 | Pillar | Optical multispectral | SAR / Sentinel-1 |
 |---|---|---|
-| Theoretical Foundations | Initial electromagnetic/radiometric module published; detailed optical radiative transfer, technical review and learner testing remain open | Shared electromagnetic introduction published; radar scattering, measurement and signal-processing foundations remain incomplete |
-| Spatial Data Collection | Initial optical satellite acquisition method published; technical review and application testing pending; Fiji pilot documents a bounded Level-2A/STAC workflow | Radar exploration and Nairobi scene specification exist; no completed scene acquisition record |
+| Theoretical Foundations | Initial electromagnetic/radiometric module published; technical review and learner testing remain open | Shared electromagnetic introduction published; radar scattering, measurement and signal-processing foundations remain incomplete |
+| Spatial Data Collection | Initial optical satellite acquisition method published; technical review and application testing pending; Fiji pilot documents a bounded Level-2A/STAC workflow | Initial SAR acquisition method published; technical review and scene execution pending |
 | Spatial Algorithms | Broad catalogue and multiple tested implementations; sensor-aware preprocessing and validation remain uneven | Lee filter, CFAR and local coherence notes exist; no complete sensor-to-product processing chain |
 | Spatial Recipes | No mature integrated optical recipe yet; Fiji pilot is an evidence workflow, not one | Guided backscatter investigation exists; no executed Nairobi recipe or validated application |
 
@@ -143,7 +146,7 @@ This table is a gap map, not a maturity score. It deliberately leaves incomplete
 ## 6. Recommended development sequence
 
 1. **Extend and review the foundation:** technically review the initial electromagnetic/radiometric module, then develop separate optical radiative-transfer and radar scattering/signal-formation modules.
-2. **Extend collection records:** technically review and test the optical acquisition method, then document SAR acquisition separately, including product families, geometry, metadata, access, calibration and quality controls.
+2. **Review collection records:** technically review and test the optical acquisition method and SAR acquisition method against actual product metadata and selected scenes.
 3. **Audit algorithms against inputs:** connect each algorithm to required sensor/product types, band mapping, units, masks, grid, assumptions, failure modes and validation needs.
 4. **Complete one bounded optical execution:** finish the Fiji multispectral quality-control gates, preserve its blind-review boundaries, and report exactly which live processing stages have passed.
 5. **Execute the Nairobi SAR study:** select and archive a suitable Sentinel-1 scene, process it reproducibly, record observations and independent contextual evidence, and do not promote it to a recipe until the hand-offs and validation are reviewed.
