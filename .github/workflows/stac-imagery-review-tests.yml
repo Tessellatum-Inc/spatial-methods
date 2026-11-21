@@ -14,6 +14,8 @@ on:
       - "implementations/python/area-adjusted-accuracy/test_fiji_multispectral_pilot.py"
       - "implementations/python/area-adjusted-accuracy/prepare_fiji_blind_review.py"
       - "implementations/python/area-adjusted-accuracy/test_prepare_fiji_blind_review.py"
+      - "implementations/python/area-adjusted-accuracy/build_fiji_review_contact_sheets.py"
+      - "implementations/python/area-adjusted-accuracy/test_build_fiji_review_contact_sheets.py"
       - ".github/workflows/stac-imagery-review-tests.yml"
   pull_request:
     paths:
@@ -57,6 +59,9 @@ jobs:
         working-directory: implementations/python/area-adjusted-accuracy
       - name: Run Fiji blind-review preparation tests
         run: python -m unittest -v test_prepare_fiji_blind_review.py
+        working-directory: implementations/python/area-adjusted-accuracy
+      - name: Run Fiji review contact-sheet tests
+        run: python -m unittest -v test_build_fiji_review_contact_sheets.py
         working-directory: implementations/python/area-adjusted-accuracy
 
   catalogue-smoke-test:
@@ -518,6 +523,11 @@ jobs:
             --output-dir /tmp/fiji-blind-review
           mkdir -p /tmp/fiji-blind-review/chips
           cp /tmp/fiji-rgb/*.png /tmp/fiji-blind-review/chips/ 2>/dev/null || true
+          python implementations/python/area-adjusted-accuracy/build_fiji_review_contact_sheets.py \
+            --worksheet /tmp/fiji-blind-review/fiji-blind-review-worksheet.csv \
+            --rgb-provenance /tmp/fiji-rgb/stac-imagery-provenance.csv \
+            --chips-dir /tmp/fiji-blind-review/chips \
+            --output-dir /tmp/fiji-blind-review/review-chips
           python - <<'PY'
           import csv
           from pathlib import Path
