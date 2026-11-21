@@ -1,6 +1,6 @@
 # Floating-point numbers, rounding and computational error
 
-**Subject identity:** \`SM-FND-016\` — Numerical analysis and scientific computing  
+**Subject identity:** `SM-FND-016` — Numerical analysis and scientific computing  
 **Module:** 01  
 **Status:** Initial public teaching resource; independent numerical-analysis review and learner testing outstanding.
 
