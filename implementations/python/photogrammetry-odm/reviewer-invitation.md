@@ -24,6 +24,8 @@ The supplied review packet contains navigation derivatives and a blank decision 
 3. [Visual review protocol](visual-review-protocol.md) — assessment criteria and field definitions.
 4. [Review status and gate record](REVIEW-STATUS.md) — current evidence and the sequence of decisions still pending.
 
+Before accepting the assignment, reviewers will be asked to disclose relevant prior exposure and conflicts of interest. See the [recruitment and intake protocol](reviewer-recruitment-and-intake.md) for the independence safeguards and submission process.
+
 ### Dataset and attribution
 
 - Source: HEIG-VD Geomatics group, `heig-vd-geo/scop-datasets`
