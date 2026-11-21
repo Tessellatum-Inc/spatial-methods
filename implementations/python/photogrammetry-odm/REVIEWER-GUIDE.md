@@ -85,7 +85,7 @@ The dossier does not contain raw imagery or complete generated products. Reviewe
 - Are declared expected outputs present?
 - Are all reported raster properties plausible for the project specification?
 - Is a populated CRS field independently checked against the intended CRS?
-- Are LAS/LAZ headers inspected where point-cloud deliverables are in scope, and are point content/classification/accuracy checks handled separately?
+- Are LAS/LAZ point counts reconciled, coordinate values finite, and classification/intensity summaries plausible? Are classification correctness, density suitability and positional accuracy evaluated separately?
 - Are mesh deliverables inspected where they are in scope?
 - Are structural inspection and product/positional acceptance kept distinct?
 
@@ -122,7 +122,7 @@ Do not collapse these statuses into a single pass/fail score.
 
 - No live Docker/ODM execution has been demonstrated in this repository environment.
 - The HEIG-VD rehearsal imagery has not yet been acquired, byte-audited and processed locally.
-- LAS/LAZ header inspection is implemented when `laspy` is installed; it does not inspect point records, classification quality or positional accuracy.
+- LAS/LAZ point records are streamed when `laspy` is installed; count reconciliation, finite coordinates, classification counts, intensity range and a bounded coordinate sample are recorded. Classification correctness, density suitability and positional accuracy remain unassessed.
 - Mesh semantic and topology inspection is not implemented.
 - Raster inspection is conditional on Rasterio; image readability checks are conditional on Pillow.
 - Checkpoint independence, sample representativeness, reference uncertainty and CRS correctness are declarations/evidence for human review, not independently established by these scripts.
