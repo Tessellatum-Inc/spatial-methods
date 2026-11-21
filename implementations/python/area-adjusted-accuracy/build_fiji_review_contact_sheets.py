@@ -17,7 +17,7 @@ def parse_dt(value):
 
 def deduplicate(rows, tolerance_seconds=2.0):
     groups=[]
-    for row in sorted(rows,key=lambda r:parse_dt(r.get("datetime")) or datetime.min.replace(tzinfo=None)):
+    for row in sorted(rows,key=lambda r:str(r.get("datetime",""))):
         current=parse_dt(row.get("datetime")); match=None
         for group in groups:
             first=group[0]; previous=parse_dt(first.get("datetime"))
