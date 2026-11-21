@@ -34,6 +34,7 @@ The following distinctions are mandatory:
    - `processing_run.py` — explicit execution boundary and provenance capture;
    - `prepare_odm_gcp.py` — source-bound control-only ODM GCP export;
    - `visual_review.py` and `lock_visual_review.py` — role-blind observation review material and decision lock;
+   - `validate_independent_checkpoint_measurements.py` — post-lock, approved-split-only measurement register and provenance validation;
    - `independent-checkpoint-measurement-protocol.md` and its CSV template — independent image-coordinate measurement after the split is locked;
    - `output_inspection.py` — read-only output inventory and GeoTIFF structure;
    - `checkpoint_qa.py` — residual definitions and statistics;
