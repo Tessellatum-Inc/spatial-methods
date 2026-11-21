@@ -38,8 +38,9 @@ The domain will cover:
 | 05 | [Root finding and nonlinear equation solving](root-finding-and-nonlinear-equation-solving.md) | Threshold crossings, implicit spatial models, root conditioning and safeguarded solvers | Initial public teaching resource |
 | 06 | [Numerical differentiation](numerical-differentiation.md) | Terrain gradients, raster derivatives, local sensitivity and sampled spatial fields | Initial public teaching resource |
 | 07 | [Numerical integration and quadrature](numerical-integration-and-quadrature.md) | Spatial totals, terrain and water volumes, raster aggregation, area measures and numerical quadrature | Initial public teaching resource |
+| 08 | [Interpolation and approximation](interpolation-and-approximation.md) | Surface construction, raster resampling, spatial prediction, model validation and support | Initial public teaching resource |
 
-The first seven modules establish a working numerical core, not a complete numerical-analysis curriculum. Further modules should be added when their prerequisites, examples and validation requirements are clear.
+The first eight modules establish a working numerical core, not a complete numerical-analysis curriculum. Further modules should be added when their prerequisites, examples and validation requirements are clear.
 
 ## Application anchors
 
@@ -58,4 +59,4 @@ Each module should define its numerical model and notation, distinguish mathemat
 
 ## Review status
 
-Modules 01–07 are initial teaching resources. They have not received independent numerical-analysis review or learner testing. The subject collection is not complete, and publication does not constitute technical certification.
+Modules 01–08 are initial teaching resources. They have not received independent numerical-analysis review or learner testing. The subject collection is not complete, and publication does not constitute technical certification.
