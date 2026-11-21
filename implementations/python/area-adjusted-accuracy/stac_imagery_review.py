@@ -293,10 +293,20 @@ def main() -> int:
     errors: list[dict[str, str]] = []
 
     with open(args.input, newline="", encoding="utf-8-sig") as stream:
-        points = list(csv.DictReader(stream))
+        reader = csv.DictReader(stream)
+        points = list(reader)
+        input_fields = set(reader.fieldnames or [])
     required = {"sample_id", "longitude", "latitude"}
-    if not points or not required.issubset(points[0]):
+    if not points or not required.issubset(input_fields):
         parser.error(f"Input CSV must contain rows and columns: {', '.join(sorted(required))}")
+    sample_ids = [str(point.get("sample_id", "")).strip() for point in points]
+    if any(not value for value in sample_ids):
+        parser.error("Every input row must have a non-empty sample_id")
+    if len(sample_ids) != len(set(sample_ids)):
+        parser.error("Input sample_id values must be unique")
+    safe_ids = [re.sub(r"[^A-Za-z0-9_.-]", "_", value) for value in sample_ids]
+    if len(safe_ids) != len(set(safe_ids)):
+        parser.error("Input sample_id values collide after chip filename sanitisation")
 
     catalogues = []
     if args.catalogues in ("both", "earth-search"):
