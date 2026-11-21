@@ -128,7 +128,7 @@ Do not collapse these statuses into a single pass/fail score.
 - Raster inspection is conditional on Rasterio; image readability checks are conditional on Pillow.
 - Checkpoint independence, sample representativeness, reference uncertainty and CRS correctness are declarations/evidence for human review, not independently established by these scripts.
 - No universal accuracy threshold is encoded. Acceptance must cite the project's own specification.
-- The delivery ZIP packages evidence records, not source imagery or complete products.
+- The delivery ZIP packages the original acquisition provenance manifest and its verification report alongside project, processing and validation evidence, but not source imagery or complete products. It cross-checks the exact manifest hash, resolved revision, selected dataset path and declared file count.
 - A synthetic acquisition-to-dossier integration test now exercises the evidence handoff and verifies that unexecuted processing and unresolved checkpoint evidence remain open. It is not a live ODM rehearsal.
 - The workflow has not been independently specialist-reviewed or field-tested.
 
