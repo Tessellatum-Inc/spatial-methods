@@ -374,3 +374,19 @@ Tests cover successful assembly, pending acceptance, run-identity mismatch and m
 ### Next integration milestone
 
 Run a controlled rehearsal on a documented, non-sensitive dataset with real outputs and independently surveyed checkpoints. Close remaining structural gaps (point-cloud classification correctness, density/positional QA and mesh inspection where deliverables require them), test the complete handoff from acquired snapshot through dossier, and record every unavailable or unverified capability rather than filling gaps with assumptions.
+
+
+## 14. Integration update — acquisition and mesh structural safeguards
+
+Two structural gaps have been tightened:
+
+- The acquisition verifier rejects symlinks in any component of a declared file path and reports symlink entries found inside the selected dataset directory. A symlinked source tree cannot quietly pass as an ordinary byte-for-byte snapshot.
+- The OBJ inspector validates finite vertex, texture-coordinate and normal records; positive and negative indices for face references; repeated vertex indices; and zero-area polygons using a face-local Newell area-vector tolerance.
+
+These checks improve file-structure evidence only. OBJ manifoldness, self-intersections, texture-file availability, normal correctness, watertightness and geometric accuracy remain unassessed. LAS/LAZ classification correctness, point density and positional accuracy also remain unassessed.
+
+The new unit tests exercise symlinked acquisition paths and directories, malformed OBJ texture references, collinear faces and valid negative OBJ indices. The synthetic pipeline test still does not represent a real photogrammetric processing run.
+
+### Real-data gate
+
+The next evidence milestone remains a controlled acquisition and processing rehearsal on the documented HEIG-VD dataset. The operator run sheet is in `implementations/python/photogrammetry-odm/rehearsal-plan.md`. It defines integrity, metadata, coordinate-reference, control/checkpoint, Docker and delivery stop conditions. Until those steps are completed with actual source files and real outputs, the workflow remains synthetically integrated but not end-to-end rehearsed.
