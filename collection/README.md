@@ -49,3 +49,9 @@ Connect collection methods to their theoretical foundations, algorithms, reprodu
 ## Development status
 
 The first focused collection unit is [photogrammetric image acquisition](photogrammetry/image-acquisition.md). It develops a measurement-centred account of image capture, acquisition geometry and quality assurance, with a worked planning implementation and learner exercise. Its examples are educational and do not constitute flight approval, survey certification or field validation.
+
+## Cross-technology observation design
+
+Before choosing a platform or instrument, use the [spatial observation and sampling design framework](spatial-observation-and-sampling-design.md). It connects the target phenomenon, measurand, sampling frame, spatial/temporal support, sampling design, technology choice, calibration, independent checks, uncertainty and provenance. It is intentionally technology-neutral: specialised methods should add their own physical measurement models and quality requirements rather than being forced into one sensor workflow.
+
+This framework complements the [survey-to-spatial-dataset capstone](../recipes/survey-to-spatial-dataset/README.md), which turns a bounded collection task into a traceable spatial dataset. It is not a substitute for instrument-specific procedures, professional standards or field validation.
