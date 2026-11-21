@@ -63,6 +63,9 @@ jobs:
       - name: Run Fiji review contact-sheet tests
         run: python -m unittest -v test_build_fiji_review_contact_sheets.py
         working-directory: implementations/python/area-adjusted-accuracy
+      - name: Run Fiji multispectral visual-evidence tests
+        run: python -m unittest -v test_fiji_multispectral_visuals.py
+        working-directory: implementations/python/area-adjusted-accuracy
 
   catalogue-smoke-test:
     runs-on: ubuntu-latest
