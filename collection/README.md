@@ -17,7 +17,7 @@ The stable subject identities are defined in the [Geoinformatics master subject 
 | Geodetic and engineering surveying | SM-COL-001 | [Measurement science and survey adjustment](../learning-paths/measurement-science-and-survey-adjustment.md) |
 | GNSS, positioning and navigation systems | SM-COL-002 | [GNSS methods and implementations](../catalog/first-curation-cluster-reference-positioning-measurement.md#3-gnss-scope-boundaries-to-preserve) |
 | Satellite and airborne optical remote sensing | SM-COL-004 | [Optical satellite imagery acquisition](optical-satellite-imagery-acquisition.md) |
-| Earth-observation synthetic aperture radar | SM-COL-005 | [SAR acquisition and observation design](sar-acquisition-and-observation-design.md) |
+| Radar, SAR and interferometric sensing | SM-COL-006 | [SAR acquisition and observation design](sar-acquisition-and-observation-design.md) |
 | Photogrammetry and structure from motion | SM-COL-007 | [Photogrammetric image acquisition](photogrammetry/image-acquisition.md) |
 | UAV platforms, robotics and autonomous acquisition | SM-COL-009 | [Photogrammetric image acquisition](photogrammetry/image-acquisition.md) |
 | Field surveys, sampling and ground truth | SM-COL-011 | [Measurement science and survey adjustment](../learning-paths/measurement-science-and-survey-adjustment.md) |
