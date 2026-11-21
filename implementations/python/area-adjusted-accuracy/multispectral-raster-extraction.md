@@ -11,7 +11,7 @@ This module adds the raster-I/O layer needed to move the Fiji blind-review pilot
 - It reprojects the point coordinate into each asset CRS before calculating the pixel window.
 - Nodata is represented as NaN.
 - STAC `raster:bands` scale and offset are applied when supplied; otherwise source values remain in source units.
-- Per-band metadata records the selected asset key, source href, CRS, map-unit pixel size, scale/offset, nodata and grid signature.
+- Per-band metadata records the selected asset key, source href, CRS, map-unit pixel size, scale/offset, nodata, grid signature, window shape and exact window bounds.
 - Missing bands are explicitly listed.
 - Bands within the same nominal native grid group must share CRS, affine transform and raster dimensions.
 
@@ -24,9 +24,9 @@ Sentinel-2 bands are separated into two native-grid groups:
 | 10 m | B02, B03, B04, B08 |
 | 20 m | B05, B06, B07, B8A, B11, B12, SCL |
 
-The module never resamples 20 m data to 10 m. It also refuses to combine bands whose grids do not match within their native group.
+The module never resamples 20 m data to 10 m. It refuses to combine bands whose grids do not match within their native group.
 
-The current `window_pixels` parameter is a pixel count per band, not a fixed ground-distance footprint. Therefore a 32 × 32 window at 10 m covers a different ground area from a 32 × 32 window at 20 m. Do not compare those window summaries as if they represented the same spatial footprint. A later orchestration layer should use an explicit ground-distance window policy if cross-resolution neighbourhood comparisons are required.
+When both resolutions are requested, the 20 m grid anchors the window bounds. The 10 m window is derived from those exact map bounds and must align to twice the pixel dimensions. For example, a 16 × 16 window at 20 m corresponds to a 32 × 32 window at 10 m, with both covering 320 m × 320 m. Cross-resolution arrays therefore describe the same footprint while retaining their native pixel sizes. If the 10 m grid is not exactly aligned to the 20 m reference bounds, extraction fails rather than silently resampling. If only one grid group is available, the requested pixel count applies to that group.
 
 ## Interpretation safeguards
 
@@ -45,9 +45,11 @@ The GitHub Actions unit-test job runs synthetic GeoTIFF tests for:
 - scale application where STAC metadata is present;
 - nodata conversion;
 - rejection of misaligned bands within one native grid;
+- shared map bounds across 10 m and 20 m windows without resampling;
+- rejection of cross-resolution grids whose pixel alignment is not exact;
 - explicit reporting of missing assets.
 
-These are local synthetic-raster tests. They do not prove that every requested band is available in every live STAC item. The five-point live multispectral retrieval pilot remains a separate verification step.
+These are local synthetic-raster tests. They do not prove that every requested band is available in every live STAC item. The five-point and 25-point live multispectral retrieval runs are separate from synthetic tests. A successful run confirms asset retrieval and extraction, not visual suitability or ground truth.
 
 ## Cost and data handling
 
