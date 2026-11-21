@@ -20,7 +20,7 @@ It is a foundation release—not a complete verification of the original compend
 
 ## Validation checkpoint
 
-The current main head is `8f1306a7b962161b5098937387f12b2e9c1f0841` (21 November 2026). The Photogrammetry ODM package-test workflow passed on this exact head: [run 44921406757](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44921406757). The full Python examples workflow [run 44921406761](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/44921406761) was queued at the time of this update. Prior exact runs on `23f8082c8cf00a5a7cd223cdea51a15105dec8e9` passed both the Python examples and package-test workflows, but are not substitutes for current-head evidence. A release tag must wait for all required workflows to pass on one exact candidate commit.
+No commit is approved as the release candidate yet. The [release-readiness ledger](../release-readiness.md) records the latest main-head identity and workflow evidence. Historical passing runs remain useful engineering evidence, but they do not validate a later commit. Before tagging, select one exact candidate commit, run all required workflows against it, verify the licence and scope gates, and tag only that verified commit.
 
 ## Known limitations and exclusions
 
