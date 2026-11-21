@@ -27,7 +27,7 @@ class FijiMultispectralVisualTests(unittest.TestCase):
             self.assertEqual(by["ndvi_10m"]["native_grid"],"10m")
             self.assertEqual(by["ndre_20m_scl_screened"]["native_grid"],"20m")
             self.assertEqual(by["swir_rededge_20m"]["native_grid"],"20m")
-            self.assertIn("invalid classes masked",by["ndre_20m_scl_screened"]["mask"])
+            self.assertIn("SCL classes 2,4,5,6 retained",by["ndre_20m_scl_screened"]["mask"])
             self.assertTrue(all((Path(d)/r["filename"]).exists() for r in rows))
             self.assertTrue(all(len(r["sha256"])==64 for r in rows))
     def test_no_cross_resolution_composite(self):
