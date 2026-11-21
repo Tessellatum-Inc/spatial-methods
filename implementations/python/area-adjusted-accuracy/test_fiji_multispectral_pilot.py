@@ -20,7 +20,7 @@ class FijiMultispectralPilotTests(unittest.TestCase):
             "B8A": np.full((4, 4), 0.5, dtype=np.float32),
         }
         result = _index_summaries(bands)
-        self.assertIn("NDVI_10m", result)
+        self.assertIn("NDVI_10m_unmasked", result)
         self.assertIn("NDRE_20m_unmasked", result)
         self.assertNotIn("NDRE_20m_scl_valid", result)
         self.assertIn("NDVI_10m_unmasked", result)
