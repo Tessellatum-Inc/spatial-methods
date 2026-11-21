@@ -2,8 +2,8 @@
 """Discover 2021 Sentinel-2 scenes and create point-centred RGB review chips.
 
 Only small raster windows are read. No scene-wide downloads are intended.
-Earth Search HTTPS COGs use GDAL range requests. CDSE S3 assets require
-GDAL /vsis3/ support and CDSE-generated S3 credentials in the environment.
+Earth Search HTTPS COGs use GDAL range requests. The public sentinel-cogs S3
+bucket is accessed anonymously; CDSE S3 assets require generated credentials.
 """
 from __future__ import annotations
 
@@ -173,12 +173,22 @@ def rasterio_source(href: str):
     if href.startswith("s3://"):
         parsed = urlparse(href)
         vsi_path = "/vsis3/" + (parsed.netloc + parsed.path).lstrip("/")
+        # Earth Search's legacy Sentinel-2 collection exposes the public
+        # sentinel-cogs bucket through s3:// URLs. Do not mistake these for
+        # Copernicus Data Space S3 assets or require CDSE credentials.
+        if parsed.netloc == "sentinel-cogs":
+            env = rasterio.Env(
+                AWS_NO_SIGN_REQUEST="YES",
+                AWS_REGION=os.getenv("AWS_DEFAULT_REGION", "us-west-2"),
+            )
+            return vsi_path, env
+
         access = os.getenv("AWS_ACCESS_KEY_ID")
         secret = os.getenv("AWS_SECRET_ACCESS_KEY")
         if not access or not secret:
             raise RuntimeError(
-                "CDSE S3 asset requires AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY "
-                "from your Copernicus Data Space S3 credentials."
+                f"S3 asset bucket '{parsed.netloc}' requires AWS_ACCESS_KEY_ID "
+                "and AWS_SECRET_ACCESS_KEY; configure the credentials for that bucket."
             )
         env = rasterio.Env(
             AWS_S3_ENDPOINT=os.getenv("CDSE_S3_ENDPOINT", "eodata.dataspace.copernicus.eu"),
