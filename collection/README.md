@@ -16,7 +16,7 @@ The stable subject identities are defined in the [Geoinformatics master subject 
 |---|---|---|
 | Geodetic and engineering surveying | SM-COL-001 | [Measurement science and survey adjustment](../learning-paths/measurement-science-and-survey-adjustment.md) |
 | GNSS, positioning and navigation systems | SM-COL-002 | [GNSS methods and implementations](../catalog/first-curation-cluster-reference-positioning-measurement.md#3-gnss-scope-boundaries-to-preserve) |
-| Satellite and airborne optical remote sensing | SM-COL-004 | [Remote sensing foundations](../foundations/README.md#existing-measurement-science-resources) |
+| Satellite and airborne optical remote sensing | SM-COL-004 | [Optical satellite imagery acquisition](optical-satellite-imagery-acquisition.md) |
 | Photogrammetry and structure from motion | SM-COL-007 | [Photogrammetric image acquisition](photogrammetry/image-acquisition.md) |
 | UAV platforms, robotics and autonomous acquisition | SM-COL-009 | [Photogrammetric image acquisition](photogrammetry/image-acquisition.md) |
 | Field surveys, sampling and ground truth | SM-COL-011 | [Measurement science and survey adjustment](../learning-paths/measurement-science-and-survey-adjustment.md) |
@@ -25,7 +25,7 @@ This is an initial navigation page, not a claim that every collection domain has
 
 ## Remote-sensing collection route
 
-Satellite and airborne optical remote sensing (SM-COL-004) is identified in the subject map, but its general collection-method record is still to be developed. The current [remote-sensing cross-pillar pathway](../learning-paths/remote-sensing-cross-pillar-pathway.md) distinguishes optical multispectral acquisition from SAR and records the existing Fiji and Nairobi evidence without treating either as a completed collection chapter.
+Satellite and airborne optical remote sensing (SM-COL-004) now has an initial [optical satellite imagery acquisition method](optical-satellite-imagery-acquisition.md). It establishes observation design, product selection, discovery, quality screening, asset access and provenance, using Sentinel-2 as a bounded reference. Technical review and application testing remain pending. SAR acquisition is a separate method still to be developed. The [remote-sensing cross-pillar pathway](../learning-paths/remote-sensing-cross-pillar-pathway.md) distinguishes the optical and radar branches.
 
 ## How to investigate a collection method
 
