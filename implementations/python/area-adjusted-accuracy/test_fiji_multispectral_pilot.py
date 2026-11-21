@@ -6,7 +6,9 @@ from unittest.mock import patch
 
 import numpy as np
 
-from fiji_multispectral_pilot import _index_summaries, run_pilot
+from fiji_multispectral_pilot import (
+    _index_summaries, deduplicate_acquisitions, run_pilot,
+)
 
 
 class FijiMultispectralPilotTests(unittest.TestCase):
@@ -26,6 +28,35 @@ class FijiMultispectralPilotTests(unittest.TestCase):
         self.assertIn("NDVI_10m_unmasked", result)
         self.assertNotIn("MNDWI", result)
         self.assertNotIn("NDBI", result)
+
+    def test_deduplicates_same_platform_acquisition_across_catalogues(self):
+        items = [
+            {
+                "id": "legacy",
+                "collection": "sentinel-2-l2a",
+                "properties": {
+                    "platform": "sentinel-2b",
+                    "datetime": "2021-07-07T22:20:45.769000Z",
+                },
+            },
+            {
+                "id": "c1",
+                "collection": "sentinel-2-c1-l2a",
+                "properties": {
+                    "platform": "sentinel-2b",
+                    "datetime": "2021-07-07T22:20:45.770000Z",
+                },
+            },
+            {
+                "id": "next-pass",
+                "properties": {
+                    "platform": "sentinel-2b",
+                    "datetime": "2021-07-08T22:20:45Z",
+                },
+            },
+        ]
+        unique = deduplicate_acquisitions(items)
+        self.assertEqual([item["id"] for item in unique], ["legacy", "next-pass"])
 
     def test_ndre_exposes_unmasked_and_native_scl_screened_summaries(self):
         bands = {
