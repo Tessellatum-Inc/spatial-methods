@@ -5,7 +5,7 @@ import numpy as np
 from multispectral_metrics import (
     apply_valid_mask, index_stack, mndwi, ndvi, ndbi, ndre,
     ndwi_mcfeeters, safe_normalized_difference, scl_valid_mask,
-    summarize_window,
+    summarize_window, scl_quality_summary,
 )
 
 
@@ -29,6 +29,15 @@ class SpectralIndexTests(unittest.TestCase):
         expected = np.array([False, False, True, False, True, True, True,
                              False, False, False, False, False])
         np.testing.assert_array_equal(scl_valid_mask(classes), expected)
+
+    def test_scl_quality_reports_native_class_fractions(self):
+        result = scl_quality_summary([[4, 4], [8, 3]])
+        self.assertEqual(result["pixel_count"], 4)
+        self.assertEqual(result["analysis_valid_pixel_count"], 2)
+        self.assertEqual(result["analysis_valid_fraction"], 0.5)
+        self.assertEqual(result["cloud_shadow_pixel_count"], 2)
+        self.assertEqual(result["class_counts"]["4"], 2)
+        self.assertEqual(result["mask_resolution"], "native SCL 20m")
 
     def test_mask_applied_to_index(self):
         result = apply_valid_mask(ndvi([0.8, 0.8], [0.2, 0.2]), [True, False])
