@@ -166,5 +166,21 @@ class OutputInspectionTests(unittest.TestCase):
         self.assertEqual(cloud["status"], "invalid")
 
 
+
+    def test_mesh_only_deliverable_does_not_require_a_geotiff(self):
+        (self.project / "model.obj").write_text(
+            "v 0 0 0\nv 1 0 0\nv 0 1 0\nf 1 2 3\n", encoding="utf-8"
+        )
+        report = inspect_outputs(self.project, ["model.obj"])
+        self.assertEqual(report["status"], "inspected")
+        self.assertFalse(any("No GeoTIFF outputs" in item for item in report["warnings"]))
+
+    def test_declared_raster_deliverable_without_geotiff_is_flagged(self):
+        report = inspect_outputs(self.project, ["orthophoto.tif"])
+        self.assertEqual(report["status"], "blocked")
+        self.assertTrue(any("Declared output is missing" in item for item in report["blockers"]))
+        self.assertTrue(any("No GeoTIFF outputs" in item for item in report["warnings"]))
+
+
 if __name__ == "__main__":
     unittest.main()
