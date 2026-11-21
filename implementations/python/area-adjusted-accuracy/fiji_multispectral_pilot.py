@@ -25,6 +25,7 @@ from multispectral_metrics import (
     summarize_window,
 )
 from multispectral_raster import BAND_ALIASES, BAND_GRID, read_multispectral_windows
+from fiji_multispectral_visuals import build_visual_evidence, write_visual_manifest
 from stac_imagery_review import (
     EARTH_SEARCH,
     EARTH_COLLECTIONS,
@@ -133,6 +134,7 @@ def run_pilot(input_csv: Path, output_dir: Path, *, point_limit: int = 5,
     rows: list[dict[str, Any]] = []
     errors: list[dict[str, str]] = []
     candidate_items_found = 0
+    visual_records: list[dict[str, Any]] = []
     unique_acquisitions_found = 0
     duplicate_acquisitions_skipped = 0
     for point in points:
@@ -189,6 +191,10 @@ def run_pilot(input_csv: Path, output_dir: Path, *, point_limit: int = 5,
                     for band, array in result["bands"].items()
                 }
                 index_summaries = _index_summaries(result["bands"])
+                visual_records.extend(build_visual_evidence(
+                    sample_id, str(result["item_id"]), str(result["datetime"]),
+                    result["bands"], result["band_metadata"], output_dir / "visuals",
+                ))
                 if "SCL" in result["bands"]:
                     index_summaries["SCL_QA_20m"] = scl_quality_summary(result["bands"]["SCL"])
                 # Hash a canonical summary/provenance payload; no raster pixels
@@ -250,6 +256,8 @@ def run_pilot(input_csv: Path, output_dir: Path, *, point_limit: int = 5,
         for row in rows:
             writer.writerow({field: row.get(field, "") for field in fields_out})
 
+    write_visual_manifest(visual_records, output_dir / "fiji-multispectral-visual-manifest.json")
+
     errors_path = output_dir / "fiji-multispectral-search-errors.csv"
     if errors:
         with errors_path.open("w", newline="", encoding="utf-8") as stream:
@@ -270,6 +278,7 @@ def run_pilot(input_csv: Path, output_dir: Path, *, point_limit: int = 5,
         "unique_acquisitions_found": unique_acquisitions_found,
         "duplicate_acquisitions_skipped": duplicate_acquisitions_skipped,
         "candidate_rows": len(rows),
+        "visual_panels_created": len(visual_records),
         "points_with_core_10m_bands": len(points_with_core_read),
         "statuses": dict(statuses),
         "search_errors": len(errors),
