@@ -56,6 +56,7 @@ The CLI queries each point independently. This avoids a single Fiji-wide boundin
 
 - `stac-imagery-provenance.csv`: one row per candidate item/chip attempt.
 - `stac-search-errors.csv`: collection/API errors by point, including partial failures.
+- Provenance uses a fixed column schema, so metadata-only, failed-chip and successful-chip rows can safely coexist in one run.
 - PNG chips: temporary, only retained with `--keep-chips`.
 - No full scenes are intentionally downloaded or stored.
 - Provenance records item IDs, acquisition time, cloud metadata, selected assets, source grid, output dimensions, output bytes and SHA-256.
@@ -65,6 +66,9 @@ The CLI queries each point independently. This avoids a single Fiji-wide boundin
 ## Interpretation cautions
 
 - Search results are candidates, not proof of local image quality. Scene cloud percentage is not point-level cloud screening.
+- Duplicate or blank `sample_id` values, including filename collisions after sanitisation, are rejected before retrieval.
+- A point that falls outside the selected raster asset bounds is marked as a failed chip rather than producing a misleading all-nodata image.
+- A catalogue failure is recorded as `search_failed`, not `no_items`; only a successful empty search is labelled `no_items`.
 - The 25 points are a purposive disagreement sample, not a probability sample.
 - A 256-pixel 10 m chip covers roughly 2.56 km per side; it is an overview for context, not a substitute for a closer inspection of individual features.
 - Use 2021 imagery for the primary review; any other date must be explicitly documented as temporal context.
