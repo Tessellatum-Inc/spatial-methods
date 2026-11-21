@@ -24,8 +24,8 @@ The proposed split remains `proposed_not_locked`. The annotated sheets are a rev
 
 1. Complete a point-by-point, role-blind visual review of the annotated images and record explicit accept/reject/uncertain decisions with reasons.
 2. Independently remeasure candidate checkpoint image coordinates without consulting the source Metashape picks. Preserve reviewer identity, method and measurement provenance.
-3. Reassess control/checkpoint geometry and image coverage; only then lock the partition and regenerate the control-only ODM GCP file.
-4. Explicitly resolve the horizontal LV95 (EPSG:2056) and vertical LN02 handling before interpreting ODM outputs.
-5. Run a documented image-only baseline and a control-constrained ODM reconstruction; evaluate withheld checkpoints using independent observations. Do not use the supplied OPK solution as independent truth.
+3. After role-blind visual decisions are locked, independently remeasure checkpoint image coordinates using the separate [measurement protocol](independent-checkpoint-measurement-protocol.md) and [blank CSV template](independent-checkpoint-measurements.template.csv). Never copy the Metashape source picks into this record.\n4. Reassess control/checkpoint geometry and image coverage; only then lock the partition and regenerate the control-only ODM GCP file.
+5. Explicitly resolve the horizontal LV95 (EPSG:2056) and vertical LN02 handling before interpreting ODM outputs.
+6. Run a documented image-only baseline and a control-constrained ODM reconstruction; evaluate withheld checkpoints using independent observations. Do not use the supplied OPK solution as independent truth.
 
 No ODM reconstruction or accuracy claim is authorised by the current evidence.
