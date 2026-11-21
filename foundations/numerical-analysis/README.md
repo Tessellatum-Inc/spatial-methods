@@ -57,6 +57,10 @@ These are application anchors for numerical reasoning, not claims that each link
 
 Each module should define its numerical model and notation, distinguish mathematical and computational error, include reproducible examples, explain assumptions and failure modes, and connect the theory to real spatial computations. Numerical examples should state precision, units, tolerances and relevant software or library versions. Tests should include boundary cases and should avoid treating agreement between two implementations as independent proof of correctness.
 
+## Sequence audit
+
+The [numerical-analysis sequence audit](sequence-audit.md) records the module dependencies, shared error vocabulary, repository checks, technical-review priorities and remaining scope gaps. It is a desk audit, not independent technical certification.
+
 ## Review status
 
 Modules 01–08 are initial teaching resources. They have not received independent numerical-analysis review or learner testing. The subject collection is not complete, and publication does not constitute technical certification.
