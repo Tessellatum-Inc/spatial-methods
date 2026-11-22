@@ -42,6 +42,8 @@ def evidence():
             "calibration_contains_vv_and_vh": True,
             "noise_annotation_contains_vv_and_vh": True,
             "manifest_is_well_formed_xml": True,
+            "safe_root_name_is_sentinel1_iw_grd": True,
+            "manifest_identifies_iw_mode": True,
         },
     }
     return stack, download, audit
@@ -76,6 +78,22 @@ class ProcessingReadinessTests(unittest.TestCase):
         record = BUILDER.build_readiness_record(stack, download, audit)
         self.assertIn("download_archive_validation_not_passed", record["structural_preflight_blockers"])
         self.assertIn("safe_structural_dual_polarisation_gate_not_passed", record["structural_preflight_blockers"])
+
+    def test_blocks_missing_iw_grd_identity_check(self):
+        stack, download, audit = evidence()
+        del audit["checks"]["safe_root_name_is_sentinel1_iw_grd"]
+        record = BUILDER.build_readiness_record(stack, download, audit)
+        self.assertEqual(record["structural_preflight_status"], "blocked")
+        self.assertIn("safe_audit_contains_missing_or_failed_checks", record["structural_preflight_blockers"])
+
+    def test_blocks_failed_iw_grd_identity_checks(self):
+        for check_name in ("safe_root_name_is_sentinel1_iw_grd", "manifest_identifies_iw_mode"):
+            with self.subTest(check_name=check_name):
+                stack, download, audit = evidence()
+                audit["checks"][check_name] = False
+                record = BUILDER.build_readiness_record(stack, download, audit)
+                self.assertEqual(record["structural_preflight_status"], "blocked")
+                self.assertIn("safe_audit_contains_missing_or_failed_checks", record["structural_preflight_blockers"])
 
     def test_rejects_unknown_product_id(self):
         stack, download, audit = evidence()
