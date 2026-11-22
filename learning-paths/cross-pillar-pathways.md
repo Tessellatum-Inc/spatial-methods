@@ -116,6 +116,25 @@ The GNSS ambiguity and RAIM packages are computational teaching components with 
 
 **Useful outcome:** Understand why a GNSS coordinate depends on the signal model, reference frame, processing choices and field evidence—and how to avoid treating a receiver status indicator as a complete accuracy assessment.
 
+## Pathway 7 — From terrestrial laser scans to a validated 3D point cloud
+
+**Application context:** Capture visible 3D surfaces from static terrestrial scan stations, align the scans, georeference the result and assess whether the cloud is complete and accurate enough for its intended use.
+
+**Best entry point:** [Terrestrial laser scanning and point-cloud acquisition](../collection/terrestrial-laser-scanning-and-point-cloud-acquisition.md).
+
+| Pillar | Canonical route | Why it belongs |
+|---|---|---|
+| Theoretical Foundations | [Measurement models and measurand definition](../foundations/measurement-science/measurement-models-and-measurand-definition.md); [measurement principles and field verification](../foundations/measurement-science/measurement-principles-and-field-verification.md); [covariance and GLS](../foundations/measurement-science/covariance-correlated-observations-and-gls.md) | Frames range/angle observations, reference control, uncertainty and the distinction between repeatability and end-to-end quality. |
+| Spatial Data Collection | [Terrestrial laser scanning and point-cloud acquisition](../collection/terrestrial-laser-scanning-and-point-cloud-acquisition.md); [terrestrial surveying](../collection/terrestrial-surveying-total-station-and-levelling.md) | Connects scanner setup, coverage, overlap, targets, georeferencing and independent survey control. |
+| Spatial Algorithms | [Point-cloud registration and geometric comparison](../algorithms/geometry/point-cloud-registration.md); [point-cloud registration implementation](../implementations/python/point-cloud-registration/README.md); [voxelization](../implementations/python/point-cloud-voxelization/README.md); [RANSAC plane fitting](../implementations/python/ransac-plane-fitting/README.md) | Provides local rigid registration, geometric comparison and bounded point-cloud processing components. |
+| Spatial Recipes | [Survey-to-spatial-dataset workflow](../recipes/survey-to-spatial-dataset/README.md) | Supplies the project gates for requirements, reference, acquisition, independent checks, provenance and delivery. |
+
+**Practical evidence and current boundary**
+
+The registration and point-cloud packages are computational baselines, not a field-validated TLS processing chain. The collection method is an initial synthesis. No scanner field verification, site scan, georeferencing campaign or independent checkpoint assessment is claimed. Mobile and airborne LiDAR require separate acquisition and trajectory procedures.
+
+**Useful outcome:** Understand why a dense point cloud can still be incomplete or misregistered, why registration residuals are not independent accuracy evidence, and how control and check points support a defensible 3D deliverable.
+
 ## What is not yet represented
 
 This index is deliberately selective. It does not imply that every subject has a complete cross-pillar route. In particular:
