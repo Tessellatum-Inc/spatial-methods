@@ -199,7 +199,7 @@ def interpolate_temporal_sound_speed_profiles(
 
     def multiply(left, right):
         return [
-            [sum(left[i][k] * right[k][j] for k in range(len(right[0])))
+            [sum(left[i][k] * right[k][j] for k in range(len(right)))
              for j in range(len(right[0]))]
             for i in range(len(left))
         ]
