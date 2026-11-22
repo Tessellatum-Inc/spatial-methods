@@ -4,58 +4,91 @@
 
 An echo-sounder measures acoustic travel time and beam direction. Converting these observations to a seabed point requires a sound-speed model because acoustic rays refract when sound speed changes with depth.
 
-This record defines a bounded two-dimensional ray tracer for a **piecewise-constant** sound-speed profile. It propagates a ray from a transducer into successively deeper horizontal layers. It is a computational teaching baseline for understanding refraction, not a production MBES beamformer or complete hydrographic processing suite.
+This record defines a bounded two-dimensional ray tracer for a **piecewise-constant** sound-speed profile. Depth is positive down from the transducer; horizontal offset is positive in the launch-angle direction; launch angle is measured from downward vertical; supplied travel time is two-way and the forward ray is traced for half that time under a stationary reciprocal-path assumption.
 
-Conventions: depth is positive down from the transducer; horizontal offset is positive in the launch-angle direction; launch angle is measured from downward vertical; input travel time is two-way and the forward ray is traced for half that time, assuming a stationary reciprocal path. Each layer is homogeneous with one constant sound speed. Layer-bottom depths are strictly increasing and the final boundary must extend beyond the ray endpoint.
-
-## Snell invariant
+## Snell invariant and layer propagation
 
 For a horizontally stratified medium, Snell's law gives the invariant horizontal slowness:
 
 \[
-p=\frac{\sin\theta_i}{c_i}
+p=\frac{\sin\theta_i}{c_i}.
 \]
 
-where \(\theta_i\) is the ray angle from vertical and \(c_i\) is sound speed in layer \(i\). Given launch angle \(\theta_0\) and first-layer speed \(c_0\):
+Given launch angle \(\theta_0\) and first-layer speed \(c_0\):
 
 \[
 p=\frac{\sin\theta_0}{c_0},
 \qquad
-\theta_i=\arcsin(p c_i)
+\theta_i=\arcsin(p c_i).
 \]
 
-A propagating ray requires \(|p c_i|<1\). If the value reaches or exceeds one, the implementation reports a critical/turning condition rather than silently clipping the angle.
-
-Within a constant-speed layer, a vertical increment \(\Delta z_i\) produces:
+A propagating ray requires \(|p c_i|<1\). Critical/turning conditions are reported rather than clipped. Within a constant-speed layer:
 
 \[
 \Delta x_i=\Delta z_i\tan\theta_i,
 \qquad
-\Delta t_i=\frac{\Delta z_i}{c_i\cos\theta_i}
+\Delta t_i=\frac{\Delta z_i}{c_i\cos\theta_i}.
 \]
 
 If remaining one-way travel time \(t_r\) ends inside the current layer:
 
 \[
-\Delta z_i=t_r c_i\cos\theta_i
+\Delta z_i=t_r c_i\cos\theta_i.
 \]
 
-The horizontal offset and depth are accumulated layer by layer. At a speed discontinuity, ray direction changes according to Snell's law while horizontal slowness is conserved.
+## Endpoint sensitivity and uncertainty
 
-## Inputs and outputs
+The endpoint is:
 
-The reference function accepts strictly increasing layer-bottom depths in metres from the transducer, one positive sound speed in metres per second per layer, launch angle in degrees from vertical, and positive two-way travel time in seconds. It returns depth, signed horizontal offset, exit angle, one-way travel time and number of traversed layers.
+\[
+\mathbf y=
+\begin{bmatrix}
+x\\z
+\end{bmatrix},
+\]
 
-## Numerical and physical limitations
+and the input vector is:
 
-- The profile is piecewise constant. A continuous profile must be discretised; results depend on layer thickness and representation.
-- The model is two-dimensional and assumes horizontally stratified water, no horizontal sound-speed gradients, no current-induced refraction and a stationary reciprocal path.
-- It does not estimate sound speed, surface sound speed, beamforming direction, bottom detection, acoustic footprint, absorption, multipath, vessel motion, GNSS/INS trajectory, transducer offsets or vertical datum.
-- It does not model uncertainty or covariance.
-- It traces a forward ray for a supplied launch angle and measured travel time. It does not solve the inverse problem of estimating launch angle from a detected bottom position.
+\[
+\mathbf u=
+\begin{bmatrix}
+c_1&\cdots&c_m&\theta_0&t_{2w}
+\end{bmatrix}^{T}.
+\]
+
+The endpoint Jacobian is:
+
+\[
+J=\frac{\partial\mathbf y}{\partial\mathbf u}.
+\]
+
+The implementation estimates each column with a central finite difference:
+
+\[
+J_{:,k}\approx
+\frac{\mathbf y(\mathbf u+h_k\mathbf e_k)
+-\mathbf y(\mathbf u-h_k\mathbf e_k)}{2h_k}.
+\]
+
+For input covariance \(C_u\), first-order endpoint covariance is:
+
+\[
+C_y\approx J C_u J^T.
+\]
+
+The covariance may contain off-diagonal terms between layer sound speeds and between sound speed, launch angle and travel time. The implementation validates its shape, finiteness, symmetry and positive semidefiniteness. It does not assume independent inputs.
+
+Finite differences are local. The implementation requires positive and negative perturbations to remain on the same traversed-layer branch as the nominal ray. A branch change or invalid perturbed ray causes an explicit error; a derivative at a layer-transition kink is not fabricated. The result is a first-order covariance approximation, not a complete nonlinear uncertainty distribution.
 
 ## Reference implementation and validation
 
-See [hydrographic ray tracing](../../implementations/python/hydrographic-ray-tracing/README.md). Tests cover vertical and oblique analytic cases, signed offsets, Snell-invariant behaviour across a speed interface, exact layer-boundary termination, invalid inputs, insufficient profile depth and critical-angle conditions.
+See [hydrographic ray tracing](../../implementations/python/hydrographic-ray-tracing/README.md). Tests cover analytic homogeneous cases, Snell-invariant behaviour, branch-stable finite-difference sensitivities, travel-time sensitivity, correlated sound-speed covariance, zero covariance and invalid covariance inputs.
 
-A successful synthetic test demonstrates the implementation under its stated layered-medium assumptions only. It does not establish sonar calibration, hydrographic survey accuracy or field performance.
+## Limitations
+
+- Piecewise-constant layers approximate continuous sound-speed profiles; discretisation affects results.
+- Assumes horizontal stratification, a stationary reciprocal path and one direct forward ray.
+- No horizontal gradients, current-induced refraction, turning rays, multipath, beamforming, bottom detection, acoustic footprint, absorption or vessel motion.
+- Does not include navigation trajectory, GNSS/INS, transducer offsets, water level, vertical datum or other TPU terms.
+- The propagated covariance covers only the supplied layer sound speeds, launch angle and two-way travel time.
+- Not a production MBES beamformer, complete hydrographic processing system or field-validation result.
