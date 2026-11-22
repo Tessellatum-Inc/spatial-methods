@@ -196,3 +196,31 @@ This distinction prevents drift from being counted twice. The full joint
 input covariance still permits cross-correlations between clock states,
 navigation/sensor states, acoustic travel-time inputs and the shared sound-
 speed profile.
+
+
+### Shared-clock effect on acoustic interval measurement
+
+The process-driven trajectory propagator also accepts one measured two-way
+travel time per ping. Under the local constant-rate approximation, a clock
+with reading \(C(t)=t+\delta t(t)\) reports
+\[
+T_m=C(t_r)-C(t_t)
+\approx T+\dot{\delta t}\,T,
+\]
+because the constant offset cancels in an elapsed-time difference. To
+first order, the corrected interval is
+\[
+T\approx T_m(1-\dot{\delta t}),\qquad
+\frac{\partial T}{\partial\dot{\delta t}}\approx -T_m.
+\]
+The propagated sounding Jacobian therefore has two distinct sensitivities
+to each ping's same clock state: epoch offset acts through the navigation
+trajectory, while fractional drift acts through the ray endpoint's
+two-way-travel-time derivative. Their covariance and cross-correlation are
+handled once in the shared clock-state covariance block.
+
+This is a short-interval, locally constant fractional-rate approximation.
+It does not yet integrate clock process noise over the transmit-to-receive
+interval or model separate transmit and receive clock observations. For
+those cases, use a clock-state model evaluated at both event epochs and
+derive the interval as the difference of their clock readings.

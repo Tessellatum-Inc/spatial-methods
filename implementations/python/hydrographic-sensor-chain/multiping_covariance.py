@@ -434,13 +434,18 @@ def propagate_time_aligned_ray_traced_multiping_covariance_from_trajectory(
 
 def assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory(
     time_aligned_sensor_chain_results, ray_endpoint_jacobians,
-    beam_azimuths_degrees, ping_epochs_s, clock_state_covariance_result):
+    beam_azimuths_degrees, ping_epochs_s, measured_two_way_travel_times_s,
+    clock_state_covariance_result):
     """Replace per-ping epoch offsets with the propagated [offset, drift] states.
 
     The clock-state covariance result must come from
-    propagate_clock_state_covariance at the same ping epochs. The drift state
-    influences later offsets through the process covariance; the direct
-    sounding derivative is with respect to offset only.
+    propagate_clock_state_covariance at the same ping epochs. Clock offset
+    shifts the navigation evaluation epoch. Clock drift also changes the
+    measured acoustic interval: for a short ping interval with locally
+    constant fractional drift, true_time ~= measured_time * (1 - drift).
+    Thus the drift column receives -measured_time times the ray travel-time
+    sensitivity. This is a first-order local-rate approximation; it does not
+    model within-ping drift evolution or transmit/receive clock-state noise.
     """
     from_clock = clock_state_covariance_result
     if not isinstance(from_clock, dict) or "joint_state_covariance" not in from_clock:
@@ -461,30 +466,45 @@ def assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_tr
     if any(abs(a - b) > 1e-9 * max(1.0, abs(a), abs(b))
            for a, b in zip(supplied_epochs, process_epochs)):
         raise ValueError("clock-state epochs must equal the supplied ping epochs")
-    clock_cov = _matrix(from_clock["joint_state_covariance"],
-                        "clock joint state covariance",
-                        rows=2 * count, columns=2 * count)
+    _matrix(from_clock["joint_state_covariance"],
+            "clock joint state covariance", rows=2 * count, columns=2 * count)
+    if not isinstance(measured_two_way_travel_times_s, (list, tuple)) or len(measured_two_way_travel_times_s) != count:
+        raise ValueError("one measured two-way travel time is required per ping")
+    try:
+        travel_times = [float(value) for value in measured_two_way_travel_times_s]
+    except (TypeError, ValueError):
+        raise ValueError("measured two-way travel times must be finite and non-negative") from None
+    if not all(math.isfinite(value) and value >= 0.0 for value in travel_times):
+        raise ValueError("measured two-way travel times must be finite and non-negative")
     base = assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
         time_aligned_sensor_chain_results, ray_endpoint_jacobians,
         beam_azimuths_degrees)
+    local_width = 17
     prefix = len(base[0]) - count
+    if prefix != count * local_width + (len(base[0]) - count * local_width - count):
+        raise ValueError("unexpected trajectory-driven multi-ping Jacobian layout")
+    profile_width = prefix - count * local_width
     output = []
     for row_index, row in enumerate(base):
         ping = row_index // 3
         axis = row_index % 3
         expanded = row[:prefix] + [0.0] * (2 * count)
-        for clock_ping in range(count):
-            expanded[prefix + 2 * clock_ping] = (
-                row[prefix + clock_ping] if clock_ping == ping else 0.0
-            )
+        # The 17 local variables are 15 sensor states, launch angle and
+        # measured two-way travel time. Fractional clock drift perturbs the
+        # true interval by -T_measured * drift to first order.
+        travel_time_column = ping * local_width + 16
+        expanded[prefix + 2 * ping] = row[prefix + ping]
+        expanded[prefix + 2 * ping + 1] = (
+            -travel_times[ping] * row[travel_time_column]
+        )
         output.append(expanded)
     return output
 
 
 def propagate_time_aligned_ray_traced_stochastic_clock_multiping_covariance_from_trajectory(
     time_aligned_sensor_chain_results, ray_endpoint_jacobians,
-    beam_azimuths_degrees, ping_epochs_s, clock_state_covariance_result,
-    joint_input_covariance):
+    beam_azimuths_degrees, ping_epochs_s, measured_two_way_travel_times_s,
+    clock_state_covariance_result, joint_input_covariance):
     """Propagate survey-line covariance using process-derived clock states.
 
     Input order is [ping-local sensor/angle/travel-time blocks, shared sound-
@@ -495,7 +515,8 @@ def propagate_time_aligned_ray_traced_stochastic_clock_multiping_covariance_from
     """
     jacobian = assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory(
         time_aligned_sensor_chain_results, ray_endpoint_jacobians,
-        beam_azimuths_degrees, ping_epochs_s, clock_state_covariance_result)
+        beam_azimuths_degrees, ping_epochs_s, measured_two_way_travel_times_s,
+        clock_state_covariance_result)
     size = len(jacobian[0])
     covariance = _matrix(joint_input_covariance, "joint_input_covariance",
                          rows=size, columns=size)

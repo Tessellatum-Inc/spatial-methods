@@ -269,19 +269,19 @@ def test_trajectory_ray_covariance_uses_process_derived_offset_drift_states():
         [100.0, 105.0], [[0.25, 0.01], [0.01, 0.04]], 0.5
     )
     jacobian = assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory(
-        results, rays, [0.0, 0.0], [100.0, 105.0], clock
+        results, rays, [0.0, 0.0], [100.0, 105.0], [0.04, 0.06], clock
     )
     # Two pings: 17 local variables each, one profile variable, four clock states.
     assert len(jacobian[0]) == 39
-    assert jacobian[0][-4:] == pytest.approx([2.0, 0.0, 0.0, 0.0])
-    assert jacobian[3][-4:] == pytest.approx([0.0, 0.0, 3.0, 0.0])
+    assert jacobian[0][-4:] == pytest.approx([2.0, -0.04 * 0.0, 0.0, 0.0])
+    assert jacobian[3][-4:] == pytest.approx([0.0, 0.0, 3.0, -0.06 * 0.0])
 
     covariance = [[0.0] * 39 for _ in range(39)]
     for i in range(4):
         for j in range(4):
             covariance[35 + i][35 + j] = clock["joint_state_covariance"][i][j]
     result = propagate_time_aligned_ray_traced_stochastic_clock_multiping_covariance_from_trajectory(
-        results, rays, [0.0, 0.0], [100.0, 105.0], clock, covariance
+        results, rays, [0.0, 0.0], [100.0, 105.0], [0.04, 0.06], clock, covariance
     )
     output = result["covariance"]
     expected = clock["offset_covariance"]
@@ -301,7 +301,7 @@ def test_trajectory_stochastic_clock_rejects_covariance_not_from_clock_process()
     with pytest.raises(ValueError, match="must match the propagated clock process"):
         propagate_time_aligned_ray_traced_stochastic_clock_multiping_covariance_from_trajectory(
             [result], [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
-            [0.0], [0.0], clock, covariance
+            [0.0], [0.0], [0.04], clock, covariance
         )
 
 
@@ -316,4 +316,52 @@ def test_trajectory_stochastic_clock_rejects_mismatched_ping_epochs():
         assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory(
             [result], [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
             [0.0], [11.0], clock
+        )
+
+
+def test_clock_drift_changes_acoustic_travel_time_sensitivity_separately_from_epoch_offset():
+    from clock_state_covariance import propagate_clock_state_covariance
+    from multiping_covariance import assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory
+
+    results = []
+    for sensitivity in (2.0, 3.0):
+        matrix = [[0.0] * 19 for _ in range(3)]
+        # Identity acoustic-vector map for a vertical beam and unit
+        # endpoint travel-time sensitivity in the depth component.
+        matrix[2][17] = 1.0
+        matrix[0][18] = sensitivity
+        results.append({"jacobian": matrix, "time_offset_sensitivity": [sensitivity, 0.0, 0.0]})
+    rays = [
+        [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+        [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+    ]
+    # Ray endpoint depth derivative with respect to measured two-way time.
+    rays = [
+        [[0.0, 0.0, 0.0], [0.0, 0.0, 1.0]],
+        [[0.0, 0.0, 0.0], [0.0, 0.0, 2.0]],
+    ]
+    clock = propagate_clock_state_covariance(
+        [100.0, 105.0], [[0.25, 0.01], [0.01, 0.04]], 0.5
+    )
+    jacobian = assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory(
+        results, rays, [0.0, 0.0], [100.0, 105.0], [0.04, 0.06], clock
+    )
+    # The navigation epoch offset acts in x; acoustic clock drift acts in z.
+    assert jacobian[0][-4:] == pytest.approx([2.0, 0.0, 0.0, 0.0])
+    assert jacobian[2][-4:] == pytest.approx([0.0, -0.04, 0.0, 0.0])
+    assert jacobian[3][-4:] == pytest.approx([0.0, 0.0, 3.0, 0.0])
+    assert jacobian[5][-4:] == pytest.approx([0.0, 0.0, 0.0, -0.12])
+
+
+def test_clock_drift_requires_one_nonnegative_two_way_time_per_ping():
+    from clock_state_covariance import propagate_clock_state_covariance
+    from multiping_covariance import assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory
+
+    result = {"jacobian": [[0.0] * 19 for _ in range(3)],
+              "time_offset_sensitivity": [1.0, 0.0, 0.0]}
+    clock = propagate_clock_state_covariance([0.0], [[1.0, 0.0], [0.0, 1.0]], 0.0)
+    with pytest.raises(ValueError, match="finite and non-negative"):
+        assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory(
+            [result], [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
+            [0.0], [0.0], [-0.01], clock
         )
