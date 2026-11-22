@@ -73,6 +73,8 @@ def run_pipeline(source_path: str | Path, output_path: str | Path) -> dict:
     """Validate a JSONL source, interpolate accepted points, and record lineage."""
     source_path = Path(source_path)
     output_path = Path(output_path)
+    if source_path.resolve() == output_path.resolve():
+        raise ValueError("source and output paths must be different; preserve the raw source")
     ingest_started = _now()
     ingestion = load_jsonl_records(source_path)
     if not ingestion.is_valid:
@@ -94,8 +96,17 @@ def run_pipeline(source_path: str | Path, output_path: str | Path) -> dict:
     if len(records) != len(ingestion.records):
         raise ValueError("this demonstration requires every input record to have QC status 'accepted'")
 
+    reference_record = records[0]
     samples = []
     for record in records:
+        if (
+            record.measurand_id != reference_record.measurand_id
+            or record.unit != reference_record.unit
+            or record.observed_at != reference_record.observed_at
+        ):
+            raise ValueError(
+                "all records must share one measurand, unit and observation timestamp"
+            )
         if record.method_id != METHOD_ID:
             raise ValueError(f"{record.observation_id}: unexpected method_id {record.method_id!r}")
         support = record.support
@@ -103,8 +114,10 @@ def run_pipeline(source_path: str | Path, output_path: str | Path) -> dict:
         if support.get("crs") != CRS or not isinstance(geometry, Mapping) or geometry.get("type") != "Point":
             raise ValueError(f"{record.observation_id}: expected a Point geometry in {CRS}")
         coordinates = geometry["coordinates"]
-        if len(coordinates) < 2:
-            raise ValueError(f"{record.observation_id}: point needs x and y coordinates")
+        if len(coordinates) != 2:
+            raise ValueError(
+                f"{record.observation_id}: this example requires exactly two coordinate ordinates"
+            )
         samples.append((float(coordinates[0]), float(coordinates[1]), record.value))
 
     source_ref = f"sha256:{ingestion.source_sha256}"
