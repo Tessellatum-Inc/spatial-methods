@@ -484,12 +484,14 @@ def test_temporal_profile_covariance_propagates_cross_epoch_sounding_correlation
         propagate_time_aligned_ray_traced_temporal_profile_multiping_covariance_from_trajectory,
     )
 
-    trajectories = [
-        {"jacobian": [[0.0] * 19 for _ in range(3)],
-         "time_offset_sensitivity": [0.0, 0.0, 0.0]},
-        {"jacobian": [[0.0] * 19 for _ in range(3)],
-         "time_offset_sensitivity": [0.0, 0.0, 0.0]},
-    ]
+    trajectories = []
+    for _ in range(2):
+        matrix = [[0.0] * 19 for _ in range(3)]
+        matrix[0][15] = 1.0
+        trajectories.append({
+            "jacobian": matrix,
+            "time_offset_sensitivity": [0.0, 0.0, 0.0],
+        })
     rays = [
         [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
         [[4.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
