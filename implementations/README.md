@@ -318,3 +318,10 @@ These are connected teaching materials, not interchangeable copies of the same e
 ### Design-based map accuracy
 
 - [Area-adjusted map accuracy](python/area-adjusted-accuracy/README.md): mapped-class-stratified simple-random-sample estimators for area-proportion error matrices, overall/user's/producer's accuracy, reference-class area and approximate uncertainty. Not a general unequal-probability or spatial sampling engine.
+
+
+### Hydrographic surveying and sounding geometry
+
+- [Layered-water-column acoustic ray tracing](python/hydrographic-ray-tracing/README.md): a bounded two-dimensional Snell-law forward model through piecewise-constant sound-speed layers.
+- [Hydrographic sounding geometry and local Jacobian](python/hydrographic-sounding-geometry/README.md): navigation-frame sounding-point transform and an explicitly conventioned small-attitude-error Jacobian; not a full vessel or sonar model.
+- [Covariance propagation](python/uncertainty-propagation/README.md): generic first-order joint-covariance propagation and independent-uniform Monte Carlo/Sobol baselines.

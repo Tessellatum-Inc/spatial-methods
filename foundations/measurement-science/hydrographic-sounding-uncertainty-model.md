@@ -91,7 +91,7 @@ u_c^2(h_D)\approx
 
 This expression requires the full joint covariance, not a list of marginal standard uncertainties alone. A correlation term can either increase or reduce an output variance depending on the signs and directions of the sensitivities.
 
-The repository's dependency-free [covariance propagation implementation](../../implementations/python/uncertainty-propagation/README.md) evaluates the matrix expression for a supplied Jacobian and covariance matrix. It validates matrix dimensions, symmetry and positive semidefiniteness, including singular positive-semidefinite covariance matrices. It does not derive a hydrographic Jacobian, estimate instrument covariance or validate a sonar model.
+The repository's dependency-free [covariance propagation implementation](../../implementations/python/uncertainty-propagation/README.md) evaluates the matrix expression for a supplied Jacobian and covariance matrix. The companion [sounding geometry implementation](../../implementations/python/hydrographic-sounding-geometry/README.md) supplies one bounded Jacobian for a single rigid-body navigation-to-sounding-point transform. It does not derive the acoustic ray vector, estimate instrument covariance or validate a sonar model.
 
 ## 4. Build a physically defensible input budget
 
@@ -185,7 +185,7 @@ Independent checks need their own uncertainty budget and must not be used to tun
 3. Define the acoustic vector model and its input parameters.
 4. Build a component inventory and identify shared parameters from data lineage.
 5. Assemble the joint covariance with documented units and assumptions.
-6. Derive or numerically verify the Jacobian; test derivatives against finite differences where appropriate.
+6. Derive or numerically verify the Jacobian; the [rigid-body sounding geometry example](../../implementations/python/hydrographic-sounding-geometry/README.md) is a starting component, not a complete sensor-chain derivative. Test derivatives against finite differences where appropriate.
 7. Propagate covariance and inspect output covariance, anisotropy and sensitivity.
 8. Compare first-order results with dependence-preserving Monte Carlo where nonlinearity may matter.
 9. Validate with independent observations and report both common-mode and local error evidence.

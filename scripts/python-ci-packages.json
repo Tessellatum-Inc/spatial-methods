@@ -448,6 +448,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/hydrographic-sounding-geometry",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/info-nce",
     "pythonpath": ""
   },
