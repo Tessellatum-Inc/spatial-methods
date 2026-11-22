@@ -5,7 +5,7 @@ from linear_spatial_assimilation import (
     periodic_nonuniform_advection_diffusion_operator,
     periodic_nonuniform_point_observation_operator,
     nonperiodic_nonuniform_advection_diffusion_operator,
-    nonperiodic_nonuniform_advection_diffusion_step,
+    nonperiodic_nonuniform_advection_diffusion_step,\n    nonperiodic_nonuniform_advection_diffusion_step_with_boundaries,
     run_linear_spatial_assimilation, verify_spatial_forecasts,
 )
 
@@ -237,3 +237,57 @@ def test_forced_nonperiodic_step_validates_source_and_boundary_inputs():
         nonperiodic_nonuniform_advection_diffusion_step(*common,boundary_fluxes=(0.0,))
     with pytest.raises(ValueError,match="finite"):
         nonperiodic_nonuniform_advection_diffusion_step(*common,source_rates=[0.0,np.nan,0.0])
+
+
+def test_boundary_closed_advection_inflow_and_outflow():
+    result=nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
+        np.ones(3),0.1,np.zeros(2),np.zeros(2),np.array([1.0,2.0,3.0]),
+        left_boundary_velocity=1.0,right_boundary_velocity=1.0,
+        left_inflow_concentration=4.0)
+    assert result["left_boundary_flux"]==pytest.approx(4.0)
+    assert result["right_boundary_flux"]==pytest.approx(3.0)
+    assert result["final_mass"]-result["initial_mass"]==pytest.approx(0.1)
+    np.testing.assert_allclose(result["concentrations"],[1.4,2.0,2.7])
+
+
+def test_boundary_closed_reverse_flow_requires_right_inflow():
+    result=nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
+        np.ones(2),0.1,np.zeros(1),np.zeros(1),np.array([2.0,3.0]),
+        left_boundary_velocity=-1.0,right_boundary_velocity=-1.0,
+        right_inflow_concentration=5.0)
+    assert result["left_boundary_flux"]==pytest.approx(-2.0)
+    assert result["right_boundary_flux"]==pytest.approx(-5.0)
+    assert result["boundary_mass_change"]==pytest.approx(0.3)
+
+
+def test_boundary_closed_dirichlet_diffusion_mass_budget():
+    result=nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
+        np.ones(2),0.05,np.zeros(1),np.zeros(1),np.array([1.0,1.0]),
+        left_boundary_diffusivity=0.2,right_boundary_diffusivity=0.2,
+        diffusive_boundary_conditions=("dirichlet","dirichlet"),
+        left_boundary_concentration=2.0,right_boundary_concentration=0.0)
+    assert result["left_boundary_flux"]==pytest.approx(0.4)
+    assert result["right_boundary_flux"]==pytest.approx(0.4)
+    assert result["final_mass"]==pytest.approx(result["initial_mass"])
+    assert result["mass_budget_residual"]==pytest.approx(0.0,abs=1e-12)
+
+
+def test_boundary_closed_no_flux_diffusion():
+    result=nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
+        np.array([0.5,1.0,0.75]),0.05,np.zeros(2),np.zeros(2),
+        np.array([1.0,0.5,2.0]),left_boundary_diffusivity=0.3,
+        right_boundary_diffusivity=0.4)
+    assert result["left_boundary_flux"]==0.0
+    assert result["right_boundary_flux"]==0.0
+    assert result["final_mass"]==pytest.approx(result["initial_mass"])
+
+
+def test_boundary_closed_requires_active_boundary_values():
+    args=(np.ones(2),0.01,np.zeros(1),np.zeros(1),np.ones(2))
+    with pytest.raises(ValueError,match="left_inflow_concentration"):
+        nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
+            *args,left_boundary_velocity=1.0)
+    with pytest.raises(ValueError,match="left_boundary_concentration"):
+        nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
+            *args,left_boundary_diffusivity=0.1,
+            diffusive_boundary_conditions=("dirichlet","no_flux"))

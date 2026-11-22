@@ -123,7 +123,7 @@ software test, not evidence of real-world predictive skill.
 - periodic_advection_diffusion_operator(...)
 - periodic_point_observation_operator(...)
 - periodic_nonuniform_advection_diffusion_operator(...)
-- nonperiodic_nonuniform_advection_diffusion_operator(...)\n- nonperiodic_nonuniform_advection_diffusion_step(...)
+- nonperiodic_nonuniform_advection_diffusion_operator(...)\n- nonperiodic_nonuniform_advection_diffusion_step(...)\n- nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(...)
 - periodic_nonuniform_point_observation_operator(...)
 - run_linear_spatial_assimilation(...)
 - verify_spatial_forecasts(...)
@@ -142,3 +142,23 @@ correlated process-observation errors or sensor-footprint physics. Process
 covariance is supplied by the caller. Real applications require physically
 justified boundaries, forcing, sensor models, calibrated error covariance,
 latency handling and independent out-of-sample verification.
+
+
+## Physical boundary closures
+
+The boundary-closed step separates advective and diffusive boundary physics.
+Advective inflow uses a prescribed external concentration; advective outflow
+uses the adjacent interior cell as the upwind state. With positive-x
+orientation, left inflow and right outflow have positive velocity, while
+right inflow and left outflow have negative velocity. Diffusion independently
+supports zero normal gradient or a Dirichlet concentration. For Dirichlet
+values the boundary gradient uses the half-cell distance:
+\[
+F_{L,d}=-\kappa_L\frac{c_0-c_L}{\Delta x_0/2},\qquad
+F_{R,d}=-\kappa_R\frac{c_R-c_{n-1}}{\Delta x_{n-1}/2}.
+\]
+The actual total boundary fluxes enter the returned mass budget. Inflow
+values are required only when velocity points inward; outflow uses the
+interior state. This is a first-order 1-D closure; Robin conditions and
+higher-order radiation conditions are not included. The prescribed-total-
+flux step remains separate for externally known fluxes.

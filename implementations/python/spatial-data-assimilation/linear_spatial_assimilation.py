@@ -307,3 +307,110 @@ def verify_spatial_forecasts(forecast_means, heldout_observations):
             "rmse": float(np.sqrt(np.mean(error**2))),
         })
     return scores
+
+
+def nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
+        cell_widths, time_step, interior_face_velocities,
+        interior_face_diffusivities, concentrations, *,
+        left_boundary_velocity=0.0, right_boundary_velocity=0.0,
+        left_boundary_diffusivity=0.0, right_boundary_diffusivity=0.0,
+        left_inflow_concentration=None, right_inflow_concentration=None,
+        diffusive_boundary_conditions=("no_flux", "no_flux"),
+        left_boundary_concentration=None, right_boundary_concentration=None,
+        source_rates=None):
+    """Advance a 1-D field with advective inflow/outflow and diffusive closures."""
+    widths = _array(cell_widths, "cell_widths", 1)
+    state = _array(concentrations, "concentrations", 1)
+    n = widths.size
+    if n < 2 or state.shape != (n,) or np.any(widths <= 0):
+        raise ValueError("cell widths and concentrations must match; widths positive")
+    if np.any(state < 0):
+        raise ValueError("concentrations must be non-negative")
+    dt = float(time_step)
+    if not np.isfinite(dt) or dt <= 0:
+        raise ValueError("time_step must be positive and finite")
+    velocity = _array(interior_face_velocities, "interior_face_velocities", 1)
+    diffusivity = _array(interior_face_diffusivities, "interior_face_diffusivities", 1)
+    if velocity.shape != (n-1,) or diffusivity.shape != (n-1,) or np.any(diffusivity < 0):
+        raise ValueError("interior face fields must have n-1 values and non-negative diffusivity")
+    ul, ur, kl, kr = map(float, (left_boundary_velocity, right_boundary_velocity,
+                                  left_boundary_diffusivity, right_boundary_diffusivity))
+    if not np.isfinite([ul, ur, kl, kr]).all() or kl < 0 or kr < 0:
+        raise ValueError("boundary velocities must be finite and boundary diffusivities non-negative")
+    if not isinstance(diffusive_boundary_conditions, (tuple, list)) or len(diffusive_boundary_conditions) != 2:
+        raise ValueError("diffusive_boundary_conditions must be (left, right)")
+    modes = tuple(diffusive_boundary_conditions)
+    if any(mode not in ("no_flux", "dirichlet") for mode in modes):
+        raise ValueError("diffusive boundary modes must be no_flux or dirichlet")
+    def boundary_value(value, name, required):
+        if value is None:
+            if required:
+                raise ValueError(f"{name} is required for the active boundary closure")
+            return None
+        result = float(value)
+        if not np.isfinite(result) or result < 0:
+            raise ValueError(f"{name} must be finite and non-negative")
+        return result
+    cin_l = boundary_value(left_inflow_concentration, "left_inflow_concentration", ul > 0)
+    cin_r = boundary_value(right_inflow_concentration, "right_inflow_concentration", ur < 0)
+    cdir_l = boundary_value(left_boundary_concentration, "left_boundary_concentration", modes[0] == "dirichlet")
+    cdir_r = boundary_value(right_boundary_concentration, "right_boundary_concentration", modes[1] == "dirichlet")
+    if source_rates is None:
+        sources = np.zeros(n)
+    else:
+        sources = _array(source_rates, "source_rates", 1)
+        if sources.shape != (n,):
+            raise ValueError("source_rates must contain one rate per cell")
+    distances = 0.5 * (widths[:-1] + widths[1:])
+    L = np.zeros((n, n))
+    for i, (u, k, distance) in enumerate(zip(velocity, diffusivity, distances)):
+        a = max(u, 0.0) + k / distance
+        b = min(u, 0.0) - k / distance
+        L[i, i] -= a / widths[i]
+        L[i, i+1] -= b / widths[i]
+        L[i+1, i] += a / widths[i+1]
+        L[i+1, i+1] += b / widths[i+1]
+    forcing = sources.copy()
+    if ul > 0:
+        forcing[0] += ul * cin_l / widths[0]
+    else:
+        L[0, 0] += ul / widths[0]
+    if modes[0] == "dirichlet":
+        g = 2.0 * kl / widths[0]
+        L[0, 0] -= g / widths[0]
+        forcing[0] += g * cdir_l / widths[0]
+    if ur < 0:
+        forcing[-1] -= ur * cin_r / widths[-1]
+    else:
+        L[-1, -1] -= ur / widths[-1]
+    if modes[1] == "dirichlet":
+        g = 2.0 * kr / widths[-1]
+        L[-1, -1] -= g / widths[-1]
+        forcing[-1] += g * cdir_r / widths[-1]
+    transition = np.eye(n) + dt * L
+    if np.min(transition) < -1e-12:
+        raise ValueError("time step violates boundary-inclusive positivity/stability bound")
+    transition[transition < 0] = 0.0
+    updated = transition @ state + dt * forcing
+    tolerance = 1e-12 * max(1.0, float(np.max(np.abs(state))))
+    if np.min(updated) < -tolerance:
+        raise ValueError("boundary-forced step would produce negative concentrations")
+    updated[updated < 0] = 0.0
+    left_adv = ul * (cin_l if ul > 0 else state[0])
+    right_adv = ur * (cin_r if ur < 0 else state[-1])
+    left_diff = 2.0 * kl * (cdir_l-state[0]) / widths[0] if modes[0] == "dirichlet" else 0.0
+    right_diff = 2.0 * kr * (state[-1]-cdir_r) / widths[-1] if modes[1] == "dirichlet" else 0.0
+    left_flux, right_flux = float(left_adv+left_diff), float(right_adv+right_diff)
+    initial_mass, final_mass = float(widths@state), float(widths@updated)
+    source_change = float(dt*(widths@sources))
+    boundary_change = float(dt*(left_flux-right_flux))
+    expected_change = source_change+boundary_change
+    residual = final_mass-initial_mass-expected_change
+    budget_tolerance = 1e-10*max(1.0,abs(initial_mass),abs(expected_change))
+    if abs(residual)>budget_tolerance:
+        raise ArithmeticError("boundary-closed finite-volume mass budget failed")
+    return {"concentrations":updated,"initial_mass":initial_mass,"final_mass":final_mass,
+            "left_boundary_flux":left_flux,"right_boundary_flux":right_flux,
+            "source_mass_change":source_change,"boundary_mass_change":boundary_change,
+            "expected_mass_change":expected_change,"mass_budget_residual":float(residual),
+            "transition_matrix":transition}

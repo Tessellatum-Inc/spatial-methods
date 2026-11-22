@@ -124,3 +124,17 @@ boundaries; validate the transport scheme against analytical or trusted
 numerical benchmarks; model actual sensor support and timing; estimate
 process and observation error; and evaluate forecasts using chronological
 held-out data excluded from assimilation and calibration.
+
+
+## Physical boundary closures
+
+At advective inflow, the external concentration supplies the upwind state;
+at outflow, the adjacent interior concentration is used. Diffusion is
+independently set to zero normal gradient or Dirichlet concentration. The
+Dirichlet gradient is evaluated over the boundary half-cell. The resulting
+total boundary fluxes obey
+\[
+M^{n+1}-M^n=\Delta t\left(\sum_i\Delta x_i s_i+F_L-F_R\right).
+\]
+The implementation checks this budget. The prescribed-flux interface remains
+separate and is appropriate when the total boundary flux is known directly.
