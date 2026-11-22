@@ -17,9 +17,10 @@ The domain will cover:
 - spatiotemporal processes, separability, advection and evolving dependence;
 - conditional simulation, uncertainty decomposition and model criticism.
 
-## First module
+## Modules
 
-[Random fields, covariance functions and variograms](random-fields-covariance-and-variograms.md) introduces the common language for modelling spatial dependence. It connects the theory to the repository's [empirical semivariogram method](../../methods/empirical-semivariogram.md), [separable spatiotemporal Gaussian-process algorithm](../../algorithms/geostatistics/separable-spatiotemporal-gp.md), [spatial cross-validation method](../../methods/spatial-cross-validation.md) and [temporally conditioned hydrographic sound-speed profiles](../../implementations/python/hydrographic-ray-tracing/README.md).
+1. [Random fields, covariance functions and variograms](random-fields-covariance-and-variograms.md) introduces the common language for modelling spatial dependence. It connects to the [empirical semivariogram method](../../methods/empirical-semivariogram.md), [separable spatiotemporal Gaussian-process algorithm](../../algorithms/geostatistics/separable-spatiotemporal-gp.md), [spatial cross-validation method](../../methods/spatial-cross-validation.md) and [temporally conditioned hydrographic sound-speed profiles](../../implementations/python/hydrographic-ray-tracing/README.md).
+2. [Spatial point processes and spatial sampling design](spatial-point-processes-and-sampling-design.md) develops first- and second-order point-process structure, canonical model families, observation-process limitations, probability-sampling inclusion probabilities, Horvitz–Thompson estimation, and the distinction between design-based and model-based adaptive selection. It connects the theory to existing point-process simulators and summaries, sampling-design implementations, adaptive sampling methods and cross-technology collection planning.
 
 ## Boundaries with neighbouring foundations
 
