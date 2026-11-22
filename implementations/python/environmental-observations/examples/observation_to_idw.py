@@ -11,6 +11,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 import hashlib
 import json
+from collections.abc import Mapping
 from pathlib import Path
 import sys
 
@@ -72,6 +73,7 @@ def run_pipeline(source_path: str | Path, output_path: str | Path) -> dict:
     """Validate a JSONL source, interpolate accepted points, and record lineage."""
     source_path = Path(source_path)
     output_path = Path(output_path)
+    ingest_started = _now()
     ingestion = load_jsonl_records(source_path)
     if not ingestion.is_valid:
         raise ValueError("source ingestion failed: " + "; ".join(ingestion.errors))
@@ -98,14 +100,14 @@ def run_pipeline(source_path: str | Path, output_path: str | Path) -> dict:
             raise ValueError(f"{record.observation_id}: unexpected method_id {record.method_id!r}")
         support = record.support
         geometry = support.get("geometry")
-        if support.get("crs") != CRS or not isinstance(geometry, dict) or geometry.get("type") != "Point":
+        if support.get("crs") != CRS or not isinstance(geometry, Mapping) or geometry.get("type") != "Point":
             raise ValueError(f"{record.observation_id}: expected a Point geometry in {CRS}")
         coordinates = geometry["coordinates"]
         if len(coordinates) < 2:
             raise ValueError(f"{record.observation_id}: point needs x and y coordinates")
         samples.append((float(coordinates[0]), float(coordinates[1]), record.value))
 
-    started = _now()
+    estimate_started = _now()
     predictions = idw_predict(samples, TARGETS, **PARAMETERS)
     product = {
         "measurand_id": records[0].measurand_id,
@@ -128,7 +130,6 @@ def run_pipeline(source_path: str | Path, output_path: str | Path) -> dict:
 
     source_ref = f"sha256:{ingestion.source_sha256}"
     output_ref = f"sha256:{output_digest}"
-    ingest_started = _now()
     ingest_activity = _activity(
         "ingest-observations", "observation-ingestion", "jsonl-observation-ingestion",
         "1.0.0", (source_ref,), tuple(record.observation_id for record in records),
@@ -137,7 +138,7 @@ def run_pipeline(source_path: str | Path, output_path: str | Path) -> dict:
     estimate_activity = _activity(
         "estimate-surface", "spatial-estimation", "inverse-distance-weighting",
         "1.0.0", tuple(record.observation_id for record in records), (output_ref,),
-        PARAMETERS, started,
+        PARAMETERS, estimate_started,
     )
     lineage = validate_lineage(
         (ingest_activity, estimate_activity), source_refs=(source_ref,)
