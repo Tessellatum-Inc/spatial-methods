@@ -11,6 +11,9 @@ from linear_spatial_assimilation import (
     nonperiodic_rectilinear_advection_diffusion_step_2d_with_forcing,
     nonperiodic_rectilinear_point_observation_operator_2d,
     run_linear_spatial_assimilation, verify_spatial_forecasts,
+    ensemble_transform_kalman_analysis,
+    forecast_rectilinear_advection_diffusion_ensemble_2d,
+    assimilate_rectilinear_advection_diffusion_ensemble_2d,
 )
 
 
@@ -456,3 +459,57 @@ def test_2d_point_observation_operator_exact_centres_and_domain_contract():
     with pytest.raises(ValueError,match="equal length"):
         nonperiodic_rectilinear_point_observation_operator_2d(
             x,y,np.array([1.0,2.0]),np.array([0.0]))
+
+
+def test_etkf_scalar_analysis_moves_ensemble_mean_toward_observation():
+    X = np.array([[0.0, 1.0, 2.0]])
+    result = ensemble_transform_kalman_analysis(
+        X, np.ones((1, 1)), np.array([2.0]), np.array([[1.0]]))
+    assert result["analysis_mean"][0] == pytest.approx(1.5)
+    assert abs(2.0 - result["analysis_observation_mean"][0]) < abs(
+        2.0 - result["forecast_observation_mean"][0])
+    np.testing.assert_allclose(np.mean(result["analysis_ensemble"], axis=1),
+                               result["analysis_mean"])
+
+
+def test_2d_ensemble_forecast_and_point_observation_etkf_integration():
+    dx = np.array([1.0, 1.2, 0.8])
+    dy = np.array([0.9, 1.1])
+    nx, ny, m = 3, 2, 4
+    prior = np.empty((nx, ny, m))
+    base = np.array([[1.0, 1.5], [2.0, 1.0], [0.8, 1.2]])
+    for member, offset in enumerate((-0.15, -0.05, 0.05, 0.15)):
+        prior[:, :, member] = base + offset
+    ux = np.zeros((nx-1, ny))
+    uy = np.zeros((nx, ny-1))
+    kx = np.zeros_like(ux)
+    ky = np.zeros_like(uy)
+    cx = np.cumsum(dx) - 0.5 * dx
+    cy = np.cumsum(dy) - 0.5 * dy
+    H = nonperiodic_rectilinear_point_observation_operator_2d(
+        cx, cy, np.array([cx[1], 0.5*(cx[0]+cx[1])]),
+        np.array([cy[0], cy[1]]))
+    truth = H @ (base.reshape(-1, order="C") + 0.1)
+    result = assimilate_rectilinear_advection_diffusion_ensemble_2d(
+        dx, dy, 0.1, ux, uy, kx, ky, prior, H, truth, np.eye(2) * 0.01)
+    np.testing.assert_allclose(result["forecast_ensemble"], prior)
+    assert result["analysis_ensemble"].shape == prior.shape
+    assert np.linalg.norm(result["analysis_observation_mean"] - truth) < np.linalg.norm(
+        result["forecast_observation_mean"] - truth)
+    assert max(abs(b["mass_budget_residual"])
+               for b in result["member_mass_budgets"]) < 1e-10
+
+
+def test_2d_ensemble_forecast_rejects_negative_members_and_etkf_bad_covariance():
+    dx = dy = np.ones(2)
+    ux = np.zeros((1, 2))
+    uy = np.zeros((2, 1))
+    with pytest.raises(ValueError, match="non-negative"):
+        forecast_rectilinear_advection_diffusion_ensemble_2d(
+            dx, dy, 0.1, ux, uy, ux, uy, -np.ones((2, 2, 3)))
+    with pytest.raises(ValueError, match="positive definite"):
+        ensemble_transform_kalman_analysis(
+            np.ones((2, 3)), np.ones((1, 2)), np.ones(1), np.zeros((1, 1)))
+    with pytest.raises(ValueError, match="at least two"):
+        ensemble_transform_kalman_analysis(
+            np.ones((2, 1)), np.ones((1, 2)), np.ones(1), np.eye(1))

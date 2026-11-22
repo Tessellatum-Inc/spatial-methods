@@ -620,3 +620,107 @@ def nonperiodic_rectilinear_point_observation_operator_2d(
                         (1-fx)*fy, fx*fy), axis=1)
     H[rows[:, None], indices] = weights
     return H
+
+
+def ensemble_transform_kalman_analysis(forecast_ensemble, observation_operator,
+                                        observations, observation_covariance):
+    """Deterministic ETKF analysis in ensemble space; no state covariance formed."""
+    X = _array(forecast_ensemble, "forecast_ensemble", 2)
+    H = _array(observation_operator, "observation_operator", 2)
+    y = _array(observations, "observations", 1)
+    n, m = X.shape
+    p = y.size
+    if n == 0 or m < 2:
+        raise ValueError("forecast_ensemble must have a non-empty state and at least two members")
+    if p == 0 or H.shape != (p, n):
+        raise ValueError("observation_operator and observations dimensions do not match ensemble state")
+    R = _covariance(observation_covariance, "observation_covariance", p, True)
+    try:
+        L = np.linalg.cholesky(R)
+    except np.linalg.LinAlgError as exc:
+        raise ValueError("observation_covariance must be positive definite") from exc
+    mean_f = np.mean(X, axis=1)
+    A = X - mean_f[:, None]
+    y_mean_f = H @ mean_f
+    Yw = np.linalg.solve(L, H @ A)
+    dw = np.linalg.solve(L, y - y_mean_f)
+    precision = (m - 1) * np.eye(m) + Yw.T @ Yw
+    precision = (precision + precision.T) / 2
+    weights = np.linalg.solve(precision, Yw.T @ dw)
+    mean_a = mean_f + A @ weights
+    eigenvalues, eigenvectors = np.linalg.eigh(precision)
+    if np.min(eigenvalues) <= 0:
+        raise ArithmeticError("ETKF ensemble-space precision is not positive definite")
+    transform = (eigenvectors * np.sqrt((m - 1) / eigenvalues)) @ eigenvectors.T
+    anomalies_a = A @ transform
+    anomalies_a -= np.mean(anomalies_a, axis=1, keepdims=True)
+    analysis = mean_a[:, None] + anomalies_a
+    return {
+        "analysis_ensemble": analysis,
+        "forecast_mean": mean_f,
+        "analysis_mean": mean_a,
+        "innovation": y - y_mean_f,
+        "forecast_observation_mean": y_mean_f,
+        "analysis_observation_mean": H @ mean_a,
+    }
+
+
+def forecast_rectilinear_advection_diffusion_ensemble_2d(
+        cell_widths_x, cell_widths_y, time_step,
+        x_face_velocities, y_face_velocities,
+        x_face_diffusivities, y_face_diffusivities, forecast_ensemble, *,
+        source_rates=None, boundary_fluxes=None):
+    """Forecast (nx, ny, n_ensemble) members with the conservative 2-D step."""
+    X = _array(forecast_ensemble, "forecast_ensemble", 3)
+    nx, ny, m = X.shape
+    if nx < 2 or ny < 2 or m < 2 or np.any(X < 0):
+        raise ValueError("forecast_ensemble needs nx, ny, at least two members and non-negative states")
+    result = np.empty_like(X)
+    budgets = []
+    for member in range(m):
+        state = X[:, :, member]
+        if source_rates is None and boundary_fluxes is None:
+            step = nonperiodic_rectilinear_advection_diffusion_step_2d(
+                cell_widths_x, cell_widths_y, time_step,
+                x_face_velocities, y_face_velocities,
+                x_face_diffusivities, y_face_diffusivities, state)
+        else:
+            step = nonperiodic_rectilinear_advection_diffusion_step_2d_with_forcing(
+                cell_widths_x, cell_widths_y, time_step,
+                x_face_velocities, y_face_velocities,
+                x_face_diffusivities, y_face_diffusivities, state,
+                source_rates=source_rates, boundary_fluxes=boundary_fluxes)
+        result[:, :, member] = step["concentrations"]
+        budgets.append({key: step[key] for key in
+                        ("initial_mass", "final_mass", "mass_budget_residual")})
+    return {"forecast_ensemble": result, "member_mass_budgets": budgets}
+
+
+def assimilate_rectilinear_advection_diffusion_ensemble_2d(
+        cell_widths_x, cell_widths_y, time_step,
+        x_face_velocities, y_face_velocities,
+        x_face_diffusivities, y_face_diffusivities, prior_ensemble,
+        observation_operator, observations, observation_covariance, *,
+        source_rates=None, boundary_fluxes=None):
+    """Forecast a 2-D ensemble then assimilate point observations with ETKF."""
+    prior = _array(prior_ensemble, "prior_ensemble", 3)
+    nx, ny, m = prior.shape
+    forecast = forecast_rectilinear_advection_diffusion_ensemble_2d(
+        cell_widths_x, cell_widths_y, time_step,
+        x_face_velocities, y_face_velocities,
+        x_face_diffusivities, y_face_diffusivities, prior,
+        source_rates=source_rates, boundary_fluxes=boundary_fluxes)
+    flat = forecast["forecast_ensemble"].reshape(nx * ny, m, order="C")
+    analysis = ensemble_transform_kalman_analysis(
+        flat, observation_operator, observations, observation_covariance)
+    analysis_grid = analysis["analysis_ensemble"].reshape(nx, ny, m, order="C")
+    return {
+        "forecast_ensemble": forecast["forecast_ensemble"],
+        "analysis_ensemble": analysis_grid,
+        "forecast_mean": analysis["forecast_mean"].reshape(nx, ny, order="C"),
+        "analysis_mean": analysis["analysis_mean"].reshape(nx, ny, order="C"),
+        "innovation": analysis["innovation"],
+        "forecast_observation_mean": analysis["forecast_observation_mean"],
+        "analysis_observation_mean": analysis["analysis_observation_mean"],
+        "member_mass_budgets": forecast["member_mass_budgets"],
+    }

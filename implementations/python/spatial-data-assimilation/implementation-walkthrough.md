@@ -219,3 +219,35 @@ subset. The state is flattened in C order, with x index first and
 rejected: extrapolation would require a separate, explicit boundary model.
 The operator describes point samples only; finite sensor footprints and
 correlated measurement errors require their own observation models.
+
+
+## 11. Two-dimensional ensemble assimilation
+
+The integrated path first advances each prior member with the 2-D conservative
+finite-volume step, preserving the member-wise area-weighted mass budget under
+closed boundaries. It then flattens each forecast field in NumPy C order and
+applies the point-sensor matrix. This ordering must match the operator's flat
+index k=i*n_y+j; otherwise the observation geometry is permuted.
+
+For m ensemble members, let A=X^f-xbar^f and Y=HA. With R=LL^T, whitening
+gives Y_w=L^{-1}Y and d_w=L^{-1}(y-H*xbar^f). The ETKF solves
+\[
+Cw=Y_w^T d_w,\qquad C=(m-1)I_m+Y_w^T Y_w,
+\]
+then updates xbar^a=xbar^f+Aw. If C=V Lambda V^T, the symmetric anomaly
+transform is
+\[
+T=V\operatorname{diag}\left(\sqrt{(m-1)/\lambda_i}\right)V^T,
+\qquad A^a=AT.
+\]
+The implementation uses Cholesky whitening, a linear solve for weights and
+a symmetric eigendecomposition. It avoids both an n_state-by-n_state
+covariance and a dense n_state-by-n_state transport matrix.
+
+The forecast ensemble is stored as (nx, ny, m); each member is advanced
+separately, with common face fields and optional common sources/boundary
+fluxes. The observation matrix is (n_obs, nx*ny), using C-order flattening.
+Member mass budgets are returned. The analysis is an unconstrained Gaussian
+update and may contain negative values even though forecast inputs must be
+non-negative. No clipping is applied; a positivity-preserving analysis,
+localisation and inflation are not yet implemented.

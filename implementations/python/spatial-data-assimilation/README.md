@@ -242,3 +242,44 @@ collapsing to two or one nonzero weights). Therefore constants are preserved,
 and an affine field in x and y is reproduced exactly up to floating-point
 round-off. This is a point-sensor interpolation operator, not an areal sensor
 footprint, line integral, vertical-column measurement, or uncertainty model.
+
+
+## 9. Two-dimensional ensemble forecast and ETKF analysis
+
+The ensemble interface advances each member with the conservative finite-volume
+transport step. A prior ensemble has shape (nx, ny, n_ensemble); all members
+share the specified face fields and, when supplied, the same source rates and
+prescribed boundary fluxes. Every member retains its own mass-budget
+diagnostics.
+
+The deterministic ensemble transform Kalman filter (ETKF) updates the
+forecast ensemble using a point-observation matrix whose columns follow the
+same C-order state flattening as the bilinear observation operator. With
+forecast anomalies A, observation anomalies Y=HA, and R=LL^T, define
+whitened quantities
+\[
+Y_w=L^{-1}Y,\qquad d_w=L^{-1}(y-H\bar x^f),
+\]
+and ensemble-space precision
+\[
+C=(m-1)I_m+Y_w^T Y_w.
+\]
+The analysis mean and symmetric anomaly transform are
+\[
+w=C^{-1}Y_w^T d_w,\qquad \bar x^a=\bar x^f+Aw,
+\]
+\[
+T=V\,\operatorname{diag}\left(\sqrt{(m-1)/\lambda_i}\right)V^T,
+\quad C=V\operatorname{diag}(\lambda_i)V^T,\qquad A^a=AT.
+\]
+The implementation uses Cholesky and linear solves plus a symmetric
+eigendecomposition; no inverse, state-sized covariance, or dense transport
+transition matrix is formed.
+
+This is an unconstrained Gaussian analysis. It does not preserve
+non-negativity automatically, and negative analysis values are not clipped.
+The next physical transport forecast rejects negative member states.
+Positivity-preserving transforms, localisation, inflation, adaptive model
+error, and correlated process/observation error treatment remain separate
+extensions. Synthetic tests demonstrate software consistency, not application
+skill.
