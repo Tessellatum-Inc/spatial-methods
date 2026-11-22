@@ -14,7 +14,7 @@ The stable subject identities are defined in the [Geoinformatics master subject 
 
 | Subject | ID | Entry point |
 |---|---|---|
-| Geodetic and engineering surveying | SM-COL-001 | [Measurement science and survey adjustment](../learning-paths/measurement-science-and-survey-adjustment.md) |
+| Geodetic and engineering surveying | SM-COL-001 | [Terrestrial surveying: total station and differential levelling](terrestrial-surveying-total-station-and-levelling.md); [Measurement science and survey adjustment](../learning-paths/measurement-science-and-survey-adjustment.md) |
 | GNSS, positioning and navigation systems | SM-COL-002 | [GNSS positioning and navigation observation](gnss-positioning-and-navigation-observation.md); [GNSS methods and implementations](../catalog/first-curation-cluster-reference-positioning-measurement.md#3-gnss-scope-boundaries-to-preserve) |
 | Satellite and airborne optical remote sensing | SM-COL-004 | [Optical satellite imagery acquisition](optical-satellite-imagery-acquisition.md) |
 | Radar, SAR and interferometric sensing | SM-COL-006 | [SAR acquisition and observation design](sar-acquisition-and-observation-design.md) |
@@ -23,6 +23,10 @@ The stable subject identities are defined in the [Geoinformatics master subject 
 | Field surveys, sampling and ground truth | SM-COL-011 | [Spatial observation and sampling design](spatial-observation-and-sampling-design.md); [practical sampling campaign exercise](spatial-observation-sampling-exercise.md) |
 
 This is an initial navigation page, not a claim that every collection domain has been comprehensively curated. The subject index remains the complete taxonomy.
+
+## Terrestrial surveying
+
+Geodetic and engineering surveying (SM-COL-001) now has an initial [total-station and differential-levelling observation method](terrestrial-surveying-total-station-and-levelling.md). It connects angular and EDM observations, station orientation, instrument/target heights, traverse design, differential height transfer, closure, field checks and provenance to the measurement-science and network-adjustment material. It is a method synthesis, not a substitute for instrument-specific procedures, current local standards or project acceptance criteria.
 
 ## GNSS positioning and navigation
 
