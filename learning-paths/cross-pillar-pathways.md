@@ -192,13 +192,42 @@ The ray tracer, rigid-body geometry Jacobian and covariance routine have synthet
 
 **Useful outcome:** Understand why bathymetric uncertainty must follow the complete physical measurement chain, why shared errors can survive cross-line agreement, and why an uncertainty requirement is not an estimator of achieved accuracy.
 
+## Pathway 11 — From environmental observations to an evolving spatial-field estimate
+
+**Application context:** Estimate the spatial distribution of an environmental variable, represent its uncertainty, incorporate observations as they arrive, and forecast its evolution under an explicitly stated process model. Examples include water quality, soil moisture, temperature, contaminant concentration and other transported or evolving scalar fields. The physical equations and observation physics must be selected for the actual phenomenon; this pathway is an architecture, not a universal environmental model.
+
+**Best entry point:** [Spatial observation and sampling design](../collection/spatial-observation-and-sampling-design.md).
+
+| Pillar | Canonical route | Why it belongs |
+|---|---|---|
+| Theoretical Foundations | [Random fields, covariance and variograms](../foundations/spatial-statistics-and-stochastic-processes/random-fields-covariance-and-variograms.md); [anisotropic and nonstationary spatial fields](../foundations/spatial-statistics-and-stochastic-processes/anisotropic-and-nonstationary-spatial-fields.md); [spatiotemporal random fields, advection and dynamic prediction](../foundations/spatial-statistics-and-stochastic-processes/spatiotemporal-random-fields-advection-and-dynamic-prediction.md); [dynamic spatial models, filtering and data assimilation](../foundations/spatial-statistics-and-stochastic-processes/dynamic-spatial-models-filtering-and-data-assimilation.md) | Defines spatial dependence, nonstationarity, temporal evolution, state-space assumptions and the distinction between filtering, smoothing and forecasting. |
+| Spatial Data Collection | [Spatial observation and sampling design](../collection/spatial-observation-and-sampling-design.md); [sampling-design exercise](../collection/spatial-observation-sampling-exercise.md); [SAR acquisition and observation design](../collection/sar-acquisition-and-observation-design.md) | Forces the study to specify the phenomenon, measurand, spatial/temporal support, sampling frame, inclusion design and sensor response before combining point, field and remotely sensed evidence. The SAR method is one possible observation source, not a proxy for all environmental measurements. |
+| Spatial Algorithms | [Geostatistics and interpolation](../algorithms/geostatistics/README.md); [kriging variants](../algorithms/geostatistics/kriging-variants.md); [separable spatiotemporal Gaussian processes](../algorithms/geostatistics/separable-spatiotemporal-gp.md); [2-D transport and ensemble assimilation implementation](../implementations/python/spatial-data-assimilation/README.md) | Separates spatial reconstruction from dynamic state estimation. The implemented 2-D finite-volume solver advances a scalar field under stated advection-diffusion assumptions; the observation operator and ETKF connect point observations to an ensemble analysis. |
+| Spatial Recipes | **Gap: no mature environmental-monitoring recipe is currently linked.** Use the [survey-to-spatial-dataset workflow](../recipes/survey-to-spatial-dataset/README.md) only for its transferable requirements, provenance, QA and delivery gates; it is not an environmental monitoring procedure. | A dedicated recipe still needs to specify the environmental measurand, field/laboratory protocols, calibration, temporal sampling, quality flags, process-model selection, data assimilation schedule, forecast verification and operational response. |
+
+**A defensible sequence**
+
+1. Define the environmental decision and target variable, including units, spatial and temporal support, target domain and acceptable uncertainty.
+2. Design the sampling frame and observation schedule. Distinguish probability-based samples for population inference from purposive sensor placement for process detection or forecasting.
+3. Specify each observation operator. A point probe, laboratory sample, satellite pixel and time-window average do not measure the same support merely because they share a variable name.
+4. Build a static spatial baseline using an appropriate covariance model and interpolation or geostatistical estimator. Check anisotropy, nonstationarity, barriers and extrapolation before interpreting the surface.
+5. If temporal evolution matters, define a process model with explicit forcing, boundary conditions, sources/sinks and parameter assumptions. Do not treat a convenient advection-diffusion equation as physically valid without justification.
+6. Assimilate only observations available at each forecast origin. Preserve the distinction between forecast and analysis, and reserve later observations for independent forecast verification.
+7. Report uncertainty, coverage, missingness, residual diagnostics, mass or other relevant physical budgets, and performance by location and lead time. A visually smooth map is not validation.
+
+**Practical evidence and current boundary**
+
+The repository contains synthetic tests for geostatistical methods and a computational 2-D rectilinear advection-diffusion/ETKF chain, including correlated observation-error verification. These establish bounded numerical behaviour under their stated assumptions. They do not establish environmental sensor calibration, a real field campaign, process-model adequacy, operational forecast skill or regulatory suitability. The current point observation operator represents bilinear point samples within the convex hull of cell centres; it is not a satellite footprint or laboratory sample model. The 2-D transport implementation is a first-order scalar solver on orthogonal rectilinear grids, and the ensemble analysis is unconstrained Gaussian ETKF: it does not guarantee non-negative concentrations.
+
+**Useful outcome:** Understand how study design, sensor support, spatial covariance, physical evolution and sequential inference fit together—and identify exactly which evidence is still needed before an environmental estimate can support a real decision.
+
 ## What is not yet represented
 
 This index is deliberately selective. It does not imply that every subject has a complete cross-pillar route. In particular:
 
 - Remote sensing now has a partial cross-pillar pathway and explicit optical/SAR branches. The route still needs reviewed sensor-physics foundations, executed acquisition methods and end-to-end validated recipes.
 - Spatial statistics has substantial methods and learning paths, but the data-generation and study-design choices should be made more explicit in future integrated routes.
-- Transport, hydrology, environmental monitoring and other application families should receive pathways when their collection, theoretical, algorithmic and recipe records are sufficiently developed to support honest hand-offs.
+- Hydrology and environmental monitoring now have a partial architecture pathway, but still need application-specific collection protocols and a mature end-to-end recipe. Other application families should receive pathways only when their collection, theoretical, algorithmic and recipe records support honest hand-offs.
 
 Do not create artificial links just to fill all four columns. A missing or immature pillar connection is a useful development finding.
 
