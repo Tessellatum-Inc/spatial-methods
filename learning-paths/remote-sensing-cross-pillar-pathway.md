@@ -1,6 +1,6 @@
 # Remote sensing: from sensor measurements to spatial evidence
 
-**Status:** Partial cross-pillar pathway; navigation and evidence audit established, integrated remote-sensing recipe not yet available  
+**Status:** Partial cross-pillar pathway; optical end-to-end recipe remains incomplete, while a Sentinel-1 GRD processing recipe is specified but not yet executed or validated  
 **Purpose:** Connect optical and radar remote sensing to the four Spatial Methods pillars without pretending that their sensors, measurements or processing chains are interchangeable.
 
 Remote sensing is not one algorithm family. It is a chain that begins with a physical interaction and a sensor/platform, produces observations with specific measurement properties, and only then supports computational analysis and an application claim.
@@ -103,9 +103,11 @@ These are scoped methods, not a complete Sentinel-1 GRD or InSAR processing chai
 
 ### Spatial Recipes and practical evidence
 
-The [Sentinel-1 backscatter investigation](../explorations/radar/sentinel-1-backscatter-investigation.md) is a guided interpretation protocol. It explains how to inspect a GRD or documented RTC product, record coefficient and scale, consider competing physical explanations, and seek independent contextual evidence.
+The [Sentinel-1 GRD backscatter preparation recipe](../recipes/remote-sensing/sentinel-1-grd-backscatter.md) is the branch's current processing design. It specifies SAFE integrity checks, orbit handling, noise treatment, linear Sigma0 calibration, optional speckle filtering, terrain correction, common-grid requirements and QA outputs. It is a workflow specification—not an executed processing result.
 
-The [Radar source register](../explorations/radar/source-notes.md) states that no scene-specific Sentinel-1 data have yet been downloaded and processed in this documentation pass. The Nairobi scene record likewise remains pending. Therefore:
+The [Sentinel-1 backscatter investigation](../explorations/radar/sentinel-1-backscatter-investigation.md) is a separate guided interpretation protocol. It explains how to inspect a GRD or documented RTC product, record coefficient and scale, consider competing physical explanations, and seek independent contextual evidence.
+
+The [Radar source register](../explorations/radar/source-notes.md) states that no scene-specific Sentinel-1 data have yet been downloaded and processed in this documentation pass. The Nairobi scene record likewise remains pending. The recipe's execution gate remains closed: the required Nairobi SAFE archive has not passed the download gate and no SNAP graph has been run. Therefore:
 
 - no Nairobi backscatter result is claimed;
 - no land-cover classification or flood extent is established;
@@ -139,7 +141,7 @@ Evidence at one level does not automatically establish the next.
 | Theoretical Foundations | Initial electromagnetic/radiometric module published; technical review and learner testing remain open | Shared electromagnetic introduction and initial radar scattering/SAR signal-formation module published; technical review and advanced signal-processing foundations remain outstanding |
 | Spatial Data Collection | Initial optical satellite acquisition method published; technical review and application testing pending; Fiji pilot documents a bounded Level-2A/STAC workflow | Initial SAR acquisition method published; technical review and scene execution pending |
 | Spatial Algorithms | Broad catalogue and multiple tested implementations; sensor-aware preprocessing and validation remain uneven | Lee filter, CFAR and local coherence notes exist; no complete sensor-to-product processing chain |
-| Spatial Recipes | No mature integrated optical recipe yet; Fiji pilot is an evidence workflow, not one | Guided backscatter investigation exists; no executed Nairobi recipe or validated application |
+| Spatial Recipes | No mature integrated optical recipe yet; Fiji pilot is an evidence workflow, not one | Sentinel-1 GRD processing recipe specified but not executed; guided interpretation protocol exists; no validated application |
 
 This table is a gap map, not a maturity score. It deliberately leaves incomplete cells visible.
 
@@ -149,7 +151,7 @@ This table is a gap map, not a maturity score. It deliberately leaves incomplete
 2. **Review collection records:** technically review and test the optical acquisition method and SAR acquisition method against actual product metadata and selected scenes.
 3. **Audit algorithms against inputs:** connect each algorithm to required sensor/product types, band mapping, units, masks, grid, assumptions, failure modes and validation needs.
 4. **Complete one bounded optical execution:** finish the Fiji multispectral quality-control gates, preserve its blind-review boundaries, and report exactly which live processing stages have passed.
-5. **Execute the Nairobi SAR study:** select and archive a suitable Sentinel-1 scene, process it reproducibly, record observations and independent contextual evidence, and do not promote it to a recipe until the hand-offs and validation are reviewed.
+5. **Execute the Nairobi SAR study:** follow the existing [Sentinel-1 GRD backscatter recipe](../recipes/remote-sensing/sentinel-1-grd-backscatter.md) one scene at a time, preserve processing logs and checksums, review QA outputs, and record independent contextual evidence. The recipe already exists as a specification; execution and validation are the remaining gates.
 6. **Create end-to-end recipes only after the chain is understood:** define acceptance criteria before execution and keep application-specific choices out of general-purpose methods.
 
 ## 7. Maintenance rule
