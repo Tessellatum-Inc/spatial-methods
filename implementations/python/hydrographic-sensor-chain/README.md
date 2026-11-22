@@ -82,3 +82,46 @@ calibration block, clock offset and clock drift. Cross-ping navigation
 correlations and calibration/clock correlations are retained when present in
 the supplied covariance. The clock model is a common offset plus linear
 drift over the represented interval; it is not a stochastic clock process.
+
+
+## Stochastic clock-state covariance
+
+`clock_state_covariance.py` models clock offset and drift as a two-state
+continuous-time process:
+\[
+\mathbf x(t)=
+\begin{bmatrix}\delta t(t)\\ \dot{\delta t}(t)\end{bmatrix},
+\qquad
+d\delta t=\dot{\delta t}\,dt,
+\qquad
+d\dot{\delta t}=\sqrt q\,dW.
+\]
+For an interval \(\Delta t\), the exact transition and process covariance are
+\[
+\mathbf F(\Delta t)=
+\begin{bmatrix}1&\Delta t\\0&1\end{bmatrix},
+\qquad
+\mathbf Q(\Delta t)=q
+\begin{bmatrix}
+\Delta t^3/3&\Delta t^2/2\\
+\Delta t^2/2&\Delta t
+\end{bmatrix}.
+\]
+Here \(q\) is the white frequency-rate noise spectral density under this
+continuous-time model. It is not interchangeable with an arbitrary per-sample
+drift variance; the physical clock-noise process and units must be selected
+from calibration evidence.
+
+`propagate_clock_state_covariance` returns every epoch's marginal state
+covariance, the full cross-epoch joint state covariance, and the clock-offset
+covariance. For \(i\leq j\), the state cross-covariance is
+\[
+\operatorname{Cov}(\mathbf x_i,\mathbf x_j)
+=\mathbf P_i\mathbf F(t_j-t_i)^T.
+\]
+The stochastic multi-ping Jacobian adds one offset column per ping. Supply
+the returned \(N\times N\) offset covariance in the clock-offset block of
+the full joint input covariance to
+`propagate_stochastic_clock_multiping_covariance`. That function retains
+clock-to-clock and any supplied clock-to-navigation or clock-to-calibration
+cross-covariances. It does not silently assume those blocks are zero.
