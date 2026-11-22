@@ -556,3 +556,71 @@ def test_temporal_profile_propagation_rejects_covariance_block_mismatch():
             [trajectory], [[[1.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
             [0.0], [0], profile, covariance
         )
+
+
+
+def test_interpolated_profile_sensitivities_map_back_to_source_observations():
+    from temporal_sound_speed_covariance import interpolate_temporal_sound_speed_profiles
+    from multiping_covariance import (
+        assemble_interpolated_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory,
+        propagate_interpolated_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory,
+    )
+
+    trajectories = []
+    for _ in range(2):
+        matrix = [[0.0] * 19 for _ in range(3)]
+        matrix[0][15] = 1.0
+        trajectories.append({"jacobian": matrix, "time_offset_sensitivity": [0.0, 0.0, 0.0]})
+    rays = [
+        [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+        [[4.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+    ]
+    source_covariance = [[1.0, 0.5], [0.5, 1.0]]
+    interpolation = interpolate_temporal_sound_speed_profiles(
+        [0.0, 10.0], [[1490.0], [1510.0]], [2.0, 8.0], source_covariance
+    )
+    jacobian = assemble_interpolated_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+        trajectories, rays, [0.0, 0.0], [0, 1], interpolation
+    )
+    # Mid-interval query sensitivities 2 and 4 map through H=[0.8,0.2]
+    # and H=[0.2,0.8] into the original observed-profile states.
+    assert len(jacobian[0]) == 38
+    assert jacobian[0][34:36] == pytest.approx([1.6, 0.4])
+    assert jacobian[3][34:36] == pytest.approx([0.8, 3.2])
+
+    covariance = [[0.0] * 38 for _ in range(38)]
+    covariance[34][34] = source_covariance[0][0]
+    covariance[34][35] = source_covariance[0][1]
+    covariance[35][34] = source_covariance[1][0]
+    covariance[35][35] = source_covariance[1][1]
+    propagated = propagate_interpolated_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory(
+        trajectories, rays, [0.0, 0.0], [0, 1], interpolation, covariance
+    )
+    expected_cross = sum(
+        jacobian[0][34 + i] * source_covariance[i][j] * jacobian[3][34 + j]
+        for i in range(2) for j in range(2)
+    )
+    assert propagated["covariance"][0][3] == pytest.approx(expected_cross)
+
+
+def test_interpolated_profile_multiping_rejects_invalid_query_index_and_source_block():
+    from temporal_sound_speed_covariance import interpolate_temporal_sound_speed_profiles
+    from multiping_covariance import (
+        assemble_interpolated_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory,
+        propagate_interpolated_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory,
+    )
+    trajectory = {"jacobian": [[0.0] * 19 for _ in range(3)],
+                  "time_offset_sensitivity": [0.0, 0.0, 0.0]}
+    interpolation = interpolate_temporal_sound_speed_profiles(
+        [0.0, 10.0], [[1490.0], [1510.0]], [5.0], [[1.0, 0.5], [0.5, 1.0]]
+    )
+    ray = [[[1.0, 0.0, 0.0], [0.0, 0.0, 0.0]]]
+    with pytest.raises(ValueError, match="outside the query profile range"):
+        assemble_interpolated_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+            [trajectory], ray, [0.0], [1], interpolation
+        )
+    covariance = [[0.0] * 20 for _ in range(20)]
+    with pytest.raises(ValueError, match="source profile covariance block"):
+        propagate_interpolated_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory(
+            [trajectory], ray, [0.0], [0], interpolation, covariance
+        )

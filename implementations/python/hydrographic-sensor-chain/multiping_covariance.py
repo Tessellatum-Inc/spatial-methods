@@ -796,3 +796,121 @@ def propagate_time_aligned_ray_traced_temporal_profile_multiping_covariance_from
         "profile_epochs_s": list(temporal_profile_covariance_result["profile_epochs_s"]),
         "profile_layer_count": temporal_profile_covariance_result["layer_count"],
     }
+
+
+
+def assemble_interpolated_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+    time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+    beam_azimuths_degrees, ping_query_profile_indices,
+    interpolated_profile_result):
+    """Map ping profile sensitivities through H to original observed profiles.
+
+    Input order is [ping-local sensor/angle/travel-time blocks,
+    observation-epoch-major source profile states, navigation epoch offsets].
+    Query profile states are not treated as independent observations: each
+    ping's query sensitivity is right-multiplied by its rows of H.
+    """
+    if not isinstance(interpolated_profile_result, dict):
+        raise ValueError("interpolated_profile_result must be a mapping")
+    query_epochs = interpolated_profile_result.get("query_epochs_s")
+    source_epochs = interpolated_profile_result.get("source_profile_epochs_s")
+    layer_count = interpolated_profile_result.get("layer_count")
+    operator = interpolated_profile_result.get("interpolation_operator")
+    source_covariance = interpolated_profile_result.get("source_joint_profile_covariance")
+    if not isinstance(query_epochs, (list, tuple)) or not query_epochs:
+        raise ValueError("interpolation result must contain query_epochs_s")
+    if not isinstance(source_epochs, (list, tuple)) or not source_epochs:
+        raise ValueError("interpolation result must contain source_profile_epochs_s")
+    try:
+        layer_count = int(layer_count)
+        query_epochs = [float(x) for x in query_epochs]
+        source_epochs = [float(x) for x in source_epochs]
+    except (TypeError, ValueError, OverflowError):
+        raise ValueError("interpolation epochs and layer count must be valid") from None
+    if layer_count < 1 or not all(math.isfinite(x) for x in query_epochs + source_epochs):
+        raise ValueError("interpolation epochs and layer count must be valid")
+    if isinstance(interpolated_profile_result.get("layer_count"), bool) or float(interpolated_profile_result["layer_count"]) != layer_count:
+        raise ValueError("interpolation layer count must be a positive integer")
+    if not isinstance(time_aligned_sensor_chain_results, (list, tuple)) or not time_aligned_sensor_chain_results:
+        raise ValueError("at least one time-aligned sensor-chain result is required")
+    count = len(time_aligned_sensor_chain_results)
+    if not isinstance(ping_query_profile_indices, (list, tuple)) or len(ping_query_profile_indices) != count:
+        raise ValueError("one query profile index is required per ping")
+    indices = []
+    for ping, value in enumerate(ping_query_profile_indices):
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise ValueError(f"ping_query_profile_indices[{ping}] must be an integer")
+        if value < 0 or value >= len(query_epochs):
+            raise ValueError(f"ping_query_profile_indices[{ping}] is outside the query profile range")
+        indices.append(value)
+    query_width = len(query_epochs) * layer_count
+    source_width = len(source_epochs) * layer_count
+    h = _matrix(operator, "interpolation_operator", rows=query_width, columns=source_width)
+    source = _matrix(source_covariance, "source_joint_profile_covariance",
+                     rows=source_width, columns=source_width)
+    scale = max(1.0, max(abs(x) for row in source for x in row))
+    if any(abs(source[i][j] - source[j][i]) > 1e-10 * scale
+           for i in range(source_width) for j in range(i)):
+        raise ValueError("source_joint_profile_covariance must be symmetric")
+
+    base = assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+        time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+        beam_azimuths_degrees)
+    local_width = 17 * count
+    if len(base[0]) != local_width + layer_count + count:
+        raise ValueError("ray profile layer count must match the interpolated profile")
+    output = []
+    for row_index, row in enumerate(base):
+        ping = row_index // 3
+        query_start = local_width
+        sensitivity = row[query_start:query_start + layer_count]
+        h_start = indices[ping] * layer_count
+        source_sensitivity = [
+            sum(sensitivity[layer] * h[h_start + layer][column]
+                for layer in range(layer_count))
+            for column in range(source_width)
+        ]
+        output.append(row[:local_width] + source_sensitivity
+                      + row[query_start + layer_count:])
+    return output
+
+
+def propagate_interpolated_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory(
+    time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+    beam_azimuths_degrees, ping_query_profile_indices,
+    interpolated_profile_result, joint_input_covariance):
+    """Propagate sounding covariance against original observed profile states."""
+    jacobian = assemble_interpolated_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+        time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+        beam_azimuths_degrees, ping_query_profile_indices,
+        interpolated_profile_result)
+    size = len(jacobian[0])
+    covariance = _matrix(joint_input_covariance, "joint_input_covariance",
+                         rows=size, columns=size)
+    scale = max(1.0, max(abs(x) for row in covariance for x in row))
+    if any(abs(covariance[i][j] - covariance[j][i]) > 1e-10 * scale
+           for i in range(size) for j in range(i)):
+        raise ValueError("joint_input_covariance must be symmetric")
+    count = len(time_aligned_sensor_chain_results)
+    source_width = len(interpolated_profile_result["source_profile_epochs_s"]) * interpolated_profile_result["layer_count"]
+    profile_start = 17 * count
+    expected = _matrix(interpolated_profile_result["source_joint_profile_covariance"],
+                       "source_joint_profile_covariance",
+                       rows=source_width, columns=source_width)
+    for i in range(source_width):
+        for j in range(source_width):
+            actual = covariance[profile_start + i][profile_start + j]
+            if abs(actual - expected[i][j]) > 1e-10 * max(1.0, abs(actual), abs(expected[i][j])):
+                raise ValueError("source profile covariance block must match the interpolation source covariance")
+    return {
+        "jacobian": jacobian,
+        "covariance": _multiply(_multiply(jacobian, covariance), _transpose(jacobian)),
+        "covariance_input_order": (
+            "[ping-local sensor/angle/travel-time blocks, observation-epoch-major "
+            "source profile errors, navigation epoch offsets by ping]"
+        ),
+        "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]",
+        "query_profile_epochs_s": list(interpolated_profile_result["query_epochs_s"]),
+        "source_profile_epochs_s": list(interpolated_profile_result["source_profile_epochs_s"]),
+        "profile_layer_count": interpolated_profile_result["layer_count"],
+    }

@@ -288,3 +288,38 @@ mean profile between observations: those are explicit survey-processing
 decisions. If a ping lies between profile observations, first construct a
 defensible profile estimate and its covariance at that ping epoch, then
 include the corresponding temporal correlations.
+
+
+
+### Multi-ping propagation through interpolated sound-speed profiles
+
+When pings occur between profile observation epochs, use
+`interpolate_temporal_sound_speed_profiles` to obtain the query-profile
+means, interpolation operator \(H\), and propagated query covariance.
+For covariance propagation back to the original observations, use
+`assemble_interpolated_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory`
+or
+`propagate_interpolated_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory`.
+
+For a ping assigned to query-profile index \(q\), its layer sensitivity
+\(j_q\) is mapped to the source observation states by
+\[
+j_{\mathrm{source}} =
+j_q H_{qL:(q+1)L,:},
+\]
+where \(L\) is the number of profile layers. The assembled input order is
+\[
+[\text{ping-local sensor/angle/travel-time blocks};
+\text{observation-epoch-major source profile states};
+\text{navigation epoch offsets by ping}].
+\]
+The propagator requires the profile covariance block in the full joint
+input covariance to equal `source_joint_profile_covariance` returned by
+the interpolation result. This preserves the original observation
+covariance and all cross-epoch/cross-layer terms; it does not incorrectly
+treat interpolated query profiles as independent observations.
+
+The interpolation is deterministic and piecewise linear within the observed
+epoch range. It does not add unresolved environmental variability between
+profile observations; that requires an explicit model-discrepancy or
+physical variability covariance rather than implicit inflation.

@@ -215,6 +215,7 @@ def interpolate_temporal_sound_speed_profiles(
         "interpolated_profiles_mps": interpolated,
         "interpolation_operator": operator,
         "joint_profile_covariance": propagated,
+        "source_joint_profile_covariance": observed_covariance,
         "source_profile_epochs_s": epochs,
         "layer_count": layer_count,
         "state_order": "query-epoch-major: [layer sound speeds at each query epoch]",

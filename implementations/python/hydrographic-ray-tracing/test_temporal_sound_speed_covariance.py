@@ -110,8 +110,9 @@ def test_profile_interpolation_preserves_exact_observation_epoch_and_covariance(
         [10.0], result["joint_profile_covariance"]
     )
     assert interpolated["interpolated_profiles_mps"] == [[1492.0, 1504.0]]
-    expected = result["joint_profile_covariance"][2:4]
+    expected = result["joint_profile_covariance"][2:4][2:4]
     assert interpolated["joint_profile_covariance"] == expected
+    assert interpolated["source_joint_profile_covariance"] == result["joint_profile_covariance"]
 
 
 def test_midpoint_interpolation_and_full_covariance_operator():
