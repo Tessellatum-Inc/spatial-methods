@@ -31,7 +31,7 @@ The subject IDs below are stable identifiers from the [Geoinformatics master sub
 | SM-FND-002 | Linear algebra and matrix methods | Initial ten-module sequence published; desk audit completed; independent review and learner testing pending | Vectors, matrices, linear systems, rank, eigenvalues, decompositions, covariance and multivariate structure |
 | SM-FND-003 | Calculus and differential methods | Planned | Derivatives, gradients, integrals, multivariable calculus, differential equations and fields |
 | SM-FND-004 | Probability and statistical inference | Initial eight-module sequence and applied pathway published; review and learner testing pending | Probability models, distributions, sampling, estimation, testing and Bayesian reasoning |
-| SM-FND-005 | Spatial statistics and stochastic processes | Planned | Random fields, spatial dependence, point processes, spatial sampling and spatiotemporal processes |
+| SM-FND-005 | Spatial statistics and stochastic processes | Initial foundation module published; domain expansion and independent review pending | Random fields, spatial dependence, covariance functions, variograms, point processes, spatial sampling and spatiotemporal processes |
 | SM-FND-006 | Geometry and computational geometry theory | Planned | Euclidean, affine and projective geometry; metric spaces; geometric constructions |
 | SM-FND-007 | Topology and spatial relations | Planned | Topological spaces, continuity, connectedness, boundaries and spatial relations |
 | SM-FND-008 | Geodesy and reference systems | Existing material; expansion required | Earth figure, datums, reference frames, coordinate systems, gravity and transformations |
@@ -55,6 +55,10 @@ The mathematics domain begins with [Mathematical language, quantities and spatia
 ### Linear algebra and matrix methods
 
 [Linear algebra and matrix methods](linear-algebra/README.md) now contains an initial ten-module sequence, selected because matrix operations, linear systems, covariance structures and transformations recur throughout the repository's survey adjustment, CRS, PCA, regression, geostatistics and optimisation work. The sequence runs from [vectors, matrices and linear transformations](linear-algebra/vectors-matrices-and-linear-transformations.md) through [covariance matrices and multivariate structure](linear-algebra/covariance-matrices-and-multivariate-structure.md). Its [sequence audit](linear-algebra/sequence-audit.md) records the desk review and the remaining work. Independent technical review and learner testing are still required.
+
+### Spatial statistics and stochastic processes
+
+[Spatial statistics and stochastic processes](spatial-statistics-and-stochastic-processes/README.md) begins with [random fields, covariance functions and variograms](spatial-statistics-and-stochastic-processes/random-fields-covariance-and-variograms.md). The module establishes the random-field notation, second-order stationarity, isotropy, valid covariance structure, semivariograms and the distinction between spatial dependence models and fitted predictions. Domain expansion into point processes, spatial sampling, nonstationary fields and spatiotemporal dynamics remains open; independent technical review and learner testing are pending.
 
 ### Probability and statistical inference
 

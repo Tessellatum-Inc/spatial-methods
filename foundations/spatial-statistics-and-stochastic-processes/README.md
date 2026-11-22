@@ -1,0 +1,40 @@
+# Spatial statistics and stochastic processes
+
+**Subject identity:** `SM-FND-005` — Spatial statistics and stochastic processes.
+
+This domain develops the probability models for spatially indexed and time-evolving quantities. It explains how dependence, spatial structure and stochastic variation differ from independent sampling noise, and how those assumptions influence estimation, prediction, simulation and decisions.
+
+## Scope
+
+The domain will cover:
+
+- random fields and spatially indexed random variables;
+- covariance functions, correlation functions and semivariograms;
+- stationarity, isotropy, anisotropy and nonstationarity;
+- spatial point processes and their first- and second-order properties;
+- spatial sampling and design-based versus model-based inference;
+- Gaussian random fields, Gaussian processes and conditional prediction;
+- spatiotemporal processes, separability, advection and evolving dependence;
+- conditional simulation, uncertainty decomposition and model criticism.
+
+## First module
+
+[Random fields, covariance functions and variograms](random-fields-covariance-and-variograms.md) introduces the common language for modelling spatial dependence. It connects the theory to the repository's [empirical semivariogram method](../../methods/empirical-semivariogram.md), [separable spatiotemporal Gaussian-process algorithm](../../algorithms/geostatistics/separable-spatiotemporal-gp.md), [spatial cross-validation method](../../methods/spatial-cross-validation.md) and [temporally conditioned hydrographic sound-speed profiles](../../implementations/python/hydrographic-ray-tracing/README.md).
+
+## Boundaries with neighbouring foundations
+
+- **SM-FND-004 — Probability and statistical inference:** general probability, random variables, distributions, conditioning and inferential procedures. This domain specialises those ideas for spatial and spatiotemporal dependence.
+- **SM-FND-002 — Linear algebra and matrix methods:** covariance matrices, matrix factorizations and multivariate transformations. This domain explains how covariance is indexed by space and time and what makes a covariance function valid.
+- **SM-FND-011 — Measurement science:** measurands, traceability, measurement uncertainty and uncertainty budgets. A stochastic field model is not a substitute for a measurement model or a metrological uncertainty budget.
+- **SM-FND-016 — Numerical analysis:** numerical approximation, conditioning and stable computation. This domain states the stochastic model; numerical methods implement it.
+
+## Development status
+
+The first module is an initial researched teaching resource, not a complete course or independent technical certification. Point-process theory, sampling design, nonstationary and anisotropic models, spatiotemporal dynamics, independent review and learner testing remain open.
+
+## Reading route
+
+1. Read the [probability foundation](../probability-and-statistics/README.md) for the general language of random variables and dependence.
+2. Read [covariance matrices and multivariate structure](../linear-algebra/covariance-matrices-and-multivariate-structure.md) for matrix properties and linear uncertainty propagation.
+3. Study the first module in this domain.
+4. Follow a theory into a method, implementation or validation design; do not infer that a model is suitable merely because its software can be run.
