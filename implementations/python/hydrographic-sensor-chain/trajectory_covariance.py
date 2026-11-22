@@ -1,12 +1,15 @@
 """First-order covariance interpolation for navigation trajectory poses."""
 import math
 from navigation_trajectory import interpolate_navigation_trajectory
-from time_aligned_sensor_chain import _so3_exp, _so3_log, _mm, _transpose
+from time_aligned_sensor_chain import _so3_exp, _so3_log, _mm, _transpose as _rotation_transpose
 from multiping_covariance import _matrix, _multiply
 
 def _pose_at(times, positions, rotations, query, tolerance):
     pose=interpolate_navigation_trajectory(times,positions,rotations,[query],tolerance)[0]
     return pose["position_navigation"],pose["imu_to_navigation_rotation"]
+
+def _matrix_transpose(matrix):
+    return [list(column) for column in zip(*matrix)]
 
 def _perturb_rotation(rotation, delta):
     return _mm(_so3_exp(delta),rotation)
@@ -69,11 +72,11 @@ def interpolate_navigation_pose_with_covariance(
         for k in range(3):
             jacobian[k][col]=(pp[k]-mp[k])/(2*step)
         # Express output attitude perturbation as a left error in navigation axes.
-        dp=_so3_log(_mm(pr,_transpose(nominal_rotation)))
-        dm=_so3_log(_mm(mr,_transpose(nominal_rotation)))
+        dp=_so3_log(_mm(pr,_rotation_transpose(nominal_rotation)))
+        dm=_so3_log(_mm(mr,_rotation_transpose(nominal_rotation)))
         for k in range(3):
             jacobian[3+k][col]=(dp[k]-dm[k])/(2*step)
-    output_covariance=_multiply(_multiply(jacobian,covariance),_transpose(jacobian))
+    output_covariance=_multiply(_multiply(jacobian,covariance),_matrix_transpose(jacobian))
     return {"position_navigation":nominal_position,
             "imu_to_navigation_rotation":nominal_rotation,
             "jacobian":jacobian,

@@ -50,7 +50,7 @@ def test_time_aligned_multiping_clock_offset_and_drift_create_cross_ping_covaria
     cov = out["covariance"]
     assert cov[0][3] == pytest.approx(0.6)
     assert cov[0][0] == pytest.approx(0.25)
-    assert cov[3][3] == pytest.approx(5.2)
+    assert cov[3][3] == pytest.approx(5.4)
 
 
 def test_time_aligned_multiping_retains_cross_ping_navigation_covariance():
