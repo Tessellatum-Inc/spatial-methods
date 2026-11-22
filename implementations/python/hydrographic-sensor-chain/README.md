@@ -133,3 +133,40 @@ clock contribution again as an independent clock term. This interface
 propagates supplied first-order covariance; it does not claim complete
 survey TPU or replace the need to model datum, water level, vessel motion,
 beamforming, sound-speed profile estimation and other error sources.
+
+
+## Time-aligned ray-traced multi-ping covariance
+
+`assemble_time_aligned_ray_traced_multiping_jacobian` and
+`propagate_time_aligned_ray_traced_multiping_covariance` extend
+the ray-traced multi-ping model with one navigation-epoch clock-offset
+variable per ping.
+
+There are two distinct time sensitivities:
+
+1. The ray endpoint depends on the ping's acoustic two-way travel time.
+   This remains in the per-ping ray input block alongside launch angle.
+2. The interpolated vessel pose depends on the navigation evaluation epoch.
+   Its sounding-coordinate derivative is supplied as one 3-vector per ping,
+   in navigation-coordinate units per second. A separate clock-offset
+   column is appended for each ping.
+
+The input covariance order is
+\[
+[\text{ping-local sensor, angle and travel-time blocks};
+ \text{shared sound-speed profile};
+ \text{navigation epoch offsets by ping}].
+\]
+The final \(N\times N\) block may be populated from the offset covariance
+returned by `propagate_clock_state_covariance` in
+`clock_state_covariance.py`. The full joint covariance can
+also retain correlations between navigation epoch offsets, acoustic
+travel-time errors, navigation states and the shared profile.
+
+If one physical clock contributes to both navigation epoch tagging and
+acoustic travel-time measurement, its cross-covariance must be represented
+in the joint input covariance. Do not assume the two effects are
+independent, and do not add the same clock contribution again as a separate
+variance term. The function propagates the supplied first-order model; it
+does not itself estimate clock states or derive navigation time
+sensitivities from a trajectory.

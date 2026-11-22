@@ -185,3 +185,27 @@ cross-ping covariance, not in a second independent contribution.
 This is a first-order covariance composition for the stated ray and
 sensor-chain models. It does not imply a complete hydrographic TPU model
 or field validation.
+
+
+### Navigation-epoch timing in multi-ping covariance
+
+The acoustic two-way travel time and the navigation evaluation epoch are
+different time inputs. The ray endpoint sensitivity with respect to
+two-way travel time remains ping-local. The derivative of the final
+sounding with respect to a navigation epoch shift is a separate
+three-component sensitivity in navigation coordinates.
+
+The sensor-chain implementation
+`assemble_time_aligned_ray_traced_multiping_jacobian` appends
+one navigation-epoch clock-offset column per ping after the ping-local
+ray inputs and the shared sound-speed profile. Its propagated joint
+covariance can use the correlated offset covariance produced by the
+stochastic clock state model. If the same clock drives acoustic travel-time
+measurement, include the corresponding cross-covariance between the
+navigation epoch offsets and the ping-local travel-time inputs. This
+preserves shared timing effects without silently counting one clock error
+twice.
+
+The time sensitivity is supplied by the caller; this function does not
+replace time-aligned trajectory interpolation or calculate the derivative
+from raw navigation observations.

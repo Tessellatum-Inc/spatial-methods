@@ -140,3 +140,64 @@ def test_ray_traced_multiping_rejects_mismatched_ray_jacobian_count():
     sensor = [[[0.0] * 17 for _ in range(3)]]
     with pytest.raises(ValueError):
         assemble_ray_traced_multiping_jacobian(sensor, [])
+
+
+def test_time_aligned_ray_traced_multiping_appends_epoch_clock_columns():
+    from multiping_covariance import assemble_time_aligned_ray_traced_multiping_jacobian
+
+    sensor = []
+    for _ in range(2):
+        matrix = [[0.0] * 17 for _ in range(3)]
+        matrix[0][15] = 1.0
+        sensor.append(matrix)
+    rays = [
+        [[1.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+        [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+    ]
+    time_sensitivities = [[3.0, 4.0, 5.0], [6.0, 7.0, 8.0]]
+    jacobian = assemble_time_aligned_ray_traced_multiping_jacobian(
+        sensor, rays, time_sensitivities)
+    assert len(jacobian) == 6
+    # Two local 17-state blocks + one shared profile + two epoch offsets.
+    assert len(jacobian[0]) == 37
+    assert jacobian[0][-2:] == pytest.approx([3.0, 0.0])
+    assert jacobian[1][-2:] == pytest.approx([4.0, 0.0])
+    assert jacobian[3][-2:] == pytest.approx([0.0, 6.0])
+    assert jacobian[5][-2:] == pytest.approx([0.0, 8.0])
+
+
+def test_time_aligned_ray_traced_multiping_propagates_clock_cross_covariance():
+    from multiping_covariance import propagate_time_aligned_ray_traced_multiping_covariance
+
+    sensor = []
+    for _ in range(2):
+        matrix = [[0.0] * 17 for _ in range(3)]
+        matrix[0][15] = 1.0
+        sensor.append(matrix)
+    rays = [
+        [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+        [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+    ]
+    time_sensitivities = [[1.0, 0.0, 0.0], [1.0, 0.0, 0.0]]
+    covariance = [[0.0] * 37 for _ in range(37)]
+    # Correlated epoch-offset errors: Var=[4,9], Cov=2.
+    covariance[35][35] = 4.0
+    covariance[36][36] = 9.0
+    covariance[35][36] = covariance[36][35] = 2.0
+    result = propagate_time_aligned_ray_traced_multiping_covariance(
+        sensor, rays, time_sensitivities, covariance)
+    output = result["covariance"]
+    assert output[0][0] == pytest.approx(4.0)
+    assert output[0][3] == pytest.approx(2.0)
+    assert output[3][0] == pytest.approx(2.0)
+    assert output[3][3] == pytest.approx(9.0)
+
+
+def test_time_aligned_ray_traced_multiping_rejects_bad_time_sensitivity():
+    from multiping_covariance import assemble_time_aligned_ray_traced_multiping_jacobian
+
+    sensor = [[[0.0] * 17 for _ in range(3)]]
+    rays = [[[1.0, 0.0, 0.0], [0.0, 0.0, 0.0]]]
+    with pytest.raises(ValueError):
+        assemble_time_aligned_ray_traced_multiping_jacobian(
+            sensor, rays, [[1.0, float("nan"), 2.0]])
