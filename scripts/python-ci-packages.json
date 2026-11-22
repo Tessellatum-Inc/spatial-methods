@@ -280,6 +280,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/environmental-observations",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/equity-covering",
     "pythonpath": ""
   },
