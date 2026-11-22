@@ -154,6 +154,25 @@ The point-cloud registration package is a local computational baseline, not a mo
 
 **Useful outcome:** Understand why a mobile point cloud depends on time-aligned sensor observations and a calibrated trajectory, why strip agreement is not absolute accuracy evidence, and how control and independent checks constrain the result.
 
+## Pathway 9 — From airborne LiDAR flightlines to a validated terrain or surface product
+
+**Application context:** Acquire broad-area 3D observations from an aircraft or UAV, georeference each laser pulse using the navigation trajectory and calibrated sensor geometry, reconcile overlapping flightlines, classify returns and validate derived products.
+
+**Best entry point:** [Airborne LiDAR acquisition and strip adjustment](../collection/airborne-lidar-acquisition-and-strip-adjustment.md).
+
+| Pillar | Canonical route | Why it belongs |
+|---|---|---|
+| Theoretical Foundations | [Measurement models and measurand definition](../foundations/measurement-science/measurement-models-and-measurand-definition.md); [measurement principles and field verification](../foundations/measurement-science/measurement-principles-and-field-verification.md); [geodesy and reference systems](../learning-paths/geodesy-foundations.md); [covariance and GLS](../foundations/measurement-science/covariance-correlated-observations-and-gls.md) | Frames pulse observations, trajectory transformations, reference systems, calibration and uncertainty. |
+| Spatial Data Collection | [Airborne LiDAR acquisition and strip adjustment](../collection/airborne-lidar-acquisition-and-strip-adjustment.md); [GNSS positioning and navigation observation](../collection/gnss-positioning-and-navigation-observation.md); [mobile laser scanning](../collection/mobile-laser-scanning-and-kinematic-point-cloud-acquisition.md) | Connects flight planning, GNSS/IMU trajectory, boresight, control and strip diagnostics to the broader kinematic sensing family. |
+| Spatial Algorithms | [Point-cloud registration and geometric comparison](../algorithms/geometry/point-cloud-registration.md); [point-cloud registration implementation](../implementations/python/point-cloud-registration/README.md); [voxelization](../implementations/python/point-cloud-voxelization/README.md) | Supplies bounded geometric comparison and point-cloud handling components. It does not implement a full airborne navigation solution, strip bundle adjustment or semantic classifier. |
+| Spatial Recipes | [Survey-to-spatial-dataset workflow](../recipes/survey-to-spatial-dataset/README.md) | Provides the requirements, control, independent validation, provenance and delivery gates. |
+
+**Practical evidence and current boundary**
+
+The point-cloud packages are computational components, not a validated airborne LiDAR production chain. The acquisition method is an initial synthesis; no flight, calibration, strip adjustment, classification or checkpoint campaign is claimed. Flight operations must comply with the applicable aviation and UAS permissions, safety requirements and project specifications.
+
+**Useful outcome:** Understand how flight geometry, trajectory, calibration, strip adjustment, classification and independent checks determine whether a point cloud or terrain model is fit for its intended use.
+
 ## What is not yet represented
 
 This index is deliberately selective. It does not imply that every subject has a complete cross-pillar route. In particular:
