@@ -513,3 +513,29 @@ def test_2d_ensemble_forecast_rejects_negative_members_and_etkf_bad_covariance()
     with pytest.raises(ValueError, match="at least two"):
         ensemble_transform_kalman_analysis(
             np.ones((2, 1)), np.ones((1, 2)), np.ones(1), np.eye(1))
+
+
+def test_etkf_matches_kalman_mean_and_covariance_with_correlated_observation_errors():
+    X = np.array([
+        [0.2, 1.0, 1.8, 2.5, 0.7],
+        [1.4, 0.3, 0.9, 2.1, 1.7],
+        [0.5, 1.6, 0.2, 1.1, 2.0],
+    ])
+    H = np.array([[1.0, 0.4, 0.0], [0.0, 0.3, 1.0]])
+    y = np.array([1.8, 1.1])
+    R = np.array([[0.20, 0.08], [0.08, 0.15]])
+    result = ensemble_transform_kalman_analysis(X, H, y, R)
+
+    mean_f = X.mean(axis=1)
+    A = X - mean_f[:, None]
+    P_f = A @ A.T / (X.shape[1] - 1)
+    innovation_covariance = H @ P_f @ H.T + R
+    expected_mean = mean_f + P_f @ H.T @ np.linalg.solve(
+        innovation_covariance, y - H @ mean_f)
+    expected_covariance = P_f - P_f @ H.T @ np.linalg.solve(
+        innovation_covariance, H @ P_f)
+    A_a = result["analysis_ensemble"] - result["analysis_mean"][:, None]
+    actual_covariance = A_a @ A_a.T / (X.shape[1] - 1)
+
+    np.testing.assert_allclose(result["analysis_mean"], expected_mean, atol=1e-11)
+    np.testing.assert_allclose(actual_covariance, expected_covariance, atol=1e-11)

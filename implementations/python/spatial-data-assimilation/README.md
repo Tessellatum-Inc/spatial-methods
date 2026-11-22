@@ -283,3 +283,17 @@ Positivity-preserving transforms, localisation, inflation, adaptive model
 error, and correlated process/observation error treatment remain separate
 extensions. Synthetic tests demonstrate software consistency, not application
 skill.
+
+
+The ETKF ensemble moments are checked against the batch Kalman solution for
+a finite ensemble and a non-diagonal positive-definite observation-error
+covariance. The sample analysis mean and sample covariance must match
+\[
+\bar x^a=\bar x^f+P^fH^T(HP^fH^T+R)^{-1}(y-H\bar x^f),
+\]
+\[
+P^a=P^f-P^fH^T(HP^fH^T+R)^{-1}HP^f,
+\]
+where \(P^f=AA^T/(m-1)\). The test uses a correlated two-observation error
+model; it checks the ETKF transform itself rather than only whether the
+innovation becomes smaller.

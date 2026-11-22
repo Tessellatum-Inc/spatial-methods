@@ -251,3 +251,9 @@ Member mass budgets are returned. The analysis is an unconstrained Gaussian
 update and may contain negative values even though forecast inputs must be
 non-negative. No clipping is applied; a positivity-preserving analysis,
 localisation and inflation are not yet implemented.
+
+
+A numerical identity test compares ETKF ensemble moments with the batch
+Kalman analysis for a finite sample covariance and a correlated observation
+error matrix. This checks the deterministic square-root transform and
+correlated-error whitening, not merely the direction of innovation reduction.
