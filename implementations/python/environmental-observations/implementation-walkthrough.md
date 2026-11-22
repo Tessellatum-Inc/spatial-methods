@@ -37,3 +37,28 @@ The structural validator answers “is this record shaped and typed correctly?�
 From this directory run `python -m pytest -q`. Tests cover round trips, timezone requirements, finite values, uncertainty units, QC vocabulary, support/CRS requirements, duplicate IDs, batch errors, JSON and JSON Lines loading, source digests, line-specific diagnostics, processing lineage, deterministic parameter hashes and deep immutability.
 
 Add method-specific validators separately, keyed by measurand and method. Do not turn the common envelope into an overconfident universal schema. A future database layer should use an authoritative spatial library for CRS and topology checks.
+
+## 8. A complete source-to-product path
+
+The companion `examples/observation_to_idw.py` is an executable integration
+example rather than a second implementation of interpolation. It:
+
+1. hashes and parses a JSON Lines source while retaining physical line numbers;
+2. applies a caller-defined field-probe method contract;
+3. requires the supplied records to already carry the programme's
+   `accepted` QC state;
+4. extracts point coordinates only after checking the declared CRS label and
+   geometry type;
+5. calls the repository's existing inverse-distance-weighting implementation;
+6. serialises the predictions deterministically and hashes the exact output
+   bytes; and
+7. records a source-digest → observation IDs → output-digest lineage chain.
+
+This is a teaching integration, not a general environmental workflow. It
+assumes one measurand, one unit, one method, one point geometry type and one
+coordinate reference system. It does not perform unit conversion, CRS
+transformation, spatial validation, temporal aggregation, uncertainty
+propagation or independent scientific QC. The synthetic fixture is not
+field data. The JSON prediction bytes are deterministic for the same inputs,
+targets, parameters and compatible numerical runtime; execution timestamps
+in the separate lineage manifest naturally vary between runs.

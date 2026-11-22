@@ -194,3 +194,30 @@ Tests cover round-trip preservation, timezone-aware timestamps, finite numeric
 values, uncertainty constraints, QC vocabulary, support geometry/CRS,
 unknown support, duplicate IDs, batch error reporting, JSON loading, deep
 immutability and caller-defined method rules.
+
+
+## End-to-end example: observations to an interpolated product
+
+The [observation-to-IDW example](examples/observation_to_idw.py) connects the
+JSON Lines ingestion and method-rule boundary above to the repository's
+existing geostatistics implementation. It reads point-supported water
+temperature records, requires an explicitly configured field-probe method
+contract, uses only records already marked `accepted`, runs the shared
+`idw_predict` implementation, and writes a deterministic JSON prediction
+artifact plus a processing-lineage manifest.
+
+Run it from this directory:
+
+```bash
+python examples/observation_to_idw.py
+```
+
+The example data are synthetic and use a declared projected CRS label
+(`EPSG:32637`) with coordinates in metres. The example does not transform
+coordinates or establish that this CRS is suitable for a real project.
+Its IDW parameters and target points are illustrative, not recommended
+environmental defaults. The output file's SHA-256 digest is linked as the
+estimation activity output; the manifest also links the exact source-file
+digest to the ingested observation identifiers. The lineage validator checks
+the declared dependency order, not the scientific validity of the model or
+proof that a computation occurred.
