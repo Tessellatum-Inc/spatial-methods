@@ -1,6 +1,6 @@
 # Random fields, covariance functions and variograms
 
-**Subject identity:** \`SM-FND-005\` — Spatial statistics and stochastic processes  
+**Subject identity:** `SM-FND-005` — Spatial statistics and stochastic processes  
 **Module:** 01  
 **Status:** Initial researched teaching resource; independent technical review and learner testing pending.
 
