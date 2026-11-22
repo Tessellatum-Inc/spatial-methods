@@ -11,7 +11,7 @@ def test_shared_clock_offset_creates_cross_ping_covariance():
     assert c[0][0]==pytest.approx(0.25) and c[3][3]==pytest.approx(1.0)
 
 def test_independent_ping_jitter_has_no_cross_ping_covariance():
-    local=[[[1.0,0.0]],[[1.0,0.0]]]; shared=[[[0.0]],[[0.0]]]
+    local=[[[0.0,1.0]],[[0.0,1.0]]]; shared=[[[0.0]],[[0.0]]]
     # Input order: ping-1 [trajectory,jitter], ping-2 [trajectory,jitter], shared.
     c=[[0.0]*5 for _ in range(5)]; c[1][1]=0.04; c[3][3]=0.09
     out=propagate_multiping_covariance(local,shared,c)["covariance"]
