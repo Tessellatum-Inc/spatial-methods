@@ -90,15 +90,15 @@ A dense grid is not automatically representative. A large number of convenience 
 
 ### 5.1 Inclusion probabilities and weighted estimation
 
-For probability samples, let (pi_i) be the probability that population unit (i) is included. If the target is a finite-population total, the Horvitz–Thompson estimator is:
+For probability samples, let \(\pi_i\) be the probability that population unit (i) is included. If the target is a finite-population total, the Horvitz–Thompson estimator is:
 
 \[
 \widehat{T}_{HT}=\sum_{i\in s}\frac{y_i}{\pi_i}
 \]
 
-where (s) is the realised sample and (y_i) is the observed value for sampled unit (i). This estimator relies on known, positive inclusion probabilities and an appropriate sampling design. Variance estimation must reflect the joint inclusion probabilities and actual design.
+where \(s\) is the realised sample and \(y_i\) is the observed value for sampled unit (i). This estimator relies on known, positive inclusion probabilities and an appropriate sampling design. Variance estimation must reflect the joint inclusion probabilities and actual design.
 
-For stratified simple random sampling, with (H) strata, population size (N_h), sample size (n_h), and within-stratum sample variance (s_h^2), the estimated variance of the stratified total is:
+For stratified simple random sampling, with \(H\) strata, population size \(N_h\), sample size \(n_h\), and within-stratum sample variance \(s_h^2\), the estimated variance of the stratified total is:
 
 \[
 \widehat{\operatorname{Var}}(\widehat{T}_{st})
@@ -115,9 +115,9 @@ For a simple random sample estimating a proportion under an approximate normal c
 n_0=\frac{z_{1-\alpha/2}^{2}\,p(1-p)}{e^2}
 \]
 
-where (p) is the anticipated proportion, (e) is the desired absolute margin of error, and (z_{1-\alpha/2}) is the corresponding normal quantile. If (p) is unknown, (p=0.5) gives the largest value under this approximation.
+where \(p\) is the anticipated proportion, \(e\) is the desired absolute margin of error, and \(z_{1-\alpha/2}\) is the corresponding normal quantile. If \(p\) is unknown, \(p=0.5\) gives the largest value under this approximation.
 
-For a finite population of size (N), a common correction is:
+For a finite population of size \(N\), a common correction is:
 
 \[
 n=\frac{n_0}{1+\frac{n_0-1}{N}}
