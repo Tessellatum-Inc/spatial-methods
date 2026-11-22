@@ -297,7 +297,7 @@ def test_trajectory_stochastic_clock_rejects_covariance_not_from_clock_process()
     result = {"jacobian": [[0.0] * 19 for _ in range(3)],
               "time_offset_sensitivity": [1.0, 0.0, 0.0]}
     clock = propagate_clock_state_covariance([0.0], [[1.0, 0.0], [0.0, 1.0]], 0.0)
-    covariance = [[0.0] * 20 for _ in range(20)]
+    covariance = [[0.0] * 19 for _ in range(19)]
     with pytest.raises(ValueError, match="must match the propagated clock process"):
         propagate_time_aligned_ray_traced_stochastic_clock_multiping_covariance_from_trajectory(
             [result], [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
