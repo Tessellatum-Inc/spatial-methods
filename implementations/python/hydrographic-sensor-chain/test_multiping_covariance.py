@@ -231,9 +231,9 @@ def test_trajectory_results_drive_ray_and_epoch_jacobian_composition():
     jacobian = assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
         [trajectory_result], [ray], [90.0])
     # At 90 degrees, horizontal endpoint maps to transducer +y.
-    assert jacobian[0][15:17] == pytest.approx([0.0, 7.0])
-    assert jacobian[1][15:17] == pytest.approx([2.0, 8.0])
-    assert jacobian[2][15:17] == pytest.approx([0.0, 9.0])
+    assert jacobian[0][15:17] == pytest.approx([0.0, 0.0])
+    assert jacobian[1][15:17] == pytest.approx([3.0, 4.0])
+    assert jacobian[2][15:17] == pytest.approx([6.0, 7.0])
     assert jacobian[0][-1] == pytest.approx(7.0)
     assert jacobian[1][-1] == pytest.approx(8.0)
     assert jacobian[2][-1] == pytest.approx(9.0)

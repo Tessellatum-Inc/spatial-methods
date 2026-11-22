@@ -170,3 +170,6 @@ independent, and do not add the same clock contribution again as a separate
 variance term. The function propagates the supplied first-order model; it
 does not itself estimate clock states or derive navigation time
 sensitivities from a trajectory.
+
+
+The trajectory-driven variant, `assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory`, accepts one result per ping from `time_aligned_sensor_chain_sounding_point_and_jacobian`, plus each ping's beam azimuth and ray endpoint Jacobian. It composes the 3x19 interpolated sensor-chain Jacobian with the endpoint-to-vector azimuth mapping and the ray Jacobian, then carries the returned navigation-epoch sensitivity into the per-ping clock columns. The companion `propagate_time_aligned_ray_traced_multiping_covariance_from_trajectory` performs the joint covariance propagation. This removes the need for the caller to manually copy the navigation-epoch sensitivity into a separate argument. It does not remove the need to supply the correct beam azimuth, ray sensitivities or joint covariance.

@@ -209,3 +209,6 @@ twice.
 The time sensitivity is supplied by the caller; this function does not
 replace time-aligned trajectory interpolation or calculate the derivative
 from raw navigation observations.
+
+
+The trajectory-driven composition is exposed as `assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory`. It consumes the 3x19 result of the time-aligned sensor-chain interpolation, maps the acoustic endpoint coordinates into the transducer-frame acoustic vector using beam azimuth, and composes that mapping with the ray endpoint Jacobian. The final time-offset column is taken from the interpolated trajectory result itself. The corresponding propagation function is `propagate_time_aligned_ray_traced_multiping_covariance_from_trajectory`.
