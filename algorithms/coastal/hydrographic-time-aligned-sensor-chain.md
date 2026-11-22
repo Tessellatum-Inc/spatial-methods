@@ -1,37 +1,54 @@
-# Time-aligned trajectory and multi-ping hydrographic sensor-chain geometry
+# Navigation trajectory and propagated hydrographic uncertainty
 
-## Piecewise navigation trajectory
+## Pose interpolation and endpoint covariance
 
-For navigation epochs \(t_k\), antenna positions \(\mathbf r_k\) and
-attitudes \(\mathbf R_k\), require strictly increasing times and evaluate
-each ping only inside the trajectory support. Within segment \(k\),
+Within a bracket \([t_0,t_1]\), with
+\(\alpha=(t-t_0)/(t_1-t_0)\), interpolate antenna position linearly and
+attitude on the shortest SO(3) geodesic:
 \[
-\alpha=\frac{t-t_k}{t_{k+1}-t_k},\quad
-\mathbf r(t)=(1-\alpha)\mathbf r_k+\alpha\mathbf r_{k+1},
+\mathbf r(t)=(1-\alpha)\mathbf r_0+\alpha\mathbf r_1,\qquad
+\mathbf R(t)=\mathbf R_0\exp\left(
+\alpha\log(\mathbf R_0^T\mathbf R_1)\right).
 \]
+No extrapolation is permitted. The endpoint pose perturbation order is
 \[
-\mathbf R(t)=\mathbf R_k\exp\left(
-\alpha\log(\mathbf R_k^T\mathbf R_{k+1})\right).
+\delta\mathbf x_e=
+[\delta\mathbf r_0^T,\delta\boldsymbol\theta_0^T,
+ \delta\mathbf r_1^T,\delta\boldsymbol\theta_1^T]^T.
 \]
-Position is piecewise linear and attitude follows the shortest SO(3)
-geodesic. Segment velocity and body angular rate are constant within a
-segment:
+Position errors are additive in navigation coordinates. Attitude errors are
+left-multiplicative in navigation axes:
 \[
-\mathbf v_k=\frac{\mathbf r_{k+1}-\mathbf r_k}{t_{k+1}-t_k},
-\qquad
-\boldsymbol\omega_k=
-\frac{\log(\mathbf R_k^T\mathbf R_{k+1})}{t_{k+1}-t_k}.
+\mathbf R_k^{\rm pert}=
+\exp([\delta\boldsymbol\theta_k]_\times)\mathbf R_k.
 \]
-No extrapolation is performed. The interpolant is continuous in pose but
-its velocity and angular rate may jump at navigation knots; it is not a
-dynamics model or a smoothed trajectory estimator.
+Define the interpolated output perturbation similarly. A six-by-twelve
+Jacobian is evaluated by central finite differences; for attitude columns,
+the output perturbation is obtained from
+\[
+\delta\boldsymbol\theta(t)=
+\log(\mathbf R^{\rm pert}(t)\mathbf R(t)^T).
+\]
+This computes the local tangent-space derivative of the actual geodesic
+interpolant, rather than assuming that SO(3) interpolation weights are
+exactly scalar multiples of the identity.
 
-## Shared multi-ping uncertainty
+Given the full endpoint covariance, including cross-epoch and
+position-attitude terms,
+\[
+\mathbf C_{\rm pose}(t)=
+\mathbf J_{\rm interp}\mathbf C_e\mathbf J_{\rm interp}^{T}.
+\]
+The full covariance matters: neighboring navigation states often share
+filter history, clock errors, inertial biases or GNSS smoothing. Dropping
+cross-epoch covariance can overstate or understate interpolated uncertainty.
 
-For ping \(i\), partition the input into ping-local parameters
-\(\mathbf x_i\) and shared parameters \(\mathbf c\). The shared set can include
-installation lever arms, mounting angles, common clock offset and drift.
-With local Jacobian \(\mathbf J_i\) and shared Jacobian \(\mathbf K_i\),
+## Multi-ping propagation
+
+For a sequence of soundings, shared lever arms, mounting calibration and
+clock parameters must appear once in the common input block. With local
+Jacobian \(\mathbf J_i\), shared Jacobian \(\mathbf K_i\), and complete input
+covariance \(\mathbf C_x\):
 \[
 \mathbf J_{\rm all}=
 \begin{bmatrix}
@@ -39,38 +56,21 @@ With local Jacobian \(\mathbf J_i\) and shared Jacobian \(\mathbf K_i\),
 0&\mathbf J_2&\cdots&0&\mathbf K_2\\
 \vdots&&\ddots&&\vdots\\
 0&0&\cdots&\mathbf J_N&\mathbf K_N
-\end{bmatrix},
-\quad
+\end{bmatrix},\qquad
 \mathbf C_p=\mathbf J_{\rm all}\mathbf C_x\mathbf J_{\rm all}^{T}.
 \]
-The result is a \(3N\times3N\) covariance. Its off-diagonal blocks encode
-cross-ping correlation. A shared clock offset contributes
-\[
-\mathbf C_{p_i p_j}^{(t)}
-=\sigma_{\delta t}^2\mathbf j_{t,i}\mathbf j_{t,j}^{T},
-\]
-whereas independent timing jitter contributes only through each ping's
-local block. For a clock model
-\[
-\Delta t_i=\delta t_0+\dot{\delta t}(t_i-t_{\rm ref})+\epsilon_i,
-\]
-the common offset and drift columns are
-\[
-\frac{\partial\mathbf p_i}{\partial\delta t_0}=\mathbf j_{t,i},
-\qquad
-\frac{\partial\mathbf p_i}{\partial\dot{\delta t}}
-=(t_i-t_{\rm ref})\mathbf j_{t,i}.
-\]
-Preserve known correlations between navigation states and shared calibration
-or clock parameters. The implementation validates dimensions, finiteness
-and symmetry; the covariance provider must ensure positive semidefiniteness.
+The full \(3N\times3N\) output covariance retains cross-ping correlation.
+Independent per-ping propagation is insufficient when navigation states,
+clock or calibration parameters are shared or correlated.
 
-## Implementation and limits
+## Implementation limits
 
-The [Python package](../../implementations/python/hydrographic-sensor-chain/README.md)
-contains static and two-state time-aligned sensor-chain geometry, multi-epoch
-piecewise pose interpolation, block-Jacobian assembly and full cross-ping
-covariance propagation. It is a first-order model, not a clock/calibration
-estimator or trajectory smoother. High-dynamic splines, clock random walks,
-asynchronous filtering, vessel flexure, acoustic ray tracing and bottom
-detection remain outside scope.
+The Python package implements piecewise pose interpolation, finite-difference
+endpoint covariance propagation and multi-ping block covariance propagation.
+Covariance inputs are checked for shape, finite values and symmetry; callers
+must ensure positive semidefiniteness. The interpolation covariance is
+first-order and depends on the selected finite-difference step. It is not a
+navigation filter or a substitute for the filter's native covariance and
+cross-covariance outputs. High-dynamic smoothing, clock random walks,
+asynchronous filtering, vessel flexure, acoustic ray tracing and full
+hydrographic TPU remain outside scope.
