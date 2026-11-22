@@ -20,9 +20,9 @@ def test_position_covariance_transfers_directly_to_sounding():
 def test_attitude_uncertainty_maps_through_acoustic_and_lever_arm_geometry():
     c=zero_covariance();c[3][3]=0.01
     out=propagate_sounding_uncertainty(*args(c))
-    # A navigation-frame rotation about x moves the 6 m forward vector in z.
-    assert out["covariance"][2][2]==pytest.approx(0.36)
-    assert out["covariance"][1][1]==pytest.approx(0.0)
+    # A navigation-frame rotation about x moves the 6 m vector in y.
+    assert out["covariance"][1][1]==pytest.approx(0.36)
+    assert out["covariance"][2][2]==pytest.approx(0.0)
 
 def test_shared_position_and_lever_arm_cross_covariance_is_retained():
     c=zero_covariance();c[0][0]=1;c[6][6]=1;c[0][6]=c[6][0]=0.5
