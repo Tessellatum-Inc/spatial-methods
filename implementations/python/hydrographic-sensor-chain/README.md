@@ -323,3 +323,41 @@ The interpolation is deterministic and piecewise linear within the observed
 epoch range. It does not add unresolved environmental variability between
 profile observations; that requires an explicit model-discrepancy or
 physical variability covariance rather than implicit inflation.
+
+
+### Multi-ping propagation with OU-conditioned profile uncertainty
+
+The ray-traced multi-ping path can propagate the residual profile uncertainty
+from `condition_temporal_sound_speed_profiles_ou` using
+`assemble_ou_conditional_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory`
+and
+`propagate_ou_conditional_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory`.
+
+First condition the profile process on the observed profiles. Use the
+returned conditional mean profiles as the sound-speed profiles supplied to
+the ray tracer. Assign each ping to a query-profile index. The new
+multi-ping Jacobian places each ping's layer sensitivity into that query
+profile's residual-state block, preserving the OU model's cross-query and
+cross-layer covariance.
+
+The joint input order is
+[
+[	ext{ping-local sensor/angle/travel-time blocks};
+	ext{query-epoch-major OU conditional profile residuals};
+	ext{navigation epoch offsets by ping}].
+]
+The query-profile covariance block must exactly match
+`conditional_joint_profile_covariance` from the OU conditioning result.
+This block represents only the residual uncertainty after conditioning on
+the noiseless observed profile values. It is not the original observation
+covariance, and it must not be combined with that same process covariance a
+second time through the deterministic interpolation path.
+
+Under the Gaussian conditioning model, the residual process is independent
+of the exact observed profile values. If observed profile measurements have
+non-negligible measurement error, use a model with explicit observation
+noise before interpreting the conditional covariance. Cross-covariance with
+other survey inputs may be supplied in the full joint matrix only when
+supported by an explicit joint error model; the helper does not infer such
+relationships. The output remains first-order ray/sensor covariance
+propagation, not a complete hydrographic TPU solution.

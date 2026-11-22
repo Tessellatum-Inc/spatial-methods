@@ -630,3 +630,67 @@ def test_interpolated_profile_multiping_rejects_invalid_query_index_and_source_b
         propagate_interpolated_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory(
             [trajectory], ray, [0.0], [0], interpolation, covariance
         )
+
+
+def test_ou_conditional_profile_residuals_propagate_across_multiple_pings():
+    from multiping_covariance import (
+        assemble_ou_conditional_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory,
+        propagate_ou_conditional_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory,
+    )
+    trajectories = []
+    for _ in range(2):
+        matrix = [[0.0] * 19 for _ in range(3)]
+        matrix[0][15] = 1.0
+        trajectories.append({"jacobian": matrix, "time_offset_sensitivity": [0.0, 0.0, 0.0]})
+    rays = [
+        [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+        [[4.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+    ]
+    conditional = {
+        "query_epochs_s": [2.0, 8.0],
+        "layer_count": 1,
+        "conditional_joint_profile_covariance": [[0.5, 0.2], [0.2, 0.6]],
+    }
+    jacobian = assemble_ou_conditional_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+        trajectories, rays, [0.0, 0.0], [0, 1], conditional
+    )
+    assert len(jacobian[0]) == 38
+    assert jacobian[0][34:36] == pytest.approx([2.0, 0.0])
+    assert jacobian[3][34:36] == pytest.approx([0.0, 4.0])
+
+    covariance = [[0.0] * 38 for _ in range(38)]
+    covariance[34][34] = 0.5
+    covariance[34][35] = covariance[35][34] = 0.2
+    covariance[35][35] = 0.6
+    result = propagate_ou_conditional_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory(
+        trajectories, rays, [0.0, 0.0], [0, 1], conditional, covariance
+    )
+    assert result["covariance"][0][0] == pytest.approx(2.0)
+    assert result["covariance"][0][3] == pytest.approx(1.6)
+    assert result["covariance"][3][3] == pytest.approx(9.6)
+
+
+def test_ou_conditional_profile_multiping_rejects_bad_query_index_and_covariance():
+    from multiping_covariance import (
+        assemble_ou_conditional_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory,
+        propagate_ou_conditional_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory,
+    )
+    trajectory = {
+        "jacobian": [[0.0] * 19 for _ in range(3)],
+        "time_offset_sensitivity": [0.0, 0.0, 0.0],
+    }
+    ray = [[[1.0, 0.0, 0.0], [0.0, 0.0, 0.0]]]
+    conditional = {
+        "query_epochs_s": [5.0],
+        "layer_count": 1,
+        "conditional_joint_profile_covariance": [[1.0]],
+    }
+    with pytest.raises(ValueError, match="outside the query profile range"):
+        assemble_ou_conditional_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+            [trajectory], ray, [0.0], [1], conditional
+        )
+    covariance = [[0.0] * 20 for _ in range(20)]
+    with pytest.raises(ValueError, match="must match the OU conditional covariance"):
+        propagate_ou_conditional_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory(
+            [trajectory], ray, [0.0], [0], conditional, covariance
+        )

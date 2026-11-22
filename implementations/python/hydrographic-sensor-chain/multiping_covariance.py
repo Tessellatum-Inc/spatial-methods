@@ -914,3 +914,131 @@ def propagate_interpolated_profile_time_aligned_ray_traced_multiping_covariance_
         "source_profile_epochs_s": list(interpolated_profile_result["source_profile_epochs_s"]),
         "profile_layer_count": interpolated_profile_result["layer_count"],
     }
+
+
+def assemble_ou_conditional_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+    time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+    beam_azimuths_degrees, ping_query_profile_indices,
+    conditional_profile_result):
+    """Map ping sensitivities to OU conditional residual profile states.
+
+    The OU conditional mean is conditioned on the observed profiles. This
+    Jacobian carries only the remaining conditional profile residual, whose
+    covariance is supplied by conditional_joint_profile_covariance. Input
+    order is [ping-local sensor/angle/travel-time blocks, query-epoch-major
+    conditional profile residuals, navigation epoch offsets by ping].
+    """
+    if not isinstance(conditional_profile_result, dict):
+        raise ValueError("conditional_profile_result must be a mapping")
+    query_epochs = conditional_profile_result.get("query_epochs_s")
+    layer_count = conditional_profile_result.get("layer_count")
+    conditional_covariance = conditional_profile_result.get(
+        "conditional_joint_profile_covariance"
+    )
+    if not isinstance(query_epochs, (list, tuple)) or not query_epochs:
+        raise ValueError("conditional profile result must contain query_epochs_s")
+    try:
+        query_epochs = [float(value) for value in query_epochs]
+        numeric_layer_count = float(layer_count)
+        layer_count = int(numeric_layer_count)
+    except (TypeError, ValueError, OverflowError):
+        raise ValueError("conditional profile epochs and layer count must be valid") from None
+    if (layer_count < 1 or numeric_layer_count != layer_count
+            or isinstance(conditional_profile_result.get("layer_count"), bool)
+            or not all(math.isfinite(value) for value in query_epochs)):
+        raise ValueError("conditional profile epochs and layer count must be valid")
+    if not isinstance(time_aligned_sensor_chain_results, (list, tuple)) or not time_aligned_sensor_chain_results:
+        raise ValueError("at least one time-aligned sensor-chain result is required")
+    count = len(time_aligned_sensor_chain_results)
+    if not isinstance(ping_query_profile_indices, (list, tuple)) or len(ping_query_profile_indices) != count:
+        raise ValueError("one query profile index is required per ping")
+    indices = []
+    for ping, value in enumerate(ping_query_profile_indices):
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise ValueError(f"ping_query_profile_indices[{ping}] must be an integer")
+        if value < 0 or value >= len(query_epochs):
+            raise ValueError(f"ping_query_profile_indices[{ping}] is outside the query profile range")
+        indices.append(value)
+
+    profile_width = len(query_epochs) * layer_count
+    profile_covariance = _matrix(
+        conditional_covariance, "conditional_joint_profile_covariance",
+        rows=profile_width, columns=profile_width
+    )
+    scale = max(1.0, max(abs(value) for row in profile_covariance for value in row))
+    if any(abs(profile_covariance[i][j] - profile_covariance[j][i]) > 1e-10 * scale
+           for i in range(profile_width) for j in range(i)):
+        raise ValueError("conditional_joint_profile_covariance must be symmetric")
+
+    base = assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+        time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+        beam_azimuths_degrees
+    )
+    local_width = 17 * count
+    if len(base[0]) != local_width + layer_count + count:
+        raise ValueError("ray profile layer count must match the conditional profile")
+    output = []
+    for row_index, row in enumerate(base):
+        ping = row_index // 3
+        query_start = local_width
+        sensitivity = row[query_start:query_start + layer_count]
+        profile_sensitivity = [0.0] * profile_width
+        profile_start = indices[ping] * layer_count
+        profile_sensitivity[profile_start:profile_start + layer_count] = sensitivity
+        output.append(
+            row[:local_width] + profile_sensitivity
+            + row[query_start + layer_count:]
+        )
+    return output
+
+
+def propagate_ou_conditional_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory(
+    time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+    beam_azimuths_degrees, ping_query_profile_indices,
+    conditional_profile_result, joint_input_covariance):
+    """Propagate soundings with OU conditional residual profile covariance.
+
+    The query-profile block in the supplied joint covariance must equal the
+    OU model's conditional residual covariance. The conditioned profile mean
+    is an input to ray tracing; this block represents only residual
+    uncertainty after conditioning, not the original observation covariance.
+    """
+    jacobian = assemble_ou_conditional_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+        time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+        beam_azimuths_degrees, ping_query_profile_indices,
+        conditional_profile_result
+    )
+    size = len(jacobian[0])
+    covariance = _matrix(
+        joint_input_covariance, "joint_input_covariance",
+        rows=size, columns=size
+    )
+    scale = max(1.0, max(abs(value) for row in covariance for value in row))
+    if any(abs(covariance[i][j] - covariance[j][i]) > 1e-10 * scale
+           for i in range(size) for j in range(i)):
+        raise ValueError("joint_input_covariance must be symmetric")
+    count = len(time_aligned_sensor_chain_results)
+    profile_width = len(conditional_profile_result["query_epochs_s"]) * conditional_profile_result["layer_count"]
+    profile_start = 17 * count
+    expected = _matrix(
+        conditional_profile_result["conditional_joint_profile_covariance"],
+        "conditional_joint_profile_covariance",
+        rows=profile_width, columns=profile_width
+    )
+    for i in range(profile_width):
+        for j in range(profile_width):
+            actual = covariance[profile_start + i][profile_start + j]
+            if abs(actual - expected[i][j]) > 1e-10 * max(1.0, abs(actual), abs(expected[i][j])):
+                raise ValueError("conditional profile covariance block must match the OU conditional covariance")
+    return {
+        "jacobian": jacobian,
+        "covariance": _multiply(_multiply(jacobian, covariance), _transpose(jacobian)),
+        "covariance_input_order": (
+            "[ping-local sensor/angle/travel-time blocks, query-epoch-major "
+            "OU conditional profile residuals, navigation epoch offsets by ping]"
+        ),
+        "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]",
+        "query_profile_epochs_s": list(conditional_profile_result["query_epochs_s"]),
+        "profile_layer_count": conditional_profile_result["layer_count"],
+        "profile_uncertainty": "OU conditional residual covariance after noiseless profile observations",
+    }
