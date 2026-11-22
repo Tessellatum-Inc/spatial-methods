@@ -135,6 +135,25 @@ The registration and point-cloud packages are computational baselines, not a fie
 
 **Useful outcome:** Understand why a dense point cloud can still be incomplete or misregistered, why registration residuals are not independent accuracy evidence, and how control and check points support a defensible 3D deliverable.
 
+## Pathway 8 — From mobile laser observations to a trajectory-referenced corridor cloud
+
+**Application context:** Capture 3D corridor or indoor geometry from a moving platform, estimate the platform trajectory, transform time-tagged laser observations into a project frame and assess strip consistency and independent accuracy.
+
+**Best entry point:** [Mobile laser scanning and kinematic point-cloud acquisition](../collection/mobile-laser-scanning-and-kinematic-point-cloud-acquisition.md).
+
+| Pillar | Canonical route | Why it belongs |
+|---|---|---|
+| Theoretical Foundations | [Measurement models and measurand definition](../foundations/measurement-science/measurement-models-and-measurand-definition.md); [measurement principles and field verification](../foundations/measurement-science/measurement-principles-and-field-verification.md); [covariance and GLS](../foundations/measurement-science/covariance-correlated-observations-and-gls.md); [geodesy and reference systems](../learning-paths/geodesy-foundations.md) | Defines sensor observations, time-dependent coordinate transformations, reference frames and uncertainty. |
+| Spatial Data Collection | [Mobile laser scanning and kinematic point-cloud acquisition](../collection/mobile-laser-scanning-and-kinematic-point-cloud-acquisition.md); [GNSS positioning and navigation observation](../collection/gnss-positioning-and-navigation-observation.md); [terrestrial surveying](../collection/terrestrial-surveying-total-station-and-levelling.md) | Connects scanner observations to platform trajectory, calibration, reference support and independent survey control. |
+| Spatial Algorithms | [Point-cloud registration and geometric comparison](../algorithms/geometry/point-cloud-registration.md); [point-cloud registration implementation](../implementations/python/point-cloud-registration/README.md) | Provides bounded local strip/point-cloud comparison methods. It does not implement a complete GNSS/INS navigation filter or production MLS georeferencing chain. |
+| Spatial Recipes | [Survey-to-spatial-dataset workflow](../recipes/survey-to-spatial-dataset/README.md) | Connects requirements, field records, reference control, independent checks, provenance and delivery. |
+
+**Practical evidence and current boundary**
+
+The point-cloud registration package is a local computational baseline, not a mobile navigation or trajectory estimator. The collection method is an initial synthesis; no sensor calibration, trajectory solution, platform test or field campaign is claimed. Indoor SLAM and GNSS-denied mapping require separate system-specific validation and external datum control where absolute coordinates are required.
+
+**Useful outcome:** Understand why a mobile point cloud depends on time-aligned sensor observations and a calibrated trajectory, why strip agreement is not absolute accuracy evidence, and how control and independent checks constrain the result.
+
 ## What is not yet represented
 
 This index is deliberately selective. It does not imply that every subject has a complete cross-pillar route. In particular:
