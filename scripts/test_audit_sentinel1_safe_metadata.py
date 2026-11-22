@@ -51,6 +51,25 @@ class SafeMetadataAuditTests(unittest.TestCase):
             self.assertTrue(report["checks"]["product_name_matches_expected"])
             self.assertEqual(report["scientific_processing_status"], "not_started")
 
+    def test_fails_when_safe_root_is_not_iw_grd(self):
+        content = members()
+        wrong_root = "S1C_EW_GRDH_1SDV_20261102T031112_20261102T031137_010152_01443B_5D46.SAFE"
+        content = {name.replace(ROOT, wrong_root): value for name, value in content.items()}
+        with tempfile.TemporaryDirectory() as directory:
+            path = self.make_archive(directory, content)
+            report = audit_archive(path)
+            self.assertEqual(report["structural_dual_pol_gate"], "failed")
+            self.assertFalse(report["checks"]["safe_root_name_is_sentinel1_iw_grd"])
+
+    def test_fails_when_manifest_mode_is_not_iw(self):
+        content = members()
+        content[f"{ROOT}/manifest.safe"] = MANIFEST.replace("<s1:mode>IW</s1:mode>", "<s1:mode>EW</s1:mode>")
+        with tempfile.TemporaryDirectory() as directory:
+            path = self.make_archive(directory, content)
+            report = audit_archive(path)
+            self.assertEqual(report["structural_dual_pol_gate"], "failed")
+            self.assertFalse(report["checks"]["manifest_identifies_iw_mode"])
+
     def test_fails_when_vh_measurement_is_missing(self):
         with tempfile.TemporaryDirectory() as directory:
             path = self.make_archive(directory, members(("vv",)))

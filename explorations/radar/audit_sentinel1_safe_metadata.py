@@ -111,6 +111,10 @@ def audit_archive(path: Path, expected_product_name: str | None = None) -> dict:
         "calibration_contains_vv_and_vh": calibration_pols == POLARISATIONS,
         "noise_annotation_contains_vv_and_vh": noise_pols == POLARISATIONS,
         "manifest_is_well_formed_xml": True,
+        "safe_root_name_is_sentinel1_iw_grd": bool(
+            re.match(r"^S1[ABCD]_IW_GRDH_.*\\.SAFE$", root_product_name, re.IGNORECASE)
+        ),
+        "manifest_identifies_iw_mode": "IW" in {value.upper() for value in modes},
     }
     if expected_product_name:
         checks["product_name_matches_expected"] = root_product_name == expected_product_name
