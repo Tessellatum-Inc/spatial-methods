@@ -6,7 +6,8 @@ from linear_spatial_assimilation import (
     periodic_nonuniform_point_observation_operator,
     nonperiodic_nonuniform_advection_diffusion_operator,
     nonperiodic_nonuniform_advection_diffusion_step,
-    nonperiodic_nonuniform_advection_diffusion_step_with_boundaries,\n    nonperiodic_rectilinear_advection_diffusion_step_2d,
+    nonperiodic_nonuniform_advection_diffusion_step_with_boundaries,
+    nonperiodic_rectilinear_advection_diffusion_step_2d,
     run_linear_spatial_assimilation, verify_spatial_forecasts,
 )
 
@@ -353,7 +354,8 @@ def test_2d_diffusion_converges_to_neumann_fourier_mode():
         dx=dy=np.full(n,1.0/n)
         x=(np.arange(n)+0.5)/n
         xx,yy=np.meshgrid(x,x,indexing="ij")
-        initial=np.cos(np.pi*xx)*np.cos(np.pi*yy)
+        mode=np.cos(np.pi*xx)*np.cos(np.pi*yy)
+        initial=1.5+0.5*mode
         ux=np.zeros((n-1,n)); uy=np.zeros((n,n-1))
         kx=np.full((n-1,n),diffusivity_x)
         ky=np.full((n,n-1),diffusivity_y)
@@ -363,7 +365,7 @@ def test_2d_diffusion_converges_to_neumann_fourier_mode():
         for _ in range(steps):
             state=nonperiodic_rectilinear_advection_diffusion_step_2d(
                 dx,dy,dt,ux,uy,kx,ky,state)["concentrations"]
-        exact=np.exp(-np.pi**2*(diffusivity_x+diffusivity_y)*final_time)*initial
+        exact=1.5+0.5*np.exp(-np.pi**2*(diffusivity_x+diffusivity_y)*final_time)*mode
         errors.append(float(np.mean(np.abs(state-exact))))
     assert errors[0]>errors[1]>errors[2]
     assert errors[0]/errors[1]>2.5
