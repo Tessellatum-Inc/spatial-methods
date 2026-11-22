@@ -109,3 +109,17 @@ def test_elapsed_interval_rejects_nonpositive_or_mismatched_events():
         propagate_clock_elapsed_interval_covariance([0.0, 1.0], [2.0], [[0, 0], [0, 0]])
     with pytest.raises(ValueError, match="later than"):
         propagate_clock_elapsed_interval_covariance([1.0], [1.0], [[0, 0], [0, 0]])
+
+
+def test_elapsed_interval_includes_initial_drift_uncertainty_and_process_noise():
+    from clock_state_covariance import propagate_clock_elapsed_interval_covariance
+
+    result = propagate_clock_elapsed_interval_covariance(
+        [10.0], [12.0], [[0.0, 0.0], [0.0, 0.25]], 0.5
+    )
+    # T^2 Var(drift_0) + q*T^3/3; initial constant offset cancels.
+    assert result["elapsed_interval_error_covariance"][0][0] == pytest.approx(
+        4.0 * 0.25 + 0.5 * 8.0 / 3.0
+    )
+
+

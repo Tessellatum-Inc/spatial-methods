@@ -587,6 +587,18 @@ def assemble_time_aligned_ray_traced_event_clock_multiping_jacobian_from_traject
         raise ValueError("all ping and event epochs must be finite numbers")
     if any(receive[i] <= transmit[i] for i in range(count)):
         raise ValueError("each receive epoch must be later than its transmit epoch")
+    recorded_transmit = clock_event_covariance_result.get("transmit_epochs_s")
+    recorded_receive = clock_event_covariance_result.get("receive_epochs_s")
+    if not isinstance(recorded_transmit, (list, tuple)) or not isinstance(recorded_receive, (list, tuple)):
+        raise ValueError("clock event result must retain its transmit and receive epoch pairing")
+    try:
+        recorded_transmit = [float(x) for x in recorded_transmit]
+        recorded_receive = [float(x) for x in recorded_receive]
+    except (TypeError, ValueError):
+        raise ValueError("clock event result transmit and receive epochs must be finite numbers") from None
+    if (len(recorded_transmit) != count or len(recorded_receive) != count
+            or recorded_transmit != transmit or recorded_receive != receive):
+        raise ValueError("transmit and receive epochs must match the clock event covariance pairing")
     if any(events[i + 1] <= events[i] for i in range(len(events) - 1)):
         raise ValueError("event epochs must be strictly increasing")
     event_index = {epoch: i for i, epoch in enumerate(events)}

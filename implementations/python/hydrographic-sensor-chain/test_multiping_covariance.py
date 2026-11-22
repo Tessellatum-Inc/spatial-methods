@@ -416,3 +416,31 @@ def test_event_clock_propagator_checks_process_derived_event_covariance():
         propagate_time_aligned_ray_traced_event_clock_multiping_covariance_from_trajectory(
             [trajectory], [ray], [0.0], [0.0], [0.0], [0.1], clock, covariance
         )
+
+
+def test_event_clock_jacobian_rejects_different_transmit_receive_pairing():
+    from clock_state_covariance import propagate_clock_elapsed_interval_covariance
+    from multiping_covariance import assemble_time_aligned_ray_traced_event_clock_multiping_jacobian_from_trajectory
+
+    trajectories = [
+        {"jacobian": [[0.0] * 19 for _ in range(3)],
+         "time_offset_sensitivity": [0.0, 0.0, 0.0]},
+        {"jacobian": [[0.0] * 19 for _ in range(3)],
+         "time_offset_sensitivity": [0.0, 0.0, 0.0]},
+    ]
+    rays = [
+        [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+        [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+    ]
+    clock = propagate_clock_elapsed_interval_covariance(
+        [0.0, 1.0], [2.0, 3.0], [[0.0, 0.0], [0.0, 0.0]], 0.1
+    )
+    # All four epochs remain present and both intervals remain positive, but
+    # swapping receive events changes which clock errors belong to each ping.
+    with pytest.raises(ValueError, match="must match the clock event covariance pairing"):
+        assemble_time_aligned_ray_traced_event_clock_multiping_jacobian_from_trajectory(
+            trajectories, rays, [0.0, 0.0], [0.0, 1.0],
+            [0.0, 1.0], [3.0, 2.0], clock
+        )
+
+
