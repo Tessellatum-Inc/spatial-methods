@@ -15,6 +15,16 @@ import re
 import sys
 
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+REQUIRED_SAFE_AUDIT_CHECKS = {
+    "measurement_contains_vv_and_vh",
+    "annotation_contains_vv_and_vh",
+    "calibration_contains_vv_and_vh",
+    "noise_annotation_contains_vv_and_vh",
+    "manifest_is_well_formed_xml",
+    "safe_root_name_is_sentinel1_iw_grd",
+    "manifest_identifies_iw_mode",
+}
+
 REMAINING_PROCESSING_GATES = [
     "complete_datatake_or_required_slice_coverage_verified",
     "processing_software_version_and_parameters_locked",
@@ -73,7 +83,11 @@ def build_readiness_record(stack: dict, download: dict, audit: dict) -> dict:
     if audit.get("structural_dual_pol_gate") != "passed":
         blockers.append("safe_structural_dual_polarisation_gate_not_passed")
     checks = audit.get("checks")
-    if not isinstance(checks, dict) or not checks or not all(value is True for value in checks.values()):
+    if (
+        not isinstance(checks, dict)
+        or not REQUIRED_SAFE_AUDIT_CHECKS.issubset(checks)
+        or not all(value is True for value in checks.values())
+    ):
         blockers.append("safe_audit_contains_missing_or_failed_checks")
 
     expected_name = candidate.get("product_name")
