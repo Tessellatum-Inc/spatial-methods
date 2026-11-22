@@ -34,9 +34,31 @@ numeric ordinates, but axis order, CRS validity, topology and physical support
 semantics remain the responsibility of the project.
 
 QC states are `raw`, `accepted`, `flagged`, `rejected` and `superseded`.
-The validator does not promote records between states. Standard uncertainty,
+The structural validator does not promote records between states. Standard uncertainty,
 when supplied, must be non-negative and carry a unit; the unit is not converted
 or assumed to equal the measurement unit automatically.
+
+## Method-specific rules
+
+The common record contract does not define universal environmental thresholds. A project may opt into explicit rules from its approved method specification or quality plan:
+
+```python
+from environmental_observations import MethodRule, validate_method_rules
+
+rule = MethodRule(
+    method_id="field-probe-v1",
+    required_provenance=("instrument_id", "calibration_ref"),
+    allowed_support_types=frozenset({"point"}),
+    allowed_units=frozenset({"Cel"}),
+    minimum_value=-5.0,
+    maximum_value=50.0,
+)
+findings = validate_method_rules(records, {rule.method_id: rule})
+for finding in findings.violations:
+    print(finding)
+```
+
+Only records whose `method_id` has a configured rule are checked. The caller supplies every constraint; no default physical range or unit conversion is inferred. Structural validation and method-rule validation are separate gates.
 
 ## Run
 
@@ -110,4 +132,5 @@ archive in place.
 
 Tests cover round-trip preservation, timezone-aware timestamps, finite numeric
 values, uncertainty constraints, QC vocabulary, support geometry/CRS,
-unknown support, duplicate IDs, batch error reporting and JSON loading.
+unknown support, duplicate IDs, batch error reporting, JSON loading, deep
+immutability and caller-defined method rules.

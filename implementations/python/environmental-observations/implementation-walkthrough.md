@@ -26,7 +26,13 @@ The original files still need to be retained in an immutable or versioned raw ar
 
 `validate_batch` processes each array row independently. Valid rows are retained, invalid rows are reported with their array index, and duplicate `observation_id` values are rejected. `load_json_records` accepts a top-level JSON array or an object containing a `records` array. Neither function rewrites source files.
 
-## 5. Run and extend
+## 5. Method-specific rule layer
+
+`MethodRule` provides an opt-in contract keyed by `method_id`. A project can declare required provenance keys, allowed support types, allowed unit identifiers and finite minimum/maximum value bounds. `validate_method_rules` reports violations without modifying observations. Rules are caller-supplied from the applicable method specification or quality plan; the package supplies no default environmental ranges and performs no unit conversion. Methods without a configured rule remain unconstrained by this layer.
+
+The structural validator answers “is this record shaped and typed correctly?” The method rule answers “does this record meet the explicitly configured contract for this acquisition method?” Neither alone proves calibration validity, scientific correctness or regulatory acceptance.
+
+## 6. Run and extend
 
 From this directory run `python -m pytest -q`. Tests cover round trips, timezone requirements, finite values, uncertainty units, QC vocabulary, support/CRS requirements, duplicate IDs, batch errors, JSON loading and deep immutability.
 

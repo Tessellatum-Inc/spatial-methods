@@ -280,16 +280,31 @@ class MethodRule:
 
     def __post_init__(self) -> None:
         _nonempty_string(self.method_id, "method_id")
-        for key in self.required_provenance:
-            _nonempty_string(key, "required_provenance item")
+        if isinstance(self.required_provenance, str):
+            raise ObservationValidationError("required_provenance must be a sequence of field names")
+        required = tuple(_nonempty_string(key, "required_provenance item")
+                         for key in self.required_provenance)
+        if len(required) != len(set(required)):
+            raise ObservationValidationError("required_provenance must not contain duplicates")
+        object.__setattr__(self, "required_provenance", required)
         if self.allowed_support_types is not None:
-            invalid = set(self.allowed_support_types) - SUPPORT_TYPES
+            allowed_support = frozenset(self.allowed_support_types)
+            invalid = allowed_support - SUPPORT_TYPES
             if invalid:
                 raise ObservationValidationError(f"unknown support types in method rule: {sorted(invalid)}")
+            object.__setattr__(self, "allowed_support_types", allowed_support)
+        if self.allowed_units is not None:
+            if isinstance(self.allowed_units, str):
+                raise ObservationValidationError("allowed_units must be a collection of unit identifiers")
+            allowed_units = frozenset(_nonempty_string(unit, "allowed_units item")
+                                      for unit in self.allowed_units)
+            if not allowed_units:
+                raise ObservationValidationError("allowed_units must not be empty")
+            object.__setattr__(self, "allowed_units", allowed_units)
         if self.minimum_value is not None:
-            _finite_number(self.minimum_value, "minimum_value")
+            object.__setattr__(self, "minimum_value", _finite_number(self.minimum_value, "minimum_value"))
         if self.maximum_value is not None:
-            _finite_number(self.maximum_value, "maximum_value")
+            object.__setattr__(self, "maximum_value", _finite_number(self.maximum_value, "maximum_value"))
         if (self.minimum_value is not None and self.maximum_value is not None
                 and self.minimum_value > self.maximum_value):
             raise ObservationValidationError("minimum_value must not exceed maximum_value")
