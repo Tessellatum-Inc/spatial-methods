@@ -297,11 +297,11 @@ def test_boundary_closed_requires_active_boundary_values():
 
 def test_robin_exchange_boundary_uses_series_resistance_and_closes_mass_budget():
     result=nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
-        np.array([2.0, 1.0]),0.05,np.zeros(1),np.zeros(1),np.array([4.0,4.0]),
+        np.array([4.0, 1.0]),0.05,np.zeros(1),np.zeros(1),np.array([4.0,4.0]),
         left_boundary_diffusivity=2.0,
         diffusive_boundary_conditions=("robin","no_flux"),
         left_exchange_concentration=1.0,left_mass_transfer_coefficient=3.0)
-    # G = 1 / (1/h + (dx/2)/k) = 1 / (1/3 + 2/2) = 0.75.
+    # G = 1 / (1/h + (dx/2)/k) = 1 / (1/3 + 4/(2*2)) = 0.75.
     assert result["left_boundary_flux"] == pytest.approx(-2.25)
     assert result["right_boundary_flux"] == pytest.approx(0.0)
     assert result["boundary_mass_change"] == pytest.approx(-0.1125)
