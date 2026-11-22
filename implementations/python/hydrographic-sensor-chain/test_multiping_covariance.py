@@ -269,7 +269,7 @@ def test_trajectory_ray_covariance_uses_process_derived_offset_drift_states():
         [100.0, 105.0], [[0.25, 0.01], [0.01, 0.04]], 0.5
     )
     jacobian = assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory(
-        results, rays, [0.0, 0.0], clock
+        results, rays, [0.0, 0.0], [100.0, 105.0], clock
     )
     # Two pings: 17 local variables each, one profile variable, four clock states.
     assert len(jacobian[0]) == 39
@@ -281,7 +281,7 @@ def test_trajectory_ray_covariance_uses_process_derived_offset_drift_states():
         for j in range(4):
             covariance[35 + i][35 + j] = clock["joint_state_covariance"][i][j]
     result = propagate_time_aligned_ray_traced_stochastic_clock_multiping_covariance_from_trajectory(
-        results, rays, [0.0, 0.0], clock, covariance
+        results, rays, [0.0, 0.0], [100.0, 105.0], clock, covariance
     )
     output = result["covariance"]
     expected = clock["offset_covariance"]
@@ -301,5 +301,19 @@ def test_trajectory_stochastic_clock_rejects_covariance_not_from_clock_process()
     with pytest.raises(ValueError, match="must match the propagated clock process"):
         propagate_time_aligned_ray_traced_stochastic_clock_multiping_covariance_from_trajectory(
             [result], [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
-            [0.0], clock, covariance
+            [0.0], [0.0], clock, covariance
+        )
+
+
+def test_trajectory_stochastic_clock_rejects_mismatched_ping_epochs():
+    from clock_state_covariance import propagate_clock_state_covariance
+    from multiping_covariance import assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory
+
+    result = {"jacobian": [[0.0] * 19 for _ in range(3)],
+              "time_offset_sensitivity": [1.0, 0.0, 0.0]}
+    clock = propagate_clock_state_covariance([10.0], [[0.0, 0.0], [0.0, 0.0]], 0.0)
+    with pytest.raises(ValueError, match="must equal the supplied ping epochs"):
+        assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory(
+            [result], [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
+            [0.0], [11.0], clock
         )

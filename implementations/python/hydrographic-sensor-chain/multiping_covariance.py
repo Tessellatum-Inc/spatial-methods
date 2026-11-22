@@ -434,7 +434,7 @@ def propagate_time_aligned_ray_traced_multiping_covariance_from_trajectory(
 
 def assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory(
     time_aligned_sensor_chain_results, ray_endpoint_jacobians,
-    beam_azimuths_degrees, clock_state_covariance_result):
+    beam_azimuths_degrees, ping_epochs_s, clock_state_covariance_result):
     """Replace per-ping epoch offsets with the propagated [offset, drift] states.
 
     The clock-state covariance result must come from
@@ -447,8 +447,20 @@ def assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_tr
         raise ValueError("clock_state_covariance_result must contain joint_state_covariance")
     epochs = from_clock.get("epochs_s")
     count = len(time_aligned_sensor_chain_results)
+    if not isinstance(ping_epochs_s, (list, tuple)) or len(ping_epochs_s) != count:
+        raise ValueError("one ping epoch is required per trajectory result")
     if not isinstance(epochs, (list, tuple)) or len(epochs) != count:
         raise ValueError("clock-state epochs must match the number of pings")
+    try:
+        supplied_epochs = [float(value) for value in ping_epochs_s]
+        process_epochs = [float(value) for value in epochs]
+    except (TypeError, ValueError):
+        raise ValueError("ping and clock-state epochs must be finite numbers") from None
+    if not all(math.isfinite(value) for value in supplied_epochs + process_epochs):
+        raise ValueError("ping and clock-state epochs must be finite numbers")
+    if any(abs(a - b) > 1e-9 * max(1.0, abs(a), abs(b))
+           for a, b in zip(supplied_epochs, process_epochs)):
+        raise ValueError("clock-state epochs must equal the supplied ping epochs")
     clock_cov = _matrix(from_clock["joint_state_covariance"],
                         "clock joint state covariance",
                         rows=2 * count, columns=2 * count)
@@ -471,7 +483,7 @@ def assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_tr
 
 def propagate_time_aligned_ray_traced_stochastic_clock_multiping_covariance_from_trajectory(
     time_aligned_sensor_chain_results, ray_endpoint_jacobians,
-    beam_azimuths_degrees, clock_state_covariance_result,
+    beam_azimuths_degrees, ping_epochs_s, clock_state_covariance_result,
     joint_input_covariance):
     """Propagate survey-line covariance using process-derived clock states.
 
@@ -483,7 +495,7 @@ def propagate_time_aligned_ray_traced_stochastic_clock_multiping_covariance_from
     """
     jacobian = assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory(
         time_aligned_sensor_chain_results, ray_endpoint_jacobians,
-        beam_azimuths_degrees, clock_state_covariance_result)
+        beam_azimuths_degrees, ping_epochs_s, clock_state_covariance_result)
     size = len(jacobian[0])
     covariance = _matrix(joint_input_covariance, "joint_input_covariance",
                          rows=size, columns=size)
