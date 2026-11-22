@@ -52,3 +52,18 @@ def test_nonzero_initial_uncertainty_and_process_noise_are_both_propagated():
 def test_rejects_invalid_epochs_covariance_or_noise(epochs, covariance, q):
     with pytest.raises(ValueError):
         propagate_clock_state_covariance(epochs, covariance, q)
+
+
+def test_joint_clock_state_covariance_is_symmetric_with_transposed_cross_epoch_blocks():
+    result = propagate_clock_state_covariance(
+        [0.0, 2.0], [[1.0, 0.2], [0.2, 0.5]], 0.0
+    )
+    joint = result["joint_state_covariance"]
+    for i in range(4):
+        for j in range(4):
+            assert joint[i][j] == pytest.approx(joint[j][i])
+    # Cov(x_0, x_1) = P_0 Phi(2)^T; the reverse block is its transpose.
+    assert joint[0][2:4] == pytest.approx([1.4, 0.2])
+    assert joint[1][2:4] == pytest.approx([1.2, 0.5])
+    assert joint[2][0:2] == pytest.approx([1.4, 1.2])
+    assert joint[3][0:2] == pytest.approx([0.2, 0.5])
