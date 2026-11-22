@@ -37,7 +37,23 @@ at each face. Diffusivity is non-negative. The periodic sensor operator uses
 actual cell-centre coordinates and interpolates across the seam using
 periodic copies of the first or last centre.
 
-## 3. Filtering and validation separation
+## 3. Nonperiodic zero-flux boundary contract
+
+The nonperiodic operator assembles only the n-1 interior face fluxes. At both
+domain ends the total flux is prescribed as zero. This means there is no
+advective or diffusive mass transfer through either boundary. Each interior
+face contributes equal and opposite mass changes to its adjacent cells, so
+
+\[
+\sum_i \Delta x_i c_i^{n+1}=\sum_i \Delta x_i c_i^n.
+\]
+
+Zero total flux is not interchangeable with a zero-gradient ghost cell when
+the boundary velocity is nonzero. Prescribed inflow/outflow and distributed
+source/sink terms require an explicit mass-budget extension and are not
+folded into this homogeneous linear operator.
+
+## 4. Filtering and validation separation
 
 The filter returns forecast priors and analysis posteriors separately. A
 held-out verification stream is supplied only to the verification function;
@@ -65,7 +81,7 @@ Each lead's sample count is reported. If no independent observations are
 available at a lead, metrics are NaN and count is zero rather than silently
 substituting an analysis observation.
 
-## 4. Analytical transport checks
+## 5. Analytical transport checks
 
 For a periodic Fourier mode, pure constant-velocity advection has exact
 solution \(c(x,t)=\sin(k(x-ut))\) when the initial state is \(\sin(kx)\).
@@ -76,7 +92,7 @@ centred diffusion is second order in space; for the diffusion test, the time
 step is scaled with \(\Delta x^2\) so temporal error does not dominate the
 spatial convergence check.
 
-## 4. Tests and interpretation
+## 6. Tests and interpretation
 
 Tests exercise analytical convergence for periodic advection and diffusion, conservation under spatially varying face velocity,
 constant-field preservation under divergence-free flow, local upwind

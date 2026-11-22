@@ -59,7 +59,19 @@ one-dimensional periodic setting); spatially varying velocity can compress or
 expand the concentration field. Sensor observations interpolate between actual
 nonuniform cell centres, including across the periodic seam.
 
-## 3. Assimilation and held-out verification
+## 3. Nonperiodic zero-flux boundaries
+
+A separate nonperiodic operator accepts the n-1 interior face fields on an
+n-cell grid. The total advective-diffusive flux at each domain end is set to
+zero. This also prevents advective mass from crossing the boundary; it is not
+merely a zero diffusive gradient. The finite-volume update conserves
+sum_i Delta x_i c_i. The explicit step is accepted only when its transition
+matrix is non-negative. A constant concentration is preserved for pure
+diffusion; with interior advection, boundary-adjacent concentrations can
+change because the imposed zero total boundary flux is not the same as
+extending a constant advective flux through the boundary.
+
+## 4. Assimilation and held-out verification
 
 The assimilation function accepts time-varying observation tuples (y, H, R)
 or None. The forecast prior and analysis posterior remain separate.
@@ -89,6 +101,7 @@ software test, not evidence of real-world predictive skill.
 - periodic_advection_diffusion_operator(...)
 - periodic_point_observation_operator(...)
 - periodic_nonuniform_advection_diffusion_operator(...)
+- nonperiodic_nonuniform_advection_diffusion_operator(...)
 - periodic_nonuniform_point_observation_operator(...)
 - run_linear_spatial_assimilation(...)
 - verify_spatial_forecasts(...)
@@ -98,8 +111,8 @@ from this directory.
 
 ## Scope and limitations
 
-Both dynamics examples are one-dimensional and periodic. The nonuniform model
-assumes cell-centred scalar states, time-constant face fields during each step,
+The dynamics examples are one-dimensional. The periodic models use periodic closure; the nonperiodic operator implements zero total boundary flux only. The nonuniform models
+assume cell-centred scalar states, time-constant face fields during each step,
 explicit first-order upwind advection and two-point centred diffusion. It does
 not implement non-periodic boundaries, source/sink terms, higher-order flux
 limiters, nonlinear flow, parameter estimation, ensemble localisation,

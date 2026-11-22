@@ -160,6 +160,42 @@ def periodic_nonuniform_advection_diffusion_operator(cell_widths, time_step,
     return F
 
 
+
+def nonperiodic_nonuniform_advection_diffusion_operator(
+        cell_widths, time_step, interior_face_velocities, interior_face_diffusivities):
+    """Explicit conservative transport step with zero total flux at both boundaries.
+
+    Cell-centred concentrations occupy a nonperiodic 1-D grid. The n-1
+    supplied face velocities and diffusivities describe only interior faces;
+    both boundary fluxes are exactly zero. This applies to the combined
+    advective-diffusive flux, not merely the diffusive gradient.
+    """
+    widths = _array(cell_widths, "cell_widths", 1)
+    n = widths.size
+    if n < 2 or np.any(widths <= 0):
+        raise ValueError("cell_widths must contain at least two positive values")
+    dt = float(time_step)
+    if not np.isfinite(dt) or dt <= 0:
+        raise ValueError("time_step must be positive and finite")
+    velocity = _array(interior_face_velocities, "interior_face_velocities", 1)
+    diffusivity = _array(interior_face_diffusivities, "interior_face_diffusivities", 1)
+    if velocity.shape != (n-1,) or diffusivity.shape != (n-1,) or np.any(diffusivity < 0):
+        raise ValueError("interior face fields must have n-1 values; diffusivity must be non-negative")
+    distances = 0.5 * (widths[:-1] + widths[1:])
+    L = np.zeros((n,n))
+    for i, (u, k, distance) in enumerate(zip(velocity, diffusivity, distances)):
+        a = max(u, 0.0) + k/distance
+        b = min(u, 0.0) - k/distance
+        L[i,i] -= a/widths[i]
+        L[i,i+1] -= b/widths[i]
+        L[i+1,i] += a/widths[i+1]
+        L[i+1,i+1] += b/widths[i+1]
+    F = np.eye(n) + dt*L
+    if np.min(F) < -1e-12:
+        raise ValueError("time step violates finite-volume positivity/stability bound")
+    F[F < 0] = 0.0
+    return F
+
 def periodic_nonuniform_point_observation_operator(cell_widths, sensor_positions):
     """Linear interpolation from nonuniform periodic cell centres to point sensors."""
     widths = _array(cell_widths, "cell_widths", 1)

@@ -4,6 +4,7 @@ from linear_spatial_assimilation import (
     periodic_advection_diffusion_operator, periodic_point_observation_operator,
     periodic_nonuniform_advection_diffusion_operator,
     periodic_nonuniform_point_observation_operator,
+    nonperiodic_nonuniform_advection_diffusion_operator,
     run_linear_spatial_assimilation, verify_spatial_forecasts,
 )
 
@@ -87,6 +88,35 @@ def test_nonuniform_model_rejects_unstable_step_and_bad_face_fields():
         periodic_nonuniform_advection_diffusion_operator(np.ones(4),2.0,np.ones(4),np.zeros(4))
     with pytest.raises(ValueError,match="one value per face"):
         periodic_nonuniform_advection_diffusion_operator(np.ones(4),0.1,np.ones(3),np.zeros(4))
+
+
+
+def test_nonperiodic_zero_total_flux_operator_conserves_mass():
+    widths=np.array([0.4,0.8,1.2,0.6])
+    velocity=np.array([0.3,-0.1,0.2])
+    diffusivity=np.array([0.02,0.04,0.01])
+    F=nonperiodic_nonuniform_advection_diffusion_operator(widths,0.1,velocity,diffusivity)
+    np.testing.assert_allclose(widths@F,widths,atol=1e-12)
+    assert np.min(F)>=0
+    state=np.array([1.0,0.4,1.7,0.2])
+    assert np.dot(widths,F@state)==pytest.approx(np.dot(widths,state))
+
+
+def test_nonperiodic_no_flux_diffusion_preserves_constant_state():
+    widths=np.array([0.5,1.0,0.75,1.25])
+    F=nonperiodic_nonuniform_advection_diffusion_operator(
+        widths,0.1,np.zeros(3),np.array([0.1,0.2,0.05]))
+    np.testing.assert_allclose(F@np.ones(4),np.ones(4),atol=1e-12)
+    np.testing.assert_allclose(widths@F,widths,atol=1e-12)
+
+
+def test_nonperiodic_operator_rejects_bad_faces_and_unstable_step():
+    with pytest.raises(ValueError,match="n-1"):
+        nonperiodic_nonuniform_advection_diffusion_operator(
+            np.ones(4),0.1,np.ones(4),np.zeros(3))
+    with pytest.raises(ValueError,match="positivity"):
+        nonperiodic_nonuniform_advection_diffusion_operator(
+            np.ones(4),2.0,np.ones(3),np.zeros(3))
 
 
 def test_nonuniform_sensor_interpolation_is_periodic_and_affine_exact():
