@@ -228,3 +228,74 @@ def test_jsonl_ingestion_rejects_non_utf8_source(tmp_path):
     path.write_bytes(bytes([0xFF]))
     with pytest.raises(ObservationValidationError, match="UTF-8"):
         load_jsonl_records(path)
+
+
+
+def test_processing_lineage_links_sources_observations_and_products_in_order():
+    from environmental_observations import (
+        ProcessingActivity, canonical_parameters_sha256, validate_lineage,
+    )
+
+    digest = canonical_parameters_sha256({"resolution": 10, "method": "kriging"})
+    source = "sha256:" + "a" * 64
+    ingest = ProcessingActivity(
+        activity_id="act-ingest", activity_type="ingestion",
+        method_id="field-probe-v1", method_version="1.2",
+        software_name="observation-loader", software_version="0.4.0",
+        started_at="2026-11-22T08:00:00Z", ended_at="2026-11-22T08:01:00Z",
+        input_refs=(source,), output_refs=("obs-001",),
+        parameters_sha256=canonical_parameters_sha256({}),
+    )
+    interpolate = ProcessingActivity(
+        activity_id="act-interpolate", activity_type="spatial-estimation",
+        method_id="ordinary-kriging", method_version="2.1",
+        software_name="spatial-engine", software_version="1.0.0",
+        started_at="2026-11-22T08:02:00Z", ended_at="2026-11-22T08:03:00Z",
+        input_refs=("obs-001",), output_refs=("surface-v1",),
+        parameters_sha256=digest,
+    )
+    assert validate_lineage([ingest, interpolate], [source]).is_valid
+    assert not validate_lineage([interpolate, ingest], [source]).is_valid
+
+
+def test_lineage_rejects_missing_inputs_and_duplicate_outputs():
+    from environmental_observations import ProcessingActivity, canonical_parameters_sha256, validate_lineage
+
+    common = dict(
+        activity_type="processing", method_id="method", method_version="1",
+        software_name="tool", software_version="1",
+        started_at="2026-11-22T08:00:00Z", ended_at="2026-11-22T08:01:00Z",
+        output_refs=("same-output",),
+        parameters_sha256=canonical_parameters_sha256({}),
+    )
+    first = ProcessingActivity(activity_id="a1", input_refs=("missing",), **common)
+    second = ProcessingActivity(activity_id="a2", input_refs=("missing",), **common)
+    result = validate_lineage([first, second])
+    assert len(result.violations) == 3
+    assert "not available" in result.violations[0]
+    assert "already defined" in result.violations[-1]
+
+
+def test_processing_activity_requires_valid_times_and_parameter_digest():
+    from environmental_observations import ProcessingActivity, ObservationValidationError
+
+    args = dict(
+        activity_id="a1", activity_type="processing", method_id="method",
+        method_version="1", software_name="tool", software_version="1",
+        started_at="2026-11-22T08:01:00Z", ended_at="2026-11-22T08:00:00Z",
+        input_refs=(), output_refs=("out-1",), parameters_sha256="0" * 64,
+    )
+    with pytest.raises(ObservationValidationError, match="ended_at"):
+        ProcessingActivity(**args)
+    args["ended_at"] = "2026-11-22T08:02:00Z"
+    args["parameters_sha256"] = "not-a-digest"
+    with pytest.raises(ObservationValidationError, match="SHA-256"):
+        ProcessingActivity(**args)
+
+
+def test_canonical_parameter_hash_is_order_independent_and_rejects_nan():
+    from environmental_observations import canonical_parameters_sha256, ObservationValidationError
+
+    assert canonical_parameters_sha256({"a": 1, "b": 2}) == canonical_parameters_sha256({"b": 2, "a": 1})
+    with pytest.raises(ObservationValidationError):
+        canonical_parameters_sha256({"invalid": math.nan})

@@ -420,3 +420,112 @@ def load_jsonl_records(path: str | Path) -> JSONLinesIngestion:
     return JSONLinesIngestion(
         digest, len(lines), tuple(records), tuple(record_line_numbers), tuple(errors)
     )
+
+
+def canonical_parameters_sha256(parameters: Mapping[str, Any]) -> str:
+    """Hash a JSON-compatible parameter mapping using deterministic JSON encoding."""
+    if not isinstance(parameters, Mapping):
+        raise ObservationValidationError("processing parameters must be an object")
+    try:
+        encoded = json.dumps(
+            parameters, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+            allow_nan=False,
+        ).encode("utf-8")
+    except (TypeError, ValueError) as exc:
+        raise ObservationValidationError(
+            "processing parameters must be finite JSON-compatible data"
+        ) from exc
+    return hashlib.sha256(encoded).hexdigest()
+
+
+@dataclass(frozen=True)
+class ProcessingActivity:
+    """Versioned processing step linking input entity IDs to output entity IDs."""
+    activity_id: str
+    activity_type: str
+    method_id: str
+    method_version: str
+    software_name: str
+    software_version: str
+    started_at: str
+    ended_at: str
+    input_refs: tuple[str, ...]
+    output_refs: tuple[str, ...]
+    parameters_sha256: str
+
+    def __post_init__(self) -> None:
+        for field_name in (
+            "activity_id", "activity_type", "method_id", "method_version",
+            "software_name", "software_version",
+        ):
+            _nonempty_string(getattr(self, field_name), field_name)
+        start = datetime.fromisoformat(_timestamp(self.started_at, "started_at").replace("Z", "+00:00"))
+        end = datetime.fromisoformat(_timestamp(self.ended_at, "ended_at").replace("Z", "+00:00"))
+        if end < start:
+            raise ObservationValidationError("ended_at must not precede started_at")
+        for field_name in ("input_refs", "output_refs"):
+            values = getattr(self, field_name)
+            if isinstance(values, str):
+                raise ObservationValidationError(f"{field_name} must be a sequence of entity references")
+            normalized = tuple(_nonempty_string(value, f"{field_name} item") for value in values)
+            if len(normalized) != len(set(normalized)):
+                raise ObservationValidationError(f"{field_name} must not contain duplicates")
+            object.__setattr__(self, field_name, normalized)
+        if not self.output_refs:
+            raise ObservationValidationError("processing activity must declare at least one output reference")
+        if set(self.input_refs) & set(self.output_refs):
+            raise ObservationValidationError("an activity must not use the same reference as both input and output")
+        digest = _nonempty_string(self.parameters_sha256, "parameters_sha256")
+        if len(digest) != 64 or any(char not in "0123456789abcdef" for char in digest):
+            raise ObservationValidationError("parameters_sha256 must be a lowercase SHA-256 hex digest")
+
+
+@dataclass(frozen=True)
+class LineageValidation:
+    """Findings from checking ordered processing activities against source IDs."""
+    violations: tuple[str, ...]
+
+    @property
+    def is_valid(self) -> bool:
+        return not self.violations
+
+
+def validate_lineage(activities: Any, source_refs: Any = ()) -> LineageValidation:
+    """Validate an ordered processing sequence against initial source identifiers.
+
+    Each input must be an initial source or an output of an earlier activity.
+    Outputs must be globally unique. The caller supplies execution order; this
+    function does not prove that a declared computation actually ran.
+    """
+    if not isinstance(activities, (list, tuple)) or not all(
+        isinstance(item, ProcessingActivity) for item in activities
+    ):
+        raise ObservationValidationError(
+            "activities must be a list or tuple of ProcessingActivity objects"
+        )
+    if isinstance(source_refs, str):
+        raise ObservationValidationError("source_refs must be a sequence of entity references")
+    try:
+        source_values = tuple(_nonempty_string(ref, "source_refs item") for ref in source_refs)
+    except TypeError as exc:
+        raise ObservationValidationError("source_refs must be an iterable of entity references") from exc
+    if len(source_values) != len(set(source_values)):
+        raise ObservationValidationError("source_refs must not contain duplicates")
+    available = set(source_values)
+    violations: list[str] = []
+    activity_ids: set[str] = set()
+    for activity in activities:
+        if activity.activity_id in activity_ids:
+            violations.append(f"duplicate activity_id {activity.activity_id!r}")
+        activity_ids.add(activity.activity_id)
+        missing = [ref for ref in activity.input_refs if ref not in available]
+        if missing:
+            violations.append(
+                f"{activity.activity_id}: inputs not available before this activity: {', '.join(missing)}"
+            )
+        for ref in activity.output_refs:
+            if ref in available:
+                violations.append(f"{activity.activity_id}: output reference {ref!r} is already defined")
+            else:
+                available.add(ref)
+    return LineageValidation(tuple(violations))

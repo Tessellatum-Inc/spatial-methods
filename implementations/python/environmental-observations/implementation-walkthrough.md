@@ -26,14 +26,14 @@ The original files still need to be retained in an immutable or versioned raw ar
 
 `validate_batch` processes each array row independently. Valid rows are retained, invalid rows are reported with their array index, and duplicate `observation_id` values are rejected. `load_json_records` accepts a top-level JSON array or an object containing a `records` array. `load_jsonl_records` parses one record per non-blank physical line, retains valid records when other lines fail, reports physical line numbers, returns line numbers aligned with each accepted record and rejects duplicate IDs. It hashes the exact source bytes with SHA-256. Neither loader rewrites source files.
 
-## 5. Method-specific rule layer
+## 5. Processing lineage\n\nProcessingActivity captures method/software versions, execution timestamps, input and output references, and a digest of canonicalised parameters. validate_lineage checks the declared execution order: each input must be a supplied source or an earlier activity output, and output identifiers cannot be redefined. This establishes a lightweight dependency chain from archived source bytes to observations and derived products. It is a declaration, not proof of execution or output integrity; the caller must preserve manifests and artifacts in controlled storage.\n\n## 6. Method-specific rule layer
 
 `MethodRule` provides an opt-in contract keyed by `method_id`. A project can declare required provenance keys, allowed support types, allowed unit identifiers and finite minimum/maximum value bounds. `validate_method_rules` reports violations without modifying observations. Rules are caller-supplied from the applicable method specification or quality plan; the package supplies no default environmental ranges and performs no unit conversion. Methods without a configured rule remain unconstrained by this layer.
 
 The structural validator answers “is this record shaped and typed correctly?” The method rule answers “does this record meet the explicitly configured contract for this acquisition method?” Neither alone proves calibration validity, scientific correctness or regulatory acceptance.
 
-## 6. Run and extend
+## 7. Run and extend
 
-From this directory run `python -m pytest -q`. Tests cover round trips, timezone requirements, finite values, uncertainty units, QC vocabulary, support/CRS requirements, duplicate IDs, batch errors, JSON and JSON Lines loading, source digests, line-specific diagnostics and deep immutability.
+From this directory run `python -m pytest -q`. Tests cover round trips, timezone requirements, finite values, uncertainty units, QC vocabulary, support/CRS requirements, duplicate IDs, batch errors, JSON and JSON Lines loading, source digests, line-specific diagnostics, processing lineage, deterministic parameter hashes and deep immutability.
 
 Add method-specific validators separately, keyed by measurand and method. Do not turn the common envelope into an overconfident universal schema. A future database layer should use an authoritative spatial library for CRS and topology checks.

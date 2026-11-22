@@ -107,6 +107,45 @@ identifies the bytes presented to the loader; it does not prove who supplied
 them or that an external archive is immutable. Retain the original file and
 record its digest in the project's controlled archive or ingestion log.
 
+
+## Processing lineage
+
+The ProcessingActivity record captures an activity ID/type, method ID and
+version, software name and version, timezone-aware start/end times, input/output
+entity references and a SHA-256 digest of canonicalised parameters. Use a
+source digest as an input reference (for example,
+sha256:<64-hex-digest>), then link observation IDs and derived product IDs
+through subsequent activities.
+
+```python
+from environmental_observations import (
+    ProcessingActivity, canonical_parameters_sha256, validate_lineage,
+)
+
+activity = ProcessingActivity(
+    activity_id="estimate-001",
+    activity_type="spatial-estimation",
+    method_id="ordinary-kriging",
+    method_version="2.1",
+    software_name="spatial-engine",
+    software_version="1.0.0",
+    started_at="2026-11-22T08:02:00Z",
+    ended_at="2026-11-22T08:03:00Z",
+    input_refs=("obs-001", "obs-002"),
+    output_refs=("surface-v1",),
+    parameters_sha256=canonical_parameters_sha256({"resolution": 10}),
+)
+result = validate_lineage([activity], source_refs=("obs-001", "obs-002"))
+assert result.is_valid
+```
+
+The validator checks that inputs exist before each activity in the supplied
+execution order and that outputs are not silently redefined. It does not prove
+that software ran, verify output bytes, establish operator identity, or provide
+a tamper-evident audit log. Persist the manifest alongside the immutable raw
+archive and actual output artifacts; add output content digests and signatures
+in a controlled deployment when those guarantees are required.
+
 ## Example record
 
 ```json
