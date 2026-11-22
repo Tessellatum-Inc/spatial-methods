@@ -49,11 +49,29 @@ face contributes equal and opposite mass changes to its adjacent cells, so
 \]
 
 Zero total flux is not interchangeable with a zero-gradient ghost cell when
-the boundary velocity is nonzero. Prescribed inflow/outflow and distributed
-source/sink terms require an explicit mass-budget extension and are not
-folded into this homogeneous linear operator.
+the boundary velocity is nonzero. Prescribed inflow/outflow and distributed source/sink terms are handled by a separate forced step, not folded into this homogeneous linear operator.
 
-## 4. Filtering and validation separation
+
+## 4. Prescribed forcing and boundary mass budget
+
+The forced step leaves the homogeneous transport matrix intact and applies
+cell source/sink rates and boundary fluxes explicitly. Both boundary fluxes
+are oriented in positive x: positive left flux enters, positive right flux
+leaves. Summing the finite-volume equations over cells cancels every interior
+face contribution and gives
+
+\[
+M^{n+1}-M^n
+=\Delta t\left(\sum_i\Delta x_i s_i+F_L-F_R\right).
+\]
+
+The API checks this identity against the actual updated state and returns the
+budget terms and residual. Prescribed boundary fluxes are not inferred from
+boundary concentrations; a physical inflow/outflow closure remains an
+application-specific responsibility. A sink or boundary outflow that drives
+any cell negative causes rejection rather than clipping.
+
+## 5. Filtering and validation separation
 
 The filter returns forecast priors and analysis posteriors separately. A
 held-out verification stream is supplied only to the verification function;
@@ -81,7 +99,7 @@ Each lead's sample count is reported. If no independent observations are
 available at a lead, metrics are NaN and count is zero rather than silently
 substituting an analysis observation.
 
-## 5. Analytical transport checks
+## 6. Analytical transport checks
 
 For a periodic Fourier mode, pure constant-velocity advection has exact
 solution \(c(x,t)=\sin(k(x-ut))\) when the initial state is \(\sin(kx)\).
@@ -92,7 +110,7 @@ centred diffusion is second order in space; for the diffusion test, the time
 step is scaled with \(\Delta x^2\) so temporal error does not dominate the
 spatial convergence check.
 
-## 6. Tests and interpretation
+## 7. Tests and interpretation
 
 Tests exercise analytical convergence for periodic advection and diffusion, conservation under spatially varying face velocity,
 constant-field preservation under divergence-free flow, local upwind

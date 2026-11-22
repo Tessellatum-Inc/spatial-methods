@@ -71,7 +71,29 @@ diffusion; with interior advection, boundary-adjacent concentrations can
 change because the imposed zero total boundary flux is not the same as
 extending a constant advective flux through the boundary.
 
-## 4. Assimilation and held-out verification
+
+## 4. Prescribed sources, sinks and boundary fluxes
+
+The forced nonperiodic step is separate from the homogeneous transition
+operator. It accepts a cell-wise source rate \(s_i\) and prescribed total
+boundary fluxes \(F_L,F_R\), both oriented in the positive x direction.
+Thus positive \(F_L\) is inflow and positive \(F_R\) is outflow. The
+mass balance is
+
+\[
+M^{n+1}-M^n
+=\Delta t\left(\sum_i\Delta x_i s_i+F_L-F_R\right),
+\qquad M=\sum_i\Delta x_i c_i.
+\]
+
+Boundary fluxes are imposed values, not computed from a ghost-cell or
+boundary-state closure. Source rates may be negative (sinks), but a step is
+rejected if it would produce a negative concentration; values are never
+clipped because clipping would break the stated mass budget. The routine
+returns initial/final mass, source and boundary contributions, expected mass
+change and the budget residual.
+
+## 5. Assimilation and held-out verification
 
 The assimilation function accepts time-varying observation tuples (y, H, R)
 or None. The forecast prior and analysis posterior remain separate.
@@ -101,7 +123,7 @@ software test, not evidence of real-world predictive skill.
 - periodic_advection_diffusion_operator(...)
 - periodic_point_observation_operator(...)
 - periodic_nonuniform_advection_diffusion_operator(...)
-- nonperiodic_nonuniform_advection_diffusion_operator(...)
+- nonperiodic_nonuniform_advection_diffusion_operator(...)\n- nonperiodic_nonuniform_advection_diffusion_step(...)
 - periodic_nonuniform_point_observation_operator(...)
 - run_linear_spatial_assimilation(...)
 - verify_spatial_forecasts(...)
@@ -114,7 +136,7 @@ from this directory.
 The dynamics examples are one-dimensional. The periodic models use periodic closure; the nonperiodic operator implements zero total boundary flux only. The nonuniform models
 assume cell-centred scalar states, time-constant face fields during each step,
 explicit first-order upwind advection and two-point centred diffusion. It does
-not implement non-periodic boundaries, source/sink terms, higher-order flux
+not implement non-periodic boundaries, higher-order flux
 limiters, nonlinear flow, parameter estimation, ensemble localisation,
 correlated process-observation errors or sensor-footprint physics. Process
 covariance is supplied by the caller. Real applications require physically

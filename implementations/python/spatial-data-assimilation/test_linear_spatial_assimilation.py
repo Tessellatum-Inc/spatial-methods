@@ -186,3 +186,53 @@ def test_uniform_central_diffusion_converges_to_fourier_decay():
     assert errors[0]>errors[1]>errors[2]
     assert errors[0]/errors[1]>3.5
     assert errors[1]/errors[2]>3.5
+
+
+def test_forced_nonperiodic_step_zero_forcing_matches_homogeneous_operator():
+    widths=np.array([0.5,0.8,1.1,0.6])
+    state=np.array([1.0,0.4,0.8,1.2])
+    args=(widths,0.05,np.array([0.1,-0.05,0.2]),np.array([0.02,0.03,0.01]))
+    F=nonperiodic_nonuniform_advection_diffusion_operator(*args)
+    result=nonperiodic_nonuniform_advection_diffusion_step(
+        *args,state,source_rates=np.zeros(4),boundary_fluxes=(0.0,0.0))
+    np.testing.assert_allclose(result["concentrations"],F@state)
+    assert result["mass_budget_residual"]==pytest.approx(0.0,abs=1e-12)
+
+
+def test_forced_nonperiodic_step_accounts_for_sources_and_oriented_boundary_fluxes():
+    widths=np.array([1.0,2.0,1.5])
+    state=np.array([2.0,1.0,3.0])
+    dt=0.1
+    sources=np.array([0.5,-0.1,0.2])
+    # Positive left flux enters; positive right flux leaves.
+    boundaries=np.array([0.4,0.15])
+    result=nonperiodic_nonuniform_advection_diffusion_step(
+        widths,dt,np.zeros(2),np.zeros(2),state,
+        source_rates=sources,boundary_fluxes=boundaries)
+    expected=dt*(widths@sources+boundaries[0]-boundaries[1])
+    assert result["expected_mass_change"]==pytest.approx(expected)
+    assert result["final_mass"]-result["initial_mass"]==pytest.approx(expected)
+    assert result["source_mass_change"]==pytest.approx(dt*(widths@sources))
+    assert result["boundary_mass_change"]==pytest.approx(dt*(boundaries[0]-boundaries[1]))
+    assert abs(result["mass_budget_residual"])<1e-12
+
+
+def test_forced_nonperiodic_step_rejects_negative_state_without_clipping():
+    with pytest.raises(ValueError,match="negative concentrations"):
+        nonperiodic_nonuniform_advection_diffusion_step(
+            np.ones(3),0.5,np.zeros(2),np.zeros(2),np.array([0.1,1.0,1.0]),
+            source_rates=np.array([-1.0,0.0,0.0]))
+    with pytest.raises(ValueError,match="negative concentrations"):
+        nonperiodic_nonuniform_advection_diffusion_step(
+            np.ones(3),0.5,np.zeros(2),np.zeros(2),np.array([0.1,1.0,1.0]),
+            boundary_fluxes=(-1.0,0.0))
+
+
+def test_forced_nonperiodic_step_validates_source_and_boundary_inputs():
+    common=(np.ones(3),0.1,np.zeros(2),np.zeros(2),np.ones(3))
+    with pytest.raises(ValueError,match="one rate per cell"):
+        nonperiodic_nonuniform_advection_diffusion_step(*common,source_rates=np.zeros(2))
+    with pytest.raises(ValueError,match="left, right"):
+        nonperiodic_nonuniform_advection_diffusion_step(*common,boundary_fluxes=(0.0,))
+    with pytest.raises(ValueError,match="finite"):
+        nonperiodic_nonuniform_advection_diffusion_step(*common,source_rates=[0.0,np.nan,0.0])

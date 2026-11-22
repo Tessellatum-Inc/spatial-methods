@@ -196,6 +196,66 @@ def nonperiodic_nonuniform_advection_diffusion_operator(
     F[F < 0] = 0.0
     return F
 
+
+def nonperiodic_nonuniform_advection_diffusion_step(
+        cell_widths, time_step, interior_face_velocities,
+        interior_face_diffusivities, concentrations, *,
+        source_rates=None, boundary_fluxes=(0.0, 0.0)):
+    """Advance concentrations with prescribed sources and boundary fluxes.
+
+    Boundary fluxes are oriented in the positive x direction at both ends:
+    positive left flux enters the domain, while positive right flux exits it.
+    They are prescribed total (advective plus diffusive) fluxes, not fluxes
+    inferred from ghost cells or boundary states. Source rates have units of
+    concentration per time. The returned mass budget is checked against the
+    actual state change. Negative concentrations are rejected, never clipped.
+    """
+    widths = _array(cell_widths, "cell_widths", 1)
+    state = _array(concentrations, "concentrations", 1)
+    n = widths.size
+    if n < 2 or state.shape != (n,) or np.any(widths <= 0):
+        raise ValueError("cell_widths and concentrations must have matching dimensions and positive widths")
+    dt = float(time_step)
+    if not np.isfinite(dt) or dt <= 0:
+        raise ValueError("time_step must be positive and finite")
+    if source_rates is None:
+        sources = np.zeros(n)
+    else:
+        sources = _array(source_rates, "source_rates", 1)
+        if sources.shape != (n,):
+            raise ValueError("source_rates must contain one rate per cell")
+    boundaries = _array(boundary_fluxes, "boundary_fluxes", 1)
+    if boundaries.shape != (2,):
+        raise ValueError("boundary_fluxes must contain (left, right) fluxes")
+    transition = nonperiodic_nonuniform_advection_diffusion_operator(
+        widths, dt, interior_face_velocities, interior_face_diffusivities)
+    updated = transition @ state + dt * sources
+    updated[0] += dt * boundaries[0] / widths[0]
+    updated[-1] -= dt * boundaries[1] / widths[-1]
+    tolerance = 1e-12 * max(1.0, float(np.max(np.abs(state))))
+    if np.min(updated) < -tolerance:
+        raise ValueError("explicit forced step would produce negative concentrations; reduce time_step or forcing")
+    initial_mass = float(widths @ state)
+    final_mass = float(widths @ updated)
+    source_change = float(dt * (widths @ sources))
+    boundary_change = float(dt * (boundaries[0] - boundaries[1]))
+    expected_change = source_change + boundary_change
+    actual_change = final_mass - initial_mass
+    residual = actual_change - expected_change
+    budget_tolerance = 1e-10 * max(1.0, abs(initial_mass), abs(expected_change))
+    if abs(residual) > budget_tolerance:
+        raise ArithmeticError("finite-volume source/boundary mass budget failed")
+    return {
+        "concentrations": updated,
+        "initial_mass": initial_mass,
+        "final_mass": final_mass,
+        "source_mass_change": source_change,
+        "boundary_mass_change": boundary_change,
+        "expected_mass_change": expected_change,
+        "mass_budget_residual": residual,
+    }
+
+
 def periodic_nonuniform_point_observation_operator(cell_widths, sensor_positions):
     """Linear interpolation from nonuniform periodic cell centres to point sensors."""
     widths = _array(cell_widths, "cell_widths", 1)
