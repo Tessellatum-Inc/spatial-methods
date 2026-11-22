@@ -78,25 +78,6 @@ This is a partial pathway and gap map, not a claim that remote sensing is now a 
 
 The optical branch has a broad algorithm catalogue, an initial electromagnetic/radiometric foundation module, an initial optical satellite acquisition method and a bounded live-data retrieval pilot; detailed optical physics, technical review and application validation remain incomplete. The SAR branch now has an [initial SAR acquisition and observation design method](../collection/sar-acquisition-and-observation-design.md), a guided backscatter investigation and scoped algorithms, but the Nairobi scene has not yet been selected or processed. Neither branch has a mature, independently validated end-to-end recipe. The pathway records these gaps rather than filling them with superficial links.
 
-## Pathway 6 — From terrestrial observations to an adjusted spatial dataset
-
-**Application context:** Capture relative positions and height differences with total stations and levels, evaluate the observation network, and deliver a traceable spatial dataset.
-
-**Best entry point:** [Terrestrial surveying: total station and differential levelling](../collection/terrestrial-surveying-total-station-and-levelling.md).
-
-| Pillar | Canonical route | Why it belongs |
-|---|---|---|
-| Theoretical Foundations | [Measurement models and measurand definition](../foundations/measurement-science/measurement-models-and-measurand-definition.md); [measurement principles and field verification](../foundations/measurement-science/measurement-principles-and-field-verification.md); [covariance and GLS](../foundations/measurement-science/covariance-correlated-observations-and-gls.md) | Defines the observed quantity, instrument/setup effects, uncertainty and correlated control information. |
-| Spatial Data Collection | [Terrestrial surveying: total station and differential levelling](../collection/terrestrial-surveying-total-station-and-levelling.md) | Describes physical observations, station orientation, EDM and staff readings, field verification, closure and metadata. |
-| Spatial Algorithms | [Covariance and GLS implementation](../implementations/python/covariance-gls/README.md); [measurement exercises F–O](../learning-paths/measurement-science-and-survey-adjustment.md) | Provides adjustment, datum, reliability, robust estimation and covariance-model experiments. The exercises are synthetic. |
-| Spatial Recipes | [Survey-to-spatial-dataset workflow](../recipes/survey-to-spatial-dataset/README.md); [measurement science and survey adjustment path](measurement-science-and-survey-adjustment.md) | Connects acquisition, independent checks, adjustment, dataset construction and delivery. |
-
-**Practical evidence and current boundary**
-
-The adjustment exercises use synthetic observations. The terrestrial collection method is an initial technical synthesis; no field campaign, instrument test, local control validation or project acceptance is claimed. Apply the governing specification and professional requirements for the actual jurisdiction and task.
-
-**Useful outcome:** Understand how instrument observations become coordinates and heights, why closures and residuals are diagnostics rather than guarantees, and how to preserve enough evidence for another competent person to assess the dataset.
-
 ## Pathway 5 — From GNSS observations to an accepted position
 
 **Application context:** Acquire satellite-based position observations and determine whether the resulting coordinates are suitable for a survey, asset record, control network or navigation task.
@@ -115,6 +96,25 @@ The adjustment exercises use synthetic observations. The terrestrial collection 
 The GNSS ambiguity and RAIM packages are computational teaching components with explicit input and integrity boundaries. They do not process raw receiver observations into a certified position solution. No GNSS field campaign or local control-network validation is claimed by this pathway.
 
 **Useful outcome:** Understand why a GNSS coordinate depends on the signal model, reference frame, processing choices and field evidence—and how to avoid treating a receiver status indicator as a complete accuracy assessment.
+
+## Pathway 6 — From terrestrial observations to an adjusted spatial dataset
+
+**Application context:** Capture relative positions and height differences with total stations and levels, evaluate the observation network, and deliver a traceable spatial dataset.
+
+**Best entry point:** [Terrestrial surveying: total station and differential levelling](../collection/terrestrial-surveying-total-station-and-levelling.md).
+
+| Pillar | Canonical route | Why it belongs |
+|---|---|---|
+| Theoretical Foundations | [Measurement models and measurand definition](../foundations/measurement-science/measurement-models-and-measurand-definition.md); [measurement principles and field verification](../foundations/measurement-science/measurement-principles-and-field-verification.md); [covariance and GLS](../foundations/measurement-science/covariance-correlated-observations-and-gls.md) | Defines the observed quantity, instrument/setup effects, uncertainty and correlated control information. |
+| Spatial Data Collection | [Terrestrial surveying: total station and differential levelling](../collection/terrestrial-surveying-total-station-and-levelling.md) | Describes physical observations, station orientation, EDM and staff readings, field verification, closure and metadata. |
+| Spatial Algorithms | [Covariance and GLS implementation](../implementations/python/covariance-gls/README.md); [measurement exercises F–O](../learning-paths/measurement-science-and-survey-adjustment.md) | Provides adjustment, datum, reliability, robust estimation and covariance-model experiments. The exercises are synthetic. |
+| Spatial Recipes | [Survey-to-spatial-dataset workflow](../recipes/survey-to-spatial-dataset/README.md); [measurement science and survey adjustment path](measurement-science-and-survey-adjustment.md) | Connects acquisition, independent checks, adjustment, dataset construction and delivery. |
+
+**Practical evidence and current boundary**
+
+The adjustment exercises use synthetic observations. The terrestrial collection method is an initial technical synthesis; no field campaign, instrument test, local control validation or project acceptance is claimed. Apply the governing specification and professional requirements for the actual jurisdiction and task.
+
+**Useful outcome:** Understand how instrument observations become coordinates and heights, why closures and residuals are diagnostics rather than guarantees, and how to preserve enough evidence for another competent person to assess the dataset.
 
 ## Pathway 7 — From terrestrial laser scans to a validated 3D point cloud
 
@@ -173,24 +173,24 @@ The point-cloud packages are computational components, not a validated airborne 
 
 **Useful outcome:** Understand how flight geometry, trajectory, calibration, strip adjustment, classification and independent checks determine whether a point cloud or terrain model is fit for its intended use.
 
-## Pathway 10 — From acoustic observations to a datum-referenced bathymetric surface
+## Pathway 10 — From acoustic observations to defensible bathymetry
 
-**Application context:** Acquire and reduce water-depth observations, account for sound-speed refraction and vessel motion, tie soundings to a defined vertical reference, and assess coverage and uncertainty before producing a bathymetric surface.
+**Application context:** Convert sonar observations into datum-referenced soundings and a bathymetric surface whose uncertainty, coverage and validation evidence are explicit.
 
-**Best entry point:** [Multibeam hydrographic surveying and bathymetric acquisition](../collection/multibeam-hydrographic-surveying-and-bathymetric-acquisition.md).
+**Best entry point:** [Multibeam bathymetry recipe](../recipes/multibeam-bathymetry/README.md).
 
 | Pillar | Canonical route | Why it belongs |
 |---|---|---|
-| Theoretical Foundations | [Measurement models and measurand definition](../foundations/measurement-science/measurement-models-and-measurand-definition.md); [measurement principles and field verification](../foundations/measurement-science/measurement-principles-and-field-verification.md); [uncertainty propagation](../algorithms/statistics/uncertainty-propagation.md); [geodesy foundations](geodesy-foundations.md) | Frames travel-time/range observations, sensor geometry, reference surfaces, correlated uncertainty and datum transformations. Dedicated water-column acoustics and tidal-datum foundations remain a gap. |
-| Spatial Data Collection | [Multibeam hydrographic surveying and bathymetric acquisition](../collection/multibeam-hydrographic-surveying-and-bathymetric-acquisition.md); [GNSS positioning](../collection/gnss-positioning-and-navigation-observation.md); [terrestrial surveying](../collection/terrestrial-surveying-total-station-and-levelling.md) | Connects sonar, sound-speed profiles, vessel motion, positioning, vertical control, patch tests and independent checks. |
-| Spatial Algorithms | [Layered-water-column acoustic ray tracing](../algorithms/coastal/layered-water-column-acoustic-ray-tracing.md); [uncertainty propagation](../algorithms/statistics/uncertainty-propagation.md); [CRS transformation](../algorithms/geodesy/crs-transformation.md); [Stumpf bathymetry and OC4v4](../algorithms/remote-sensing/stumpf-bathymetry-and-oc4v4.md) | Supplies uncertainty and reference-frame operations while explicitly distinguishing optical satellite-derived bathymetry from acoustic sounding. A dedicated bathymetric gridding/uncertainty implementation remains to be developed. |
-| Spatial Recipes | [Multibeam bathymetry recipe](../recipes/multibeam-bathymetry/README.md); [survey-to-spatial-dataset workflow](../recipes/survey-to-spatial-dataset/README.md) | The hydrographic recipe connects sonar-specific acquisition, corrections, datum reduction, uncertainty, surface generation and validation. The generic survey workflow remains useful for transferable measurement and delivery principles. |
+| Theoretical Foundations | [Hydrographic sounding uncertainty](../foundations/measurement-science/hydrographic-sounding-uncertainty-model.md); [covariance and correlated observations](../foundations/measurement-science/covariance-correlated-observations-and-gls.md) | Establishes the sounding measurement chain, frame transformations, joint covariance and the distinction between local uncertainty and common-mode error. |
+| Spatial Data Collection | [Multibeam hydrographic surveying and bathymetric acquisition](../collection/multibeam-hydrographic-surveying-and-bathymetric-acquisition.md) | Connects the measurement model to vessel/sensor installation, calibration, acquisition geometry, sound-speed and water-level observations. |
+| Spatial Algorithms | [Layered-water-column acoustic ray tracing](../algorithms/coastal/layered-water-column-acoustic-ray-tracing.md); [sounding-point geometry and Jacobian](../algorithms/coastal/hydrographic-sounding-point-geometry-and-jacobian.md); [covariance propagation implementation](../implementations/python/uncertainty-propagation/README.md) | Provides a bounded ray-path teaching model and a generic first-order covariance calculation. Neither is a complete vendor correction chain or full hydrographic TPU engine. |
+| Spatial Recipes | [Multibeam bathymetry: observations-to-validated-surface](../recipes/multibeam-bathymetry/README.md) | Connects requirements, system verification, acquisition, correction, sounding review, gridding, independent checks and delivery. |
 
 **Practical evidence and current boundary**
 
-The hydrographic method and recipe are desk-designed technical syntheses. The acoustic ray-tracing implementation has synthetic unit tests; it is not a full MBES processing chain. No vessel mobilisation, sonar calibration, patch test, water-level tie, bathymetric acquisition, surface generation from real sonar data or field validation is claimed. The route must not be used as a substitute for the current IHO order, national hydrographic authority instructions or project specifications.
+The ray tracer, rigid-body geometry Jacobian and covariance routine have synthetic software tests. The geometry routine covers one rigid transform under a stated attitude convention; the covariance routine accepts a supplied Jacobian and joint covariance. Neither estimates instrument-specific parameters. No vessel survey, patch test, operational TPU, field validation or accepted bathymetric surface is claimed.
 
-**Useful outcome:** Understand why bathymetry is a coupled acoustic, navigation, motion, water-level and datum problem—and why a dense sounding grid alone does not demonstrate full feature search or absolute vertical accuracy.
+**Useful outcome:** Understand why bathymetric uncertainty must follow the complete physical measurement chain, why shared errors can survive cross-line agreement, and why an uncertainty requirement is not an estimator of achieved accuracy.
 
 ## What is not yet represented
 
@@ -216,23 +216,3 @@ When adding or revising a pathway:
 8. Review links and status when a canonical resource changes.
 
 A pathway is ready for broader teaching use only when its sequence has been reviewed, the hand-offs are understandable, and its practical outputs and limitations have been checked. This index is an initial navigation aid, not a certification of pathway completeness.
-
-
-## Pathway 9 — From acoustic observations to defensible bathymetry
-
-**Application context:** Convert sonar observations into datum-referenced soundings and a bathymetric surface whose uncertainty, coverage and validation evidence are explicit.
-
-**Best entry point:** [Multibeam bathymetry recipe](../recipes/multibeam-bathymetry/README.md).
-
-| Pillar | Canonical route | Why it belongs |
-|---|---|---|
-| Theoretical Foundations | [Hydrographic sounding uncertainty](../foundations/measurement-science/hydrographic-sounding-uncertainty-model.md); [covariance and correlated observations](../foundations/measurement-science/covariance-correlated-observations-and-gls.md) | Establishes the sounding measurement chain, frame transformations, joint covariance and the distinction between local uncertainty and common-mode error. |
-| Spatial Data Collection | [Multibeam hydrographic surveying and bathymetric acquisition](../collection/multibeam-hydrographic-surveying-and-bathymetric-acquisition.md) | Connects the measurement model to vessel/sensor installation, calibration, acquisition geometry, sound-speed and water-level observations. |
-| Spatial Algorithms | [Layered-water-column acoustic ray tracing](../algorithms/coastal/layered-water-column-acoustic-ray-tracing.md); [sounding-point geometry and Jacobian](../algorithms/coastal/hydrographic-sounding-point-geometry-and-jacobian.md); [covariance propagation implementation](../implementations/python/uncertainty-propagation/README.md) | Provides a bounded ray-path teaching model and a generic first-order covariance calculation. Neither is a complete vendor correction chain or full hydrographic TPU engine. |
-| Spatial Recipes | [Multibeam bathymetry: observations-to-validated-surface](../recipes/multibeam-bathymetry/README.md) | Connects requirements, system verification, acquisition, correction, sounding review, gridding, independent checks and delivery. |
-
-**Practical evidence and current boundary**
-
-The ray tracer, rigid-body geometry Jacobian and covariance routine have synthetic software tests. The geometry routine covers one rigid transform under a stated attitude convention; the covariance routine accepts a supplied Jacobian and joint covariance. Neither estimates instrument-specific parameters. No vessel survey, patch test, operational TPU, field validation or accepted bathymetric surface is claimed.
-
-**Useful outcome:** Understand why bathymetric uncertainty must follow the complete physical measurement chain, why shared errors can survive cross-line agreement, and why an uncertainty requirement is not an estimator of achieved accuracy.
