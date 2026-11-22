@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, Mapping
 from types import MappingProxyType
 import json
+import hashlib
 
 
 QC_STATUSES = frozenset({"raw", "accepted", "flagged", "rejected", "superseded"})
@@ -365,3 +366,52 @@ def load_json_records(path: str | Path) -> BatchValidation:
         payload = json.load(stream)
     rows = payload.get("records") if isinstance(payload, dict) else payload
     return validate_batch(rows)
+
+
+@dataclass(frozen=True)
+class JSONLinesIngestion:
+    """Traceable result from parsing a newline-delimited JSON source file."""
+    source_sha256: str
+    total_lines: int
+    records: tuple[ObservationRecord, ...]
+    errors: tuple[str, ...]
+
+    @property
+    def is_valid(self) -> bool:
+        return not self.errors
+
+
+def load_jsonl_records(path: str | Path) -> JSONLinesIngestion:
+    """Parse JSON Lines while retaining source digest and physical line diagnostics.
+
+    Blank lines are ignored but still count toward physical line numbers. Each
+    non-blank line must contain one observation object. The source is read as
+    bytes so the digest identifies the exact archived input, including line
+    endings and any byte-order mark. No source file is modified.
+    """
+    source = Path(path).read_bytes()
+    digest = hashlib.sha256(source).hexdigest()
+    try:
+        content = source.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise ObservationValidationError("JSON Lines source must be UTF-8") from exc
+
+    records: list[ObservationRecord] = []
+    errors: list[str] = []
+    seen: set[str] = set()
+    lines = content.splitlines()
+    for line_number, line in enumerate(lines, start=1):
+        if not line.strip():
+            continue
+        try:
+            raw = json.loads(line)
+            record = ObservationRecord.from_dict(raw)
+            if record.observation_id in seen:
+                raise ObservationValidationError(
+                    f"duplicate observation_id {record.observation_id!r} in source"
+                )
+            seen.add(record.observation_id)
+            records.append(record)
+        except (json.JSONDecodeError, ObservationValidationError) as exc:
+            errors.append(f"line {line_number}: {exc}")
+    return JSONLinesIngestion(digest, len(lines), tuple(records), tuple(errors))

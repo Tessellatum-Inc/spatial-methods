@@ -13,7 +13,7 @@ This package provides:
   geometry with an explicit CRS label;
 - controlled QC lifecycle states;
 - source/method/instrument/calibration provenance as caller-supplied metadata;
-- row-level batch validation, duplicate-ID detection and JSON loading.
+- row-level batch validation, duplicate-ID detection, JSON-array loading and traceable JSON Lines ingestion.
 
 It intentionally does **not** convert units, infer coordinate reference systems,
 calibrate instruments, decide whether a measurement is physically plausible,
@@ -85,6 +85,27 @@ A batch result retains valid records and reports invalid rows with their array
 index. Duplicate identifiers are rejected rather than silently overwritten.
 The source file is read only; this module never edits or normalises the raw
 archive in place.
+
+
+Load newline-delimited observations with a source digest and physical-line diagnostics:
+
+```python
+from environmental_observations import load_jsonl_records
+
+ingestion = load_jsonl_records("observations.jsonl")
+print(ingestion.source_sha256, ingestion.total_lines)
+for error in ingestion.errors:
+    print(error)
+for record in ingestion.records:
+    print(record.observation_id)
+```
+
+`load_jsonl_records` ignores blank lines while retaining physical line
+numbers, keeps valid records when another line is malformed, rejects duplicate
+observation IDs, and computes SHA-256 over the exact source bytes. A digest
+identifies the bytes presented to the loader; it does not prove who supplied
+them or that an external archive is immutable. Retain the original file and
+record its digest in the project's controlled archive or ingestion log.
 
 ## Example record
 

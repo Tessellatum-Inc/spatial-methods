@@ -3,7 +3,7 @@ import math
 import pytest
 
 from environmental_observations import (
-    ObservationRecord, ObservationValidationError, load_json_records, validate_batch,
+    ObservationRecord, ObservationValidationError, load_json_records, load_jsonl_records, validate_batch,
 )
 
 
@@ -185,3 +185,45 @@ def test_method_rule_rejects_inverted_value_range():
 
     with pytest.raises(ObservationValidationError):
         MethodRule(method_id="probe", minimum_value=10, maximum_value=0)
+
+
+
+def test_jsonl_ingestion_preserves_line_numbers_digest_and_valid_records(tmp_path):
+    import hashlib
+
+    path = tmp_path / "observations.jsonl"
+    source = "\n".join([
+        json.dumps(row()),
+        "",
+        "{malformed json",
+        json.dumps(row(observation_id="obs-002")),
+        json.dumps(row(observation_id="obs-002")),
+    ]) + "\n"
+    path.write_text(source, encoding="utf-8", newline="")
+    result = load_jsonl_records(path)
+
+    assert result.source_sha256 == hashlib.sha256(path.read_bytes()).hexdigest()
+    assert result.total_lines == 5
+    assert [record.observation_id for record in result.records] == ["obs-001", "obs-002"]
+    assert len(result.errors) == 2
+    assert result.errors[0].startswith("line 3:")
+    assert result.errors[1].startswith("line 5:")
+    assert "duplicate observation_id" in result.errors[1]
+    assert not result.is_valid
+    assert path.read_text(encoding="utf-8") == source
+
+
+def test_jsonl_ingestion_reports_structural_error_at_physical_line(tmp_path):
+    path = tmp_path / "observations.jsonl"
+    path.write_text("\n" + json.dumps({"observation_id": "broken"}) + "\n", encoding="utf-8")
+    result = load_jsonl_records(path)
+    assert result.total_lines == 2
+    assert not result.records
+    assert result.errors[0].startswith("line 2: missing required fields")
+
+
+def test_jsonl_ingestion_rejects_non_utf8_source(tmp_path):
+    path = tmp_path / "observations.jsonl"
+    path.write_bytes(b"\\xff")
+    with pytest.raises(ObservationValidationError, match="UTF-8"):
+        load_jsonl_records(path)

@@ -24,7 +24,7 @@ The original files still need to be retained in an immutable or versioned raw ar
 
 ## 4. Batch validation
 
-`validate_batch` processes each array row independently. Valid rows are retained, invalid rows are reported with their array index, and duplicate `observation_id` values are rejected. `load_json_records` accepts a top-level JSON array or an object containing a `records` array. Neither function rewrites source files.
+`validate_batch` processes each array row independently. Valid rows are retained, invalid rows are reported with their array index, and duplicate `observation_id` values are rejected. `load_json_records` accepts a top-level JSON array or an object containing a `records` array. `load_jsonl_records` parses one record per non-blank physical line, retains valid records when other lines fail, reports physical line numbers and rejects duplicate IDs. It hashes the exact source bytes with SHA-256. Neither loader rewrites source files.
 
 ## 5. Method-specific rule layer
 
@@ -34,6 +34,6 @@ The structural validator answers â€œis this record shaped and typed correctly?â€
 
 ## 6. Run and extend
 
-From this directory run `python -m pytest -q`. Tests cover round trips, timezone requirements, finite values, uncertainty units, QC vocabulary, support/CRS requirements, duplicate IDs, batch errors, JSON loading and deep immutability.
+From this directory run `python -m pytest -q`. Tests cover round trips, timezone requirements, finite values, uncertainty units, QC vocabulary, support/CRS requirements, duplicate IDs, batch errors, JSON and JSON Lines loading, source digests, line-specific diagnostics and deep immutability.
 
 Add method-specific validators separately, keyed by measurand and method. Do not turn the common envelope into an overconfident universal schema. A future database layer should use an authoritative spatial library for CRS and topology checks.
