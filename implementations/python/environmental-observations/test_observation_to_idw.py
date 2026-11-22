@@ -86,3 +86,26 @@ def test_pipeline_refuses_unaccepted_or_wrong_method_observations(tmp_path):
     with pytest.raises(ValueError, match="requires every input record"):
         PIPELINE.run_pipeline(source, output)
     assert not output.exists()
+
+
+def test_pipeline_never_overwrites_the_raw_source(tmp_path):
+    source = tmp_path / "observations.jsonl"
+    _source(source)
+    original = source.read_bytes()
+    with pytest.raises(ValueError, match="source and output paths must be different"):
+        PIPELINE.run_pipeline(source, source)
+    assert source.read_bytes() == original
+
+
+def test_pipeline_rejects_mixed_observation_times(tmp_path):
+    source = tmp_path / "observations.jsonl"
+    output = tmp_path / "predictions.json"
+    _source(source)
+    rows = source.read_text(encoding="utf-8").splitlines()
+    changed = json.loads(rows[-1])
+    changed["observed_at"] = "2026-11-22T09:00:00Z"
+    rows[-1] = json.dumps(changed)
+    source.write_text("\\n".join(rows) + "\\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="one measurand, unit and observation timestamp"):
+        PIPELINE.run_pipeline(source, output)
+    assert not output.exists()
