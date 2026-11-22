@@ -22,6 +22,8 @@ The domain covers:
 2. [Spatial point processes and spatial sampling design](spatial-point-processes-and-sampling-design.md) develops point-process structure, observation-process limitations, inclusion probabilities, Horvitz–Thompson estimation and design-based versus model-based selection. It connects to point-process simulators, sampling-design implementations and collection planning.
 3. [Anisotropic and nonstationary spatial fields](anisotropic-and-nonstationary-spatial-fields.md) distinguishes directional dependence from location-varying mean, variance and covariance. It develops valid geometric-anisotropy metrics, directional variogram diagnostics, spatial deformation and process-convolution constructions, then connects these assumptions to fitting, kriging and spatial validation.
 
+4. [Gaussian random-field inference and conditional simulation](gaussian-random-field-inference-and-conditional-simulation.md) derives Gaussian conditioning, distinguishes latent prediction from noisy-observation prediction, explains kriging and sequential conditional simulation, and identifies parameter/model uncertainty and validation requirements. It connects directly to the repository's kriging and simulation implementations.
+
 ## Boundaries with neighbouring foundations
 
 - **SM-FND-004 — Probability and statistical inference:** general probability, random variables, distributions, conditioning and inferential procedures. This domain specialises those ideas for spatial and spatiotemporal dependence.
@@ -31,7 +33,7 @@ The domain covers:
 
 ## Development status
 
-Three initial teaching modules are published. They are a foundation for further development, not a complete course or independent technical certification. Remaining work includes Gaussian-field inference and simulation, covariance-parameter uncertainty, preferential sampling, advanced spatiotemporal dynamics, independent technical review and learner testing.
+Four initial teaching modules are published. They are a foundation for further development, not a complete course or independent technical certification. Remaining work includes deeper Bayesian and likelihood-based inference, covariance-parameter uncertainty, preferential sampling, advanced spatiotemporal dynamics, independent technical review and learner testing.
 
 ## Reading route
 

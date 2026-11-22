@@ -197,12 +197,12 @@ Compare candidate models using spatially meaningful holdouts, residual diagnosti
 | Concept | Related repository resource | Relationship |
 |---|---|---|
 | Empirical directional and omnidirectional variograms | [Empirical semivariogram method](../../methods/empirical-semivariogram.md) and [implementation](../../implementations/python/empirical-semivariogram/README.md) | Pair construction and empirical diagnostics; model assumptions remain explicit |
-| Fitting and comparing covariance structures | [Variogram model fitting](../../algorithms/geostatistics/variogram-model-fitting.md) | Parameter fitting is distinct from proving stationarity or selecting the correct physical model |
+| Fitting and comparing covariance structures | [Variogram model fitting](../../algorithms/geostatistics/variogram-model-fitting.md) and [variogram models implementation](../../implementations/python/variogram-models/README.md) | Includes directional analysis and geometric-anisotropy fitting by fixed transform or dense REML; parameter fitting is distinct from proving stationarity or selecting the correct physical model |
 | Kriging under alternative structures | [Kriging variants](../../algorithms/geostatistics/kriging-variants.md) and [implementation](../../implementations/python/kriging-variants/README.md) | Prediction methods depend on the specified mean and covariance assumptions |
 | Spatial validation | [Spatial cross-validation](../../methods/spatial-cross-validation.md) | Holdout geometry should reflect intended spatial transfer |
 | Nonseparable space-time dependence | [Nonseparable space-time covariance implementation](../../implementations/python/nonseparable-space-time-covariance/README.md) | Extends dependence beyond separable space/time factors; it is not automatically a nonstationary spatial model |
 
-These connections identify reusable repository assets. They do not imply that each implementation currently estimates every model family discussed here.
+These connections identify reusable repository assets. The variogram implementation already supports directional diagnostics and geometric-anisotropy fitting; its documented bounds and fixed Matérn smoothness remain relevant. They do not imply that each implementation estimates every model family discussed here.
 
 ## 9. Practical modelling checklist
 

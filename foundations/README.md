@@ -58,7 +58,7 @@ The mathematics domain begins with [Mathematical language, quantities and spatia
 
 ### Spatial statistics and stochastic processes
 
-[Spatial statistics and stochastic processes](spatial-statistics-and-stochastic-processes/README.md) begins with [random fields, covariance functions and variograms](spatial-statistics-and-stochastic-processes/random-fields-covariance-and-variograms.md). The module establishes the random-field notation, second-order stationarity, isotropy, valid covariance structure, semivariograms and the distinction between spatial dependence models and fitted predictions. Three initial modules now cover random fields/covariance/variograms, spatial point processes/sampling design, and anisotropic/nonstationary fields. Gaussian-field inference and simulation, advanced spatiotemporal dynamics, independent technical review and learner testing remain open.
+[Spatial statistics and stochastic processes](spatial-statistics-and-stochastic-processes/README.md) begins with [random fields, covariance functions and variograms](spatial-statistics-and-stochastic-processes/random-fields-covariance-and-variograms.md). The module establishes the random-field notation, second-order stationarity, isotropy, valid covariance structure, semivariograms and the distinction between spatial dependence models and fitted predictions. Four initial modules now cover random fields/covariance/variograms, spatial point processes/sampling design, anisotropic/nonstationary fields, and Gaussian-field inference/conditional simulation. Deeper Bayesian inference, advanced spatiotemporal dynamics, independent technical review and learner testing remain open.
 
 ### Probability and statistical inference
 
