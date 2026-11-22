@@ -1314,5 +1314,9 @@
   {
     "directory": "implementations/python/zonal-statistics",
     "pythonpath": ""
+  },
+  {
+    "directory": "implementations/python/hydrographic-sensor-chain",
+    "pythonpath": ""
   }
 ]

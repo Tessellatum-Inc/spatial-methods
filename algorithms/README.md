@@ -67,7 +67,8 @@ Each record explains one method or operation, its assumptions, where it is usefu
 ## Hydrography and coastal acoustics
 
 - [Layered-water-column acoustic ray tracing](coastal/layered-water-column-acoustic-ray-tracing.md) — trace a two-dimensional acoustic beam through piecewise-constant sound-speed layers using Snell's law; bounded teaching baseline, not production MBES processing.
-- [Hydrographic sounding-point geometry and local Jacobian](coastal/hydrographic-sounding-point-geometry-and-jacobian.md) — derive a frame-explicit rigid-body sounding-point transform and its left-multiplicative small-attitude-error Jacobian.
+- [Hydrographic sounding-point geometry and local Jacobian](coastal/hydrographic-sounding-point-geometry-and-jacobian.md) — derive a frame-explicit single rigid-body sounding-point transform and its left-multiplicative small-attitude-error Jacobian.
+- [GNSS–IMU–transducer sensor-chain geometry and Jacobian](coastal/hydrographic-sensor-chain-geometry-and-jacobian.md) — compose antenna, IMU, transducer and acoustic-detection frames with explicit lever-arm signs, mounting rotation and a 3 × 18 Jacobian.
 
 ## Geometry
 
