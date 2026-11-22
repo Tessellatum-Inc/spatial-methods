@@ -481,9 +481,8 @@ def assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_tr
         beam_azimuths_degrees)
     local_width = 17
     prefix = len(base[0]) - count
-    if prefix != count * local_width + (len(base[0]) - count * local_width - count):
+    if prefix < count * local_width + 1:
         raise ValueError("unexpected trajectory-driven multi-ping Jacobian layout")
-    profile_width = prefix - count * local_width
     output = []
     for row_index, row in enumerate(base):
         ping = row_index // 3

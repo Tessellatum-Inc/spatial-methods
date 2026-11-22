@@ -315,7 +315,7 @@ def test_trajectory_stochastic_clock_rejects_mismatched_ping_epochs():
     with pytest.raises(ValueError, match="must equal the supplied ping epochs"):
         assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory(
             [result], [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
-            [0.0], [11.0], clock
+            [0.0], [0.04], [11.0], clock
         )
 
 
