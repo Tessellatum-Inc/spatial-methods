@@ -256,6 +256,80 @@ def nonperiodic_nonuniform_advection_diffusion_step(
     }
 
 
+
+def nonperiodic_rectilinear_advection_diffusion_step_2d_with_forcing(
+        cell_widths_x, cell_widths_y, time_step,
+        x_face_velocities, y_face_velocities,
+        x_face_diffusivities, y_face_diffusivities, concentrations, *,
+        source_rates=None, boundary_fluxes=None):
+    """Advance a 2-D field with cell sources and prescribed total boundary fluxes.
+
+    Boundary flux densities are ordered (left, right, bottom, top). Positive
+    left/bottom flux enters the domain; positive right/top flux exits. The
+    arrays have shapes (ny,), (ny,), (nx,), (nx,), respectively. Fluxes are
+    total advective-diffusive flux densities; they are not inferred from
+    boundary states. Source rates have concentration/time units.
+    """
+    dx = _array(cell_widths_x, "cell_widths_x", 1)
+    dy = _array(cell_widths_y, "cell_widths_y", 1)
+    state = _array(concentrations, "concentrations", 2)
+    nx, ny = dx.size, dy.size
+    if state.shape != (nx, ny) or np.any(state < 0):
+        raise ValueError("concentrations must be non-negative with shape (nx, ny)")
+    if source_rates is None:
+        sources = np.zeros((nx, ny))
+    else:
+        sources = _array(source_rates, "source_rates", 2)
+        if sources.shape != (nx, ny):
+            raise ValueError("source_rates must have shape (nx, ny)")
+    if boundary_fluxes is None:
+        boundary_fluxes = (np.zeros(ny), np.zeros(ny), np.zeros(nx), np.zeros(nx))
+    if not isinstance(boundary_fluxes, (tuple, list)) or len(boundary_fluxes) != 4:
+        raise ValueError("boundary_fluxes must be (left, right, bottom, top)")
+    left, right, bottom, top = (
+        _array(value, name, 1) for value, name in zip(
+            boundary_fluxes, ("left_boundary_flux", "right_boundary_flux",
+                               "bottom_boundary_flux", "top_boundary_flux")))
+    if left.shape != (ny,) or right.shape != (ny,) or bottom.shape != (nx,) or top.shape != (nx,):
+        raise ValueError("boundary flux arrays must have shapes (ny,), (ny,), (nx,), (nx,)")
+    dt = float(time_step)
+    if not np.isfinite(dt) or dt <= 0:
+        raise ValueError("time_step must be positive and finite")
+
+    base = nonperiodic_rectilinear_advection_diffusion_step_2d(
+        dx, dy, dt, x_face_velocities, y_face_velocities,
+        x_face_diffusivities, y_face_diffusivities, state)
+    area = dx[:, None] * dy[None, :]
+    boundary_tendency = np.zeros((nx, ny))
+    boundary_tendency[0, :] += left * dy / area[0, :]
+    boundary_tendency[-1, :] -= right * dy / area[-1, :]
+    boundary_tendency[:, 0] += bottom * dx / area[:, 0]
+    boundary_tendency[:, -1] -= top * dx / area[:, -1]
+    updated = base["concentrations"] + dt * (sources + boundary_tendency)
+    tolerance = 1e-12 * max(1.0, float(np.max(state)))
+    if np.min(updated) < -tolerance:
+        raise ValueError("explicit forced 2-D step would produce negative concentrations; reduce time_step or forcing")
+    initial_mass = float(np.sum(area * state))
+    final_mass = float(np.sum(area * updated))
+    source_change = float(dt * np.sum(area * sources))
+    boundary_change = float(dt * (
+        dy @ left - dy @ right + dx @ bottom - dx @ top))
+    expected_change = source_change + boundary_change
+    residual = final_mass - initial_mass - expected_change
+    budget_tolerance = 1e-10 * max(1.0, abs(initial_mass), abs(expected_change))
+    if abs(residual) > budget_tolerance:
+        raise ArithmeticError("2-D finite-volume forced mass budget failed")
+    return {
+        "concentrations": updated,
+        "initial_mass": initial_mass,
+        "final_mass": final_mass,
+        "source_mass_change": source_change,
+        "boundary_mass_change": boundary_change,
+        "expected_mass_change": expected_change,
+        "mass_budget_residual": residual,
+        "maximum_local_cfl": base["maximum_local_cfl"],
+    }
+
 def periodic_nonuniform_point_observation_operator(cell_widths, sensor_positions):
     """Linear interpolation from nonuniform periodic cell centres to point sensors."""
     widths = _array(cell_widths, "cell_widths", 1)

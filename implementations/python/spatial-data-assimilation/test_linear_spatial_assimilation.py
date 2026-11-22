@@ -385,3 +385,39 @@ def test_2d_transport_rejects_unstable_steps_and_invalid_face_shapes():
         nonperiodic_rectilinear_advection_diffusion_step_2d(
             np.ones(2),np.ones(2),0.01,np.zeros((1,2)),np.zeros((2,1)),
             -np.ones((1,2)),np.zeros((2,1)),np.ones((2,2)))
+
+
+
+def test_2d_forced_transport_closes_source_and_oriented_boundary_mass_budget():
+    dx=np.array([2.0,1.0])
+    dy=np.array([3.0,4.0])
+    state=np.full((2,2),2.0)
+    zeros_x=np.zeros((1,2))
+    zeros_y=np.zeros((2,1))
+    sources=np.array([[1.0,-0.5],[0.25,0.0]])
+    fluxes=(np.array([1.0,2.0]),np.array([0.5,0.25]),
+            np.array([0.2,0.3]),np.array([0.1,0.2]))
+    result=nonperiodic_rectilinear_advection_diffusion_step_2d_with_forcing(
+        dx,dy,0.1,zeros_x,zeros_y,np.zeros_like(zeros_x),np.zeros_like(zeros_y),
+        state,source_rates=sources,boundary_fluxes=fluxes)
+    expected_source=0.1*np.sum(dx[:,None]*dy[None,:]*sources)
+    expected_boundary=0.1*(dy@fluxes[0]-dy@fluxes[1]+dx@fluxes[2]-dx@fluxes[3])
+    assert result["source_mass_change"]==pytest.approx(expected_source)
+    assert result["boundary_mass_change"]==pytest.approx(expected_boundary)
+    assert result["final_mass"]-result["initial_mass"]==pytest.approx(
+        expected_source+expected_boundary)
+    assert result["mass_budget_residual"]==pytest.approx(0.0,abs=1e-12)
+    assert np.min(result["concentrations"])>=0
+
+
+def test_2d_forced_transport_rejects_negative_state_and_invalid_boundary_shapes():
+    dx=dy=np.ones(2)
+    state=np.ones((2,2))
+    ux=np.zeros((1,2)); uy=np.zeros((2,1))
+    args=(dx,dy,0.1,ux,uy,np.zeros_like(ux),np.zeros_like(uy),state)
+    with pytest.raises(ValueError,match="negative concentrations"):
+        nonperiodic_rectilinear_advection_diffusion_step_2d_with_forcing(
+            *args,source_rates=np.full((2,2),-100.0))
+    with pytest.raises(ValueError,match="boundary flux arrays"):
+        nonperiodic_rectilinear_advection_diffusion_step_2d_with_forcing(
+            *args,boundary_fluxes=(np.zeros(2),np.zeros(2),np.zeros(3),np.zeros(2)))

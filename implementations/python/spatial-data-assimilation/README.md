@@ -123,7 +123,7 @@ software test, not evidence of real-world predictive skill.
 - periodic_advection_diffusion_operator(...)
 - periodic_point_observation_operator(...)
 - periodic_nonuniform_advection_diffusion_operator(...)
-- nonperiodic_nonuniform_advection_diffusion_operator(...)\n- nonperiodic_nonuniform_advection_diffusion_step(...)\n- nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(...)\n- nonperiodic_rectilinear_advection_diffusion_step_2d(...)
+- nonperiodic_nonuniform_advection_diffusion_operator(...)\n- nonperiodic_nonuniform_advection_diffusion_step(...)\n- nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(...)\n- nonperiodic_rectilinear_advection_diffusion_step_2d(...)\n- nonperiodic_rectilinear_advection_diffusion_step_2d_with_forcing(...)
 - periodic_nonuniform_point_observation_operator(...)
 - run_linear_spatial_assimilation(...)
 - verify_spatial_forecasts(...)
@@ -197,3 +197,28 @@ boundaries. Its continuous decay is
 of the numerical solution. This validates the discrete transport component,
 not an environmental model.
 
+
+
+
+## 7. Two-dimensional prescribed forcing and boundary exchange
+
+The forced 2-D step extends the closed-boundary transport operator with
+cell-wise source/sink rates and prescribed total boundary flux densities.
+Boundary arrays are ordered left, right, bottom, top, with lengths matching
+the boundary face counts. Positive left and bottom fluxes enter; positive
+right and top fluxes leave. The area-weighted budget is
+
+\[
+M^{n+1}-M^n=\Delta t\left[
+\sum_{ij}A_{ij}s_{ij}
++\sum_j\Delta y_j(F_{L,j}-F_{R,j})
++\sum_i\Delta x_i(F_{B,i}-F_{T,i})
+\right].
+\]
+
+The routine checks the actual state change against this budget and rejects
+updates that produce negative concentrations. Boundary values are prescribed
+total flux densities, not ghost-cell reconstructions or physical boundary
+closures; deriving them from inflow/outflow and diffusive exchange physics
+remains a separate modelling decision. Corner cells receive contributions
+from both intersecting boundary faces.

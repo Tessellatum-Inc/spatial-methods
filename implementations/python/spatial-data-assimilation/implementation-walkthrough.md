@@ -164,3 +164,31 @@ analytical two-dimensional diffusion decay. The current operator is
 orthogonal/rectilinear, scalar, first order in advection, and closed at all
 outer boundaries; it does not yet represent open boundaries, sources,
 unstructured meshes, or multidimensional data-assimilation coupling.
+
+
+
+## 9. Two-dimensional sources, sinks and prescribed boundary fluxes
+
+The forced 2-D interface adds a source rate to each cell and four arrays of
+boundary total-flux densities. Positive flux is defined inward on the left
+and bottom edges and outward on the right and top edges. Since a boundary
+face has a physical length, each flux density is multiplied by its edge
+length before it changes cell mass. For cell areas
+\(A_{ij}=\Delta x_i\Delta y_j\), summing the update yields
+
+\[
+\Delta M=\Delta t\left[
+\sum_{ij}A_{ij}s_{ij}
++\sum_j\Delta y_j(F_{L,j}-F_{R,j})
++\sum_i\Delta x_i(F_{B,i}-F_{T,i})
+\right].
+\]
+
+This explicit orientation convention avoids treating a flux density as
+already integrated mass flow. The four edge arrays have lengths
+\(n_y,n_y,n_x,n_x\); corner cells receive both adjacent edge contributions.
+The routine validates shapes, finite values, non-negative resulting state
+and the complete mass budget. It does not infer physical boundary fluxes
+from external concentrations or implement 2-D Robin/Dirichlet boundary
+closures; prescribed fluxes are the interface when those total fluxes are
+known from an upstream physical model or measurement.
