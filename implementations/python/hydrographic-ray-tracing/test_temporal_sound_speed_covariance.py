@@ -151,9 +151,11 @@ def test_nonuniform_epochs_and_multiple_query_epochs_keep_cross_query_covariance
         [[1490.0, 1500.0], [1494.0, 1508.0], [1500.0, 1520.0]],
         [2.0, 7.0], covariance
     )
-    assert result["interpolated_profiles_mps"] == pytest.approx(
-        [[1492.0, 1504.0], [1497.0, 1514.0]]
-    )
+    for actual, expected in zip(
+        result["interpolated_profiles_mps"],
+        [[1492.0, 1504.0], [1497.0, 1514.0]],
+    ):
+        assert actual == pytest.approx(expected)
     assert len(result["joint_profile_covariance"]) == 4
     assert result["joint_profile_covariance"][0][2] != 0.0
 

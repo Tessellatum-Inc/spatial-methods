@@ -184,11 +184,6 @@ def interpolate_temporal_sound_speed_profiles(
         weights = [0.0] * len(epochs)
         weights[lower] = 1.0 - fraction
         weights[upper] += fraction
-        profile = [
-            weights[epoch] * profiles[epoch][layer]
-            for layer in range(layer_count)
-            for epoch in range(len(epochs))
-        ]
         # Sum the epoch contributions for each layer.
         profile = [
             sum(weights[epoch] * profiles[epoch][layer]
