@@ -65,9 +65,20 @@ Each lead's sample count is reported. If no independent observations are
 available at a lead, metrics are NaN and count is zero rather than silently
 substituting an analysis observation.
 
+## 4. Analytical transport checks
+
+For a periodic Fourier mode, pure constant-velocity advection has exact
+solution \(c(x,t)=\sin(k(x-ut))\) when the initial state is \(\sin(kx)\).
+Pure diffusion has exact solution
+\(c(x,t)=\exp(-\kappa k^2t)\sin(kx)\). Refinement tests compare numerical
+states with these solutions. Upwind advection is first order in space and
+centred diffusion is second order in space; for the diffusion test, the time
+step is scaled with \(\Delta x^2\) so temporal error does not dominate the
+spatial convergence check.
+
 ## 4. Tests and interpretation
 
-Tests exercise conservation under spatially varying face velocity,
+Tests exercise analytical convergence for periodic advection and diffusion, conservation under spatially varying face velocity,
 constant-field preservation under divergence-free flow, local upwind
 direction, nonuniform interpolation, periodic seam handling, positivity
 restrictions and held-out score calculations. They are numerical contract

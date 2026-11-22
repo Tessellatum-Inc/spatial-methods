@@ -112,3 +112,47 @@ def test_heldout_forecast_verification_reports_leadwise_errors_without_updates()
     assert scores[2]["count"]==2
     with pytest.raises(ValueError,match="dimensions"):
         verify_spatial_forecasts(forecasts,[(np.ones(2),np.ones((2,2))),None,None])
+
+def test_uniform_upwind_advection_converges_to_translated_fourier_mode():
+    length=2*np.pi
+    velocity=0.7
+    final_time=0.5
+    errors=[]
+    for n in (40,80,160):
+        dx=length/n
+        centres=(np.arange(n)+0.5)*dx
+        dt=0.4*dx/velocity
+        steps=int(round(final_time/dt))
+        dt=final_time/steps
+        transition=periodic_advection_diffusion_operator(n,dx,dt,velocity,0.0)
+        state=np.sin(centres)
+        for _ in range(steps):
+            state=transition@state
+        exact=np.sin(centres-velocity*final_time)
+        errors.append(float(np.mean(np.abs(state-exact))))
+    assert errors[0]>errors[1]>errors[2]
+    assert 1.7<errors[0]/errors[1]<2.4
+    assert 1.7<errors[1]/errors[2]<2.4
+
+
+def test_uniform_central_diffusion_converges_to_fourier_decay():
+    length=2*np.pi
+    diffusivity=0.3
+    final_time=0.2
+    errors=[]
+    for n in (20,40,80):
+        dx=length/n
+        centres=(np.arange(n)+0.5)*dx
+        dt=0.2*dx**2/diffusivity
+        steps=int(round(final_time/dt))
+        dt=final_time/steps
+        transition=periodic_advection_diffusion_operator(
+            n,dx,dt,0.0,diffusivity)
+        state=np.sin(2*centres)
+        for _ in range(steps):
+            state=transition@state
+        exact=np.exp(-4*diffusivity*final_time)*np.sin(2*centres)
+        errors.append(float(np.mean(np.abs(state-exact))))
+    assert errors[0]>errors[1]>errors[2]
+    assert errors[0]/errors[1]>3.5
+    assert errors[1]/errors[2]>3.5

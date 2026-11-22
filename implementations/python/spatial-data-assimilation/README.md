@@ -68,6 +68,16 @@ of held-out (y, H) observations. It reports sample count, bias, mean absolute
 error and root mean square error at each lead. It does not modify the forecast
 or use verification observations in the filter.
 
+## Analytical numerical checks
+
+The test suite also compares the uniform periodic operators with exact Fourier
+solutions. For pure advection, a sinusoid translates by \(u t\); for pure
+diffusion, a mode \(\sin(kx)\) decays by \(\exp(-\kappa k^2t)\). Refinement
+tests check decreasing error and expected order-of-magnitude convergence for
+first-order upwind advection and centred diffusion under a time step scaled
+with \(\Delta x^2\). These are discretisation checks for idealised equations,
+not validation of a physical application.
+
 For credible evaluation, held-out observations must be excluded from
 assimilation, parameter fitting and model selection at the forecast origin.
 Use chronological forecast origins, retain the forecast issue time, and report
