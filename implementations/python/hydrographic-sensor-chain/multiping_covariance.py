@@ -101,3 +101,73 @@ def propagate_time_aligned_multiping_covariance(
     return {"jacobian": j, "covariance": _multiply(_multiply(j, c), _transpose(j)),
             "covariance_input_order": "[ping-local blocks..., shared calibration block, clock offset, clock drift]",
             "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]"}
+
+
+def assemble_stochastic_clock_multiping_jacobian(
+    local_jacobians, shared_jacobians, time_sensitivities):
+    """Append one correlated clock-offset state per ping to the shared block.
+
+    The clock-offset covariance is supplied by clock_state_covariance.py.
+    Input order is [ping-local blocks..., shared calibration block,
+    clock_offset_at_ping_1, ..., clock_offset_at_ping_N]. Each ping's
+    sounding is sensitive only to its own clock offset, while covariance
+    between clock offsets creates cross-ping sounding covariance.
+    """
+    if not isinstance(local_jacobians, (list, tuple)) or not local_jacobians:
+        raise ValueError("at least one local Jacobian is required")
+    count = len(local_jacobians)
+    if len(shared_jacobians) != count or len(time_sensitivities) != count:
+        raise ValueError("one shared Jacobian and time sensitivity are required per ping")
+    base_blocks = [_matrix(value, f"shared_jacobians[{i}]", rows=3)
+                   for i, value in enumerate(shared_jacobians)]
+    clock_sensitivities = []
+    for i, value in enumerate(time_sensitivities):
+        try:
+            vector = [float(x) for x in value]
+        except (TypeError, ValueError):
+            raise ValueError(f"time_sensitivities[{i}] must be a finite 3-vector") from None
+        if len(vector) != 3 or not all(math.isfinite(x) for x in vector):
+            raise ValueError(f"time_sensitivities[{i}] must be a finite 3-vector")
+        clock_sensitivities.append(vector)
+    shared_count = len(base_blocks[0][0])
+    if any(len(block[0]) != shared_count for block in base_blocks):
+        raise ValueError("shared Jacobians must have equal column counts")
+    augmented = []
+    for ping in range(count):
+        rows = []
+        for axis in range(3):
+            clock_columns = [
+                clock_sensitivities[ping][axis] if clock_ping == ping else 0.0
+                for clock_ping in range(count)
+            ]
+            rows.append(base_blocks[ping][axis] + clock_columns)
+        augmented.append(rows)
+    return assemble_multiping_jacobian(local_jacobians, augmented)
+
+
+def propagate_stochastic_clock_multiping_covariance(
+    local_jacobians, shared_jacobians, time_sensitivities,
+    joint_input_covariance):
+    """Propagate soundings using a full covariance including ping clock offsets.
+
+    Supply the clock_offset_covariance from
+    propagate_clock_state_covariance in the final N x N block of the joint
+    input covariance. Cross-covariances with navigation/calibration may also
+    be supplied in that same full matrix; this function makes no independence
+    assumption and does not discard any off-diagonal terms.
+    """
+    jacobian = assemble_stochastic_clock_multiping_jacobian(
+        local_jacobians, shared_jacobians, time_sensitivities)
+    size = len(jacobian[0])
+    covariance = _matrix(joint_input_covariance, "joint_input_covariance",
+                         rows=size, columns=size)
+    scale = max(1.0, max(abs(x) for row in covariance for x in row))
+    if any(abs(covariance[i][j] - covariance[j][i]) > 1e-10 * scale
+           for i in range(size) for j in range(i)):
+        raise ValueError("joint_input_covariance must be symmetric")
+    return {
+        "jacobian": jacobian,
+        "covariance": _multiply(_multiply(jacobian, covariance), _transpose(jacobian)),
+        "covariance_input_order": "[ping-local blocks..., shared calibration block, clock offsets by ping]",
+        "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]",
+    }
