@@ -123,7 +123,7 @@ software test, not evidence of real-world predictive skill.
 - periodic_advection_diffusion_operator(...)
 - periodic_point_observation_operator(...)
 - periodic_nonuniform_advection_diffusion_operator(...)
-- nonperiodic_nonuniform_advection_diffusion_operator(...)\n- nonperiodic_nonuniform_advection_diffusion_step(...)\n- nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(...)
+- nonperiodic_nonuniform_advection_diffusion_operator(...)\n- nonperiodic_nonuniform_advection_diffusion_step(...)\n- nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(...)\n- nonperiodic_rectilinear_advection_diffusion_step_2d(...)
 - periodic_nonuniform_point_observation_operator(...)
 - run_linear_spatial_assimilation(...)
 - verify_spatial_forecasts(...)
@@ -133,7 +133,7 @@ from this directory.
 
 ## Scope and limitations
 
-The dynamics examples are one-dimensional. The periodic models use periodic closure; the nonperiodic operator implements zero total boundary flux only. The nonuniform models
+The 1-D and 2-D dynamics examples use rectilinear cell-centred grids. The periodic models use periodic closure; the nonperiodic operator implements zero total boundary flux only. The nonuniform models
 assume cell-centred scalar states, time-constant face fields during each step,
 explicit first-order upwind advection and two-point centred diffusion. It does
 not implement non-periodic boundaries, higher-order flux
@@ -163,3 +163,37 @@ interior state. This is a first-order 1-D closure; Robin exchange uses a non-neg
 \[G=\left(h^{-1}+\frac{\Delta x/2}{\kappa}\right)^{-1},\]
 with zero conductance when either coefficient is zero. The positive-x diffusive flux is \(-G(c_0-c_\infty)\) at the left and \(+G(c_{n-1}-c_\infty)\) at the right. This is a linear Robin exchange closure, not a general nonlinear radiation condition. The prescribed-total-
 flux step remains separate for externally known fluxes.
+
+
+## 6. Two-dimensional rectilinear finite-volume transport
+
+The 2-D step stores concentration at cell centres on a rectangular grid with
+independently nonuniform x- and y-cell widths. The x-face arrays have shape
+\((n_x-1,n_y)\); y-face arrays have shape \((n_x,n_y-1)\). Each internal
+face uses first-order upwind advection and a two-point centred diffusive
+gradient. Flux is multiplied by the physical face length before it is added
+to the two adjacent cell mass tendencies with opposite signs.
+
+For cell area \(A_{ij}=\Delta x_i\Delta y_j\), the update is
+\[
+c_{ij}^{n+1}=c_{ij}^{n}
++\frac{\Delta t}{A_{ij}}
+\left(\sum_{f\in\partial V_{ij}} s_{if}\,\ell_f\,\mathcal F_f\right),
+\]
+where \(s_{if}\) is the outward-orientation sign. All four external
+boundaries have zero total flux. Consequently the area-weighted mass
+\(\sum_{ij}A_{ij}c_{ij}\) is conserved. The implementation uses O(nx ny)
+storage rather than constructing a dense state-transition matrix.
+
+A local outgoing-CFL condition is checked cell by cell. It is sufficient for
+a non-negative explicit update with these upwind/two-point face fluxes; a
+step that violates it is rejected. The returned mass-budget residual is
+checked independently. This is a first-order scalar transport operator on
+orthogonal rectilinear grids, not a general unstructured or curvilinear solver.
+
+The analytical test uses a product cosine mode with homogeneous Neumann
+boundaries. Its continuous decay is
+\(\exp[-\pi^2(\kappa_x+\kappa_y)t]\); grid refinement checks convergence
+of the numerical solution. This validates the discrete transport component,
+not an environmental model.
+

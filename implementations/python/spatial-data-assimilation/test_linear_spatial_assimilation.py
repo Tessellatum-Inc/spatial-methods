@@ -6,7 +6,7 @@ from linear_spatial_assimilation import (
     periodic_nonuniform_point_observation_operator,
     nonperiodic_nonuniform_advection_diffusion_operator,
     nonperiodic_nonuniform_advection_diffusion_step,
-    nonperiodic_nonuniform_advection_diffusion_step_with_boundaries,
+    nonperiodic_nonuniform_advection_diffusion_step_with_boundaries,\n    nonperiodic_rectilinear_advection_diffusion_step_2d,
     run_linear_spatial_assimilation, verify_spatial_forecasts,
 )
 
@@ -321,3 +321,65 @@ def test_robin_exchange_zero_transfer_is_no_flux_and_requires_ambient_value():
             *args,left_boundary_diffusivity=1.0,
             diffusive_boundary_conditions=("robin","no_flux"),
             left_mass_transfer_coefficient=1.0)
+
+
+
+def test_2d_nonuniform_transport_conserves_area_weighted_mass_and_preserves_constant_diffusion_state():
+    dx=np.array([0.4,0.7,0.9])
+    dy=np.array([0.5,1.0,0.6,0.8])
+    state=np.arange(12,dtype=float).reshape(3,4)/5+0.2
+    ux=np.array([[0.2,-0.1,0.0,0.3],[-0.2,0.1,0.15,-0.1]])
+    uy=np.array([[0.1,-0.2,0.0],[0.0,0.15,-0.1],[-0.1,0.0,0.2]])
+    kx=np.full((2,4),0.03)
+    ky=np.full((3,3),0.02)
+    result=nonperiodic_rectilinear_advection_diffusion_step_2d(
+        dx,dy,0.05,ux,uy,kx,ky,state)
+    area=dx[:,None]*dy[None,:]
+    assert np.sum(area*result["concentrations"])==pytest.approx(np.sum(area*state))
+    assert result["mass_budget_residual"]==pytest.approx(0.0,abs=1e-12)
+    assert np.min(result["concentrations"])>=0
+
+    constant=nonperiodic_rectilinear_advection_diffusion_step_2d(
+        dx,dy,0.05,np.zeros((2,4)),np.zeros((3,3)),
+        kx,ky,np.full((3,4),2.5))
+    np.testing.assert_allclose(constant["concentrations"],2.5,atol=1e-12)
+
+
+def test_2d_diffusion_converges_to_neumann_fourier_mode():
+    diffusivity_x,diffusivity_y=0.2,0.1
+    final_time=0.02
+    errors=[]
+    for n in (8,16,32):
+        dx=dy=np.full(n,1.0/n)
+        x=(np.arange(n)+0.5)/n
+        xx,yy=np.meshgrid(x,x,indexing="ij")
+        initial=np.cos(np.pi*xx)*np.cos(np.pi*yy)
+        ux=np.zeros((n-1,n)); uy=np.zeros((n,n-1))
+        kx=np.full((n-1,n),diffusivity_x)
+        ky=np.full((n,n-1),diffusivity_y)
+        dt=0.15*(1.0/n)**2/(diffusivity_x+diffusivity_y)
+        steps=int(np.ceil(final_time/dt)); dt=final_time/steps
+        state=initial.copy()
+        for _ in range(steps):
+            state=nonperiodic_rectilinear_advection_diffusion_step_2d(
+                dx,dy,dt,ux,uy,kx,ky,state)["concentrations"]
+        exact=np.exp(-np.pi**2*(diffusivity_x+diffusivity_y)*final_time)*initial
+        errors.append(float(np.mean(np.abs(state-exact))))
+    assert errors[0]>errors[1]>errors[2]
+    assert errors[0]/errors[1]>2.5
+    assert errors[1]/errors[2]>2.5
+
+
+def test_2d_transport_rejects_unstable_steps_and_invalid_face_shapes():
+    with pytest.raises(ValueError,match="positivity/stability"):
+        nonperiodic_rectilinear_advection_diffusion_step_2d(
+            np.ones(2),np.ones(2),2.0,np.ones((1,2)),np.ones((2,1)),
+            np.zeros((1,2)),np.zeros((2,1)),np.ones((2,2)))
+    with pytest.raises(ValueError,match="x-face"):
+        nonperiodic_rectilinear_advection_diffusion_step_2d(
+            np.ones(2),np.ones(3),0.01,np.ones((2,3)),np.zeros((2,2)),
+            np.zeros((1,3)),np.zeros((2,2)),np.ones((2,3)))
+    with pytest.raises(ValueError,match="non-negative"):
+        nonperiodic_rectilinear_advection_diffusion_step_2d(
+            np.ones(2),np.ones(2),0.01,np.zeros((1,2)),np.zeros((2,1)),
+            -np.ones((1,2)),np.zeros((2,1)),np.ones((2,2)))

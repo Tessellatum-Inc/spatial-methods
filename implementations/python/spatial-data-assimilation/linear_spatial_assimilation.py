@@ -431,3 +431,83 @@ def nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
             "source_mass_change":source_change,"boundary_mass_change":boundary_change,
             "expected_mass_change":expected_change,"mass_budget_residual":float(residual),
             "transition_matrix":transition}
+
+
+def nonperiodic_rectilinear_advection_diffusion_step_2d(
+        cell_widths_x, cell_widths_y, time_step,
+        x_face_velocities, y_face_velocities,
+        x_face_diffusivities, y_face_diffusivities, concentrations):
+    """Advance a 2-D cell-centred field on a nonuniform rectangular grid.
+
+    Interior x-face arrays have shape (nx-1, ny); y-face arrays have
+    shape (nx, ny-1). Face fluxes are positive in +x or +y respectively.
+    All four outer boundaries have zero *total* flux. The explicit
+    finite-volume step is rejected unless its local outgoing-CFL condition
+    guarantees a non-negative update. Work and storage are O(nx*ny).
+    """
+    dx = _array(cell_widths_x, "cell_widths_x", 1)
+    dy = _array(cell_widths_y, "cell_widths_y", 1)
+    state = _array(concentrations, "concentrations", 2)
+    nx, ny = dx.size, dy.size
+    if nx < 2 or ny < 2 or np.any(dx <= 0) or np.any(dy <= 0):
+        raise ValueError("each grid axis must contain at least two positive cell widths")
+    if state.shape != (nx, ny) or np.any(state < 0):
+        raise ValueError("concentrations must be non-negative with shape (nx, ny)")
+    dt = float(time_step)
+    if not np.isfinite(dt) or dt <= 0:
+        raise ValueError("time_step must be positive and finite")
+    ux = _array(x_face_velocities, "x_face_velocities", 2)
+    uy = _array(y_face_velocities, "y_face_velocities", 2)
+    kx = _array(x_face_diffusivities, "x_face_diffusivities", 2)
+    ky = _array(y_face_diffusivities, "y_face_diffusivities", 2)
+    if ux.shape != (nx-1, ny) or kx.shape != (nx-1, ny):
+        raise ValueError("x-face velocity and diffusivity must have shape (nx-1, ny)")
+    if uy.shape != (nx, ny-1) or ky.shape != (nx, ny-1):
+        raise ValueError("y-face velocity and diffusivity must have shape (nx, ny-1)")
+    if np.any(kx < 0) or np.any(ky < 0):
+        raise ValueError("face diffusivities must be non-negative")
+
+    area = dx[:, None] * dy[None, :]
+    outgoing = np.zeros((nx, ny))
+    mass_tendency = np.zeros((nx, ny))
+
+    # x-normal faces: face length is the local y-cell width.
+    distance_x = 0.5 * (dx[:-1] + dx[1:])
+    ax = np.maximum(ux, 0.0) + kx / distance_x[:, None]
+    bx = np.minimum(ux, 0.0) - kx / distance_x[:, None]
+    flux_x = dy[None, :] * (ax * state[:-1, :] + bx * state[1:, :])
+    mass_tendency[:-1, :] -= flux_x
+    mass_tendency[1:, :] += flux_x
+    outgoing[:-1, :] += dy[None, :] * ax
+    outgoing[1:, :] -= dy[None, :] * bx
+
+    # y-normal faces: face length is the local x-cell width.
+    distance_y = 0.5 * (dy[:-1] + dy[1:])
+    ay = np.maximum(uy, 0.0) + ky / distance_y[None, :]
+    by = np.minimum(uy, 0.0) - ky / distance_y[None, :]
+    flux_y = dx[:, None] * (ay * state[:, :-1] + by * state[:, 1:])
+    mass_tendency[:, :-1] -= flux_y
+    mass_tendency[:, 1:] += flux_y
+    outgoing[:, :-1] += dx[:, None] * ay
+    outgoing[:, 1:] -= dx[:, None] * by
+
+    local_cfl = dt * outgoing / area
+    if np.max(local_cfl) > 1.0 + 1e-12:
+        raise ValueError("time step violates 2-D finite-volume positivity/stability bound")
+    updated = state + dt * mass_tendency / area
+    tolerance = 1e-12 * max(1.0, float(np.max(state)))
+    if np.min(updated) < -tolerance:
+        raise ArithmeticError("positive-coefficient finite-volume update produced a negative concentration")
+    initial_mass = float(np.sum(area * state))
+    final_mass = float(np.sum(area * updated))
+    residual = final_mass - initial_mass
+    budget_tolerance = 1e-10 * max(1.0, abs(initial_mass))
+    if abs(residual) > budget_tolerance:
+        raise ArithmeticError("2-D finite-volume zero-boundary-flux mass budget failed")
+    return {
+        "concentrations": updated,
+        "initial_mass": initial_mass,
+        "final_mass": final_mass,
+        "mass_budget_residual": residual,
+        "maximum_local_cfl": float(np.max(local_cfl)),
+    }

@@ -138,3 +138,29 @@ M^{n+1}-M^n=\Delta t\left(\sum_i\Delta x_i s_i+F_L-F_R\right).
 \]
 The implementation checks this budget. The prescribed-flux interface remains
 separate and is appropriate when the total boundary flux is known directly.
+
+
+## 8. Two-dimensional rectilinear transport
+
+The 2-D implementation generalises the same conservative face-flux
+construction to cell areas \(A_{ij}=\Delta x_i\Delta y_j\). An x-normal
+face has length \(\Delta y_j\), and a y-normal face has length
+\(\Delta x_i\). For every interior face, its integrated flux is subtracted
+from one adjacent cell's mass tendency and added to the other's. The four
+outer boundaries are closed with zero total flux, so summing over all cells
+cancels every internal contribution and preserves area-weighted mass.
+
+The update is evaluated directly on arrays rather than assembling a dense
+transition matrix. Its local positivity condition is
+\[
+\Delta t\,\frac{\sum_{f\,\mathrm{outgoing}} a_f\ell_f}{A_{ij}}
+\leq 1,
+\]
+where \(a_f\) is the non-negative coefficient multiplying the cell's own
+concentration in its outward flux. This condition keeps the explicit
+self-weight non-negative; the routine rejects a violating time step. A
+homogeneous-Neumann product cosine benchmark checks convergence to the
+analytical two-dimensional diffusion decay. The current operator is
+orthogonal/rectilinear, scalar, first order in advection, and closed at all
+outer boundaries; it does not yet represent open boundaries, sources,
+unstructured meshes, or multidimensional data-assimilation coupling.
