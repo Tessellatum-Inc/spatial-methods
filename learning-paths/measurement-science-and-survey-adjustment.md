@@ -32,6 +32,8 @@ Start with the foundations:
 
 Then work through [Exercise A: repeated distance and angle observations](../experiments/measurement/exercise-a-repeated-distance-and-angle.md). Pay attention to the assumptions behind repeated observations and the distinction between a calculated standard uncertainty and a claim about instrument performance.
 
+Before the network exercises, read [Terrestrial surveying: total station and differential levelling](../collection/terrestrial-surveying-total-station-and-levelling.md). It describes the field observations and checks that give practical meaning to angles, distances, height differences, closures and stochastic assumptions. Its procedures are a learning synthesis, not a substitute for current instrument manuals or project specifications.
+
 ### 2. Move from observations to network adjustment
 
 Read [Exercise B: differential levelling loop](../experiments/measurement/exercise-b-differential-levelling-loop.md) and [Exercise C: weighted control network](../experiments/measurement/exercise-c-weighted-control-network.md).
