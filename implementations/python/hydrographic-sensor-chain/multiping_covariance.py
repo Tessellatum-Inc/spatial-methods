@@ -261,3 +261,80 @@ def propagate_ray_traced_multiping_covariance(
         ),
         "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]",
     }
+
+
+def assemble_time_aligned_ray_traced_multiping_jacobian(
+    sensor_chain_jacobians, ray_endpoint_jacobians,
+    navigation_time_sensitivities):
+    """Add one navigation-epoch clock-offset column per ray-traced ping.
+
+    Base input order is [ping-local 17-state blocks, shared sound-speed
+    profile]. The returned order appends N navigation epoch clock offsets,
+    one per ping. Each time sensitivity is d(sounding)/d(epoch shift), in
+    navigation-coordinate units per second.
+
+    Acoustic two-way travel-time uncertainty remains in each ping-local ray
+    input block. If the same physical clock drives both epoch tagging and
+    acoustic timing, represent their correlation in the full covariance.
+    """
+    if not isinstance(sensor_chain_jacobians, (list, tuple)) or not sensor_chain_jacobians:
+        raise ValueError("at least one sensor-chain Jacobian is required")
+    count = len(sensor_chain_jacobians)
+    if not isinstance(navigation_time_sensitivities, (list, tuple)) or len(navigation_time_sensitivities) != count:
+        raise ValueError("one navigation time sensitivity is required per ping")
+    base = assemble_ray_traced_multiping_jacobian(
+        sensor_chain_jacobians, ray_endpoint_jacobians)
+    vectors = []
+    for i, value in enumerate(navigation_time_sensitivities):
+        try:
+            vector = [float(x) for x in value]
+        except (TypeError, ValueError):
+            raise ValueError(f"navigation_time_sensitivities[{i}] must be a finite 3-vector") from None
+        if len(vector) != 3 or not all(math.isfinite(x) for x in vector):
+            raise ValueError(f"navigation_time_sensitivities[{i}] must be a finite 3-vector")
+        vectors.append(vector)
+
+    output = []
+    for ping in range(count):
+        for axis in range(3):
+            output.append(
+                base[3 * ping + axis] +
+                [vectors[ping][axis] if clock_ping == ping else 0.0
+                 for clock_ping in range(count)]
+            )
+    return output
+
+
+def propagate_time_aligned_ray_traced_multiping_covariance(
+    sensor_chain_jacobians, ray_endpoint_jacobians,
+    navigation_time_sensitivities, joint_input_covariance):
+    """Propagate ray-traced soundings with correlated navigation epoch errors.
+
+    Input covariance order is [per-ping sensor/angle/travel-time blocks,
+    shared sound-speed profile, navigation epoch clock offsets by ping].
+    The covariance may retain correlations between any of these groups,
+    including epoch offsets and acoustic travel-time errors. A clock-state
+    offset covariance can populate the final N-by-N block. The resulting
+    3N-by-3N covariance retains profile and time-alignment correlations.
+    """
+    jacobian = assemble_time_aligned_ray_traced_multiping_jacobian(
+        sensor_chain_jacobians, ray_endpoint_jacobians,
+        navigation_time_sensitivities)
+    size = len(jacobian[0])
+    covariance = _matrix(
+        joint_input_covariance, "joint_input_covariance",
+        rows=size, columns=size)
+    scale = max(1.0, max(abs(value) for row in covariance for value in row))
+    if any(abs(covariance[i][j] - covariance[j][i]) > 1e-10 * scale
+           for j in range(i)):
+        raise ValueError("joint_input_covariance must be symmetric")
+    return {
+        "jacobian": jacobian,
+        "covariance": _multiply(
+            _multiply(jacobian, covariance), _transpose(jacobian)),
+        "covariance_input_order": (
+            "[ping-local sensor/angle/travel-time blocks, shared sound-speed "
+            "profile, navigation epoch clock offsets by ping]"
+        ),
+        "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]",
+    }
