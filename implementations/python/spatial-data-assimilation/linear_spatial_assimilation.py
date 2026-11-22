@@ -411,12 +411,12 @@ def nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
     updated[updated < 0] = 0.0
     left_adv = ul * (cin_l if ul > 0 else state[0])
     right_adv = ur * (cin_r if ur < 0 else state[-1])
+    g_left = 0.0 if modes[0] != "robin" or hl == 0 or kl == 0 else 1.0/(1.0/hl+widths[0]/(2.0*kl))
+    g_right = 0.0 if modes[1] != "robin" or hr == 0 or kr == 0 else 1.0/(1.0/hr+widths[-1]/(2.0*kr))
     left_diff = (2.0 * kl * (cdir_l-state[0]) / widths[0] if modes[0] == "dirichlet"
                  else -g_left * (state[0]-cenv_l) if modes[0] == "robin" else 0.0)
     right_diff = (2.0 * kr * (state[-1]-cdir_r) / widths[-1] if modes[1] == "dirichlet"
                   else g_right * (state[-1]-cenv_r) if modes[1] == "robin" else 0.0)
-    g_left = 0.0 if modes[0] != "robin" or hl == 0 or kl == 0 else 1.0/(1.0/hl+widths[0]/(2.0*kl))
-    g_right = 0.0 if modes[1] != "robin" or hr == 0 or kr == 0 else 1.0/(1.0/hr+widths[-1]/(2.0*kr))
     left_flux, right_flux = float(left_adv+left_diff), float(right_adv+right_diff)
     initial_mass, final_mass = float(widths@state), float(widths@updated)
     source_change = float(dt*(widths@sources))
