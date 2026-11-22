@@ -1,6 +1,6 @@
 # Spatial statistics and stochastic processes
 
-**Subject identity:** \`SM-FND-005\` — Spatial statistics and stochastic processes.
+**Subject identity:** `SM-FND-005` — Spatial statistics and stochastic processes.
 
 This domain develops the probability models for spatially indexed and time-evolving quantities. It explains how dependence, spatial structure and stochastic variation differ from independent sampling noise, and how those assumptions influence estimation, prediction, simulation and decisions.
 
@@ -14,6 +14,7 @@ The domain covers:
 - spatial sampling and design-based versus model-based inference;
 - Gaussian random fields, Gaussian processes and conditional prediction;
 - spatiotemporal processes, separability, advection and evolving dependence;
+- sequential state estimation, filtering, smoothing, ensemble methods and data assimilation;
 - conditional simulation, uncertainty decomposition and model criticism.
 
 ## Modules
@@ -24,6 +25,8 @@ The domain covers:
 4. [Gaussian random-field inference and conditional simulation](gaussian-random-field-inference-and-conditional-simulation.md) derives Gaussian conditioning, distinguishes latent prediction from noisy-observation prediction, explains kriging and sequential conditional simulation, and identifies parameter/model uncertainty and validation requirements.
 5. [Spatiotemporal random fields, advection and dynamic prediction](spatiotemporal-random-fields-advection-and-dynamic-prediction.md) develops separable and nonseparable dependence, moving-frame coordinates, evolving anisotropy, state-space and transport models, observation trajectories, and the distinction between interpolation, conditional prediction and physical forecasting.
 
+6. [Dynamic spatial models, filtering and data assimilation](dynamic-spatial-models-filtering-and-data-assimilation.md) explains state-space models, spatial observation operators, Bayesian filtering, Kalman/EKF/UKF methods, ensemble and particle filters, smoothing, forecast-analysis cycling and leakage-safe validation. It connects to the repository's temporal filtering, nonlinear state-estimation and ensemble-analysis implementations.
+
 ## Boundaries with neighbouring foundations
 
 - **SM-FND-004 — Probability and statistical inference:** general probability, random variables, distributions, conditioning and inferential procedures. This domain specialises those ideas for spatial and spatiotemporal dependence.
@@ -33,7 +36,7 @@ The domain covers:
 
 ## Development status
 
-Five initial teaching modules are published. They establish the core vocabulary and connect to existing algorithms and implementations, but do not constitute a complete course or independent technical certification. Remaining work includes deeper Bayesian and likelihood-based inference, covariance-parameter uncertainty, preferential sampling, dynamic-model implementations, application-specific advection, scalable inference, independent technical review and learner testing.
+Six initial teaching modules are published. They establish the core vocabulary and connect to existing algorithms and implementations, but do not constitute a complete course or independent technical certification. Remaining work includes deeper Bayesian and likelihood-based inference, covariance-parameter uncertainty, preferential sampling, integrated spatial data-assimilation examples, covariance-parameter uncertainty, preferential sampling, scalable inference, independent technical review and learner testing.
 
 ## Reading route
 

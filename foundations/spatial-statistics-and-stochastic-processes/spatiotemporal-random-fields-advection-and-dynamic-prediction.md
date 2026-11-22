@@ -269,7 +269,7 @@ Further development should include dynamic-model implementations with explicit p
 
 - Cressie, N. and Wikle, C. K. (2011). *Statistics for Spatio-Temporal Data*. Wiley.
 - Gneiting, T. (2002). Nonseparable, Stationary Covariance Functions for Space-Time Data. *Journal of the American Statistical Association*, 97(458), 590–600. https://doi.org/10.1198/016214502760047113
-- Wikle, C. K., Zammit-Mangion, A. and Cressie, N. (2019). * स्पatial Statistics for Remote Sensing*. CRC Press.
+- Wikle, C. K., Zammit-Mangion, A. and Cressie, N. (2019). * Spatial Statistics for Remote Sensing*. CRC Press.
 
 ## Check your understanding
 

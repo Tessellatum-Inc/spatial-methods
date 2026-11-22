@@ -31,7 +31,7 @@ The subject IDs below are stable identifiers from the [Geoinformatics master sub
 | SM-FND-002 | Linear algebra and matrix methods | Initial ten-module sequence published; desk audit completed; independent review and learner testing pending | Vectors, matrices, linear systems, rank, eigenvalues, decompositions, covariance and multivariate structure |
 | SM-FND-003 | Calculus and differential methods | Planned | Derivatives, gradients, integrals, multivariable calculus, differential equations and fields |
 | SM-FND-004 | Probability and statistical inference | Initial eight-module sequence and applied pathway published; review and learner testing pending | Probability models, distributions, sampling, estimation, testing and Bayesian reasoning |
-| SM-FND-005 | Spatial statistics and stochastic processes | Five initial teaching modules published; technical review and learner testing pending | Random fields, covariance, variograms, point processes, spatial sampling, Gaussian inference, anisotropy and spatiotemporal dynamics |
+| SM-FND-005 | Spatial statistics and stochastic processes | Six initial teaching modules published; technical review and learner testing pending | Random fields, covariance, variograms, point processes, spatial sampling, Gaussian inference, anisotropy, spatiotemporal dynamics and data assimilation |
 | SM-FND-006 | Geometry and computational geometry theory | Planned | Euclidean, affine and projective geometry; metric spaces; geometric constructions |
 | SM-FND-007 | Topology and spatial relations | Planned | Topological spaces, continuity, connectedness, boundaries and spatial relations |
 | SM-FND-008 | Geodesy and reference systems | Existing material; expansion required | Earth figure, datums, reference frames, coordinate systems, gravity and transformations |
@@ -58,7 +58,7 @@ The mathematics domain begins with [Mathematical language, quantities and spatia
 
 ### Spatial statistics and stochastic processes
 
-[Spatial statistics and stochastic processes](spatial-statistics-and-stochastic-processes/README.md) now has five initial modules: [random fields, covariance functions and variograms](spatial-statistics-and-stochastic-processes/random-fields-covariance-and-variograms.md), [spatial point processes and sampling design](spatial-statistics-and-stochastic-processes/spatial-point-processes-and-sampling-design.md), [anisotropic and nonstationary spatial fields](spatial-statistics-and-stochastic-processes/anisotropic-and-nonstationary-spatial-fields.md), [Gaussian random-field inference and conditional simulation](spatial-statistics-and-stochastic-processes/gaussian-random-field-inference-and-conditional-simulation.md), and [spatiotemporal random fields, advection and dynamic prediction](spatial-statistics-and-stochastic-processes/spatiotemporal-random-fields-advection-and-dynamic-prediction.md). Together they establish spatial and temporal dependence, sampling design, covariance validity, conditional inference, simulation and dynamic prediction. Advanced Bayesian inference, covariance-parameter uncertainty, preferential sampling, scalable dynamic models, independent technical review and learner testing remain open.
+[Spatial statistics and stochastic processes](spatial-statistics-and-stochastic-processes/README.md) now has six initial modules: [random fields, covariance functions and variograms](spatial-statistics-and-stochastic-processes/random-fields-covariance-and-variograms.md), [spatial point processes and sampling design](spatial-statistics-and-stochastic-processes/spatial-point-processes-and-sampling-design.md), [anisotropic and nonstationary spatial fields](spatial-statistics-and-stochastic-processes/anisotropic-and-nonstationary-spatial-fields.md), [Gaussian random-field inference and conditional simulation](spatial-statistics-and-stochastic-processes/gaussian-random-field-inference-and-conditional-simulation.md), and [spatiotemporal random fields, advection and dynamic prediction](spatial-statistics-and-stochastic-processes/spatiotemporal-random-fields-advection-and-dynamic-prediction.md), and [dynamic spatial models, filtering and data assimilation](spatial-statistics-and-stochastic-processes/dynamic-spatial-models-filtering-and-data-assimilation.md). Together they establish spatial and temporal dependence, sampling design, covariance validity, conditional inference, simulation, dynamic prediction and sequential state estimation. Advanced Bayesian inference, covariance-parameter uncertainty, preferential sampling, integrated spatial assimilation, scalable inference, independent technical review and learner testing remain open.
 
 ### Probability and statistical inference
 
@@ -110,25 +110,25 @@ Not every topic needs the same mathematical depth or the same type of example. T
 
 As subject coverage grows, organise material into durable domain folders rather than one large flat directory:
 
-- \`mathematics/\`
-- \`linear-algebra/\`
-- \`calculus-and-differential-methods/\`
-- \`probability-and-statistics/\`
-- \`spatial-statistics/\`
-- \`geometry-and-topology/\`
-- \`geodesy-and-reference-systems/\`
-- \`earth-science-and-physical-geography/\`
-- \`cartography-and-visual-perception/\`
-- \`measurement-science/\`
-- \`remote-sensing-physics/\`
-- \`optics-and-electromagnetism/\`
-- \`signal-processing-and-information-theory/\`
-- \`computer-science/\`
-- \`numerical-analysis/\`
-- \`optimisation-and-operations-research/\`
-- \`geographic-information-science/\`
-- \`systems-and-complexity/\`
-- \`environmental-and-life-sciences/\`
+- `mathematics/`
+- `linear-algebra/`
+- `calculus-and-differential-methods/`
+- `probability-and-statistics/`
+- `spatial-statistics/`
+- `geometry-and-topology/`
+- `geodesy-and-reference-systems/`
+- `earth-science-and-physical-geography/`
+- `cartography-and-visual-perception/`
+- `measurement-science/`
+- `remote-sensing-physics/`
+- `optics-and-electromagnetism/`
+- `signal-processing-and-information-theory/`
+- `computer-science/`
+- `numerical-analysis/`
+- `optimisation-and-operations-research/`
+- `geographic-information-science/`
+- `systems-and-complexity/`
+- `environmental-and-life-sciences/`
 
 Create a folder when substantive canonical material is ready to live there; avoid filling the repository with empty placeholders.
 
