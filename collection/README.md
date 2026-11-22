@@ -15,7 +15,7 @@ The stable subject identities are defined in the [Geoinformatics master subject 
 | Subject | ID | Entry point |
 |---|---|---|
 | Geodetic and engineering surveying | SM-COL-001 | [Measurement science and survey adjustment](../learning-paths/measurement-science-and-survey-adjustment.md) |
-| GNSS, positioning and navigation systems | SM-COL-002 | [GNSS methods and implementations](../catalog/first-curation-cluster-reference-positioning-measurement.md#3-gnss-scope-boundaries-to-preserve) |
+| GNSS, positioning and navigation systems | SM-COL-002 | [GNSS positioning and navigation observation](gnss-positioning-and-navigation-observation.md); [GNSS methods and implementations](../catalog/first-curation-cluster-reference-positioning-measurement.md#3-gnss-scope-boundaries-to-preserve) |
 | Satellite and airborne optical remote sensing | SM-COL-004 | [Optical satellite imagery acquisition](optical-satellite-imagery-acquisition.md) |
 | Radar, SAR and interferometric sensing | SM-COL-006 | [SAR acquisition and observation design](sar-acquisition-and-observation-design.md) |
 | Photogrammetry and structure from motion | SM-COL-007 | [Photogrammetric image acquisition](photogrammetry/image-acquisition.md) |
@@ -23,6 +23,10 @@ The stable subject identities are defined in the [Geoinformatics master subject 
 | Field surveys, sampling and ground truth | SM-COL-011 | [Spatial observation and sampling design](spatial-observation-and-sampling-design.md); [practical sampling campaign exercise](spatial-observation-sampling-exercise.md) |
 
 This is an initial navigation page, not a claim that every collection domain has been comprehensively curated. The subject index remains the complete taxonomy.
+
+## GNSS positioning and navigation
+
+GNSS positioning (SM-COL-002) now has an initial [positioning and navigation observation method](gnss-positioning-and-navigation-observation.md). It distinguishes code and carrier-phase observables, static and kinematic positioning modes, reference-frame and height handling, field occupation records, independent checks and quality acceptance. It is a technology-aware collection method, not a claim that receiver precision or a fixed RTK status proves survey accuracy. Local control specifications and field validation remain necessary.
 
 ## Remote-sensing collection route
 
