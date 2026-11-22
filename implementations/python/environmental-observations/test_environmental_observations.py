@@ -109,3 +109,33 @@ def test_support_geometry_collection_is_checked():
         support={"support_type": "area", "geometry": geometry, "crs": "OGC:CRS84"}
     ))
     assert record.support["geometry"]["type"] == "GeometryCollection"
+
+
+def test_nested_support_and_provenance_are_deeply_immutable():
+    source = row(
+        support={
+            "support_type": "point",
+            "geometry": {"type": "Point", "coordinates": [36.8, -1.3]},
+            "crs": "OGC:CRS84",
+        },
+        provenance={"source": {"file": "raw.csv", "line": 4}},
+    )
+    record = ObservationRecord.from_dict(source)
+    source["support"]["geometry"]["coordinates"][0] = 0
+    source["provenance"]["source"]["line"] = 99
+    assert record.to_dict()["support"]["geometry"]["coordinates"] == [36.8, -1.3]
+    assert record.to_dict()["provenance"]["source"]["line"] == 4
+    with pytest.raises(TypeError):
+        record.support["geometry"]["type"] = "LineString"
+    with pytest.raises(TypeError):
+        record.provenance["source"]["file"] = "changed.csv"
+    exported = record.to_dict()
+    exported["support"]["geometry"]["coordinates"][0] = 0
+    assert record.to_dict()["support"]["geometry"]["coordinates"] == [36.8, -1.3]
+
+
+def test_provenance_rejects_non_json_and_non_finite_values():
+    with pytest.raises(ObservationValidationError):
+        ObservationRecord.from_dict(row(provenance={"source": object()}))
+    with pytest.raises(ObservationValidationError):
+        ObservationRecord.from_dict(row(provenance={"source": math.inf}))

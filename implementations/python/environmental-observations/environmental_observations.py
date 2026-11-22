@@ -11,6 +11,7 @@ from math import isfinite
 from numbers import Real
 from pathlib import Path
 from typing import Any, Mapping
+from types import MappingProxyType
 import json
 
 
@@ -59,6 +60,33 @@ def _finite_number(value: Any, field: str, *, nonnegative: bool = False) -> floa
     if nonnegative and number < 0:
         raise ObservationValidationError(f"{field} must be non-negative")
     return number
+
+
+def _freeze_json(value: Any, field: str) -> Any:
+    """Copy JSON-compatible data into recursively immutable containers."""
+    if isinstance(value, Mapping):
+        frozen = {}
+        for key, item in value.items():
+            if not isinstance(key, str):
+                raise ObservationValidationError(f"{field} object keys must be strings")
+            frozen[key] = _freeze_json(item, f"{field}.{key}")
+        return MappingProxyType(frozen)
+    if isinstance(value, (list, tuple)):
+        return tuple(_freeze_json(item, field) for item in value)
+    if value is None or isinstance(value, (str, bool, int)):
+        return value
+    if isinstance(value, float) and isfinite(value):
+        return value
+    raise ObservationValidationError(f"{field} must contain only finite JSON-compatible values")
+
+
+def _thaw_json(value: Any) -> Any:
+    """Return fresh mutable JSON containers for serialization."""
+    if isinstance(value, Mapping):
+        return {key: _thaw_json(item) for key, item in value.items()}
+    if isinstance(value, tuple):
+        return [_thaw_json(item) for item in value]
+    return value
 
 
 def _validate_coordinates(value: Any, field: str) -> None:
@@ -146,6 +174,8 @@ class ObservationRecord:
             _nonempty_string(key, "provenance key")
             if value is None:
                 raise ObservationValidationError(f"provenance.{key} must not be null")
+        frozen_support = _freeze_json(support, "support")
+        frozen_provenance = _freeze_json(provenance, "provenance")
 
         status = _nonempty_string(raw["qc_status"], "qc_status")
         if status not in QC_STATUSES:
@@ -172,9 +202,9 @@ class ObservationRecord:
             value=_finite_number(raw["value"], "value"),
             unit=_nonempty_string(raw["unit"], "unit"),
             method_id=_nonempty_string(raw["method_id"], "method_id"),
-            support=dict(support),
+            support=frozen_support,
             qc_status=status,
-            provenance=dict(provenance),
+            provenance=frozen_provenance,
             standard_uncertainty=uncertainty,
             uncertainty_unit=uncertainty_unit,
             notes=notes,
@@ -189,9 +219,9 @@ class ObservationRecord:
             "value": self.value,
             "unit": self.unit,
             "method_id": self.method_id,
-            "support": dict(self.support),
+            "support": _thaw_json(self.support),
             "qc_status": self.qc_status,
-            "provenance": dict(self.provenance),
+            "provenance": _thaw_json(self.provenance),
         }
         if self.standard_uncertainty is not None:
             result["standard_uncertainty"] = self.standard_uncertainty
