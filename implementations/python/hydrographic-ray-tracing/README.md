@@ -122,3 +122,63 @@ interpolated estimates under that interpolation rule; it does not include
 unresolved ocean variability between observations, horizontal advection,
 or model discrepancy. Those require an additional physical or stochastic
 model rather than an arbitrary inflation of the covariance.
+
+
+### Conditional OU model for stochastic profiles at ping epochs
+
+For applications where piecewise-linear interpolation is not an adequate model
+of between-observation variability, the module also provides
+\`condition_temporal_sound_speed_profiles_ou\`. This is a separate stochastic
+model; it does not change the deterministic interpolation API.
+
+Let the supplied reference profile \(\mathbf c_{\mathrm{ref}}\) be the
+assumed temporal mean profile, and let profile anomalies have separable
+covariance
+\[
+\operatorname{Cov}(\mathbf a(t_i),\mathbf a(t_j))
+=R_{ij}C_p,\qquad
+R_{ij}=\exp(-|t_i-t_j|/\tau).
+\]
+For observation epochs \(t_o\) and query epochs \(t_q\), define
+\[
+W=R_{qo}R_{oo}^{-1},\qquad
+S=R_{qq}-WR_{oq}.
+\]
+The conditional profile mean and full query covariance are
+\[
+\widehat{\mathbf c}_q
+=\mathbf c_{\mathrm{ref}}
++(W\otimes I_L)
+(\mathbf c_o-\mathbf c_{\mathrm{ref}}^{(o)}),
+\]
+\[
+C_{q|o}=S\otimes C_p.
+\]
+The implementation obtains the conditioning weights using a Cholesky solve;
+it does not explicitly form \(R_{oo}^{-1}\). Output states are ordered
+query-epoch-major, then layer-major. Both cross-query and cross-layer
+covariances are retained.
+
+The function requires strictly increasing, distinct observation epochs,
+finite equal-length observed profiles, a finite reference profile, a
+symmetric positive-semidefinite single-epoch layer covariance, and a
+positive correlation time. Query epochs may repeat or lie outside the
+observation interval. Outside-interval results are conditional predictions
+under the OU model, not deterministic interpolation or an unrestricted
+physical forecast.
+
+**Observation assumption:** observations are treated as exact values of the
+latent profile process. At an exact observation epoch, the conditional mean
+equals the observed profile and the conditional residual covariance is zero.
+If profile measurements have material measurement error, this noiseless
+conditioning model is inappropriate; an explicit observation-noise model
+must be introduced rather than hiding measurement error inside \(C_p\).
+
+The model assumes a stationary exponential temporal correlation with one
+correlation time \(\tau\), and a supplied time-invariant vertical covariance
+\(C_p\). The reference profile must represent a defensible mean/trend. The
+model does not represent horizontal advection, currents, horizontal
+gradients, evolving mean structure, internal-wave dynamics or the physical
+evolution of an ocean water column. Estimate or justify parameters from
+relevant observations and survey cadence. This is a conditional stochastic
+profile model, not an oceanographic forecast.

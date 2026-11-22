@@ -60,6 +60,64 @@ def _jacobi_eigenvalues(matrix):
     return [a[i][i] for i in range(n)]
 
 
+def _transpose(matrix):
+    return [list(column) for column in zip(*matrix)]
+
+
+def _multiply(left, right):
+    if not left or not right or len(left[0]) != len(right):
+        raise ValueError("matrix dimensions are incompatible")
+    return [
+        [
+            sum(left[i][k] * right[k][j] for k in range(len(right)))
+            for j in range(len(right[0]))
+        ]
+        for i in range(len(left))
+    ]
+
+
+def _cholesky_solve(matrix, right_hand_side):
+    """Solve A X = B for symmetric positive-definite A without inversion."""
+    n = len(matrix)
+    if n == 0 or len(right_hand_side) != n:
+        raise ValueError("linear-system dimensions are incompatible")
+    width = len(right_hand_side[0])
+    if width == 0 or any(len(row) != width for row in right_hand_side):
+        raise ValueError("right-hand side must be a non-empty rectangular matrix")
+    lower = [[0.0] * n for _ in range(n)]
+    scale = max(1.0, max(abs(value) for row in matrix for value in row))
+    for i in range(n):
+        for j in range(i + 1):
+            residual = matrix[i][j] - sum(
+                lower[i][k] * lower[j][k] for k in range(j)
+            )
+            if i == j:
+                if residual <= 1e-14 * scale:
+                    raise ValueError(
+                        "observation temporal covariance is not numerically positive definite"
+                    )
+                lower[i][j] = math.sqrt(residual)
+            else:
+                lower[i][j] = residual / lower[j][j]
+
+    forward = [[0.0] * width for _ in range(n)]
+    for i in range(n):
+        for col in range(width):
+            forward[i][col] = (
+                right_hand_side[i][col]
+                - sum(lower[i][k] * forward[k][col] for k in range(i))
+            ) / lower[i][i]
+
+    solution = [[0.0] * width for _ in range(n)]
+    for i in range(n - 1, -1, -1):
+        for col in range(width):
+            solution[i][col] = (
+                forward[i][col]
+                - sum(lower[k][i] * solution[k][col] for k in range(i + 1, n))
+            ) / lower[i][i]
+    return solution
+
+
 def build_temporally_correlated_sound_speed_covariance(
     profile_epochs_s: Sequence[float],
     single_epoch_profile_covariance: Sequence[Sequence[float]],
@@ -71,11 +129,6 @@ def build_temporally_correlated_sound_speed_covariance(
     at any one epoch. Temporal correlation follows a stationary exponential
     (Ornstein-Uhlenbeck) kernel exp(-|t_i-t_j| / tau). The full covariance is
     separable: C[(i,k),(j,l)] = R[i,j] * C_profile[k,l].
-
-    State order is epoch-major: all layer sound-speed errors at epoch 1,
-    followed by all layers at epoch 2, and so on. Epoch order is preserved,
-    including repeated epochs. The model represents correlated profile
-    anomalies, not a time-evolving mean profile or a physical ocean forecast.
     """
     try:
         epochs = [float(value) for value in profile_epochs_s]
@@ -86,7 +139,6 @@ def build_temporally_correlated_sound_speed_covariance(
         raise ValueError("profile_epochs_s must contain finite epochs")
     if not math.isfinite(correlation_time) or correlation_time <= 0.0:
         raise ValueError("correlation_time_s must be finite and positive")
-
     profile_covariance = _symmetric_psd_matrix(
         single_epoch_profile_covariance, "single_epoch_profile_covariance"
     )
@@ -120,7 +172,6 @@ def build_temporally_correlated_sound_speed_covariance(
     }
 
 
-
 def interpolate_temporal_sound_speed_profiles(
     profile_epochs_s: Sequence[float],
     observed_profiles_mps: Sequence[Sequence[float]],
@@ -129,14 +180,9 @@ def interpolate_temporal_sound_speed_profiles(
 ) -> dict[str, object]:
     """Linearly interpolate observed profiles and propagate their full covariance.
 
-    Profile and covariance state order is epoch-major, then layer-major.
-    Interpolation is restricted to the closed observation-time interval:
-    extrapolation is rejected. The returned operator H maps the flattened
-    observed profile vector to the flattened query profile vector, and the
-    propagated covariance is exactly H C_observed H.T.
-
-    This deterministic interpolation does not add a stochastic model for
-    unresolved variability between observations.
+    The returned operator H maps the flattened observation profile vector to
+    query profiles; the propagated covariance is H C_observed H.T. This
+    deterministic interpolation does not model unresolved variability.
     """
     try:
         epochs = [float(value) for value in profile_epochs_s]
@@ -159,15 +205,12 @@ def interpolate_temporal_sound_speed_profiles(
         raise ValueError("all observed profiles must have the same layer count")
     if any(not math.isfinite(value) for row in profiles for value in row):
         raise ValueError("observed profiles must contain only finite values")
-
     observed_covariance = _symmetric_psd_matrix(
         joint_profile_covariance, "joint_profile_covariance"
     )
     state_width = len(epochs) * layer_count
     if len(observed_covariance) != state_width:
-        raise ValueError(
-            "joint_profile_covariance dimension must equal epoch_count * layer_count"
-        )
+        raise ValueError("joint_profile_covariance dimension must equal epoch_count * layer_count")
 
     operator = []
     interpolated = []
@@ -176,39 +219,25 @@ def interpolate_temporal_sound_speed_profiles(
         if upper is None:
             raise ValueError("query epochs must lie within the observed epoch range")
         if epochs[upper] == query:
-            lower = upper
-            fraction = 0.0
+            lower, fraction = upper, 0.0
         else:
             lower = upper - 1
             fraction = (query - epochs[lower]) / (epochs[upper] - epochs[lower])
         weights = [0.0] * len(epochs)
         weights[lower] = 1.0 - fraction
         weights[upper] += fraction
-        # Sum the epoch contributions for each layer.
-        profile = [
-            sum(weights[epoch] * profiles[epoch][layer]
-                for epoch in range(len(epochs)))
+        interpolated.append([
+            sum(weights[e] * profiles[e][layer] for e in range(len(epochs)))
             for layer in range(layer_count)
-        ]
-        interpolated.append(profile)
+        ])
         for layer in range(layer_count):
             row = [0.0] * state_width
             for epoch in range(len(epochs)):
                 row[epoch * layer_count + layer] = weights[epoch]
             operator.append(row)
 
-    def multiply(left, right):
-        return [
-            [sum(left[i][k] * right[k][j] for k in range(len(right)))
-             for j in range(len(right[0]))]
-            for i in range(len(left))
-        ]
-
-    def transpose(matrix):
-        return [list(column) for column in zip(*matrix)]
-
-    propagated = multiply(
-        multiply(operator, observed_covariance), transpose(operator)
+    propagated = _multiply(
+        _multiply(operator, observed_covariance), _transpose(operator)
     )
     return {
         "query_epochs_s": queries,
@@ -222,8 +251,148 @@ def interpolate_temporal_sound_speed_profiles(
         "source_state_order": "observation-epoch-major: [layer sound speeds at each observation epoch]",
         "covariance_propagation": "C_query = H C_observed H^T",
         "interpolation_model": "piecewise-linear in time; no extrapolation",
+        "limitation": "Does not model unresolved variability between observation epochs.",
+    }
+
+
+def condition_temporal_sound_speed_profiles_ou(
+    profile_epochs_s: Sequence[float],
+    observed_profiles_mps: Sequence[Sequence[float]],
+    query_epochs_s: Sequence[float],
+    single_epoch_profile_covariance: Sequence[Sequence[float]],
+    correlation_time_s: float,
+    reference_profile_mps: Sequence[float],
+) -> dict[str, object]:
+    """Condition a separable OU profile process on noiseless observed profiles.
+
+    The reference profile is the assumed temporal mean/trend. Profile
+    anomalies have covariance R(t_i,t_j) * C_profile, where R is the
+    stationary exponential kernel. Observation epochs must be distinct and
+    strictly increasing. Query epochs may repeat and need not lie inside the
+    observation interval; extrapolation is a model prediction, not linear
+    interpolation.
+
+    Observations are treated as exact process values. Measurement noise must
+    not be folded into C_profile; a future noisy-observation model would add
+    an explicit observation-noise covariance to R_oo tensor C_profile.
+    """
+    try:
+        epochs = [float(value) for value in profile_epochs_s]
+        queries = [float(value) for value in query_epochs_s]
+        profiles = [[float(value) for value in row] for row in observed_profiles_mps]
+        reference = [float(value) for value in reference_profile_mps]
+        tau = float(correlation_time_s)
+    except (TypeError, ValueError):
+        raise ValueError("epochs, profiles, reference profile and correlation time must be numeric") from None
+    if not epochs or not all(math.isfinite(value) for value in epochs):
+        raise ValueError("profile_epochs_s must contain finite epochs")
+    if any(epochs[i + 1] <= epochs[i] for i in range(len(epochs) - 1)):
+        raise ValueError("profile_epochs_s must be strictly increasing")
+    if not queries or not all(math.isfinite(value) for value in queries):
+        raise ValueError("query_epochs_s must contain finite epochs")
+    if not math.isfinite(tau) or tau <= 0.0:
+        raise ValueError("correlation_time_s must be finite and positive")
+    if len(profiles) != len(epochs) or any(not row for row in profiles):
+        raise ValueError("one non-empty observed profile is required per epoch")
+    layer_count = len(profiles[0])
+    if len(reference) != layer_count or any(len(row) != layer_count for row in profiles):
+        raise ValueError("observed and reference profiles must have the same layer count")
+    if any(not math.isfinite(value) for row in profiles for value in row) or not all(
+        math.isfinite(value) for value in reference
+    ):
+        raise ValueError("observed and reference profile values must be finite")
+    profile_covariance = _symmetric_psd_matrix(
+        single_epoch_profile_covariance, "single_epoch_profile_covariance"
+    )
+    if len(profile_covariance) != layer_count:
+        raise ValueError("single_epoch_profile_covariance dimension must equal layer_count")
+
+    temporal_oo = [
+        [math.exp(-abs(a - b) / tau) for b in epochs] for a in epochs
+    ]
+    temporal_qo = [
+        [math.exp(-abs(query - epoch) / tau) for epoch in epochs]
+        for query in queries
+    ]
+    temporal_qq = [
+        [math.exp(-abs(a - b) / tau) for b in queries] for a in queries
+    ]
+    # Solve R_oo X = R_oq; transpose X to obtain W = R_qo R_oo^-1.
+    solved = _cholesky_solve(temporal_oo, _transpose(temporal_qo))
+    weights = _transpose(solved)
+    residual_temporal = [
+        [
+            temporal_qq[i][j] - sum(
+                weights[i][k] * temporal_qo[j][k] for k in range(len(epochs))
+            )
+            for j in range(len(queries))
+        ]
+        for i in range(len(queries))
+    ]
+    residual_temporal = [
+        [
+            0.5 * (residual_temporal[i][j] + residual_temporal[j][i])
+            for j in range(len(queries))
+        ]
+        for i in range(len(queries))
+    ]
+    temporal_scale = max(1.0, max(abs(v) for row in temporal_qq for v in row))
+    for i in range(len(queries)):
+        for j in range(len(queries)):
+            if abs(residual_temporal[i][j]) <= 1e-12 * temporal_scale:
+                residual_temporal[i][j] = 0.0
+    if min(_jacobi_eigenvalues(residual_temporal)) < -1e-9 * temporal_scale:
+        raise ArithmeticError("conditional temporal covariance lost positive semidefiniteness")
+
+    conditional_profiles = []
+    for query_index in range(len(queries)):
+        conditional_profiles.append([
+            reference[layer] + sum(
+                weights[query_index][epoch] *
+                (profiles[epoch][layer] - reference[layer])
+                for epoch in range(len(epochs))
+            )
+            for layer in range(layer_count)
+        ])
+
+    profile_operator = []
+    for query_index in range(len(queries)):
+        for layer in range(layer_count):
+            row = [0.0] * (len(epochs) * layer_count)
+            for epoch in range(len(epochs)):
+                row[epoch * layer_count + layer] = weights[query_index][epoch]
+            profile_operator.append(row)
+
+    conditional_covariance = [
+        [
+            residual_temporal[i][j] * profile_covariance[k][ell]
+            for j in range(len(queries))
+            for ell in range(layer_count)
+        ]
+        for i in range(len(queries))
+        for k in range(layer_count)
+    ]
+    return {
+        "query_epochs_s": queries,
+        "conditional_profiles_mps": conditional_profiles,
+        "temporal_conditioning_weights": weights,
+        "profile_conditioning_operator": profile_operator,
+        "conditional_temporal_covariance": residual_temporal,
+        "conditional_joint_profile_covariance": conditional_covariance,
+        "source_profile_epochs_s": epochs,
+        "reference_profile_mps": reference,
+        "single_epoch_profile_covariance": profile_covariance,
+        "correlation_time_s": tau,
+        "layer_count": layer_count,
+        "state_order": "query-epoch-major: [layer sound-speed anomalies at each query epoch]",
+        "source_state_order": "observation-epoch-major: [layer sound-speed anomalies at each observation epoch]",
+        "mean_model": "c_query = c_reference + (W tensor I_layer) (c_observed - c_reference)",
+        "covariance_model": "C_query|observed = (R_qq - W R_oq) tensor C_profile",
+        "temporal_model": "stationary exponential / Ornstein-Uhlenbeck covariance",
+        "observation_model": "noiseless observations of the latent profile process",
         "limitation": (
-            "Deterministic interpolation propagates supplied observation covariance "
-            "but does not model unresolved variability between observation epochs."
+            "A stationary separable temporal model with one correlation time and a supplied "
+            "reference mean profile; it does not model advection, horizontal variability, "
+            "currents, evolving mean structure, or measurement noise."
         ),
     }
