@@ -69,4 +69,4 @@ def test_profile_must_extend_to_ray_endpoint():
 
 def test_critical_angle_condition_is_reported_not_clipped():
     with pytest.raises(ValueError, match="critical"):
-        trace_layered_water_column([10.0, 100.0], [1500.0, 1800.0], 60.0, 0.02)
+        trace_layered_water_column([10.0, 100.0], [1500.0, 1800.0], 60.0, 0.04)
