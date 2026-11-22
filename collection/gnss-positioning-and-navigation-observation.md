@@ -175,6 +175,11 @@ GNSS observations support cadastral and engineering control, construction set-ou
 The appropriate method depends on the physical decision. A road-asset inventory may accept a validated metre-level position; a bridge deformation network may require stable monuments, long sessions, controlled antenna models and rigorous adjustment. The same receiver can be used in different modes, but the evidence required to accept its outputs changes with the task.
 
 ## 11. Connections to the wider Spatial Methods repository
+- [GNSS carrier-phase integer ambiguity resolution](../algorithms/geodesy/gnss-carrier-phase-ambiguity-resolution.md) — integer least squares and LAMBDA decorrelation, with explicit acceptance boundaries.
+- [GNSS ambiguity and dual-frequency implementation](../implementations/python/gnss-ambiguity/README.md) — float-to-integer ambiguity solver components, signal combinations and cycle-slip screening.
+- [GNSS residual-based RAIM implementation](../implementations/python/gnss-raim/README.md) — bounded residual consistency and fault-exclusion baseline, not certified aviation integrity monitoring.
+- [Measurement models and measurand definition](../foundations/measurement-science/measurement-models-and-measurand-definition.md) — observation models and model-dependent uncertainty.
+- [Measurement principles and field verification](../foundations/measurement-science/measurement-principles-and-field-verification.md) — field evidence, verification and the measurement chain.
 
 - [Measurement science and survey adjustment](../learning-paths/measurement-science-and-survey-adjustment.md) — reference frames, observations, least-squares estimation and uncertainty.
 - [Spatial observation and sampling design](spatial-observation-and-sampling-design.md) — sampling frame, support, independent checks and provenance.
