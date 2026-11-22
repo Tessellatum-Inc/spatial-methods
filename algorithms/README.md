@@ -60,6 +60,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 - [Sibson natural-neighbour interpolation](interpolation/natural-neighbour.md) — interpolate from Voronoi-cell areas stolen when a query is inserted; the reference implementation rejects extrapolation.
 - [Whittaker-Eilers smoothing](interpolation/whittaker-smoother.md) — smooth ordered sequences with a weighted finite-difference penalty and explicit missing-observation handling.
 
+## Geodesy and positioning
+
+- [GNSS carrier-phase integer ambiguity resolution](geodesy/gnss-carrier-phase-ambiguity-resolution.md) — integer least squares, LAMBDA decorrelation, candidate validation and the limits of the repository implementation.
+
 ## Geometry
 
 - [Point in polygon](geometry/point-in-polygon.md) — classify a point as inside, outside or on a polygon boundary.
