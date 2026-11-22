@@ -4,10 +4,10 @@ A standard-library Python implementation of forward acoustic ray tracing and fir
 
 ## Functions
 
-- \`trace_layered_water_column(layer_bottom_depths_m, sound_speeds_mps, launch_angle_deg, two_way_travel_time_s)\`: trace a one-way ray for half the supplied two-way echo travel time. Snell's law preserves horizontal slowness across layer interfaces.
-- \`trace_layered_water_column_with_sensitivities(..., input_covariance=None)\`: return the endpoint Jacobian and, when covariance is supplied, the propagated endpoint covariance.
+- `trace_layered_water_column(layer_bottom_depths_m, sound_speeds_mps, launch_angle_deg, two_way_travel_time_s)`: trace a one-way ray for half the supplied two-way echo travel time. Snell's law preserves horizontal slowness across layer interfaces.
+- `trace_layered_water_column_with_sensitivities(..., input_covariance=None)`: return the endpoint Jacobian and, when covariance is supplied, the propagated endpoint covariance.
 
-Endpoint order is \`[horizontal_offset_m, depth_m]\`. Input order is \`[sound_speed_layer_1_mps, ..., sound_speed_layer_N_mps, launch_angle_deg, two_way_travel_time_s]\`. Angle uncertainty is therefore expressed in degrees, not radians.
+Endpoint order is `[horizontal_offset_m, depth_m]`. Input order is `[sound_speed_layer_1_mps, ..., sound_speed_layer_N_mps, launch_angle_deg, two_way_travel_time_s]`. Angle uncertainty is therefore expressed in degrees, not radians.
 
 ## Uncertainty model
 
@@ -23,7 +23,7 @@ The input covariance must be finite, symmetric, positive semidefinite, and order
 
 ## Example
 
-\`\`\`python
+```python
 from hydrographic_ray_tracing import trace_layered_water_column_with_sensitivities
 
 result = trace_layered_water_column_with_sensitivities(
@@ -42,13 +42,13 @@ result = trace_layered_water_column_with_sensitivities(
 print(result["trace"])
 print(result["jacobian"])
 print(result["endpoint_covariance"])
-\`\`\`
+```
 
 ## Run tests
 
-\`\`\`bash
+```bash
 python -m pytest -q
-\`\`\`
+```
 
 No third-party runtime dependency is required; pytest is needed only to run the tests.
 
@@ -59,7 +59,7 @@ This is a two-dimensional teaching model with constant speed inside each layer. 
 
 ## Temporally correlated sound-speed profile uncertainty
 
-The module \`temporal_sound_speed_covariance.py\` constructs a joint covariance
+The module `temporal_sound_speed_covariance.py` constructs a joint covariance
 for layered profile errors observed at multiple survey epochs. For
 single-epoch vertical profile covariance \(C_p\), epoch times \(t_i\), and
 positive correlation time \(\tau\), it uses
@@ -89,3 +89,36 @@ survey cadence; it is not a universal oceanographic constant. This model
 describes anomalies around epoch-specific mean profiles. It does not
 forecast or advect the mean sound-speed field, represent horizontal
 gradients or currents, or replace in-situ SVP/CTD/XBT/MVP observations.
+
+
+
+### Interpolating profiles to ping epochs
+
+When profile observations and acoustic ping epochs do not coincide, use
+`interpolate_temporal_sound_speed_profiles`. It accepts strictly increasing
+observation epochs, one equal-length layer profile per epoch, target ping
+epochs, and the full observation-profile covariance in epoch-major order.
+Targets must lie inside the closed observation interval; extrapolation is
+rejected.
+
+For a target epoch between observations \(t_a\) and \(t_b\), define
+\[
+\lambda=\frac{t-t_a}{t_b-t_a},\qquad
+\mathbf c(t)=(1-\lambda)\mathbf c(t_a)+\lambda\mathbf c(t_b).
+\]
+The function returns the linear interpolation operator \(H\), all
+interpolated profiles, and
+\[
+C_{\mathrm{query}}=H C_{\mathrm{observed}}H^T.
+\]
+Because the full observation covariance is used, the result retains
+cross-layer covariance, cross-observation covariance, and covariance
+between different query epochs. Repeated query epochs therefore produce
+identical, perfectly correlated profile blocks.
+
+This is deterministic piecewise-linear interpolation of the supplied
+profile means. The covariance is the propagated uncertainty of those
+interpolated estimates under that interpolation rule; it does not include
+unresolved ocean variability between observations, horizontal advection,
+or model discrepancy. Those require an additional physical or stochastic
+model rather than an arbitrary inflation of the covariance.

@@ -118,3 +118,116 @@ def build_temporally_correlated_sound_speed_covariance(
         "temporal_model": "stationary exponential / Ornstein-Uhlenbeck correlation",
         "covariance_model": "C[(i,k),(j,l)] = exp(-abs(t_i-t_j)/tau) * C_profile[k,l]",
     }
+
+
+
+def interpolate_temporal_sound_speed_profiles(
+    profile_epochs_s: Sequence[float],
+    observed_profiles_mps: Sequence[Sequence[float]],
+    query_epochs_s: Sequence[float],
+    joint_profile_covariance: Sequence[Sequence[float]],
+) -> dict[str, object]:
+    """Linearly interpolate observed profiles and propagate their full covariance.
+
+    Profile and covariance state order is epoch-major, then layer-major.
+    Interpolation is restricted to the closed observation-time interval:
+    extrapolation is rejected. The returned operator H maps the flattened
+    observed profile vector to the flattened query profile vector, and the
+    propagated covariance is exactly H C_observed H.T.
+
+    This deterministic interpolation does not add a stochastic model for
+    unresolved variability between observations.
+    """
+    try:
+        epochs = [float(value) for value in profile_epochs_s]
+        queries = [float(value) for value in query_epochs_s]
+        profiles = [[float(value) for value in row] for row in observed_profiles_mps]
+    except (TypeError, ValueError):
+        raise ValueError("epochs, query epochs and profiles must be numeric") from None
+    if not epochs or not all(math.isfinite(value) for value in epochs):
+        raise ValueError("profile_epochs_s must contain finite epochs")
+    if any(epochs[i + 1] <= epochs[i] for i in range(len(epochs) - 1)):
+        raise ValueError("profile_epochs_s must be strictly increasing")
+    if not queries or not all(math.isfinite(value) for value in queries):
+        raise ValueError("query_epochs_s must contain finite epochs")
+    if any(value < epochs[0] or value > epochs[-1] for value in queries):
+        raise ValueError("query epochs must lie within the observed epoch range")
+    if len(profiles) != len(epochs) or any(not row for row in profiles):
+        raise ValueError("one non-empty observed profile is required per epoch")
+    layer_count = len(profiles[0])
+    if any(len(row) != layer_count for row in profiles):
+        raise ValueError("all observed profiles must have the same layer count")
+    if any(not math.isfinite(value) for row in profiles for value in row):
+        raise ValueError("observed profiles must contain only finite values")
+
+    observed_covariance = _symmetric_psd_matrix(
+        joint_profile_covariance, "joint_profile_covariance"
+    )
+    state_width = len(epochs) * layer_count
+    if len(observed_covariance) != state_width:
+        raise ValueError(
+            "joint_profile_covariance dimension must equal epoch_count * layer_count"
+        )
+
+    operator = []
+    interpolated = []
+    for query in queries:
+        upper = next((i for i, epoch in enumerate(epochs) if epoch >= query), None)
+        if upper is None:
+            raise ValueError("query epochs must lie within the observed epoch range")
+        if epochs[upper] == query:
+            lower = upper
+            fraction = 0.0
+        else:
+            lower = upper - 1
+            fraction = (query - epochs[lower]) / (epochs[upper] - epochs[lower])
+        weights = [0.0] * len(epochs)
+        weights[lower] = 1.0 - fraction
+        weights[upper] += fraction
+        profile = [
+            weights[epoch] * profiles[epoch][layer]
+            for layer in range(layer_count)
+            for epoch in range(len(epochs))
+        ]
+        # Sum the epoch contributions for each layer.
+        profile = [
+            sum(weights[epoch] * profiles[epoch][layer]
+                for epoch in range(len(epochs)))
+            for layer in range(layer_count)
+        ]
+        interpolated.append(profile)
+        for layer in range(layer_count):
+            row = [0.0] * state_width
+            for epoch in range(len(epochs)):
+                row[epoch * layer_count + layer] = weights[epoch]
+            operator.append(row)
+
+    def multiply(left, right):
+        return [
+            [sum(left[i][k] * right[k][j] for k in range(len(right[0])))
+             for j in range(len(right[0]))]
+            for i in range(len(left))
+        ]
+
+    def transpose(matrix):
+        return [list(column) for column in zip(*matrix)]
+
+    propagated = multiply(
+        multiply(operator, observed_covariance), transpose(operator)
+    )
+    return {
+        "query_epochs_s": queries,
+        "interpolated_profiles_mps": interpolated,
+        "interpolation_operator": operator,
+        "joint_profile_covariance": propagated,
+        "source_profile_epochs_s": epochs,
+        "layer_count": layer_count,
+        "state_order": "query-epoch-major: [layer sound speeds at each query epoch]",
+        "source_state_order": "observation-epoch-major: [layer sound speeds at each observation epoch]",
+        "covariance_propagation": "C_query = H C_observed H^T",
+        "interpolation_model": "piecewise-linear in time; no extrapolation",
+        "limitation": (
+            "Deterministic interpolation propagates supplied observation covariance "
+            "but does not model unresolved variability between observation epochs."
+        ),
+    }

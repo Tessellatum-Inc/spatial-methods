@@ -4,6 +4,7 @@ import pytest
 
 from temporal_sound_speed_covariance import (
     build_temporally_correlated_sound_speed_covariance,
+    interpolate_temporal_sound_speed_profiles,
 )
 
 
@@ -97,3 +98,95 @@ def test_increasing_time_separation_reduces_cross_epoch_covariance():
     assert covariance[0][1] == pytest.approx(4.0 * math.exp(-0.5))
     assert covariance[0][2] == pytest.approx(4.0 * math.exp(-5.0))
     assert covariance[0][1] > covariance[0][2]
+
+
+
+def test_profile_interpolation_preserves_exact_observation_epoch_and_covariance():
+    result = build_temporally_correlated_sound_speed_covariance(
+        [0.0, 10.0], [[4.0, 1.0], [1.0, 9.0]], 20.0
+    )
+    interpolated = interpolate_temporal_sound_speed_profiles(
+        [0.0, 10.0], [[1490.0, 1500.0], [1492.0, 1504.0]],
+        [10.0], result["joint_profile_covariance"]
+    )
+    assert interpolated["interpolated_profiles_mps"] == [[1492.0, 1504.0]]
+    expected = result["joint_profile_covariance"][2:4]
+    assert interpolated["joint_profile_covariance"] == expected
+
+
+def test_midpoint_interpolation_and_full_covariance_operator():
+    covariance = [
+        [4.0, 1.0, 2.0, 0.5],
+        [1.0, 9.0, 0.25, 3.0],
+        [2.0, 0.25, 16.0, 4.0],
+        [0.5, 3.0, 4.0, 25.0],
+    ]
+    result = interpolate_temporal_sound_speed_profiles(
+        [0.0, 10.0], [[1490.0, 1500.0], [1510.0, 1540.0]],
+        [5.0], covariance
+    )
+    assert result["interpolated_profiles_mps"] == [[1500.0, 1520.0]]
+    operator = result["interpolation_operator"]
+    assert operator == [[0.5, 0.0, 0.5, 0.0], [0.0, 0.5, 0.0, 0.5]]
+    expected = [
+        [sum(operator[i][a] * covariance[a][b] * operator[j][b]
+             for a in range(4) for b in range(4))
+         for j in range(2)] for i in range(2)
+    ]
+    for actual, wanted in zip(result["joint_profile_covariance"], expected):
+        assert actual == pytest.approx(wanted)
+
+
+def test_nonuniform_epochs_and_multiple_query_epochs_keep_cross_query_covariance():
+    covariance = [
+        [1.0, 0.0, 0.2, 0.0, 0.1, 0.0],
+        [0.0, 2.0, 0.0, 0.2, 0.0, 0.1],
+        [0.2, 0.0, 1.5, 0.0, 0.3, 0.0],
+        [0.0, 0.2, 0.0, 2.5, 0.0, 0.3],
+        [0.1, 0.0, 0.3, 0.0, 2.0, 0.0],
+        [0.0, 0.1, 0.0, 0.3, 0.0, 3.0],
+    ]
+    result = interpolate_temporal_sound_speed_profiles(
+        [0.0, 4.0, 10.0],
+        [[1490.0, 1500.0], [1494.0, 1508.0], [1500.0, 1520.0]],
+        [2.0, 7.0], covariance
+    )
+    assert result["interpolated_profiles_mps"] == pytest.approx(
+        [[1492.0, 1504.0], [1497.0, 1514.0]]
+    )
+    assert len(result["joint_profile_covariance"]) == 4
+    assert result["joint_profile_covariance"][0][2] != 0.0
+
+
+def test_duplicate_query_epochs_produce_identical_correlated_profile_blocks():
+    covariance = [[2.0, 0.5], [0.5, 3.0]]
+    result = interpolate_temporal_sound_speed_profiles(
+        [0.0], [[1490.0, 1500.0]], [0.0, 0.0], covariance
+    )
+    joint = result["joint_profile_covariance"]
+    assert joint[0] == joint[2]
+    assert joint[1] == joint[3]
+    assert joint[0][0] == joint[0][2]
+    assert joint[1][1] == joint[3][3]
+
+
+@pytest.mark.parametrize(
+    "epochs,profiles,queries,covariance",
+    [
+        ([0.0, 0.0], [[1.0], [2.0]], [0.0], [[1.0, 0.0], [0.0, 1.0]]),
+        ([1.0, 0.0], [[1.0], [2.0]], [0.5], [[1.0, 0.0], [0.0, 1.0]]),
+        ([0.0, 10.0], [[1.0], [2.0]], [-1.0], [[1.0, 0.0], [0.0, 1.0]]),
+        ([0.0, 10.0], [[1.0], [2.0]], [11.0], [[1.0, 0.0], [0.0, 1.0]]),
+        ([0.0, 10.0], [[1.0], [2.0]], [5.0], [[1.0]]),
+        ([0.0, 10.0], [[1.0], [2.0, 3.0]], [5.0], [[1.0, 0.0], [0.0, 1.0]]),
+        ([0.0, 10.0], [[1.0], [math.nan]], [5.0], [[1.0, 0.0], [0.0, 1.0]]),
+        ([0.0, 10.0], [[1.0], [2.0]], [], [[1.0, 0.0], [0.0, 1.0]]),
+    ],
+)
+def test_invalid_profile_interpolation_inputs_are_rejected(
+    epochs, profiles, queries, covariance
+):
+    with pytest.raises(ValueError):
+        interpolate_temporal_sound_speed_profiles(
+            epochs, profiles, queries, covariance
+        )
