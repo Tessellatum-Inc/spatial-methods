@@ -338,3 +338,95 @@ def propagate_time_aligned_ray_traced_multiping_covariance(
         ),
         "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]",
     }
+
+def assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+    time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+    beam_azimuths_degrees):
+    """Compose trajectory-interpolated sensor chains with ray and epoch terms.
+
+    Each result is the mapping returned by
+    time_aligned_sensor_chain_sounding_point_and_jacobian: its 3x19
+    Jacobian contains the static 18-state sensor-chain block followed by
+    the navigation-epoch time-offset sensitivity. The 18-state block has
+    15 navigation/calibration columns and three acoustic-vector columns.
+    The ray endpoint [horizontal offset, depth] is mapped into that vector
+    using the supplied beam azimuth before composing the ray Jacobian.
+
+    Final input order is [per-ping 15 sensor states, launch angle,
+    two-way travel time; shared sound-speed profile; per-ping navigation
+    epoch offsets]. The acoustic travel-time and navigation epoch effects
+    remain distinct inputs.
+    """
+    if not isinstance(time_aligned_sensor_chain_results, (list, tuple)) or not time_aligned_sensor_chain_results:
+        raise ValueError("at least one time-aligned sensor-chain result is required")
+    count = len(time_aligned_sensor_chain_results)
+    if not isinstance(beam_azimuths_degrees, (list, tuple)) or len(beam_azimuths_degrees) != count:
+        raise ValueError("one beam azimuth is required per ping")
+    sensor_jacobians = []
+    time_sensitivities = []
+    for ping, result in enumerate(time_aligned_sensor_chain_results):
+        if not isinstance(result, dict) or "jacobian" not in result:
+            raise ValueError(f"time_aligned_sensor_chain_results[{ping}] must contain a Jacobian")
+        try:
+            matrix = [[float(x) for x in row] for row in result["jacobian"]]
+        except (TypeError, ValueError):
+            raise ValueError(f"time-aligned Jacobian {ping} must be finite and 3x19") from None
+        if len(matrix) != 3 or any(len(row) != 19 for row in matrix) or not all(
+            math.isfinite(x) for row in matrix for x in row
+        ):
+            raise ValueError(f"time-aligned Jacobian {ping} must be finite and 3x19")
+        try:
+            azimuth = math.radians(float(beam_azimuths_degrees[ping]))
+        except (TypeError, ValueError):
+            raise ValueError(f"beam_azimuths_degrees[{ping}] must be finite") from None
+        if not math.isfinite(azimuth):
+            raise ValueError(f"beam_azimuths_degrees[{ping}] must be finite")
+        mapping = [[math.cos(azimuth), 0.0],
+                   [math.sin(azimuth), 0.0],
+                   [0.0, 1.0]]
+        endpoint_block = [
+            [sum(matrix[row][15 + k] * mapping[k][axis] for k in range(3))
+             for axis in range(2)]
+            for row in range(3)
+        ]
+        sensor_jacobians.append([
+            matrix[row][:15] + endpoint_block[row] for row in range(3)
+        ])
+        sensitivity = result.get("time_offset_sensitivity", [matrix[row][18] for row in range(3)])
+        try:
+            sensitivity = [float(x) for x in sensitivity]
+        except (TypeError, ValueError):
+            raise ValueError(f"time sensitivity {ping} must be a finite 3-vector") from None
+        if len(sensitivity) != 3 or not all(math.isfinite(x) for x in sensitivity):
+            raise ValueError(f"time sensitivity {ping} must be a finite 3-vector")
+        time_sensitivities.append(sensitivity)
+    return assemble_time_aligned_ray_traced_multiping_jacobian(
+        sensor_jacobians, ray_endpoint_jacobians, time_sensitivities)
+
+
+def propagate_time_aligned_ray_traced_multiping_covariance_from_trajectory(
+    time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+    beam_azimuths_degrees, joint_input_covariance):
+    """Propagate multi-ping ray covariance directly from interpolated poses."""
+    jacobian = assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+        time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+        beam_azimuths_degrees)
+    size = len(jacobian[0])
+    covariance = _matrix(
+        joint_input_covariance, "joint_input_covariance",
+        rows=size, columns=size)
+    scale = max(1.0, max(abs(value) for row in covariance for value in row))
+    if any(abs(covariance[i][j] - covariance[j][i]) > 1e-10 * scale
+           for i in range(size) for j in range(i)):
+        raise ValueError("joint_input_covariance must be symmetric")
+    return {
+        "jacobian": jacobian,
+        "covariance": _multiply(
+            _multiply(jacobian, covariance), _transpose(jacobian)),
+        "covariance_input_order": (
+            "[ping-local sensor/angle/travel-time blocks, shared sound-speed "
+            "profile, navigation epoch clock offsets by ping]"
+        ),
+        "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]",
+    }
+

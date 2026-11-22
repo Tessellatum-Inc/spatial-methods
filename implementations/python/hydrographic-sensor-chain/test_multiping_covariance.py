@@ -208,9 +208,42 @@ def test_time_aligned_ray_traced_multiping_rejects_asymmetric_covariance():
     sensor = [[[0.0] * 17 for _ in range(3)]]
     rays = [[[1.0, 0.0, 0.0], [0.0, 0.0, 0.0]]]
     sensitivities = [[1.0, 0.0, 0.0]]
-    covariance = [[0.0] * 36 for _ in range(36)]
+    covariance = [[0.0] * 19 for _ in range(19)]
     covariance[0][1] = 0.1
     with pytest.raises(ValueError, match="must be symmetric"):
         propagate_time_aligned_ray_traced_multiping_covariance(
             sensor, rays, sensitivities, covariance)
+
+def test_trajectory_results_drive_ray_and_epoch_jacobian_composition():
+    from multiping_covariance import assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory
+
+    trajectory_result = {
+        "jacobian": [[0.0] * 19 for _ in range(3)],
+        "time_offset_sensitivity": [7.0, 8.0, 9.0],
+    }
+    trajectory_result["jacobian"][0][15] = 1.0
+    trajectory_result["jacobian"][1][16] = 1.0
+    trajectory_result["jacobian"][2][17] = 1.0
+    trajectory_result["jacobian"][0][18] = 7.0
+    trajectory_result["jacobian"][1][18] = 8.0
+    trajectory_result["jacobian"][2][18] = 9.0
+    ray = [[2.0, 3.0, 4.0], [5.0, 6.0, 7.0]]
+    jacobian = assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+        [trajectory_result], [ray], [90.0])
+    # At 90 degrees, horizontal endpoint maps to transducer +y.
+    assert jacobian[0][15:17] == pytest.approx([0.0, 7.0])
+    assert jacobian[1][15:17] == pytest.approx([2.0, 8.0])
+    assert jacobian[2][15:17] == pytest.approx([0.0, 9.0])
+    assert jacobian[0][-1] == pytest.approx(7.0)
+    assert jacobian[1][-1] == pytest.approx(8.0)
+    assert jacobian[2][-1] == pytest.approx(9.0)
+
+
+def test_trajectory_composition_rejects_wrong_jacobian_shape():
+    from multiping_covariance import assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory
+
+    with pytest.raises(ValueError, match="3x19"):
+        assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+            [{"jacobian": [[0.0] * 18 for _ in range(3)]}],
+            [[[1.0, 0.0, 0.0], [0.0, 0.0, 0.0]]], [0.0])
 
