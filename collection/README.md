@@ -19,10 +19,15 @@ The stable subject identities are defined in the [Geoinformatics master subject 
 | Satellite and airborne optical remote sensing | SM-COL-004 | [Optical satellite imagery acquisition](optical-satellite-imagery-acquisition.md) |
 | Radar, SAR and interferometric sensing | SM-COL-006 | [SAR acquisition and observation design](sar-acquisition-and-observation-design.md) |
 | Photogrammetry and structure from motion | SM-COL-007 | [Photogrammetric image acquisition](photogrammetry/image-acquisition.md) |
+| LiDAR and laser scanning | SM-COL-008 | [Terrestrial laser scanning and point-cloud acquisition](terrestrial-laser-scanning-and-point-cloud-acquisition.md); [Point-cloud registration algorithm](../algorithms/geometry/point-cloud-registration.md) |
 | UAV platforms, robotics and autonomous acquisition | SM-COL-009 | [Photogrammetric image acquisition](photogrammetry/image-acquisition.md) |
 | Field surveys, sampling and ground truth | SM-COL-011 | [Spatial observation and sampling design](spatial-observation-and-sampling-design.md); [practical sampling campaign exercise](spatial-observation-sampling-exercise.md) |
 
 This is an initial navigation page, not a claim that every collection domain has been comprehensively curated. The subject index remains the complete taxonomy.
+
+## LiDAR and laser scanning
+
+LiDAR and laser scanning (SM-COL-008) now has an initial [terrestrial laser scanning and point-cloud acquisition method](terrestrial-laser-scanning-and-point-cloud-acquisition.md). It covers static TLS measurement geometry, scan planning, completeness and registrability, target/control/check-point roles, field acquisition, registration, georeferencing, independent quality assessment and provenance. It is explicitly separate from mobile and airborne LiDAR, which require their own platform and trajectory models.
 
 ## Terrestrial surveying
 
