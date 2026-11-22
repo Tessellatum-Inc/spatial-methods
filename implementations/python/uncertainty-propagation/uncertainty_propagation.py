@@ -90,3 +90,89 @@ def sobol_first_total(model, bounds, n, seed=None):
         first.append(sum(yb[i]*(yab[i]-ya[i]) for i in range(n))/(n*variance))
         total.append(sum((ya[i]-yab[i])**2 for i in range(n))/(2*n*variance))
     return {"first_order":first,"total_order":total,"output_variance":variance,"n":n}
+
+
+def _matrix(values, name):
+    try:
+        rows = [list(map(float, row)) for row in values]
+    except (TypeError, ValueError):
+        raise ValueError(f"{name} must be a non-empty rectangular numeric matrix") from None
+    if not rows or not rows[0] or any(len(row) != len(rows[0]) for row in rows):
+        raise ValueError(f"{name} must be a non-empty rectangular numeric matrix")
+    if any(not math.isfinite(x) for row in rows for x in row):
+        raise ValueError(f"{name} must contain only finite values")
+    return rows
+
+
+def _minimum_symmetric_eigenvalue(matrix):
+    """Jacobi eigenvalue iteration for a small real symmetric matrix."""
+    a = [row[:] for row in matrix]
+    n = len(a)
+    if n == 1:
+        return a[0][0]
+    scale = max(1.0, max(abs(x) for row in a for x in row))
+    threshold = 1e-14 * scale
+    for _ in range(50 * n * n):
+        p, q, largest = 0, 1, 0.0
+        for i in range(n):
+            for j in range(i + 1, n):
+                if abs(a[i][j]) > largest:
+                    p, q, largest = i, j, abs(a[i][j])
+        if largest <= threshold:
+            return min(a[i][i] for i in range(n))
+        app, aqq, apq = a[p][p], a[q][q], a[p][q]
+        tau = (aqq - app) / (2.0 * apq)
+        t = math.copysign(1.0, tau) / (abs(tau) + math.sqrt(1.0 + tau*tau))
+        c = 1.0 / math.sqrt(1.0 + t*t)
+        s = t*c
+        a[p][p] = app - t*apq
+        a[q][q] = aqq + t*apq
+        a[p][q] = a[q][p] = 0.0
+        for k in range(n):
+            if k not in (p, q):
+                akp, akq = a[k][p], a[k][q]
+                a[k][p] = a[p][k] = c*akp - s*akq
+                a[k][q] = a[q][k] = s*akp + c*akq
+    raise ValueError("covariance PSD check did not converge")
+
+
+def covariance_propagation(jacobian, covariance, tolerance=1e-10):
+    """Propagate a joint input covariance through a supplied Jacobian.
+
+    jacobian has shape (n_outputs, n_inputs); covariance has shape
+    (n_inputs, n_inputs). Returns J C J^T and marginal standard uncertainties.
+    The first-order approximation assumes the Jacobian is evaluated at a
+    suitable expansion point. No distributional or nonlinear effects are
+    estimated by this function.
+    """
+    j = _matrix(jacobian, "jacobian")
+    c = _matrix(covariance, "covariance")
+    n = len(j[0])
+    if len(c) != n or any(len(row) != n for row in c):
+        raise ValueError("covariance shape must match the Jacobian input dimension")
+    try:
+        tolerance = float(tolerance)
+    except (TypeError, ValueError):
+        raise ValueError("tolerance must be finite and non-negative") from None
+    if not math.isfinite(tolerance) or tolerance < 0:
+        raise ValueError("tolerance must be finite and non-negative")
+    scale = max(1.0, max(abs(x) for row in c for x in row))
+    symmetry_tol = tolerance * scale
+    for i in range(n):
+        for k in range(n):
+            if abs(c[i][k] - c[k][i]) > symmetry_tol:
+                raise ValueError("covariance must be symmetric")
+    c = [[0.5*(c[i][k] + c[k][i]) for k in range(n)] for i in range(n)]
+    if _minimum_symmetric_eigenvalue(c) < -symmetry_tol:
+        raise ValueError("covariance must be positive semidefinite")
+    b = [[sum(j[r][k]*c[k][m] for k in range(n)) for m in range(n)]
+         for r in range(len(j))]
+    out = [[sum(b[r][k]*j[s][k] for k in range(n))
+            for s in range(len(j))] for r in range(len(j))]
+    out = [[0.5*(out[r][s] + out[s][r]) for s in range(len(j))]
+           for r in range(len(j))]
+    diagonal = [out[i][i] for i in range(len(out))]
+    if any(x < -symmetry_tol for x in diagonal):
+        raise ArithmeticError("propagated covariance has a materially negative variance")
+    standard = [math.sqrt(max(0.0, x)) for x in diagonal]
+    return {"covariance": out, "standard_uncertainties": standard}
