@@ -92,3 +92,47 @@ See [hydrographic ray tracing](../../implementations/python/hydrographic-ray-tra
 - Does not include navigation trajectory, GNSS/INS, transducer offsets, water level, vertical datum or other TPU terms.
 - The propagated covariance covers only the supplied layer sound speeds, launch angle and two-way travel time.
 - Not a production MBES beamformer, complete hydrographic processing system or field-validation result.
+
+## Sound-speed-profile uncertainty to sounding coordinates
+
+The ray-tracing implementation returns a two-dimensional endpoint
+\(\mathbf y=[x,z]^T\) and, for supplied input covariance, its first-order
+covariance \(C_{xz}\). The sensor-chain implementation can now consume that
+endpoint directly through
+\`propagate_ray_traced_sounding_uncertainty\`.
+
+For transducer-frame beam azimuth \(\alpha\), measured from +x toward +y, the
+ray endpoint is represented as
+\[
+\mathbf s_t=
+\begin{bmatrix}
+x\cos\alpha\\x\sin\alpha\\z
+\end{bmatrix}.
+\]
+The endpoint-to-vector map is
+\[
+B=
+\begin{bmatrix}
+\cos\alpha&0\\
+\sin\alpha&0\\
+0&1
+\end{bmatrix}.
+\]
+The original sensor-chain Jacobian \(J_s\) is composed with this map. The
+resulting 3-by-17 Jacobian maps a joint state consisting of the 15
+navigation/calibration variables followed by ray endpoint \([x,z]\) into
+the three-dimensional navigation-frame sounding position. Its covariance
+is
+\[
+C_p\approx J_{\mathrm{composed}}C_uJ_{\mathrm{composed}}^T.
+\]
+
+The full input covariance can retain ray-to-navigation and
+ray-to-calibration cross-correlations. This is preferable to simply adding
+an independent ray covariance to an 18-state sounding covariance when
+shared error sources exist. The caller must build one consistent covariance
+and must not count the same ray-input uncertainty twice.
+
+This integration remains conditional on the two-dimensional, horizontally
+stratified, piecewise-constant ray model and the supplied beam azimuth. It
+does not complete all hydrographic TPU terms or validate a field survey.

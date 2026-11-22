@@ -91,7 +91,7 @@ def test_homogeneous_vertical_time_sensitivity_is_half_sound_speed():
     result = trace_layered_water_column_with_sensitivities([200.0], [1500.0], 0.0, 0.1)
     assert result["jacobian"][1][0] == pytest.approx(0.05, rel=1e-7)
     assert result["jacobian"][1][2] == pytest.approx(750.0, rel=1e-7)
-    assert result["jacobian"][0][1] == pytest.approx(0.0, abs=1e-9)
+    assert result["jacobian"][0][1] == pytest.approx(75.0 * math.pi / 180.0, rel=1e-7)
 
 
 def test_correlated_profile_covariance_propagates_to_endpoint():
@@ -136,7 +136,7 @@ def test_invalid_input_covariance_is_rejected(covariance):
 
 def test_sensitivity_rejects_perturbation_that_changes_ray_branch():
     # The unperturbed ray terminates exactly at the first interface.
-    with pytest.raises(ValueError, match="stable sensitivity"):
+    with pytest.raises(ValueError, match="layer-transition branch change"):
         trace_layered_water_column_with_sensitivities(
             [10.0, 100.0], [1500.0, 1500.0], 0.0, 2 * 10.0 / 1500.0
         )
