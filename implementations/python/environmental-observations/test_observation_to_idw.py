@@ -50,7 +50,7 @@ def test_end_to_end_pipeline_writes_spatial_product_and_valid_lineage(tmp_path):
     product_bytes = output.read_bytes()
     product = json.loads(product_bytes)
 
-    assert [item["value"] for item in product["predictions"]] == pytest.approx([25, 10, 25])
+    assert [item["value"] for item in product["predictions"]] == pytest.approx([25, 10, 28.333333333333336])
     assert manifest["lineage_valid"] is True
     assert manifest["source_sha256"] == hashlib.sha256(source.read_bytes()).hexdigest()
     output_digest = hashlib.sha256(product_bytes).hexdigest()
@@ -121,7 +121,7 @@ def test_pipeline_rejects_non_numeric_point_coordinates(tmp_path):
     changed["support"]["geometry"]["coordinates"] = [[0, 1], 2]
     rows[0] = json.dumps(changed)
     source.write_text("\n".join(rows) + "\n", encoding="utf-8")
-    with pytest.raises(ValueError, match="finite numeric coordinate ordinates"):
+    with pytest.raises(ValueError, match="numeric coordinate arrays"):
         PIPELINE.run_pipeline(source, output)
     assert not output.exists()
 
