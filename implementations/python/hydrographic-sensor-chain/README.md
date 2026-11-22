@@ -1,94 +1,79 @@
-# Hydrographic multi-stage sensor-chain geometry
+# Hydrographic sensor-chain geometry and multi-ping uncertainty
 
-Dependency-free first-order geometry from a GNSS antenna reference point through
-an IMU and mounted transducer to an acoustic detection point.
-
-## Frames and static model
-
-Let \(n\), \(i\), and \(t\) be navigation, IMU, and transducer frames.
-\(\mathbf l_{i,g}\) and \(\mathbf l_{i,t}\) are vectors from the IMU origin to
-the GNSS antenna and transducer origins, both expressed in IMU axes.
-\(\mathbf s_t\) runs from transducer origin to acoustic detection in transducer
-axes. \(\mathbf R_{n\leftarrow i}\) maps IMU to navigation and
-\(\mathbf R_{i\leftarrow t}\) maps transducer to IMU.
-
+The static and time-aligned geometry modules model a GNSS antenna, IMU,
+mounted transducer and acoustic detection point. The static point is
 \[
 \mathbf p_n=\mathbf r_{n,g}+
 \mathbf R_{n\leftarrow i}(-\mathbf l_{i,g}+\mathbf l_{i,t}+
 \mathbf R_{i\leftarrow t}\mathbf s_t).
 \]
+The static Jacobian has 18 columns for antenna position, navigation attitude,
+two IMU lever arms, mounting attitude and acoustic vector. The time-aligned
+module appends the derivative with respect to a timing offset, giving 19
+columns. It linearly interpolates antenna position and follows the shortest
+SO(3) geodesic between bracketing attitudes; extrapolation is rejected.
 
-The negative antenna lever-arm term follows from solving for the IMU origin.
-The supplied GNSS position must refer to the antenna. If the navigation
-solution already reports the IMU origin, do not apply this correction again.
+## Multi-ping covariance
 
-## Static Jacobian
-
-For \(\mathbf q=\mathbf R_{i\leftarrow t}\mathbf s_t\) and
-\(\mathbf v_n=\mathbf R_{n\leftarrow i}(-\mathbf l_{i,g}+\mathbf l_{i,t}+\mathbf q)\),
-the static input order is
-\([\mathbf r_{n,g},\delta\boldsymbol\theta_n,\mathbf l_{i,g},
-\mathbf l_{i,t},\delta\boldsymbol\phi_i,\mathbf s_t]\), and
-
+For \(N\) pings, partition the input into local states \(\mathbf x_i\) and
+parameters \(\mathbf c\) shared across pings (installation lever arms,
+mounting angles, clock offset and clock drift):
 \[
-\mathbf J=[\mathbf I,-[\mathbf v_n]_\times,
--\mathbf R_{n\leftarrow i},\mathbf R_{n\leftarrow i},
--\mathbf R_{n\leftarrow i}[\mathbf q]_\times,
-\mathbf R_{n\leftarrow i}\mathbf R_{i\leftarrow t}].
+\mathbf x=[\mathbf x_1^T,\ldots,\mathbf x_N^T,\mathbf c^T]^T.
 \]
-
-Both attitude perturbations are left-multiplicative; their angular derivatives
-are per radian.
-
-## Time-aligned pose interpolation
-
-The time-aligned module evaluates the chain at
-\(t_e=t_{ping}+\Delta t\). GNSS position is linearly interpolated between two
-bracketing navigation epochs, and attitude is interpolated along the shortest
-SO(3) geodesic. Extrapolation is rejected rather than silently extending a
-trajectory beyond its support.
-
-The returned Jacobian is 3 by 19: the static 18 columns followed by the
-time-offset sensitivity \(\partial\mathbf p/\partial\Delta t\), in
-coordinate-units per second. Under the segment's constant-velocity and
-constant-body-angular-rate interpolation assumptions,
-
+Each ping has a \(3\times L\) local Jacobian \(\mathbf J_i\) and a
+\(3\times S\) shared Jacobian \(\mathbf K_i\). The block Jacobian is
 \[
-\frac{\partial\mathbf p_n}{\partial\Delta t}
-=\frac{\mathbf r_{n,g,1}-\mathbf r_{n,g,0}}{t_1-t_0}
-+\mathbf R_{n\leftarrow i}
-\left[\frac{\boldsymbol\phi}{t_1-t_0}\right]_\times
-\mathbf v_i,
+\mathbf J_{\rm all}=
+\begin{bmatrix}
+\mathbf J_1&0&\cdots&0&\mathbf K_1\\
+0&\mathbf J_2&\cdots&0&\mathbf K_2\\
+\vdots&&\ddots&&\vdots\\
+0&0&\cdots&\mathbf J_N&\mathbf K_N
+\end{bmatrix}.
 \]
+The propagated covariance is
+\[
+\mathbf C_p=\mathbf J_{\rm all}\mathbf C_x\mathbf J_{\rm all}^T.
+\]
+It is a full \(3N\times3N\) matrix. Its off-diagonal \(3\times3\) blocks
+are cross-ping covariance. A common clock offset with variance
+\(\sigma_{\delta t}^2\) contributes
+\[
+\mathbf C_{p_i p_j}^{(t)}
+=\sigma_{\delta t}^2\mathbf j_{t,i}\mathbf j_{t,j}^T.
+\]
+This contribution is lost if every ping is propagated independently.
 
-where \(\boldsymbol\phi=\log(\mathbf R_{n\leftarrow i,0}^{T}
-\mathbf R_{n\leftarrow i,1})\) and
-\(\mathbf v_i=-\mathbf l_{i,g}+\mathbf l_{i,t}+
-\mathbf R_{i\leftarrow t}\mathbf s_t\).
-Positive \(\Delta t\) means evaluating navigation later than the ping timestamp.
-This is a local timing derivative for the chosen interpolation model, not an
-estimate of actual sensor latency.
+A clock model can be written
+\[
+\Delta t_i=\delta t_0+\dot{\delta t}(t_i-t_{\rm ref})+\epsilon_i.
+\]
+The shared offset and drift sensitivities are
+\[
+\frac{\partial\mathbf p_i}{\partial\delta t_0}=\mathbf j_{t,i},
+\qquad
+\frac{\partial\mathbf p_i}{\partial\dot{\delta t}}
+=(t_i-t_{\rm ref})\mathbf j_{t,i}.
+\]
+Independent jitter \(\epsilon_i\) belongs in the ping-local input block.
+Use a reference epoch near the survey midpoint to reduce offset/drift
+correlation. Shared calibration parameters appear once in the common block.
+Retain the complete covariance, including local-to-local and local-to-shared
+cross terms when known.
 
-The 3 by 19 Jacobian can be combined with a joint covariance whose final
-parameter is the time offset in seconds. If timing is correlated with
-trajectory or calibration parameters, retain those off-diagonal covariance
-terms; do not add timing variance as though it were automatically independent.
+The implementation assembles the block Jacobian and propagates a supplied
+joint covariance. It validates dimensions, finiteness and symmetry; the
+caller remains responsible for positive-semidefinite validation and for
+constructing a physically meaningful joint covariance.
 
-## Run and test
+## Tests and scope
 
-    python -m pip install -r requirements.txt
-    python -m pytest -q
+Run \`python -m pytest -q\` in this package. Tests cover static/time-aligned
+geometry, timing finite differences, shared-clock cross-ping covariance,
+independent jitter, clock drift columns, block ordering and invalid inputs.
 
-Tests cover identity and composed rotations, lever-arm signs, all static
-Jacobian blocks by finite differences, time interpolation, time sensitivity
-by finite differences, extrapolation rejection and invalid inputs.
-
-## Scope
-
-The temporal model uses only two bracketing states, linear position and
-constant-rate geodesic attitude interpolation. It does not model higher-order
-trajectory dynamics, asynchronous sensor filtering, latency estimation,
-clock drift, time-varying lever arms, heave/draft/squat, vessel flexure,
-acoustic ray tracing, beamforming, bottom detection, vertical datum reduction,
-calibration estimation or full hydrographic TPU. It is not a substitute for
-instrument-specific calibration or field validation.
+This is first-order uncertainty propagation, not a clock or calibration
+estimator. It does not yet model clock random walks, high-dynamic trajectory
+splines, asynchronous filtering, heave/draft/squat, vessel flexure, acoustic
+ray tracing, beamforming, bottom detection or full hydrographic TPU.
