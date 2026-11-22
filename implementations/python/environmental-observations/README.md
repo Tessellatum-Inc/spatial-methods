@@ -206,9 +206,13 @@ contract, uses only records already marked `accepted`, runs the shared
 `idw_predict` implementation, and writes a deterministic JSON prediction
 artifact plus a processing-lineage manifest.
 
-Run it from this directory:
+The core observation-record module uses only the Python standard library.
+The end-to-end example additionally imports the repository's NumPy-based
+geostatistics implementation. Install the example's optional dependencies
+from this directory before running it:
 
 ```bash
+python -m pip install -r requirements.txt
 python examples/observation_to_idw.py
 ```
 
