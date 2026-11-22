@@ -61,7 +61,7 @@ def test_geometry_requires_crs_and_finite_coordinates():
     record = ObservationRecord.from_dict(row(
         support={"support_type": "point", "geometry": geometry, "crs": "OGC:CRS84"}
     ))
-    assert record.support["geometry"] == geometry
+    assert record.to_dict()["support"]["geometry"] == geometry
     with pytest.raises(ObservationValidationError):
         ObservationRecord.from_dict(row(
             support={"support_type": "point", "geometry": {"type": "Point", "coordinates": [math.nan, 0]}, "crs": "OGC:CRS84"}
