@@ -345,3 +345,8 @@ For Kenya, confirm current national hydrographic authority requirements, maritim
 5. A real dataset only after its licence, provenance, reference, processing history and independent checks are established.
 
 Do not close these gaps with a visually plausible raster or unverified public dataset.
+
+
+### Time alignment in the sensor chain
+
+Sounding geometry must be evaluated at the acoustic ping epoch, not at the nearest navigation sample by default. The repository now includes a [time-aligned GNSS–IMU–transducer method](../../algorithms/coastal/hydrographic-time-aligned-sensor-chain.md) and [Python reference](../../implementations/python/hydrographic-sensor-chain/README.md). It linearly interpolates antenna position, uses shortest-geodesic SO(3) attitude interpolation, rejects extrapolation and provides a timing-offset sensitivity. Its two-state interpolation is a bounded educational model; operational processing must follow the acquisition system's documented time tags, clock model and validated trajectory interpolation. This is not latency estimation or full TPU.

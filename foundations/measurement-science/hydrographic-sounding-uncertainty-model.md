@@ -203,3 +203,8 @@ This module is not an instrument-specific TPU model, an IHO compliance calculati
 - Repository [covariance foundation](covariance-correlated-observations-and-gls.md), [covariance propagation implementation](../../implementations/python/uncertainty-propagation/README.md), and [multibeam bathymetry recipe](../../recipes/multibeam-bathymetry/README.md).
 
 Independent hydrographic and metrological technical review is required before using this framework to support operational survey acceptance.
+
+
+## Time alignment and shared timing uncertainty
+
+A sounding uses the navigation pose at its acoustic observation epoch. The [time-aligned sensor-chain method](../../algorithms/coastal/hydrographic-time-aligned-sensor-chain.md) makes the ping-to-navigation offset explicit and provides a local timing-sensitivity column. When timing uncertainty is propagated, preserve correlations with trajectory and calibration parameters where they share clocks, filters or estimation sources. A constant-offset variance added independently to each ping misses shared clock error and the resulting cross-ping covariance. The reference interpolation is deliberately limited to two bracketing states with linear position and shortest-geodesic attitude interpolation; it is not a latency estimator or a substitute for the navigation system's validated trajectory interpolation.

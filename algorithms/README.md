@@ -541,3 +541,5 @@ Records may have different evidence and implementation status. Check the status 
 ### 3D geometry
 
 - [Möller–Trumbore ray/triangle intersection](geometry/ray-triangle-intersection.md) — barycentric ray hit testing with explicit tolerance, interval and back-face policies.
+
+- [Time-aligned hydrographic sensor-chain geometry](coastal/hydrographic-time-aligned-sensor-chain.md) — interpolate position and attitude at the ping epoch and propagate a timing-offset sensitivity.
