@@ -326,7 +326,7 @@ def propagate_time_aligned_ray_traced_multiping_covariance(
         rows=size, columns=size)
     scale = max(1.0, max(abs(value) for row in covariance for value in row))
     if any(abs(covariance[i][j] - covariance[j][i]) > 1e-10 * scale
-           for j in range(i)):
+           for i in range(size) for j in range(i)):
         raise ValueError("joint_input_covariance must be symmetric")
     return {
         "jacobian": jacobian,

@@ -201,3 +201,16 @@ def test_time_aligned_ray_traced_multiping_rejects_bad_time_sensitivity():
     with pytest.raises(ValueError):
         assemble_time_aligned_ray_traced_multiping_jacobian(
             sensor, rays, [[1.0, float("nan"), 2.0]])
+
+def test_time_aligned_ray_traced_multiping_rejects_asymmetric_covariance():
+    from multiping_covariance import propagate_time_aligned_ray_traced_multiping_covariance
+
+    sensor = [[[0.0] * 17 for _ in range(3)]]
+    rays = [[[1.0, 0.0, 0.0], [0.0, 0.0, 0.0]]]
+    sensitivities = [[1.0, 0.0, 0.0]]
+    covariance = [[0.0] * 36 for _ in range(36)]
+    covariance[0][1] = 0.1
+    with pytest.raises(ValueError, match="must be symmetric"):
+        propagate_time_aligned_ray_traced_multiping_covariance(
+            sensor, rays, sensitivities, covariance)
+
