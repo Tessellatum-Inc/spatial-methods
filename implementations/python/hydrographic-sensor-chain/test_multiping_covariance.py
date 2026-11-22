@@ -560,7 +560,6 @@ def test_temporal_profile_propagation_rejects_covariance_block_mismatch():
 
 
 def test_interpolated_profile_sensitivities_map_back_to_source_observations():
-    from temporal_sound_speed_covariance import interpolate_temporal_sound_speed_profiles
     from multiping_covariance import (
         assemble_interpolated_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory,
         propagate_interpolated_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory,
@@ -576,9 +575,13 @@ def test_interpolated_profile_sensitivities_map_back_to_source_observations():
         [[4.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
     ]
     source_covariance = [[1.0, 0.5], [0.5, 1.0]]
-    interpolation = interpolate_temporal_sound_speed_profiles(
-        [0.0, 10.0], [[1490.0], [1510.0]], [2.0, 8.0], source_covariance
-    )
+    interpolation = {
+        "query_epochs_s": [2.0, 8.0],
+        "source_profile_epochs_s": [0.0, 10.0],
+        "layer_count": 1,
+        "interpolation_operator": [[0.8, 0.2], [0.2, 0.8]],
+        "source_joint_profile_covariance": source_covariance,
+    }
     jacobian = assemble_interpolated_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
         trajectories, rays, [0.0, 0.0], [0, 1], interpolation
     )
@@ -604,16 +607,19 @@ def test_interpolated_profile_sensitivities_map_back_to_source_observations():
 
 
 def test_interpolated_profile_multiping_rejects_invalid_query_index_and_source_block():
-    from temporal_sound_speed_covariance import interpolate_temporal_sound_speed_profiles
     from multiping_covariance import (
         assemble_interpolated_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory,
         propagate_interpolated_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory,
     )
     trajectory = {"jacobian": [[0.0] * 19 for _ in range(3)],
                   "time_offset_sensitivity": [0.0, 0.0, 0.0]}
-    interpolation = interpolate_temporal_sound_speed_profiles(
-        [0.0, 10.0], [[1490.0], [1510.0]], [5.0], [[1.0, 0.5], [0.5, 1.0]]
-    )
+    interpolation = {
+        "query_epochs_s": [5.0],
+        "source_profile_epochs_s": [0.0, 10.0],
+        "layer_count": 1,
+        "interpolation_operator": [[0.5, 0.5]],
+        "source_joint_profile_covariance": [[1.0, 0.5], [0.5, 1.0]],
+    }
     ray = [[[1.0, 0.0, 0.0], [0.0, 0.0, 0.0]]]
     with pytest.raises(ValueError, match="outside the query profile range"):
         assemble_interpolated_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
