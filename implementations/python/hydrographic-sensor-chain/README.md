@@ -6,11 +6,11 @@ and covariance propagation.
 
 ## Sounding-coordinate uncertainty
 
-\`sounding_uncertainty.py\` provides two complementary paths:
+`sounding_uncertainty.py` provides two complementary paths:
 
-- \`propagate_sounding_uncertainty\` accepts the established 18-state
+- `propagate_sounding_uncertainty` accepts the established 18-state
   covariance, including a three-component acoustic vector.
-- \`propagate_ray_traced_sounding_uncertainty\` accepts a 17-state covariance
+- `propagate_ray_traced_sounding_uncertainty` accepts a 17-state covariance
   in which the acoustic vector is replaced by the ray endpoint
   \([x,z]\). It maps the endpoint into the transducer frame using beam
   azimuth, composes the ray-to-vector map with the sensor-chain Jacobian,
@@ -61,7 +61,7 @@ remains the caller's responsibility in this sensor-chain module.
 
 ## Navigation trajectory covariance
 
-\`trajectory_covariance.py\` propagates a joint covariance for two bracketing
+`trajectory_covariance.py` propagates a joint covariance for two bracketing
 navigation poses through interpolation. Endpoint input order is
 \[
 [\mathbf r_0,\delta\boldsymbol\theta_0,
@@ -83,16 +83,16 @@ SO(3) geodesics. Queries outside trajectory support are rejected.
 
 ## Tests and limits
 
-Run \`python -m pytest -q\` in this directory. The package remains a bounded
+Run `python -m pytest -q` in this directory. The package remains a bounded
 teaching implementation: it is not a production hydrographic processing
 system or a complete total propagated uncertainty (TPU) solution.
 
 ## Ray-traced multi-ping covariance
 
-\`multiping_covariance.py\` now composes ray endpoint sensitivities with each
+`multiping_covariance.py` now composes ray endpoint sensitivities with each
 ping's 3-by-17 sensor-chain Jacobian through
-\`assemble_ray_traced_multiping_jacobian\` and
-\`propagate_ray_traced_multiping_covariance\`.
+`assemble_ray_traced_multiping_jacobian` and
+`propagate_ray_traced_multiping_covariance`.
 
 For ping \(i\), let \(J_{s,i}\) map the 15 sensor/navigation states and
 ray endpoint \([x_i,z_i]\) into the sounding, and let

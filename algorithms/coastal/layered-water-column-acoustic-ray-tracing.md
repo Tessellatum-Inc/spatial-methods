@@ -99,7 +99,7 @@ The ray-tracing implementation returns a two-dimensional endpoint
 \(\mathbf y=[x,z]^T\) and, for supplied input covariance, its first-order
 covariance \(C_{xz}\). The sensor-chain implementation can now consume that
 endpoint directly through
-\`propagate_ray_traced_sounding_uncertainty\`.
+`propagate_ray_traced_sounding_uncertainty`.
 
 For transducer-frame beam azimuth \(\alpha\), measured from +x toward +y, the
 ray endpoint is represented as
