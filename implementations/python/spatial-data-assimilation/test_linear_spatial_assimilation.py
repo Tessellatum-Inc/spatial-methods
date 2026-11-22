@@ -9,6 +9,7 @@ from linear_spatial_assimilation import (
     nonperiodic_nonuniform_advection_diffusion_step_with_boundaries,
     nonperiodic_rectilinear_advection_diffusion_step_2d,
     nonperiodic_rectilinear_advection_diffusion_step_2d_with_forcing,
+    nonperiodic_rectilinear_point_observation_operator_2d,
     run_linear_spatial_assimilation, verify_spatial_forecasts,
 )
 
@@ -422,3 +423,36 @@ def test_2d_forced_transport_rejects_negative_state_and_invalid_boundary_shapes(
     with pytest.raises(ValueError,match="boundary flux arrays"):
         nonperiodic_rectilinear_advection_diffusion_step_2d_with_forcing(
             *args,boundary_fluxes=(np.zeros(2),np.zeros(2),np.zeros(3),np.zeros(2)))
+
+
+def test_2d_point_observation_operator_interpolates_affine_fields_on_nonuniform_centres():
+    x=np.array([0.5,2.0,5.0])
+    y=np.array([1.0,3.0,7.0,8.0])
+    ox=np.array([0.5,1.25,5.0,3.5])
+    oy=np.array([1.0,2.0,8.0,5.0])
+    H=nonperiodic_rectilinear_point_observation_operator_2d(x,y,ox,oy)
+    xx,yy=np.meshgrid(x,y,indexing="ij")
+    state=2.0+3.0*xx-0.75*yy
+    expected=2.0+3.0*ox-0.75*oy
+    np.testing.assert_allclose(H@state.ravel(order="C"),expected,atol=1e-12)
+    np.testing.assert_allclose(H@np.ones(state.size),np.ones(ox.size),atol=1e-14)
+    assert np.all(H>=0)
+    np.testing.assert_allclose(H.sum(axis=1),np.ones(ox.size))
+
+
+def test_2d_point_observation_operator_exact_centres_and_domain_contract():
+    x=np.array([1.0,2.5,6.0])
+    y=np.array([-2.0,0.0,4.0])
+    H=nonperiodic_rectilinear_point_observation_operator_2d(
+        x,y,np.array([2.5]),np.array([4.0]))
+    expected=np.zeros((1,9)); expected[0,1*3+2]=1.0
+    np.testing.assert_allclose(H,expected)
+    with pytest.raises(ValueError,match="convex hull"):
+        nonperiodic_rectilinear_point_observation_operator_2d(
+            x,y,np.array([0.99]),np.array([0.0]))
+    with pytest.raises(ValueError,match="strictly increasing"):
+        nonperiodic_rectilinear_point_observation_operator_2d(
+            np.array([0.0,1.0,1.0]),y,np.array([0.5]),np.array([0.0]))
+    with pytest.raises(ValueError,match="equal length"):
+        nonperiodic_rectilinear_point_observation_operator_2d(
+            x,y,np.array([1.0,2.0]),np.array([0.0]))

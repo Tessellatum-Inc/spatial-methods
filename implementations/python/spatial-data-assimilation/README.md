@@ -124,6 +124,7 @@ software test, not evidence of real-world predictive skill.
 - periodic_point_observation_operator(...)
 - periodic_nonuniform_advection_diffusion_operator(...)
 - nonperiodic_nonuniform_advection_diffusion_operator(...)\n- nonperiodic_nonuniform_advection_diffusion_step(...)\n- nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(...)\n- nonperiodic_rectilinear_advection_diffusion_step_2d(...)\n- nonperiodic_rectilinear_advection_diffusion_step_2d_with_forcing(...)
+- nonperiodic_rectilinear_point_observation_operator_2d(...)
 - periodic_nonuniform_point_observation_operator(...)
 - run_linear_spatial_assimilation(...)
 - verify_spatial_forecasts(...)
@@ -222,3 +223,22 @@ total flux densities, not ghost-cell reconstructions or physical boundary
 closures; deriving them from inflow/outflow and diffusive exchange physics
 remains a separate modelling decision. Corner cells receive contributions
 from both intersecting boundary faces.
+
+
+
+## 8. Two-dimensional point observation geometry
+
+`nonperiodic_rectilinear_point_observation_operator_2d` maps a cell-centred
+state with shape `(nx, ny)` to point observations by bilinear interpolation.
+The caller supplies the actual, strictly increasing x- and y-cell-centre
+coordinates, so nonuniform spacing is represented directly. The observation
+coordinates must lie within the rectangular convex hull of those cell centres;
+the operator deliberately rejects extrapolation rather than silently snapping
+or extending the field beyond its represented support. State vectorisation is
+NumPy C order, with flat index `i * ny + j`.
+
+Each row has four non-negative weights that sum to one (with boundary cases
+collapsing to two or one nonzero weights). Therefore constants are preserved,
+and an affine field in x and y is reproduced exactly up to floating-point
+round-off. This is a point-sensor interpolation operator, not an areal sensor
+footprint, line integral, vertical-column measurement, or uncertainty model.

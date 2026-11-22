@@ -192,3 +192,30 @@ and the complete mass budget. It does not infer physical boundary fluxes
 from external concentrations or implement 2-D Robin/Dirichlet boundary
 closures; prescribed fluxes are the interface when those total fluxes are
 known from an upstream physical model or measurement.
+
+
+
+## 10. Two-dimensional point observation operator
+
+The point-observation matrix is built from the actual cell-centre coordinate
+vectors rather than assuming uniform cell spacing. For an observation inside
+one centre-to-centre rectangle, let its local fractions be
+[
+\alpha=\frac{x-x_i}{x_{i+1}-x_i},\qquad
+\beta=\frac{y-y_j}{y_{j+1}-y_j}.
+]
+Its four bilinear weights are
+[
+(1-\alpha)(1-\beta),\quad
+\alpha(1-\beta),\quad
+(1-\alpha)\beta,\quad
+\alpha\beta.
+]
+They are non-negative and sum to one, so the operator preserves a constant
+field. Bilinear interpolation also reproduces any field of the form
+(a+bx+cy+dxy) exactly within each rectangle; the tests include the affine
+subset. The state is flattened in C order, with x index first and
+(k=i n_y+j). Observations outside the convex hull of cell centres are
+rejected: extrapolation would require a separate, explicit boundary model.
+The operator describes point samples only; finite sensor footprints and
+correlated measurement errors require their own observation models.

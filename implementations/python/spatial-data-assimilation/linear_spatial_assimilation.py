@@ -585,3 +585,38 @@ def nonperiodic_rectilinear_advection_diffusion_step_2d(
         "mass_budget_residual": residual,
         "maximum_local_cfl": float(np.max(local_cfl)),
     }
+
+
+def nonperiodic_rectilinear_point_observation_operator_2d(
+        cell_centres_x, cell_centres_y, observation_x, observation_y):
+    """Bilinearly interpolate a (nx, ny) cell-centred field to point observations.
+
+    Coordinates are expressed in the same projected or Cartesian coordinate
+    system. Each axis must contain at least two strictly increasing cell-centre
+    coordinates. Observations must lie inside the rectangular convex hull of
+    those centres; no extrapolation or implicit nearest-cell snapping occurs.
+    State flattening is NumPy C order: flat_index = i * ny + j.
+    """
+    x = _array(cell_centres_x, "cell_centres_x", 1)
+    y = _array(cell_centres_y, "cell_centres_y", 1)
+    ox = _array(observation_x, "observation_x", 1)
+    oy = _array(observation_y, "observation_y", 1)
+    if x.size < 2 or y.size < 2 or np.any(np.diff(x) <= 0) or np.any(np.diff(y) <= 0):
+        raise ValueError("each cell-centre coordinate axis must contain at least two strictly increasing values")
+    if ox.size == 0 or oy.size != ox.size:
+        raise ValueError("observation_x and observation_y must be non-empty arrays of equal length")
+    if (np.any(ox < x[0]) or np.any(ox > x[-1])
+            or np.any(oy < y[0]) or np.any(oy > y[-1])):
+        raise ValueError("point observations must lie within the convex hull of cell centres")
+    ix = np.clip(np.searchsorted(x, ox, side="right") - 1, 0, x.size - 2)
+    iy = np.clip(np.searchsorted(y, oy, side="right") - 1, 0, y.size - 2)
+    fx = (ox - x[ix]) / (x[ix + 1] - x[ix])
+    fy = (oy - y[iy]) / (y[iy + 1] - y[iy])
+    H = np.zeros((ox.size, x.size * y.size))
+    rows = np.arange(ox.size)
+    indices = np.stack((ix*y.size+iy, (ix+1)*y.size+iy,
+                        ix*y.size+(iy+1), (ix+1)*y.size+(iy+1)), axis=1)
+    weights = np.stack(((1-fx)*(1-fy), fx*(1-fy),
+                        (1-fx)*fy, fx*fy), axis=1)
+    H[rows[:, None], indices] = weights
+    return H
