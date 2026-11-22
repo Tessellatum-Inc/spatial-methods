@@ -689,7 +689,7 @@ def test_ou_conditional_profile_multiping_rejects_bad_query_index_and_covariance
         assemble_ou_conditional_profile_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
             [trajectory], ray, [0.0], [1], conditional
         )
-    covariance = [[0.0] * 20 for _ in range(20)]
+    covariance = [[0.0] * 19 for _ in range(19)]
     with pytest.raises(ValueError, match="must match the OU conditional covariance"):
         propagate_ou_conditional_profile_time_aligned_ray_traced_multiping_covariance_from_trajectory(
             [trajectory], ray, [0.0], [0], conditional, covariance
