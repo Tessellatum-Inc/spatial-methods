@@ -63,14 +63,23 @@ def test_invalid_covariance_and_observation_dimensions_are_rejected():
                                         [(np.ones(1),np.ones((1,3)),np.zeros((1,1)))])
 
 
-def test_nonuniform_variable_coefficient_model_conserves_mass_and_constants():
+def test_nonuniform_variable_coefficient_model_conserves_mass_and_preserves_constants_for_divergence_free_flow():
     widths=np.array([0.5,1.0,1.5,0.75,1.25])
-    velocity=np.array([0.4,0.2,-0.1,0.3,0.0])
+    variable_velocity=np.array([0.4,0.2,-0.1,0.3,0.0])
     diffusivity=np.array([0.02,0.04,0.03,0.01,0.05])
-    F=periodic_nonuniform_advection_diffusion_operator(widths,0.1,velocity,diffusivity)
-    np.testing.assert_allclose(F@np.ones(5),np.ones(5),atol=1e-12)
-    np.testing.assert_allclose(widths@F,widths,atol=1e-12)
-    assert np.min(F)>=0
+    variable_F=periodic_nonuniform_advection_diffusion_operator(
+        widths,0.1,variable_velocity,diffusivity)
+    np.testing.assert_allclose(widths@variable_F,widths,atol=1e-12)
+    assert np.min(variable_F)>=0
+
+    # A constant concentration is stationary when the 1-D periodic
+    # velocity field is divergence-free (constant face velocity).
+    constant_velocity=np.full(5,0.2)
+    constant_F=periodic_nonuniform_advection_diffusion_operator(
+        widths,0.1,constant_velocity,diffusivity)
+    np.testing.assert_allclose(constant_F@np.ones(5),np.ones(5),atol=1e-12)
+    np.testing.assert_allclose(widths@constant_F,widths,atol=1e-12)
+    assert np.min(constant_F)>=0
 
 
 def test_nonuniform_model_rejects_unstable_step_and_bad_face_fields():

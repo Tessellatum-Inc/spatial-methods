@@ -52,8 +52,11 @@ The cell tendency is
 Velocity and diffusivity vary from face to face. The explicit transition is
 accepted only when it is non-negative (within round-off tolerance), a
 sufficient positivity restriction for this monotone finite-volume step. It
-preserves constants and conserves width-weighted mass,
-\(\sum_i \Delta x_i c_i\). Sensor observations interpolate between actual
+conserves width-weighted mass, \(\sum_i \Delta x_i c_i\), for arbitrary
+periodic face velocities. A constant concentration is preserved when the
+velocity field is discretely divergence-free (constant face velocity in this
+one-dimensional periodic setting); spatially varying velocity can compress or
+expand the concentration field. Sensor observations interpolate between actual
 nonuniform cell centres, including across the periodic seam.
 
 ## 3. Assimilation and held-out verification

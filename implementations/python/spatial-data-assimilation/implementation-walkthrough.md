@@ -67,7 +67,8 @@ substituting an analysis observation.
 
 ## 4. Tests and interpretation
 
-Tests exercise conservation, constant-field preservation, local upwind
+Tests exercise conservation under spatially varying face velocity,
+constant-field preservation under divergence-free flow, local upwind
 direction, nonuniform interpolation, periodic seam handling, positivity
 restrictions and held-out score calculations. They are numerical contract
 tests for this simplified model, not proof that the transport equation suits
