@@ -1,57 +1,64 @@
-# Hydrographic layered-water-column ray tracing
+# Temporally correlated sound-speed profile uncertainty
 
-A standard-library Python implementation of forward acoustic ray tracing and first-order endpoint uncertainty propagation through a horizontally stratified, piecewise-constant water column.
+This module constructs a joint covariance for layered sound-speed-profile
+errors observed at multiple survey epochs. It complements the ray tracer's
+single-epoch profile covariance and the sensor-chain multi-ping Jacobian.
 
-## Functions
+## Model
 
-- \`trace_layered_water_column(layer_bottom_depths_m, sound_speeds_mps, launch_angle_deg, two_way_travel_time_s)\`: trace a one-way ray for half the supplied two-way echo travel time. Snell's law preserves horizontal slowness across layer interfaces.
-- \`trace_layered_water_column_with_sensitivities(..., input_covariance=None)\`: return the endpoint Jacobian and, when covariance is supplied, the propagated endpoint covariance.
-
-Endpoint order is \`[horizontal_offset_m, depth_m]\`. Input order is \`[sound_speed_layer_1_mps, ..., sound_speed_layer_N_mps, launch_angle_deg, two_way_travel_time_s]\`. Angle uncertainty is therefore expressed in degrees, not radians.
-
-## Uncertainty model
-
-For endpoint \(\mathbf y=[x,z]^T\), input vector \(\mathbf u\), and Jacobian \(J=\partial\mathbf y/\partial\mathbf u\):
+Let \(C_p\) be the covariance between layer sound-speed errors at one epoch.
+Temporal dependence is represented by a stationary exponential kernel:
 
 \[
-C_y \approx J C_u J^T.
+R_{ij}=\exp\left(-\frac{|t_i-t_j|}{\tau}\right),
 \]
 
-The Jacobian is evaluated by central finite differences. Every perturbed ray must traverse the same number of layers as the nominal ray. If a perturbation changes the traversed-layer branch, the function raises an error rather than returning a misleading derivative at a discontinuity or kink. This is a local, first-order covariance approximation; it is not a nonlinear probability distribution or a complete total propagated uncertainty budget.
+where \(\tau>0\) is the temporal correlation time. The joint covariance is
+separable:
 
-The input covariance must be finite, symmetric, positive semidefinite, and ordered exactly as the input vector. Off-diagonal terms are retained, so correlated sound-speed errors and cross-correlations with angle or travel time are supported.
+\[
+C_{(i,k),(j,\ell)}=R_{ij}(C_p)_{k\ell}.
+\]
 
-## Example
+The state order is epoch-major: all layer errors at the first supplied
+epoch, then all layer errors at the second epoch, and so forth. The supplied
+epoch order is preserved. Repeated epochs are permitted and have unit
+temporal correlation.
 
-\`\`\`python
-from hydrographic_ray_tracing import trace_layered_water_column_with_sensitivities
+## API
 
-result = trace_layered_water_column_with_sensitivities(
-    layer_bottom_depths_m=[20.0, 80.0, 150.0],
-    sound_speeds_mps=[1490.0, 1502.0, 1515.0],
-    launch_angle_deg=25.0,
-    two_way_travel_time_s=0.08,
-    input_covariance=[
-        [4.0, 1.0, 0.0, 0.0, 0.0],
-        [1.0, 4.0, 0.5, 0.0, 0.0],
-        [0.0, 0.5, 4.0, 0.0, 0.0],
-        [0.0, 0.0, 0.0, 0.01, 0.0],
-        [0.0, 0.0, 0.0, 0.0, 1e-8],
-    ],
-)
-print(result["trace"])
-print(result["jacobian"])
-print(result["endpoint_covariance"])
-\`\`\`
+\`build_temporally_correlated_sound_speed_covariance(
+profile_epochs_s, single_epoch_profile_covariance, correlation_time_s)\`
 
-## Run tests
+The returned mapping contains the joint profile covariance, temporal
+correlation matrix, epochs, correlation time, layer count and state-order
+description. The single-epoch profile covariance must be finite, symmetric
+and positive semidefinite. The exponential temporal kernel is positive
+semidefinite, so its Kronecker/separable product with the profile covariance
+is also positive semidefinite.
 
-\`\`\`bash
-python -m pytest -q
-\`\`\`
+## Connecting to multi-ping ray tracing
 
-No third-party runtime dependency is required; pytest is needed only to run the tests.
+For ping \(i\), evaluate the ray endpoint Jacobian with respect to its
+epoch's layer speeds. Compose that profile block through the endpoint-to-
+sounding sensor-chain Jacobian. Stack those per-ping profile sensitivities
+in the same epoch-major order as the returned covariance, then include the
+resulting temporal profile state block in the full multi-ping input
+covariance. This retains both vertical cross-layer correlation and
+cross-epoch correlation in the final sounding covariance.
 
-## Scope and limitations
+Do not duplicate one profile state into independent ping blocks. Do not
+interpret \(\tau\) as a universal oceanographic constant: estimate or
+select it from the survey's environmental sampling cadence and observed
+profile variability, and perform sensitivity analysis. The model describes
+correlated anomalies around supplied epoch-specific mean profiles; it does
+not evolve the mean profile, infer water-mass advection, or replace CTD,
+SVP, XBT, MVP or other in-situ observations.
 
-This is a two-dimensional teaching model with constant speed inside each layer. A continuous profile must be discretised, and results depend on that representation. It assumes horizontal stratification and a stationary reciprocal path. It does not model horizontal gradients, currents, turning rays, multipath, beamforming, bottom detection, acoustic footprint, absorption, vessel motion, GNSS/INS, lever arms, water levels, vertical datum or a complete hydrographic TPU budget. Covariance propagation covers only the supplied sound-speed, launch-angle and travel-time uncertainty. It is not production MBES software or a substitute for survey calibration, field validation or independent quality control.
+## Scope
+
+This is a separable first-order covariance model. It assumes the same
+vertical covariance structure at each epoch and one exponential temporal
+correlation scale shared across layers. More complex depth-dependent
+temporal scales, nonstationarity, horizontal variability, currents and
+profile interpolation uncertainty require richer environmental models.
