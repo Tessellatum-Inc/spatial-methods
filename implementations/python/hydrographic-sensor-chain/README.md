@@ -86,3 +86,50 @@ SO(3) geodesics. Queries outside trajectory support are rejected.
 Run \`python -m pytest -q\` in this directory. The package remains a bounded
 teaching implementation: it is not a production hydrographic processing
 system or a complete total propagated uncertainty (TPU) solution.
+
+## Ray-traced multi-ping covariance
+
+`multiping_covariance.py` now composes ray endpoint sensitivities with each
+ping's 3-by-17 sensor-chain Jacobian through
+`assemble_ray_traced_multiping_jacobian` and
+`propagate_ray_traced_multiping_covariance`.
+
+For ping (i), let (J_{s,i}) map the 15 sensor/navigation states and
+ray endpoint ([x_i,z_i]) into the sounding, and let
+(J_{r,i}) map the shared sound-speed profile plus that ping's launch angle
+and two-way travel time into the ray endpoint. The composed per-ping blocks
+are
+[
+J_{mathrm{local},i}
+=
+egin{bmatrix}
+J_{s,i}[:,1{:}15] &
+J_{s,i}[:,16{:}17}J_{r,i}[:,m+1{:}m+2]
+end{bmatrix},
+]
+[
+J_{mathrm{profile},i}
+=
+J_{s,i}[:,16{:}17]J_{r,i}[:,1{:}m].
+]
+The assembled joint Jacobian places every per-ping local block first and
+the (m)-parameter sound-speed profile exactly once at the end. Its
+first-order output covariance is
+[
+C_{mathrm{survey}}approx J_{mathrm{joint}}C_{mathrm{joint}}J_{mathrm{joint}}^T.
+]
+
+The joint input covariance can retain cross-ping correlations among local
+states, correlations between local states and the shared profile, and
+correlations within the profile. A shared profile perturbation therefore
+creates off-diagonal covariance between soundings even when ping-local
+measurement errors are independent.
+
+The local block order is 15 sensor/navigation variables, launch angle in
+degrees, and two-way travel time in seconds. If clock error contributes to
+the corrected travel time, represent it in that travel-time state and its
+cross-ping covariance in the same joint covariance. Do not add the same
+clock contribution again as an independent clock term. This interface
+propagates supplied first-order covariance; it does not claim complete
+survey TPU or replace the need to model datum, water level, vessel motion,
+beamforming, sound-speed profile estimation and other error sources.

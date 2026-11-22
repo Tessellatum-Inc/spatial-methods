@@ -171,3 +171,93 @@ def propagate_stochastic_clock_multiping_covariance(
         "covariance_input_order": "[ping-local blocks..., shared calibration block, clock offsets by ping]",
         "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]",
     }
+
+
+def assemble_ray_traced_multiping_jacobian(
+    sensor_chain_jacobians, ray_endpoint_jacobians):
+    """Compose per-ping sensor-chain and acoustic-ray Jacobians.
+
+    Each sensor-chain Jacobian is 3x17, with columns ordered as the 15
+    navigation/calibration states followed by ray endpoint [x, z].
+    Each ray endpoint Jacobian is 2x(m+2), ordered as the m shared
+    sound-speed layer parameters followed by that ping's launch angle
+    (degrees) and two-way travel time (seconds).
+
+    The assembled input order is
+    [ping_1 local(15 sensor + angle + travel time), ...,
+     ping_N local(...), shared sound-speed profile(m)].
+    Thus sound-speed errors are represented once, in a shared block,
+    and induce the physically required cross-ping covariance.
+    """
+    if not isinstance(sensor_chain_jacobians, (list, tuple)) or not sensor_chain_jacobians:
+        raise ValueError("at least one sensor-chain Jacobian is required")
+    count = len(sensor_chain_jacobians)
+    if not isinstance(ray_endpoint_jacobians, (list, tuple)) or len(ray_endpoint_jacobians) != count:
+        raise ValueError("one ray endpoint Jacobian is required per ping")
+
+    sensor = [
+        _matrix(value, f"sensor_chain_jacobians[{i}]", rows=3, columns=17)
+        for i, value in enumerate(sensor_chain_jacobians)
+    ]
+    rays = [
+        _matrix(value, f"ray_endpoint_jacobians[{i}]", rows=2)
+        for i, value in enumerate(ray_endpoint_jacobians)
+    ]
+    shared_count = len(rays[0][0]) - 2
+    if shared_count < 1:
+        raise ValueError("ray endpoint Jacobians must include at least one shared sound-speed parameter")
+    if any(len(ray[0]) != shared_count + 2 for ray in rays):
+        raise ValueError("ray endpoint Jacobians must have equal input column counts")
+
+    local_blocks = []
+    shared_blocks = []
+    for ping, (sensor_j, ray_j) in enumerate(zip(sensor, rays)):
+        endpoint_j = [row[15:17] for row in sensor_j]
+        local_ray = [[ray_j[k][shared_count + q] for q in range(2)] for k in range(2)]
+        shared_ray = [[ray_j[k][q] for q in range(shared_count)] for k in range(2)]
+        local_effect = _multiply(endpoint_j, local_ray)
+        shared_effect = _multiply(endpoint_j, shared_ray)
+        local_blocks.append([
+            sensor_j[row][:15] + local_effect[row] for row in range(3)
+        ])
+        shared_blocks.append(shared_effect)
+
+    return assemble_multiping_jacobian(local_blocks, shared_blocks)
+
+
+def propagate_ray_traced_multiping_covariance(
+    sensor_chain_jacobians, ray_endpoint_jacobians, joint_input_covariance):
+    """Propagate a survey-line joint covariance through ray and sensor chains.
+
+    Covariance input order is all per-ping blocks
+    [15 sensor states, launch angle, two-way travel time], followed by
+    the shared sound-speed profile parameters. The full matrix may retain
+    correlations among pings, between ping-local states and the shared
+    profile, and among shared profile parameters. In particular, the
+    sound-speed profile is not duplicated into each ping-local covariance.
+
+    If a clock error affects the corrected two-way travel time, include its
+    contribution in the corresponding travel-time state and its cross-ping
+    covariance in this same joint matrix. Do not also add that clock error
+    as a separate independent term.
+    """
+    jacobian = assemble_ray_traced_multiping_jacobian(
+        sensor_chain_jacobians, ray_endpoint_jacobians)
+    size = len(jacobian[0])
+    covariance = _matrix(
+        joint_input_covariance, "joint_input_covariance",
+        rows=size, columns=size)
+    scale = max(1.0, max(abs(value) for row in covariance for value in row))
+    if any(abs(covariance[i][j] - covariance[j][i]) > 1e-10 * scale
+           for i in range(size) for j in range(i)):
+        raise ValueError("joint_input_covariance must be symmetric")
+    return {
+        "jacobian": jacobian,
+        "covariance": _multiply(
+            _multiply(jacobian, covariance), _transpose(jacobian)),
+        "covariance_input_order": (
+            "[ping-local blocks: sensor states, launch angle, two-way travel time; "
+            "shared sound-speed profile]"
+        ),
+        "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]",
+    }

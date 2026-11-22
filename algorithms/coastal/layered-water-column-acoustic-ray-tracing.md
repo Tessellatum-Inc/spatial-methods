@@ -136,3 +136,52 @@ and must not count the same ray-input uncertainty twice.
 This integration remains conditional on the two-dimensional, horizontally
 stratified, piecewise-constant ray model and the supplied beam azimuth. It
 does not complete all hydrographic TPU terms or validate a field survey.
+
+## Multi-ping propagation with a shared sound-speed profile
+
+The sensor-chain package composes the per-ping ray endpoint Jacobian with
+the ray-aware sensor-chain Jacobian. For ping (i), the ray model input
+is ordered as
+[
+mathbf u_i=[c_1,ldots,c_m,\theta_i,t_{2w,i}]^T,
+]
+where the (m) sound-speed parameters describe one shared profile, while
+launch angle and travel time are ping-specific. The sensor-chain Jacobian
+maps the first 15 navigation/calibration variables and the two-dimensional
+ray endpoint into the navigation-frame sounding.
+
+The resulting per-ping local Jacobian is
+[
+J_{\mathrm{local},i}=
+\begin{bmatrix}
+J_{s,i}[:,1{:}15]&
+J_{s,i}[:,16{:}17]J_{r,i}[:,m+1{:}m+2]
+\end{bmatrix},
+]
+and the shared-profile block is
+[
+J_{\mathrm{profile},i}=
+J_{s,i}[:,16{:}17]J_{r,i}[:,1{:}m].
+]
+The joint input vector contains each local block once and the shared
+sound-speed profile once. Consequently,
+[
+C_{\mathrm{survey}}\approx
+J_{\mathrm{joint}}C_{\mathrm{joint}}J_{\mathrm{joint}}^T
+]
+retains the cross-ping covariance induced by shared profile uncertainty.
+The joint covariance may additionally retain cross-ping navigation and
+calibration correlations and local-to-profile correlations.
+
+The implementation is available as
+`assemble_ray_traced_multiping_jacobian` and
+`propagate_ray_traced_multiping_covariance` in the hydrographic
+sensor-chain package. Its local input order is 15 sensor/navigation
+variables, launch angle, and two-way travel time; its shared input block
+contains the sound-speed profile parameters. A clock error that affects
+corrected travel time belongs in the travel-time state and its joint
+cross-ping covariance, not in a second independent contribution.
+
+This is a first-order covariance composition for the stated ray and
+sensor-chain models. It does not imply a complete hydrographic TPU model
+or field validation.
