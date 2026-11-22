@@ -107,6 +107,12 @@ def run_pipeline(source_path: str | Path, output_path: str | Path) -> dict:
             raise ValueError(f"{record.observation_id}: point needs x and y coordinates")
         samples.append((float(coordinates[0]), float(coordinates[1]), record.value))
 
+    source_ref = f"sha256:{ingestion.source_sha256}"
+    ingest_activity = _activity(
+        "ingest-observations", "observation-ingestion", "jsonl-observation-ingestion",
+        "1.0.0", (source_ref,), tuple(record.observation_id for record in records),
+        {"encoding": "UTF-8", "format": "JSON Lines"}, ingest_started,
+    )
     estimate_started = _now()
     predictions = idw_predict(samples, TARGETS, **PARAMETERS)
     product = {
@@ -128,13 +134,7 @@ def run_pipeline(source_path: str | Path, output_path: str | Path) -> dict:
     output_path.write_bytes(output_bytes)
     output_digest = hashlib.sha256(output_bytes).hexdigest()
 
-    source_ref = f"sha256:{ingestion.source_sha256}"
     output_ref = f"sha256:{output_digest}"
-    ingest_activity = _activity(
-        "ingest-observations", "observation-ingestion", "jsonl-observation-ingestion",
-        "1.0.0", (source_ref,), tuple(record.observation_id for record in records),
-        {"encoding": "UTF-8", "format": "JSON Lines"}, ingest_started,
-    )
     estimate_activity = _activity(
         "estimate-surface", "spatial-estimation", "inverse-distance-weighting",
         "1.0.0", tuple(record.observation_id for record in records), (output_ref,),
