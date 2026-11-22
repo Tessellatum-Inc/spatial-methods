@@ -224,6 +224,6 @@ def test_jsonl_ingestion_reports_structural_error_at_physical_line(tmp_path):
 
 def test_jsonl_ingestion_rejects_non_utf8_source(tmp_path):
     path = tmp_path / "observations.jsonl"
-    path.write_bytes(b"\\xff")
+    path.write_bytes(bytes([0xFF]))
     with pytest.raises(ObservationValidationError, match="UTF-8"):
         load_jsonl_records(path)
