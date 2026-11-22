@@ -5,6 +5,7 @@ from linear_spatial_assimilation import (
     periodic_nonuniform_advection_diffusion_operator,
     periodic_nonuniform_point_observation_operator,
     nonperiodic_nonuniform_advection_diffusion_operator,
+    nonperiodic_nonuniform_advection_diffusion_step,
     run_linear_spatial_assimilation, verify_spatial_forecasts,
 )
 
