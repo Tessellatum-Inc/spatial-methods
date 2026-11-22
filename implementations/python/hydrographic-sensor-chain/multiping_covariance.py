@@ -666,3 +666,133 @@ def propagate_time_aligned_ray_traced_event_clock_multiping_covariance_from_traj
         "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]",
         "clock_event_epochs_s": list(clock_event_covariance_result["event_epochs_s"]),
     }
+
+
+def assemble_time_aligned_ray_traced_temporal_profile_multiping_jacobian_from_trajectory(
+    time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+    beam_azimuths_degrees, ping_profile_epoch_indices,
+    temporal_profile_covariance_result):
+    """Compose ray/trajectory sensitivities with epoch-specific profile states.
+
+    The temporal profile covariance result is produced by
+    build_temporally_correlated_sound_speed_covariance. Each ping is assigned
+    to one supplied profile epoch through ping_profile_epoch_indices.
+
+    Input order is [ping-local sensor/angle/travel-time blocks,
+    epoch-major sound-speed profile errors, navigation epoch offsets by ping].
+    Each ping's ray profile sensitivity is inserted only into its assigned
+    epoch block. Cross-epoch and cross-layer correlations are carried by the
+    supplied joint profile covariance, including correlations with other
+    input groups in the caller's full joint covariance.
+    """
+    if not isinstance(temporal_profile_covariance_result, dict):
+        raise ValueError("temporal_profile_covariance_result must be a mapping")
+    epochs = temporal_profile_covariance_result.get("profile_epochs_s")
+    profile_covariance = temporal_profile_covariance_result.get(
+        "joint_profile_covariance")
+    layer_count = temporal_profile_covariance_result.get("layer_count")
+    if not isinstance(epochs, (list, tuple)) or not epochs:
+        raise ValueError("temporal profile result must contain profile_epochs_s")
+    try:
+        epochs = [float(value) for value in epochs]
+        layer_count = int(layer_count)
+    except (TypeError, ValueError, OverflowError):
+        raise ValueError("temporal profile epochs and layer count must be valid") from None
+    if (not all(math.isfinite(value) for value in epochs)
+            or layer_count < 1
+            or isinstance(temporal_profile_covariance_result.get("layer_count"), bool)
+            or float(temporal_profile_covariance_result["layer_count"]) != layer_count):
+        raise ValueError("temporal profile epochs and layer count must be valid")
+    if not isinstance(time_aligned_sensor_chain_results, (list, tuple)) or not time_aligned_sensor_chain_results:
+        raise ValueError("at least one time-aligned sensor-chain result is required")
+    count = len(time_aligned_sensor_chain_results)
+    if not isinstance(ping_profile_epoch_indices, (list, tuple)) or len(ping_profile_epoch_indices) != count:
+        raise ValueError("one profile epoch index is required per ping")
+    indices = []
+    for ping, value in enumerate(ping_profile_epoch_indices):
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise ValueError(f"ping_profile_epoch_indices[{ping}] must be an integer")
+        if value < 0 or value >= len(epochs):
+            raise ValueError(f"ping_profile_epoch_indices[{ping}] is outside the profile epoch range")
+        indices.append(value)
+
+    profile_matrix = _matrix(
+        profile_covariance, "joint_profile_covariance",
+        rows=len(epochs) * layer_count, columns=len(epochs) * layer_count)
+    profile_scale = max(1.0, max(abs(value) for row in profile_matrix for value in row))
+    if any(abs(profile_matrix[i][j] - profile_matrix[j][i]) > 1e-10 * profile_scale
+           for i in range(len(profile_matrix)) for j in range(i)):
+        raise ValueError("joint_profile_covariance must be symmetric")
+
+    base = assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+        time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+        beam_azimuths_degrees)
+    local_width = 17 * count
+    shared_start = local_width
+    if len(base[0]) != local_width + layer_count + count:
+        raise ValueError("ray profile layer count must match the temporal profile covariance")
+    profile_width = len(epochs) * layer_count
+    output = []
+    for row_index, row in enumerate(base):
+        ping = row_index // 3
+        profile_sensitivity = row[shared_start:shared_start + layer_count]
+        profile_columns = [0.0] * profile_width
+        offset = indices[ping] * layer_count
+        profile_columns[offset:offset + layer_count] = profile_sensitivity
+        navigation_columns = row[shared_start + layer_count:]
+        output.append(
+            row[:local_width] + profile_columns + navigation_columns
+        )
+    return output
+
+
+def propagate_time_aligned_ray_traced_temporal_profile_multiping_covariance_from_trajectory(
+    time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+    beam_azimuths_degrees, ping_profile_epoch_indices,
+    temporal_profile_covariance_result, joint_input_covariance):
+    """Propagate multi-ping sounding covariance with temporal profile states.
+
+    The epoch-major profile covariance block in joint_input_covariance must
+    equal the covariance returned by the temporal profile model. All
+    cross-covariances with ping-local states and navigation offsets remain
+    supported in the full matrix.
+    """
+    jacobian = assemble_time_aligned_ray_traced_temporal_profile_multiping_jacobian_from_trajectory(
+        time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+        beam_azimuths_degrees, ping_profile_epoch_indices,
+        temporal_profile_covariance_result)
+    size = len(jacobian[0])
+    covariance = _matrix(
+        joint_input_covariance, "joint_input_covariance",
+        rows=size, columns=size)
+    scale = max(1.0, max(abs(value) for row in covariance for value in row))
+    if any(abs(covariance[i][j] - covariance[j][i]) > 1e-10 * scale
+           for i in range(size) for j in range(i)):
+        raise ValueError("joint_input_covariance must be symmetric")
+    count = len(time_aligned_sensor_chain_results)
+    profile_width = len(temporal_profile_covariance_result["profile_epochs_s"]) * temporal_profile_covariance_result["layer_count"]
+    profile_start = 17 * count
+    expected = _matrix(
+        temporal_profile_covariance_result["joint_profile_covariance"],
+        "joint_profile_covariance", rows=profile_width, columns=profile_width)
+    for i in range(profile_width):
+        for j in range(profile_width):
+            actual = covariance[profile_start + i][profile_start + j]
+            if abs(actual - expected[i][j]) > 1e-10 * max(
+                1.0, abs(actual), abs(expected[i][j])
+            ):
+                raise ValueError(
+                    "epoch-major profile covariance block must match the temporal profile model"
+                )
+    return {
+        "jacobian": jacobian,
+        "covariance": _multiply(
+            _multiply(jacobian, covariance), _transpose(jacobian)),
+        "covariance_input_order": (
+            "[ping-local sensor/angle/travel-time blocks, epoch-major "
+            "sound-speed profile errors, navigation epoch offsets by ping]"
+        ),
+        "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]",
+        "profile_epochs_s": list(temporal_profile_covariance_result["profile_epochs_s"]),
+        "profile_layer_count": temporal_profile_covariance_result["layer_count"],
+    }

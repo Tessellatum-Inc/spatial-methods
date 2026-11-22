@@ -259,3 +259,32 @@ single continuous clock drives navigation epoch tagging and acoustic
 interval measurement. Distinct clocks require separate or jointly modelled
 clock processes. Event epochs are nominal linearisation epochs, and the
 result remains a first-order covariance propagation.
+
+
+## Multi-ping propagation with time-varying sound-speed profiles
+
+The trajectory-driven multi-ping covariance module now supports an
+epoch-specific profile block. Use
+\`assemble_time_aligned_ray_traced_temporal_profile_multiping_jacobian_from_trajectory\`
+or
+\`propagate_time_aligned_ray_traced_temporal_profile_multiping_covariance_from_trajectory\`
+with the mapping returned by
+\`build_temporally_correlated_sound_speed_covariance\`.
+
+Assign each ping to a supplied environmental profile epoch using
+\`ping_profile_epoch_indices\`. The Jacobian places that ping's ray
+sound-speed sensitivity in the corresponding epoch-major profile block.
+The full covariance input order is:
+
+1. Per-ping sensor, launch-angle and measured-travel-time states.
+2. Epoch-major sound-speed profile errors, with all layers at each epoch.
+3. Per-ping navigation epoch offsets.
+
+The propagation function verifies that the profile covariance sub-block
+matches the temporal profile model. It retains any cross-covariance between
+the profile block and other input states in the caller's full covariance.
+It does not infer the environmental epoch assignment or interpolate the
+mean profile between observations: those are explicit survey-processing
+decisions. If a ping lies between profile observations, first construct a
+defensible profile estimate and its covariance at that ping epoch, then
+include the corresponding temporal correlations.

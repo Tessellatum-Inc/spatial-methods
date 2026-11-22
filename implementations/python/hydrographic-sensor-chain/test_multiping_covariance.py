@@ -444,3 +444,109 @@ def test_event_clock_jacobian_rejects_different_transmit_receive_pairing():
         )
 
 
+
+
+def test_temporal_profile_jacobian_assigns_each_ping_to_its_epoch_block():
+    from multiping_covariance import (
+        assemble_time_aligned_ray_traced_temporal_profile_multiping_jacobian_from_trajectory,
+    )
+
+    trajectories = []
+    for _ in range(2):
+        trajectories.append({
+            "jacobian": [[0.0] * 19 for _ in range(3)],
+            "time_offset_sensitivity": [0.0, 0.0, 0.0],
+        })
+    rays = [
+        [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+        [[4.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+    ]
+    profile = {
+        "profile_epochs_s": [0.0, 10.0],
+        "layer_count": 1,
+        "joint_profile_covariance": [[1.0, 0.5], [0.5, 1.0]],
+    }
+    jacobian = assemble_time_aligned_ray_traced_temporal_profile_multiping_jacobian_from_trajectory(
+        trajectories, rays, [0.0, 0.0], [0, 1], profile
+    )
+    # [34 ping-local, 2 epoch-major profile, 2 navigation-offset] columns.
+    assert len(jacobian[0]) == 38
+    assert jacobian[0][34:36] == pytest.approx([2.0, 0.0])
+    assert jacobian[3][34:36] == pytest.approx([0.0, 4.0])
+
+
+def test_temporal_profile_covariance_propagates_cross_epoch_sounding_correlation():
+    from multiping_covariance import (
+        propagate_time_aligned_ray_traced_temporal_profile_multiping_covariance_from_trajectory,
+    )
+
+    trajectories = [
+        {"jacobian": [[0.0] * 19 for _ in range(3)],
+         "time_offset_sensitivity": [0.0, 0.0, 0.0]},
+        {"jacobian": [[0.0] * 19 for _ in range(3)],
+         "time_offset_sensitivity": [0.0, 0.0, 0.0]},
+    ]
+    rays = [
+        [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+        [[4.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+    ]
+    profile = {
+        "profile_epochs_s": [0.0, 10.0],
+        "layer_count": 1,
+        "joint_profile_covariance": [[1.0, 0.5], [0.5, 1.0]],
+    }
+    covariance = [[0.0] * 38 for _ in range(38)]
+    covariance[34][34] = 1.0
+    covariance[34][35] = covariance[35][34] = 0.5
+    covariance[35][35] = 1.0
+    result = propagate_time_aligned_ray_traced_temporal_profile_multiping_covariance_from_trajectory(
+        trajectories, rays, [0.0, 0.0], [0, 1], profile, covariance
+    )
+    output = result["covariance"]
+    assert output[0][0] == pytest.approx(4.0)
+    assert output[0][3] == pytest.approx(4.0)
+    assert output[3][0] == pytest.approx(4.0)
+    assert output[3][3] == pytest.approx(16.0)
+
+
+def test_temporal_profile_jacobian_rejects_out_of_range_epoch_index():
+    from multiping_covariance import (
+        assemble_time_aligned_ray_traced_temporal_profile_multiping_jacobian_from_trajectory,
+    )
+
+    trajectory = {
+        "jacobian": [[0.0] * 19 for _ in range(3)],
+        "time_offset_sensitivity": [0.0, 0.0, 0.0],
+    }
+    profile = {
+        "profile_epochs_s": [0.0],
+        "layer_count": 1,
+        "joint_profile_covariance": [[1.0]],
+    }
+    with pytest.raises(ValueError, match="outside the profile epoch range"):
+        assemble_time_aligned_ray_traced_temporal_profile_multiping_jacobian_from_trajectory(
+            [trajectory], [[[1.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
+            [0.0], [1], profile
+        )
+
+
+def test_temporal_profile_propagation_rejects_covariance_block_mismatch():
+    from multiping_covariance import (
+        propagate_time_aligned_ray_traced_temporal_profile_multiping_covariance_from_trajectory,
+    )
+
+    trajectory = {
+        "jacobian": [[0.0] * 19 for _ in range(3)],
+        "time_offset_sensitivity": [0.0, 0.0, 0.0],
+    }
+    profile = {
+        "profile_epochs_s": [0.0],
+        "layer_count": 1,
+        "joint_profile_covariance": [[1.0]],
+    }
+    covariance = [[0.0] * 20 for _ in range(20)]
+    with pytest.raises(ValueError, match="must match the temporal profile model"):
+        propagate_time_aligned_ray_traced_temporal_profile_multiping_covariance_from_trajectory(
+            [trajectory], [[[1.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
+            [0.0], [0], profile, covariance
+        )
