@@ -24,7 +24,7 @@ The original files still need to be retained in an immutable or versioned raw ar
 
 ## 4. Batch validation
 
-`validate_batch` processes each array row independently. Valid rows are retained, invalid rows are reported with their array index, and duplicate `observation_id` values are rejected. `load_json_records` accepts a top-level JSON array or an object containing a `records` array. `load_jsonl_records` parses one record per non-blank physical line, retains valid records when other lines fail, reports physical line numbers and rejects duplicate IDs. It hashes the exact source bytes with SHA-256. Neither loader rewrites source files.
+`validate_batch` processes each array row independently. Valid rows are retained, invalid rows are reported with their array index, and duplicate `observation_id` values are rejected. `load_json_records` accepts a top-level JSON array or an object containing a `records` array. `load_jsonl_records` parses one record per non-blank physical line, retains valid records when other lines fail, reports physical line numbers, returns line numbers aligned with each accepted record and rejects duplicate IDs. It hashes the exact source bytes with SHA-256. Neither loader rewrites source files.
 
 ## 5. Method-specific rule layer
 

@@ -374,6 +374,7 @@ class JSONLinesIngestion:
     source_sha256: str
     total_lines: int
     records: tuple[ObservationRecord, ...]
+    record_line_numbers: tuple[int, ...]
     errors: tuple[str, ...]
 
     @property
@@ -397,6 +398,7 @@ def load_jsonl_records(path: str | Path) -> JSONLinesIngestion:
         raise ObservationValidationError("JSON Lines source must be UTF-8") from exc
 
     records: list[ObservationRecord] = []
+    record_line_numbers: list[int] = []
     errors: list[str] = []
     seen: set[str] = set()
     lines = content.splitlines()
@@ -412,6 +414,9 @@ def load_jsonl_records(path: str | Path) -> JSONLinesIngestion:
                 )
             seen.add(record.observation_id)
             records.append(record)
+            record_line_numbers.append(line_number)
         except (json.JSONDecodeError, ObservationValidationError) as exc:
             errors.append(f"line {line_number}: {exc}")
-    return JSONLinesIngestion(digest, len(lines), tuple(records), tuple(errors))
+    return JSONLinesIngestion(
+        digest, len(lines), tuple(records), tuple(record_line_numbers), tuple(errors)
+    )

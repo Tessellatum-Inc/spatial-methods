@@ -205,6 +205,7 @@ def test_jsonl_ingestion_preserves_line_numbers_digest_and_valid_records(tmp_pat
     assert result.source_sha256 == hashlib.sha256(path.read_bytes()).hexdigest()
     assert result.total_lines == 5
     assert [record.observation_id for record in result.records] == ["obs-001", "obs-002"]
+    assert result.record_line_numbers == (1, 4)
     assert len(result.errors) == 2
     assert result.errors[0].startswith("line 3:")
     assert result.errors[1].startswith("line 5:")
