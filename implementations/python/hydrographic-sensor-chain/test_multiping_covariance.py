@@ -422,12 +422,14 @@ def test_event_clock_jacobian_rejects_different_transmit_receive_pairing():
     from clock_state_covariance import propagate_clock_elapsed_interval_covariance
     from multiping_covariance import assemble_time_aligned_ray_traced_event_clock_multiping_jacobian_from_trajectory
 
-    trajectories = [
-        {"jacobian": [[0.0] * 19 for _ in range(3)],
-         "time_offset_sensitivity": [0.0, 0.0, 0.0]},
-        {"jacobian": [[0.0] * 19 for _ in range(3)],
-         "time_offset_sensitivity": [0.0, 0.0, 0.0]},
-    ]
+    trajectories = []
+    for _ in range(2):
+        matrix = [[0.0] * 19 for _ in range(3)]
+        matrix[0][15] = 1.0
+        trajectories.append({
+            "jacobian": matrix,
+            "time_offset_sensitivity": [0.0, 0.0, 0.0],
+        })
     rays = [
         [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
         [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
@@ -453,8 +455,10 @@ def test_temporal_profile_jacobian_assigns_each_ping_to_its_epoch_block():
 
     trajectories = []
     for _ in range(2):
+        matrix = [[0.0] * 19 for _ in range(3)]
+        matrix[0][15] = 1.0
         trajectories.append({
-            "jacobian": [[0.0] * 19 for _ in range(3)],
+            "jacobian": matrix,
             "time_offset_sensitivity": [0.0, 0.0, 0.0],
         })
     rays = [
