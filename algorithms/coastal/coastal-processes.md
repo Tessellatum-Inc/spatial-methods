@@ -49,3 +49,8 @@ The package includes a linear calibration baseline for depth as a function of a 
 ## Six-variable coastal vulnerability index
 
 For six ordinal variable ranks (r_i\in\{1,2,3,4,5\}), the conventional index is (\mathrm{CVI}=\sqrt{\prod_{i=1}^{6}r_i}\). The implementation validates the six-rank axis and supports arrays of sites. The choice of variables and local rank thresholds are study-specific; the output is an ordinal composite, not an annual probability or calibrated risk estimate.
+
+
+## Layered-water-column acoustic ray tracing
+
+A separate [layered-water-column ray-tracing method](layered-water-column-acoustic-ray-tracing.md) traces a beam through piecewise-constant sound-speed layers using Snell's law. It is a forward teaching model and is not part of the coastal-processes package. The existing multibeam gridding function only bins supplied soundings; neither operation performs a complete hydrographic reduction, sound-speed correction, uncertainty model or CUBE surface estimation.

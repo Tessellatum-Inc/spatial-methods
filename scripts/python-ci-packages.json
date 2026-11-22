@@ -444,6 +444,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/hydrographic-ray-tracing",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/info-nce",
     "pythonpath": ""
   },

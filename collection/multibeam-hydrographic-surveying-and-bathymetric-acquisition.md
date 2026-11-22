@@ -4,7 +4,7 @@
 > **Subject:** SM-COL-013 — Hydrographic, marine and bathymetric surveying  
 > **Scope:** Vessel-based multibeam echo-sounder (MBES) acquisition and processing context, with single-beam comparison; positioning, attitude, sound velocity, water levels, calibration, coverage and quality assessment  
 > **Status:** Initial method synthesis; no vessel mobilisation, sonar calibration or field validation is claimed  
-> **Related methods:** [GNSS positioning](gnss-positioning-and-navigation-observation.md); [terrestrial surveying](terrestrial-surveying-total-station-and-levelling.md); [airborne LiDAR](airborne-lidar-acquisition-and-strip-adjustment.md); [coastal optical bathymetry algorithm](../algorithms/remote-sensing/stumpf-bathymetry-and-oc4v4.md)
+> **Related methods:** [GNSS positioning](gnss-positioning-and-navigation-observation.md); [terrestrial surveying](terrestrial-surveying-total-station-and-levelling.md); [airborne LiDAR](airborne-lidar-acquisition-and-strip-adjustment.md); [layered-water-column acoustic ray tracing](../algorithms/coastal/layered-water-column-acoustic-ray-tracing.md); [coastal optical bathymetry algorithm](../algorithms/remote-sensing/stumpf-bathymetry-and-oc4v4.md)
 
 ## 1. What hydrographic sounding measures
 

@@ -64,6 +64,10 @@ Each record explains one method or operation, its assumptions, where it is usefu
 
 - [GNSS carrier-phase integer ambiguity resolution](geodesy/gnss-carrier-phase-ambiguity-resolution.md) — integer least squares, LAMBDA decorrelation, candidate validation and the limits of the repository implementation.
 
+## Hydrography and coastal acoustics
+
+- [Layered-water-column acoustic ray tracing](coastal/layered-water-column-acoustic-ray-tracing.md) — trace a two-dimensional acoustic beam through piecewise-constant sound-speed layers using Snell's law; bounded teaching baseline, not production MBES processing.
+
 ## Geometry
 
 - [Point in polygon](geometry/point-in-polygon.md) — classify a point as inside, outside or on a polygon boundary.
