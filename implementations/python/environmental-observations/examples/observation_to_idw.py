@@ -12,6 +12,8 @@ from datetime import datetime, timezone
 import hashlib
 import json
 from collections.abc import Mapping
+from math import isfinite
+from numbers import Real
 from pathlib import Path
 import sys
 
@@ -114,9 +116,16 @@ def run_pipeline(source_path: str | Path, output_path: str | Path) -> dict:
         if support.get("crs") != CRS or not isinstance(geometry, Mapping) or geometry.get("type") != "Point":
             raise ValueError(f"{record.observation_id}: expected a Point geometry in {CRS}")
         coordinates = geometry["coordinates"]
-        if len(coordinates) != 2:
+        if (
+            not isinstance(coordinates, (list, tuple))
+            or len(coordinates) != 2
+            or any(
+                isinstance(value, bool) or not isinstance(value, Real) or not isfinite(float(value))
+                for value in coordinates
+            )
+        ):
             raise ValueError(
-                f"{record.observation_id}: this example requires exactly two coordinate ordinates"
+                f"{record.observation_id}: this example requires exactly two finite numeric coordinate ordinates"
             )
         samples.append((float(coordinates[0]), float(coordinates[1]), record.value))
 
@@ -143,8 +152,6 @@ def run_pipeline(source_path: str | Path, output_path: str | Path) -> dict:
         json.dumps(product, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
         + "\n"
     ).encode("utf-8")
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_bytes(output_bytes)
     output_digest = hashlib.sha256(output_bytes).hexdigest()
 
     output_ref = f"sha256:{output_digest}"
@@ -158,6 +165,10 @@ def run_pipeline(source_path: str | Path, output_path: str | Path) -> dict:
     )
     if not lineage.is_valid:
         raise RuntimeError("generated lineage is invalid: " + "; ".join(lineage.violations))
+
+    # Commit artifacts only after the complete dependency chain validates.
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_bytes(output_bytes)
 
     manifest = {
         "source_sha256": ingestion.source_sha256,
