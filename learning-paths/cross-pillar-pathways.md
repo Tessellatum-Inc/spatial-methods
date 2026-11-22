@@ -78,6 +78,25 @@ This is a partial pathway and gap map, not a claim that remote sensing is now a 
 
 The optical branch has a broad algorithm catalogue, an initial electromagnetic/radiometric foundation module, an initial optical satellite acquisition method and a bounded live-data retrieval pilot; detailed optical physics, technical review and application validation remain incomplete. The SAR branch now has an [initial SAR acquisition and observation design method](../collection/sar-acquisition-and-observation-design.md), a guided backscatter investigation and scoped algorithms, but the Nairobi scene has not yet been selected or processed. Neither branch has a mature, independently validated end-to-end recipe. The pathway records these gaps rather than filling them with superficial links.
 
+## Pathway 6 — From terrestrial observations to an adjusted spatial dataset
+
+**Application context:** Capture relative positions and height differences with total stations and levels, evaluate the observation network, and deliver a traceable spatial dataset.
+
+**Best entry point:** [Terrestrial surveying: total station and differential levelling](../collection/terrestrial-surveying-total-station-and-levelling.md).
+
+| Pillar | Canonical route | Why it belongs |
+|---|---|---|
+| Theoretical Foundations | [Measurement models and measurand definition](../foundations/measurement-science/measurement-models-and-measurand-definition.md); [measurement principles and field verification](../foundations/measurement-science/measurement-principles-and-field-verification.md); [covariance and GLS](../foundations/measurement-science/covariance-correlated-observations-and-gls.md) | Defines the observed quantity, instrument/setup effects, uncertainty and correlated control information. |
+| Spatial Data Collection | [Terrestrial surveying: total station and differential levelling](../collection/terrestrial-surveying-total-station-and-levelling.md) | Describes physical observations, station orientation, EDM and staff readings, field verification, closure and metadata. |
+| Spatial Algorithms | [Covariance and GLS implementation](../implementations/python/covariance-gls/README.md); [measurement exercises F–O](../learning-paths/measurement-science-and-survey-adjustment.md) | Provides adjustment, datum, reliability, robust estimation and covariance-model experiments. The exercises are synthetic. |
+| Spatial Recipes | [Survey-to-spatial-dataset workflow](../recipes/survey-to-spatial-dataset/README.md); [measurement science and survey adjustment path](measurement-science-and-survey-adjustment.md) | Connects acquisition, independent checks, adjustment, dataset construction and delivery. |
+
+**Practical evidence and current boundary**
+
+The adjustment exercises use synthetic observations. The terrestrial collection method is an initial technical synthesis; no field campaign, instrument test, local control validation or project acceptance is claimed. Apply the governing specification and professional requirements for the actual jurisdiction and task.
+
+**Useful outcome:** Understand how instrument observations become coordinates and heights, why closures and residuals are diagnostics rather than guarantees, and how to preserve enough evidence for another competent person to assess the dataset.
+
 ## Pathway 5 — From GNSS observations to an accepted position
 
 **Application context:** Acquire satellite-based position observations and determine whether the resulting coordinates are suitable for a survey, asset record, control network or navigation task.
