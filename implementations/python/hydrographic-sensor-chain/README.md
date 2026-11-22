@@ -89,35 +89,35 @@ system or a complete total propagated uncertainty (TPU) solution.
 
 ## Ray-traced multi-ping covariance
 
-`multiping_covariance.py` now composes ray endpoint sensitivities with each
+\`multiping_covariance.py\` now composes ray endpoint sensitivities with each
 ping's 3-by-17 sensor-chain Jacobian through
-`assemble_ray_traced_multiping_jacobian` and
-`propagate_ray_traced_multiping_covariance`.
+\`assemble_ray_traced_multiping_jacobian\` and
+\`propagate_ray_traced_multiping_covariance\`.
 
-For ping (i), let (J_{s,i}) map the 15 sensor/navigation states and
-ray endpoint ([x_i,z_i]) into the sounding, and let
-(J_{r,i}) map the shared sound-speed profile plus that ping's launch angle
+For ping \(i\), let \(J_{s,i}\) map the 15 sensor/navigation states and
+ray endpoint \([x_i,z_i]\) into the sounding, and let
+\(J_{r,i}\) map the shared sound-speed profile plus that ping's launch angle
 and two-way travel time into the ray endpoint. The composed per-ping blocks
 are
-[
-J_{mathrm{local},i}
+\[
+J_{\mathrm{local},i}
 =
-egin{bmatrix}
+\begin{bmatrix}
 J_{s,i}[:,1{:}15] &
-J_{s,i}[:,16{:}17}J_{r,i}[:,m+1{:}m+2]
-end{bmatrix},
-]
-[
-J_{mathrm{profile},i}
+J_{s,i}[:,16{:}17]J_{r,i}[:,m+1{:}m+2]
+\end{bmatrix},
+\]
+\[
+J_{\mathrm{profile},i}
 =
 J_{s,i}[:,16{:}17]J_{r,i}[:,1{:}m].
-]
+\]
 The assembled joint Jacobian places every per-ping local block first and
-the (m)-parameter sound-speed profile exactly once at the end. Its
+the \(m\)-parameter sound-speed profile exactly once at the end. Its
 first-order output covariance is
-[
-C_{mathrm{survey}}approx J_{mathrm{joint}}C_{mathrm{joint}}J_{mathrm{joint}}^T.
-]
+\[
+C_{\mathrm{survey}}\approx J_{\mathrm{joint}}C_{\mathrm{joint}}J_{\mathrm{joint}}^T.
+\]
 
 The joint input covariance can retain cross-ping correlations among local
 states, correlations between local states and the shared profile, and
