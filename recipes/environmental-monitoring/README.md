@@ -329,7 +329,11 @@ Before claiming an operational environmental-monitoring workflow, a project stil
 - independent spatial and chronological forecast validation;
 - a documented acceptance decision by the responsible project authority.
 
-## 13. Further reading within this repository
+## 13. Reusable observation-record implementation
+
+The [environmental observation record and validation implementation](../../implementations/python/environmental-observations/README.md) provides a standard-library data contract for heterogeneous observations, including support metadata, event/receipt timestamps, provenance, uncertainty and QC lifecycle states. It validates record structure only; it does not calibrate sensors, convert units, assign scientific QC or certify measurements. Preserve raw source data separately.
+
+## 14. Further reading within this repository
 
 - [Spatial observation and sampling design](../../collection/spatial-observation-and-sampling-design.md)
 - [Random fields, covariance and variograms](../../foundations/spatial-statistics-and-stochastic-processes/random-fields-covariance-and-variograms.md)

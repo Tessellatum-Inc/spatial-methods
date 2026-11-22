@@ -34,6 +34,10 @@ Each implementation should state:
 - [Syndromic surveillance](python/syndromic-surveillance/README.md): two-sided tabular CUSUM and explicit EARS-style C1/C2/C3 count-series detectors, with lagged baselines, validation and reference tests.
 
 
+### Environmental observations
+
+- [Environmental observation records and validation](python/environmental-observations/README.md): a dependency-free record envelope for heterogeneous point, line, area, volume, profile and pixel observations, with timestamp, provenance, support, uncertainty and QC-state validation.
+
 ### Forecast verification
 
 - [Low-dimensional spatial data assimilation](python/spatial-data-assimilation/README.md): periodic upwind-advection/diffusion state propagation, point-sensor interpolation, sequential linear-Gaussian forecast-analysis cycling, Joseph covariance updates and free forecasts, with independent tests and a [step-by-step walkthrough](python/spatial-data-assimilation/implementation-walkthrough.md).
