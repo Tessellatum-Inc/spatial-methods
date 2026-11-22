@@ -19,7 +19,8 @@ The stable subject identities are defined in the [Geoinformatics master subject 
 | Satellite and airborne optical remote sensing | SM-COL-004 | [Optical satellite imagery acquisition](optical-satellite-imagery-acquisition.md) |
 | Radar, SAR and interferometric sensing | SM-COL-006 | [SAR acquisition and observation design](sar-acquisition-and-observation-design.md) |
 | Photogrammetry and structure from motion | SM-COL-007 | [Photogrammetric image acquisition](photogrammetry/image-acquisition.md) |
-| LiDAR and laser scanning | SM-COL-008 | [Terrestrial laser scanning and point-cloud acquisition](terrestrial-laser-scanning-and-point-cloud-acquisition.md); [Point-cloud registration algorithm](../algorithms/geometry/point-cloud-registration.md) |
+| LiDAR and laser scanning | SM-COL-008 | [Terrestrial laser scanning and point-cloud acquisition](terrestrial-laser-scanning-and-point-cloud-acquisition.md); [Mobile laser scanning and kinematic point-cloud acquisition](mobile-laser-scanning-and-kinematic-point-cloud-acquisition.md); [Point-cloud registration algorithm](../algorithms/geometry/point-cloud-registration.md) |
+| Mobile mapping and indoor positioning | SM-COL-010 | [Mobile laser scanning and kinematic point-cloud acquisition](mobile-laser-scanning-and-kinematic-point-cloud-acquisition.md); [GNSS positioning and navigation observation](gnss-positioning-and-navigation-observation.md) |
 | UAV platforms, robotics and autonomous acquisition | SM-COL-009 | [Photogrammetric image acquisition](photogrammetry/image-acquisition.md) |
 | Field surveys, sampling and ground truth | SM-COL-011 | [Spatial observation and sampling design](spatial-observation-and-sampling-design.md); [practical sampling campaign exercise](spatial-observation-sampling-exercise.md) |
 
@@ -27,7 +28,7 @@ This is an initial navigation page, not a claim that every collection domain has
 
 ## LiDAR and laser scanning
 
-LiDAR and laser scanning (SM-COL-008) now has an initial [terrestrial laser scanning and point-cloud acquisition method](terrestrial-laser-scanning-and-point-cloud-acquisition.md). It covers static TLS measurement geometry, scan planning, completeness and registrability, target/control/check-point roles, field acquisition, registration, georeferencing, independent quality assessment and provenance. It is explicitly separate from mobile and airborne LiDAR, which require their own platform and trajectory models.
+LiDAR and laser scanning (SM-COL-008) now has an initial [terrestrial laser scanning and point-cloud acquisition method](terrestrial-laser-scanning-and-point-cloud-acquisition.md). It covers static TLS measurement geometry, scan planning, completeness and registrability, target/control/check-point roles, field acquisition, registration, georeferencing, independent quality assessment and provenance. A separate [mobile laser scanning and kinematic point-cloud method](mobile-laser-scanning-and-kinematic-point-cloud-acquisition.md) addresses moving platforms, GNSS/INS trajectory, timing, lever arms, boresight, strip consistency and GNSS-denied operation. Airborne LiDAR still requires its own flight-planning and sensor/trajectory procedure.
 
 ## Terrestrial surveying
 
