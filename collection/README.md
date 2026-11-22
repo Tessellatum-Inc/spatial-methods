@@ -20,6 +20,7 @@ The stable subject identities are defined in the [Geoinformatics master subject 
 | Radar, SAR and interferometric sensing | SM-COL-006 | [SAR acquisition and observation design](sar-acquisition-and-observation-design.md) |
 | Photogrammetry and structure from motion | SM-COL-007 | [Photogrammetric image acquisition](photogrammetry/image-acquisition.md) |
 | LiDAR and laser scanning | SM-COL-008 | [Terrestrial laser scanning and point-cloud acquisition](terrestrial-laser-scanning-and-point-cloud-acquisition.md); [Mobile laser scanning and kinematic point-cloud acquisition](mobile-laser-scanning-and-kinematic-point-cloud-acquisition.md); [Airborne LiDAR acquisition and strip adjustment](airborne-lidar-acquisition-and-strip-adjustment.md); [Point-cloud registration algorithm](../algorithms/geometry/point-cloud-registration.md) |
+| Hydrographic, marine and bathymetric surveying | SM-COL-013 | [Multibeam hydrographic surveying and bathymetric acquisition](multibeam-hydrographic-surveying-and-bathymetric-acquisition.md); [Bathymetric retrieval from optical imagery](../algorithms/remote-sensing/stumpf-bathymetry-and-oc4v4.md) |
 | Mobile mapping and indoor positioning | SM-COL-010 | [Mobile laser scanning and kinematic point-cloud acquisition](mobile-laser-scanning-and-kinematic-point-cloud-acquisition.md); [GNSS positioning and navigation observation](gnss-positioning-and-navigation-observation.md) |
 | UAV platforms, robotics and autonomous acquisition | SM-COL-009 | [Photogrammetric image acquisition](photogrammetry/image-acquisition.md); [Airborne LiDAR acquisition and strip adjustment](airborne-lidar-acquisition-and-strip-adjustment.md) |
 | Field surveys, sampling and ground truth | SM-COL-011 | [Spatial observation and sampling design](spatial-observation-and-sampling-design.md); [practical sampling campaign exercise](spatial-observation-sampling-exercise.md) |
@@ -35,6 +36,10 @@ Airborne LiDAR acquisition (SM-COL-008; with UAV platform links to SM-COL-009) n
 
 
 Mobile mapping (SM-COL-010) now has an initial [mobile laser scanning and kinematic point-cloud acquisition method](mobile-laser-scanning-and-kinematic-point-cloud-acquisition.md). It treats the moving-platform trajectory, GNSS/INS fusion, timing, lever arms, boresight, strip consistency and GNSS-denied/SLAM cases as part of the observation model. It is distinct from static TLS and airborne LiDAR.
+
+## Hydrographic and bathymetric surveying
+
+Hydrographic and bathymetric surveying (SM-COL-013) now has an initial [multibeam hydrographic surveying and bathymetric acquisition method](multibeam-hydrographic-surveying-and-bathymetric-acquisition.md). It covers acoustic depth measurement, water-column sound speed and refraction, vessel positioning and attitude, sensor offsets, patch testing, water-level/vertical-datum reduction, coverage, uncertainty and deliverables. It is an MBES-centred method synthesis, not a field-validated survey procedure or a universal hydrographic specification. Satellite-derived bathymetry and airborne bathymetric LiDAR remain distinct acquisition methods.
 
 ## Terrestrial surveying
 

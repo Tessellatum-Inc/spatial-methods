@@ -173,6 +173,25 @@ The point-cloud packages are computational components, not a validated airborne 
 
 **Useful outcome:** Understand how flight geometry, trajectory, calibration, strip adjustment, classification and independent checks determine whether a point cloud or terrain model is fit for its intended use.
 
+## Pathway 10 — From acoustic observations to a datum-referenced bathymetric surface
+
+**Application context:** Acquire and reduce water-depth observations, account for sound-speed refraction and vessel motion, tie soundings to a defined vertical reference, and assess coverage and uncertainty before producing a bathymetric surface.
+
+**Best entry point:** [Multibeam hydrographic surveying and bathymetric acquisition](../collection/multibeam-hydrographic-surveying-and-bathymetric-acquisition.md).
+
+| Pillar | Canonical route | Why it belongs |
+|---|---|---|
+| Theoretical Foundations | [Measurement models and measurand definition](../foundations/measurement-science/measurement-models-and-measurand-definition.md); [measurement principles and field verification](../foundations/measurement-science/measurement-principles-and-field-verification.md); [uncertainty propagation](../algorithms/statistics/uncertainty-propagation.md); [geodesy foundations](geodesy-foundations.md) | Frames travel-time/range observations, sensor geometry, reference surfaces, correlated uncertainty and datum transformations. Dedicated water-column acoustics and tidal-datum foundations remain a gap. |
+| Spatial Data Collection | [Multibeam hydrographic surveying and bathymetric acquisition](../collection/multibeam-hydrographic-surveying-and-bathymetric-acquisition.md); [GNSS positioning](../collection/gnss-positioning-and-navigation-observation.md); [terrestrial surveying](../collection/terrestrial-surveying-total-station-and-levelling.md) | Connects sonar, sound-speed profiles, vessel motion, positioning, vertical control, patch tests and independent checks. |
+| Spatial Algorithms | [Uncertainty propagation](../algorithms/statistics/uncertainty-propagation.md); [CRS transformation](../algorithms/geodesy/crs-transformation.md); [Stumpf bathymetry and OC4v4](../algorithms/remote-sensing/stumpf-bathymetry-and-oc4v4.md) | Supplies uncertainty and reference-frame operations while explicitly distinguishing optical satellite-derived bathymetry from acoustic sounding. A dedicated bathymetric gridding/uncertainty implementation remains to be developed. |
+| Spatial Recipes | [Survey-to-spatial-dataset workflow](../recipes/survey-to-spatial-dataset/README.md) | Provides generic requirements, acquisition, provenance and independent-validation gates; it is not yet a hydrographic production recipe. |
+
+**Practical evidence and current boundary**
+
+The hydrographic method is an initial synthesis. No vessel mobilisation, sonar calibration, patch test, water-level tie, bathymetric acquisition or field validation is claimed. The generic survey-to-dataset recipe does not yet implement hydrographic-specific processing. The route must not be used as a substitute for the current IHO order, national hydrographic authority instructions or project specifications.
+
+**Useful outcome:** Understand why bathymetry is a coupled acoustic, navigation, motion, water-level and datum problem—and why a dense sounding grid alone does not demonstrate full feature search or absolute vertical accuracy.
+
 ## What is not yet represented
 
 This index is deliberately selective. It does not imply that every subject has a complete cross-pillar route. In particular:
