@@ -8,6 +8,7 @@ from linear_spatial_assimilation import (
     nonperiodic_nonuniform_advection_diffusion_step,
     nonperiodic_nonuniform_advection_diffusion_step_with_boundaries,
     nonperiodic_rectilinear_advection_diffusion_step_2d,
+    nonperiodic_rectilinear_advection_diffusion_step_2d_with_forcing,
     run_linear_spatial_assimilation, verify_spatial_forecasts,
 )
 
