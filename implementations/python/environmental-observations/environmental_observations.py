@@ -262,6 +262,88 @@ def validate_batch(rows: Any) -> BatchValidation:
     return BatchValidation(tuple(records), tuple(errors))
 
 
+
+@dataclass(frozen=True)
+class MethodRule:
+    """Project-defined constraints for one acquisition/measurement method.
+
+    No environmental thresholds are built in: callers supply allowed units,
+    supports, provenance requirements and optional value bounds from the
+    method specification or monitoring quality plan.
+    """
+    method_id: str
+    required_provenance: tuple[str, ...] = ()
+    allowed_support_types: frozenset[str] | None = None
+    allowed_units: frozenset[str] | None = None
+    minimum_value: float | None = None
+    maximum_value: float | None = None
+
+    def __post_init__(self) -> None:
+        _nonempty_string(self.method_id, "method_id")
+        for key in self.required_provenance:
+            _nonempty_string(key, "required_provenance item")
+        if self.allowed_support_types is not None:
+            invalid = set(self.allowed_support_types) - SUPPORT_TYPES
+            if invalid:
+                raise ObservationValidationError(f"unknown support types in method rule: {sorted(invalid)}")
+        if self.minimum_value is not None:
+            _finite_number(self.minimum_value, "minimum_value")
+        if self.maximum_value is not None:
+            _finite_number(self.maximum_value, "maximum_value")
+        if (self.minimum_value is not None and self.maximum_value is not None
+                and self.minimum_value > self.maximum_value):
+            raise ObservationValidationError("minimum_value must not exceed maximum_value")
+
+
+@dataclass(frozen=True)
+class MethodRuleValidation:
+    """Method-rule findings; structural validity is checked separately."""
+    violations: tuple[str, ...]
+
+    @property
+    def is_valid(self) -> bool:
+        return not self.violations
+
+
+def validate_method_rules(
+    records: Any, rules: Mapping[str, MethodRule]
+) -> MethodRuleValidation:
+    """Apply only explicitly supplied method rules to structurally valid records.
+
+    Records whose method_id has no configured rule are left untouched. This
+    prevents the library from inventing universal environmental constraints.
+    """
+    if not isinstance(records, (list, tuple)) or not all(
+        isinstance(record, ObservationRecord) for record in records
+    ):
+        raise ObservationValidationError("records must be a list or tuple of ObservationRecord objects")
+    if not isinstance(rules, Mapping):
+        raise ObservationValidationError("rules must map method_id strings to MethodRule objects")
+    for method_id, rule in rules.items():
+        _nonempty_string(method_id, "rule key")
+        if not isinstance(rule, MethodRule) or method_id != rule.method_id:
+            raise ObservationValidationError("each rule key must match its MethodRule.method_id")
+
+    violations: list[str] = []
+    for record in records:
+        rule = rules.get(record.method_id)
+        if rule is None:
+            continue
+        prefix = f"{record.observation_id} ({record.method_id})"
+        missing = sorted(set(rule.required_provenance) - set(record.provenance))
+        if missing:
+            violations.append(f"{prefix}: missing required provenance: {', '.join(missing)}")
+        support_type = record.support["support_type"]
+        if rule.allowed_support_types is not None and support_type not in rule.allowed_support_types:
+            violations.append(f"{prefix}: support type {support_type!r} is not allowed")
+        if rule.allowed_units is not None and record.unit not in rule.allowed_units:
+            violations.append(f"{prefix}: unit {record.unit!r} is not allowed")
+        if rule.minimum_value is not None and record.value < rule.minimum_value:
+            violations.append(f"{prefix}: value is below configured minimum {rule.minimum_value}")
+        if rule.maximum_value is not None and record.value > rule.maximum_value:
+            violations.append(f"{prefix}: value is above configured maximum {rule.maximum_value}")
+    return MethodRuleValidation(tuple(violations))
+
 def load_json_records(path: str | Path) -> BatchValidation:
     """Load a JSON array or an object with a 'records' array; never rewrite raw input."""
     with Path(path).open("r", encoding="utf-8") as stream:

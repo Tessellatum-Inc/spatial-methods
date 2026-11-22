@@ -139,3 +139,49 @@ def test_provenance_rejects_non_json_and_non_finite_values():
         ObservationRecord.from_dict(row(provenance={"source": object()}))
     with pytest.raises(ObservationValidationError):
         ObservationRecord.from_dict(row(provenance={"source": math.inf}))
+
+def test_method_rule_validation_uses_only_caller_supplied_constraints():
+    from environmental_observations import MethodRule, validate_method_rules
+
+    record = ObservationRecord.from_dict(row())
+    rule = MethodRule(
+        method_id="field-probe-v1",
+        required_provenance=("instrument_id", "calibration_ref"),
+        allowed_support_types=frozenset({"point"}),
+        allowed_units=frozenset({"Cel"}),
+        minimum_value=-5,
+        maximum_value=50,
+    )
+    result = validate_method_rules([record], {"field-probe-v1": rule})
+    assert not result.is_valid
+    assert len(result.violations) == 1
+    assert "calibration_ref" in result.violations[0]
+
+
+def test_method_rule_validation_reports_support_unit_and_value_constraints():
+    from environmental_observations import MethodRule, validate_method_rules
+
+    record = ObservationRecord.from_dict(row(value=60, unit="F"))
+    rule = MethodRule(
+        method_id="field-probe-v1",
+        allowed_support_types=frozenset({"area"}),
+        allowed_units=frozenset({"Cel"}),
+        maximum_value=40,
+    )
+    result = validate_method_rules([record], {"field-probe-v1": rule})
+    assert len(result.violations) == 3
+
+
+def test_method_rules_do_not_constrain_unconfigured_methods():
+    from environmental_observations import MethodRule, validate_method_rules
+
+    record = ObservationRecord.from_dict(row(method_id="unconfigured-method"))
+    rule = MethodRule(method_id="field-probe-v1", allowed_units=frozenset({"Cel"}))
+    assert validate_method_rules([record], {"field-probe-v1": rule}).is_valid
+
+
+def test_method_rule_rejects_inverted_value_range():
+    from environmental_observations import MethodRule, ObservationValidationError
+
+    with pytest.raises(ObservationValidationError):
+        MethodRule(method_id="probe", minimum_value=10, maximum_value=0)
