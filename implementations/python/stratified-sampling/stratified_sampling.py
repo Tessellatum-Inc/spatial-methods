@@ -56,9 +56,9 @@ def neyman_allocation(
     """Allocate a fixed-size stratified sample by Neyman's rule.
 
     For equal per-unit costs, continuous allocations are proportional to
-    N_h*S_h. Integer counts use a deterministic largest-remainder procedure.
-    At least one unit is assigned to every stratum, and no stratum is allocated
-    more units than its finite population contains.
+    N_h*S_h. Integer counts use largest-remainder apportionment of the
+    continuous allocation, subject to at least one unit per stratum and
+    finite-population upper bounds.
 
     If every pilot standard deviation is zero, proportional allocation by
     population size is used as a documented fallback. Pilot values are
@@ -79,45 +79,54 @@ def neyman_allocation(
     if math.fsum(weights) == 0:
         weights = [float(n) for n in sizes]
 
-    allocation = [1] * strata
-    remaining = sample_size - strata
-    while remaining:
-        eligible = [i for i in range(strata) if allocation[i] < sizes[i]]
-        if not eligible:
-            raise ValueError("sample_size exceeds remaining stratum capacity")
-        active_weights = [weights[i] for i in eligible]
+    allocation = [0] * strata
+    remaining = sample_size
+    active = [i for i, capacity in enumerate(sizes) if capacity > 0]
+
+    # Fix strata whose unconstrained quota violates a lower or upper bound,
+    # then recompute the remaining continuous allocation over the active set.
+    while active:
+        active_weights = [weights[i] for i in active]
         if math.fsum(active_weights) == 0:
-            active_weights = [float(sizes[i] - allocation[i]) for i in eligible]
+            active_weights = [float(sizes[i] - allocation[i]) for i in active]
         weight_sum = math.fsum(active_weights)
         quotas = [remaining * weight / weight_sum for weight in active_weights]
-        floors = [min(sizes[i] - allocation[i], math.floor(q))
-                  for i, q in zip(eligible, quotas)]
-        placed = sum(floors)
-        for i, count in zip(eligible, floors):
-            allocation[i] += count
-        remaining -= placed
-        if remaining == 0:
-            break
+        fixed = []
+        for position, (i, quota) in enumerate(zip(active, quotas)):
+            capacity = sizes[i] - allocation[i]
+            if quota < 1.0:
+                allocation[i] += 1
+                remaining -= 1
+                fixed.append(i)
+            elif quota > capacity:
+                allocation[i] += capacity
+                remaining -= capacity
+                fixed.append(i)
+        if fixed:
+            fixed_set = set(fixed)
+            active = [i for i in active if i not in fixed_set]
+            continue
 
-        fractions = [q - math.floor(q) for q in quotas]
-        order = sorted(
-            range(len(eligible)),
-            key=lambda j: (-fractions[j], eligible[j]),
+        floors = [math.floor(quota) for quota in quotas]
+        for i, count in zip(active, floors):
+            allocation[i] += count
+        remaining -= sum(floors)
+        fractions_order = sorted(
+            range(len(active)),
+            key=lambda position: (-(quotas[position] - floors[position]), active[position]),
         )
-        progressed = False
-        for j in order:
-            i = eligible[j]
+        for position in fractions_order:
             if remaining == 0:
                 break
+            i = active[position]
             if allocation[i] < sizes[i]:
                 allocation[i] += 1
                 remaining -= 1
-                progressed = True
-        if not progressed and placed == 0:
-            raise ValueError("could not allocate remaining sample within stratum capacities")
+        break
 
+    if remaining != 0 or sum(allocation) != sample_size:
+        raise ValueError("could not allocate requested sample within stratum bounds")
     return tuple(allocation)
-
 
 def stratified_total_estimate(
     population_sizes: Sequence[int],
