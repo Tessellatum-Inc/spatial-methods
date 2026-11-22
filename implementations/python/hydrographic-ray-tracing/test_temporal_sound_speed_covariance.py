@@ -193,3 +193,78 @@ def test_invalid_profile_interpolation_inputs_are_rejected(
         interpolate_temporal_sound_speed_profiles(
             epochs, profiles, queries, covariance
         )
+
+
+def test_ou_conditioning_at_observation_epoch_is_exact_with_zero_residual_covariance():
+    from temporal_sound_speed_covariance import condition_temporal_sound_speed_profiles_ou
+    result = condition_temporal_sound_speed_profiles_ou(
+        [0.0, 10.0], [[1490.0, 1500.0], [1492.0, 1504.0]],
+        [10.0], [[4.0, 1.0], [1.0, 9.0]], 20.0, [1500.0, 1500.0]
+    )
+    assert result["conditional_profiles_mps"] == [[1492.0, 1504.0]]
+    assert result["conditional_joint_profile_covariance"] == [[0.0, 0.0], [0.0, 0.0]]
+
+
+def test_ou_midpoint_weights_are_conditioned_not_linear_interpolation_weights():
+    from temporal_sound_speed_covariance import condition_temporal_sound_speed_profiles_ou
+    result = condition_temporal_sound_speed_profiles_ou(
+        [0.0, 10.0], [[1490.0], [1510.0]], [5.0], [[4.0]], 10.0, [1500.0]
+    )
+    rho = math.exp(-0.5)
+    expected_weight = rho / (1.0 + math.exp(-1.0))
+    assert result["temporal_conditioning_weights"][0] == pytest.approx([expected_weight, expected_weight])
+    assert result["temporal_conditioning_weights"][0] != pytest.approx([0.5, 0.5])
+    assert result["conditional_profiles_mps"][0] == pytest.approx([1500.0])
+
+
+def test_ou_conditional_covariance_is_psd_and_retains_cross_query_layer_dependence():
+    from temporal_sound_speed_covariance import condition_temporal_sound_speed_profiles_ou
+    result = condition_temporal_sound_speed_profiles_ou(
+        [0.0, 10.0], [[1490.0, 1500.0], [1494.0, 1508.0]], [2.0, 7.0],
+        [[4.0, 1.0], [1.0, 9.0]], 12.0, [1500.0, 1500.0]
+    )
+    covariance = result["conditional_joint_profile_covariance"]
+    assert len(covariance) == 4
+    assert covariance[0][2] != 0.0
+    assert covariance[0][1] != 0.0
+    assert all(covariance[i][j] == pytest.approx(covariance[j][i]) for i in range(4) for j in range(4))
+    vector = [1.0, -2.0, 0.5, 3.0]
+    quadratic = sum(vector[i] * covariance[i][j] * vector[j] for i in range(4) for j in range(4))
+    assert quadratic >= -1e-9
+
+
+def test_ou_conditioning_query_permutation_only_permutates_output_blocks():
+    from temporal_sound_speed_covariance import condition_temporal_sound_speed_profiles_ou
+    epochs = [0.0, 4.0, 10.0]
+    profiles = [[1490.0, 1500.0], [1494.0, 1508.0], [1500.0, 1520.0]]
+    layer_covariance = [[2.0, 0.25], [0.25, 3.0]]
+    reference = [1500.0, 1500.0]
+    forward = condition_temporal_sound_speed_profiles_ou(epochs, profiles, [2.0, 7.0], layer_covariance, 8.0, reference)
+    reverse = condition_temporal_sound_speed_profiles_ou(epochs, profiles, [7.0, 2.0], layer_covariance, 8.0, reference)
+    for actual, expected in zip(reverse["conditional_profiles_mps"], reversed(forward["conditional_profiles_mps"])):
+        assert actual == pytest.approx(expected)
+    permutation = [2, 3, 0, 1]
+    for i in range(4):
+        for j in range(4):
+            assert reverse["conditional_joint_profile_covariance"][i][j] == pytest.approx(
+                forward["conditional_joint_profile_covariance"][permutation[i]][permutation[j]]
+            )
+
+
+@pytest.mark.parametrize(
+    "epochs,profiles,queries,covariance,tau,reference",
+    [
+        ([], [], [1.0], [[1.0]], 1.0, [1500.0]),
+        ([0.0, 0.0], [[1.0], [2.0]], [1.0], [[1.0]], 1.0, [1500.0]),
+        ([0.0], [[1.0]], [], [[1.0]], 1.0, [1500.0]),
+        ([0.0], [[1.0]], [1.0], [[1.0]], 0.0, [1500.0]),
+        ([0.0], [[1.0, 2.0]], [1.0], [[1.0]], 1.0, [1500.0, 1500.0]),
+        ([0.0], [[1.0], [2.0]], [1.0], [[1.0]], 1.0, [1500.0]),
+        ([0.0], [[math.nan]], [1.0], [[1.0]], 1.0, [1500.0]),
+        ([0.0], [[1.0]], [1.0], [[1.0]], 1.0, [math.inf]),
+    ],
+)
+def test_invalid_ou_conditioning_inputs_are_rejected(epochs, profiles, queries, covariance, tau, reference):
+    from temporal_sound_speed_covariance import condition_temporal_sound_speed_profiles_ou
+    with pytest.raises(ValueError):
+        condition_temporal_sound_speed_profiles_ou(epochs, profiles, queries, covariance, tau, reference)
