@@ -317,6 +317,8 @@ def nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
         left_inflow_concentration=None, right_inflow_concentration=None,
         diffusive_boundary_conditions=("no_flux", "no_flux"),
         left_boundary_concentration=None, right_boundary_concentration=None,
+        left_exchange_concentration=None, right_exchange_concentration=None,
+        left_mass_transfer_coefficient=0.0, right_mass_transfer_coefficient=0.0,
         source_rates=None):
     """Advance a 1-D field with advective inflow/outflow and diffusive closures."""
     widths = _array(cell_widths, "cell_widths", 1)
@@ -333,15 +335,16 @@ def nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
     diffusivity = _array(interior_face_diffusivities, "interior_face_diffusivities", 1)
     if velocity.shape != (n-1,) or diffusivity.shape != (n-1,) or np.any(diffusivity < 0):
         raise ValueError("interior face fields must have n-1 values and non-negative diffusivity")
-    ul, ur, kl, kr = map(float, (left_boundary_velocity, right_boundary_velocity,
-                                  left_boundary_diffusivity, right_boundary_diffusivity))
-    if not np.isfinite([ul, ur, kl, kr]).all() or kl < 0 or kr < 0:
-        raise ValueError("boundary velocities must be finite and boundary diffusivities non-negative")
+    ul, ur, kl, kr, hl, hr = map(float, (left_boundary_velocity, right_boundary_velocity,
+                                  left_boundary_diffusivity, right_boundary_diffusivity,
+                                  left_mass_transfer_coefficient, right_mass_transfer_coefficient))
+    if not np.isfinite([ul, ur, kl, kr, hl, hr]).all() or min(kl, kr, hl, hr) < 0:
+        raise ValueError("boundary velocities must be finite; diffusivities and transfer coefficients non-negative")
     if not isinstance(diffusive_boundary_conditions, (tuple, list)) or len(diffusive_boundary_conditions) != 2:
         raise ValueError("diffusive_boundary_conditions must be (left, right)")
     modes = tuple(diffusive_boundary_conditions)
-    if any(mode not in ("no_flux", "dirichlet") for mode in modes):
-        raise ValueError("diffusive boundary modes must be no_flux or dirichlet")
+    if any(mode not in ("no_flux", "dirichlet", "robin") for mode in modes):
+        raise ValueError("diffusive boundary modes must be no_flux, dirichlet or robin")
     def boundary_value(value, name, required):
         if value is None:
             if required:
@@ -355,6 +358,8 @@ def nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
     cin_r = boundary_value(right_inflow_concentration, "right_inflow_concentration", ur < 0)
     cdir_l = boundary_value(left_boundary_concentration, "left_boundary_concentration", modes[0] == "dirichlet")
     cdir_r = boundary_value(right_boundary_concentration, "right_boundary_concentration", modes[1] == "dirichlet")
+    cenv_l = boundary_value(left_exchange_concentration, "left_exchange_concentration", modes[0] == "robin")
+    cenv_r = boundary_value(right_exchange_concentration, "right_exchange_concentration", modes[1] == "robin")
     if source_rates is None:
         sources = np.zeros(n)
     else:
@@ -379,6 +384,10 @@ def nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
         g = 2.0 * kl / widths[0]
         L[0, 0] -= g / widths[0]
         forcing[0] += g * cdir_l / widths[0]
+    elif modes[0] == "robin":
+        g = 0.0 if hl == 0 or kl == 0 else 1.0 / (1.0/hl + widths[0]/(2.0*kl))
+        L[0, 0] -= g / widths[0]
+        forcing[0] += g * cenv_l / widths[0]
     if ur < 0:
         forcing[-1] -= ur * cin_r / widths[-1]
     else:
@@ -387,6 +396,10 @@ def nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
         g = 2.0 * kr / widths[-1]
         L[-1, -1] -= g / widths[-1]
         forcing[-1] += g * cdir_r / widths[-1]
+    elif modes[1] == "robin":
+        g = 0.0 if hr == 0 or kr == 0 else 1.0 / (1.0/hr + widths[-1]/(2.0*kr))
+        L[-1, -1] -= g / widths[-1]
+        forcing[-1] += g * cenv_r / widths[-1]
     transition = np.eye(n) + dt * L
     if np.min(transition) < -1e-12:
         raise ValueError("time step violates boundary-inclusive positivity/stability bound")
@@ -398,8 +411,12 @@ def nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
     updated[updated < 0] = 0.0
     left_adv = ul * (cin_l if ul > 0 else state[0])
     right_adv = ur * (cin_r if ur < 0 else state[-1])
-    left_diff = 2.0 * kl * (cdir_l-state[0]) / widths[0] if modes[0] == "dirichlet" else 0.0
-    right_diff = 2.0 * kr * (state[-1]-cdir_r) / widths[-1] if modes[1] == "dirichlet" else 0.0
+    left_diff = (2.0 * kl * (cdir_l-state[0]) / widths[0] if modes[0] == "dirichlet"
+                 else -g_left * (state[0]-cenv_l) if modes[0] == "robin" else 0.0)
+    right_diff = (2.0 * kr * (state[-1]-cdir_r) / widths[-1] if modes[1] == "dirichlet"
+                  else g_right * (state[-1]-cenv_r) if modes[1] == "robin" else 0.0)
+    g_left = 0.0 if modes[0] != "robin" or hl == 0 or kl == 0 else 1.0/(1.0/hl+widths[0]/(2.0*kl))
+    g_right = 0.0 if modes[1] != "robin" or hr == 0 or kr == 0 else 1.0/(1.0/hr+widths[-1]/(2.0*kr))
     left_flux, right_flux = float(left_adv+left_diff), float(right_adv+right_diff)
     initial_mass, final_mass = float(widths@state), float(widths@updated)
     source_change = float(dt*(widths@sources))

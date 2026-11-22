@@ -151,7 +151,7 @@ Advective inflow uses a prescribed external concentration; advective outflow
 uses the adjacent interior cell as the upwind state. With positive-x
 orientation, left inflow and right outflow have positive velocity, while
 right inflow and left outflow have negative velocity. Diffusion independently
-supports zero normal gradient or a Dirichlet concentration. For Dirichlet
+supports zero normal gradient, a Dirichlet concentration, or a Robin exchange boundary. For Dirichlet
 values the boundary gradient uses the half-cell distance:
 \[
 F_{L,d}=-\kappa_L\frac{c_0-c_L}{\Delta x_0/2},\qquad
@@ -159,6 +159,7 @@ F_{R,d}=-\kappa_R\frac{c_R-c_{n-1}}{\Delta x_{n-1}/2}.
 \]
 The actual total boundary fluxes enter the returned mass budget. Inflow
 values are required only when velocity points inward; outflow uses the
-interior state. This is a first-order 1-D closure; Robin conditions and
-higher-order radiation conditions are not included. The prescribed-total-
+interior state. This is a first-order 1-D closure; Robin exchange uses a non-negative transfer coefficient and ambient concentration. The half-cell diffusive resistance and boundary transfer resistance are combined in series, so the effective conductance is
+\[G=\left(h^{-1}+\frac{\Delta x/2}{\kappa}\right)^{-1},\]
+with zero conductance when either coefficient is zero. The positive-x diffusive flux is \(-G(c_0-c_\infty)\) at the left and \(+G(c_{n-1}-c_\infty)\) at the right. This is a linear Robin exchange closure, not a general nonlinear radiation condition. The prescribed-total-
 flux step remains separate for externally known fluxes.

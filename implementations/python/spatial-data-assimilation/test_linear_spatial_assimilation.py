@@ -292,3 +292,32 @@ def test_boundary_closed_requires_active_boundary_values():
         nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
             *args,left_boundary_diffusivity=0.1,
             diffusive_boundary_conditions=("dirichlet","no_flux"))
+
+
+
+def test_robin_exchange_boundary_uses_series_resistance_and_closes_mass_budget():
+    result=nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
+        np.array([2.0, 1.0]),0.05,np.zeros(1),np.zeros(1),np.array([4.0,4.0]),
+        left_boundary_diffusivity=2.0,
+        diffusive_boundary_conditions=("robin","no_flux"),
+        left_exchange_concentration=1.0,left_mass_transfer_coefficient=3.0)
+    # G = 1 / (1/h + (dx/2)/k) = 1 / (1/3 + 2/2) = 0.75.
+    assert result["left_boundary_flux"] == pytest.approx(-2.25)
+    assert result["right_boundary_flux"] == pytest.approx(0.0)
+    assert result["boundary_mass_change"] == pytest.approx(-0.1125)
+    assert result["final_mass"]-result["initial_mass"] == pytest.approx(-0.1125)
+    assert result["mass_budget_residual"] == pytest.approx(0.0,abs=1e-12)
+
+
+def test_robin_exchange_zero_transfer_is_no_flux_and_requires_ambient_value():
+    args=(np.ones(2),0.01,np.zeros(1),np.zeros(1),np.array([2.0,3.0]))
+    zero=nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
+        *args,left_boundary_diffusivity=1.0,
+        diffusive_boundary_conditions=("robin","no_flux"),
+        left_exchange_concentration=10.0,left_mass_transfer_coefficient=0.0)
+    assert zero["left_boundary_flux"] == pytest.approx(0.0)
+    with pytest.raises(ValueError,match="left_exchange_concentration"):
+        nonperiodic_nonuniform_advection_diffusion_step_with_boundaries(
+            *args,left_boundary_diffusivity=1.0,
+            diffusive_boundary_conditions=("robin","no_flux"),
+            left_mass_transfer_coefficient=1.0)
