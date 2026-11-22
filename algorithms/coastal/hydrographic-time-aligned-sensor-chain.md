@@ -1,5 +1,43 @@
 # Navigation trajectory and propagated hydrographic uncertainty
 
+## Sounding coordinate covariance
+
+The sounding coordinate is computed from the GNSS antenna position, IMU
+attitude, lever arms, mounting rotation and acoustic detection vector:
+\[
+\mathbf p_n=\mathbf r_{n,g}+
+\mathbf R_{n\leftarrow i}
+(-\mathbf l_{i,g}+\mathbf l_{i,t}
++\mathbf R_{i\leftarrow t}\mathbf s_t).
+\]
+For the parameter order
+\[
+\delta\mathbf x=[
+\delta\mathbf r_{n,g},
+\delta\boldsymbol\theta_n,
+\delta\mathbf l_{i,g},
+\delta\mathbf l_{i,t},
+\delta\boldsymbol\phi_i,
+\delta\mathbf s_t]^T,
+\]
+the implemented 3-by-18 Jacobian maps all first-order input errors into
+navigation-frame sounding-coordinate error. Given the complete joint
+covariance, including any navigation/calibration cross-covariances,
+\[
+\mathbf C_p=\mathbf J_{\rm chain}\mathbf C_x\mathbf J_{\rm chain}^{T}.
+\]
+The implementation returns the point, Jacobian, three-dimensional covariance
+and marginal standard uncertainties. It does not silently construct a block
+diagonal covariance: the caller supplies the full matrix and is responsible
+for defensible correlations and positive semidefiniteness.
+
+For a trajectory-derived pose, the six-by-six interpolated pose covariance
+occupies the leading position/attitude block of the 18-state covariance. The
+remaining blocks hold lever-arm, mounting and acoustic-vector uncertainty.
+Any known covariance between pose and calibration parameters belongs in the
+off-diagonal blocks. This creates a direct path from navigation interpolation
+to sounding-coordinate uncertainty.
+
 ## Pose interpolation and endpoint covariance
 
 Within a bracket \([t_0,t_1]\), with
@@ -10,67 +48,29 @@ attitude on the shortest SO(3) geodesic:
 \mathbf R(t)=\mathbf R_0\exp\left(
 \alpha\log(\mathbf R_0^T\mathbf R_1)\right).
 \]
-No extrapolation is permitted. The endpoint pose perturbation order is
-\[
-\delta\mathbf x_e=
-[\delta\mathbf r_0^T,\delta\boldsymbol\theta_0^T,
- \delta\mathbf r_1^T,\delta\boldsymbol\theta_1^T]^T.
-\]
-Position errors are additive in navigation coordinates. Attitude errors are
-left-multiplicative in navigation axes:
-\[
-\mathbf R_k^{\rm pert}=
-\exp([\delta\boldsymbol\theta_k]_\times)\mathbf R_k.
-\]
-Define the interpolated output perturbation similarly. A six-by-twelve
-Jacobian is evaluated by central finite differences; for attitude columns,
-the output perturbation is obtained from
-\[
-\delta\boldsymbol\theta(t)=
-\log(\mathbf R^{\rm pert}(t)\mathbf R(t)^T).
-\]
-This computes the local tangent-space derivative of the actual geodesic
-interpolant, rather than assuming that SO(3) interpolation weights are
-exactly scalar multiples of the identity.
-
-Given the full endpoint covariance, including cross-epoch and
-position-attitude terms,
+No extrapolation is permitted. Endpoint attitude errors are left
+multiplicative in navigation axes. A six-by-twelve Jacobian is evaluated by
+central finite differences in the tangent space, then
 \[
 \mathbf C_{\rm pose}(t)=
 \mathbf J_{\rm interp}\mathbf C_e\mathbf J_{\rm interp}^{T}.
 \]
-The full covariance matters: neighboring navigation states often share
-filter history, clock errors, inertial biases or GNSS smoothing. Dropping
-cross-epoch covariance can overstate or understate interpolated uncertainty.
+The full endpoint covariance retains cross-epoch and position-attitude terms.
 
 ## Multi-ping propagation
 
-For a sequence of soundings, shared lever arms, mounting calibration and
-clock parameters must appear once in the common input block. With local
-Jacobian \(\mathbf J_i\), shared Jacobian \(\mathbf K_i\), and complete input
-covariance \(\mathbf C_x\):
-\[
-\mathbf J_{\rm all}=
-\begin{bmatrix}
-\mathbf J_1&0&\cdots&0&\mathbf K_1\\
-0&\mathbf J_2&\cdots&0&\mathbf K_2\\
-\vdots&&\ddots&&\vdots\\
-0&0&\cdots&\mathbf J_N&\mathbf K_N
-\end{bmatrix},\qquad
-\mathbf C_p=\mathbf J_{\rm all}\mathbf C_x\mathbf J_{\rm all}^{T}.
-\]
-The full \(3N\times3N\) output covariance retains cross-ping correlation.
-Independent per-ping propagation is insufficient when navigation states,
-clock or calibration parameters are shared or correlated.
+Shared lever arms, mounting calibration and clock parameters must appear once
+in the common input block. The assembled block Jacobian propagates the full
+joint covariance into a \(3N\times3N\) sounding covariance, preserving
+cross-ping correlations. Independent per-ping propagation is insufficient
+when navigation states or calibration parameters are shared.
 
 ## Implementation limits
 
-The Python package implements piecewise pose interpolation, finite-difference
-endpoint covariance propagation and multi-ping block covariance propagation.
-Covariance inputs are checked for shape, finite values and symmetry; callers
-must ensure positive semidefiniteness. The interpolation covariance is
-first-order and depends on the selected finite-difference step. It is not a
-navigation filter or a substitute for the filter's native covariance and
-cross-covariance outputs. High-dynamic smoothing, clock random walks,
-asynchronous filtering, vessel flexure, acoustic ray tracing and full
-hydrographic TPU remain outside scope.
+The Python package provides first-order covariance propagation. Covariance
+inputs are checked for shape, finite values and symmetry; positive
+semidefiniteness remains the caller's responsibility. The interpolation
+Jacobian depends on the finite-difference step. This is not a navigation
+filter or a substitute for filter-native covariance outputs. High-dynamic
+smoothing, clock random walks, asynchronous filtering, vessel flexure,
+acoustic ray tracing and full hydrographic TPU remain outside scope.
