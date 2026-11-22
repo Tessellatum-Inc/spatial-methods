@@ -16,6 +16,10 @@ The [cross-pillar pathway index](../learning-paths/cross-pillar-pathways.md) exp
 
 - [Sentinel-1 IW GRD backscatter preparation](remote-sensing/sentinel-1-grd-backscatter.md) — a gated workflow from SAFE inspection through orbit, noise, calibration, optional speckle treatment, terrain correction, dB conversion and temporal quality checks. Current status: design documented; Nairobi processing not yet executed.
 
+## Hydrographic recipe
+
+- [Multibeam bathymetry: observations-to-validated-surface](multibeam-bathymetry/README.md) — a gated workflow from survey requirements and reference definition through MBES verification, acoustic/navigation corrections, sounding assessment, surface generation, independent validation and delivery. Current status: desk-designed; no field data processed.
+
 ## First integrated recipe
 
 - [Survey-to-spatial-dataset workflow](survey-to-spatial-dataset/README.md) — a design-stage field-to-office workflow connecting measurement science, field acquisition, geodetic computation, quality assurance and spatial data delivery.
