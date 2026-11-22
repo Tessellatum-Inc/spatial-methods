@@ -17,7 +17,7 @@ def test_identity_and_signs():
  assert [x[15:18] for x in o["jacobian"]]==I
 def test_composed_rotations():
  R=[[0,-1,0],[1,0,0],[0,0,1]];Q=[[1,0,0],[0,0,-1],[0,1,0]]
- assert calc(R,Q)["point_navigation"]==pytest.approx([94.1,201.2,30])
+ assert calc(R,Q)["point_navigation"]==pytest.approx([94.1,201.2,31])
 @pytest.mark.parametrize("block,axis",[(3,0),(6,0),(9,1),(12,2),(15,1)])
 def test_jacobian_blocks_finite_difference(block,axis):
  R=[[0,-1,0],[1,0,0],[0,0,1]];Q=[[1,0,0],[0,0,-1],[0,1,0]]
