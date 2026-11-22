@@ -64,3 +64,21 @@ Run \`python -m pytest -q\` in this directory. The package does not yet
 implement a high-dynamic spline, clock random walk, asynchronous navigation
 filter, vessel flexure, acoustic ray tracing, beamforming, bottom detection
 or full hydrographic TPU.
+
+
+## Time-aligned multi-ping covariance
+
+`assemble_time_aligned_multiping_jacobian` appends two common clock
+parameters to the shared input block: clock offset and linear clock drift.
+For ping (i), its time-sensitivity vector (mathbf j_{t,i}) contributes
+[
+\frac{\partial\mathbf p_i}{\partial\delta t_0}=\mathbf j_{t,i},
+\qquad
+\frac{\partial\mathbf p_i}{\partial\dot{\delta t}}=(t_i-t_{\rm ref})\mathbf j_{t,i}.
+]
+`propagate_time_aligned_multiping_covariance` propagates the resulting full
+joint covariance. Its input order is all ping-local blocks, the shared
+calibration block, clock offset and clock drift. Cross-ping navigation
+correlations and calibration/clock correlations are retained when present in
+the supplied covariance. The clock model is a common offset plus linear
+drift over the represented interval; it is not a stochastic clock process.

@@ -52,3 +52,52 @@ def propagate_multiping_covariance(local_jacobians,shared_jacobians,joint_input_
     scale=max(1.0,max(abs(x) for r in c for x in r))
     if any(abs(c[i][k]-c[k][i])>1e-10*scale for i in range(n) for k in range(i)): raise ValueError("joint_input_covariance must be symmetric")
     return {"jacobian":j,"covariance":_multiply(_multiply(j,c),_transpose(j))}
+
+
+def assemble_time_aligned_multiping_jacobian(
+    local_jacobians, shared_jacobians, time_sensitivities,
+    ping_times, reference_time):
+    """Append common clock-offset and clock-drift columns to shared inputs.
+
+    Input order is [ping-local blocks..., shared calibration block,
+    common clock offset (s), common clock drift (s/s)]. The per-ping
+    time_sensitivities are derivatives of sounding coordinates with respect
+    to that ping's evaluation-time shift, in navigation-coordinate units/s.
+    """
+    if not isinstance(local_jacobians, (list, tuple)) or not local_jacobians:
+        raise ValueError("at least one local Jacobian is required")
+    if len(time_sensitivities) != len(local_jacobians) or len(ping_times) != len(local_jacobians):
+        raise ValueError("one time sensitivity and ping time are required per ping")
+    clock = clock_offset_and_drift_sensitivities(
+        time_sensitivities, ping_times, reference_time)
+    augmented = []
+    for i, shared in enumerate(shared_jacobians):
+        base = _matrix(shared, f"shared_jacobians[{i}]", rows=3)
+        if len(base[0]) == 0:
+            raise ValueError("each shared Jacobian must contain at least one shared parameter")
+        augmented.append([base[k] + clock[i][k] for k in range(3)])
+    return assemble_multiping_jacobian(local_jacobians, augmented)
+
+
+def propagate_time_aligned_multiping_covariance(
+    local_jacobians, shared_jacobians, time_sensitivities,
+    ping_times, reference_time, joint_input_covariance):
+    """Propagate multiple time-aligned soundings with shared clock errors.
+
+    Covariance input order is the assembled Jacobian order: all ping-local
+    blocks, the shared calibration block, then common clock offset and drift.
+    The full matrix may contain cross-ping local-state correlations and
+    calibration/clock correlations; none are discarded.
+    """
+    j = assemble_time_aligned_multiping_jacobian(
+        local_jacobians, shared_jacobians, time_sensitivities,
+        ping_times, reference_time)
+    n = len(j[0])
+    c = _matrix(joint_input_covariance, "joint_input_covariance", rows=n, columns=n)
+    scale = max(1.0, max(abs(x) for row in c for x in row))
+    if any(abs(c[i][k] - c[k][i]) > 1e-10 * scale
+           for i in range(n) for k in range(i)):
+        raise ValueError("joint_input_covariance must be symmetric")
+    return {"jacobian": j, "covariance": _multiply(_multiply(j, c), _transpose(j)),
+            "covariance_input_order": "[ping-local blocks..., shared calibration block, clock offset, clock drift]",
+            "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]"}

@@ -34,3 +34,33 @@ def test_rejects_bad_shapes_and_asymmetric_covariance():
     with pytest.raises(ValueError):
         propagate_multiping_covariance([[[1],[0],[0]],[[1],[0],[0]]],
           [[[1],[0],[0]],[[1],[0],[0]]],[[1,0,0],[0.2,1,0],[0,0,1]])
+
+
+def test_time_aligned_multiping_clock_offset_and_drift_create_cross_ping_covariance():
+    from multiping_covariance import propagate_time_aligned_multiping_covariance
+    local = [[[0.0], [0.0], [0.0]], [[0.0], [0.0], [0.0]]]
+    shared = [[[0.0], [0.0], [0.0]], [[0.0], [0.0], [0.0]]]
+    # [local_1, local_2, calibration, clock_offset, clock_drift]
+    c = [[0.0] * 5 for _ in range(5)]
+    c[3][3] = 0.25
+    c[4][4] = 0.04
+    c[3][4] = c[4][3] = 0.01
+    out = propagate_time_aligned_multiping_covariance(
+        local, shared, [[1, 0, 0], [2, 0, 0]], [100, 105], 100, c)
+    cov = out["covariance"]
+    assert cov[0][3] == pytest.approx(0.6)
+    assert cov[0][0] == pytest.approx(0.25)
+    assert cov[3][3] == pytest.approx(5.2)
+
+
+def test_time_aligned_multiping_retains_cross_ping_navigation_covariance():
+    from multiping_covariance import propagate_time_aligned_multiping_covariance
+    local = [[[1.0], [0.0], [0.0]], [[1.0], [0.0], [0.0]]]
+    shared = [[[0.0], [0.0], [0.0]], [[0.0], [0.0], [0.0]]]
+    # Two correlated local position states, one shared calibration and two clocks.
+    c = [[0.0] * 5 for _ in range(5)]
+    c[0][0] = c[1][1] = 1.0
+    c[0][1] = c[1][0] = 0.3
+    out = propagate_time_aligned_multiping_covariance(
+        local, shared, [[0, 0, 0], [0, 0, 0]], [100, 105], 100, c)
+    assert out["covariance"][0][3] == pytest.approx(0.3)

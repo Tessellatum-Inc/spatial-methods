@@ -74,3 +74,29 @@ Jacobian depends on the finite-difference step. This is not a navigation
 filter or a substitute for filter-native covariance outputs. High-dynamic
 smoothing, clock random walks, asynchronous filtering, vessel flexure,
 acoustic ray tracing and full hydrographic TPU remain outside scope.
+
+
+## Time-offset and multi-ping integration
+
+The time-aligned sensor-chain Jacobian includes
+\(\mathbf j_{t,i}=\partial\mathbf p_i/\partial\Delta t_i\), in coordinate
+units per second. For a common clock offset \(\delta t_0\) and linear drift
+\(\dot{\delta t}\) referenced to \(t_{\rm ref}\), the shared sensitivity
+columns are
+\[
+\frac{\partial\mathbf p_i}{\partial\delta t_0}=\mathbf j_{t,i},
+\qquad
+\frac{\partial\mathbf p_i}{\partial\dot{\delta t}}=
+(t_i-t_{\rm ref})\mathbf j_{t,i}.
+\]
+The multi-ping assembler appends these two shared columns after the shared
+calibration block. Its covariance order is all ping-local state blocks,
+shared calibration, clock offset and clock drift. The complete covariance
+matrix can additionally encode cross-ping navigation-state correlations
+and correlations between calibration and clock parameters. Propagation then
+returns the joint \(3N\times3N\) sounding covariance, not merely independent
+per-ping marginals.
+
+The clock model here is deterministic offset plus linear drift over the
+interval. It does not represent clock random walk, time-varying drift or
+filter-state evolution; those require an explicit stochastic clock model.
