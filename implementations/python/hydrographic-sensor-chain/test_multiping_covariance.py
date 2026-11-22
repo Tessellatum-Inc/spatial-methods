@@ -365,3 +365,53 @@ def test_clock_drift_requires_one_nonnegative_two_way_time_per_ping():
             [result], [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
             [0.0], [0.0], [-0.01], clock
         )
+
+
+def test_event_clock_jacobian_maps_navigation_and_acoustic_interval_to_event_offsets():
+    from clock_state_covariance import propagate_clock_elapsed_interval_covariance
+    from multiping_covariance import assemble_time_aligned_ray_traced_event_clock_multiping_jacobian_from_trajectory
+
+    matrix = [[0.0] * 19 for _ in range(3)]
+    matrix[0][18] = 2.0
+    matrix[2][17] = 1.0
+    trajectory = {"jacobian": matrix, "time_offset_sensitivity": [2.0, 0.0, 0.0]}
+    # Ray travel-time derivative in the depth row is 1.5.
+    ray = [[0.0, 0.0, 0.0], [0.0, 0.0, 1.5]]
+    clock = propagate_clock_elapsed_interval_covariance(
+        [10.0], [10.04], [[0.0, 0.0], [0.0, 0.0]], 0.25,
+        additional_epochs_s=[10.0]
+    )
+    jacobian = assemble_time_aligned_ray_traced_event_clock_multiping_jacobian_from_trajectory(
+        [trajectory], [ray], [0.0], [10.0], [10.0], [10.04], clock
+    )
+    # Local inputs (17), one shared profile, then [tx offset,tx drift,rx offset,rx drift].
+    assert len(jacobian[0]) == 22
+    assert jacobian[0][-4:] == pytest.approx([2.0, 0.0, 0.0, 0.0])
+    assert jacobian[2][-4:] == pytest.approx([1.5, 0.0, -1.5, 0.0])
+
+
+def test_event_clock_propagator_checks_process_derived_event_covariance():
+    from clock_state_covariance import propagate_clock_elapsed_interval_covariance
+    from multiping_covariance import propagate_time_aligned_ray_traced_event_clock_multiping_covariance_from_trajectory
+
+    matrix = [[0.0] * 19 for _ in range(3)]
+    trajectory = {"jacobian": matrix, "time_offset_sensitivity": [0.0, 0.0, 0.0]}
+    ray = [[0.0, 0.0, 0.0], [0.0, 0.0, 1.0]]
+    clock = propagate_clock_elapsed_interval_covariance(
+        [0.0], [0.1], [[0.0, 0.0], [0.0, 0.0]], 0.5,
+        additional_epochs_s=[0.0]
+    )
+    # One local block + one profile + four event-state values.
+    covariance = [[0.0] * 22 for _ in range(22)]
+    for i in range(4):
+        for j in range(4):
+            covariance[18 + i][18 + j] = clock["joint_event_state_covariance"][i][j]
+    result = propagate_time_aligned_ray_traced_event_clock_multiping_covariance_from_trajectory(
+        [trajectory], [ray], [0.0], [0.0], [0.0], [0.1], clock, covariance
+    )
+    assert result["covariance"][2][2] == pytest.approx(0.5 * 0.1 ** 3 / 3.0)
+    covariance[18][18] += 1.0
+    with pytest.raises(ValueError, match="must match the propagated clock process"):
+        propagate_time_aligned_ray_traced_event_clock_multiping_covariance_from_trajectory(
+            [trajectory], [ray], [0.0], [0.0], [0.0], [0.1], clock, covariance
+        )

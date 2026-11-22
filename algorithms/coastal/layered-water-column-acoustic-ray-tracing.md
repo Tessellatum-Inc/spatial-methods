@@ -263,3 +263,38 @@ It does not yet integrate clock process noise over the transmit-to-receive
 interval or model separate transmit and receive clock observations. For
 those cases, use a clock-state model evaluated at both event epochs and
 derive the interval as the difference of their clock readings.
+
+
+### Event-resolved shared-clock timing
+
+For acoustic interval timing, use
+\`propagate_clock_elapsed_interval_covariance\` in
+\`clock_state_covariance.py\` to build one joint clock process over the union
+of transmit, receive and optional navigation epochs. For ping \(i\), the
+clock-induced elapsed-time error is
+\[
+e_i=\delta t(t_{r,i})-\delta t(t_{t,i}),
+\qquad T_i=T_{m,i}-e_i.
+\]
+The returned interval-error covariance is formed from the full event-state
+covariance and a transmit/receive offset-difference matrix. It therefore
+includes the integrated frequency-rate process noise during each ping and
+the correlation between overlapping ping intervals. A constant clock offset
+cancels exactly.
+
+The trajectory-driven event-clock functions
+\`assemble_time_aligned_ray_traced_event_clock_multiping_jacobian_from_trajectory\`
+and
+\`propagate_time_aligned_ray_traced_event_clock_multiping_covariance_from_trajectory\`
+map navigation epoch sensitivity to the clock offset at the ping epoch and
+map the acoustic travel-time derivative with opposite signs to transmit
+and receive offsets. Their final covariance block must match the process-
+derived event-state covariance. Do not also add a separate interval-noise
+term: that would count the same clock process twice.
+
+This event-resolved formulation supersedes the local constant-rate
+approximation when transmit and receive epochs are available. It assumes a
+single continuous clock drives navigation epoch tagging and acoustic
+interval measurement. Distinct clocks require separate or jointly modelled
+clock processes. Event epochs are nominal linearisation epochs, and the
+result remains a first-order covariance propagation.

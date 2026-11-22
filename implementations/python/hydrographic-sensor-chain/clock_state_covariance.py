@@ -130,3 +130,60 @@ def propagate_clock_state_covariance(epochs_s, initial_covariance,
         "state_order": "[clock_offset_s, clock_drift_s_per_s]",
         "process_model": "d(offset)/dt=drift; d(drift)=sqrt(q) dW",
     }
+
+
+def propagate_clock_elapsed_interval_covariance(
+    transmit_epochs_s, receive_epochs_s, initial_covariance,
+    process_noise_spectral_density=0.0, additional_epochs_s=()):
+    """Propagate clock states at transmit/receive events and interval errors.
+
+    The clock reading is C(t)=t+offset(t). For ping i, the clock-induced
+    elapsed-time error is offset(t_receive_i)-offset(t_transmit_i).
+    Event states are propagated jointly, so overlapping intervals and
+    within-interval process noise remain correlated.
+
+    The initial covariance is defined at the earliest event epoch. Optional
+    additional_epochs_s inserts navigation evaluation epochs into the same
+    event-state process. Returned event states are ordered
+    [offset_1, drift_1, offset_2, drift_2, ...].
+    """
+    def epochs(values, name, allow_empty=False):
+        if not isinstance(values, (list, tuple)) or (not values and not allow_empty):
+            raise ValueError(f"{name} must be a non-empty sequence")
+        result = [_finite_number(value, f"{name}[{i}]")
+                  for i, value in enumerate(values)]
+        return result
+
+    transmit = epochs(transmit_epochs_s, "transmit_epochs_s")
+    receive = epochs(receive_epochs_s, "receive_epochs_s")
+    additional = epochs(additional_epochs_s, "additional_epochs_s", True)
+    if len(transmit) != len(receive):
+        raise ValueError("one receive epoch is required per transmit epoch")
+    if any(receive[i] <= transmit[i] for i in range(len(transmit))):
+        raise ValueError("each receive epoch must be later than its transmit epoch")
+
+    event_epochs = sorted(set(transmit + receive + additional))
+    if len(event_epochs) < 2:
+        raise ValueError("at least two distinct event epochs are required")
+    process = propagate_clock_state_covariance(
+        event_epochs, initial_covariance, process_noise_spectral_density)
+    indices = {epoch: i for i, epoch in enumerate(event_epochs)}
+    difference = [[0.0] * (2 * len(event_epochs)) for _ in transmit]
+    for ping, (tx, rx) in enumerate(zip(transmit, receive)):
+        difference[ping][2 * indices[tx]] = -1.0
+        difference[ping][2 * indices[rx]] = 1.0
+    elapsed_covariance = _multiply(
+        _multiply(difference, process["joint_state_covariance"]),
+        _transpose(difference))
+    return {
+        "event_epochs_s": event_epochs,
+        "joint_event_state_covariance": process["joint_state_covariance"],
+        "elapsed_interval_error_covariance": elapsed_covariance,
+        "elapsed_interval_difference_jacobian": difference,
+        "transmit_epochs_s": transmit,
+        "receive_epochs_s": receive,
+        "process_noise_spectral_density": process["process_noise_spectral_density"],
+        "event_state_order": "[clock_offset_s, clock_drift_s_per_s] by event epoch",
+        "elapsed_interval_order": "[receive clock offset - transmit clock offset] by ping",
+        "process_model": process["process_model"],
+    }

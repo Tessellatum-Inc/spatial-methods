@@ -67,3 +67,45 @@ def test_joint_clock_state_covariance_is_symmetric_with_transposed_cross_epoch_b
     assert joint[1][2:4] == pytest.approx([1.2, 0.5])
     assert joint[2][0:2] == pytest.approx([1.4, 1.2])
     assert joint[3][0:2] == pytest.approx([0.2, 0.5])
+
+
+def test_elapsed_interval_covariance_integrates_within_ping_process_noise():
+    from clock_state_covariance import propagate_clock_elapsed_interval_covariance
+
+    result = propagate_clock_elapsed_interval_covariance(
+        [0.0], [2.0], [[0.0, 0.0], [0.0, 0.0]], 0.5
+    )
+    # Brownian frequency-rate noise integrates into offset with variance q*T^3/3.
+    assert result["elapsed_interval_error_covariance"][0][0] == pytest.approx(4.0 / 3.0)
+    assert result["event_epochs_s"] == [0.0, 2.0]
+
+
+def test_overlapping_ping_intervals_retain_process_noise_cross_covariance():
+    from clock_state_covariance import propagate_clock_elapsed_interval_covariance
+
+    result = propagate_clock_elapsed_interval_covariance(
+        [0.0, 1.0], [2.0, 3.0], [[0.0, 0.0], [0.0, 0.0]], 1.0
+    )
+    covariance = result["elapsed_interval_error_covariance"]
+    assert covariance[0][0] == pytest.approx(8.0 / 3.0)
+    assert covariance[1][1] == pytest.approx(8.0 / 3.0)
+    assert covariance[0][1] == pytest.approx(13.0 / 6.0)
+    assert covariance[1][0] == pytest.approx(13.0 / 6.0)
+
+
+def test_elapsed_interval_constant_offset_cancels_exactly():
+    from clock_state_covariance import propagate_clock_elapsed_interval_covariance
+
+    result = propagate_clock_elapsed_interval_covariance(
+        [10.0], [12.0], [[4.0, 0.0], [0.0, 0.0]], 0.0
+    )
+    assert result["elapsed_interval_error_covariance"][0][0] == pytest.approx(0.0)
+
+
+def test_elapsed_interval_rejects_nonpositive_or_mismatched_events():
+    from clock_state_covariance import propagate_clock_elapsed_interval_covariance
+
+    with pytest.raises(ValueError, match="one receive epoch"):
+        propagate_clock_elapsed_interval_covariance([0.0, 1.0], [2.0], [[0, 0], [0, 0]])
+    with pytest.raises(ValueError, match="later than"):
+        propagate_clock_elapsed_interval_covariance([1.0], [1.0], [[0, 0], [0, 0]])

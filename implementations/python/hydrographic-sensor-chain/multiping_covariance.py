@@ -546,3 +546,111 @@ def propagate_time_aligned_ray_traced_stochastic_clock_multiping_covariance_from
         "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]",
         "clock_state_order": "[clock_offset_s, clock_drift_s_per_s] by ping",
     }
+
+
+def assemble_time_aligned_ray_traced_event_clock_multiping_jacobian_from_trajectory(
+    time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+    beam_azimuths_degrees, ping_epochs_s, transmit_epochs_s,
+    receive_epochs_s, clock_event_covariance_result):
+    """Compose ray/trajectory sensitivities with exact transmit/receive clock events.
+
+    The final clock block contains [offset, drift] at every unique event epoch.
+    Navigation epoch sensitivity maps to the offset at ping_epochs_s. The
+    corrected acoustic interval T = T_measured - (offset_receive-offset_transmit)
+    maps +d(sound)/dT to transmit offset and -d(sound)/dT to receive offset.
+    Process noise between the two events is represented by their joint state
+    covariance, not by an extra independent interval-noise term.
+    """
+    if not isinstance(clock_event_covariance_result, dict):
+        raise ValueError("clock_event_covariance_result must be an event covariance result")
+    event_epochs = clock_event_covariance_result.get("event_epochs_s")
+    event_covariance = clock_event_covariance_result.get("joint_event_state_covariance")
+    if not isinstance(event_epochs, (list, tuple)) or not event_epochs:
+        raise ValueError("clock event result must contain event_epochs_s")
+    if event_covariance is None:
+        raise ValueError("clock event result must contain joint_event_state_covariance")
+    count = len(time_aligned_sensor_chain_results)
+    if not isinstance(ping_epochs_s, (list, tuple)) or len(ping_epochs_s) != count:
+        raise ValueError("one ping epoch is required per trajectory result")
+    if not isinstance(transmit_epochs_s, (list, tuple)) or len(transmit_epochs_s) != count:
+        raise ValueError("one transmit epoch is required per ping")
+    if not isinstance(receive_epochs_s, (list, tuple)) or len(receive_epochs_s) != count:
+        raise ValueError("one receive epoch is required per ping")
+    try:
+        ping_epochs = [float(x) for x in ping_epochs_s]
+        transmit = [float(x) for x in transmit_epochs_s]
+        receive = [float(x) for x in receive_epochs_s]
+        events = [float(x) for x in event_epochs]
+    except (TypeError, ValueError):
+        raise ValueError("all ping and event epochs must be finite numbers") from None
+    if not all(math.isfinite(x) for x in ping_epochs + transmit + receive + events):
+        raise ValueError("all ping and event epochs must be finite numbers")
+    if any(receive[i] <= transmit[i] for i in range(count)):
+        raise ValueError("each receive epoch must be later than its transmit epoch")
+    if any(events[i + 1] <= events[i] for i in range(len(events) - 1)):
+        raise ValueError("event epochs must be strictly increasing")
+    event_index = {epoch: i for i, epoch in enumerate(events)}
+    if any(epoch not in event_index for epoch in ping_epochs + transmit + receive):
+        raise ValueError("clock event epochs must include every ping, transmit and receive epoch")
+    _matrix(event_covariance, "clock joint event state covariance",
+            rows=2 * len(events), columns=2 * len(events))
+
+    base = assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+        time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+        beam_azimuths_degrees)
+    local_width = 17
+    prefix = len(base[0]) - count
+    if prefix < count * local_width + 1:
+        raise ValueError("unexpected trajectory-driven multi-ping Jacobian layout")
+    output = []
+    for row_index, row in enumerate(base):
+        ping, axis = divmod(row_index, 3)
+        expanded = row[:prefix] + [0.0] * (2 * len(events))
+        # Navigation pose is evaluated at the ping epoch.
+        expanded[prefix + 2 * event_index[ping_epochs[ping]]] += row[prefix + ping]
+        # T_true = T_measured - (delta_t_receive - delta_t_transmit).
+        travel_column = ping * local_width + 16
+        travel_sensitivity = row[travel_column]
+        expanded[prefix + 2 * event_index[transmit[ping]]] += travel_sensitivity
+        expanded[prefix + 2 * event_index[receive[ping]]] -= travel_sensitivity
+        output.append(expanded)
+    return output
+
+
+def propagate_time_aligned_ray_traced_event_clock_multiping_covariance_from_trajectory(
+    time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+    beam_azimuths_degrees, ping_epochs_s, transmit_epochs_s,
+    receive_epochs_s, clock_event_covariance_result, joint_input_covariance):
+    """Propagate soundings with one process-derived clock state per event epoch."""
+    jacobian = assemble_time_aligned_ray_traced_event_clock_multiping_jacobian_from_trajectory(
+        time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+        beam_azimuths_degrees, ping_epochs_s, transmit_epochs_s,
+        receive_epochs_s, clock_event_covariance_result)
+    size = len(jacobian[0])
+    covariance = _matrix(joint_input_covariance, "joint_input_covariance",
+                         rows=size, columns=size)
+    scale = max(1.0, max(abs(x) for row in covariance for x in row))
+    if any(abs(covariance[i][j] - covariance[j][i]) > 1e-10 * scale
+           for i in range(size) for j in range(i)):
+        raise ValueError("joint_input_covariance must be symmetric")
+    event_count = len(clock_event_covariance_result["event_epochs_s"])
+    prefix = size - 2 * event_count
+    expected = _matrix(
+        clock_event_covariance_result["joint_event_state_covariance"],
+        "clock joint event state covariance",
+        rows=2 * event_count, columns=2 * event_count)
+    for i in range(2 * event_count):
+        for j in range(2 * event_count):
+            actual = covariance[prefix + i][prefix + j]
+            if abs(actual - expected[i][j]) > 1e-10 * max(1.0, abs(actual), abs(expected[i][j])):
+                raise ValueError("final clock event covariance block must match the propagated clock process")
+    return {
+        "jacobian": jacobian,
+        "covariance": _multiply(_multiply(jacobian, covariance), _transpose(jacobian)),
+        "covariance_input_order": (
+            "[ping-local sensor/angle/measured-travel-time blocks, shared "
+            "sound-speed profile, (clock offset, clock drift) by event epoch]"
+        ),
+        "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]",
+        "clock_event_epochs_s": list(clock_event_covariance_result["event_epochs_s"]),
+    }
