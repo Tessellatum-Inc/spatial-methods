@@ -124,3 +124,20 @@ def test_pipeline_rejects_non_numeric_point_coordinates(tmp_path):
     with pytest.raises(ValueError, match="finite numeric coordinate ordinates"):
         PIPELINE.run_pipeline(source, output)
     assert not output.exists()
+
+
+
+def test_spatial_product_bytes_are_reproducible_for_identical_inputs(tmp_path):
+    source = tmp_path / "observations.jsonl"
+    first_output = tmp_path / "first.json"
+    second_output = tmp_path / "second.json"
+    _source(source)
+
+    first_manifest = PIPELINE.run_pipeline(source, first_output)
+    second_manifest = PIPELINE.run_pipeline(source, second_output)
+
+    assert first_output.read_bytes() == second_output.read_bytes()
+    assert first_manifest["output_sha256"] == second_manifest["output_sha256"]
+    assert first_manifest["activities"][1]["parameters_sha256"] == (
+        second_manifest["activities"][1]["parameters_sha256"]
+    )
