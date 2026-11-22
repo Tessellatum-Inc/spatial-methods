@@ -105,7 +105,7 @@ def test_pipeline_rejects_mixed_observation_times(tmp_path):
     changed = json.loads(rows[-1])
     changed["observed_at"] = "2026-11-22T09:00:00Z"
     rows[-1] = json.dumps(changed)
-    source.write_text("\\n".join(rows) + "\\n", encoding="utf-8")
+    source.write_text("\n".join(rows) + "\n", encoding="utf-8")
     with pytest.raises(ValueError, match="one measurand, unit and observation timestamp"):
         PIPELINE.run_pipeline(source, output)
     assert not output.exists()
@@ -120,7 +120,7 @@ def test_pipeline_rejects_non_numeric_point_coordinates(tmp_path):
     changed = json.loads(rows[0])
     changed["support"]["geometry"]["coordinates"] = [[0, 1], 2]
     rows[0] = json.dumps(changed)
-    source.write_text("\\n".join(rows) + "\\n", encoding="utf-8")
+    source.write_text("\n".join(rows) + "\n", encoding="utf-8")
     with pytest.raises(ValueError, match="finite numeric coordinate ordinates"):
         PIPELINE.run_pipeline(source, output)
     assert not output.exists()
