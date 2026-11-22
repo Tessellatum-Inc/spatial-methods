@@ -267,7 +267,7 @@ For broad-area terrain or vegetation mapping, airborne or UAV LiDAR may be more 
 - [NCHRP 15-44 — Guidelines for the Use of Mobile LiDAR in Transportation Applications](https://onlinepubs.trb.org/onlinepubs/nchrp/docs/nchrp15-44_finalguidelines.pdf). Technical guidance on MLS calibration, lever arms, boresight, trajectory correction and transportation applications.
 - [Pöppl et al. (2024), A flexible trajectory estimation methodology for kinematic laser scanning](https://doi.org/10.1016/j.isprsjprs.2024.06.014). Research on GNSS/IMU-supported trajectory estimation for moving laser scanners.
 - [Rigorous Boresight Self-Calibration of Mobile and UAV LiDAR Scanning Systems by Strip Adjustment (2019)](https://www.mdpi.com/2072-4292/11/4/442). Research on joint boresight calibration and strip adjustment.
-- [ISO/TS 19159-2:2016 — Lidar systems calibration and validation](https://www.iso.org/standard/629 ಮತ್ತೆ.html). Consult the official ISO catalogue for current status, amendments and applicable adoption before specifying a project requirement.
+- [ISO/TS 19159-2:2016 — Lidar systems calibration and validation](https://www.iso.org/standard/629 ಮತ್ತೆ.html). ISO's catalogue lists this as published and last confirmed in 2023; its status is currently under systematic review, so check the catalogue again when specifying a project requirement.
 
 The above sources inform the method but do not establish a universal acceptance specification. Confirm current national, client and professional requirements, platform manuals, safety procedures and local reference-frame requirements before field execution. In Kenya, verify applicable surveying, road-access, traffic-management and occupational-safety requirements.
 
