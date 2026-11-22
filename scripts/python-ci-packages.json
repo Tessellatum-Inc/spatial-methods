@@ -448,6 +448,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/hydrographic-sensor-chain",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/hydrographic-sounding-geometry",
     "pythonpath": ""
   },
@@ -1016,6 +1020,10 @@
     "pythonpath": ""
   },
   {
+    "directory": "implementations/python/spatial-data-assimilation",
+    "pythonpath": ""
+  },
+  {
     "directory": "implementations/python/spatial-distribution-summaries",
     "pythonpath": ""
   },
@@ -1313,10 +1321,6 @@
   },
   {
     "directory": "implementations/python/zonal-statistics",
-    "pythonpath": ""
-  },
-  {
-    "directory": "implementations/python/hydrographic-sensor-chain",
     "pythonpath": ""
   }
 ]
