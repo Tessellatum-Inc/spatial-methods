@@ -27,9 +27,9 @@ def test_ray_endpoint_covariance_propagates_into_navigation_coordinates():
     covariance[15][15] = 4.0
     covariance[16][16] = 9.0
     result = propagate_ray_traced_sounding_uncertainty(*args(covariance))
-    assert result["covariance"] == pytest.approx([
-        [4.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 9.0]
-    ])
+    expected = [[4.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 9.0]]
+    for actual_row, expected_row in zip(result["covariance"], expected):
+        assert actual_row == pytest.approx(expected_row)
     assert result["standard_uncertainties"] == pytest.approx([2.0, 0.0, 3.0])
 
 
