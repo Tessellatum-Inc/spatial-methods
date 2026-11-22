@@ -110,6 +110,8 @@ Select the method from the measurand, site conditions, required quality, feature
 | Tape or laser distance | Short local dimensions and offsets | Range, surface, alignment, instrument specification and repeatability |
 | Photogrammetry | Image-derived geometry and surface/feature products | Image geometry, control/check distribution, camera calibration, texture and occlusion |
 | Terrestrial/mobile LiDAR | Dense 3D geometry and asset/scene capture | Registration, trajectory/control, reflectance, occlusion, point density and independent checks |
+
+For a static terrestrial scanner, follow the dedicated [terrestrial laser scanning and point-cloud acquisition method](../../collection/terrestrial-laser-scanning-and-point-cloud-acquisition.md). It specifies scan-station planning, overlap and registrability, target/control/check-point roles, registration and independent validation. Do not apply its static-station procedure unchanged to mobile or airborne LiDAR; trajectory estimation, time synchronisation and platform calibration require separate methods.
 | Other sensors or sampling systems | Thematic/environmental observations | Measurand, calibration, sampling design, spatial support, temporal behaviour and metadata |
 
 Methods may be combined. A sensor's nominal precision or marketing specification is not proof that the complete project workflow meets its requirement.
