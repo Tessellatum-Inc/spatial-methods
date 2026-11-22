@@ -20,6 +20,10 @@ The [cross-pillar pathway index](../learning-paths/cross-pillar-pathways.md) exp
 
 - [Multibeam bathymetry: observations-to-validated-surface](multibeam-bathymetry/README.md) — a gated workflow from survey requirements and reference definition through MBES verification, acoustic/navigation corrections, sounding assessment, surface generation, independent validation and delivery. Current status: desk-designed; no field data processed.
 
+## Environmental monitoring recipe
+
+- [Environmental monitoring: observations-to-spatiotemporal-estimates](environmental-monitoring/README.md) — a technology-neutral, gated workflow from measurand and sampling design through calibration, provenance, QC, spatial estimation, optional assimilation and independent verification. Current status: design-stage; no field campaign or operational forecast claimed.
+
 ## First integrated recipe
 
 - [Survey-to-spatial-dataset workflow](survey-to-spatial-dataset/README.md) — a design-stage field-to-office workflow connecting measurement science, field acquisition, geodetic computation, quality assurance and spatial data delivery.
