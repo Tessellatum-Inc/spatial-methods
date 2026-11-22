@@ -123,3 +123,51 @@ def test_elapsed_interval_includes_initial_drift_uncertainty_and_process_noise()
     )
 
 
+
+
+
+def test_elapsed_interval_covariance_is_positive_semidefinite_and_additive():
+    from clock_state_covariance import propagate_clock_elapsed_interval_covariance
+
+    result = propagate_clock_elapsed_interval_covariance(
+        [0.0, 2.0, 0.0], [2.0, 3.0, 3.0],
+        [[0.2, 0.01], [0.01, 0.03]], 0.4
+    )
+    covariance = result["elapsed_interval_error_covariance"]
+    # The [0,3] interval is exactly the sum of [0,2] and [2,3].
+    for j in range(3):
+        assert covariance[2][j] == pytest.approx(covariance[0][j] + covariance[1][j])
+        assert covariance[j][2] == pytest.approx(covariance[j][0] + covariance[j][1])
+    # Check all principal minors (including the full determinant) for this
+    # symmetric 3x3 covariance; singularity is permitted.
+    for i in range(3):
+        assert covariance[i][i] >= -1e-10
+    for i in range(3):
+        for j in range(i + 1, 3):
+            assert covariance[i][i] * covariance[j][j] - covariance[i][j] ** 2 >= -1e-9
+    a, b, c = covariance
+    determinant = (
+        a[0] * (b[1] * c[2] - b[2] * c[1])
+        - a[1] * (b[0] * c[2] - b[2] * c[0])
+        + a[2] * (b[0] * c[1] - b[1] * c[0])
+    )
+    assert determinant >= -1e-8
+
+
+def test_inserting_navigation_epochs_does_not_change_ping_interval_covariance():
+    from clock_state_covariance import propagate_clock_elapsed_interval_covariance
+
+    initial = [[0.3, -0.02], [-0.02, 0.05]]
+    direct = propagate_clock_elapsed_interval_covariance(
+        [0.0, 1.0], [2.0, 3.0], initial, 0.7
+    )
+    aligned = propagate_clock_elapsed_interval_covariance(
+        [0.0, 1.0], [2.0, 3.0], initial, 0.7,
+        additional_epochs_s=[0.5, 1.5, 2.5]
+    )
+    for i in range(2):
+        for j in range(2):
+            assert aligned["elapsed_interval_error_covariance"][i][j] == pytest.approx(
+                direct["elapsed_interval_error_covariance"][i][j]
+            )
+    assert aligned["event_epochs_s"] == [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
