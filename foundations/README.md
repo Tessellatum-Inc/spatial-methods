@@ -76,6 +76,7 @@ The first developed foundation domain is measurement science:
 2. [Measurement models and measurand definition](measurement-science/measurement-models-and-measurand-definition.md)
 3. [Standard uncertainty: Type A and Type B evaluation](measurement-science/standard-uncertainty-type-a-type-b.md)
 4. [Covariance, correlated observations and generalized least squares](measurement-science/covariance-correlated-observations-and-gls.md)
+5. [Hydrographic sounding uncertainty: measurement model and covariance budget](measurement-science/hydrographic-sounding-uncertainty-model.md)
 
 These resources are connected to the [measurement science and survey adjustment learning path](../learning-paths/measurement-science-and-survey-adjustment.md), synthetic [measurement experiments](../experiments/measurement/) and the [covariance/GLS Python implementation](../implementations/python/covariance-gls/README.md).
 

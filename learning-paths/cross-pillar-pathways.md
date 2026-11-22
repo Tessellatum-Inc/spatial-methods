@@ -216,3 +216,23 @@ When adding or revising a pathway:
 8. Review links and status when a canonical resource changes.
 
 A pathway is ready for broader teaching use only when its sequence has been reviewed, the hand-offs are understandable, and its practical outputs and limitations have been checked. This index is an initial navigation aid, not a certification of pathway completeness.
+
+
+## Pathway 9 — From acoustic observations to defensible bathymetry
+
+**Application context:** Convert sonar observations into datum-referenced soundings and a bathymetric surface whose uncertainty, coverage and validation evidence are explicit.
+
+**Best entry point:** [Multibeam bathymetry recipe](../recipes/multibeam-bathymetry/README.md).
+
+| Pillar | Canonical route | Why it belongs |
+|---|---|---|
+| Theoretical Foundations | [Hydrographic sounding uncertainty](../foundations/measurement-science/hydrographic-sounding-uncertainty-model.md); [covariance and correlated observations](../foundations/measurement-science/covariance-correlated-observations-and-gls.md) | Establishes the sounding measurement chain, frame transformations, joint covariance and the distinction between local uncertainty and common-mode error. |
+| Spatial Data Collection | [Multibeam hydrographic surveying and bathymetric acquisition](../collection/multibeam-hydrographic-surveying-and-bathymetric-acquisition.md) | Connects the measurement model to vessel/sensor installation, calibration, acquisition geometry, sound-speed and water-level observations. |
+| Spatial Algorithms | [Layered-water-column acoustic ray tracing](../algorithms/coastal/layered-water-column-acoustic-ray-tracing.md); [covariance propagation implementation](../implementations/python/uncertainty-propagation/README.md) | Provides a bounded ray-path teaching model and a generic first-order covariance calculation. Neither is a complete vendor correction chain or full hydrographic TPU engine. |
+| Spatial Recipes | [Multibeam bathymetry: observations-to-validated-surface](../recipes/multibeam-bathymetry/README.md) | Connects requirements, system verification, acquisition, correction, sounding review, gridding, independent checks and delivery. |
+
+**Practical evidence and current boundary**
+
+The ray tracer and covariance routine have synthetic software tests. The covariance routine accepts a supplied Jacobian and joint covariance; it does not estimate instrument-specific parameters. No vessel survey, patch test, operational TPU, field validation or accepted bathymetric surface is claimed.
+
+**Useful outcome:** Understand why bathymetric uncertainty must follow the complete physical measurement chain, why shared errors can survive cross-line agreement, and why an uncertainty requirement is not an estimator of achieved accuracy.

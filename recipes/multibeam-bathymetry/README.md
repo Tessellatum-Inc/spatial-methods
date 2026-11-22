@@ -227,7 +227,7 @@ Assess separately:
 - outliers, noise and rejected sounding rates;
 - independent check observations and their uncertainty.
 
-Build a total propagated uncertainty (TPU) model from relevant components: acoustic range, sound speed/refraction, beam angle, GNSS position, heading, roll/pitch, heave, timing, lever arms, draft, squat, water level/datum and processing. Some contributions may be correlated. A covariance-aware propagation is preferable where correlations materially affect the result; do not blindly sum standard deviations or assume independence.
+Build a total propagated uncertainty (TPU) model from relevant components: acoustic range, sound speed/refraction, beam angle, GNSS position, heading, roll/pitch, heave, timing, lever arms, draft, squat, water level/datum and processing. Some contributions may be correlated. A covariance-aware propagation is preferable where correlations materially affect the result; do not blindly sum standard deviations or assume independence. Use the new [hydrographic sounding uncertainty foundation](../../foundations/measurement-science/hydrographic-sounding-uncertainty-model.md) to structure the measurement model, frame transformations, shared-error budget and covariance propagation. It is a general framework, not an instrument-specific TPU estimator.
 
 For IHO S-44 the depth-dependent maximum allowable TVU is represented by:
 
