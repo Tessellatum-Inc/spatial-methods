@@ -395,6 +395,7 @@ def test_event_clock_propagator_checks_process_derived_event_covariance():
     from multiping_covariance import propagate_time_aligned_ray_traced_event_clock_multiping_covariance_from_trajectory
 
     matrix = [[0.0] * 19 for _ in range(3)]
+    matrix[2][17] = 1.0
     trajectory = {"jacobian": matrix, "time_offset_sensitivity": [0.0, 0.0, 0.0]}
     ray = [[0.0, 0.0, 0.0], [0.0, 0.0, 1.0]]
     clock = propagate_clock_elapsed_interval_covariance(

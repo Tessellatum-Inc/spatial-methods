@@ -88,7 +88,7 @@ def test_overlapping_ping_intervals_retain_process_noise_cross_covariance():
     )
     covariance = result["elapsed_interval_error_covariance"]
     assert covariance[0][0] == pytest.approx(8.0 / 3.0)
-    assert covariance[1][1] == pytest.approx(8.0 / 3.0)
+    assert covariance[1][1] == pytest.approx(20.0 / 3.0)
     assert covariance[0][1] == pytest.approx(23.0 / 6.0)
     assert covariance[1][0] == pytest.approx(23.0 / 6.0)
 
