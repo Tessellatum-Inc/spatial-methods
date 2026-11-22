@@ -212,3 +212,26 @@ from raw navigation observations.
 
 
 The trajectory-driven composition is exposed as `assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory`. It consumes the 3x19 result of the time-aligned sensor-chain interpolation, maps the acoustic endpoint coordinates into the transducer-frame acoustic vector using beam azimuth, and composes that mapping with the ray endpoint Jacobian. The final time-offset column is taken from the interpolated trajectory result itself. The corresponding propagation function is `propagate_time_aligned_ray_traced_multiping_covariance_from_trajectory`.
+
+
+## Process-driven navigation epoch clock states
+
+For a survey line, model the navigation epoch error at ping \(i\) as the
+offset component of a two-state clock process,
+\[
+\mathbf{x}_i=
+\begin{bmatrix}
+\delta t_i\\
+\dot{\delta t}_i
+\end{bmatrix}.
+\]
+The sounding derivative is with respect to \(\delta t_i\), not a second
+independent derivative with respect to drift. Drift affects later epoch
+offsets through the clock transition and process-noise covariance. Build
+the joint state covariance at the ping epochs with
+\`propagate_clock_state_covariance\`; the trajectory-driven stochastic-clock
+propagator checks that the final \(2N\times2N\) block of the full joint
+input covariance matches this process result. This preserves cross-epoch
+offset/drift correlations and allows cross-covariance with navigation,
+acoustic travel-time and sound-speed inputs. It does not equate epoch-tag
+uncertainty with acoustic two-way travel-time uncertainty.

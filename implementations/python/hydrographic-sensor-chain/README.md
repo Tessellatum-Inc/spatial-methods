@@ -173,3 +173,26 @@ sensitivities from a trajectory.
 
 
 The trajectory-driven variant, `assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory`, accepts one result per ping from `time_aligned_sensor_chain_sounding_point_and_jacobian`, plus each ping's beam azimuth and ray endpoint Jacobian. It composes the 3x19 interpolated sensor-chain Jacobian with the endpoint-to-vector azimuth mapping and the ray Jacobian, then carries the returned navigation-epoch sensitivity into the per-ping clock columns. The companion `propagate_time_aligned_ray_traced_multiping_covariance_from_trajectory` performs the joint covariance propagation. This removes the need for the caller to manually copy the navigation-epoch sensitivity into a separate argument. It does not remove the need to supply the correct beam azimuth, ray sensitivities or joint covariance.
+
+
+### Trajectory-driven stochastic clock offset and drift
+
+The stochastic-clock trajectory variant,
+\`assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory\`
+and its covariance propagation companion, use a two-state clock at each ping:
+\[
+\mathbf{x}_i=[\delta t_i,\dot{\delta t}_i]^T.
+\]
+Generate the joint state covariance at the ping epochs with
+\`propagate_clock_state_covariance\`. The final covariance block supplied to
+the trajectory propagation function must match that generated process
+covariance; the function checks this rather than silently accepting an
+unrelated offset/drift block.
+
+The direct sounding derivative is with respect to epoch offset. There is no
+separate direct derivative with respect to drift: drift changes the
+cross-epoch offset/state covariance through the clock transition model.
+This distinction prevents drift from being counted twice. The full joint
+input covariance still permits cross-correlations between clock states,
+navigation/sensor states, acoustic travel-time inputs and the shared sound-
+speed profile.

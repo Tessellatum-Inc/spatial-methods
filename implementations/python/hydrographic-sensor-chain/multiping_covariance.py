@@ -430,3 +430,87 @@ def propagate_time_aligned_ray_traced_multiping_covariance_from_trajectory(
         "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]",
     }
 
+
+
+def assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory(
+    time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+    beam_azimuths_degrees, clock_state_covariance_result):
+    """Replace per-ping epoch offsets with the propagated [offset, drift] states.
+
+    The clock-state covariance result must come from
+    propagate_clock_state_covariance at the same ping epochs. The drift state
+    influences later offsets through the process covariance; the direct
+    sounding derivative is with respect to offset only.
+    """
+    from_clock = clock_state_covariance_result
+    if not isinstance(from_clock, dict) or "joint_state_covariance" not in from_clock:
+        raise ValueError("clock_state_covariance_result must contain joint_state_covariance")
+    epochs = from_clock.get("epochs_s")
+    count = len(time_aligned_sensor_chain_results)
+    if not isinstance(epochs, (list, tuple)) or len(epochs) != count:
+        raise ValueError("clock-state epochs must match the number of pings")
+    clock_cov = _matrix(from_clock["joint_state_covariance"],
+                        "clock joint state covariance",
+                        rows=2 * count, columns=2 * count)
+    base = assemble_time_aligned_ray_traced_multiping_jacobian_from_trajectory(
+        time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+        beam_azimuths_degrees)
+    prefix = len(base[0]) - count
+    output = []
+    for row_index, row in enumerate(base):
+        ping = row_index // 3
+        axis = row_index % 3
+        expanded = row[:prefix] + [0.0] * (2 * count)
+        for clock_ping in range(count):
+            expanded[prefix + 2 * clock_ping] = (
+                row[prefix + clock_ping] if clock_ping == ping else 0.0
+            )
+        output.append(expanded)
+    return output
+
+
+def propagate_time_aligned_ray_traced_stochastic_clock_multiping_covariance_from_trajectory(
+    time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+    beam_azimuths_degrees, clock_state_covariance_result,
+    joint_input_covariance):
+    """Propagate survey-line covariance using process-derived clock states.
+
+    Input order is [ping-local sensor/angle/travel-time blocks, shared sound-
+    speed profile, (offset_1, drift_1), ..., (offset_N, drift_N)]. The final
+    2N-by-2N covariance block must equal the joint state covariance returned
+    by propagate_clock_state_covariance. Cross-covariances between clock
+    states and all other inputs remain supported in the full joint matrix.
+    """
+    jacobian = assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory(
+        time_aligned_sensor_chain_results, ray_endpoint_jacobians,
+        beam_azimuths_degrees, clock_state_covariance_result)
+    size = len(jacobian[0])
+    covariance = _matrix(joint_input_covariance, "joint_input_covariance",
+                         rows=size, columns=size)
+    scale = max(1.0, max(abs(value) for row in covariance for value in row))
+    if any(abs(covariance[i][j] - covariance[j][i]) > 1e-10 * scale
+           for i in range(size) for j in range(i)):
+        raise ValueError("joint_input_covariance must be symmetric")
+    count = len(time_aligned_sensor_chain_results)
+    prefix = size - 2 * count
+    expected = _matrix(
+        clock_state_covariance_result["joint_state_covariance"],
+        "clock joint state covariance", rows=2 * count, columns=2 * count)
+    for i in range(2 * count):
+        for j in range(2 * count):
+            if abs(covariance[prefix + i][prefix + j] - expected[i][j]) > 1e-10 * max(
+                1.0, abs(expected[i][j]), abs(covariance[prefix + i][prefix + j])
+            ):
+                raise ValueError(
+                    "final clock-state covariance block must match the propagated clock process"
+                )
+    return {
+        "jacobian": jacobian,
+        "covariance": _multiply(_multiply(jacobian, covariance), _transpose(jacobian)),
+        "covariance_input_order": (
+            "[ping-local sensor/angle/travel-time blocks, shared sound-speed "
+            "profile, (clock offset, clock drift) state by ping]"
+        ),
+        "covariance_output_order": "[sounding_1, sounding_2, ..., sounding_N]",
+        "clock_state_order": "[clock_offset_s, clock_drift_s_per_s] by ping",
+    }

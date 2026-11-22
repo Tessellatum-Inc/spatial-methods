@@ -247,3 +247,59 @@ def test_trajectory_composition_rejects_wrong_jacobian_shape():
             [{"jacobian": [[0.0] * 18 for _ in range(3)]}],
             [[[1.0, 0.0, 0.0], [0.0, 0.0, 0.0]]], [0.0])
 
+
+
+def test_trajectory_ray_covariance_uses_process_derived_offset_drift_states():
+    from clock_state_covariance import propagate_clock_state_covariance
+    from multiping_covariance import (
+        assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory,
+        propagate_time_aligned_ray_traced_stochastic_clock_multiping_covariance_from_trajectory,
+    )
+
+    results = []
+    for sensitivity in ([2.0, 0.0, 0.0], [3.0, 0.0, 0.0]):
+        matrix = [[0.0] * 19 for _ in range(3)]
+        matrix[0][18] = sensitivity[0]
+        results.append({"jacobian": matrix, "time_offset_sensitivity": sensitivity})
+    rays = [
+        [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+        [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+    ]
+    clock = propagate_clock_state_covariance(
+        [100.0, 105.0], [[0.25, 0.01], [0.01, 0.04]], 0.5
+    )
+    jacobian = assemble_time_aligned_ray_traced_stochastic_clock_multiping_jacobian_from_trajectory(
+        results, rays, [0.0, 0.0], clock
+    )
+    # Two pings: 17 local variables each, one profile variable, four clock states.
+    assert len(jacobian[0]) == 39
+    assert jacobian[0][-4:] == pytest.approx([2.0, 0.0, 0.0, 0.0])
+    assert jacobian[3][-4:] == pytest.approx([0.0, 0.0, 3.0, 0.0])
+
+    covariance = [[0.0] * 39 for _ in range(39)]
+    for i in range(4):
+        for j in range(4):
+            covariance[35 + i][35 + j] = clock["joint_state_covariance"][i][j]
+    result = propagate_time_aligned_ray_traced_stochastic_clock_multiping_covariance_from_trajectory(
+        results, rays, [0.0, 0.0], clock, covariance
+    )
+    output = result["covariance"]
+    expected = clock["offset_covariance"]
+    assert output[0][0] == pytest.approx(4.0 * expected[0][0])
+    assert output[0][3] == pytest.approx(6.0 * expected[0][1])
+    assert output[3][3] == pytest.approx(9.0 * expected[1][1])
+
+
+def test_trajectory_stochastic_clock_rejects_covariance_not_from_clock_process():
+    from clock_state_covariance import propagate_clock_state_covariance
+    from multiping_covariance import propagate_time_aligned_ray_traced_stochastic_clock_multiping_covariance_from_trajectory
+
+    result = {"jacobian": [[0.0] * 19 for _ in range(3)],
+              "time_offset_sensitivity": [1.0, 0.0, 0.0]}
+    clock = propagate_clock_state_covariance([0.0], [[1.0, 0.0], [0.0, 1.0]], 0.0)
+    covariance = [[0.0] * 20 for _ in range(20)]
+    with pytest.raises(ValueError, match="must match the propagated clock process"):
+        propagate_time_aligned_ray_traced_stochastic_clock_multiping_covariance_from_trajectory(
+            [result], [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
+            [0.0], clock, covariance
+        )
