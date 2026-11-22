@@ -36,6 +36,7 @@ Each implementation should state:
 
 ### Forecast verification
 
+- [Low-dimensional spatial data assimilation](python/spatial-data-assimilation/README.md): periodic upwind-advection/diffusion state propagation, point-sensor interpolation, sequential linear-Gaussian forecast-analysis cycling, Joseph covariance updates and free forecasts, with independent tests and a [step-by-step walkthrough](python/spatial-data-assimilation/implementation-walkthrough.md).
 - [Binary-event forecast verification](python/forecast-verification/README.md): contingency-table counts and scores, Brier score/skill, reliability bins and tied-rank ROC AUC, with tests and an [intern walkthrough](python/forecast-verification/implementation-walkthrough.md). A separate [Fractions Skill Score module](python/forecast-verification/spatial_fss.py) adds regular-grid neighbourhood verification, with a [scale lab](../notebooks/forecast-fractions-skill-score-lab.ipynb); CRPS, ensemble rank histograms, SAL and MODE remain open.
 
 ### Flow-based facility location
