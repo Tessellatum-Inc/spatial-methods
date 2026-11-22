@@ -78,6 +78,25 @@ This is a partial pathway and gap map, not a claim that remote sensing is now a 
 
 The optical branch has a broad algorithm catalogue, an initial electromagnetic/radiometric foundation module, an initial optical satellite acquisition method and a bounded live-data retrieval pilot; detailed optical physics, technical review and application validation remain incomplete. The SAR branch now has an [initial SAR acquisition and observation design method](../collection/sar-acquisition-and-observation-design.md), a guided backscatter investigation and scoped algorithms, but the Nairobi scene has not yet been selected or processed. Neither branch has a mature, independently validated end-to-end recipe. The pathway records these gaps rather than filling them with superficial links.
 
+## Pathway 5 — From GNSS observations to an accepted position
+
+**Application context:** Acquire satellite-based position observations and determine whether the resulting coordinates are suitable for a survey, asset record, control network or navigation task.
+
+**Best entry point:** [GNSS positioning and navigation observation](../collection/gnss-positioning-and-navigation-observation.md).
+
+| Pillar | Canonical route | Why it belongs |
+|---|---|---|
+| Theoretical Foundations | [Measurement models and measurand definition](../foundations/measurement-science/measurement-models-and-measurand-definition.md); [measurement principles and field verification](../foundations/measurement-science/measurement-principles-and-field-verification.md); [covariance and GLS](../foundations/measurement-science/covariance-correlated-observations-and-gls.md) | Defines the observation model, reference, uncertainty and evidence needed to interpret an estimated coordinate. |
+| Spatial Data Collection | [GNSS positioning and navigation observation](../collection/gnss-positioning-and-navigation-observation.md) | Connects physical signal observables, field occupation, reference frames, correction modes, antenna heights and independent checks. |
+| Spatial Algorithms | [GNSS carrier-phase integer ambiguity resolution](../algorithms/geodesy/gnss-carrier-phase-ambiguity-resolution.md); [GNSS ambiguity implementation](../implementations/python/gnss-ambiguity/README.md); [GNSS residual-based RAIM implementation](../implementations/python/gnss-raim/README.md) | Connects integer ambiguity estimation and residual screening to the observations while preserving their bounded implementation scopes. |
+| Spatial Recipes | [Survey-to-spatial-dataset workflow](../recipes/survey-to-spatial-dataset/README.md); [measurement science and survey adjustment path](measurement-science-and-survey-adjustment.md) | Provides the broader acquisition-to-delivery and estimation context. Neither resource is a GNSS-specific field procedure; project-specific control specifications still govern execution. |
+
+**Practical evidence and current boundary**
+
+The GNSS ambiguity and RAIM packages are computational teaching components with explicit input and integrity boundaries. They do not process raw receiver observations into a certified position solution. No GNSS field campaign or local control-network validation is claimed by this pathway.
+
+**Useful outcome:** Understand why a GNSS coordinate depends on the signal model, reference frame, processing choices and field evidence—and how to avoid treating a receiver status indicator as a complete accuracy assessment.
+
 ## What is not yet represented
 
 This index is deliberately selective. It does not imply that every subject has a complete cross-pillar route. In particular:
