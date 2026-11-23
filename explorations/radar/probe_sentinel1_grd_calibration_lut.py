@@ -104,10 +104,16 @@ def compare_calibration_to_annotation(calibration_lut:dict,annotation_grid:dict)
     bilinear=np.asarray([calibration_lut_bilinear_at(calibration_lut["vectors"],p["line"],p["pixel"]) for p in annotation_grid["points"]],dtype=np.float64)
     delaunay_metrics=_angle_difference_metrics(predicted,expected)
     bilinear_metrics=_angle_difference_metrics(bilinear,expected)
-    return {"method":"Delaunay linear interpolation of calibration LUT samples in source line/pixel coordinates",
+    return {"method":"Delaunay and bilinear interpolation of calibration LUT samples in source line/pixel coordinates",
         "annotation_tie_points":int(len(expected)),
-        "delaunay":delaunay_metrics,"bilinear":bilinear_metrics,
-        "median_signed_difference_degrees":float(np.median(predicted[valid]-expected[valid]))}
+        "matched_tie_points":delaunay_metrics["matched_tie_points"],
+        "annotation_tie_point_coverage_fraction":delaunay_metrics["coverage_fraction"],
+        "mean_signed_difference_degrees":delaunay_metrics["mean_signed_difference_degrees"],
+        "median_signed_difference_degrees":float(np.median(predicted[valid]-expected[valid])),
+        "mae_degrees":delaunay_metrics["mae_degrees"],"rmse_degrees":delaunay_metrics["rmse_degrees"],
+        "p95_absolute_error_degrees":delaunay_metrics["p95_absolute_error_degrees"],
+        "max_absolute_error_degrees":delaunay_metrics["max_absolute_error_degrees"],
+        "delaunay":delaunay_metrics,"bilinear":bilinear_metrics}
 
 def extract_calibration_files(features,annotation_products,access_key,secret_key):
     import boto3
