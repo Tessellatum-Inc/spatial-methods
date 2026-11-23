@@ -1,4 +1,5 @@
 name: Sentinel-1 ellipsoid incidence-angle interpolation
+run-name: Source incidence-angle and common-footprint validation
 on:
   workflow_dispatch:
   push:
