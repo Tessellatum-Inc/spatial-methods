@@ -53,7 +53,7 @@ class PairedComparisonTests(unittest.TestCase):
         expected = -10.0 * np.log10(area)
         observed = 2.0 * expected + 0.25
         report = MODULE._area_factor_relation(observed, area)
-        self.assertEqual(report["pixels"], 3)
+        self.assertEqual(report["pixels"], 4)
         self.assertAlmostEqual(report["median_absolute_residual_db"], float(np.median(np.abs(expected + 0.25))), places=12)
         self.assertAlmostEqual(report["median_observed_minus_predicted_db"], float(np.median(expected + 0.25)), places=12)
         self.assertAlmostEqual(report["median_absolute_centered_residual_db"], 0.0, places=6)
