@@ -101,6 +101,41 @@ class PairedComparisonTests(unittest.TestCase):
             report["area_only_test_metrics"]["rmse_db"],
         )
 
+
+    def test_leave_one_acquisition_out_model_transfers_across_dates(self):
+        rng = np.random.default_rng(7)
+        scenes = []
+        for index in range(4):
+            area_factor = rng.uniform(-2.0, 2.0, 12000)
+            area = 10.0 ** (-area_factor / 10.0)
+            angle = rng.uniform(35.0, 55.0, 12000)
+            angle_scaled = (angle - 45.0) / 10.0
+            delta = 0.35 + 0.9 * area_factor + 0.2 * angle_scaled
+            delta += 0.1 * area_factor * angle_scaled
+            delta += rng.normal(0.0, 0.025, size=delta.shape)
+            scenes.append({
+                "file": f"scene-{index}.tif",
+                "polarizations": {
+                    "VV": {
+                        "delta_db": delta.astype(np.float32),
+                        "scattering_area": area.astype(np.float32),
+                        "local_incidence_angle_degrees": angle.astype(np.float32),
+                    }
+                },
+            })
+
+        report = MODULE._temporal_holdout_residual_model(scenes, "VV")
+        self.assertEqual(report["status"], "screening_only")
+        self.assertEqual(report["validation"], "leave_one_acquisition_out")
+        self.assertEqual(len(report["folds"]), 4)
+        for fold in report["folds"]:
+            self.assertEqual(fold["test_pixels"], 12000)
+            self.assertGreater(fold["test_rmse_reduction_fraction"], 0.2)
+            self.assertLess(
+                fold["area_plus_angle_test_metrics"]["rmse_db"],
+                fold["area_only_test_metrics"]["rmse_db"],
+            )
+
     def test_rejects_mismatched_grids(self):
         with tempfile.TemporaryDirectory() as tmp:
             base = np.ones((3, 2, 2), dtype=np.float32)
