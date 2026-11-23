@@ -1,4 +1,5 @@
 name: Sentinel-1 Nairobi alternate-orbit RTC experiment
+# Separate, explicitly masked partial-coverage experiment; not the baseline full-AOI stack.
 on:
   push:
     branches: [main]
