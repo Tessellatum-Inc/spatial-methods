@@ -11,7 +11,7 @@ def summarize_relation(ellipsoid, rtc, area, angle, mask):
     rt=np.asarray(rtc,dtype=np.float64)[mask]
     ar=np.asarray(area,dtype=np.float64)[mask]
     ang=np.asarray(angle,dtype=np.float64)[mask]
-    valid=(ell>0)&(rt>0)&(ar>0)&np.isfinite(ell)&np.isfinite(rt)&np.isfinite(ar)&np.isfinite(ang)&(ang>=0)&(ang<=180)
+    valid=(ell>0)&(rt>0)&(ar>0)&np.isfinite(ell)&np.isfinite(rt)&np.isfinite(ar)&np.isfinite(ang)&(ang>0)&(ang<90)
     ell,rt,ar,ang=ell[valid],rt[valid],ar[valid],ang[valid]
     if len(ar)<100: raise ValueError("Too few shared positive pixels for relation metrics")
     x=-10.0*np.log10(ar); y=10.0*np.log10(rt)-10.0*np.log10(ell)
@@ -19,6 +19,8 @@ def summarize_relation(ellipsoid, rtc, area, angle, mask):
     fitted=slope*x+intercept
     ss_res=float(np.sum((y-fitted)**2)); ss_tot=float(np.sum((y-y.mean())**2))
     residual=y-x; centered=residual-np.median(residual)
+    local_angle_term=-10.0*np.log10(np.tan(np.deg2rad(ang)))
+    geometry_adjusted=residual-local_angle_term
     return {"pixels":int(len(x)),"ols_slope":float(slope),"ols_intercept_db":float(intercept),
         "ols_r_squared":float(1-ss_res/ss_tot) if ss_tot>0 else None,
         "median_direct_rtc_minus_ellipsoid_db":float(np.median(y)),
@@ -27,6 +29,10 @@ def summarize_relation(ellipsoid, rtc, area, angle, mask):
         "median_observed_minus_area_factor_db":float(np.median(residual)),
         "mean_absolute_area_factor_residual_db":float(np.mean(np.abs(residual))),
         "p95_absolute_centered_area_factor_residual_db":float(np.percentile(np.abs(centered),95)),
+        "median_local_angle_term_db":float(np.median(local_angle_term)),
+        "median_geometry_adjusted_residual_db":float(np.median(geometry_adjusted)),
+        "mean_absolute_geometry_adjusted_residual_db":float(np.mean(np.abs(geometry_adjusted))),
+        "p95_absolute_geometry_adjusted_residual_db":float(np.percentile(np.abs(geometry_adjusted),95)),
         "median_scattering_area":float(np.median(ar)),
         "median_local_incidence_angle_degrees":float(np.median(ang)),
         "p10_local_incidence_angle_degrees":float(np.percentile(ang,10)),
@@ -77,7 +83,9 @@ def run(input_dir:Path,output:Path):
             keys=("ols_slope","ols_intercept_db","ols_r_squared","median_direct_rtc_minus_ellipsoid_db",
                 "mean_absolute_direct_rtc_minus_ellipsoid_db","p95_absolute_direct_rtc_minus_ellipsoid_db",
                 "median_observed_minus_area_factor_db",
-                "mean_absolute_area_factor_residual_db","p95_absolute_centered_area_factor_residual_db","median_scattering_area",
+                "mean_absolute_area_factor_residual_db","p95_absolute_centered_area_factor_residual_db",
+                "median_local_angle_term_db","median_geometry_adjusted_residual_db",
+                "mean_absolute_geometry_adjusted_residual_db","p95_absolute_geometry_adjusted_residual_db","median_scattering_area",
                 "median_local_incidence_angle_degrees","p10_local_incidence_angle_degrees","p90_local_incidence_angle_degrees",
                 "area_factor_residual_vs_angle_correlation")
             aggregate[pol]={key:float(np.mean([row[key] for row in rows])) for key in keys}
