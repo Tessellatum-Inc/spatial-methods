@@ -18,6 +18,8 @@ import sys
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
+from shapely.geometry import box, shape
+
 PROCESS_URL = "https://sh.dataspace.copernicus.eu/process/v1"
 NAIROBI_BBOX = [36.65, -1.45, 37.05, -1.15]
 WIDTH = 2048
@@ -53,12 +55,29 @@ def default_interval() -> tuple[str, str]:
     return fmt(start), fmt(end)
 
 
-def select_latest_feature(collection: dict) -> dict:
-    """Return the latest feature with a valid STAC properties.datetime."""
+def feature_coverage(feature: dict) -> tuple[bool, float]:
+    """Return whether a STAC footprint covers the search rectangle and its area fraction."""
+    geometry_json = feature.get("geometry")
+    if not isinstance(geometry_json, dict):
+        return False, 0.0
+    try:
+        footprint = shape(geometry_json)
+        aoi = box(*NAIROBI_BBOX)
+        if footprint.is_empty or not footprint.is_valid:
+            return False, 0.0
+        fraction = float(footprint.intersection(aoi).area / aoi.area)
+        return bool(footprint.covers(aoi)), min(1.0, max(0.0, fraction))
+    except (TypeError, ValueError):
+        return False, 0.0
+
+
+def select_latest_feature(collection: dict, allow_partial: bool = False) -> dict:
+    """Select the latest full-coverage feature; partial coverage requires explicit opt-in."""
     features = collection.get("features")
     if not isinstance(features, list) or not features:
         raise ValueError("No Sentinel-1 GRD catalogue features intersect the Nairobi AOI.")
-    dated = []
+    full_coverage = []
+    partial_coverage = []
     for feature in features:
         if not isinstance(feature, dict):
             continue
@@ -72,10 +91,19 @@ def select_latest_feature(collection: dict) -> dict:
             continue
         if acquired.tzinfo is None:
             continue
-        dated.append((acquired.astimezone(timezone.utc), feature))
-    if not dated:
-        raise ValueError("Catalogue features did not contain valid acquisition timestamps.")
-    return max(dated, key=lambda pair: pair[0])[1]
+        covers, fraction = feature_coverage(feature)
+        if fraction <= 0:
+            continue
+        record = (acquired.astimezone(timezone.utc), feature)
+        (full_coverage if covers else partial_coverage).append(record)
+    if full_coverage:
+        return max(full_coverage, key=lambda pair: pair[0])[1]
+    if allow_partial and partial_coverage:
+        return max(partial_coverage, key=lambda pair: pair[0])[1]
+    if partial_coverage:
+        raise ValueError("No catalogue footprint fully covers the Nairobi search rectangle. "
+                         "Use --allow-partial-coverage only when a partial scene is acceptable.")
+    raise ValueError("Catalogue features had no valid footprints or acquisition timestamps.")
 
 
 def build_process_payload(feature: dict, width: int = WIDTH, height: int = HEIGHT) -> dict:
@@ -159,6 +187,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--end", default=default_end, help="Exclusive ISO 8601 catalogue end.")
     parser.add_argument("--limit", type=int, default=100)
     parser.add_argument("--timeout", type=int, default=180)
+    parser.add_argument("--allow-partial-coverage", action="store_true", help="Allow a partial scene if no full-coverage scene exists.")
     parser.add_argument("--output-dir", type=Path, default=Path("data/sentinelhub/nairobi"))
     args = parser.parse_args(argv)
     try:
@@ -169,7 +198,7 @@ def main(argv: list[str] | None = None) -> int:
             timeout=min(args.timeout, 30),
         )
         catalogue = _CATALOG.search_catalog(token, query, timeout=min(args.timeout, 60))
-        feature = select_latest_feature(catalogue)
+        feature = select_latest_feature(catalogue, allow_partial=args.allow_partial_coverage)
         payload = build_process_payload(feature)
         raster = request_geotiff(token, payload, timeout=args.timeout)
     except (ValueError, RuntimeError) as exc:
@@ -183,12 +212,14 @@ def main(argv: list[str] | None = None) -> int:
     metadata_path = args.output_dir / f"sentinel1_nairobi_{stamp}_vv-vh.metadata.json"
     raster_path.write_bytes(raster)
     props = feature.get("properties", {})
+    footprint_covers, footprint_fraction = feature_coverage(feature)
     metadata = {
         "service": "Copernicus Data Space Ecosystem Sentinel Hub Process API",
         "process_endpoint": PROCESS_URL,
         "catalog_collection": "sentinel-1-grd",
         "catalog_item_id": feature.get("id"),
         "acquisition_datetime": props.get("datetime"),
+        "catalogue_footprint": {"covers_search_rectangle": footprint_covers, "intersection_fraction": footprint_fraction},
         "retrieved_at_utc": retrieved.isoformat().replace("+00:00", "Z"),
         "bbox_crs84": NAIROBI_BBOX,
         "output": {

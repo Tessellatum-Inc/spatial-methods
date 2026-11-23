@@ -35,14 +35,37 @@ class ProcessClientTests(unittest.TestCase):
             "type": "Feature",
             "id": "S1A_TEST_SCENE",
             "properties": {"datetime": "2026-11-20T03:42:11Z"},
+            "geometry": {"type": "Polygon", "coordinates": [[[36.60,-1.50],[37.10,-1.50],[37.10,-1.10],[36.60,-1.10],[36.60,-1.50]]]},
         }
 
-    def test_selects_latest_catalogue_feature(self):
-        older = {"id": "old", "properties": {"datetime": "2026-11-19T00:00:00Z"}}
+    def test_selects_latest_full_coverage_scene_over_newer_partial_scene(self):
+        newer_partial = {
+            "id": "newer-partial",
+            "properties": {"datetime": "2026-11-22T00:00:00Z"},
+            "geometry": {"type": "Polygon", "coordinates": [[[36.65,-1.45],[36.85,-1.45],[36.85,-1.15],[36.65,-1.15],[36.65,-1.45]]]},
+        }
         self.assertEqual(
-            CLIENT.select_latest_feature({"features": [older, self.feature]})["id"],
+            CLIENT.select_latest_feature({"features": [newer_partial, self.feature]})["id"],
             "S1A_TEST_SCENE",
         )
+
+    def test_requires_explicit_opt_in_for_partial_scene(self):
+        partial = {
+            "id": "partial",
+            "properties": {"datetime": "2026-11-22T00:00:00Z"},
+            "geometry": {"type": "Polygon", "coordinates": [[[36.65,-1.45],[36.85,-1.45],[36.85,-1.15],[36.65,-1.15],[36.65,-1.45]]]},
+        }
+        with self.assertRaisesRegex(ValueError, "No catalogue footprint fully covers"):
+            CLIENT.select_latest_feature({"features": [partial]})
+        self.assertEqual(
+            CLIENT.select_latest_feature({"features": [partial]}, allow_partial=True)["id"],
+            "partial",
+        )
+
+    def test_reports_full_coverage_fraction(self):
+        covers, fraction = CLIENT.feature_coverage(self.feature)
+        self.assertTrue(covers)
+        self.assertAlmostEqual(fraction, 1.0)
 
     def test_rejects_empty_catalogue(self):
         with self.assertRaisesRegex(ValueError, "No Sentinel-1"):
