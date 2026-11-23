@@ -12,7 +12,7 @@ on:
         description: Inclusive UTC start
         required: true
         type: string
-        default: "2026-10-01T00:00:00Z"
+        default: "2025-01-01T00:00:00Z"
       end:
         description: Exclusive UTC end
         required: true
@@ -49,7 +49,7 @@ jobs:
           SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
         run: |
           python explorations/radar/discover_sentinel1_orbit_diversity.py \
-            --start "${{ inputs.start || '2026-10-01T00:00:00Z' }}" --end "${{ inputs.end || '2026-11-23T00:00:00Z' }}" \
+            --start "${{ inputs.start || '2025-01-01T00:00:00Z' }}" --end "${{ inputs.end || '2026-11-23T00:00:00Z' }}" \
             --min-acquisitions "${{ inputs.min_acquisitions || 2 }}" \
             --output data/sentinelhub/nairobi/sentinel1_orbit_diversity_screen.json
       - uses: actions/upload-artifact@v4
