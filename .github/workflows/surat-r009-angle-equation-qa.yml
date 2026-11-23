@@ -17,6 +17,8 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/surat-r009-angle-equation-qa.yml"
+      - "explorations/radar/qa_surat_r009_angle_equation.py"
+      - "explorations/radar/test_qa_surat_r009_angle_equation.py"
 permissions:
   actions: read
   contents: read
