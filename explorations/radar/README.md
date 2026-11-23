@@ -246,3 +246,6 @@ The first worked study now has a staged, evidence-preserving toolchain. These to
 6. The [download, validation and readiness guide](sentinel-1-download-and-validation.md) documents commands, evidence requirements and the remaining scientific gates.
 
 The workflow is intentionally not represented as a completed Nairobi analysis. No SAFE product has yet been downloaded in this environment; the actual archive, full-datatake coverage, raster values, calibration and geolocation still require inspection and QA. The structural readiness record is an evidence ledger, not a scientific processing approval.
+
+
+A **manual GitHub Actions download/preflight** is also defined in `.github/workflows/copernicus-sentinel1-download-preflight.yml`. It requires the repository secrets `CDSE_USERNAME` and `CDSE_PASSWORD`, is pinned to the selected 2 November 2026 candidate, and uploads JSON evidence only—not the SAFE archive. See the [download and validation guide](sentinel-1-download-and-validation.md) before dispatching it. Hosted-runner disk capacity and Copernicus account access remain external constraints.

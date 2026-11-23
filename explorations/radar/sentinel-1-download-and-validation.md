@@ -151,3 +151,15 @@ Offline tests:
 ```bash
 python -m unittest discover -s scripts -p "test_build_sentinel1_processing_readiness.py"
 ```
+
+
+## Optional GitHub Actions download and preflight
+
+A manually triggered workflow is available at **Actions → Sentinel-1 Nairobi download and structural preflight → Run workflow**. It is pinned to the 2 November 2026 candidate UUID above; it does not accept arbitrary product IDs and does not run on pushes. Before using it, add these two repository secrets under **Settings → Secrets and variables → Actions → Repository secrets**:
+
+- `CDSE_USERNAME`: your Copernicus Data Space account email.
+- `CDSE_PASSWORD`: your Copernicus Data Space password.
+
+Do not put either value in workflow inputs, source files, commits, or chat. The workflow passes them only to the downloader process as environment variables. It builds the candidate manifest from the committed inventory, downloads the selected ZIP, runs the SAFE metadata audit, and reconciles the evidence. The workflow artifact contains JSON metadata and provenance only; the SAFE archive is removed from the runner workspace and is not uploaded to GitHub.
+
+**Runner capacity is a real constraint.** The standard hosted runner has finite temporary storage, and the product's actual archive size must fit alongside the operating environment and working files. The workflow prints available disk capacity before download, but this is not a guarantee that the archive will fit. If the download fails for space, timeout, account entitlement, or provider availability, use the documented local download procedure on a machine with sufficient disk instead. A successful workflow run establishes only the structural preflight recorded in the artifact; it does not authorize SNAP processing or establish scientific validity.
