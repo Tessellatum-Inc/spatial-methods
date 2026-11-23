@@ -1,4 +1,5 @@
 name: Sentinel-1A Surat Basin catalogue coverage screen
+run-name: Screen repeated acquisitions over surveyed Surat reflectors
 on:
   workflow_dispatch:
   push:
