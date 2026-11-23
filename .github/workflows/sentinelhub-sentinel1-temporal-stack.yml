@@ -127,3 +127,19 @@ jobs:
             data/sentinelhub/nairobi/stack/terrain_aux/*.json
           if-no-files-found: error
           retention-days: 14
+
+      # Keep compact machine-readable QA reports independently retrievable;
+      # the full raster bundle is hundreds of MB and is not needed for review.
+      - name: Upload compact QA reports for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: sentinelhub-sentinel1-nairobi-qa-reports
+          path: |
+            data/sentinelhub/nairobi/stack/terrain_aux/*.json
+            data/sentinelhub/nairobi/stack/geometry_aux/*.json
+            data/sentinelhub/nairobi/stack/sentinel1_nairobi_registration_screen.json
+            data/sentinelhub/nairobi/stack/sentinel1_nairobi_temporal_qa_screen.json
+            data/sentinelhub/nairobi/stack/sentinel1_nairobi_reference_area_screen.json
+            data/sentinelhub/nairobi/stack/sentinel1_nairobi_temporal_stack.metadata.json
+          if-no-files-found: error
+          retention-days: 14
