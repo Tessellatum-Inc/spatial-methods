@@ -24,11 +24,12 @@ def summarize_relation(ellipsoid, rtc, area, angle, mask, ellipsoid_incidence_an
     residual=y-x; centered=residual-np.median(residual)
     angle_proxy=-10.0*np.log10(np.tan(np.deg2rad(ang)))
     angle_adjusted=residual-angle_proxy
-    ellipsoid_geometry_term=None if ellang is None else 10.0*np.log10(np.tan(np.deg2rad(ellang)))
-    ellipsoid_reference_area_term=None if ellipsoid_geometry_term is None else -ellipsoid_geometry_term
+    # gamma0_ellipsoid = beta0 * tan(theta_E); gamma0_RTC = beta0 / scatteringArea.
+    # Thus RTC/ellipsoid = 1 / (scatteringArea * tan(theta_E)).
+    ellipsoid_log_tan_term=None if ellang is None else 10.0*np.log10(np.tan(np.deg2rad(ellang)))
+    ellipsoid_reference_area_term=None if ellipsoid_log_tan_term is None else -ellipsoid_log_tan_term
     ellipsoid_adjusted_residual=None if ellipsoid_reference_area_term is None else residual-ellipsoid_reference_area_term
-    full_geometry_term=None if ellang is None else angle_proxy+ellipsoid_geometry_term
-    full_geometry_adjusted=None if ellang is None else residual-full_geometry_term
+    local_to_ellipsoid_geometry_difference=None if ellipsoid_reference_area_term is None else angle_proxy-ellipsoid_reference_area_term
     if np.ptp(x)>1e-12:
         slope,intercept=np.polyfit(x,y,1)
         fitted=slope*x+intercept
@@ -54,15 +55,12 @@ def summarize_relation(ellipsoid, rtc, area, angle, mask, ellipsoid_incidence_an
         "p90_local_incidence_angle_degrees":float(np.percentile(ang,90)),
         "area_factor_residual_vs_angle_correlation":float(np.corrcoef(residual,ang)[0,1]) if np.std(residual)>0 and np.std(ang)>0 else None,
         "median_ellipsoid_incidence_angle_degrees":float(np.median(ellang)) if ellang is not None else None,
-        "median_ellipsoid_geometry_term_db":float(np.median(ellipsoid_geometry_term)) if ellipsoid_geometry_term is not None else None,
+        "median_ellipsoid_log_tan_term_db":float(np.median(ellipsoid_log_tan_term)) if ellipsoid_log_tan_term is not None else None,
         "median_ellipsoid_reference_area_term_db":float(np.median(ellipsoid_reference_area_term)) if ellipsoid_reference_area_term is not None else None,
         "median_area_and_ellipsoid_angle_adjusted_residual_db":float(np.median(ellipsoid_adjusted_residual)) if ellipsoid_adjusted_residual is not None else None,
         "mean_absolute_area_and_ellipsoid_angle_adjusted_residual_db":float(np.mean(np.abs(ellipsoid_adjusted_residual))) if ellipsoid_adjusted_residual is not None else None,
         "p95_absolute_area_and_ellipsoid_angle_adjusted_residual_db":float(np.percentile(np.abs(ellipsoid_adjusted_residual),95)) if ellipsoid_adjusted_residual is not None else None,
-        "median_local_to_ellipsoid_geometry_term_db":float(np.median(full_geometry_term)) if full_geometry_term is not None else None,
-        "median_area_and_geometry_adjusted_residual_db":float(np.median(full_geometry_adjusted)) if full_geometry_adjusted is not None else None,
-        "mean_absolute_area_and_geometry_adjusted_residual_db":float(np.mean(np.abs(full_geometry_adjusted))) if full_geometry_adjusted is not None else None,
-        "p95_absolute_area_and_geometry_adjusted_residual_db":float(np.percentile(np.abs(full_geometry_adjusted),95)) if full_geometry_adjusted is not None else None}
+        "median_local_to_ellipsoid_geometry_difference_db":float(np.median(local_to_ellipsoid_geometry_difference)) if local_to_ellipsoid_geometry_difference is not None else None}
 
 def load_tracks(root,incidence_dir=None):
     tracks={}
