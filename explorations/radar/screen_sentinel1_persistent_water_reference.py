@@ -61,9 +61,11 @@ def build_occurrence_masks(occurrence: np.ndarray, valid: np.ndarray,
         raise ValueError("Occurrence and validity arrays must be matching 2D arrays.")
     if not 1 <= threshold <= 100:
         raise ValueError("Occurrence threshold must be between 1 and 100.")
-    if np.any((values[valid_mask] < 0) | (values[valid_mask] > 100)):
+    effective_valid = valid_mask & (values != 255)
+    selected = values[effective_valid]
+    if np.any((selected < 0) | (selected > 100)):
         raise ValueError("Valid occurrence values must be in the 0–100 range.")
-    candidate = valid_mask & (values >= threshold) & (values != 255)
+    candidate = effective_valid & (values >= threshold)
     core = erode_mask(candidate, erosion_iterations)
     return candidate, core
 
