@@ -385,3 +385,46 @@ The Copernicus Data Space catalogue inventory identified the exact source GRD pr
 Once the annotation XML objects are listed, extract and interpolate `incidenceAngle` to the shared output grid, then evaluate the full reference-area equation against the paired RTC/ellipsoid rasters. Validate interpolation against source geolocation points and restrict analysis to common valid pixels. Do not substitute the terrain `localIncidenceAngle` band as if it were θE. Keep `analysis_ready: false` until this independent geometric test and stable-target validation pass.
 
 Latest reproducible angle-proxy/common-mask run: [workflow run 45169689313](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45169689313).
+
+
+### Completion: source ellipsoid-angle extraction and full equation test (2026-11-23)
+
+This section supersedes the previous "next validation step" status: the CDSE S3 credentials have now been configured and the source metadata workflow has completed.
+
+Eight original Sentinel-1A GRD products were inspected. The inventory found 64 annotation/calibration/RFI XML objects; the VV product annotation XML was extracted for each of the eight acquisitions. Each geolocation grid contains 210 complete tie points (10 azimuth lines × 21 range pixels). The source `incidenceAngle` field was interpolated in geographic coordinates onto the fixed 2048 × 1536 Nairobi output grid, with no extrapolation.
+
+| Track | Tie-point CV MAE | CV RMSE | CV P95 absolute error | Interpolated AOI coverage |
+|---|---:|---:|---:|---:|
+| R057 | 0.00844° | 0.01277° | 0.02529° | 77.3% |
+| R130 | 0.00737° | 0.00943° | 0.01922° | 94.7% |
+
+The common footprint after intersecting the eight incidence rasters with all eight ellipsoid/RTC data masks is **1,848,662 pixels (58.77% of the requested grid)**. Pixels outside the source tie-point convex hull remain NoData.
+
+The full reference-area relation was then tested on that identical footprint:
+
+\[
+\Delta_{dB}
+=10\log_{10}\left(\frac{\gamma^0_{RTC}}{\gamma^0_E}\right)
+=-10\log_{10}(\widehat A_\gamma)-10\log_{10}(\tan\theta_E).
+\]
+
+Here `θE` is the source GRD annotation geolocation-grid `incidenceAngle`, not the RTC `localIncidenceAngle`. The equation follows from the ellipsoid gamma reference-area factor `tan(θE)` and the provider's normalized scattering-area convention described above.
+
+Mean results across four acquisitions and VV/VH on the identical common mask:
+
+| Track | Median θE | Area-only residual MAE | Median `-10 log10(tan θE)` | Adjusted residual median | Adjusted residual MAE | Adjusted residual P95 abs |
+|---|---:|---:|---:|---:|---:|---:|
+| R057 | 31.925° | 2.054 dB | +2.055 dB | −0.00176 dB | 0.00174 dB | 0.00309 dB |
+| R130 | 45.375° | 0.0639 dB | −0.05695 dB | +0.00420 dB | 0.00436 dB | 0.00578 dB |
+
+The result is consistent across all four dates and both polarizations. The area-only residual MAE falls from 2.054 to 0.00174 dB on R057, and from 0.0639 to 0.00436 dB on R130. The residual medians and tails are similarly small. This strongly supports the full reference-area equation as an explanation of the provider's paired RTC/ellipsoid outputs on this study footprint.
+
+The earlier local-angle-only proxy was an incomplete substitute: the terrain-relative angle is not θE. The source ellipsoid angle resolves the track-dependent area-only offsets. Do not treat the earlier local-angle proxy as the equation's correction term.
+
+Reproducibility:
+- Source annotation inventory: [run 45198522746](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45198522746).
+- Eight source geolocation grids: [run 45199797385](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45199797385).
+- Full interpolation and equation test: [run 45201769040](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45201769040).
+- Targeted tests: [run 45201796311](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45201796311).
+
+This remains a provider-internal, single-site, same-platform/two-orbit validation. The interpolation cross-validation is internal to the source tie-point grids, not independent geodetic control. The common footprint is 58.77% of the requested AOI. Stable radiometric targets, independent geometric control and a second study area/provider are still needed before generalization. Keep `analysis_ready: false`; do not operationalize normalization or change detection from this result alone.
