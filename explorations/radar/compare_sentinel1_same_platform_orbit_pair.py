@@ -6,12 +6,13 @@ from pathlib import Path
 import numpy as np
 import rasterio
 
-def summarize_relation(ellipsoid, rtc, area, mask):
+def summarize_relation(ellipsoid, rtc, area, angle, mask):
     ell=np.asarray(ellipsoid,dtype=np.float64)[mask]
     rt=np.asarray(rtc,dtype=np.float64)[mask]
     ar=np.asarray(area,dtype=np.float64)[mask]
-    valid=(ell>0)&(rt>0)&(ar>0)&np.isfinite(ell)&np.isfinite(rt)&np.isfinite(ar)
-    ell,rt,ar=ell[valid],rt[valid],ar[valid]
+    ang=np.asarray(angle,dtype=np.float64)[mask]
+    valid=(ell>0)&(rt>0)&(ar>0)&np.isfinite(ell)&np.isfinite(rt)&np.isfinite(ar)&np.isfinite(ang)&(ang>=0)&(ang<=180)
+    ell,rt,ar,ang=ell[valid],rt[valid],ar[valid],ang[valid]
     if len(ar)<100: raise ValueError("Too few shared positive pixels for relation metrics")
     x=-10.0*np.log10(ar); y=10.0*np.log10(rt)-10.0*np.log10(ell)
     slope,intercept=np.polyfit(x,y,1)
@@ -23,7 +24,7 @@ def summarize_relation(ellipsoid, rtc, area, mask):
         "median_observed_minus_area_factor_db":float(np.median(residual)),
         "mean_absolute_area_factor_residual_db":float(np.mean(np.abs(residual))),
         "p95_absolute_centered_area_factor_residual_db":float(np.percentile(np.abs(centered),95)),
-        "median_scattering_area":float(np.median(ar))}
+        "median_scattering_area":float(np.median(ar)),\n        "median_local_incidence_angle_degrees":float(np.median(ang)),\n        "p10_local_incidence_angle_degrees":float(np.percentile(ang,10)),\n        "p90_local_incidence_angle_degrees":float(np.percentile(ang,90)),\n        "area_factor_residual_vs_angle_correlation":float(np.corrcoef(residual,ang)[0,1]) if np.std(residual)>0 and np.std(ang)>0 else None}
 
 def load_tracks(root):
     tracks={}
@@ -60,14 +61,14 @@ def run(input_dir:Path,output:Path):
         per_scene=[]
         for scene in scenes:
             with rasterio.open(scene["ellipsoid"]) as e, rasterio.open(scene["rtc"]) as r:
-                eb=e.read([1,2]); rb=r.read([1,2,3])
+                eb=e.read([1,2]); rb=r.read([1,2,3,4])
             per_scene.append({"datetime_utc":scene["datetime_utc"],"polarizations":{
-                pol:summarize_relation(eb[i],rb[i],rb[2],common) for i,pol in enumerate(("VV","VH"))}})
+                pol:summarize_relation(eb[i],rb[i],rb[2],rb[3],common) for i,pol in enumerate(("VV","VH"))}})
         aggregate={}
         for pol in ("VV","VH"):
             rows=[s["polarizations"][pol] for s in per_scene]
             keys=("ols_slope","ols_intercept_db","ols_r_squared","median_observed_minus_area_factor_db",
-                "mean_absolute_area_factor_residual_db","p95_absolute_centered_area_factor_residual_db","median_scattering_area")
+                "mean_absolute_area_factor_residual_db","p95_absolute_centered_area_factor_residual_db","median_scattering_area",\n                "median_local_incidence_angle_degrees","p10_local_incidence_angle_degrees","p90_local_incidence_angle_degrees",\n                "area_factor_residual_vs_angle_correlation")
             aggregate[pol]={key:float(np.mean([row[key] for row in rows])) for key in keys}
             aggregate[pol]["pixels_per_scene"]=int(min(row["pixels"] for row in rows))
         results[str(orbit)]={"scene_count":len(scenes),"scenes":per_scene,"mean_metrics_on_shared_mask":aggregate}
@@ -84,7 +85,7 @@ def run(input_dir:Path,output:Path):
     output.parent.mkdir(parents=True,exist_ok=True); output.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
     print(f"Shared valid footprint: {common.mean():.4f} ({int(common.sum())} pixels)")
     print("Per-track mean metrics on the identical all-scenes common mask:")
-    print(json.dumps({orbit:data["mean_metrics_on_shared_mask"] for orbit,data in results.items()},sort_keys=True))
+    print(json.dumps({orbit:{"mean_metrics":data["mean_metrics_on_shared_mask"],"per_scene":data["scenes"]} for orbit,data in results.items()},sort_keys=True))
     return report
 
 def main(argv=None):
