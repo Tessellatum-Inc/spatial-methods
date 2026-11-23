@@ -61,6 +61,13 @@ jobs:
           SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
         run: python explorations/radar/process_sentinel1_geometry_aux.py --stack-metadata data/sentinelhub/nairobi/stack/sentinel1_nairobi_temporal_stack.metadata.json --output-dir data/sentinelhub/nairobi/stack/geometry_aux
 
+      - name: Compare local incidence-angle surfaces across dates
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          angles=(data/sentinelhub/nairobi/stack/geometry_aux/*_local-incidence-angle.tif)
+          python explorations/radar/screen_sentinel1_angle_consistency.py --rasters "${angles[@]}" --output data/sentinelhub/nairobi/stack/geometry_aux/sentinel1_nairobi_local_incidence_angle_consistency.json
+
       - name: Inspect each acquisition and create Nairobi county-masked raster
         run: |
           set -euo pipefail
