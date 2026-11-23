@@ -127,12 +127,10 @@ def run(input_dir:Path,output:Path,incidence_dir:Path|None=None):
                 "mean_absolute_local_angle_proxy_adjusted_residual_db","p95_absolute_local_angle_proxy_adjusted_residual_db","median_scattering_area",
                 "median_local_incidence_angle_degrees","p10_local_incidence_angle_degrees","p90_local_incidence_angle_degrees",
                 "area_factor_residual_vs_angle_correlation","median_ellipsoid_incidence_angle_degrees",
-                "median_ellipsoid_geometry_term_db","median_local_to_ellipsoid_geometry_term_db",
-                "median_area_and_geometry_adjusted_residual_db","mean_absolute_area_and_geometry_adjusted_residual_db",
-                "p95_absolute_area_and_geometry_adjusted_residual_db","median_ellipsoid_reference_area_term_db",
+                "median_ellipsoid_log_tan_term_db","median_ellipsoid_reference_area_term_db",
                 "median_area_and_ellipsoid_angle_adjusted_residual_db","mean_absolute_area_and_ellipsoid_angle_adjusted_residual_db",
-                "p95_absolute_area_and_ellipsoid_angle_adjusted_residual_db")
-            if incidence_dir is None: keys=keys[:-10]
+                "p95_absolute_area_and_ellipsoid_angle_adjusted_residual_db","median_local_to_ellipsoid_geometry_difference_db")
+            if incidence_dir is None: keys=keys[:-6]
             aggregate[pol]={key:float(np.mean([row[key] for row in rows])) for key in keys}
             aggregate[pol]["pixels_per_scene"]=int(min(row["pixels"] for row in rows))
         results[str(orbit)]={"scene_count":len(scenes),"scenes":per_scene,"mean_metrics_on_shared_mask":aggregate}
