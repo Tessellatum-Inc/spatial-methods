@@ -32,7 +32,7 @@ jobs:
             --start "2025-01-01T00:00:00Z" \
             --end "2026-11-23T00:00:00Z" \
             --min-scenes 4 \
-            --min-fraction 0.70 \
+            --min-fraction 0.50 \
             --output data/sentinelhub/nairobi/same_platform_intermediate_orbit_candidates.json
       - uses: actions/upload-artifact@v4
         with:
