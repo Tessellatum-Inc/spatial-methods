@@ -5,40 +5,46 @@ from explorations.radar.download_opera_surat_r009_assets import select_assets
 
 class OperaAssetSelectionTests(unittest.TestCase):
     def test_selects_rtc_science_assets_and_excludes_browse_and_md5(self):
-        report = {
-            "matched_features": [{
-                "file_id": "rtc-product",
+        rtc_features = []
+        for i in range(8):
+            base = f"product{i}"
+            rtc_features.append({
+                "file_id": base,
                 "properties": {
                     "s3Urls": [
-                        "s3://asf-cumulus-prod-opera-products/path/product.h5",
-                        "s3://asf-cumulus-prod-opera-products/path/product.iso.xml",
-                        "s3://asf-cumulus-prod-opera-products/path/product_VV.tif",
-                        "s3://asf-cumulus-prod-opera-products/path/product_VH.tif",
-                        "s3://asf-cumulus-prod-opera-products/path/product_mask.tif",
-                        "s3://asf-cumulus-prod-opera-products/path/product_VV.tif.md5",
-                        "s3://asf-cumulus-prod-opera-browse/path/product_BROWSE.png",
+                        f"s3://asf-cumulus-prod-opera-products/path/{base}.h5",
+                        f"s3://asf-cumulus-prod-opera-products/path/{base}.iso.xml",
+                        f"s3://asf-cumulus-prod-opera-products/path/{base}_VV.tif",
+                        f"s3://asf-cumulus-prod-opera-products/path/{base}_VH.tif",
+                        f"s3://asf-cumulus-prod-opera-products/path/{base}_mask.tif",
+                        f"s3://asf-cumulus-prod-opera-products/path/{base}_VV.tif.md5",
+                        f"s3://asf-cumulus-prod-opera-browse/path/{base}_BROWSE.png",
                     ],
                     "bytes": {},
                 },
-            } for _ in range(8)],
-            "static_layer_query": {
-                "features": [{
-                    "file_id": "static-product",
-                    "properties": {
-                        "s3Urls": [
-                            "s3://asf-cumulus-prod-opera-products/path/static.iso.xml",
-                            "s3://asf-cumulus-prod-opera-products/path/static_incidence_angle.tif",
-                            "s3://asf-cumulus-prod-opera-products/path/static_local_incidence_angle.tif",
-                            "s3://asf-cumulus-prod-opera-products/path/static_mask.tif",
-                            "s3://asf-cumulus-prod-opera-products/path/static_number_of_looks.tif",
-                            "s3://asf-cumulus-prod-opera-products/path/static_rtc_anf_gamma0_to_beta0.tif",
-                            "s3://asf-cumulus-prod-opera-products/path/static_rtc_anf_gamma0_to_sigma0.tif",
-                            "s3://asf-cumulus-prod-opera-products/path/static_mask.tif.md5",
-                        ],
-                        "bytes": {},
-                    },
-                } for _ in range(2)],
-            },
+            })
+        static_features = []
+        for i in range(2):
+            base = f"static{i}"
+            static_features.append({
+                "file_id": base,
+                "properties": {
+                    "s3Urls": [
+                        f"s3://asf-cumulus-prod-opera-products/path/{base}.iso.xml",
+                        f"s3://asf-cumulus-prod-opera-products/path/{base}_incidence_angle.tif",
+                        f"s3://asf-cumulus-prod-opera-products/path/{base}_local_incidence_angle.tif",
+                        f"s3://asf-cumulus-prod-opera-products/path/{base}_mask.tif",
+                        f"s3://asf-cumulus-prod-opera-products/path/{base}_number_of_looks.tif",
+                        f"s3://asf-cumulus-prod-opera-products/path/{base}_rtc_anf_gamma0_to_beta0.tif",
+                        f"s3://asf-cumulus-prod-opera-products/path/{base}_rtc_anf_gamma0_to_sigma0.tif",
+                        f"s3://asf-cumulus-prod-opera-products/path/{base}_mask.tif.md5",
+                    ],
+                    "bytes": {},
+                },
+            })
+        report = {
+            "matched_features": rtc_features,
+            "static_layer_query": {"features": static_features},
         }
         assets = select_assets(report)
         rtc = [x for x in assets if x["product_type"] == "rtc"]
