@@ -24,6 +24,30 @@ def _quantiles(values: np.ndarray) -> dict:
     }
 
 
+
+def _stratified_summary(delta: np.ndarray, strata: np.ndarray,
+                        edges: list[float], labels: list[str]) -> list[dict]:
+    """Summarize paired dB differences within fixed, interpretable strata."""
+    if strata.shape != delta.shape or len(edges) != len(labels) + 1:
+        raise ValueError("Stratification values, edges, and labels are inconsistent.")
+    records = []
+    for index, label in enumerate(labels):
+        selected = np.isfinite(strata) & (strata >= edges[index])
+        if index == len(labels) - 1:
+            selected &= strata <= edges[index + 1]
+        else:
+            selected &= strata < edges[index + 1]
+        values = delta[selected]
+        records.append({
+            "stratum": label,
+            "pixels": int(values.size),
+            "median_delta_db": float(np.median(values)) if values.size else None,
+            "mean_absolute_delta_db": float(np.mean(np.abs(values))) if values.size else None,
+            "p95_absolute_delta_db": float(np.percentile(np.abs(values), 95)) if values.size else None,
+        })
+    return records
+
+
 def compare_pair(ellipsoid_path: Path, rtc_path: Path) -> dict:
     with rasterio.open(ellipsoid_path) as ell, rasterio.open(rtc_path) as rtc:
         if ell.count < 3 or rtc.count != 6:
@@ -62,7 +86,22 @@ def compare_pair(ellipsoid_path: Path, rtc_path: Path) -> dict:
         ell_db = 10.0 * np.log10(a[positive].astype(np.float64))
         rtc_db = 10.0 * np.log10(b[positive].astype(np.float64))
         delta = rtc_db - ell_db
+        area_values = terrain[2][common][positive].astype(np.float64)
+        angle_values = terrain[3][common][positive].astype(np.float64)
+        stratified = {
+            "scattering_area": _stratified_summary(
+                delta, area_values,
+                [0.0, 0.9, 1.0, 1.1, 1.2, float("inf")],
+                ["<0.9", "0.9–1.0", "1.0–1.1", "1.1–1.2", "≥1.2"],
+            ),
+            "local_incidence_angle_degrees": _stratified_summary(
+                delta, angle_values,
+                [0.0, 35.0, 40.0, 45.0, 50.0, 90.0],
+                ["<35°", "35–40°", "40–45°", "45–50°", "≥50°"],
+            ),
+        }
         result["polarizations"][name] = {
+            "stratified_differences": stratified,
             "positive_common_pixels": int(positive.sum()),
             "ellipsoid_median_db": float(np.median(ell_db)),
             "rtc_median_db": float(np.median(rtc_db)),

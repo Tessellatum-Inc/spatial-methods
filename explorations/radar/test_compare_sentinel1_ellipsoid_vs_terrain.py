@@ -37,6 +37,11 @@ class PairedComparisonTests(unittest.TestCase):
                     dst.write(array)
             report = MODULE.compare_pair(epath, rpath)
             self.assertEqual(report["common_valid_pixels"], 2)
+            strata = report["polarizations"]["VV"]["stratified_differences"]
+            area_bin = next(x for x in strata["scattering_area"] if x["stratum"] == "1.0–1.1")
+            angle_bin = next(x for x in strata["local_incidence_angle_degrees"] if x["stratum"] == "40–45°")
+            self.assertEqual(area_bin["pixels"], 2)
+            self.assertEqual(angle_bin["pixels"], 2)
             self.assertAlmostEqual(
                 report["polarizations"]["VV"]["rtc_minus_ellipsoid_db"]["median"],
                 10 * np.log10(2), places=5
