@@ -1,0 +1,76 @@
+name: Sentinel Hub Sentinel-1 Nairobi temporal stack
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_scenes:
+        description: Number of chronological catalogue candidates to process (2–4)
+        required: true
+        type: number
+        default: 4
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sentinelhub-sentinel1-nairobi-temporal-stack
+  cancel-in-progress: false
+
+jobs:
+  process-temporal-stack:
+    name: Process and quality-check fixed-grid Nairobi acquisitions
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install raster QA dependencies
+        run: python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
+
+      - name: Verify Client Credentials OAuth secrets
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          test -n "$SENTINEL_HUB_CLIENT_ID" || { echo "::error::Missing SENTINEL_HUB_CLIENT_ID"; exit 1; }
+          test -n "$SENTINEL_HUB_CLIENT_SECRET" || { echo "::error::Missing SENTINEL_HUB_CLIENT_SECRET"; exit 1; }
+          echo "Sentinel Hub Client Credentials secrets are configured."
+
+      - name: Process chronological full-coverage candidates on a common grid
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          python explorations/radar/process_sentinelhub_sentinel1_stack.py \
+            --max-scenes "${{ inputs.max_scenes || 4 }}" \
+            --output-dir data/sentinelhub/nairobi/stack
+
+      - name: Inspect each acquisition and create Nairobi county-masked raster
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          rasters=(data/sentinelhub/nairobi/stack/*.tif)
+          test "${#rasters[@]}" -ge 2
+          for raster in "${rasters[@]}"; do
+            python explorations/radar/inspect_sentinelhub_sentinel1.py "$raster"
+            python explorations/radar/mask_sentinelhub_sentinel1_nairobi_county.py "$raster"
+          done
+
+      - name: Upload temporal stack, source rasters, county rasters and QA evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: sentinelhub-sentinel1-nairobi-temporal-stack
+          path: |
+            data/sentinelhub/nairobi/stack/*.tif
+            data/sentinelhub/nairobi/stack/*.metadata.json
+            data/sentinelhub/nairobi/stack/*.quicklook.png
+            data/sentinelhub/nairobi/stack/*.qa.json
+            data/sentinelhub/nairobi/stack/*.geojson
+          if-no-files-found: error
+          retention-days: 14
