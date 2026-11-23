@@ -25,6 +25,10 @@ class OperaSuratDiscoveryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             build_query("2025-12-19T08:46:12Z", "2025-12-19T08:36:12Z")
 
+    def test_query_rejects_zero_result_limit(self):
+        with self.assertRaises(ValueError):
+            build_query("2025-12-19T08:36:12Z", "2025-12-19T08:46:12Z", 0)
+
     def test_acquisition_time_from_start_time(self):
         result = acquisition_datetime({"startTime": "2025-12-19T08:41:12Z"})
         self.assertEqual(result.isoformat(), "2025-12-19T08:41:12+00:00")
