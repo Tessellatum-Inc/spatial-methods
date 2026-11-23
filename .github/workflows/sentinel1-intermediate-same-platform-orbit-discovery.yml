@@ -30,7 +30,7 @@ jobs:
         run: |
           python explorations/radar/discover_sentinel1_intermediate_same_platform_orbits.py \
             --start "2025-01-01T00:00:00Z" \
-            --end "2025-02-20T00:00:00Z" \
+            --end "2026-11-23T00:00:00Z" \
             --min-scenes 4 \
             --min-fraction 0.70 \
             --output data/sentinelhub/nairobi/same_platform_intermediate_orbit_candidates.json
