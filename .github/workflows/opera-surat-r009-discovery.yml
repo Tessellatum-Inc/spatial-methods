@@ -1,0 +1,31 @@
+name: Discover OPERA RTC-S1 products for Surat R009
+run-name: Search independent OPERA RTC-S1 products for Surat acquisitions
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/opera-surat-r009-discovery.yml"
+      - "explorations/radar/discover_opera_surat_r009_products.py"
+      - "explorations/radar/test_discover_opera_surat_r009_products.py"
+permissions:
+  contents: read
+jobs:
+  discover-opera-products:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Test OPERA catalogue discovery logic
+        run: python -m unittest explorations.radar.test_discover_opera_surat_r009_products -v
+      - name: Query ASF OPERA RTC-S1 catalogue
+        run: python explorations/radar/discover_opera_surat_r009_products.py
+      - name: Upload catalogue evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: surat-r009-opera-rtc-catalogue-discovery
+          path: data/asf/surat_r009_opera/surat_r009_opera_rtc_catalogue_discovery.json
+          if-no-files-found: error
+          retention-days: 90
