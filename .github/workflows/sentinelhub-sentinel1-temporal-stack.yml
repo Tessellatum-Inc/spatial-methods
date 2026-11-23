@@ -149,5 +149,6 @@ jobs:
             data/sentinelhub/nairobi/stack/sentinel1_nairobi_temporal_qa_screen.json
             data/sentinelhub/nairobi/stack/sentinel1_nairobi_reference_area_screen.json
             data/sentinelhub/nairobi/stack/sentinel1_nairobi_temporal_stack.metadata.json
+            data/sentinelhub/nairobi/stack/reference_aux/*.json
           if-no-files-found: error
           retention-days: 14
