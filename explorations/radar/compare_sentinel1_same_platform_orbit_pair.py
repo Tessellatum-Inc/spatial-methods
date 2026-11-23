@@ -15,24 +15,26 @@ def summarize_relation(ellipsoid, rtc, area, angle, mask):
     ell,rt,ar,ang=ell[valid],rt[valid],ar[valid],ang[valid]
     if len(ar)<100: raise ValueError("Too few shared positive pixels for relation metrics")
     x=-10.0*np.log10(ar); y=10.0*np.log10(rt)-10.0*np.log10(ell)
-    slope,intercept=np.polyfit(x,y,1)
-    fitted=slope*x+intercept
-    ss_res=float(np.sum((y-fitted)**2)); ss_tot=float(np.sum((y-y.mean())**2))
+    direct_abs=np.abs(y)
     residual=y-x; centered=residual-np.median(residual)
-    local_angle_proxy_term=-10.0*np.log10(np.tan(np.deg2rad(ang)))
-    local_angle_proxy_adjusted=residual-local_angle_proxy_term
-    return {"pixels":int(len(x)),"ols_slope":float(slope),"ols_intercept_db":float(intercept),
-        "ols_r_squared":float(1-ss_res/ss_tot) if ss_tot>0 else None,
+    angle_proxy=-10.0*np.log10(np.tan(np.deg2rad(ang)))
+    angle_adjusted=residual-angle_proxy
+    if np.ptp(x)>1e-12:
+        slope,intercept=np.polyfit(x,y,1)
+        fitted=slope*x+intercept
+        ss_res=float(np.sum((y-fitted)**2)); ss_tot=float(np.sum((y-y.mean())**2))
+        r_squared=float(1-ss_res/ss_tot) if ss_tot>0 else None
+    else:
+        slope=None; intercept=float(np.mean(y)); r_squared=None
+    return {"pixels":int(len(x)),"ols_slope":float(slope) if slope is not None else None,
+        "ols_intercept_db":float(intercept),"ols_r_squared":r_squared,
         "median_direct_rtc_minus_ellipsoid_db":float(np.median(y)),
-        "mean_absolute_direct_rtc_minus_ellipsoid_db":float(np.mean(np.abs(y))),
-        "p95_absolute_direct_rtc_minus_ellipsoid_db":float(np.percentile(np.abs(y),95)),
+        "mean_absolute_direct_rtc_minus_ellipsoid_db":float(np.mean(direct_abs)),
         "median_observed_minus_area_factor_db":float(np.median(residual)),
         "mean_absolute_area_factor_residual_db":float(np.mean(np.abs(residual))),
         "p95_absolute_centered_area_factor_residual_db":float(np.percentile(np.abs(centered),95)),
-        "median_local_angle_proxy_term_db":float(np.median(local_angle_proxy_term)),
-        "median_local_angle_proxy_adjusted_residual_db":float(np.median(local_angle_proxy_adjusted)),
-        "mean_absolute_local_angle_proxy_adjusted_residual_db":float(np.mean(np.abs(local_angle_proxy_adjusted))),
-        "p95_absolute_local_angle_proxy_adjusted_residual_db":float(np.percentile(np.abs(local_angle_proxy_adjusted),95)),
+        "median_local_angle_proxy_adjusted_residual_db":float(np.median(angle_adjusted)),
+        "mean_absolute_local_angle_proxy_adjusted_residual_db":float(np.mean(np.abs(angle_adjusted))),
         "median_scattering_area":float(np.median(ar)),
         "median_local_incidence_angle_degrees":float(np.median(ang)),
         "p10_local_incidence_angle_degrees":float(np.percentile(ang,10)),
