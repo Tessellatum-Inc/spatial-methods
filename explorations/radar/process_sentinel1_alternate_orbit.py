@@ -24,7 +24,9 @@ COMPARE=load("compare_sentinel1_ellipsoid_vs_terrain")
 
 def collect_track(token,start,end,direction,relative_orbit):
     payload=CAT.build_search_payload(start,end,100)
-    payload["filter"]=f"sar:instrument_mode='IW' AND sat:orbit_state='{direction.lower()}' AND sat:relative_orbit={relative_orbit}"
+    # Query IW items broadly, then filter orbit metadata locally. This avoids
+    # relying on provider-specific queryability of sat:relative_orbit.
+    payload["filter"]="sar:instrument_mode='IW'"
     features={}
     for _ in range(50):
         page=CAT.search_catalog(token,payload,timeout=60)
