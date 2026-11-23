@@ -62,6 +62,15 @@ jobs:
             python explorations/radar/mask_sentinelhub_sentinel1_nairobi_county.py "$raster"
           done
 
+      - name: Screen relative global alignment across acquisition dates
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          rasters=(data/sentinelhub/nairobi/stack/sentinel1_nairobi_stack_*_vv-vh.tif)
+          python explorations/radar/screen_sentinel1_registration.py \
+            --rasters "${rasters[@]}" \
+            --output data/sentinelhub/nairobi/stack/sentinel1_nairobi_registration_screen.json
+
       - name: Upload temporal stack, source rasters, county rasters and QA evidence
         uses: actions/upload-artifact@v4
         with:
