@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Tessellatum-Inc/spatial-methods/blob/main/catalog/schemas/knowledge-record.schema.json",
+  "title": "Spatial Methods canonical knowledge record",
+  "description": "Metadata contract for a canonical public knowledge object. This schema validates catalogue metadata, not the technical correctness of the referenced content.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_id",
+    "title",
+    "kind",
+    "canonical_path",
+    "subject_ids",
+    "summary",
+    "status",
+    "relationships"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "pattern": "^SM-KB-[0-9]{6}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "foundation",
+        "algorithm",
+        "operation",
+        "data_structure",
+        "model",
+        "statistic",
+        "metric",
+        "method",
+        "workflow",
+        "system",
+        "standard",
+        "implementation",
+        "dataset",
+        "application",
+        "review"
+      ]
+    },
+    "canonical_path": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.md$|^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.ipynb$"
+    },
+    "subject_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^SM-(FND|ALG|COL|REC|INF|APP)-[0-9]{3}$"
+      }
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 20
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "captured",
+        "mapped",
+        "sourced",
+        "curated",
+        "researched",
+        "implemented",
+        "tested",
+        "validated",
+        "maintained"
+      ]
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "relationship",
+          "target_id"
+        ],
+        "properties": {
+          "relationship": {
+            "type": "string",
+            "enum": [
+              "explains",
+              "depends_on",
+              "implements",
+              "uses",
+              "collects_with",
+              "applies_to",
+              "alternative_to",
+              "validates",
+              "benchmarked_by",
+              "derived_from",
+              "cites",
+              "part_of",
+              "supersedes"
+            ]
+          },
+          "target_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    },
+    "reviewed_on": {
+      "type": "string",
+      "format": "date"
+    },
+    "licence_note": {
+      "type": "string"
+    }
+  }
+}

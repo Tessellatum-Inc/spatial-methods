@@ -1,0 +1,3 @@
+# Path-size logit route choice
+
+For path k with edge set A_k, edge length l_a and number of alternatives using edge a, n_a, define PS_k = sum((l_a/L_k)/n_a), where L_k is total path length. Corrected utility is V_k + beta_PS log(PS_k); choice probability is the softmax after multiplication by a positive scale. Disjoint alternatives have PS=1; shared edges reduce the factor. The implementation validates edge identities and positive lengths, uses stable softmax and exposes the chosen-alternative log likelihood. The overlap coefficient is not estimated. C-logit, path enumeration and stochastic user equilibrium are not included.

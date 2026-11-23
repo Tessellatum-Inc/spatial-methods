@@ -1,0 +1,183 @@
+name: HEIG-VD real-data acquisition audit
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/heig-vd-real-data-audit.yml"
+      - "implementations/python/photogrammetry-odm/visual_review.py"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: heig-vd-real-data-audit
+  cancel-in-progress: false
+
+jobs:
+  acquire-and-audit:
+    name: Acquire, verify and audit HEIG-VD drone dataset
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install acquisition and image-audit dependencies
+        run: python -m pip install "huggingface_hub>=0.30,<2" "Pillow>=10,<13"
+
+      - name: Acquire immutable dataset snapshot
+        working-directory: implementations/python/photogrammetry-odm
+        run: python acquire_rehearsal_dataset.py "$GITHUB_WORKSPACE/data/heig-vd-scop"
+
+      - name: Verify acquired source bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          SNAPSHOT="$(find data/heig-vd-scop/snapshots -mindepth 1 -maxdepth 1 -type d | sort | head -n 1)"
+          test -n "$SNAPSHOT"
+          python implementations/python/photogrammetry-odm/verify_acquisition.py \
+            "$SNAPSHOT/acquisition-provenance.json" \
+            --json-out "$SNAPSHOT/acquisition-verification.json"
+
+      - name: Run image inventory and readability audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p reports/heig-vd
+          SNAPSHOT="$(find data/heig-vd-scop/snapshots -mindepth 1 -maxdepth 1 -type d | sort | head -n 1)"
+          DATASET="$SNAPSHOT/datasets/drone_heig_2019"
+          python implementations/python/photogrammetry-odm/dataset_audit.py \
+            "$DATASET" --expected-images 32 --json-out reports/heig-vd/dataset-audit.json
+
+      - name: Run GCP, image-observation and OPK consistency audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          SNAPSHOT="$(find data/heig-vd-scop/snapshots -mindepth 1 -maxdepth 1 -type d | sort | head -n 1)"
+          DATASET="$SNAPSHOT/datasets/drone_heig_2019"
+          python implementations/python/photogrammetry-odm/dataset_metadata_audit.py \
+            "$DATASET" --json-out reports/heig-vd/dataset-metadata-audit.json
+
+      - name: Prepare provisional ODM control-point list
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p reports/heig-vd
+          SNAPSHOT="$(find data/heig-vd-scop/snapshots -mindepth 1 -maxdepth 1 -type d | sort | head -n 1)"
+          DATASET="$SNAPSHOT/datasets/drone_heig_2019"
+          python implementations/python/photogrammetry-odm/prepare_odm_gcp.py \
+            "$DATASET" \
+            implementations/python/photogrammetry-odm/rehearsal-control-checkpoint-split.proposed.json \
+            "$SNAPSHOT/acquisition-provenance.json" \
+            reports/heig-vd/gcp_list.proposed.txt \
+            --allow-proposed \
+            --json-out reports/heig-vd/gcp-preparation-report.json
+
+      - name: Generate annotated visual-review sheets
+        shell: bash
+        run: |
+          set -euo pipefail
+          SNAPSHOT="$(find data/heig-vd-scop/snapshots -mindepth 1 -maxdepth 1 -type d | sort | head -n 1)"
+          DATASET="$SNAPSHOT/datasets/drone_heig_2019"
+          python implementations/python/photogrammetry-odm/visual_review.py "$DATASET" implementations/python/photogrammetry-odm/rehearsal-control-checkpoint-split.proposed.json reports/heig-vd/visual-review --acquisition-manifest "$SNAPSHOT/acquisition-provenance.json"
+
+      - name: Preserve acquisition and audit evidence
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p reports/heig-vd
+          SNAPSHOT_ROOT="data/heig-vd-scop/snapshots"
+          if [ -d "$SNAPSHOT_ROOT" ]; then
+            SNAPSHOT="$(find "$SNAPSHOT_ROOT" -mindepth 1 -maxdepth 1 -type d | sort | head -n 1 || true)"
+            if [ -n "$SNAPSHOT" ]; then
+              for file in acquisition-provenance.json acquisition-verification.json; do
+                if [ -f "$SNAPSHOT/$file" ]; then
+                  cp "$SNAPSHOT/$file" "reports/heig-vd/$file"
+                fi
+              done
+            fi
+          fi
+          if [ -n "${SNAPSHOT:-}" ]; then
+            DATASET="$SNAPSHOT/datasets/drone_heig_2019"
+            for source_file in README.md gcp/GCP_MN95.txt gcp/gcp_obs.csv opk.txt; do
+              if [ -f "$DATASET/$source_file" ]; then
+                mkdir -p "reports/heig-vd/source/$(dirname "$source_file")"
+                cp "$DATASET/$source_file" "reports/heig-vd/source/$source_file"
+              fi
+            done
+          fi
+          mkdir -p reports/heig-vd/visual-review
+          if [ -n "${SNAPSHOT:-}" ]; then
+            cp "$SNAPSHOT/acquisition-provenance.json" reports/heig-vd/visual-review/ 2>/dev/null
+            cp "$SNAPSHOT/acquisition-verification.json" reports/heig-vd/visual-review/ 2>/dev/null
+          fi
+          cat > reports/heig-vd/visual-review/README.md <<'EOF'
+          # Role-blind point review packet
+
+          This packet intentionally omits the control/checkpoint role mapping.
+          Follow the repository's reviewer-handoff.md for the complete operating
+          procedure, exact source-revision acquisition command, original-image
+          access, worksheet completion, lock command and submission requirements.
+
+          The packet contains annotated/cropped review derivatives and metadata,
+          but NOT the original full-resolution imagery. Acquire the original
+          dataset at revision e0dfeba2b6ed94ea1ae2bf773e742c39fb437b71 and verify
+          it against its acquisition manifest before reviewing ambiguous targets.
+          The yellow ring marks a publisher-provided Metashape image pick; it is
+          not an independent measurement and does not establish accuracy.
+
+          Complete all 206 rows with accepted, questioned or rejected decisions,
+          all required observations, reviewer identity, timezone-aware timestamp
+          and rationale. Lock the final worksheet while roles remain blinded.
+          A structurally valid lock is not evidence of reviewer independence,
+          target identity or survey accuracy.
+          EOF
+          cat > reports/heig-vd/README.md <<'EOF'
+          # HEIG-VD real-data acquisition and audit
+
+          Source: https://huggingface.co/datasets/heig-vd-geo/scop-datasets
+          Selected dataset: datasets/drone_heig_2019
+          Licence: CC BY 4.0
+          Attribution: HEIG-VD, Geomatics group (2026), Photogrammetry and LiDAR datasets.
+
+          This artifact contains provenance, audit reports, small source metadata files
+          (README, GCP coordinates, image observations and OPK text), a provisional
+          ODM GCP list, and role-blind image annotations/cropped review excerpts.
+          Full-resolution source imagery is not included.
+          The proposed split is not human-locked and the provisional GCP list has not been processed by ODM.
+          A separate EXIF-only ODM baseline has completed and its orthophoto, DSM and LAZ
+          passed structural inspection; no positional accuracy has been established.
+          Acquisition hashes establish local byte agreement with the recorded manifest;
+          they do not establish publisher authenticity, licence compliance, coordinate
+          reference correctness, photogrammetric suitability or product accuracy.
+          The supplied OPK orientations derive from a Metashape adjustment using
+          ground points as control and are not independent validation.
+          EOF
+
+      - name: Upload technical audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: heig-vd-audit-evidence
+          path: reports/heig-vd/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload separate role-blind review packet
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: heig-vd-role-blind-review
+          path: reports/heig-vd/visual-review/
+          if-no-files-found: warn
+          retention-days: 30

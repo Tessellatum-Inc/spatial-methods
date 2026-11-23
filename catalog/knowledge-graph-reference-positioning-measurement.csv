@@ -1,0 +1,19 @@
+source_id,relationship,target_id,evidence_path,relationship_basis,qualification
+SM-FND-008,explains,SM-ALG-004,algorithms/geodesy/crs-transformation.md,editorial_semantic_mapping,Geodetic reference concepts explain coordinate transformation and operation selection
+SM-FND-008,explains,SM-COL-001,catalog/first-curation-cluster-reference-positioning-measurement.md,documented_subject_connection,Geodetic reference systems underpin geodetic and engineering surveying
+SM-FND-011,explains,SM-COL-001,foundations/measurement-science/measurement-principles-and-field-verification.md,documented_subject_connection,Measurement science provides principles for field surveying and measurement
+SM-FND-011,explains,SM-COL-002,foundations/measurement-science/measurement-principles-and-field-verification.md,documented_subject_connection,Measurement science supports evaluation of positioning observations and uncertainty
+SM-FND-011,explains,SM-COL-003,foundations/measurement-science/measurement-principles-and-field-verification.md,documented_subject_connection,Measurement science supports control and field measurement
+SM-FND-011,explains,SM-ALG-018,foundations/measurement-science/measurement-principles-and-field-verification.md,documented_subject_connection,Uncertainty and measurement models underpin error propagation and sensitivity methods
+SM-FND-011,explains,SM-REC-008,catalog/first-curation-cluster-reference-positioning-measurement.md,editorial_semantic_mapping,Measurement requirements and uncertainty inform survey planning and field quality control
+SM-FND-011,explains,SM-REC-017,catalog/first-curation-cluster-reference-positioning-measurement.md,editorial_semantic_mapping,Measurement science informs accuracy assessment and quality assurance
+SM-COL-001,depends_on,SM-FND-008,catalog/first-curation-cluster-reference-positioning-measurement.md,editorial_semantic_mapping,Survey observations require a defined reference framework appropriate to the task
+SM-COL-001,depends_on,SM-FND-011,foundations/measurement-science/measurement-principles-and-field-verification.md,documented_subject_connection,Survey methods require a defensible measurement model and uncertainty treatment
+SM-COL-002,depends_on,SM-FND-008,catalog/first-curation-cluster-reference-positioning-measurement.md,editorial_semantic_mapping,Positioning results depend on reference-frame and coordinate-system definitions
+SM-COL-002,depends_on,SM-FND-011,foundations/measurement-science/measurement-principles-and-field-verification.md,editorial_semantic_mapping,Positioning observations require uncertainty and quality interpretation
+SM-COL-003,depends_on,SM-FND-011,foundations/measurement-science/measurement-principles-and-field-verification.md,documented_subject_connection,Control and field measurements require measurement-science principles
+SM-ALG-004,depends_on,SM-FND-008,algorithms/geodesy/crs-transformation.md,editorial_semantic_mapping,Coordinate transformation requires reference-system and geodetic foundations
+SM-ALG-018,depends_on,SM-FND-011,implementations/python/uncertainty-propagation/README.md,editorial_semantic_mapping,Uncertainty propagation depends on measurement and uncertainty concepts
+SM-REC-003,uses,SM-ALG-004,algorithms/geodesy/crs-transformation.md,editorial_semantic_mapping,CRS selection and coordinate QA use coordinate transformation methods
+SM-REC-008,uses,SM-COL-001,catalog/first-curation-cluster-reference-positioning-measurement.md,editorial_semantic_mapping,Survey planning and field capture use surveying methods and systems
+SM-REC-017,uses,SM-ALG-018,implementations/python/uncertainty-propagation/README.md,editorial_semantic_mapping,Spatial quality assurance can use uncertainty propagation and sensitivity methods

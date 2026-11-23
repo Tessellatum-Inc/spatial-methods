@@ -1,0 +1,3 @@
+# Proper CAR Gibbs sampler
+
+A systematic-scan Gibbs sampler for a Gaussian latent field with proper conditional autoregressive prior precision Q = tau(D - rho W) and independent Gaussian observations. Symmetric nonnegative adjacency, positive node degrees and positive-definite prior precision are enforced. Missing observations are represented by NaN. Hyperparameters are fixed inputs; the package does not estimate rho, precision or observation variance, and does not implement SAR, Metropolis-within-Gibbs for non-Gaussian likelihoods, or convergence diagnostics beyond reproducible sampling and analytic small-graph checks.

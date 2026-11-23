@@ -1,0 +1,3 @@
+# Approximate Bayesian inference
+
+Provides a numerical Laplace approximation around a posterior mode and a componentwise stepping-out slice sampler. The Laplace method estimates the negative log-density Hessian by central finite differences, checks positive definiteness, and returns local covariance and Gaussian log-evidence. The slice sampler updates each parameter conditionally using stepping-out and shrinkage. These are reference inference kernels; the Laplace approximation is local and may fail for multimodal or weakly identified posteriors, while slice sampling requires convergence diagnostics. No spatial model likelihood or hyperparameter prior is prescribed.

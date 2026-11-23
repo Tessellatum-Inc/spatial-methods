@@ -1,0 +1,122 @@
+name: Fiji WorldCover comparison rehearsal
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fiji-worldcover-rehearsal.yml"
+      - "implementations/python/area-adjusted-accuracy/sample_worldcover.py"
+      - "implementations/python/area-adjusted-accuracy/stratified_accuracy.py"
+      - "implementations/python/area-adjusted-accuracy/paired_map_comparison.py"
+      - "implementations/python/area-adjusted-accuracy/crosswalk_sensitivity.py"
+      - "implementations/python/area-adjusted-accuracy/spatial_disagreement.py"
+      - "implementations/python/area-adjusted-accuracy/test_spatial_disagreement.py"
+      - "implementations/python/area-adjusted-accuracy/class_error_analysis.py"
+      - "implementations/python/area-adjusted-accuracy/test_class_error_analysis.py"
+      - "implementations/python/area-adjusted-accuracy/requirements-worldcover.txt"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fiji-worldcover-rehearsal
+  cancel-in-progress: false
+
+jobs:
+  extract-and-estimate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: implementations/python/area-adjusted-accuracy
+    steps:
+      - name: Check out Spatial Methods
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: implementations/python/area-adjusted-accuracy/requirements-worldcover.txt
+
+      - name: Install raster extraction dependency
+        run: python -m pip install -r requirements-worldcover.txt
+
+      - name: Retrieve pinned Fiji reference sample
+        env:
+          GEOJSON_URL: https://raw.githubusercontent.com/livelihoods-and-landscapes/ccai-data/050021d57c99abaaa6f2c511e4f718a402c7ca2a/fiji-lulc-test-data/fiji-lulc-2021-test-data.geojson
+        run: |
+          curl --fail --location --retry 3 --retry-delay 2 "$GEOJSON_URL" --output fiji-lulc-2021-test-data.geojson
+          sha256sum fiji-lulc-2021-test-data.geojson
+
+      - name: Extract WorldCover classes at all 834 points
+        run: |
+          python sample_worldcover.py \
+            --geojson fiji-lulc-2021-test-data.geojson \
+            --raster https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18E174_Map.tif \
+            --raster https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18E177_Map.tif \
+            --raster https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S18W180_Map.tif \
+            --raster https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S21E177_Map.tif \
+            --raster https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_S21W180_Map.tif \
+            --output worldcover-fiji-sample.csv
+
+      - name: Calculate design-adjusted accuracy
+        run: |
+          python stratified_accuracy.py worldcover-fiji-sample.csv \
+            --stratum-area-weights '{"water":0.011331967836,"mangrove":0.022598921173,"bare_soil_rock":0.003445902118,"urban":0.004378396325,"agriculture":0.090917519797,"grassland":0.096242589869,"shrubland":0.031660519822,"tree":0.739424183060}' \
+            --stratum-population-sizes '{"water":1779768,"mangrove":3549325,"bare_soil_rock":541204,"urban":687659,"agriculture":14279258,"grassland":15115599,"shrubland":4972515,"tree":116131948}' \
+            --json-out worldcover-fiji-accuracy.json
+          python -c "import json; r=json.load(open('worldcover-fiji-accuracy.json')); print('Sample size:', r['sample_size']); print('Overall accuracy:', r['overall_accuracy'])"
+
+      - name: Compare WorldCover with the original Fiji map on paired points
+        run: |
+          python paired_map_comparison.py worldcover-fiji-sample.csv \
+            --stratum-area-weights '{"water":0.011331967836,"mangrove":0.022598921173,"bare_soil_rock":0.003445902118,"urban":0.004378396325,"agriculture":0.090917519797,"grassland":0.096242589869,"shrubland":0.031660519822,"tree":0.739424183060}' \
+            --stratum-population-sizes '{"water":1779768,"mangrove":3549325,"bare_soil_rock":541204,"urban":687659,"agriculture":14279258,"grassland":15115599,"shrubland":4972515,"tree":116131948}' \
+            --json-out worldcover-fiji-paired-comparison.json
+          python -c "import json; r=json.load(open('worldcover-fiji-paired-comparison.json')); print('Original-map OA:', r['baseline_map_overall_accuracy']); print('WorldCover OA:', r['evaluated_map_overall_accuracy']); print('Paired difference:', r['evaluated_minus_baseline_accuracy_difference'])"
+      - name: Test alternative class crosswalks
+        run: |
+          python crosswalk_sensitivity.py worldcover-fiji-sample.csv \
+            --stratum-area-weights '{"water":0.011331967836,"mangrove":0.022598921173,"bare_soil_rock":0.003445902118,"urban":0.004378396325,"agriculture":0.090917519797,"grassland":0.096242589869,"shrubland":0.031660519822,"tree":0.739424183060}' \
+            --stratum-population-sizes '{"water":1779768,"mangrove":3549325,"bare_soil_rock":541204,"urban":687659,"agriculture":14279258,"grassland":15115599,"shrubland":4972515,"tree":116131948}' \
+            --json-out worldcover-fiji-crosswalk-sensitivity.json
+          python -c "import json; r=json.load(open('worldcover-fiji-crosswalk-sensitivity.json')); [print(s['scenario_id'], s['worldcover_overall_accuracy'], s['worldcover_minus_original_accuracy_difference']) for s in r['scenarios']]"
+
+
+
+      - name: Test and analyse four-outcome spatial disagreement
+        run: |
+          python -m unittest -v test_spatial_disagreement.py
+          python spatial_disagreement.py worldcover-fiji-sample.csv \
+            --stratum-area-weights '{"water":0.011331967836,"mangrove":0.022598921173,"bare_soil_rock":0.003445902118,"urban":0.004378396325,"agriculture":0.090917519797,"grassland":0.096242589869,"shrubland":0.031660519822,"tree":0.739424183060}' \
+            --stratum-population-sizes '{"water":1779768,"mangrove":3549325,"bare_soil_rock":541204,"urban":687659,"agriculture":14279258,"grassland":15115599,"shrubland":4972515,"tree":116131948}' \
+            --json-out fiji-worldcover-spatial-disagreement.json \
+            --geojson-out fiji-worldcover-spatial-disagreement.geojson
+
+      - name: Test and analyse class-specific errors
+        run: |
+          python -m unittest -v test_class_error_analysis.py
+          python class_error_analysis.py worldcover-fiji-sample.csv \
+            --stratum-area-weights '{"water":0.011331967836,"mangrove":0.022598921173,"bare_soil_rock":0.003445902118,"urban":0.004378396325,"agriculture":0.090917519797,"grassland":0.096242589869,"shrubland":0.031660519822,"tree":0.739424183060}' \
+            --json-out fiji-worldcover-class-error-analysis.json
+
+      - name: Upload reproducibility outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fiji-worldcover-rehearsal
+          path: |
+            implementations/python/area-adjusted-accuracy/fiji-lulc-2021-test-data.geojson
+            implementations/python/area-adjusted-accuracy/worldcover-fiji-sample.csv
+            implementations/python/area-adjusted-accuracy/worldcover-fiji-sample.csv.metadata.json
+            implementations/python/area-adjusted-accuracy/worldcover-fiji-accuracy.json
+            implementations/python/area-adjusted-accuracy/worldcover-fiji-paired-comparison.json
+            implementations/python/area-adjusted-accuracy/worldcover-fiji-crosswalk-sensitivity.json
+            implementations/python/area-adjusted-accuracy/fiji-worldcover-spatial-disagreement.json
+            implementations/python/area-adjusted-accuracy/fiji-worldcover-spatial-disagreement.geojson
+            implementations/python/area-adjusted-accuracy/fiji-worldcover-class-error-analysis.json
+          if-no-files-found: ignore
+          retention-days: 30

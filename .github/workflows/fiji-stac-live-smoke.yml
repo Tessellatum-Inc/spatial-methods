@@ -1,0 +1,71 @@
+name: Fiji STAC live imagery smoke test
+
+on:
+  push:
+    paths:
+      - ".github/workflows/fiji-stac-live-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install imagery dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r implementations/python/area-adjusted-accuracy/requirements-stac-imagery.txt
+      - name: Select one blind point from each disagreement group
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          source = Path("implementations/python/area-adjusted-accuracy/data/fiji-worldcover-legend-adjudication-blind-review.csv")
+          target = Path("/tmp/fiji-stac-smoke-points.csv")
+          with source.open(newline="", encoding="utf-8-sig") as stream:
+              rows = list(csv.DictReader(stream))
+          chosen = {}
+          for row in rows:
+              chosen.setdefault(row["transition"], row)
+          if not chosen:
+              raise SystemExit("No blind review points found")
+          with target.open("w", newline="", encoding="utf-8") as stream:
+              writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+              writer.writeheader()
+              writer.writerows(chosen.values())
+          print(f"Selected {len(chosen)} points across {len(chosen)} disagreement groups")
+          PY
+      - name: Live discovery against both catalogues
+        continue-on-error: true
+        working-directory: implementations/python/area-adjusted-accuracy
+        run: |
+          python stac_imagery_review.py \
+            --input /tmp/fiji-stac-smoke-points.csv \
+            --output-dir /tmp/fiji-stac-live-discovery \
+            --catalogues both --metadata-only --limit-per-point 1
+      - name: Read Earth Search assets and render point chips
+        continue-on-error: true
+        working-directory: implementations/python/area-adjusted-accuracy
+        run: |
+          python stac_imagery_review.py \
+            --input /tmp/fiji-stac-smoke-points.csv \
+            --output-dir /tmp/fiji-stac-live-chips \
+            --catalogues earth-search --keep-chips --limit-per-point 1
+      - name: Upload live discovery and chip provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fiji-stac-live-smoke
+          path: |
+            /tmp/fiji-stac-live-discovery/
+            /tmp/fiji-stac-live-chips/
+          if-no-files-found: warn
+          retention-days: 3

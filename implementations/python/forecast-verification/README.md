@@ -1,0 +1,40 @@
+# Forecast verification teaching package
+
+The package includes binary-event contingency metrics, Brier score and skill, reliability bins, tied-rank ROC AUC, regular-grid Fractions Skill Score, and a new ensemble-verification module.
+
+The ensemble module implements empirical-distribution CRPS per case and its sample mean, plus an expected rank histogram that fractionally distributes ties across admissible ranks. Inputs are paired cases with a rectangular ensemble and finite values. These metrics do not replace calibration assessment, uncertainty intervals or a spatially valid held-out design.
+
+Run python -m pip install -r requirements.txt and python -m pytest -q from this directory. See the individual module docstrings for contracts and the package walkthrough for derivations.
+
+
+
+
+## Spatial neighbourhood verification fractions skill score
+
+The `spatial_fss.py` module implements the Fractions Skill Score for paired regular two-dimensional grids. It thresholds the observed and forecast fields, computes neighbourhood event fractions with summed-area tables, and evaluates the standard FSS numerator and denominator. Neighbourhood width is an odd number of grid cells; `truncate` clips windows at the grid edge and `valid` scores only complete windows. The result is undefined (`None`) when the denominator is zero. It is a small-grid teaching baseline; physical grid spacing, projection, masks, threshold selection and reference interpretation remain the caller's responsibility. See [implementation](spatial_fss.py) and [tests](test_spatial_fss.py).
+
+## MODE-inspired object extraction and matching
+
+The object_verification module implements a bounded sequence: optional Gaussian smoothing, thresholding, connected-component labelling, measurement of area/intensity/weighted centroid/orientation, and minimum-cost one-to-one forecast-observation matching with explicit unmatched objects. The matching cost uses normalized centroid distance and log-ratio penalties for area and mean intensity.
+
+This is not a full MODE reproduction. It omits within-field merging and cluster objects, the official fuzzy-interest formulation, multi-threshold hierarchies and temporal tracking. The implementation is a transparent teaching candidate intended for parameter-sensitivity experiments.
+
+Reference: Davis, Brown & Bullock (2006), “Object-Based Verification of Precipitation Forecasts. Part I: Methodology and Application to Mesoscale Rain Areas,” *Monthly Weather Review*, 134, 1772–1784. https://doi.org/10.1175/MWR3145.1
+
+
+## SAL structure-amplitude-location verification
+
+The sal_verification module computes the amplitude component from domain means, the structure component from precipitation-mass-weighted scaled object volumes, and location as L1 centroid displacement plus L2 difference in object scatter. Forecast and observation objects are identified independently using a fraction of each field's own maximum. The implementation does not match objects between fields, consistent with the SAL method.
+
+The connected-component object finder is a bounded teaching choice, not a claim of exact parity with the original coherent-object identification. Dry-field edge cases are explicit. See [implementation](sal_verification.py), [tests](test_sal_verification.py) and [lab](../../../notebooks/sal-precipitation-verification-lab.ipynb).
+
+Reference: Wernli, Paulat, Hagen & Frei (2008), “SAL—A Novel Quality Measure for the Verification of Quantitative Precipitation Forecasts,” *Monthly Weather Review*, 136, 4470–4487. https://doi.org/10.1175/2008MWR2415.1
+
+
+## CRPS reliability-resolution-uncertainty decomposition
+
+The `crps_decomposition` module applies the identity CRPS = integral of threshold Brier scores. For each threshold, ensemble exceedance fractions are grouped into forecast-probability bins and the Brier score is decomposed into reliability − resolution + uncertainty. Each term is integrated with trapezoidal quadrature over a supplied or generated threshold grid.
+
+This is a transparent finite-threshold approximation to the CRPS decomposition, not the exact ensemble-bin-width estimator of Hersbach (2000). Report the threshold range and density; use a dense grid and compare the integrated score with the direct empirical-ensemble CRPS. See [implementation](crps_decomposition.py), [tests](test_crps_decomposition.py) and [lab](../../../notebooks/crps-decomposition-lab.ipynb).
+
+Reference: Hersbach (2000), “Decomposition of the Continuous Ranked Probability Score for Ensemble Prediction Systems,” *Weather and Forecasting*, 15, 559–570. https://doi.org/10.1175/1520-0434(2000)015<0559:DOTCRP>2.0.CO;2

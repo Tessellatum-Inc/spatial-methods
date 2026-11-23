@@ -1,0 +1,105 @@
+name: Sentinel-1 Nairobi download and structural preflight
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: copernicus-sentinel1-nairobi-download-preflight
+  cancel-in-progress: false
+
+jobs:
+  download-and-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Check out Spatial Methods
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Prepare evidence directory and inspect runner storage
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/copernicus-nairobi
+          df -h /tmp
+
+      - name: Verify repository secrets are configured
+        env:
+          CDSE_USERNAME: ${{ secrets.CDSE_USERNAME }}
+          CDSE_PASSWORD: ${{ secrets.CDSE_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CDSE_USERNAME}" ] || [ -z "${CDSE_PASSWORD}" ]; then
+            echo "::error::Configure CDSE_USERNAME and CDSE_PASSWORD as repository Actions secrets before running this workflow."
+            exit 1
+          fi
+
+          # Diagnose common copy/paste errors without exposing either secret.
+          python - <<'PY'
+          import os
+          username = os.environ["CDSE_USERNAME"]
+          password = os.environ["CDSE_PASSWORD"]
+          checks = {
+              "username_has_outer_whitespace": username != username.strip(),
+              "password_has_outer_whitespace": password != password.strip(),
+              "username_looks_like_email": "@" in username and "." in username.rsplit("@", 1)[-1],
+              "password_contains_line_break": "\\n" in password or "\\r" in password,
+          }
+          for name, result in checks.items():
+              print(f"{name}={str(result).lower()}")
+          if checks["username_has_outer_whitespace"] or checks["password_has_outer_whitespace"] or checks["password_contains_line_break"]:
+              raise SystemExit("A credential contains leading/trailing whitespace or a line break. Recreate the affected GitHub secret carefully.")
+          PY
+
+      - name: Build the catalogue candidate manifest
+        run: |
+          python explorations/radar/build_sentinel1_stack_manifest.py \
+            --input explorations/radar/nairobi-sentinel-1-catalogue-inventory.csv \
+            --output /tmp/copernicus-nairobi/nairobi-sentinel-1-stack-manifest.json
+
+      - name: Download the selected Sentinel-1 SAFE archive
+        env:
+          CDSE_USERNAME: ${{ secrets.CDSE_USERNAME }}
+          CDSE_PASSWORD: ${{ secrets.CDSE_PASSWORD }}
+        run: |
+          set -euo pipefail
+          python explorations/radar/download_copernicus_sentinel1.py \
+            --product-id 8ffa5641-c404-4189-b0fb-ed805b077d71 \
+            --output-dir /tmp/copernicus-nairobi \
+            --timeout 180
+
+      - name: Audit SAFE metadata and VV/VH structure
+        run: |
+          set -euo pipefail
+          python explorations/radar/audit_sentinel1_safe_metadata.py \
+            /tmp/copernicus-nairobi/sentinel1_8ffa5641-c404-4189-b0fb-ed805b077d71.SAFE.zip \
+            --expected-product-name S1C_IW_GRDH_1SDV_20261102T031112_20261102T031137_010152_01443B_5D46.SAFE \
+            --output /tmp/copernicus-nairobi/sentinel1_8ffa5641-c404-4189-b0fb-ed805b077d71.preflight.json
+
+      - name: Reconcile catalogue, download and audit evidence
+        run: |
+          set -euo pipefail
+          python explorations/radar/build_sentinel1_processing_readiness.py \
+            --stack-manifest /tmp/copernicus-nairobi/nairobi-sentinel-1-stack-manifest.json \
+            --download-sidecar /tmp/copernicus-nairobi/sentinel1_8ffa5641-c404-4189-b0fb-ed805b077d71.SAFE.zip.metadata.json \
+            --safe-audit /tmp/copernicus-nairobi/sentinel1_8ffa5641-c404-4189-b0fb-ed805b077d71.preflight.json \
+            --output /tmp/copernicus-nairobi/sentinel1_8ffa5641-c404-4189-b0fb-ed805b077d71.readiness.json
+
+      - name: Remove the satellite archive from the runner workspace
+        if: always()
+        run: rm -f /tmp/copernicus-nairobi/*.SAFE.zip /tmp/copernicus-nairobi/*.SAFE.zip.part
+
+      - name: Upload metadata and provenance evidence only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sentinel1-nairobi-structural-preflight
+          path: /tmp/copernicus-nairobi/*.json
+          if-no-files-found: warn
+          retention-days: 14

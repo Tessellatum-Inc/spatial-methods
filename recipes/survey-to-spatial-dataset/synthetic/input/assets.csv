@@ -1,0 +1,7 @@
+asset_id,stop_id,x_local_m,y_local_m,asset_type,presence,condition,observed_at,observer_id
+ASSET-SYN-001,STOP-SYN-001,12.1,8.4,shelter,present,fair,2026-11-19T09:01:00+03:00,TEAM-SYN
+ASSET-SYN-002,STOP-SYN-001,12.0,8.0,seat,present,good,2026-11-19T09:02:00+03:00,TEAM-SYN
+ASSET-SYN-003,STOP-SYN-002,45.2,9.1,sign,present,good,2026-11-19T09:06:00+03:00,TEAM-SYN
+ASSET-SYN-004,STOP-SYN-002,44.7,9.5,light,not_assessed,not_assessed,2026-11-19T09:07:00+03:00,TEAM-SYN
+ASSET-SYN-005,STOP-SYN-003,78.0,10.8,footway_link,present,poor,2026-11-19T09:11:00+03:00,TEAM-SYN
+ASSET-SYN-006,STOP-SYN-004,111.8,11.2,kerb_ramp,obscured,unknown,2026-11-19T09:16:00+03:00,TEAM-SYN

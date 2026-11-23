@@ -1,0 +1,43 @@
+services:
+  postgis:
+    image: postgis/postgis:16-3.5-alpine
+    environment:
+      POSTGRES_DB: spatial_methods_test
+      POSTGRES_USER: spatial_methods
+      POSTGRES_PASSWORD: spatial_methods_local_only
+    ports:
+      - "55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spatial_methods -d spatial_methods_test"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - ./postgis-schema.sql:/tests/postgis-schema.sql:ro
+      - ./integration.sql:/tests/integration.sql:ro
+      - ./spatial-qa.sql:/tests/spatial-qa.sql:ro
+
+  ingest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://spatial_methods:spatial_methods_local_only@postgis:5432/spatial_methods_test
+    depends_on:
+      postgis:
+        condition: service_healthy
+    command: ["python", "/app/ingest_pilot.py", "--input", "/app/input"]
+
+  export:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      OGR_PG_CONNECTION_STRING: PG:host=postgis port=5432 dbname=spatial_methods_test user=spatial_methods password=spatial_methods_local_only
+      DELIVERY_DIR: /output
+    volumes:
+      - ./output:/output
+    depends_on:
+      postgis:
+        condition: service_healthy
+    command: ["python", "/app/build_delivery.py"]

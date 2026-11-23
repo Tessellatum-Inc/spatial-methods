@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "project_id": "REPLACE-WITH-PROJECT-ID",
+  "title": "REPLACE-WITH-PROJECT-TITLE",
+  "intended_use": "Describe the decision or measurement task this project supports.",
+  "data_sources": [
+    {
+      "source_id": "SOURCE-01",
+      "description": "Describe source, publisher and selected dataset.",
+      "uri": "https://example.org/dataset",
+      "licence": "Record applicable licence and conditions.",
+      "resolved_version": "Record immutable version, revision or retrieval date."
+    }
+  ],
+  "dataset": {
+    "project_directory": "./dataset-project",
+    "expected_image_count": null,
+    "raw_data_location": "Describe separately maintained immutable raw archive."
+  },
+  "processing": {
+    "engine": "OpenDroneMap",
+    "container_image": "opendronemap/odm:PINNED_VERSION",
+    "arguments": []
+  },
+  "validation": {
+    "horizontal_crs": "REQUIRED: specify CRS and relevant realisation/epoch.",
+    "vertical_reference": "REQUIRED: specify vertical datum and height type.",
+    "coordinate_units": "REQUIRED: specify units and axis order.",
+    "independent_checkpoints": false,
+    "reference_uncertainty": "REQUIRED: describe survey method and uncertainty.",
+    "acceptance_criteria": "REQUIRED: cite project specification and measurable test."
+  },
+  "deliverables": [
+    "List required products and reports."
+  ]
+}

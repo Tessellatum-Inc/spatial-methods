@@ -1,0 +1,65 @@
+# Find your way through spatial analysis
+
+There isn't one right way to learn spatial analysis.
+
+You might be starting from the basics. You might have a project to finish and need one particular method. Or you might already work with spatial data and want to understand what happens underneath the tools you use every day.
+
+Start with what matters to you. Follow a path when it helps. Take a detour whenever something catches your attention.
+
+## Cross-pillar pathways
+
+For routes that deliberately connect Theoretical Foundations, Spatial Data Collection, Spatial Algorithms and Spatial Recipes around a practical question, use the [cross-pillar pathway index](cross-pillar-pathways.md). It documents photogrammetric mapping, survey-to-spatial-dataset delivery, measurement-network adjustment and a partial remote-sensing route, with evidence boundaries and unfinished connections made explicit.
+
+## Start with a problem
+
+These are starting points, not locked courses.
+
+1. **I want to understand the basics of GIS.** Start with geometry, spatial relationships, indexing, proximity, networks and routing.
+2. **I want to understand how shapes and boundaries work.** Explore geometric predicates, intersections, polygon operations, triangulation, Voronoi diagrams and related structures.
+3. **I work with large spatial datasets.** Explore spatial databases, indexes, query processing, joins and distributed computing.
+4. **I want to find patterns in data.** Explore sampling, spatial autocorrelation, point patterns, clustering, interpolation and uncertainty.
+5. **I work with satellite or raster data.** Explore raster foundations, image processing, classification, change detection and data fusion.
+6. **I work with cities, places or transport.** Explore networks, accessibility, flows, location, land use and simulation.
+
+## Learn in the way that works for you
+
+- **Follow a path:** work through a subject in a considered order.
+- **Look up one method:** go straight to the explanation you need.
+- **Learn by doing:** use examples and exercises to test your understanding.
+- **Go deeper:** follow the references into the mathematics, research and implementation details.
+- **Explore sideways:** related methods are linked, so one question can lead to another.
+
+You can move between paths. You can revisit a topic. You can begin with a practical question and learn the foundations along the way.
+
+## A good way to work through a method
+
+You do not need to memorise everything on the first read. Try this simple cycle:
+
+1. **Read the question.** Make sure you understand what the method is trying to do.
+2. **Look at the picture.** Follow the geometry, data flow or sequence of events.
+3. **Work through a small example.** Predict the answer before looking at the result.
+4. **Run the code.** Change an input and see what happens.
+5. **Check the edge cases.** Use the tests to understand where the simple example stops being enough.
+6. **Explain it in your own words.** If you can describe why the method works and when it might fail, you are ready to go further.
+
+Some topics benefit from a notebook, map, animation or benchmark. We will use those when they make the idea clearer—not simply to add more tools.
+
+## A first path to follow
+
+[Geometry foundations: how points, lines and areas relate](geometry-foundations.md) connects four lessons—from testing one point against a boundary to finding crossings across a whole set of segments. It includes runnable examples and a step-by-step implementation walkthrough.
+
+## Another place to begin
+
+If you want to understand event concentrations and nearest-neighbour spacing, follow [Point-pattern foundations](point-pattern-foundations.md). If you want to group point observations by density and distinguish clusters from noise, follow [Spatial clustering foundations](spatial-clustering-foundations.md). If you want to understand whether nearby places have similar values, follow the [spatial autocorrelation path](global-spatial-autocorrelation.md). It connects global and local Moran, Geary and Getis-Ord methods with worked examples and interactive notebooks.
+
+If you want to understand how a GIS searches large collections of features, start with [spatial indexing](spatial-indexing.md). The first lessons explain bounding boxes, STR-packed R-trees and indexed spatial joins.
+
+To understand spatial criteria, suitability models and decision trade-offs, start with [Spatial decision support](spatial-decision-support.md). To understand facility location and potential service accessibility, start with [Location science foundations](location-science-foundations.md). To calculate and interpret a first vegetation spectral index, start with [Remote sensing index foundations](remote-sensing-indices.md). To understand how optical and radar observations connect to physics, acquisition, algorithms and validation—and where the repository still has gaps—follow the [remote-sensing cross-pillar pathway](remote-sensing-cross-pillar-pathway.md). To understand raster distance and cell-size effects, start with [Raster distance foundations](raster-distance-foundations.md). To follow elevation through DEM conditioning, D8 flow direction, accumulation, watershed delineation and stream ordering, use [Raster hydrology foundations](raster-hydrology-foundations.md). To understand how to estimate values between measured locations, follow [Spatial interpolation foundations](geostatistics-foundations.md) and the [interpolation and geostatistics path](interpolation-and-geostatistics.md). To continue from geometry foundations into simplification, offsets, proximity graphs and planar point location, follow [Core GIS continuation](core-gis-continuation.md). For graph costs, shortest paths and the modelling choices behind a route planner, follow [Network routing foundations](network-routing-foundations.md). To begin geospatial self-supervised learning with a concrete contrastive objective, follow [GeoAI foundations](geoai-foundations.md). To understand coordinate systems and point transformations, follow [Geodesy foundations](geodesy-foundations.md).
+
+For measurement science, uncertainty evaluation and survey-network adjustment, follow [Measurement science and survey adjustment](measurement-science-and-survey-adjustment.md). It connects foundations, synthetic network experiments and reusable Python implementations. To connect statistical foundations to field data, map accuracy and spatial prediction, follow [Spatial statistical inference](spatial-statistical-inference.md), an applied route from study design to defensible results.
+
+## The collection keeps growing
+
+Each method has its own permanent page. New weekly editions introduce and explore topics, while the learning paths bring those topics together in useful sequences. That means the order in which something was published does not decide the order in which you have to learn it.
+
+The paths below are being built and reviewed as the collection grows. A path is marked ready only when its sequence, explanations, examples and exercises have been checked.

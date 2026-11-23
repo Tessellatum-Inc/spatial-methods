@@ -1,0 +1,121 @@
+# Section 6 — Optimization, location science, mobility, transport
+
+- **Original source section:** 6
+- **Source pages:** 9–11
+- **Source transcription:** [pages 6–10](../../source-inventory/pages-06-10.md) and [pages 11–15](../../source-inventory/pages-11-15.md)
+- **Review state:** source entries extracted into this index; not every entry independently verified
+- **Current canonical records:** [The p-median problem](../../algorithms/optimization/p-median.md); [Capacitated p-median](../../algorithms/optimization/capacitated-p-median.md); [Discrete p-center](../../algorithms/optimization/p-center.md); [Location set covering](../../algorithms/optimization/set-covering.md); [Maximal covering location](../../algorithms/optimization/maximal-covering.md); [Backup coverage (r-covering)](../../algorithms/optimization/backup-coverage.md); [M/M/c queueing model](../../algorithms/optimization/mmc-queue.md); [Maximum expected covering (MEXCLP)](../../algorithms/optimization/mexclp.md); [Two-step floating catchment area](../../algorithms/optimization/two-step-fca.md) (first audited facility-location and accessibility models; remaining entries are still unverified); [TSP 2-opt and Clarke–Wright CVRP heuristics](../../algorithms/optimization/tsp-two-opt-clarke-wright.md); [Greedy VRPTW construction](../../algorithms/optimization/vrptw-greedy-insertion.md)
+
+This section brings together optimisation problems, logistics, accessibility, transport planning, human mobility, positioning and robotics. It includes exact optimisation methods, heuristics, models, software, metrics and applied workflows. Keep the problem definition visible: many similarly named methods solve different objectives or operate under different constraints.
+
+## First audited location model
+
+The [p-median lesson](../../algorithms/optimization/p-median.md) states the uncapacitated facility-location objective and assignment constraints. A tested exact exhaustive solver provides a small-instance oracle, with an interactive notebook. The distinct [p-dispersion problem](../../algorithms/optimization/p-dispersion.md) now has an exact small-instance max-min solver and independent tests; it maximises minimum separation rather than minimising demand assignment cost. These baselines do not include large-scale optimisation or all real-world constraints.
+
+## First audited location and accessibility models
+
+The [p-median lesson](../../algorithms/optimization/p-median.md) states the uncapacitated facility-location objective and assignment constraints. A tested exact exhaustive solver provides a small-instance oracle, with an interactive notebook. The [2SFCA lesson](../../algorithms/optimization/two-step-fca.md) adds a binary-catchment accessibility measure balancing provider supply and population demand, with a tested implementation and notebook. The [p-center lesson](../../algorithms/optimization/p-center.md) minimizes the maximum nearest-facility cost when exactly p sites open, with a tested exact small-instance solver and visual lab. The [set-covering lesson](../../algorithms/optimization/set-covering.md) minimizes the number of sites needed to reach every demand point within a threshold, with an exact small-instance solver, tests, walkthrough, exercise and visual lab. The [MCLP lesson](../../algorithms/optimization/maximal-covering.md) selects at most p facilities to maximize weighted demand within a service threshold, with an exact small-instance solver, tests, intern walkthrough, exercise and visual lab. These are distinct models: p-median minimizes total assignment cost, p-center minimizes worst-case cost, set covering minimizes the number of facilities needed to cover everyone, MCLP maximizes threshold coverage, and 2SFCA measures supply-to-demand accessibility. The capacitated p-median baseline enforces deterministic scalar facility limits but does not model queues, split demand, stochastic capacity or service levels. A separate [accessibility equity diagnostics lesson](../../algorithms/optimization/accessibility-equity.md) measures population-weighted Lorenz/Gini distributions, lower-tail access, threshold shortfall and caller-defined group gaps. The [equity-constrained maximal-covering model](../../algorithms/optimization/equity-constrained-covering.md) adds explicit group coverage floors to a threshold-covering problem, with an exact tiny-instance solver and unit-test suite. Both are scoped teaching tools; the floors and groups remain policy choices, not a universal fairness rule. More general equity-constrained location optimisation remains future work.
+
+## Capacity-constrained location
+
+The [capacitated p-median lesson](../../algorithms/optimization/capacitated-p-median.md) and exact tiny-instance implementation add indivisible demand quantities and hard facility capacities to the assignment model. A test suite, intern walkthrough, exercise and visual notebook compare the constrained solution with the uncapacitated p-median baseline. It is not a queueing model and does not allow demand splitting.
+
+## Expected coverage under busy units
+
+The [MEXCLP lesson](../../algorithms/optimization/mexclp.md) adds an availability-aware objective to the deterministic location models. Its exact small-instance solver, tests, intern walkthrough, exercise and interactive lab assume equal independent busy fractions and allow multiple units at one candidate site. This is distinct from deterministic r-covering and from M/M/c queueing; the adjusted MEXCLP and hypercube queueing model remain outside this implementation.
+
+## Location-allocation and spatial optimization
+
+| Source entry | Provisional kind | Source page | Verification status |
+|---|---|---:|--- |
+| Covering and median: [p-median](../../algorithms/optimization/p-median.md), [p-center](../../algorithms/optimization/p-center.md), [p-dispersion](../../algorithms/optimization/p-dispersion.md), [set covering](../../algorithms/optimization/set-covering.md), [maximal covering (MCLP)](../../algorithms/optimization/maximal-covering.md), [MEXCLP](../../algorithms/optimization/mexclp.md), MALP, BACOP, hypercube queuing, [M/M/c queue](../../algorithms/optimization/mmc-queue.md) | Facility-location models / optimisation problems / queueing models | 10 | Partial — p-dispersion now has an exact small-instance max-min solver with analytic/tie/validation tests; MEXCLP includes common and site-specific independent busy probabilities; adjusted dependence correction, MALP, BACOP, hypercube queueing and source-entry review remain open |
+| Capacitated and hub location, p-hub median, hierarchical, stochastic and robust facility location | Facility-location problem variants / optimisation models | 10 | [Exact p-median](../../implementations/python/p-median/README.md) and [capacitated p-median](../../implementations/python/capacitated-p-median/README.md) have tested exhaustive solvers for small instances | Partial — uncapacitated and indivisible-demand capacitated p-median are implemented; p-hub, hierarchical, stochastic and robust facility location remain open |
+| Districting: redistricting, ReCom, MCMC and Flip, compactness scores (Polsby-Popper, Reock, Schwartzberg), territory design, set partitioning | Districting and partitioning methods / sampling methods / compactness metrics | 10 | Partial — tested planar Polsby–Popper, Reock and Schwartzberg metrics with a deterministic minimum enclosing circle; ReCom/MCMC/Flip, territory design and set partitioning remain open |
+| Land-use allocation, spatial reserve design (Marxan), art gallery problem, sensor and camera placement, cell tower siting | Spatial allocation / reserve design / coverage and placement problems | 10 | Not checked — intake only |
+| Heuristics: genetic algorithms, simulated annealing, NSGA-II, particle swarm, ant colony, tabu search, GRASP, variable neighborhood search, matheuristics | Metaheuristics / multi-objective optimisation methods | 10 | [Metaheuristics for spatial optimisation](../../algorithms/optimization/metaheuristics.md); selected identity and bibliography checks are recorded in a [verification record](../verification/metaheuristics.md) | Partial — named families and selected primary bibliography confirmed; technical and variant review remains open |
+| Exact methods: branch-and-bound, Lagrangian relaxation, Benders decomposition, min-cost flow, transportation and assignment problems, Hungarian algorithm; quantum annealing and QAOA (experimental) | Exact optimisation methods / mathematical programming / experimental quantum methods | 10 | [Exact optimisation methods and network-flow models](../../algorithms/optimization/exact-optimisation-methods.md); selected identities and bibliography are recorded in a [verification record](../verification/exact-optimisation.md) | Partial — named methods/models and selected primary references identified; detailed technical and implementation review remains open |
+
+## Logistics
+
+| Source entry | Provisional kind | Source page | Verification status |
+|---|---|---:|--- |
+| TSP and capacitated VRP: 2-opt local search and Clarke–Wright savings | Routing heuristics / combinatorial optimisation | 10 | [2-opt and Clarke–Wright](../../algorithms/optimization/tsp-two-opt-clarke-wright.md) have dependency-free tested baselines with deterministic Euclidean costs, capacity validation and seeded differential checks. A separate [greedy VRPTW construction](../../algorithms/optimization/vrptw-greedy-insertion.md) now records feasible service schedules, waiting, capacity, depot-return deadlines and explicitly unserved customers. Lin–Kernighan, Christofides, exact/advanced VRPTW, multi-depot, pickup-and-delivery, periodic, inventory-routing and drone-truck variants remain outstanding; see the [VRPTW verification record](../verification/vrptw-greedy-insertion.md) | Partial — TSP, CVRP and a bounded VRPTW construction implemented; source-entry review pending |
+| Multi-depot VRP, periodic routing, inventory-routing, drone-truck routing, school bus routing | Vehicle-routing problem variants | 10 | Not checked — intake only |
+| Snow plow and waste collection arc routing, ride-hailing dispatch, bike rebalancing | Arc-routing and dispatch optimisation problems | 10 | Not checked — intake only |
+| ETA prediction (WDR, DeepTTE, graph neural networks), OR-Tools | Prediction models / software toolkit | 10 | Not checked — intake only |
+
+## Accessibility and spatial interaction
+
+| Source entry | Provisional kind | Source page | Verification status |
+|---|---|---:|--- |
+| Gravity models, [Harris market potential](../../methods/harris-market-potential.md), Huff model, Hansen accessibility, Reilly's law, [2SFCA and variants](../../algorithms/optimization/two-step-fca.md), cumulative opportunities, impedance decay | Spatial interaction models / accessibility measures | 10 | Partial — Harris inverse-power market-potential implementation and lab exist; Huff, gravity, Hansen, Reilly and other variants remain separately scoped; source-entry review pending |
+| Radiation model, intervening opportunities, origin-destination flow models, [equity accessibility (Gini, Lorenz)](../../algorithms/optimization/accessibility-equity.md), [equity-constrained covering](../../algorithms/optimization/equity-constrained-covering.md) | Interaction and flow models / equity measures | 10 | Partial — related record exists; source-entry review pending |
+| Trade area analysis (drive-time, Huff, analog), cannibalization, retail gravity, 15-minute city metrics | Retail and urban analysis methods / spatial indicators | 10 | [Huff competitive facility-choice model](../../implementations/python/huff-model/README.md) has a tested probabilistic allocation baseline | Partial — Huff origin-to-facility choice probabilities and expected visits are implemented; drive-time isochrones, analog trade areas, cannibalization and 15-minute-city indicators remain open |
+
+## Transport planning
+
+| Source entry | Provisional kind | Source page | Verification status |
+|---|---|---:|--- |
+| Four-step model: trip generation, gravity distribution, mode choice (multinomial and nested logit), assignment | Transport modelling framework / statistical models / network assignment | 10–11 | Not checked — intake only |
+| Traffic assignment: user equilibrium, Frank-Wolfe, Wardrop equilibrium, dynamic traffic assignment, cell transmission model | Network equilibrium / optimisation / traffic-flow models | 10–11 | Not checked — intake only |
+| Activity-based and simulation: MATSim, SUMO, ActivitySim, UrbanSim, car-following (IDM, Gipps) | Simulation frameworks / software / behavioural models | 11 | Not checked — intake only |
+| O-D estimation from counts, GTFS processing, transit accessibility, crash hotspot and empirical Bayes screening | Estimation methods / data processing / accessibility / safety analysis | 11 | Not checked — intake only |
+| Traffic forecasting: DCRNN, STGCN, Graph WaveNet, ASTGCN, GMAN, PDFormer, STID | Spatiotemporal forecasting model architectures | 11 | Not checked — intake only |
+
+## Human mobility and trajectories
+
+| Source entry | Provisional kind | Source page | Verification status |
+|---|---|---:|--- |
+| Trajectory processing: stop and stay-point detection, compression (SQUISH, STTrace, opening window, TD-TR), imputation, route recovery | Trajectory processing algorithms | 11 | Partial — tested start-anchored stay-point detection and spatial Douglas–Peucker simplification are implemented; SQUISH, STTrace, opening-window and TD-TR compression, trajectory imputation and route recovery remain open |
+| Similarity and clustering: dynamic time warping, LCSS, Fréchet, TRACLUS, T-DBSCAN, trajectory similarity search | Similarity measures / clustering algorithms / query methods | 11 | Partial — tested Euclidean DTW with an optional Sakoe–Chiba window and index-windowed LCSS similarity are implemented; TRACLUS, T-DBSCAN, trajectory Fréchet variants and indexed similarity search remain open |
+| Patterns: flock, convoy, swarm; transport mode detection; activity inference | Moving-object patterns / classification and inference methods | 11 | Not checked — intake only |
+| Mobility models: exploration and preferential return, Lévy flights, continuous-time random walks; metrics (radius of gyration, entropy, predictability) | Mobility models / movement metrics | 11 | [Descriptive mobility metrics](../../implementations/python/mobility-metrics/README.md) provides tested radius of gyration, step/turn measures, visit entropy and Fano predictability bound | Partial — exploration/preferential-return models, Lévy flights and continuous-time random walks remain open |
+| Next-location prediction: Markov, DeepMove, LSTPM, GETNext, STAN, Flashback; POI recommendation | Sequential prediction models / recommendation systems | 11 | Not checked — intake only |
+| Time geography: space-time prisms, potential path areas, activity spaces | Spatial-temporal constructs / analytical methods | 11 | [Time-geography potential path areas](../../implementations/python/time-geography/README.md) provides tested constant-speed Euclidean prism and ellipse baselines | Partial — network-constrained prisms, barriers, time-varying travel and activity-space inference remain open |
+| Movement ecology: MCP, KDE, LoCoH, Brownian bridge, step selection, resource selection functions | Movement ecology estimators / models | 11 | Not checked — intake only |
+| Mobile phone CDR analysis, footfall estimation, segregation from mobility | Data analysis workflows / population and mobility measures | 11 | Not checked — intake only |
+
+## Positioning, navigation, robotics
+
+| Source entry | Provisional kind | Source page | Verification status |
+|---|---|---:|--- |
+| Haversine, Vincenty and Karney geodesics, great-circle and rhumb lines | Geodesic calculations / navigation methods | 11 | Not checked — intake only |
+| GNSS: RTK, PPP, Kalman and particle filters, dead reckoning, trilateration, Wi-Fi and Bluetooth fingerprinting, UWB, Wi-Fi RTT, magnetic fingerprinting, pedestrian dead reckoning | Positioning methods / estimation filters / sensor technologies | 11 | [GNSS ambiguity and RAIM baselines](../../implementations/python/gnss-ambiguity/README.md) include tested integer least-squares and residual fault-exclusion components | Partial — ambiguity-resolution and residual-based RAIM/FDE components are implemented for supplied linearised inputs; raw-observation RTK/PPP, protection levels, dead reckoning and indoor positioning remain open |
+| SLAM: EKF-SLAM, FastSLAM, GraphSLAM, ORB-SLAM, LOAM, LIO-SAM; visual odometry, loop closure, pose graph optimization | Simultaneous localisation and mapping algorithms / robotics workflows | 11 | Not checked — intake only |
+| Planning: RRT and RRT*, PRM, D* Lite, hybrid A*, Dubins and Reeds-Shepp curves, potential fields, coverage path planning, navigation meshes, social force crowd models | Motion-planning algorithms / geometric path models / crowd models | 11 | Not checked — intake only |
+| Maritime and aviation: weather routing (isochrone method), CPA/TCPA collision avoidance, AIS trajectory prediction and anomaly analysis, UAV mission planning, 3D path planning | Domain-specific routing / collision avoidance / prediction and planning workflows | 11 | Not checked — intake only |
+
+## Decisions for the next pass
+
+1. Separate the optimisation problem from the algorithm used to solve it.
+2. Record objective functions, constraints, decision variables and units for location-allocation examples.
+3. Distinguish accessibility measures from the models used to estimate travel or interaction.
+4. Treat GTFS processing and transit routing as data and network workflows with explicit feed versions and service assumptions.
+5. Record temporal resolution, sampling bias and privacy constraints for mobility data.
+6. Verify named software, forecasting architectures and robotics systems against original publications and maintained documentation.
+
+## Backup coverage extension
+
+The [backup-coverage lesson](../../algorithms/optimization/backup-coverage.md) and [Python package](../../implementations/python/backup-coverage/README.md) introduce deterministic r-covering: demand is counted only when at least r distinct selected candidate facilities are within the service threshold. The package includes tests, an intern walkthrough, exercise and executable notebook. This is a redundancy screen, not a reliability probability; shared infrastructure, correlated failures, capacity and queues are outside scope.
+
+## Service queueing extension
+
+The [M/M/c lesson](../../algorithms/optimization/mmc-queue.md) and [implementation](../../implementations/python/mmc-queue/README.md) introduce Erlang-C steady-state waiting for one FCFS queue feeding identical parallel servers. Tests, an intern walkthrough, an exercise and an executable notebook accompany the package. The assumptions are explicit: Poisson arrivals, exponential service, stationarity, an infinite queue and identical servers. It is an operations model, not a geographic accessibility measure.
+
+## Bibliographic checks on the scoped location models
+
+The following foundational citation metadata has been checked against publisher or authoritative bibliographic records and corrected where necessary:
+
+- **p-center:** Hakimi (1964), *Operations Research*, 12(3), 450–459, [10.1287/opre.12.3.450](https://doi.org/10.1287/opre.12.3.450). **p-median:** Hakimi (1964), same paper, and Hakimi (1965), *Operations Research*, 13(3), 462–475, [10.1287/opre.13.3.462](https://doi.org/10.1287/opre.13.3.462), which directly treats the distribution of p switching centres.
+- **Location set covering:** Toregas, Swain, ReVelle and Bergman (1971), *Operations Research*, 19(6), 1363–1373, [10.1287/opre.19.6.1363](https://doi.org/10.1287/opre.19.6.1363).
+- **Maximal covering:** Church and ReVelle (1974), *Papers of the Regional Science Association*, 32(1), 101–118, [10.1007/BF01942293](https://doi.org/10.1007/BF01942293); and their distinct 1976 theoretical-links paper, *Geographical Analysis*, 8(4), 406–415, [10.1111/j.1538-4632.1976.tb00547.x](https://doi.org/10.1111/j.1538-4632.1976.tb00547.x).
+- **Backup coverage:** Hogan and ReVelle (1986), *Management Science*, 32(11), 1434–1444, [10.1287/mnsc.32.11.1434](https://doi.org/10.1287/mnsc.32.11.1434).
+- **MEXCLP:** Daskin (1983), *Transportation Science*, 17(1), 48–70, [10.1287/trsc.17.1.48](https://doi.org/10.1287/trsc.17.1.48); Batta, Dolan and Krishnamurthy (1989), *Transportation Science*, 23(4), 277–287, [10.1287/trsc.23.4.277](https://doi.org/10.1287/trsc.23.4.277).
+- **2SFCA and E2SFCA:** Radke and Mu (2000), *Geographic Information Sciences*, 6(2), 105–112, [10.1080/10824000009480538](https://doi.org/10.1080/10824000009480538); Luo and Wang (2003), *Environment and Planning B: Planning and Design*, 30(6), 865–884, [10.1068/b29120](https://doi.org/10.1068/b29120); Luo and Qi (2009), *Health & Place*, 15(4), 1100–1107, [10.1016/j.healthplace.2009.06.002](https://doi.org/10.1016/j.healthplace.2009.06.002), with its [2011 erratum](https://doi.org/10.1016/j.healthplace.2010.10.006).
+
+This pass checks bibliographic identity and metadata for these cited foundations. It does not verify every technical claim, every model variant or every grouped source entry in Section 6.
+
+
+## Atomic completion tracking
+
+The grouped source entries above have been decomposed into individually auditable child IDs in the [Section 6 atomic completion register](../../docs/section-6-atomic-completion-register.md). The register preserves the source grouping and distinguishes algorithms from models, metrics, software and workflows. It is traceability infrastructure, not a verification or completion claim.

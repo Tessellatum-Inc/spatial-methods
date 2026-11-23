@@ -1,0 +1,98 @@
+name: HEIG-VD ODM output inspection
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: GitHub Actions run ID containing the completed EXIF baseline artifact
+        required: true
+        default: "44899855412"
+  push:
+    paths:
+      - ".github/workflows/heig-vd-odm-output-inspection.yml"
+      - "implementations/python/photogrammetry-odm/output_inspection.py"
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: heig-vd-odm-output-inspection
+  cancel-in-progress: true
+
+jobs:
+  inspect:
+    name: Inspect preserved real ODM products
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install output inspection dependencies
+        run: python -m pip install "rasterio>=1.4,<2" "laspy>=2.5,<3" "lazrs>=0.6,<1" "pyproj>=3.7,<4"
+
+      - name: Download completed ODM baseline artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: heig-vd-odm-exif-baseline
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: ${{ inputs.source_run_id || '44899855412' }}
+          path: source-artifact
+
+      - name: Reconstruct minimal read-only output tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p inspection-project/odm_orthophoto inspection-project/odm_dem inspection-project/odm_georeferencing reports
+          cp source-artifact/products/odm_orthophoto/odm_orthophoto.tif inspection-project/odm_orthophoto/
+          cp source-artifact/products/odm_dem/dsm.tif inspection-project/odm_dem/
+          cp source-artifact/products/odm_georeferencing/odm_georeferenced_model.laz inspection-project/odm_georeferencing/
+          cp source-artifact/reports/acquisition-provenance.json reports/
+          cp source-artifact/reports/acquisition-verification.json reports/
+          cp source-artifact/reports/project-manifest.json reports/
+          cp source-artifact/reports/run-records/processing-run.json reports/
+          printf '%s\n' "${{ inputs.source_run_id || '44899855412' }}" > reports/source-run-id.txt
+
+      - name: Inspect orthophoto, DSM and georeferenced point cloud
+        id: inspect
+        continue-on-error: true
+        run: |
+          python implementations/python/photogrammetry-odm/output_inspection.py inspection-project \
+            --expect odm_orthophoto/odm_orthophoto.tif \
+            --expect odm_dem/dsm.tif \
+            --expect odm_georeferencing/odm_georeferenced_model.laz \
+            --json-out reports/output-inspection.json
+
+      - name: Upload inspection evidence and selected products
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: heig-vd-odm-exif-baseline-inspection
+          path: |
+            reports/
+            inspection-project/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Enforce inspection result after preserving evidence
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = Path("reports/output-inspection.json")
+          if not report.exists():
+              raise SystemExit("Output inspection report was not produced.")
+          data = json.loads(report.read_text(encoding="utf-8"))
+          print("Output inspection status:", data.get("status"))
+          if data.get("status") == "blocked":
+              raise SystemExit("Output inspection is blocked; inspect the preserved report.")
+          PY

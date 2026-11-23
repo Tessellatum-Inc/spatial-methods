@@ -1,0 +1,301 @@
+import json
+import math
+import pytest
+
+from environmental_observations import (
+    ObservationRecord, ObservationValidationError, load_json_records, load_jsonl_records, validate_batch,
+)
+
+
+def row(**overrides):
+    value = {
+        "observation_id": "obs-001",
+        "measurand_id": "water-temperature",
+        "observed_at": "2026-11-22T08:30:00Z",
+        "received_at": "2026-11-22T08:31:00+00:00",
+        "value": 18.25,
+        "unit": "Cel",
+        "method_id": "field-probe-v1",
+        "support": {"support_type": "point", "support_id": "station-7"},
+        "qc_status": "raw",
+        "provenance": {"source_id": "campaign-4", "instrument_id": "probe-2"},
+    }
+    value.update(overrides)
+    return value
+
+
+def test_valid_record_round_trips_without_losing_optional_fields():
+    value = row(standard_uncertainty=0.15, uncertainty_unit="Cel", notes="duplicate field check")
+    record = ObservationRecord.from_dict(value)
+    assert record.value == pytest.approx(18.25)
+    assert record.to_dict() == value
+
+
+@pytest.mark.parametrize("timestamp", ["2026-11-22T08:30:00", "not-a-date", None])
+def test_timestamps_must_be_valid_and_timezone_aware(timestamp):
+    with pytest.raises(ObservationValidationError):
+        ObservationRecord.from_dict(row(observed_at=timestamp))
+
+
+@pytest.mark.parametrize("value", [math.nan, math.inf, -math.inf, True, "18.2"])
+def test_measurement_value_must_be_finite_numeric_not_boolean_or_string(value):
+    with pytest.raises(ObservationValidationError):
+        ObservationRecord.from_dict(row(value=value))
+
+
+def test_negative_uncertainty_and_missing_uncertainty_unit_are_rejected():
+    with pytest.raises(ObservationValidationError):
+        ObservationRecord.from_dict(row(standard_uncertainty=-0.1, uncertainty_unit="Cel"))
+    with pytest.raises(ObservationValidationError):
+        ObservationRecord.from_dict(row(standard_uncertainty=0.1))
+
+
+@pytest.mark.parametrize("status", ["pending", "pass", ""])
+def test_qc_status_is_a_controlled_vocabulary(status):
+    with pytest.raises(ObservationValidationError):
+        ObservationRecord.from_dict(row(qc_status=status))
+
+
+def test_geometry_requires_crs_and_finite_coordinates():
+    geometry = {"type": "Point", "coordinates": [36.8, -1.3]}
+    record = ObservationRecord.from_dict(row(
+        support={"support_type": "point", "geometry": geometry, "crs": "OGC:CRS84"}
+    ))
+    assert record.to_dict()["support"]["geometry"] == geometry
+    with pytest.raises(ObservationValidationError):
+        ObservationRecord.from_dict(row(
+            support={"support_type": "point", "geometry": {"type": "Point", "coordinates": [math.nan, 0]}, "crs": "OGC:CRS84"}
+        ))
+    with pytest.raises(ObservationValidationError):
+        ObservationRecord.from_dict(row(
+            support={"support_type": "point", "geometry": geometry}
+        ))
+
+
+def test_unknown_support_cannot_claim_geometry_and_known_support_needs_locator():
+    with pytest.raises(ObservationValidationError):
+        ObservationRecord.from_dict(row(support={"support_type": "unknown", "geometry": {"type": "Point", "coordinates": [0, 0]}, "crs": "OGC:CRS84"}))
+    with pytest.raises(ObservationValidationError):
+        ObservationRecord.from_dict(row(support={"support_type": "area"}))
+
+
+def test_batch_collects_row_errors_and_duplicate_identifiers():
+    result = validate_batch([row(), row(), {"observation_id": "broken"}])
+    assert len(result.records) == 1
+    assert len(result.errors) == 2
+    assert "duplicate observation_id" in result.errors[0]
+    assert "missing required fields" in result.errors[1]
+    assert not result.is_valid
+
+
+def test_json_loader_accepts_wrapped_records(tmp_path):
+    path = tmp_path / "observations.json"
+    path.write_text(json.dumps({"records": [row()]}), encoding="utf-8")
+    result = load_json_records(path)
+    assert result.is_valid
+    assert result.records[0].observation_id == "obs-001"
+
+
+def test_batch_requires_array():
+    with pytest.raises(ObservationValidationError):
+        validate_batch({"records": []})
+
+
+def test_support_geometry_collection_is_checked():
+    geometry = {"type": "GeometryCollection", "geometries": [
+        {"type": "Point", "coordinates": [36.8, -1.3]}
+    ]}
+    record = ObservationRecord.from_dict(row(
+        support={"support_type": "area", "geometry": geometry, "crs": "OGC:CRS84"}
+    ))
+    assert record.support["geometry"]["type"] == "GeometryCollection"
+
+
+def test_nested_support_and_provenance_are_deeply_immutable():
+    source = row(
+        support={
+            "support_type": "point",
+            "geometry": {"type": "Point", "coordinates": [36.8, -1.3]},
+            "crs": "OGC:CRS84",
+        },
+        provenance={"source": {"file": "raw.csv", "line": 4}},
+    )
+    record = ObservationRecord.from_dict(source)
+    source["support"]["geometry"]["coordinates"][0] = 0
+    source["provenance"]["source"]["line"] = 99
+    assert record.to_dict()["support"]["geometry"]["coordinates"] == [36.8, -1.3]
+    assert record.to_dict()["provenance"]["source"]["line"] == 4
+    with pytest.raises(TypeError):
+        record.support["geometry"]["type"] = "LineString"
+    with pytest.raises(TypeError):
+        record.provenance["source"]["file"] = "changed.csv"
+    exported = record.to_dict()
+    exported["support"]["geometry"]["coordinates"][0] = 0
+    assert record.to_dict()["support"]["geometry"]["coordinates"] == [36.8, -1.3]
+
+
+def test_provenance_rejects_non_json_and_non_finite_values():
+    with pytest.raises(ObservationValidationError):
+        ObservationRecord.from_dict(row(provenance={"source": object()}))
+    with pytest.raises(ObservationValidationError):
+        ObservationRecord.from_dict(row(provenance={"source": math.inf}))
+
+def test_method_rule_validation_uses_only_caller_supplied_constraints():
+    from environmental_observations import MethodRule, validate_method_rules
+
+    record = ObservationRecord.from_dict(row())
+    rule = MethodRule(
+        method_id="field-probe-v1",
+        required_provenance=("instrument_id", "calibration_ref"),
+        allowed_support_types=frozenset({"point"}),
+        allowed_units=frozenset({"Cel"}),
+        minimum_value=-5,
+        maximum_value=50,
+    )
+    result = validate_method_rules([record], {"field-probe-v1": rule})
+    assert not result.is_valid
+    assert len(result.violations) == 1
+    assert "calibration_ref" in result.violations[0]
+
+
+def test_method_rule_validation_reports_support_unit_and_value_constraints():
+    from environmental_observations import MethodRule, validate_method_rules
+
+    record = ObservationRecord.from_dict(row(value=60, unit="F"))
+    rule = MethodRule(
+        method_id="field-probe-v1",
+        allowed_support_types=frozenset({"area"}),
+        allowed_units=frozenset({"Cel"}),
+        maximum_value=40,
+    )
+    result = validate_method_rules([record], {"field-probe-v1": rule})
+    assert len(result.violations) == 3
+
+
+def test_method_rules_do_not_constrain_unconfigured_methods():
+    from environmental_observations import MethodRule, validate_method_rules
+
+    record = ObservationRecord.from_dict(row(method_id="unconfigured-method"))
+    rule = MethodRule(method_id="field-probe-v1", allowed_units=frozenset({"Cel"}))
+    assert validate_method_rules([record], {"field-probe-v1": rule}).is_valid
+
+
+def test_method_rule_rejects_inverted_value_range():
+    from environmental_observations import MethodRule, ObservationValidationError
+
+    with pytest.raises(ObservationValidationError):
+        MethodRule(method_id="probe", minimum_value=10, maximum_value=0)
+
+
+
+def test_jsonl_ingestion_preserves_line_numbers_digest_and_valid_records(tmp_path):
+    import hashlib
+
+    path = tmp_path / "observations.jsonl"
+    source = "\n".join([
+        json.dumps(row()),
+        "",
+        "{malformed json",
+        json.dumps(row(observation_id="obs-002")),
+        json.dumps(row(observation_id="obs-002")),
+    ]) + "\n"
+    path.write_text(source, encoding="utf-8", newline="")
+    result = load_jsonl_records(path)
+
+    assert result.source_sha256 == hashlib.sha256(path.read_bytes()).hexdigest()
+    assert result.total_lines == 5
+    assert [record.observation_id for record in result.records] == ["obs-001", "obs-002"]
+    assert result.record_line_numbers == (1, 4)
+    assert len(result.errors) == 2
+    assert result.errors[0].startswith("line 3:")
+    assert result.errors[1].startswith("line 5:")
+    assert "duplicate observation_id" in result.errors[1]
+    assert not result.is_valid
+    assert path.read_text(encoding="utf-8") == source
+
+
+def test_jsonl_ingestion_reports_structural_error_at_physical_line(tmp_path):
+    path = tmp_path / "observations.jsonl"
+    path.write_text("\n" + json.dumps({"observation_id": "broken"}) + "\n", encoding="utf-8")
+    result = load_jsonl_records(path)
+    assert result.total_lines == 2
+    assert not result.records
+    assert result.errors[0].startswith("line 2: missing required fields")
+
+
+def test_jsonl_ingestion_rejects_non_utf8_source(tmp_path):
+    path = tmp_path / "observations.jsonl"
+    path.write_bytes(bytes([0xFF]))
+    with pytest.raises(ObservationValidationError, match="UTF-8"):
+        load_jsonl_records(path)
+
+
+
+def test_processing_lineage_links_sources_observations_and_products_in_order():
+    from environmental_observations import (
+        ProcessingActivity, canonical_parameters_sha256, validate_lineage,
+    )
+
+    digest = canonical_parameters_sha256({"resolution": 10, "method": "kriging"})
+    source = "sha256:" + "a" * 64
+    ingest = ProcessingActivity(
+        activity_id="act-ingest", activity_type="ingestion",
+        method_id="field-probe-v1", method_version="1.2",
+        software_name="observation-loader", software_version="0.4.0",
+        started_at="2026-11-22T08:00:00Z", ended_at="2026-11-22T08:01:00Z",
+        input_refs=(source,), output_refs=("obs-001",),
+        parameters_sha256=canonical_parameters_sha256({}),
+    )
+    interpolate = ProcessingActivity(
+        activity_id="act-interpolate", activity_type="spatial-estimation",
+        method_id="ordinary-kriging", method_version="2.1",
+        software_name="spatial-engine", software_version="1.0.0",
+        started_at="2026-11-22T08:02:00Z", ended_at="2026-11-22T08:03:00Z",
+        input_refs=("obs-001",), output_refs=("surface-v1",),
+        parameters_sha256=digest,
+    )
+    assert validate_lineage([ingest, interpolate], [source]).is_valid
+    assert not validate_lineage([interpolate, ingest], [source]).is_valid
+
+
+def test_lineage_rejects_missing_inputs_and_duplicate_outputs():
+    from environmental_observations import ProcessingActivity, canonical_parameters_sha256, validate_lineage
+
+    common = dict(
+        activity_type="processing", method_id="method", method_version="1",
+        software_name="tool", software_version="1",
+        started_at="2026-11-22T08:00:00Z", ended_at="2026-11-22T08:01:00Z",
+        output_refs=("same-output",),
+        parameters_sha256=canonical_parameters_sha256({}),
+    )
+    first = ProcessingActivity(activity_id="a1", input_refs=("missing",), **common)
+    second = ProcessingActivity(activity_id="a2", input_refs=("missing",), **common)
+    result = validate_lineage([first, second])
+    assert len(result.violations) == 3
+    assert "not available" in result.violations[0]
+    assert "already defined" in result.violations[-1]
+
+
+def test_processing_activity_requires_valid_times_and_parameter_digest():
+    from environmental_observations import ProcessingActivity, ObservationValidationError
+
+    args = dict(
+        activity_id="a1", activity_type="processing", method_id="method",
+        method_version="1", software_name="tool", software_version="1",
+        started_at="2026-11-22T08:01:00Z", ended_at="2026-11-22T08:00:00Z",
+        input_refs=(), output_refs=("out-1",), parameters_sha256="0" * 64,
+    )
+    with pytest.raises(ObservationValidationError, match="ended_at"):
+        ProcessingActivity(**args)
+    args["ended_at"] = "2026-11-22T08:02:00Z"
+    args["parameters_sha256"] = "not-a-digest"
+    with pytest.raises(ObservationValidationError, match="SHA-256"):
+        ProcessingActivity(**args)
+
+
+def test_canonical_parameter_hash_is_order_independent_and_rejects_nan():
+    from environmental_observations import canonical_parameters_sha256, ObservationValidationError
+
+    assert canonical_parameters_sha256({"a": 1, "b": 2}) == canonical_parameters_sha256({"b": 2, "a": 1})
+    with pytest.raises(ObservationValidationError):
+        canonical_parameters_sha256({"invalid": math.nan})

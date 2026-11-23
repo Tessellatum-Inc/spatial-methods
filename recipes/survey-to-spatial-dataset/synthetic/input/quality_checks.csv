@@ -1,0 +1,5 @@
+check_id,feature_type,feature_id,check_type,result_value,result_unit,acceptance_rule,decision,independent,reviewer_id
+QC-SYN-001,stop,STOP-SYN-001,attribute_recheck,match,categorical,observed status agrees with fixture definition,pass,true,REVIEW-SYN
+QC-SYN-002,stop,STOP-SYN-002,metadata,complete,categorical,required fields populated,pass,true,REVIEW-SYN
+QC-SYN-003,asset,ASSET-SYN-001,attribute_recheck,match,categorical,asset type agrees with fixture definition,pass,true,REVIEW-SYN
+QC-SYN-004,asset,ASSET-SYN-006,completeness,obscured,categorical,obscured state retained and not treated as absent,pass,true,REVIEW-SYN

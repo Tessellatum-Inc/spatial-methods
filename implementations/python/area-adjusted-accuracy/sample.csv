@@ -1,0 +1,9 @@
+sample_id,map_class,reference_class
+s01,forest,forest
+s02,forest,forest
+s03,forest,other
+s04,forest,forest
+s05,other,other
+s06,other,forest
+s07,other,other
+s08,other,other

@@ -1,0 +1,24 @@
+{
+  "dataset_name": "synthetic_nairobi_stop_asset_inventory",
+  "dataset_status": "SYNTHETIC — NOT FIELD OBSERVATIONS",
+  "coordinate_model": "local_cartesian_xy_metres",
+  "crs": null,
+  "crs_note": "No geographic CRS is assigned. Coordinates are invented local-plane values and must not be mapped as Nairobi positions.",
+  "input_sha256": {
+    "stops.csv": "c663ec3f53950e82e7086e7bccd8c4ea88c0dc6a267fd79d2a3ebdee66da4720",
+    "assets.csv": "c9a8f11d7972eb99394146b54bfbe3f38fc10ef09d90cd7a4a8f115078efe66d",
+    "observations.csv": "c6d812d8d7559fa99176ec5c8b84d41cb67fdb0a670014143722fb939009e3da",
+    "quality_checks.csv": "f5dca257a8df1895cb1cb797ea3400e9a2a0a95c02c48f9853e1ba7b7c261664"
+  },
+  "record_counts": {"stops": 4, "assets": 6, "observations": 4, "quality_checks": 4},
+  "quality_decisions": {"pass": 4},
+  "independent_checks": 4,
+  "errors": [],
+  "validation_status": "PASS",
+  "limitations": [
+    "Synthetic records test schema and validation logic only.",
+    "No real corridor, instrument, control, field access or permissions are represented.",
+    "A passing schema check is not evidence of positional accuracy or fitness for operational use.",
+    "Independent-check flags are declarations in the fixture, not independently audited evidence."
+  ]
+}
