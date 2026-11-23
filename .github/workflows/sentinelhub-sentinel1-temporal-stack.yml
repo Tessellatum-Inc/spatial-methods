@@ -111,6 +111,9 @@ jobs:
           test "${#boundaries[@]}" -ge 1
           python explorations/radar/screen_sentinel1_reference_areas.py --rasters "${rasters[@]}" --boundary "${boundaries[0]}" --output data/sentinelhub/nairobi/stack/sentinel1_nairobi_reference_area_screen.json
 
+      - name: Screen JRC Global Surface Water persistent-water reference stratum
+        run: python explorations/radar/screen_sentinel1_persistent_water_reference.py --stack-metadata data/sentinelhub/nairobi/stack/sentinel1_nairobi_temporal_stack.metadata.json --output-dir data/sentinelhub/nairobi/stack/reference_aux
+
       - name: Upload temporal stack, source rasters, county rasters and QA evidence
         uses: actions/upload-artifact@v4
         with:
@@ -128,6 +131,8 @@ jobs:
             data/sentinelhub/nairobi/stack/geometry_aux/*.json
             data/sentinelhub/nairobi/stack/terrain_aux/*.tif
             data/sentinelhub/nairobi/stack/terrain_aux/*.json
+            data/sentinelhub/nairobi/stack/reference_aux/*.tif
+            data/sentinelhub/nairobi/stack/reference_aux/*.json
           if-no-files-found: error
           retention-days: 14
 
