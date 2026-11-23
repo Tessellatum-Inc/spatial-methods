@@ -22,6 +22,16 @@ def residual_stats(values):
         "p95_absolute_db":float(np.percentile(np.abs(v),95)),
         "max_absolute_db":float(np.max(np.abs(v)))}
 
+def valid_geometry_mask(ellipsoid_data_mask,rtc_data_mask,rtc_shadow_mask,ellipsoid_angle_degrees):
+    """Select shared valid pixels, excluding Sentinel Hub's flagged shadow neighbourhoods."""
+    ell=np.asarray(ellipsoid_data_mask,dtype=bool)
+    rtc=np.asarray(rtc_data_mask,dtype=bool)
+    shadow=np.asarray(rtc_shadow_mask,dtype=np.float64)
+    angle=np.asarray(ellipsoid_angle_degrees,dtype=np.float64)
+    if not (ell.shape==rtc.shape==shadow.shape==angle.shape):
+        raise ValueError("Geometry masks and incidence-angle raster must have identical shapes")
+    return ell&rtc&np.isfinite(shadow)&(shadow<0.5)&np.isfinite(angle)&(angle>0)&(angle<90)
+
 def relation_summary(delta_db,scattering_area,ellipsoid_angle_degrees):
     delta=np.asarray(delta_db,dtype=np.float64)
     area=np.asarray(scattering_area,dtype=np.float64)
@@ -73,8 +83,9 @@ def analyze(process_report,incidence_report,process_dir,angle_dir):
                 raise ValueError(f"Grid mismatch across scenes or source incidence raster for {date}")
             if ell.count!=3 or rtc.count!=6 or ang.count!=1: raise ValueError(f"Unexpected band count for {date}")
             em=ell.read(3)>0.5; rm=rtc.read(6)>0.5
+            shadow=rtc.read(5)
             av=ang.read(1)
-            valid=em&rm&np.isfinite(av)&(av>0)&(av<90)
+            valid=valid_geometry_mask(em,rm,shadow,av)
             common=valid if common is None else common&valid
             records.append((date,ell,rtc,ang))
         excluded=target_exclusion_mask(common.shape,signature[1],TARGETS,TARGET_EXCLUSION_RADIUS)
