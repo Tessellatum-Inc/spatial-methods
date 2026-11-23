@@ -1,0 +1,51 @@
+name: Download OPERA RTC-S1 assets for Surat R009
+run-name: Retrieve independent OPERA RTC-S1 science rasters
+on:
+  workflow_dispatch:
+    inputs:
+      discovery_run_id:
+        description: Successful run containing OPERA RTC and RTC-STATIC catalogue evidence
+        required: false
+        default: "45214363125"
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/download-opera-surat-r009-assets.yml"
+      - "explorations/radar/download_opera_surat_r009_assets.py"
+      - "explorations/radar/test_download_opera_surat_r009_assets.py"
+permissions:
+  actions: read
+  contents: read
+jobs:
+  download-opera-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Ensure AWS CLI is available
+        run: |
+          if ! command -v aws >/dev/null 2>&1; then
+            python -m pip install awscli
+          fi
+          aws --version
+      - name: Download OPERA catalogue evidence
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.discovery_run_id || '45214363125' }}
+          name: surat-r009-opera-rtc-catalogue-discovery
+          path: data/asf/surat_r009_opera
+          github-token: ${{ github.token }}
+      - name: Test OPERA asset selection
+        run: python -m unittest explorations.radar.test_download_opera_surat_r009_assets -v
+      - name: Download OPERA RTC and static science assets
+        run: python explorations/radar/download_opera_surat_r009_assets.py
+      - name: Upload independent processor raster assets and checksums
+        uses: actions/upload-artifact@v4
+        with:
+          name: surat-r009-opera-rtc-science-assets
+          path: data/asf/surat_r009_opera/downloaded
+          if-no-files-found: error
+          retention-days: 30
