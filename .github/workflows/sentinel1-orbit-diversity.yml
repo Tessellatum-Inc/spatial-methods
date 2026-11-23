@@ -1,4 +1,5 @@
 name: Sentinel-1 Nairobi orbit diversity catalogue screen
+# Catalogue-only screening; intentionally separate from the expensive raster workflow.
 on:
   push:
     branches: [main]
