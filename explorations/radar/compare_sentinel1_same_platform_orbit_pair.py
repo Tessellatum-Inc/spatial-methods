@@ -82,8 +82,8 @@ def load_tracks(root,incidence_dir=None):
     if set(tracks)!={57,130}: raise ValueError(f"Expected R057 and R130 artifacts; found {sorted(tracks)}")
     return tracks
 
-def run(input_dir:Path,output:Path):
-    tracks=load_tracks(input_dir); masks=[]; grid=None
+def run(input_dir:Path,output:Path,incidence_dir:Path|None=None):
+    tracks=load_tracks(input_dir,incidence_dir); masks=[]; grid=None
     for scenes in tracks.values():
         for scene in scenes:
             with rasterio.open(scene["ellipsoid"]) as e, rasterio.open(scene["rtc"]) as r:
@@ -122,7 +122,7 @@ def run(input_dir:Path,output:Path):
                 "median_local_angle_proxy_term_db","median_local_angle_proxy_adjusted_residual_db",
                 "mean_absolute_local_angle_proxy_adjusted_residual_db","p95_absolute_local_angle_proxy_adjusted_residual_db","median_scattering_area",
                 "median_local_incidence_angle_degrees","p10_local_incidence_angle_degrees","p90_local_incidence_angle_degrees",
-                "area_factor_residual_vs_angle_correlation")
+                "area_factor_residual_vs_angle_correlation","median_ellipsoid_incidence_angle_degrees",\n                "median_ellipsoid_geometry_term_db","median_local_to_ellipsoid_geometry_term_db",\n                "median_area_and_geometry_adjusted_residual_db","mean_absolute_area_and_geometry_adjusted_residual_db",\n                "p95_absolute_area_and_geometry_adjusted_residual_db")
             aggregate[pol]={key:float(np.mean([row[key] for row in rows])) for key in keys}
             aggregate[pol]["pixels_per_scene"]=int(min(row["pixels"] for row in rows))
         results[str(orbit)]={"scene_count":len(scenes),"scenes":per_scene,"mean_metrics_on_shared_mask":aggregate}
