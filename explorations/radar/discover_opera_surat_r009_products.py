@@ -100,7 +100,7 @@ def acquisition_datetime(properties: dict) -> datetime | None:
     # Product/granule names commonly embed the source acquisition timestamp.
     text = " ".join(str(value(properties, k) or "") for k in
                     ("fileID", "fileName", "granuleName", "sceneName", "productName"))
-    match = re.search(r"(20\\d{6})T(\\d{6})", text)
+    match = re.search(r"(20\d{6})T(\d{6})", text)
     if match:
         return datetime.strptime("".join(match.groups()), "%Y%m%d%H%M%S").replace(tzinfo=timezone.utc)
     return None
