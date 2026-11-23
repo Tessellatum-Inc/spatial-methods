@@ -58,16 +58,12 @@ class OperaSuratDiscoveryTests(unittest.TestCase):
         self.assertEqual(report["time_matched_feature_count"], 1)
         self.assertTrue(report["matched_features"][0]["within_source_time_tolerance"])
 
-    def test_static_query_uses_burst_ids_without_acquisition_date_filter(self):
-        params = build_static_query(["T009-019159-IW3", "T009-019160-IW3"])
+    def test_static_query_uses_documented_archive_date_and_aoi(self):
+        params = build_static_query()
         self.assertEqual(params["processingLevel"], "RTC_STATIC")
-        self.assertEqual(params["operaBurstID"], "T009-019159-IW3,T009-019160-IW3")
-        self.assertNotIn("start", params)
-        self.assertNotIn("end", params)
-
-    def test_static_query_rejects_empty_burst_list(self):
-        with self.assertRaises(ValueError):
-            build_static_query([])
+        self.assertEqual(params["start"], "2014-04-03T00:00:00Z")
+        self.assertEqual(params["end"], "2014-04-04T00:00:00Z")
+        self.assertIn("intersectsWith", params)
 
     def test_invalid_geojson_is_rejected(self):
         with self.assertRaises(ValueError):
