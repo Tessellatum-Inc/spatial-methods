@@ -13,8 +13,10 @@ class SuratCatalogueTests(unittest.TestCase):
         features=[feature(f"full-{i}",57,i,polygon(149,152)) for i in (1,7,13,19)]
         result=summarize(features,TARGETS)
         self.assertEqual(result["candidate_track_count"],1)
-        self.assertTrue(result["candidates"][0]["candidate_for_processing"])
-        self.assertEqual(result["candidates"][0]["scenes_with_target_coverage_threshold_and_dual_pol"],4)
+        candidate=result["candidates"][0]
+        self.assertTrue(candidate["candidate_for_processing"])
+        self.assertEqual(candidate["scenes_with_full_array_coverage"],4)
+        self.assertEqual(candidate["qualifying_scene_count"],4)
 
     def test_partial_scene_does_not_qualify(self):
         features=[feature(f"partial-{i}",57,i,polygon(150.0,150.04)) for i in (1,7,13,19)]
