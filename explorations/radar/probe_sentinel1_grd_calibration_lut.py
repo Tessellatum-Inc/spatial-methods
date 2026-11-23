@@ -53,6 +53,37 @@ def parse_calibration_lut(xml_bytes:bytes)->dict:
         "max_beta_sigma_vs_gamma_sigma_identity_difference_degrees":float(max(v["max_identity_difference_degrees"] for v in vectors)),
         "vectors":vectors}
 
+def calibration_lut_bilinear_at(vectors,line,pixel):
+    ordered=sorted(vectors,key=lambda v:v["line"])
+    lines=np.asarray([v["line"] for v in ordered],dtype=np.float64)
+    if line<lines[0] or line>lines[-1]: return float("nan")
+    hi=int(np.searchsorted(lines,line,side="left"))
+    if hi<len(lines) and lines[hi]==line: lo=hi
+    else: lo=hi-1
+    def interpolate_row(index):
+        px=np.asarray(ordered[index]["pixels"],dtype=np.float64)
+        values=np.asarray(ordered[index]["incidence_angle_degrees"],dtype=np.float64)
+        if pixel<px[0] or pixel>px[-1]: return float("nan")
+        return float(np.interp(pixel,px,values))
+    low=interpolate_row(lo)
+    if not np.isfinite(low): return float("nan")
+    if lo==hi: return low
+    high=interpolate_row(hi)
+    if not np.isfinite(high): return float("nan")
+    fraction=(line-lines[lo])/(lines[hi]-lines[lo])
+    return float(low*(1.0-fraction)+high*fraction)
+
+def _angle_difference_metrics(predicted,expected):
+    valid=np.isfinite(predicted)&np.isfinite(expected)
+    if not valid.any(): raise ValueError("No matched angle samples for calibration comparison")
+    error=predicted[valid]-expected[valid]; absolute=np.abs(error)
+    return {"matched_tie_points":int(valid.sum()),"coverage_fraction":float(valid.mean()),
+        "mean_signed_difference_degrees":float(np.mean(error)),
+        "mae_degrees":float(np.mean(absolute)),
+        "rmse_degrees":float(np.sqrt(np.mean(error**2))),
+        "p95_absolute_error_degrees":float(np.percentile(absolute,95)),
+        "max_absolute_error_degrees":float(np.max(absolute))}
+
 def compare_calibration_to_annotation(calibration_lut:dict,annotation_grid:dict)->dict:
     from scipy.interpolate import LinearNDInterpolator
     from scipy.spatial import Delaunay, QhullError
@@ -70,16 +101,13 @@ def compare_calibration_to_annotation(calibration_lut:dict,annotation_grid:dict)
         raise ValueError(f"Could not triangulate calibration LUT source coordinates: {exc}") from exc
     valid=np.isfinite(predicted)&np.isfinite(expected)
     if not valid.any(): raise ValueError("No annotation geolocation points fall inside calibration LUT hull")
-    error=predicted[valid]-expected[valid]
-    return {"method":"linear interpolation of calibration LUT angle samples in source line/pixel coordinates",
-        "annotation_tie_points":int(len(expected)),"matched_tie_points":int(valid.sum()),
-        "annotation_tie_point_coverage_fraction":float(valid.mean()),
-        "mean_signed_difference_degrees":float(np.mean(error)),
-        "median_signed_difference_degrees":float(np.median(error)),
-        "mae_degrees":float(np.mean(np.abs(error))),
-        "rmse_degrees":float(np.sqrt(np.mean(error**2))),
-        "p95_absolute_error_degrees":float(np.percentile(np.abs(error),95)),
-        "max_absolute_error_degrees":float(np.max(np.abs(error)))}
+    bilinear=np.asarray([calibration_lut_bilinear_at(calibration_lut["vectors"],p["line"],p["pixel"]) for p in annotation_grid["points"]],dtype=np.float64)
+    delaunay_metrics=_angle_difference_metrics(predicted,expected)
+    bilinear_metrics=_angle_difference_metrics(bilinear,expected)
+    return {"method":"Delaunay linear interpolation of calibration LUT samples in source line/pixel coordinates",
+        "annotation_tie_points":int(len(expected)),
+        "delaunay":delaunay_metrics,"bilinear":bilinear_metrics,
+        "median_signed_difference_degrees":float(np.median(predicted[valid]-expected[valid]))}
 
 def extract_calibration_files(features,annotation_products,access_key,secret_key):
     import boto3
