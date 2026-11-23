@@ -83,8 +83,8 @@ def run(input_dir:Path,output:Path):
         "The fitted relation remains diagnostic and is not approved for normalization or change detection."]}
     output.parent.mkdir(parents=True,exist_ok=True); output.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
     print(f"Shared valid footprint: {common.mean():.4f} ({int(common.sum())} pixels)")
-    for orbit,data in results.items():
-        print(f"R{int(orbit):03d}: VV R2={data['mean_metrics_on_shared_mask']['VV']['ols_r_squared']:.5f}; VH R2={data['mean_metrics_on_shared_mask']['VH']['ols_r_squared']:.5f}")
+    print("Per-track mean metrics on the identical all-scenes common mask:")
+    print(json.dumps({orbit:data["mean_metrics_on_shared_mask"] for orbit,data in results.items()},sort_keys=True))
     return report
 
 def main(argv=None):
