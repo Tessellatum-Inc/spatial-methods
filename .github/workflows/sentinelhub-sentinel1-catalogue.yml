@@ -1,0 +1,52 @@
+name: Sentinel Hub Sentinel-1 Nairobi catalogue preflight
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sentinelhub-sentinel1-catalogue
+  cancel-in-progress: false
+
+jobs:
+  catalogue-preflight:
+    name: OAuth and Nairobi Sentinel-1 catalogue search
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Verify OAuth secrets are configured
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          test -n "$SENTINEL_HUB_CLIENT_ID" || { echo "::error::Missing SENTINEL_HUB_CLIENT_ID repository secret"; exit 1; }
+          test -n "$SENTINEL_HUB_CLIENT_SECRET" || { echo "::error::Missing SENTINEL_HUB_CLIENT_SECRET repository secret"; exit 1; }
+          echo "Both Sentinel Hub OAuth secrets are configured."
+
+      - name: Authenticate and search Sentinel-1 GRD catalogue
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          python explorations/radar/query_sentinelhub_sentinel1.py \
+            --start 2026-10-01T00:00:00Z \
+            --end 2026-11-23T00:00:00Z \
+            --limit 20
+
+      - name: Upload catalogue evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: sentinelhub-sentinel1-nairobi-catalogue
+          path: data/sentinelhub/nairobi/
+          if-no-files-found: error
+          retention-days: 14
