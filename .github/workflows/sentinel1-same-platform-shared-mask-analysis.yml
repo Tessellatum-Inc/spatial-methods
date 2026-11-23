@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/sentinel1-same-platform-shared-mask-analysis.yml"
+      - "explorations/radar/compare_sentinel1_same_platform_orbit_pair.py"
 permissions:
   actions: read
   contents: read
