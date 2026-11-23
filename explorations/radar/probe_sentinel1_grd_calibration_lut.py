@@ -74,6 +74,8 @@ def compare_calibration_to_annotation(calibration_lut:dict,annotation_grid:dict)
     return {"method":"linear interpolation of calibration LUT angle samples in source line/pixel coordinates",
         "annotation_tie_points":int(len(expected)),"matched_tie_points":int(valid.sum()),
         "annotation_tie_point_coverage_fraction":float(valid.mean()),
+        "mean_signed_difference_degrees":float(np.mean(error)),
+        "median_signed_difference_degrees":float(np.median(error)),
         "mae_degrees":float(np.mean(np.abs(error))),
         "rmse_degrees":float(np.sqrt(np.mean(error**2))),
         "p95_absolute_error_degrees":float(np.percentile(np.abs(error),95)),
