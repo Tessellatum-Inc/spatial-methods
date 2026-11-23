@@ -131,3 +131,56 @@ The next discriminating step is therefore to obtain the **ellipsoid incidence an
 That prepared workflow requires CDSE S3 access credentials, separate from the existing Sentinel Hub OAuth credentials. The user must generate an S3 access key and secret in CDSE and add them to GitHub Actions secrets as `CDSE_S3_ACCESS_KEY` and `CDSE_S3_SECRET_KEY`. Do not paste the secrets into chat or commit them. Once configured, list only the small annotation XML and manifest objects, extract/interpolate `incidenceAngle` to the shared output grid, validate interpolation against the source geolocation points, and evaluate the complete reference-area equation on common valid pixels.
 
 No stable radiometric reference or independent geodetic control has been established. Keep `analysis_ready: false`; do not normalize the time series or use the results for change detection.
+
+
+## Source GRD incidence-angle extraction and pixel-level reference-area test (2026-11-23)
+
+The CDSE S3 credentials were configured as repository secrets. The annotation inventory completed successfully: eight original Sentinel-1A GRD products were inspected and 64 annotation/calibration/RFI XML objects were located (eight per product). The VV product annotation XML was then extracted for each acquisition. Each source geolocation grid contains 210 complete tie points arranged as 10 azimuth lines by 21 range pixels.
+
+The source product `incidenceAngle` values were linearly interpolated in geographic coordinates onto the fixed 2048 × 1536 Nairobi grid. No extrapolation was used. Five-fold interleaved tie-point holdout diagnostics were:
+
+| Track | Tie-point CV MAE | CV RMSE | CV P95 absolute error | Interpolated AOI coverage |
+|---|---:|---:|---:|---:|
+| R057 | 0.00844° | 0.01277° | 0.02529° | 77.3% |
+| R130 | 0.00737° | 0.00943° | 0.01922° | 94.7% |
+
+Uncovered output pixels remain NoData. Intersecting all eight angle rasters with the eight ellipsoid/RTC data masks leaves a common footprint of **1,848,662 pixels (58.77% of the requested grid)**.
+
+### Full reference-area equation
+
+The source GRD geolocation-grid incidence angle, rather than the RTC terrain-relative `localIncidenceAngle`, was used as the ellipsoid reference angle `θE`. The tested relation is:
+
+\[
+\Delta_{dB}
+=10\log_{10}\left(\frac{\gamma^0_{RTC}}{\gamma^0_E}\right)
+=-10\log_{10}(\widehat A_\gamma)-10\log_{10}(\tan\theta_E).
+\]
+
+This follows the reference-area definitions described in the Sentinel Hub RTC documentation and the RTC method literature cited above. The Sentinel-1 product specification defines `incidenceAngle` in each `geolocationGridPoint` alongside the source image line/pixel and geodetic coordinates ([ESA Sentinel-1 Product Specification](https://sentiwiki.copernicus.eu/__attachments/1673968/S1-RS-MDA-52-7441%20-%20Sentinel-1%20Product%20Specification%202025%20-%203.16.1.pdf?inst-v=ece54fea-0304-4b72-9f89-45b672ef46c2)).
+
+Mean metrics across four acquisitions and both polarizations on the identical eight-scene common footprint:
+
+| Track | Median θE | Area-only residual MAE | Median ellipsoid reference-area term | Adjusted residual median | Adjusted residual MAE | Adjusted residual P95 abs |
+|---|---:|---:|---:|---:|---:|---:|
+| Sentinel-1A ascending R057 | 31.925° | 2.054 dB | +2.055 dB | −0.00176 dB | 0.00174 dB | 0.00309 dB |
+| Sentinel-1A ascending R130 | 45.375° | 0.0639 dB | −0.05695 dB | +0.00420 dB | 0.00436 dB | 0.00578 dB |
+
+The pixel-level residual after including the ellipsoid reference-area term is extremely small and consistent across all four dates and both VV/VH polarizations. On R057, the area-only residual MAE falls from about 2.054 dB to 0.00174 dB; on R130 it falls from about 0.0639 dB to 0.00436 dB. The adjusted median and error quantiles are similarly stable across all eight date/polarization combinations.
+
+This is strong empirical support for the complete reference-area relation **within these Sentinel Hub processing branches and this Nairobi study area**. It also explains why the area-only residual differed between R057 and R130: their median source ellipsoid incidence angles differ by about 13.45°. The earlier local-angle-only proxy is superseded for this equation; the terrain-relative local angle is not a substitute for θE.
+
+### Scope and remaining validation
+
+- The common valid footprint is only 58.77% of the requested AOI; the result applies to this shared subset, not the whole requested grid.
+- Five-fold tie-point validation is internal to each source annotation grid. It is not independent geodetic control.
+- Both tracks use the same Sentinel-1A platform, Nairobi site, provider, processing configuration and reference-area convention. This is not independent-site or cross-provider validation.
+- The source angle interpolation is sparse-grid interpolation; the reported tie-point errors do not establish absolute geolocation accuracy.
+- Stable radiometric reference targets and independent geometric control remain unestablished.
+
+Reproducibility:
+- Annotation inventory: [workflow run 45198522746](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45198522746).
+- Eight source geolocation grids: [workflow run 45199797385](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45199797385).
+- Interpolation and full common-footprint equation test: [workflow run 45201769040](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45201769040).
+- Targeted parser/interpolation/comparator tests: [Python examples run 45201796311](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45201796311).
+
+The result does **not** authorize operational normalization, change detection or setting `analysis_ready: true`. The equation is now strongly supported as a description of this provider's RTC/ellipsoid relationship; independent reference-target and cross-site validation are still required before generalization.
