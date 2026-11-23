@@ -148,8 +148,9 @@ def main(argv=None):
     except Exception as exc:
         print(f"Surat equation QA failed: {type(exc).__name__}: {exc}",file=sys.stderr); return 2
     for pol,metrics in report["aggregate_metrics"].items():
-        a=metrics["area_only_residual"]; b=metrics["area_plus_ellipsoid_angle_residual"]
-        print(f"{pol}: area-only residual MAE={a['mae_db']:.5f} dB; after ellipsoid-angle term MAE={b['mae_db']:.5f} dB; P95={b['p95_absolute_db']:.5f} dB")
+        area_metrics=metrics["area_only_residual"]
+        full_metrics=metrics["area_plus_ellipsoid_angle_residual"]
+        print(f"{pol}: area-only residual MAE={area_metrics['mae_db']:.5f} dB; after ellipsoid-angle term MAE={full_metrics['mae_db']:.5f} dB; P95={full_metrics['p95_absolute_db']:.5f} dB")
     print(f"Common valid pixels: {report['grid']['common_valid_pixels_after_target_exclusion']} ({report['grid']['common_valid_fraction_after_target_exclusion']:.4f}); report={a.output}; analysis_ready=false")
     return 0
 if __name__=="__main__": raise SystemExit(main())
