@@ -47,3 +47,47 @@ Processing workflow: [Sentinel-1 Nairobi alternate-orbit RTC experiment](https:/
 ## Current status
 
 Catalogue discovery succeeded and selected R130 for the partial-coverage experiment. The first processing workflow run using the initial catalogue filter failed with HTTP 400; the filter was simplified to the documented IW constraint and orbit selection is now performed locally from returned metadata. The corrected processing run is [45163757264](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45163757264); its completion and QA artifact must be checked before scientific conclusions are drawn.
+
+
+## R130 processing results (2026-11-23)
+
+The corrected partial-coverage processing workflow completed successfully in [run 45163757264](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45163757264). A duplicate rerun on the subsequent workflow-only commit also completed successfully in [run 45163774292](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45163774292).
+
+- Four of four R130 acquisitions processed; zero failures.
+- Per-scene paired ellipsoid/RTC valid fractions: 0.84220, 0.84189, 0.84301 and 0.84247.
+- The report's all-date common valid fraction is 0.84189 of the requested grid (2,648,363 pixels).
+- RTC shadow-mask fraction was zero in each acquisition.
+- The paired comparison completed for VV and VH, with status `paired_diagnostic_only`.
+
+Mean per-scene area-factor relation diagnostics across the four dates:
+
+| Polarization | OLS slope | Mean R² | Mean median residual offset (dB) | Mean centered P95 absolute residual (dB) |
+|---|---:|---:|---:|---:|
+| VV | 0.99421 | 0.97837 | -0.01016 | 0.13907 |
+| VH | 0.99428 | 0.97847 | -0.00975 | 0.13918 |
+
+Leave-one-acquisition-out temporal screening on R130 showed a small further benefit from angle terms:
+
+| Polarization | Metric | Area only | Area + angle + interaction | Reduction |
+|---|---|---:|---:|---:|
+| VV | RMSE (dB) | 0.08421 | 0.08287 | 1.60% |
+| VV | MAE (dB) | 0.07263 | 0.07129 | 1.85% |
+| VV | P95 absolute error (dB) | 0.13935 | 0.13734 | 1.44% |
+| VH | RMSE (dB) | 0.08412 | 0.08279 | 1.59% |
+| VH | MAE (dB) | 0.07254 | 0.07121 | 1.84% |
+| VH | P95 absolute error (dB) | 0.13944 | 0.13737 | 1.48% |
+
+## Cross-orbit interpretation
+
+The R130 results support the usefulness of scattering area as a strong empirical explanatory variable beyond the original R079 sequence. However, the relationship is not coefficient-invariant:
+
+- R079 had an approximate median residual offset of +0.282 dB and mean OLS slope near 0.983.
+- R130 has mean median residual offset near -0.010 dB and mean OLS slope near 0.994.
+
+The approximately 0.29 dB offset difference is material. It means a correction calibrated on R079 cannot simply be transferred to R130 with the same intercept. The R130 result is also confounded by orbit direction and platform: R079 was descending Sentinel-1C, while R130 was ascending Sentinel-1D. This is independent acquisition geometry, but not a controlled isolation of relative-orbit effects.
+
+The correct conclusion is therefore narrower: the area-factor relationship remains strong across these two acquisition configurations, while its fitted offset and slope vary. Do not pool the two tracks or apply one universal correction. A next experiment should separate platform from orbit direction where possible, and add independent stable reference targets/geodetic control.
+
+The R130 QA artifact is attached to workflow run [45163757264](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45163757264), artifact `sentinel1-nairobi-alternate-orbit-qa`. The raster artifact is retained separately for 14 days.
+
+The status remains `analysis_ready: false`; no normalization or change detection is authorized by these diagnostics.
