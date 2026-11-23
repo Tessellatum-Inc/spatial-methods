@@ -243,4 +243,21 @@ The inverse-area factor is a strong first-order explanation of the observed RTC-
 
 Do not use the fitted relation to normalize the time series, declare radiometric equivalence, or enable change detection. The current processing and QA reports correctly remain `analysis_ready: false` because independent geometric and radiometric validation is still absent.
 
+
+### Leave-one-acquisition-out transfer test
+
+A second test trains on three acquisitions and evaluates the fourth, rotating through all four dates independently for VV and VH. To keep memory bounded, the model uses a systematic sample at every fourth row and column (approximately one-sixteenth of eligible pixels). Each fold contains about 589,800 training samples and 196,600 held-out samples.
+
+Across all eight held-out date/polarization folds:
+
+- Area-only mean test RMSE: **0.10457 dB**.
+- Area + angle + interaction mean test RMSE: **0.10142 dB** (about **3.01% lower**).
+- Mean test MAE: **0.09005 → 0.08654 dB** (about **3.90% lower**).
+- Mean P95 absolute error: **0.17675 → 0.17463 dB** (about **1.20% lower**).
+- RMSE reduction in individual folds: approximately **2.98–3.05%**.
+
+The small improvement transfers consistently to each held-out date in this four-scene series. This is stronger evidence than a within-scene random pixel split, but it is not independent-site validation: all dates share the same Nairobi study area, descending relative orbit 79, provider, requested grid and processing configuration. The systematic sampling design may also interact with spatial texture. Treat the angle terms as a modest empirical refinement, not a validated physical correction.
+
+The area-only relation remains the simpler baseline. Neither model is applied to the imagery, and the workflow continues to report `analysis_ready: false`. A next-stage validation would need independent stable targets and/or acquisitions from another relative orbit or study area, plus stronger geodetic and radiometric validation.
+
 The machine-readable QA evidence is retained in the GitHub Actions artifact `sentinelhub-sentinel1-nairobi-qa-reports` from run [45157063999](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45157063999). The full temporal stack is a separate artifact from the same run.
