@@ -1,2 +1,0 @@
-# Standard-library-only implementation.
-pytest>=8,<9

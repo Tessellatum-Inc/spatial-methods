@@ -1,5 +1,0 @@
-observation_id,feature_type,feature_id,raw_record_ref,method,observed_at,operator_id,processing_status
-OBS-SYN-001,stop,STOP-SYN-001,synthetic://raw/001,simulated_local_coordinate,2026-11-19T09:00:00+03:00,TEAM-SYN,raw
-OBS-SYN-002,stop,STOP-SYN-002,synthetic://raw/002,simulated_local_coordinate,2026-11-19T09:05:00+03:00,TEAM-SYN,raw
-OBS-SYN-003,asset,ASSET-SYN-001,synthetic://raw/003,simulated_local_coordinate,2026-11-19T09:01:00+03:00,TEAM-SYN,raw
-OBS-SYN-004,asset,ASSET-SYN-003,synthetic://raw/004,simulated_local_coordinate,2026-11-19T09:06:00+03:00,TEAM-SYN,raw

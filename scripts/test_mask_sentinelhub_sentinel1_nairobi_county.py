@@ -48,20 +48,29 @@ class CountyMaskTests(unittest.TestCase):
         self.assertEqual(feature["properties"]["county"], "Nairobi")
         self.assertEqual(provenance["geometry_crs"], "EPSG:4326")
         request = mocked.call_args.args[0]
-        self.assertIn("county%3D%27Nairobi%27", request.full_url)
+        self.assertIn("where=1%3D1", request.full_url)
 
     @mock.patch.object(CLIENT, "urlopen")
-    def test_rejects_ambiguous_or_wrong_county(self, mocked):
+    def test_accepts_normalized_nairobi_city_label(self, mocked):
+        feature = dict(self.feature, properties={"county": " Nairobi City "})
+        mocked.return_value = FakeResponse(json.dumps({
+            "type": "FeatureCollection", "features": [feature]
+        }).encode())
+        selected, _ = CLIENT.fetch_nairobi_boundary()
+        self.assertEqual(selected["properties"]["county"], " Nairobi City ")
+
+    @mock.patch.object(CLIENT, "urlopen")
+    def test_rejects_ambiguous_or_missing_nairobi_county(self, mocked):
         mocked.return_value = FakeResponse(json.dumps({
             "type": "FeatureCollection", "features": [self.feature, self.feature]
         }).encode())
-        with self.assertRaisesRegex(RuntimeError, "exactly one"):
+        with self.assertRaisesRegex(RuntimeError, "received 2"):
             CLIENT.fetch_nairobi_boundary()
         wrong = dict(self.feature, properties={"county": "Kiambu"})
         mocked.return_value = FakeResponse(json.dumps({
             "type": "FeatureCollection", "features": [wrong]
         }).encode())
-        with self.assertRaisesRegex(RuntimeError, "did not identify"):
+        with self.assertRaisesRegex(RuntimeError, "received 0"):
             CLIENT.fetch_nairobi_boundary()
 
     @mock.patch.object(CLIENT, "fetch_nairobi_boundary")

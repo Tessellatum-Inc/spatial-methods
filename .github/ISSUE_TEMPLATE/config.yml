@@ -1,8 +1,0 @@
-blank_issues_enabled: true
-contact_links:
-  - name: Read the contribution guide
-    url: https://github.com/Tessellatum-Inc/spatial-methods/blob/main/CONTRIBUTING.md
-    about: See the easiest ways to suggest a correction, source, example or improvement.
-  - name: Guided learning and community on Patreon
-    url: https://www.patreon.com/c/SpatialMethods
-    about: Learn with guided paths, companion exercises, deeper walkthroughs and community support.

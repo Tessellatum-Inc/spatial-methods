@@ -1,1 +1,0 @@
-# Winged-edge verification\n\nImplemented: polygon-face ingestion; canonical edge records; left/right face references; four wing references; boundary representation; incident-edge lookup; validation of duplicate faces, winding and non-manifold edge incidence.\n\nTests authored for triangle pairs, polygon boundaries and invalid topology. Not executed in this environment.

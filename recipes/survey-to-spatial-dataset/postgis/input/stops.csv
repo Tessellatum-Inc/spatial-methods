@@ -1,4 +1,0 @@
-stop_id,longitude,latitude,observed_name,stop_status,evidence_basis,route_reference,side_of_road,observation_datetime,positional_method,position_quality_class,source_observer
-SYN-STOP-001,0.00010,0.00010,Synthetic stop alpha,observed_stop,Invented fixture label,TEST-A,east,2026-11-19T09:00:00Z,other,software_test_only,fixture-team
-SYN-STOP-002,0.00020,0.00015,Synthetic stop beta,uncertain,Invented fixture label,TEST-B,north,2026-11-19T09:05:00Z,other,software_test_only,fixture-team
-SYN-STOP-003,0.00030,0.00025,Synthetic stop gamma,signed_stop,Invented fixture label,TEST-C,west,2026-11-19T09:10:00Z,other,software_test_only,fixture-team

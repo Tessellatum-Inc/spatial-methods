@@ -1,3 +1,0 @@
-numpy>=2.0,<3
-pykrige==1.7.3
-pytest==9.0.2

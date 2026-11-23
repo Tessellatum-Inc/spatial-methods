@@ -1,2 +1,0 @@
-pytest>=8,<10
-shapely>=2.0,<3  # independent differential-test oracle

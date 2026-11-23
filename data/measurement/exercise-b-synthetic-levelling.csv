@@ -1,9 +1,0 @@
-run_id,section_id,from_point,to_point,distance_km,sum_bs_m,sum_fs_m,observed_delta_h_m,synthetic
-FORWARD,1,BM-A,TP1,0.8,5.0000,3.7655,1.2345,true
-FORWARD,2,TP1,TP2,1.2,5.1000,5.5568,-0.4568,true
-FORWARD,3,TP2,TP3,0.6,4.9000,4.1108,0.7892,true
-FORWARD,4,TP3,BM-A,1.4,5.2000,6.7650,-1.5650,true
-REVERSE,1,BM-A,TP3,1.4,5.0000,3.4343,1.5657,true
-REVERSE,2,TP3,TP2,0.6,5.1000,5.8895,-0.7895,true
-REVERSE,3,TP2,TP1,1.2,4.9000,4.4429,0.4571,true
-REVERSE,4,TP1,BM-A,0.8,5.2000,6.4350,-1.2350,true

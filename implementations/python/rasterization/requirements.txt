@@ -1,2 +1,0 @@
-# Standard-library runtime; pytest is used by the repository CI test job.
-pytest>=8.0,<9.0

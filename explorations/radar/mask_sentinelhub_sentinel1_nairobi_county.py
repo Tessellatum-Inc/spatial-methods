@@ -40,7 +40,7 @@ NODATA = -9999.0
 def fetch_nairobi_boundary(timeout: int = 60) -> tuple[dict, dict]:
     """Fetch exactly one Nairobi feature as GeoJSON; reject ambiguous responses."""
     params = urlencode({
-        "where": "county='Nairobi'",
+        "where": "1=1",
         "outFields": "county,area_km2,objectid",
         "returnGeometry": "true",
         "outSR": "4326",
@@ -61,12 +61,24 @@ def fetch_nairobi_boundary(timeout: int = 60) -> tuple[dict, dict]:
     if not isinstance(payload, dict) or payload.get("type") != "FeatureCollection":
         raise RuntimeError("County boundary service did not return a GeoJSON FeatureCollection.")
     features = payload.get("features")
-    if not isinstance(features, list) or len(features) != 1:
-        raise RuntimeError(f"Expected exactly one Nairobi county feature; received {len(features) if isinstance(features, list) else 'invalid feature list'}.")
-    feature = features[0]
+    if not isinstance(features, list):
+        raise RuntimeError("County boundary service returned an invalid feature list.")
+    # Query the small administrative layer and normalize its labels locally.
+    # This avoids relying on an exact SQL string match against a service label.
+    matches = []
+    for candidate in features:
+        properties = (candidate or {}).get("properties") or {}
+        label = " ".join(str(properties.get("county", "")).strip().casefold().split())
+        if label in {"nairobi", "nairobi city"}:
+            matches.append(candidate)
+    if len(matches) != 1:
+        labels = sorted({str(((item or {}).get("properties") or {}).get("county", "")) for item in features})
+        raise RuntimeError(
+            "Expected exactly one Nairobi county feature after normalized matching; "
+            f"received {len(matches)}. Service labels: {labels[:60]}"
+        )
+    feature = matches[0]
     properties = feature.get("properties") or {}
-    if str(properties.get("county", "")).strip().casefold() != "nairobi":
-        raise RuntimeError("Boundary service response did not identify the county as Nairobi.")
     geometry = feature.get("geometry")
     if not isinstance(geometry, dict):
         raise RuntimeError("Nairobi county feature has no polygon geometry.")
