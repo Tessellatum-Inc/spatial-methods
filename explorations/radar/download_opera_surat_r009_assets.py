@@ -1,24 +1,27 @@
 #!/usr/bin/env python3
-"""Download the selected OPERA RTC-S1 and RTC-STATIC COGs from ASF's public S3 assets."""
+"""Download selected OPERA RTC-S1 and RTC-STATIC assets with an Earthdata token."""
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
-import subprocess
+import shutil
 import sys
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
+from urllib.request import Request, urlopen
 
-PRODUCT_BUCKET = "asf-cumulus-prod-opera-products"
+ALLOWED_HOSTS = {"cumulus.asf.earthdatacloud.nasa.gov", "datapool.asf.alaska.edu"}
 RTC_SUFFIXES = (".h5", ".iso.xml", "_VV.tif", "_VH.tif", "_mask.tif")
 STATIC_SUFFIXES = (
     ".iso.xml",
-    "_incidence_angle.tif",
     "_local_incidence_angle.tif",
     "_mask.tif",
     "_number_of_looks.tif",
     "_rtc_anf_gamma0_to_beta0.tif",
+    "_rtc_anf_gamma0_to_sigma0.tif",
 )
 
 
@@ -38,23 +41,26 @@ def select_assets(report: dict) -> list[dict]:
     ):
         for feature in features:
             props = feature["properties"]
+            candidates = list(props.get("additionalUrls", []))
+            if product_type == "rtc" and props.get("url"):
+                candidates.append(props["url"])
             selected = set()
-            for uri in props.get("s3Urls", []):
-                parsed = urlparse(uri)
-                if parsed.scheme != "s3" or parsed.netloc != PRODUCT_BUCKET:
+            for url in candidates:
+                parsed = urlparse(url)
+                if parsed.scheme != "https" or parsed.hostname not in ALLOWED_HOSTS:
                     continue
                 filename = Path(parsed.path).name
                 if any(filename.endswith(suffix) for suffix in suffixes):
-                    selected.add(uri)
+                    selected.add(url)
             sizes = props.get("bytes", {})
             product_id = feature.get("file_id") or props.get("fileID") or props.get("sceneName")
-            for uri in sorted(selected):
-                filename = Path(urlparse(uri).path).name
+            for url in sorted(selected):
+                filename = Path(urlparse(url).path).name
                 size_record = sizes.get(filename, {})
                 assets.append({
                     "product_type": product_type,
                     "product_id": product_id,
-                    "s3_uri": uri,
+                    "url": url,
                     "filename": filename,
                     "expected_size_bytes": size_record.get("bytes"),
                     "format": size_record.get("format"),
@@ -75,22 +81,28 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def download_assets(assets: list[dict], output_dir: Path) -> list[dict]:
+def download_assets(assets: list[dict], output_dir: Path, token: str) -> list[dict]:
+    if not token or not token.strip():
+        raise ValueError("EARTHDATA_TOKEN is required; configure it as a GitHub Actions secret")
     manifest = []
     for asset in assets:
         folder = output_dir / asset["product_type"]
         folder.mkdir(parents=True, exist_ok=True)
         destination = folder / asset["filename"]
-        command = [
-            "aws", "s3", "cp", "--no-sign-request", "--region", "us-west-2",
-            "--only-show-errors", asset["s3_uri"], str(destination),
-        ]
-        result = subprocess.run(command, capture_output=True, text=True)
-        if result.returncode != 0:
+        request = Request(asset["url"], headers={
+            "Authorization": f"Bearer {token.strip()}",
+            "User-Agent": "Tessellatum-Spatial-Methods/1.0",
+        })
+        try:
+            with urlopen(request, timeout=180) as response, destination.open("wb") as stream:
+                shutil.copyfileobj(response, stream)
+        except HTTPError as exc:
             raise RuntimeError(
-                f"Could not download {asset['s3_uri']}: "
-                f"{result.stderr.strip() or result.stdout.strip()}"
-            )
+                f"Earthdata download failed for {asset['filename']}: HTTP {exc.code} {exc.reason}. "
+                "Check that the Earthdata token is valid and has not expired."
+            ) from exc
+        except (URLError, TimeoutError, OSError) as exc:
+            raise RuntimeError(f"Download failed for {asset['filename']}: {exc}") from exc
         actual_size = destination.stat().st_size
         expected_size = asset.get("expected_size_bytes")
         if expected_size is not None and actual_size != expected_size:
@@ -120,7 +132,7 @@ def main(argv=None) -> int:
     try:
         report = json.loads(args.report.read_text(encoding="utf-8"))
         assets = select_assets(report)
-        manifest = download_assets(assets, args.output_dir)
+        manifest = download_assets(assets, args.output_dir, os.environ.get("EARTHDATA_TOKEN", ""))
     except (OSError, ValueError, json.JSONDecodeError, RuntimeError) as exc:
         print(f"OPERA asset download failed: {exc}", file=sys.stderr)
         return 2
@@ -134,6 +146,7 @@ def main(argv=None) -> int:
             "Successful downloads and size checks do not establish raster-grid alignment or radiometric equivalence.",
             "The RTC-S1 products are 30 m burst-based gamma0 power products; reconcile CRS, transform, source acquisition, mask and effective resolution before comparison.",
             "RTC-STATIC masks are ancillary geometry masks; use each acquisition's RTC product mask to screen the corresponding dynamic RTC raster.",
+            "The ellipsoid incidence-angle layer is taken from the separately interpolated source GRD angle grids; the RTC-STATIC local incidence angle is not a substitute for ellipsoid incidence angle.",
         ],
     }
     args.output_dir.mkdir(parents=True, exist_ok=True)
