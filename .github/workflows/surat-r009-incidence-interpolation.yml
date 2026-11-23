@@ -1,4 +1,5 @@
 name: Surat R009 ellipsoid incidence-angle interpolation
+run-name: Interpolate source angles for the paired Surat rasters
 on:
   workflow_dispatch:
   push:
