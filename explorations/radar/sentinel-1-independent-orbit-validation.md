@@ -113,8 +113,21 @@ Reproducibility:
 - The identical-footprint calculation and per-scene angle diagnostics completed successfully in [workflow run 45168656320](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45168656320).
 - The test suite for the shared-footprint comparator passed in [Python examples run 45168656390](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45168656390).
 
-## Next discriminating experiment
+## Angle-proxy diagnostic and next validation step
 
-The next catalogue screen should find another ascending Sentinel-1A relative orbit in the same January–February 2025 period with repeated acquisitions and a local-incidence-angle regime between the R057 and R130 ranges. Processing that intermediate track would help determine whether the large residual offset varies systematically with angle or is specific to one track. If no suitable intermediate track exists, the next option is a second study area with overlapping angle distributions. The provider's scattering-area convention should be checked in parallel.
+The common-mask comparator was extended to report the direct RTC-minus-ellipsoid difference and a local-angle proxy term, `-10 log10(tan(localIncidenceAngle))`. This proxy makes the two tracks' median residuals look similar:
+
+| Track | Median area-factor residual | Median local-angle proxy term | Median proxy-adjusted residual | Median direct RTC − ellipsoid |
+|---|---:|---:|---:|---:|
+| Sentinel-1A ascending R057 | +2.053 dB | +1.948 dB | +0.078 dB | +0.014 dB |
+| Sentinel-1A ascending R130 | −0.053 dB | −0.144 dB | +0.073 dB | +0.021 dB |
+
+This is a useful consistency clue, not a validated physical correction. The available RTC `localIncidenceAngle` is measured relative to the **local terrain normal**. The reference-area equation requires ellipsoid incidence angle θE. Substituting the local terrain angle pixel-by-pixel is not justified: mean absolute residual worsens on R130 (about 0.064 to 0.295 dB) and remains large on R057 (about 2.054 to 0.323 dB); P95 absolute proxy-adjusted residuals remain around 1.0–1.1 dB. Direct RTC-minus-ellipsoid differences have mean absolute magnitudes around 0.30–0.34 dB and P95 absolute magnitudes around 1.03–1.16 dB.
+
+A wider Sentinel-1A catalogue screen across both orbit directions, 2025-01-01 through 2026-11-23, with at least four scenes and at least 50% Nairobi AOI overlap found only the already tested ascending R057 and R130 tracks. It found no additional intermediate-angle candidate under those filters ([run 45169939031](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45169939031)). This does not rule out tracks outside the date, platform, direction or overlap filters.
+
+The next discriminating step is therefore to obtain the **ellipsoid incidence angle** independently rather than process more tracks or substitute the terrain angle. The Sentinel-1 product specification defines `incidenceAngle` in each `geolocationGridPoint` record alongside source image line/pixel and geodetic coordinates. The catalogue asset inventory identified the exact source GRD products and S3 prefixes for the eight R057/R130 acquisitions ([inventory run 45169844808](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45169844808)). The catalogue exposes only a `data` COG asset; the annotation XML objects must be listed through the separate CDSE S3 workflow.
+
+That prepared workflow requires CDSE S3 access credentials, separate from the existing Sentinel Hub OAuth credentials. The user must generate an S3 access key and secret in CDSE and add them to GitHub Actions secrets as `CDSE_S3_ACCESS_KEY` and `CDSE_S3_SECRET_KEY`. Do not paste the secrets into chat or commit them. Once configured, list only the small annotation XML and manifest objects, extract/interpolate `incidenceAngle` to the shared output grid, validate interpolation against the source geolocation points, and evaluate the complete reference-area equation on common valid pixels.
 
 No stable radiometric reference or independent geodetic control has been established. Keep `analysis_ready: false`; do not normalize the time series or use the results for change detection.
