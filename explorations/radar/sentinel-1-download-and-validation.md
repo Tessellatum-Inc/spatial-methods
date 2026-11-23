@@ -96,9 +96,18 @@ python explorations/radar/audit_sentinel1_safe_metadata.py \
 
 This second gate checks ZIP CRCs, a parseable `manifest.safe`, safe member
 paths, and the presence of VV and VH measurement, annotation, calibration and
-noise-annotation file sets based on SAFE member names. It records the archive
-SHA-256 and metadata values exposed by the manifest. It does not extract or
-modify the source archive.
+noise-annotation file sets based on SAFE member names. It also verifies that
+the SAFE root name identifies a Sentinel-1 IW GRD product and that the manifest
+declares IW mode. When an expected catalogue product name is supplied, the
+audit checks that exact identity too. It records the archive SHA-256 and
+metadata values exposed by the manifest. It does not extract or modify the
+source archive.
+
+The readiness reconciler requires all seven base audit checks to be present
+and pass: the four VV/VH file-set checks, well-formed manifest XML, IW GRD SAFE
+root identity, and IW mode in the manifest. Missing checks are treated as
+incomplete evidence, not silently accepted. The optional expected-name
+comparison is an additional identity check when included in the audit.
 
 A failed dual-polarisation gate blocks processing. A passing gate is still
 only a structural preflight: it does not inspect raster pixels, validate
