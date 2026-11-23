@@ -1,0 +1,61 @@
+name: Sentinel-1 same-platform orbit-pair RTC experiment
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sentinel1-same-platform-orbit-pair.yml"
+      - "explorations/radar/process_sentinel1_alternate_orbit.py"
+jobs:
+  same-platform-orbit-pair:
+    strategy:
+      fail-fast: false
+      matrix:
+        relative_orbit: [57, 130]
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install processing dependencies
+        run: python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
+      - name: Verify OAuth secrets
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          test -n "$SENTINEL_HUB_CLIENT_ID"
+          test -n "$SENTINEL_HUB_CLIENT_SECRET"
+      - name: Process four Sentinel-1A acquisitions on this ascending relative orbit
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          python explorations/radar/process_sentinel1_alternate_orbit.py \
+            --start "2025-01-01T00:00:00Z" \
+            --end "2025-02-20T00:00:00Z" \
+            --direction ascending \
+            --relative-orbit "${{ matrix.relative_orbit }}" \
+            --platform sentinel-1a \
+            --min-coverage 0.7 \
+            --max-scenes 4 \
+            --output-dir "data/sentinelhub/nairobi/same_platform_r${{ matrix.relative_orbit }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sentinel1a-ascending-r${{ matrix.relative_orbit }}-qa
+          path: |
+            data/sentinelhub/nairobi/same_platform_r${{ matrix.relative_orbit }}/*.json
+            data/sentinelhub/nairobi/same_platform_r${{ matrix.relative_orbit }}/terrain_aux/*.json
+          if-no-files-found: error
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sentinel1a-ascending-r${{ matrix.relative_orbit }}-rasters
+          path: |
+            data/sentinelhub/nairobi/same_platform_r${{ matrix.relative_orbit }}/*.tif
+            data/sentinelhub/nairobi/same_platform_r${{ matrix.relative_orbit }}/terrain_aux/*.tif
+            data/sentinelhub/nairobi/same_platform_r${{ matrix.relative_orbit }}/*.metadata.json
+          if-no-files-found: error
+          retention-days: 14
