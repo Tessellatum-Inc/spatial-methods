@@ -1,0 +1,41 @@
+name: Sentinel-1A Surat Basin paired RTC and ellipsoid processing
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sentinel1a-surat-basin-paired-processing.yml"
+      - "explorations/radar/process_surat_basin_sentinel1_validation.py"
+      - "explorations/radar/process_sentinelhub_sentinel1.py"
+      - "explorations/radar/process_sentinel1_gamma0_terrain.py"
+jobs:
+  process-surat-paired-scenes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install raster and geospatial dependencies
+        run: python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
+      - name: Verify Sentinel Hub credentials
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          test -n "$SENTINEL_HUB_CLIENT_ID"
+          test -n "$SENTINEL_HUB_CLIENT_SECRET"
+      - name: Process four R009 acquisitions with both backscatter conventions
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          python explorations/radar/process_surat_basin_sentinel1_validation.py \
+            --output-dir data/sentinelhub/surat_basin/processed \
+            --timeout 300
+      - uses: actions/upload-artifact@v4
+        with:
+          name: surat-r009-paired-rtc-ellipsoid-rasters
+          path: data/sentinelhub/surat_basin/processed/
+          if-no-files-found: error
+          retention-days: 30
