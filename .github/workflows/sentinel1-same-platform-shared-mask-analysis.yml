@@ -1,0 +1,38 @@
+name: Sentinel-1 same-platform shared-mask analysis
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sentinel1-same-platform-shared-mask-analysis.yml"
+permissions:
+  actions: read
+  contents: read
+jobs:
+  shared-mask-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install raster comparison dependencies
+        run: python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
+      - name: Download successful same-platform R057 and R130 raster artifacts
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 45165182363
+          pattern: sentinel1a-ascending-r*-rasters
+          path: data/same_platform_rasters
+          github-token: ${{ github.token }}
+      - name: Compare both tracks on their shared valid footprint
+        run: |
+          python explorations/radar/compare_sentinel1_same_platform_orbit_pair.py \
+            --input-dir data/same_platform_rasters \
+            --output data/same_platform_rasters/sentinel1a_same_platform_orbit_pair_common_mask.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sentinel1a-same-platform-orbit-pair-common-mask-qa
+          path: data/same_platform_rasters/sentinel1a_same_platform_orbit_pair_common_mask.json
+          if-no-files-found: error
+          retention-days: 30
