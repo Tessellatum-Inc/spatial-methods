@@ -1,0 +1,50 @@
+name: Sentinel Hub Sentinel-1 Nairobi raster sample
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sentinelhub-sentinel1-process
+  cancel-in-progress: false
+
+jobs:
+  process-sample:
+    name: Process latest Nairobi Sentinel-1 GRD scene
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Verify OAuth secrets are configured
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          test -n "$SENTINEL_HUB_CLIENT_ID" || { echo "::error::Missing SENTINEL_HUB_CLIENT_ID repository secret"; exit 1; }
+          test -n "$SENTINEL_HUB_CLIENT_SECRET" || { echo "::error::Missing SENTINEL_HUB_CLIENT_SECRET repository secret"; exit 1; }
+          echo "Both Sentinel Hub OAuth secrets are configured."
+
+      - name: Request one acquisition as VV/VH GeoTIFF
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: python explorations/radar/process_sentinelhub_sentinel1.py --limit 100
+
+      - name: Upload processed raster and provenance
+        uses: actions/upload-artifact@v4
+        with:
+          name: sentinelhub-sentinel1-nairobi-raster-sample
+          path: |
+            data/sentinelhub/nairobi/*.tif
+            data/sentinelhub/nairobi/*.metadata.json
+          if-no-files-found: error
+          retention-days: 14
