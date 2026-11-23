@@ -1,4 +1,5 @@
 name: Sentinel-1 same-platform shared-mask analysis
+# Reuses the successful R057/R130 raster artifacts; no new provider processing.
 on:
   workflow_dispatch:
   push:
