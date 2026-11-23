@@ -40,6 +40,23 @@ jobs:
             exit 1
           fi
 
+          # Diagnose common copy/paste errors without exposing either secret.
+          python - <<'PY'
+          import os
+          username = os.environ["CDSE_USERNAME"]
+          password = os.environ["CDSE_PASSWORD"]
+          checks = {
+              "username_has_outer_whitespace": username != username.strip(),
+              "password_has_outer_whitespace": password != password.strip(),
+              "username_looks_like_email": "@" in username and "." in username.rsplit("@", 1)[-1],
+              "password_contains_line_break": "\\n" in password or "\\r" in password,
+          }
+          for name, result in checks.items():
+              print(f"{name}={str(result).lower()}")
+          if checks["username_has_outer_whitespace"] or checks["password_has_outer_whitespace"] or checks["password_contains_line_break"]:
+              raise SystemExit("A credential contains leading/trailing whitespace or a line break. Recreate the affected GitHub secret carefully.")
+          PY
+
       - name: Build the catalogue candidate manifest
         run: |
           python explorations/radar/build_sentinel1_stack_manifest.py \
