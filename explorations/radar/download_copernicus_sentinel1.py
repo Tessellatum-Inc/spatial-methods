@@ -77,7 +77,28 @@ def request_access_token(username: str, password: str, timeout: int = 60) -> str
     try:
         with opener.open(request, timeout=timeout) as response:
             payload = json.loads(response.read().decode("utf-8"))
-    except (HTTPError, URLError, TimeoutError, json.JSONDecodeError) as exc:
+    except HTTPError as exc:
+        # Keycloak returns useful, non-secret diagnostics such as
+        # invalid_grant or a TOTP requirement in the JSON response body.
+        # Never include request data, credentials, or response headers here.
+        detail = ""
+        try:
+            error_payload = json.loads(exc.read().decode("utf-8"))
+            if isinstance(error_payload, dict):
+                error = error_payload.get("error")
+                description = error_payload.get("error_description")
+                parts = [
+                    value for value in (error, description)
+                    if isinstance(value, str) and value.strip()
+                ]
+                if parts:
+                    detail = ": " + " — ".join(parts)
+        except (UnicodeDecodeError, json.JSONDecodeError, OSError):
+            pass
+        raise RuntimeError(
+            f"Copernicus token request failed: HTTP {exc.code}{detail}"
+        ) from exc
+    except (URLError, TimeoutError, json.JSONDecodeError) as exc:
         raise RuntimeError(f"Copernicus token request failed: {exc}") from exc
     token = payload.get("access_token") if isinstance(payload, dict) else None
     if not isinstance(token, str) or not token:

@@ -163,3 +163,23 @@ A manually triggered workflow is available at **Actions → Sentinel-1 Nairobi d
 Do not put either value in workflow inputs, source files, commits, or chat. The workflow passes them only to the downloader process as environment variables. It builds the candidate manifest from the committed inventory, downloads the selected ZIP, runs the SAFE metadata audit, and reconciles the evidence. The workflow artifact contains JSON metadata and provenance only; the SAFE archive is removed from the runner workspace and is not uploaded to GitHub.
 
 **Runner capacity is a real constraint.** The standard hosted runner has finite temporary storage, and the product's actual archive size must fit alongside the operating environment and working files. The workflow prints available disk capacity before download, but this is not a guarantee that the archive will fit. If the download fails for space, timeout, account entitlement, or provider availability, use the documented local download procedure on a machine with sufficient disk instead. A successful workflow run establishes only the structural preflight recorded in the artifact; it does not authorize SNAP processing or establish scientific validity.
+
+### Copernicus authentication troubleshooting
+
+The workflow first verifies that both repository secrets are present, but that
+check cannot verify that the account credentials are valid or that the account
+has completed any required authentication steps. If token generation fails,
+inspect the failed **Download the selected Sentinel-1 SAFE archive** step for
+the HTTP status and the provider's safe error description. The downloader
+reports only the OAuth error code/description; it never prints the username,
+password, request body or response headers.
+
+The official [token-generation guide](https://documentation.dataspace.copernicus.eu/APIs/Token.html)
+documents the password grant and an additional `totp` parameter for accounts
+using two-factor authentication. If the provider reports an invalid grant,
+check that the secret contains the Copernicus Data Space login email and the
+current account password (not a Sentinel Hub OAuth client secret), and confirm
+whether the account requires TOTP. Do not disable account security or paste
+one-time codes into repository files, workflow inputs, logs or chat. The
+workflow currently supports username/password authentication only; TOTP
+support must be added safely if the account requires it.

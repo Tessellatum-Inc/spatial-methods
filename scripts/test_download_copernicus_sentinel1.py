@@ -1,7 +1,10 @@
 """Offline tests for the Copernicus Sentinel-1 SAFE download validator."""
 import importlib.util
+import io
+import json
 from pathlib import Path
 import tempfile
+from urllib.error import HTTPError
 import unittest
 import zipfile
 
@@ -60,6 +63,23 @@ class Sentinel1DownloadValidationTests(unittest.TestCase):
                 archive.writestr("candidate.SAFE/annotation/s1.xml", "<annotation/>")
             with self.assertRaisesRegex(ValueError, "no measurement GeoTIFF"):
                 DOWNLOAD.validate_safe_archive(path)
+
+
+    def test_token_http_error_includes_safe_keycloak_diagnostic(self):
+        error = HTTPError(
+            "https://identity.dataspace.copernicus.eu/token",
+            400,
+            "Bad Request",
+            {},
+            io.BytesIO(json.dumps({
+                "error": "invalid_grant",
+                "error_description": "Invalid user credentials",
+            }).encode("utf-8")),
+        )
+        with self.assertRaisesRegex(
+            RuntimeError, "HTTP 400: invalid_grant — Invalid user credentials"
+        ):
+            DOWNLOAD.request_access_token("account@example.com", "not-a-real-password")
 
     def test_requires_credentials_without_network_access(self):
         with self.assertRaisesRegex(ValueError, "CDSE_USERNAME and CDSE_PASSWORD"):
