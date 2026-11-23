@@ -36,7 +36,10 @@ class PairedComparisonTests(unittest.TestCase):
                                    count=array.shape[0], dtype="float32",
                                    crs="EPSG:4326", transform=transform) as dst:
                     dst.write(array)
-            report = MODULE.compare_pair(epath, rpath)
+            report, samples = MODULE.compare_pair(epath, rpath, collect_temporal_samples=True)
+            self.assertEqual(set(samples), {"VV", "VH"})
+            self.assertEqual(samples["VV"]["delta_db"].size, 1)
+            self.assertEqual(samples["VH"]["delta_db"].size, 1)
             self.assertEqual(report["common_valid_pixels"], 2)
             strata = report["polarizations"]["VV"]["stratified_differences"]
             area_bin = next(x for x in strata["scattering_area"] if x["stratum"] == "1.0–1.1")
