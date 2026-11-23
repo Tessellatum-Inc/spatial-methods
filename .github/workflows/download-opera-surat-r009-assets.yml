@@ -25,12 +25,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Ensure AWS CLI is available
-        run: |
-          if ! command -v aws >/dev/null 2>&1; then
-            python -m pip install awscli
-          fi
-          aws --version
       - name: Download OPERA catalogue evidence
         uses: actions/download-artifact@v4
         with:
@@ -40,9 +34,24 @@ jobs:
           github-token: ${{ github.token }}
       - name: Test OPERA asset selection
         run: python -m unittest explorations.radar.test_download_opera_surat_r009_assets -v
+      - name: Check Earthdata token availability
+        id: earthdata
+        env:
+          EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
+        run: |
+          if [ -n "$EARTHDATA_TOKEN" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "EARTHDATA_TOKEN is not configured. Add it as a repository Actions secret to enable downloads."
+          fi
       - name: Download OPERA RTC and static science assets
+        if: ${{ steps.earthdata.outputs.available == 'true' }}
+        env:
+          EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
         run: python explorations/radar/download_opera_surat_r009_assets.py
       - name: Upload independent processor raster assets and checksums
+        if: ${{ steps.earthdata.outputs.available == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: surat-r009-opera-rtc-science-assets
