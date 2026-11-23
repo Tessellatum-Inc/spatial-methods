@@ -1,0 +1,40 @@
+name: Sentinel-1 ellipsoid incidence asset inventory
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sentinel1-ellipsoid-incidence-asset-inventory.yml"
+      - "explorations/radar/inspect_sentinel1_ellipsoid_incidence_assets.py"
+jobs:
+  catalogue-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install catalogue dependencies
+        run: python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
+      - name: Verify OAuth secrets
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          test -n "$SENTINEL_HUB_CLIENT_ID"
+          test -n "$SENTINEL_HUB_CLIENT_SECRET"
+      - name: Inventory original GRD annotation assets
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          python explorations/radar/inspect_sentinel1_ellipsoid_incidence_assets.py \
+            --start "2025-01-01T00:00:00Z" \
+            --end "2025-02-20T00:00:00Z" \
+            --output data/sentinelhub/nairobi/sentinel1_ellipsoid_incidence_asset_inventory.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sentinel1-ellipsoid-incidence-asset-inventory
+          path: data/sentinelhub/nairobi/sentinel1_ellipsoid_incidence_asset_inventory.json
+          if-no-files-found: error
+          retention-days: 30
