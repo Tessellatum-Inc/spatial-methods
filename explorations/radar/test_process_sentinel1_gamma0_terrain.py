@@ -1,4 +1,4 @@
-"""Offline tests for the parallel Sentinel-1 gamma0 terrain branch."""
+""""Offline tests for the parallel Sentinel-1 gamma0 terrain branch."""
 import importlib.util
 from pathlib import Path
 import unittest
@@ -33,11 +33,14 @@ class Gamma0TerrainTests(unittest.TestCase):
             MODULE.build_rtc_payload(self.feature(), oversampling=5)
 
     def test_summarizes_six_band_rtc_stack(self):
+        # Band order: VV, VH, scatteringArea, localIncidenceAngle, shadowMask, dataMask.
+        # Initialize shadow-free pixels and fully valid data, then flag one shadow pixel.
         a = np.ones((6, 3, 3), dtype=np.float32)
         a[0] *= 0.1
         a[1] *= 0.01
         a[2] *= 0.8
         a[3] *= 40
+        a[4] = 0
         a[4, 0, 0] = 1
         report = MODULE.summarize_rtc(a)
         self.assertEqual(report["valid_pixels"], 9)
