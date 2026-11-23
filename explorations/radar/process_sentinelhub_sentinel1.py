@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timedelta, timezone
+from http.client import HTTPException
 import hashlib
 import importlib.util
 import json
@@ -178,7 +179,7 @@ def request_geotiff(access_token: str, payload: dict, timeout: int = 180) -> byt
                 continue
             # Do not expose provider response bodies, headers, request bodies, or credentials.
             raise RuntimeError(f"Sentinel Hub Process API failed with HTTP {exc.code}.") from None
-        except (URLError, TimeoutError, OSError) as exc:
+        except (URLError, TimeoutError, OSError, HTTPException) as exc:
             if attempt < len(retry_delays):
                 time.sleep(retry_delays[attempt])
                 continue

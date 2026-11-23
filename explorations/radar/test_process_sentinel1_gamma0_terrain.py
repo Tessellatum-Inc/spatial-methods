@@ -2,6 +2,8 @@
 import importlib.util
 from pathlib import Path
 import unittest
+from http.client import IncompleteRead
+from unittest.mock import patch
 
 import numpy as np
 
@@ -46,6 +48,25 @@ class Gamma0TerrainTests(unittest.TestCase):
         self.assertEqual(report["valid_pixels"], 9)
         self.assertAlmostEqual(report["shadow_mask_fraction_of_valid_pixels"], 1 / 9)
         self.assertAlmostEqual(report["vv_median_db"], -10.0, places=6)
+
+
+    def test_process_api_retries_incomplete_chunked_response(self):
+        class Response:
+            headers = {"Content-Type": "image/tiff"}
+            def __enter__(self):
+                return self
+            def __exit__(self, *args):
+                return False
+            def read(self):
+                return b"II*\\x00" + b"\\x00" * 8
+
+        with patch.object(MODULE._PROCESS, "urlopen",
+                          side_effect=[IncompleteRead(b"", 12), Response()]) as mocked, \
+             patch.object(MODULE._PROCESS.time, "sleep") as sleep:
+            body = MODULE._PROCESS.request_geotiff("token", {"test": True}, timeout=1)
+        self.assertEqual(body[:4], b"II*\\x00")
+        self.assertEqual(mocked.call_count, 2)
+        sleep.assert_called_once_with(2)
 
     def test_rejects_invalid_angle(self):
         a = np.ones((6, 2, 2), dtype=np.float32)
