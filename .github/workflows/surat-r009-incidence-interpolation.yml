@@ -1,0 +1,41 @@
+name: Surat R009 ellipsoid incidence-angle interpolation
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/surat-r009-incidence-interpolation.yml"
+      - "explorations/radar/interpolate_surat_r009_incidence.py"
+jobs:
+  interpolate-surat-incidence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install raster interpolation dependencies
+        run: |
+          python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
+          python -m pip install -r explorations/radar/requirements-sentinel1-incidence-interpolation.txt
+      - name: Download source annotation and calibration metadata
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 45208408624
+          name: surat-r009-source-incidence-metadata
+          path: data/sentinelhub/surat_basin
+          github-token: ${{ github.token }}
+      - name: Interpolate source incidence angles to paired processing grid
+        run: |
+          python explorations/radar/interpolate_surat_r009_incidence.py \
+            --input data/sentinelhub/surat_basin/surat_r009_source_incidence_metadata.json \
+            --output-dir data/sentinelhub/surat_basin/processed/ellipsoid_incidence \
+            --report data/sentinelhub/surat_basin/processed/surat_r009_incidence_interpolation_qa.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: surat-r009-ellipsoid-incidence-grids
+          path: |
+            data/sentinelhub/surat_basin/processed/ellipsoid_incidence/
+            data/sentinelhub/surat_basin/processed/surat_r009_incidence_interpolation_qa.json
+          if-no-files-found: error
+          retention-days: 30
