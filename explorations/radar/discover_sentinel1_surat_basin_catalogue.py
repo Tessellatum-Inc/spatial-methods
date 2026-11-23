@@ -26,15 +26,16 @@ def collect(token,bbox,start,end,limit=100,max_pages=50):
         payload={**payload,"next":nxt}
     raise RuntimeError("Catalogue pagination exceeded safety limit")
 
-def count_covered_targets(feature,targets):
+def covered_target_names(feature,targets):
     geometry=feature.get("geometry")
-    if not isinstance(geometry,dict): return 0
+    if not isinstance(geometry,dict): return []
     try: footprint=shape(geometry)
-    except Exception: return 0
-    if footprint.is_empty or not footprint.is_valid: return 0
-    return sum(1 for target in targets if footprint.covers(Point(target["longitude"],target["latitude"])))
+    except Exception: return []
+    if footprint.is_empty or not footprint.is_valid: return []
+    return [target["name"] for target in targets
+        if footprint.covers(Point(target["longitude"],target["latitude"]))]
 
-def summarize(features,targets,min_scenes=4,min_target_fraction=0.90):
+def summarize(features,targets,min_scenes=4,min_target_fraction=0.90,min_repeated_targets=10,min_scene_targets=10):
     groups=defaultdict(list)
     for feature in features:
         props=feature.get("properties",{})
@@ -49,29 +50,38 @@ def summarize(features,targets,min_scenes=4,min_target_fraction=0.90):
             if dt.tzinfo is None: continue
             stamp=dt.astimezone(timezone.utc).isoformat().replace("+00:00","Z")
         except ValueError: continue
-        covered=count_covered_targets(feature,targets)
-        fraction=covered/len(targets)
+        covered_names=covered_target_names(feature,targets)
+        fraction=len(covered_names)/len(targets)
         pols=props.get("sar:polarizations")
         groups[(platform,direction,orbit)].append({"item_id":feature.get("id"),
-            "datetime_utc":stamp,"covered_target_count":covered,
-            "target_coverage_fraction":round(fraction,6),
+            "datetime_utc":stamp,"covered_target_count":len(covered_names),
+            "covered_target_names":covered_names,"target_coverage_fraction":round(fraction,6),
             "polarizations":pols if isinstance(pols,list) else []})
     tracks=[]
     for (platform,direction,orbit),scenes in sorted(groups.items(),key=lambda x:(x[0][1],x[0][2])):
         scenes.sort(key=lambda x:x["datetime_utc"])
         fractions=[x["target_coverage_fraction"] for x in scenes]
-        full=[x for x in scenes if x["target_coverage_fraction"]>=min_target_fraction
-            and {"VV","VH"}.issubset(set(x["polarizations"]))]
+        dual=[x for x in scenes if {"VV","VH"}.issubset(set(x["polarizations"]))]
+        full=[x for x in dual if x["target_coverage_fraction"]>=min_target_fraction]
+        partial=[x for x in dual if x["covered_target_count"]>=min_scene_targets]
+        target_counts={target["name"]:sum(target["name"] in scene["covered_target_names"] for scene in dual) for target in targets}
+        repeated=[name for name,count in target_counts.items() if count>=min_scenes]
+        stable_partial=[x for x in partial if sum(name in x["covered_target_names"] for name in repeated)>=min_repeated_targets]
         tracks.append({"platform":platform,"orbit_direction":direction,"relative_orbit":orbit,
-            "scene_count":len(scenes),"scenes_with_target_coverage_threshold_and_dual_pol":len(full),
+            "scene_count":len(scenes),"dual_pol_scene_count":len(dual),
+            "scenes_with_full_array_coverage":len(full),"scenes_with_minimum_partial_target_count":len(partial),
             "minimum_target_coverage_fraction":min(fractions),"median_target_coverage_fraction":sorted(fractions)[len(fractions)//2],
-            "candidate_for_processing":direction=="ASCENDING" and len(full)>=min_scenes,
-            "qualifying_scenes":full,"scenes":scenes})
+            "repeated_target_count":len(repeated),"repeated_target_names":repeated,
+            "partial_array_candidate":direction=="ASCENDING" and len(stable_partial)>=min_scenes and len(repeated)>=min_repeated_targets,
+            "full_array_candidate":direction=="ASCENDING" and len(full)>=min_scenes,
+            "candidate_for_processing":direction=="ASCENDING" and ((len(stable_partial)>=min_scenes and len(repeated)>=min_repeated_targets) or len(full)>=min_scenes),
+            "qualifying_scenes":stable_partial if len(stable_partial)>=min_scenes else full,"scenes":scenes})
     candidates=[t for t in tracks if t["candidate_for_processing"]]
     return {"schema":"tessellatum.sentinel1.surat-basin-corner-reflector-catalogue-screen.v1",
         "catalogue_feature_count":len(features),"target_count":len(targets),
         "track_count":len(tracks),"candidate_track_count":len(candidates),
         "minimum_scenes":min_scenes,"minimum_target_coverage_fraction":min_target_fraction,
+        "minimum_repeated_targets":min_repeated_targets,"minimum_targets_per_scene":min_scene_targets,
         "tracks":tracks,"candidates":candidates,"analysis_ready":False,
         "limitations":["Catalogue footprints are used only to screen whether surveyed reflector coordinates fall inside a scene; they do not establish pixel-level data validity.",
             "Corner-reflector orientation and visibility must be checked for each acquisition.",
@@ -106,7 +116,7 @@ def main(argv=None):
     a.output.parent.mkdir(parents=True,exist_ok=True); a.output.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
     print(f"CEOS targets: {len(targets)}; Sentinel-1A IW features: {len(features)}; qualifying tracks: {len(report['tracks'])}; ascending candidates: {len(report['candidates'])}")
     for track in report["tracks"]:
-        print(f"{track['orbit_direction']} R{track['relative_orbit']:03d}: scenes={track['scene_count']}; qualifying dual-pol scenes={track['scenes_with_target_coverage_threshold_and_dual_pol']}; median target coverage={track['median_target_coverage_fraction']:.3f}; candidate={track['candidate_for_processing']}")
+        print(f"{track['orbit_direction']} R{track['relative_orbit']:03d}: scenes={track['scene_count']}; full-array scenes={track['scenes_with_full_array_coverage']}; repeated targets={track['repeated_target_count']}; partial candidate={track['partial_array_candidate']}; candidate={track['candidate_for_processing']}")
     print(f"Report: {a.output}; analysis_ready=false")
     return 0
 if __name__=="__main__": raise SystemExit(main())
