@@ -136,6 +136,11 @@ def main(argv=None):
         print(f"{track['orbit_direction']} R{track['relative_orbit']:03d}: scenes={track['scene_count']}; full-array scenes={track['scenes_with_full_array_coverage']}; repeated targets={track['repeated_target_count']}; partial candidate={track['partial_array_candidate']}; candidate={track['candidate_for_processing']}")
         if track["candidate_for_processing"]:
             print("  Common reflectors across selected acquisitions: " + ", ".join(track["best_common_subset_target_names"]))
+            lookup={target["name"]:target for target in targets}
+            common=[lookup[name] for name in track["best_common_subset_target_names"]]
+            print("  Common reflector coordinates (name, lon, lat): " + "; ".join(f"{x['name']} {x['longitude']:.6f},{x['latitude']:.6f}" for x in common))
+            if common:
+                print(f"  Common subset extent: {min(x['longitude'] for x in common):.6f},{min(x['latitude'] for x in common):.6f},{max(x['longitude'] for x in common):.6f},{max(x['latitude'] for x in common):.6f}")
             for scene in track["qualifying_scenes"]:
                 print(f"  SELECT {scene['datetime_utc']}: {scene['covered_target_count']} targets; {scene['item_id']}")
     print(f"Report: {a.output}; analysis_ready=false")
