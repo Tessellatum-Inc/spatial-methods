@@ -131,8 +131,6 @@ class ProcessClientTests(unittest.TestCase):
         self.assertNotIn("token", str(raised.exception))
 
 
-if __name__ == "__main__":
-    unittest.main()
     @mock.patch.object(CLIENT.time, "sleep")
     @mock.patch.object(CLIENT, "urlopen")
     def test_does_not_retry_non_transient_http_error(self, mocked, mocked_sleep):
@@ -144,3 +142,6 @@ if __name__ == "__main__":
         mocked.assert_called_once()
         mocked_sleep.assert_not_called()
 
+
+if __name__ == "__main__":
+    unittest.main()
