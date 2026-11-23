@@ -55,6 +55,12 @@ jobs:
           SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
         run: python explorations/radar/process_sentinelhub_sentinel1_stack.py --max-scenes "${{ inputs.max_scenes || 4 }}" --output-dir data/sentinelhub/nairobi/stack
 
+      - name: Retrieve per-pixel local incidence angle for each acquisition
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: python explorations/radar/process_sentinel1_geometry_aux.py --stack-metadata data/sentinelhub/nairobi/stack/sentinel1_nairobi_temporal_stack.metadata.json --output-dir data/sentinelhub/nairobi/stack/geometry_aux
+
       - name: Inspect each acquisition and create Nairobi county-masked raster
         run: |
           set -euo pipefail
@@ -102,5 +108,7 @@ jobs:
             data/sentinelhub/nairobi/stack/sentinel1_nairobi_registration_screen.json
             data/sentinelhub/nairobi/stack/sentinel1_nairobi_temporal_qa_screen.json
             data/sentinelhub/nairobi/stack/sentinel1_nairobi_reference_area_screen.json
+            data/sentinelhub/nairobi/stack/geometry_aux/*.tif
+            data/sentinelhub/nairobi/stack/geometry_aux/*.json
           if-no-files-found: error
           retention-days: 14
