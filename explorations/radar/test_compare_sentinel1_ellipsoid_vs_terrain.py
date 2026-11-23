@@ -48,6 +48,16 @@ class PairedComparisonTests(unittest.TestCase):
                 10 * np.log10(2), places=5
             )
 
+    def test_scattering_area_factor_relation_reports_residuals(self):
+        area = np.array([0.5, 1.0, 2.0], dtype=np.float64)
+        expected = -10.0 * np.log10(area)
+        observed = expected + np.array([0.1, -0.2, 0.05])
+        report = MODULE._area_factor_relation(observed, area)
+        self.assertEqual(report["pixels"], 3)
+        self.assertAlmostEqual(report["median_absolute_residual_db"], 0.1, places=6)
+        self.assertAlmostEqual(report["p95_absolute_residual_db"], 0.195, places=3)
+        self.assertGreater(report["observed_predicted_pearson_r"], 0.99)
+
     def test_rejects_mismatched_grids(self):
         with tempfile.TemporaryDirectory() as tmp:
             base = np.ones((3, 2, 2), dtype=np.float32)

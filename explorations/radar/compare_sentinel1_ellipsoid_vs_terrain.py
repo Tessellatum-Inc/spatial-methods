@@ -48,6 +48,30 @@ def _stratified_summary(delta: np.ndarray, strata: np.ndarray,
     return records
 
 
+def _area_factor_relation(delta: np.ndarray, scattering_area: np.ndarray) -> dict:
+    """Test whether RTC/ellipsoid dB differences follow inverse scattering area."""
+    if scattering_area.shape != delta.shape:
+        raise ValueError("Scattering-area values must align with paired differences.")
+    valid = np.isfinite(delta) & np.isfinite(scattering_area) & (scattering_area > 0)
+    if not valid.any():
+        raise ValueError("No finite positive scattering-area values for factor diagnostic.")
+    observed = delta[valid].astype(np.float64)
+    predicted = -10.0 * np.log10(scattering_area[valid].astype(np.float64))
+    residual = observed - predicted
+    correlation = None
+    if observed.size > 1 and np.std(observed) > 0 and np.std(predicted) > 0:
+        correlation = float(np.corrcoef(observed, predicted)[0, 1])
+    return {
+        "pixels": int(observed.size),
+        "hypothesis": "RTC_minus_ellipsoid_dB = -10*log10(scatteringArea)",
+        "predicted_delta_db_quantiles": _quantiles(predicted),
+        "observed_minus_predicted_db_quantiles": _quantiles(residual),
+        "median_absolute_residual_db": float(np.median(np.abs(residual))),
+        "p95_absolute_residual_db": float(np.percentile(np.abs(residual), 95)),
+        "observed_predicted_pearson_r": correlation,
+    }
+
+
 def compare_pair(ellipsoid_path: Path, rtc_path: Path) -> dict:
     with rasterio.open(ellipsoid_path) as ell, rasterio.open(rtc_path) as rtc:
         if ell.count < 3 or rtc.count != 6:
@@ -102,6 +126,7 @@ def compare_pair(ellipsoid_path: Path, rtc_path: Path) -> dict:
         }
         result["polarizations"][name] = {
             "stratified_differences": stratified,
+            "scattering_area_factor_relation": _area_factor_relation(delta, area_values),
             "positive_common_pixels": int(positive.sum()),
             "ellipsoid_median_db": float(np.median(ell_db)),
             "rtc_median_db": float(np.median(rtc_db)),
