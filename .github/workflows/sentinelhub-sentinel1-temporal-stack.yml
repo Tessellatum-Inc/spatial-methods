@@ -1,6 +1,13 @@
 name: Sentinel Hub Sentinel-1 Nairobi temporal stack
 
 on:
+  # Keep the expensive provider run explicit, but automatically regenerate the
+  # QA artifact whenever the pipeline implementation itself changes on main.
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sentinelhub-sentinel1-temporal-stack.yml"
+      - "explorations/radar/**"
   workflow_dispatch:
     inputs:
       max_scenes:
