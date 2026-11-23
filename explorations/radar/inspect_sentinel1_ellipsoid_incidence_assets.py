@@ -64,9 +64,7 @@ def main(argv=None):
     for row in report["items"]:
         print(f"R{row['relative_orbit']:03d} {row['datetime_utc']} {row['item_id']} asset_keys={','.join(row['assets'])}")
         for key,value in row["assets"].items():
-            href=value.get("href","")
-            if "annotation" in href.lower() or "manifest" in href.lower() or "product" in key.lower():
-                print(f"  {key}: {href}")
+            print(f"  {key}: {value.get('href','')}")
     print(f"Report: {a.output}; analysis_ready=false")
     return 0
 if __name__=="__main__": raise SystemExit(main())
