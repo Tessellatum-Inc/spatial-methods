@@ -320,3 +320,26 @@ The R130 RTC/ellipsoid experiment processed all four acquisitions with zero fail
 This is meaningful cross-configuration evidence, but the fit coefficients are not invariant: R130's median residual offset was about -0.010 dB, compared with about +0.282 dB in the original descending R079 stack. R130 is ascending Sentinel-1D, while R079 is descending Sentinel-1C, so platform and orbit direction are confounded. Do not transfer the R079 intercept to R130 or pool the tracks as one time series. See [the independent-orbit experiment record](sentinel-1-independent-orbit-validation.md) and [workflow run 45163757264](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45163757264).
 
 The broader conclusion remains: the scattering-area relationship is strong across both tested acquisition configurations, but the fitted offset/slope vary and independent radiometric/geodetic reference validation is still absent. Keep `analysis_ready: false`.
+
+
+### Same-platform ascending-orbit comparison on an identical footprint (2026-11-23)
+
+To separate platform effects from orbit effects, a paired Sentinel-1A experiment processed four ascending R057 acquisitions and four ascending R130 acquisitions from January–February 2025. Both tracks used the same Nairobi output grid, the same ellipsoid and RTC processing functions, and the same requested temporal window. The comparison was then restricted to the intersection of valid data masks across all eight acquisitions and both processing branches.
+
+The shared footprint contains **1,848,662 pixels (58.77% of the requested grid)**. On this identical footprint, the mean per-scene results were:
+
+| Track | Median local incidence angle | Area-factor OLS slope | R² (VV / VH) | Median residual offset (VV / VH) | Mean absolute residual (VV / VH) |
+|---|---:|---:|---:|---:|---:|
+| Ascending R130, Sentinel-1A | 45.95° | 0.992 | 0.986 / 0.986 | -0.053 / -0.053 dB | 0.064 / 0.064 dB |
+| Ascending R057, Sentinel-1A | 32.56° | 0.982 | 0.976 / 0.976 | +2.053 / +2.053 dB | 2.054 / 2.054 dB |
+
+The residual-offset difference is large and repeatable across all four acquisitions in each track and both polarizations. It persists after restricting the analysis to exactly the same pixels, so it is not explained by different valid map footprints. Within each track, the residual-angle correlation is weak (approximately -0.05 for R130 and -0.08 for R057), while the track-level median local incidence angles differ by about 13.4 degrees.
+
+**Interpretation restraint:** relative orbit and local incidence angle are strongly confounded in this two-track comparison: the R057 and R130 angle distributions barely overlap (approximately 29.9–35.6° versus 43.3–49.0° for the central 80%). The offset difference therefore cannot be assigned to orbit geometry alone, nor can the angle effect be isolated from track identity with these two tracks. The strikingly consistent R057 offset also warrants checking the provider's scattering-area semantics and the exact RTC/ellipsoid pairing before any physical interpretation. Do not treat the +2.05 dB as an orbit correction.
+
+The same-platform comparison is a useful warning against transferring an intercept between tracks. It does not validate a correction, and it does not authorize pooling the acquisitions. The next discriminating experiment should add at least one ascending track with an intermediate incidence-angle distribution (or a second independent site) and should independently verify the provider's area-factor convention and per-scene metadata. Until then, keep `analysis_ready: false`; do not normalize or run change detection from these coefficients.
+
+Reproducibility:
+- Same-platform processing artifacts: [workflow run 45165312108](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45165312108).
+- Common-mask analysis and machine-readable metrics: [workflow run 45168656320](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45168656320).
+- Shared-mask analysis code: `compare_sentinel1_same_platform_orbit_pair.py`.
