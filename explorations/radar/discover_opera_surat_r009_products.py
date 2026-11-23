@@ -54,16 +54,16 @@ def build_query(start: str, end: str, max_results: int = 500) -> dict[str, str]:
     }
 
 
-def build_static_query(burst_ids: list[str], max_results: int = 100) -> dict[str, str]:
-    """Build a date-independent query for OPERA RTC-STATIC layers."""
-    if not burst_ids or any(not item.strip() for item in burst_ids):
-        raise ValueError("At least one non-empty OPERA burst ID is required")
+def build_static_query(max_results: int = 500) -> dict[str, str]:
+    """Search the documented 2014-04-03 acquisition date for static layers."""
     if max_results < 1:
         raise ValueError("max_results must be positive")
     return {
         "dataset": "OPERA-S1",
         "processingLevel": "RTC_STATIC",
-        "operaBurstID": ",".join(burst_ids),
+        "intersectsWith": WKT,
+        "start": "2014-04-03T00:00:00Z",
+        "end": "2014-04-04T00:00:00Z",
         "output": "geojson",
         "maxResults": str(max_results),
     }
@@ -209,7 +209,7 @@ def main(argv=None) -> int:
         unique[key] = feature
     collection = {"type": "FeatureCollection", "features": list(unique.values())}
     report = summarize(collection)
-    static_params = build_static_query(["T009-019159-IW3", "T009-019160-IW3"])
+    static_params = build_static_query()
     try:
         static_raw, static_url = retrieve(static_params, args.timeout)
         static_collection = parse_collection(static_raw)
@@ -219,17 +219,26 @@ def main(argv=None) -> int:
     except (URLError, TimeoutError, OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"ASF RTC-STATIC catalogue query failed: {exc}", file=sys.stderr)
         return 3
+    wanted_bursts = {"T009-019159-IW3", "T009-019160-IW3", "T009_019159_IW3", "T009_019160_IW3"}
+    static_features = []
+    for x in static_collection["features"]:
+        props = x["properties"]
+        burst = value(props, "operaBurstID", "operaBurstId")
+        if burst in wanted_bursts or any(burst and burst.replace("-", "_") == wanted.replace("-", "_") for wanted in wanted_bursts):
+            static_features.append(x)
     report["static_layer_query"] = {
         "query_url": static_url,
         "response_sha256": hashlib.sha256(static_raw).hexdigest(),
-        "feature_count": len(static_collection["features"]),
+        "catalogue_feature_count": len(static_collection["features"]),
+        "matched_burst_ids": sorted({value(x["properties"], "operaBurstID", "operaBurstId") for x in static_features}),
+        "feature_count": len(static_features),
         "features": [{
             "file_id": value(x["properties"], "fileID", "fileId", "sceneName"),
             "product_name": value(x["properties"], "fileName", "sceneName"),
             "burst_id": value(x["properties"], "operaBurstID", "operaBurstId"),
             "properties": x["properties"],
             "geometry": x["geometry"],
-        } for x in static_collection["features"]],
+        } for x in static_features],
     }
     report["queries"] = queries
     args.output_dir.mkdir(parents=True, exist_ok=True)
