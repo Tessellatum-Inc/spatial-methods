@@ -100,6 +100,18 @@ class ProcessClientTests(unittest.TestCase):
         self.assertEqual(request.get_header("Authorization"), "Bearer token")
         self.assertEqual(request.full_url, CLIENT.PROCESS_URL)
 
+    @mock.patch.object(CLIENT.time, "sleep")
+    @mock.patch.object(CLIENT, "urlopen")
+    def test_retries_transient_gateway_error(self, mocked, mocked_sleep):
+        tiff = b"II*\\x00" + b"\\x00" * 64
+        mocked.side_effect = [
+            HTTPError(CLIENT.PROCESS_URL, 502, "Bad Gateway", {}, io.BytesIO(b"")),
+            FakeResponse(tiff),
+        ]
+        self.assertEqual(CLIENT.request_geotiff("token", {}), tiff)
+        self.assertEqual(mocked.call_count, 2)
+        mocked_sleep.assert_called_once_with(2)
+
     @mock.patch.object(CLIENT, "urlopen")
     def test_rejects_non_tiff_response(self, mocked):
         mocked.return_value = FakeResponse(b'{"error":"not an image"}', "application/json")

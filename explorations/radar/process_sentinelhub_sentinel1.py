@@ -15,6 +15,7 @@ import json
 import os
 from pathlib import Path
 import sys
+import time
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -162,17 +163,28 @@ def request_geotiff(access_token: str, payload: dict, timeout: int = 180) -> byt
         },
         method="POST",
     )
-    try:
-        with urlopen(request, timeout=timeout) as response:
-            content_type = response.headers.get("Content-Type", "").lower()
-            body = response.read()
-    except HTTPError as exc:
-        # Do not expose provider response bodies, headers, request bodies, or credentials.
-        raise RuntimeError(f"Sentinel Hub Process API failed with HTTP {exc.code}.") from None
-    except (URLError, TimeoutError, OSError) as exc:
-        raise RuntimeError(
-            f"Sentinel Hub Process API request could not complete ({type(exc).__name__})."
-        ) from None
+    # Retry transient provider/network failures, but fail immediately on
+    # non-retryable client/authentication errors (e.g. 400/401/403).
+    retry_delays = (2, 5, 10)
+    for attempt in range(len(retry_delays) + 1):
+        try:
+            with urlopen(request, timeout=timeout) as response:
+                content_type = response.headers.get("Content-Type", "").lower()
+                body = response.read()
+            break
+        except HTTPError as exc:
+            if exc.code in {429, 500, 502, 503, 504} and attempt < len(retry_delays):
+                time.sleep(retry_delays[attempt])
+                continue
+            # Do not expose provider response bodies, headers, request bodies, or credentials.
+            raise RuntimeError(f"Sentinel Hub Process API failed with HTTP {exc.code}.") from None
+        except (URLError, TimeoutError, OSError) as exc:
+            if attempt < len(retry_delays):
+                time.sleep(retry_delays[attempt])
+                continue
+            raise RuntimeError(
+                f"Sentinel Hub Process API request could not complete ({type(exc).__name__})."
+            ) from None
     if "image/tiff" not in content_type and "application/octet-stream" not in content_type:
         raise RuntimeError("Sentinel Hub Process API did not return a GeoTIFF response.")
     if len(body) < 8 or body[:4] not in (b"II*\x00", b"MM\x00*"):
