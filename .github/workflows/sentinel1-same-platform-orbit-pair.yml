@@ -7,6 +7,32 @@ on:
       - ".github/workflows/sentinel1-same-platform-orbit-pair.yml"
       - "explorations/radar/process_sentinel1_alternate_orbit.py"
 jobs:
+  shared-footprint-comparison:
+    needs: same-platform-orbit-pair
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install raster comparison dependencies
+        run: python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
+      - name: Download both orbit raster artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: sentinel1a-ascending-r*-rasters
+          path: data/same_platform_rasters
+      - name: Compare both tracks on their shared valid footprint
+        run: |
+          python explorations/radar/compare_sentinel1_same_platform_orbit_pair.py \
+            --input-dir data/same_platform_rasters \
+            --output data/same_platform_rasters/sentinel1a_same_platform_orbit_pair_common_mask.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sentinel1a-same-platform-orbit-pair-common-mask-qa
+          path: data/same_platform_rasters/sentinel1a_same_platform_orbit_pair_common_mask.json
+          if-no-files-found: error
+          retention-days: 30
   same-platform-orbit-pair:
     strategy:
       fail-fast: false
