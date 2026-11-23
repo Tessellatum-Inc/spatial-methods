@@ -6,6 +6,10 @@ on:
     paths:
       - ".github/workflows/sentinel1-ellipsoid-incidence-angle-interpolation.yml"
       - "explorations/radar/interpolate_sentinel1_ellipsoid_incidence.py"
+      - "explorations/radar/compare_sentinel1_same_platform_orbit_pair.py"
+permissions:
+  actions: read
+  contents: read
 jobs:
   interpolate-source-incidence-angle:
     runs-on: ubuntu-latest
@@ -40,6 +44,25 @@ jobs:
           python explorations/radar/interpolate_sentinel1_ellipsoid_incidence.py \
             --output-dir data/sentinelhub/nairobi/ellipsoid_incidence \
             --report data/sentinelhub/nairobi/sentinel1_ellipsoid_incidence_grid_qa.json
+      - name: Download successful R057 and R130 raster artifacts
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 45165182363
+          pattern: sentinel1a-ascending-r*-rasters
+          path: data/same_platform_rasters
+          github-token: ${{ github.token }}
+      - name: Compare RTC and ellipsoid backscatter using source ellipsoid incidence angle
+        run: |
+          python explorations/radar/compare_sentinel1_same_platform_orbit_pair.py \\
+            --input-dir data/same_platform_rasters \\
+            --incidence-dir data/sentinelhub/nairobi/ellipsoid_incidence \\
+            --output data/sentinelhub/nairobi/sentinel1a_same_platform_orbit_pair_ellipsoid_angle_qa.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sentinel1a-same-platform-ellipsoid-angle-qa
+          path: data/sentinelhub/nairobi/sentinel1a_same_platform_orbit_pair_ellipsoid_angle_qa.json
+          if-no-files-found: error
+          retention-days: 30
       - uses: actions/upload-artifact@v4
         with:
           name: sentinel1-ellipsoid-incidence-angle-grids
