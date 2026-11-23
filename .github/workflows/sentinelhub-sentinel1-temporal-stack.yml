@@ -6,8 +6,22 @@ on:
   push:
     branches: [main]
     paths:
-      - ".github/workflows/sentinelhub-sentinel1-temporal-stack.yml"
-      - "explorations/radar/**"
+      - "explorations/radar/query_sentinelhub_sentinel1.py"
+      - "explorations/radar/process_sentinelhub_sentinel1.py"
+      - "explorations/radar/build_sentinel1_stack_manifest.py"
+      - "explorations/radar/process_sentinelhub_sentinel1_stack.py"
+      - "explorations/radar/process_sentinel1_geometry_aux.py"
+      - "explorations/radar/screen_sentinel1_angle_consistency.py"
+      - "explorations/radar/process_sentinel1_gamma0_terrain.py"
+      - "explorations/radar/compare_sentinel1_ellipsoid_vs_terrain.py"
+      - "explorations/radar/inspect_sentinelhub_sentinel1.py"
+      - "explorations/radar/mask_sentinelhub_sentinel1_nairobi_county.py"
+      - "explorations/radar/screen_sentinel1_registration.py"
+      - "explorations/radar/screen_sentinel1_temporal_qa.py"
+      - "explorations/radar/screen_sentinel1_reference_areas.py"
+      - "explorations/radar/screen_sentinel1_persistent_water_reference.py"
+      - "explorations/radar/requirements-sentinelhub-processing.txt"
+      - "explorations/radar/nairobi-sentinel-1-catalogue-inventory.csv"
   workflow_dispatch:
     inputs:
       max_scenes:
