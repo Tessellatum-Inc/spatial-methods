@@ -60,7 +60,7 @@ class OperaSuratDiscoveryTests(unittest.TestCase):
 
     def test_static_query_uses_documented_archive_date_and_aoi(self):
         params = build_static_query()
-        self.assertEqual(params["processingLevel"], "RTC_STATIC")
+        self.assertEqual(params["processingLevel"], "RTC-STATIC")
         self.assertEqual(params["start"], "2014-04-03T00:00:00Z")
         self.assertEqual(params["end"], "2014-04-04T00:00:00Z")
         self.assertIn("intersectsWith", params)
