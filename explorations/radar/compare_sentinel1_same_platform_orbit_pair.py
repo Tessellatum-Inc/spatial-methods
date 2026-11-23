@@ -72,7 +72,9 @@ def run(input_dir:Path,output:Path):
         for pol in ("VV","VH"):
             rows=[s["polarizations"][pol] for s in per_scene]
             keys=("ols_slope","ols_intercept_db","ols_r_squared","median_observed_minus_area_factor_db",
-                "mean_absolute_area_factor_residual_db","p95_absolute_centered_area_factor_residual_db","median_scattering_area",\n                "median_local_incidence_angle_degrees","p10_local_incidence_angle_degrees","p90_local_incidence_angle_degrees",\n                "area_factor_residual_vs_angle_correlation")
+                "mean_absolute_area_factor_residual_db","p95_absolute_centered_area_factor_residual_db","median_scattering_area",
+                "median_local_incidence_angle_degrees","p10_local_incidence_angle_degrees","p90_local_incidence_angle_degrees",
+                "area_factor_residual_vs_angle_correlation")
             aggregate[pol]={key:float(np.mean([row[key] for row in rows])) for key in keys}
             aggregate[pol]["pixels_per_scene"]=int(min(row["pixels"] for row in rows))
         results[str(orbit)]={"scene_count":len(scenes),"scenes":per_scene,"mean_metrics_on_shared_mask":aggregate}
