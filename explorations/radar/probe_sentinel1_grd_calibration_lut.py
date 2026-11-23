@@ -69,7 +69,7 @@ def extract_calibration_files(features,access_key,secret_key):
         bucket=resource.Bucket(parsed.netloc); prefix=parsed.path.lstrip("/").rstrip("/")+"/"
         keys=[o.key for o in bucket.objects.filter(Prefix=prefix)
             if "/annotation/calibration/" in o.key.lower() and o.key.lower().endswith(".xml")
-            and "calibration-" in o.key.lower()]
+            and "calibration-" in o.key.lower() and "iw-grd-vv-" in o.key.lower()]
         if len(keys)!=1: raise RuntimeError(f"Expected one calibration XML for {product_id}; found {len(keys)}")
         key=keys[0]; body=bucket.Object(key).get()["Body"].read()
         parsed_lut=parse_calibration_lut(body)
