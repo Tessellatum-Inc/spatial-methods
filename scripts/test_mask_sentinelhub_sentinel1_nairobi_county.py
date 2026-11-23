@@ -43,33 +43,46 @@ class CountyMaskTests(unittest.TestCase):
     @mock.patch.object(CLIENT, "urlopen")
     def test_fetches_and_validates_one_nairobi_feature(self, mocked):
         payload = {"type": "FeatureCollection", "features": [self.feature]}
-        mocked.return_value = FakeResponse(json.dumps(payload).encode())
+        mocked.side_effect = [
+            FakeResponse(json.dumps({"objectIds": [1, 2, 3]}).encode()),
+            FakeResponse(json.dumps(payload).encode()),
+        ]
         feature, provenance = CLIENT.fetch_nairobi_boundary()
         self.assertEqual(feature["properties"]["county"], "Nairobi")
         self.assertEqual(provenance["geometry_crs"], "EPSG:4326")
-        request = mocked.call_args.args[0]
-        self.assertIn("where=1%3D1", request.full_url)
+        self.assertEqual(mocked.call_count, 2)
+        self.assertIn("returnIdsOnly=true", mocked.call_args_list[0].args[0].full_url)
+        self.assertIn("objectIds=1%2C2%2C3", mocked.call_args_list[1].args[0].full_url)
 
     @mock.patch.object(CLIENT, "urlopen")
     def test_accepts_normalized_nairobi_city_label(self, mocked):
         feature = dict(self.feature, properties={"county": " Nairobi City "})
-        mocked.return_value = FakeResponse(json.dumps({
-            "type": "FeatureCollection", "features": [feature]
-        }).encode())
+        mocked.side_effect = [
+            FakeResponse(json.dumps({"objectIds": [1]}).encode()),
+            FakeResponse(json.dumps({
+                "type": "FeatureCollection", "features": [feature]
+            }).encode()),
+        ]
         selected, _ = CLIENT.fetch_nairobi_boundary()
         self.assertEqual(selected["properties"]["county"], " Nairobi City ")
 
     @mock.patch.object(CLIENT, "urlopen")
     def test_rejects_ambiguous_or_missing_nairobi_county(self, mocked):
-        mocked.return_value = FakeResponse(json.dumps({
-            "type": "FeatureCollection", "features": [self.feature, self.feature]
-        }).encode())
+        mocked.side_effect = [
+            FakeResponse(json.dumps({"objectIds": [1, 2]}).encode()),
+            FakeResponse(json.dumps({
+                "type": "FeatureCollection", "features": [self.feature, self.feature]
+            }).encode()),
+        ]
         with self.assertRaisesRegex(RuntimeError, "received 2"):
             CLIENT.fetch_nairobi_boundary()
         wrong = dict(self.feature, properties={"county": "Kiambu"})
-        mocked.return_value = FakeResponse(json.dumps({
-            "type": "FeatureCollection", "features": [wrong]
-        }).encode())
+        mocked.side_effect = [
+            FakeResponse(json.dumps({"objectIds": [3]}).encode()),
+            FakeResponse(json.dumps({
+                "type": "FeatureCollection", "features": [wrong]
+            }).encode()),
+        ]
         with self.assertRaisesRegex(RuntimeError, "received 0"):
             CLIENT.fetch_nairobi_boundary()
 
