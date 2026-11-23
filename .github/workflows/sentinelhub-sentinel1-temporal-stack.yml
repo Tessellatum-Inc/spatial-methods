@@ -68,6 +68,12 @@ jobs:
           angles=(data/sentinelhub/nairobi/stack/geometry_aux/*_local-incidence-angle.tif)
           python explorations/radar/screen_sentinel1_angle_consistency.py --rasters "${angles[@]}" --output data/sentinelhub/nairobi/stack/geometry_aux/sentinel1_nairobi_local_incidence_angle_consistency.json
 
+      - name: Process parallel gamma0 terrain-corrected backscatter and terrain diagnostics
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: python explorations/radar/process_sentinel1_gamma0_terrain.py --stack-metadata data/sentinelhub/nairobi/stack/sentinel1_nairobi_temporal_stack.metadata.json --output-dir data/sentinelhub/nairobi/stack/terrain_aux --dem-instance COPERNICUS_30 --oversampling 2
+
       - name: Inspect each acquisition and create Nairobi county-masked raster
         run: |
           set -euo pipefail
@@ -117,5 +123,7 @@ jobs:
             data/sentinelhub/nairobi/stack/sentinel1_nairobi_reference_area_screen.json
             data/sentinelhub/nairobi/stack/geometry_aux/*.tif
             data/sentinelhub/nairobi/stack/geometry_aux/*.json
+            data/sentinelhub/nairobi/stack/terrain_aux/*.tif
+            data/sentinelhub/nairobi/stack/terrain_aux/*.json
           if-no-files-found: error
           retention-days: 14
