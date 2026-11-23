@@ -1,0 +1,43 @@
+name: Sentinel-1A Surat Basin catalogue coverage screen
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sentinel1a-surat-basin-catalogue-screen.yml"
+      - "explorations/radar/discover_sentinel1_surat_basin_catalogue.py"
+      - "explorations/radar/inventory_ceos_surat_corner_reflectors.py"
+jobs:
+  surat-basin-catalogue-screen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install geospatial catalogue dependency
+        run: python -m pip install shapely
+      - name: Verify Sentinel Hub credentials
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          test -n "$SENTINEL_HUB_CLIENT_ID"
+          test -n "$SENTINEL_HUB_CLIENT_SECRET"
+      - name: Search archive against surveyed Surat reflectors
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          python explorations/radar/discover_sentinel1_surat_basin_catalogue.py \
+            --start 2025-01-01T00:00:00Z \
+            --end 2026-11-23T00:00:00Z \
+            --min-scenes 4 \
+            --min-target-fraction 0.90 \
+            --output data/sentinelhub/surat_basin/sentinel1a_catalogue_candidates.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sentinel1a-surat-basin-catalogue-candidates
+          path: data/sentinelhub/surat_basin/sentinel1a_catalogue_candidates.json
+          if-no-files-found: error
+          retention-days: 30
