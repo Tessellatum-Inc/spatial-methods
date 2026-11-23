@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse, importlib.util, json, os, sys
 from collections import defaultdict
 from datetime import datetime, timezone
+from itertools import combinations
 from pathlib import Path
 from shapely.geometry import Point, shape
 
@@ -34,6 +35,19 @@ def covered_target_names(feature,targets):
     if footprint.is_empty or not footprint.is_valid: return []
     return [target["name"] for target in targets
         if footprint.covers(Point(target["longitude"],target["latitude"]))]
+
+def select_common_scene_set(scenes,count=4,max_span_days=90):
+    best_scenes=[]; best_targets=[]; best_key=None
+    for group in combinations(scenes,count):
+        dates=[datetime.fromisoformat(x["datetime_utc"].replace("Z","+00:00")) for x in group]
+        span=(max(dates)-min(dates)).total_seconds()/86400.0
+        if span>max_span_days: continue
+        common=set(group[0]["covered_target_names"])
+        for scene in group[1:]: common.intersection_update(scene["covered_target_names"])
+        key=(len(common),-span,tuple(x["datetime_utc"] for x in group))
+        if best_key is None or key[:2]>best_key[:2]:
+            best_key=key; best_scenes=list(group); best_targets=sorted(common)
+    return best_scenes,best_targets
 
 def summarize(features,targets,min_scenes=4,min_target_fraction=0.90,min_repeated_targets=10,min_scene_targets=10):
     groups=defaultdict(list)
@@ -66,17 +80,19 @@ def summarize(features,targets,min_scenes=4,min_target_fraction=0.90,min_repeate
         partial=[x for x in dual if x["covered_target_count"]>=min_scene_targets]
         target_counts={target["name"]:sum(target["name"] in scene["covered_target_names"] for scene in dual) for target in targets}
         repeated=[name for name,count in target_counts.items() if count>=min_scenes]
-        stable_partial=[x for x in partial if sum(name in x["covered_target_names"] for name in repeated)>=min_repeated_targets]
+        selected,common_targets=select_common_scene_set(partial,min_scenes)
+        partial_candidate=direction=="ASCENDING" and len(selected)==min_scenes and len(common_targets)>=min_repeated_targets
+        full_candidate=direction=="ASCENDING" and len(full)>=min_scenes
+        chosen=selected if partial_candidate else full
         tracks.append({"platform":platform,"orbit_direction":direction,"relative_orbit":orbit,
             "scene_count":len(scenes),"dual_pol_scene_count":len(dual),
             "scenes_with_full_array_coverage":len(full),"scenes_with_minimum_partial_target_count":len(partial),
             "minimum_target_coverage_fraction":min(fractions),"median_target_coverage_fraction":sorted(fractions)[len(fractions)//2],
             "repeated_target_count":len(repeated),"repeated_target_names":repeated,
-            "partial_array_candidate":direction=="ASCENDING" and len(stable_partial)>=min_scenes and len(repeated)>=min_repeated_targets,
-            "full_array_candidate":direction=="ASCENDING" and len(full)>=min_scenes,
-            "candidate_for_processing":direction=="ASCENDING" and ((len(stable_partial)>=min_scenes and len(repeated)>=min_repeated_targets) or len(full)>=min_scenes),
-            "qualifying_scene_count":len(stable_partial if len(stable_partial)>=min_scenes else full),
-            "qualifying_scenes":stable_partial if len(stable_partial)>=min_scenes else full,"scenes":scenes})
+            "best_common_subset_target_count":len(common_targets),"best_common_subset_target_names":common_targets,
+            "partial_array_candidate":partial_candidate,"full_array_candidate":full_candidate,
+            "candidate_for_processing":partial_candidate or full_candidate,
+            "qualifying_scene_count":len(chosen),"qualifying_scenes":chosen,"scenes":scenes})
     candidates=[t for t in tracks if t["candidate_for_processing"]]
     return {"schema":"tessellatum.sentinel1.surat-basin-corner-reflector-catalogue-screen.v1",
         "catalogue_feature_count":len(features),"target_count":len(targets),
@@ -119,11 +135,9 @@ def main(argv=None):
     for track in report["tracks"]:
         print(f"{track['orbit_direction']} R{track['relative_orbit']:03d}: scenes={track['scene_count']}; full-array scenes={track['scenes_with_full_array_coverage']}; repeated targets={track['repeated_target_count']}; partial candidate={track['partial_array_candidate']}; candidate={track['candidate_for_processing']}")
         if track["candidate_for_processing"]:
-            print("  Repeatable reflectors: " + ", ".join(track["repeated_target_names"]))
-            scenes=track["qualifying_scenes"]
-            selected=scenes[:6] if len(scenes)<=12 else scenes[:6]+scenes[-6:]
-            for scene in selected:
-                print(f"  {scene['datetime_utc']}: {scene['covered_target_count']} targets; {scene['item_id']}")
+            print("  Common reflectors across selected acquisitions: " + ", ".join(track["best_common_subset_target_names"]))
+            for scene in track["qualifying_scenes"]:
+                print(f"  SELECT {scene['datetime_utc']}: {scene['covered_target_count']} targets; {scene['item_id']}")
     print(f"Report: {a.output}; analysis_ready=false")
     return 0
 if __name__=="__main__": raise SystemExit(main())
