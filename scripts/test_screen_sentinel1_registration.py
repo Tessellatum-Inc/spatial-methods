@@ -4,7 +4,6 @@ import importlib.util
 from pathlib import Path
 import unittest
 import numpy as np
-from scipy.ndimage import gaussian_filter
 
 SCRIPT = Path(__file__).resolve().parents[1] / "explorations/radar/screen_sentinel1_registration.py"
 SPEC = importlib.util.spec_from_file_location("screen_sentinel1_registration", SCRIPT)
@@ -21,7 +20,8 @@ class PhaseCorrelationTests(unittest.TestCase):
 
     def test_translation_is_recovered(self):
         rng = np.random.default_rng(7)
-        image = gaussian_filter(rng.normal(size=(128,128)), 1).astype(np.float32)
+        noise = rng.normal(size=(128,128)).astype(np.float32)
+        image = (noise + np.roll(noise,1,0) + np.roll(noise,-1,0) + np.roll(noise,1,1) + np.roll(noise,-1,1)) / 5.0
         moving = np.roll(np.roll(image, 2, axis=0), -3, axis=1)
         result = MODULE.phase_correlation(image, moving, np.ones(image.shape, dtype=bool))
         shift = result["estimated_shift_pixels"]
