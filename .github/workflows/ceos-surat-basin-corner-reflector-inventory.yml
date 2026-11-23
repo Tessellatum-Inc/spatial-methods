@@ -1,4 +1,5 @@
 name: CEOS Surat Basin corner-reflector inventory
+run-name: Retrieve and validate independent Surat reference targets
 on:
   workflow_dispatch:
   push:
