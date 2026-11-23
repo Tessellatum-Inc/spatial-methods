@@ -64,7 +64,9 @@ jobs:
         with:
           python-version: "3.13"
       - name: Install Sentinel-1 raster QA test dependencies
-        run: python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
+        run: |
+          python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
+          python -m pip install -r explorations/radar/requirements-sentinel1-incidence-interpolation.txt
       - name: Test catalogue dashboard checker
         run: python -m unittest discover -s scripts -p "test_check_catalogue_dashboard.py"
       - name: Test Nairobi ASF Sentinel-1 query client
@@ -123,8 +125,6 @@ jobs:
         run: python -m unittest discover -s explorations/radar -p "test_qa_surat_r009_angle_equation.py"
       - name: Test eight-scene GRD incidence geolocation extraction
         run: python -m unittest discover -s explorations/radar -p "test_extract_sentinel1_grd_incidence_grids.py"
-      - name: Install incidence interpolation test dependency
-        run: python -m pip install -r explorations/radar/requirements-sentinel1-incidence-interpolation.txt
       - name: Test GRD calibration LUT incidence-angle identities
         run: python -m unittest discover -s explorations/radar -p "test_probe_sentinel1_grd_calibration_lut.py"
       - name: Test source ellipsoid incidence-angle interpolation
