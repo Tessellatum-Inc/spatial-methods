@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Find repeated same-platform Sentinel-1 tracks with useful Nairobi overlap."""
+"""Find repeated Sentinel-1A tracks with useful Nairobi overlap across both orbit directions."""
 from __future__ import annotations
 import argparse, importlib.util, json, os, sys
 from collections import defaultdict
@@ -44,7 +44,7 @@ def summarize(features,min_scenes=4,min_fraction=0.70):
         direction=str(p.get("sat:orbit_state","")).upper()
         orbit=p.get("sat:relative_orbit")
         pols=p.get("sar:polarizations")
-        if platform!="sentinel-1a" or direction!="ASCENDING" or not isinstance(orbit,int):
+        if platform!="sentinel-1a" or direction not in ("ASCENDING","DESCENDING") or not isinstance(orbit,int):
             skipped+=1; continue
         if isinstance(pols,list) and not {"VV","VH"}.issubset(set(pols)): continue
         stamp=p.get("datetime")
@@ -62,7 +62,7 @@ def summarize(features,min_scenes=4,min_fraction=0.70):
         tracks.append({"platform":platform,"orbit_direction":direction,"relative_orbit":orbit,
             "scene_count":len(scenes),"minimum_aoi_intersection_fraction":min(s["aoi_intersection_fraction"] for s in scenes),
             "median_aoi_intersection_fraction":sorted(s["aoi_intersection_fraction"] for s in scenes)[len(scenes)//2],
-            "candidate_for_processing":len(scenes)>=min_scenes and orbit not in (57,130),
+            "candidate_for_processing":len(scenes)>=min_scenes and (direction,orbit) not in {("ASCENDING",57),("ASCENDING",130)},
             "scenes":scenes})
     candidates=[t for t in tracks if t["candidate_for_processing"]]
     return {"schema":"tessellatum.sentinel1.same-platform-intermediate-orbit-catalogue-screen.v1",
@@ -91,7 +91,7 @@ def main(argv=None):
     except (OSError,ValueError,RuntimeError) as exc:
         print(f"Intermediate-orbit catalogue screen failed: {exc}",file=sys.stderr); return 2
     report["query"]={"collection":"sentinel-1-grd","instrument_mode":"IW","bbox_crs84":CAT.NAIROBI_BBOX,
-        "start":utc(a.start),"end":utc(a.end),"platform":"sentinel-1a","orbit_direction":"ASCENDING"}
+        "start":utc(a.start),"end":utc(a.end),"platform":"sentinel-1a","orbit_direction":"ASCENDING_AND_DESCENDING"}
     report["retrieved_at_utc"]=datetime.now(timezone.utc).isoformat().replace("+00:00","Z")
     a.output.parent.mkdir(parents=True,exist_ok=True); a.output.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
     print(f"Catalogue features: {len(features)}; qualifying tracks: {len(report['tracks'])}; intermediate candidates: {len(report['candidates'])}")
