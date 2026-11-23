@@ -58,6 +58,8 @@ def _area_factor_relation(delta: np.ndarray, scattering_area: np.ndarray) -> dic
     observed = delta[valid].astype(np.float64)
     predicted = -10.0 * np.log10(scattering_area[valid].astype(np.float64))
     residual = observed - predicted
+    residual_offset = float(np.median(residual))
+    centered_residual = residual - residual_offset
     correlation = None
     if observed.size > 1 and np.std(observed) > 0 and np.std(predicted) > 0:
         correlation = float(np.corrcoef(observed, predicted)[0, 1])
@@ -66,8 +68,12 @@ def _area_factor_relation(delta: np.ndarray, scattering_area: np.ndarray) -> dic
         "hypothesis": "RTC_minus_ellipsoid_dB = -10*log10(scatteringArea)",
         "predicted_delta_db_quantiles": _quantiles(predicted),
         "observed_minus_predicted_db_quantiles": _quantiles(residual),
+        "median_observed_minus_predicted_db": residual_offset,
         "median_absolute_residual_db": float(np.median(np.abs(residual))),
         "p95_absolute_residual_db": float(np.percentile(np.abs(residual), 95)),
+        "centered_observed_minus_predicted_db_quantiles": _quantiles(centered_residual),
+        "median_absolute_centered_residual_db": float(np.median(np.abs(centered_residual))),
+        "p95_absolute_centered_residual_db": float(np.percentile(np.abs(centered_residual), 95)),
         "observed_predicted_pearson_r": correlation,
     }
 
@@ -200,7 +206,9 @@ def main(argv: list[str] | None = None) -> int:
                 f"{comparison['ellipsoid_file']} {polarization} "
                 f"pixels={factor['pixels']} "
                 f"median_abs_residual_db={factor['median_absolute_residual_db']:.6f} "
+                f"median_offset_db={factor['median_observed_minus_predicted_db']:.6f} "
                 f"p95_abs_residual_db={factor['p95_absolute_residual_db']:.6f} "
+                f"centered_p95_abs_residual_db={factor['p95_absolute_centered_residual_db']:.6f} "
                 f"pearson_r={factor['observed_predicted_pearson_r']}"
             )
     return 0
