@@ -13,11 +13,14 @@ class TestIntermediateOrbitDiscovery(unittest.TestCase):
         rows=[feature(57,"2025-01-01T00:00:00Z"),feature(130,"2025-01-02T00:00:00Z")]
         rows += [feature(88,f"2025-01-{day:02d}T00:00:00Z") for day in (1,13,25)]
         rows += [feature(88,"2025-02-06T00:00:00Z")]
+        rows += [feature(79,f"2025-01-{day:02d}T00:00:00Z",direction="DESCENDING") for day in (2,14,26)]
+        rows += [feature(79,"2025-02-07T00:00:00Z",direction="DESCENDING")]
         rows += [feature(99,"2025-01-01T00:00:00Z",platform="sentinel-1b") for _ in range(4)]
         result=M.summarize(rows,min_scenes=4,min_fraction=0.7)
-        self.assertEqual(len(result["candidates"]),1)
-        self.assertEqual(result["candidates"][0]["relative_orbit"],88)
-        self.assertEqual(result["candidates"][0]["scene_count"],4)
+        self.assertEqual(len(result["candidates"]),2)
+        by_track={(item["orbit_direction"],item["relative_orbit"]):item for item in result["candidates"]}
+        self.assertEqual(by_track[("ASCENDING",88)]["scene_count"],4)
+        self.assertEqual(by_track[("DESCENDING",79)]["scene_count"],4)
     def test_excludes_low_overlap_items(self):
         result=M.summarize([feature(88,"2025-01-01T00:00:00Z",0.5)],min_scenes=2,min_fraction=0.7)
         self.assertEqual(result["tracks"],[])
