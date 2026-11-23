@@ -137,7 +137,7 @@ def main(argv=None):
     a.output.parent.mkdir(parents=True,exist_ok=True); a.output.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
     for product in products:
         lut=product["calibration_lut"]; a0=lut["incidence_angle_degrees"]; qa=product["calibration_vs_annotation_angle_qa"]
-        print(f"R{product['relative_orbit']:03d} {product['datetime_utc']}: vectors={lut['vector_count']}, samples={lut['sample_count']}, angle={a0['min']:.5f}/{a0['median']:.5f}/{a0['max']:.5f} degrees, LUT identity max diff={lut['max_beta_sigma_vs_gamma_sigma_identity_difference_degrees']:.6g} degrees, annotation matched={qa['matched_tie_points']}/{qa['annotation_tie_points']}, cross-source MAE/RMSE/P95={qa['mae_degrees']:.5f}/{qa['rmse_degrees']:.5f}/{qa['p95_absolute_error_degrees']:.5f} degrees")
+        print(f"R{product['relative_orbit']:03d} {product['datetime_utc']}: vectors={lut['vector_count']}, samples={lut['sample_count']}, angle={a0['min']:.5f}/{a0['median']:.5f}/{a0['max']:.5f} degrees, LUT identity max diff={lut['max_beta_sigma_vs_gamma_sigma_identity_difference_degrees']:.6g} degrees, annotation matched={qa['matched_tie_points']}/{qa['annotation_tie_points']}, cross-source bias/MAE/RMSE/P95={qa['mean_signed_difference_degrees']:.5f}/{qa['mae_degrees']:.5f}/{qa['rmse_degrees']:.5f}/{qa['p95_absolute_error_degrees']:.5f} degrees")
     print(f"Products extracted: {len(products)}; report={a.output}; analysis_ready=false")
     return 0
 if __name__=="__main__": raise SystemExit(main())
