@@ -100,15 +100,15 @@ class ProcessClientTests(unittest.TestCase):
         self.assertEqual(request.get_header("Authorization"), "Bearer token")
         self.assertEqual(request.full_url, CLIENT.PROCESS_URL)
 
-    @mock.patch.object(CLIENT.time, "sleep")
     @mock.patch.object(CLIENT, "urlopen")
-    def test_retries_transient_gateway_error(self, mocked, mocked_sleep):
-        tiff = b"II*\\x00" + b"\\x00" * 64
+    def test_retries_transient_gateway_error(self, mocked):
+        tiff = bytes([0x49, 0x49, 0x2A, 0x00]) + bytes(64)
         mocked.side_effect = [
             HTTPError(CLIENT.PROCESS_URL, 502, "Bad Gateway", {}, io.BytesIO(b"")),
             FakeResponse(tiff),
         ]
-        self.assertEqual(CLIENT.request_geotiff("token", {}), tiff)
+        with mock.patch.object(CLIENT.time, "sleep") as mocked_sleep:
+            self.assertEqual(CLIENT.request_geotiff("token", {}), tiff)
         self.assertEqual(mocked.call_count, 2)
         mocked_sleep.assert_called_once_with(2)
 
