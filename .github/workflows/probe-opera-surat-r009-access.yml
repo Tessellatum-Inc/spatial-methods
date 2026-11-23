@@ -1,0 +1,36 @@
+name: Probe anonymous OPERA asset access
+run-name: Check public access to OPERA RTC and static rasters
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/probe-opera-surat-r009-access.yml"
+      - "explorations/radar/probe_opera_surat_r009_anonymous_access.py"
+permissions:
+  actions: read
+  contents: read
+jobs:
+  probe-opera-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Download OPERA catalogue evidence
+        uses: actions/download-artifact@v4
+        with:
+          run-id: "45214363125"
+          name: surat-r009-opera-rtc-catalogue-discovery
+          path: data/asf/surat_r009_opera
+          github-token: ${{ github.token }}
+      - name: Probe representative science assets
+        run: python explorations/radar/probe_opera_surat_r009_anonymous_access.py
+      - name: Upload access probe result
+        uses: actions/upload-artifact@v4
+        with:
+          name: surat-r009-opera-anonymous-access-probe
+          path: data/asf/surat_r009_opera/anonymous_access_probe.json
+          if-no-files-found: error
+          retention-days: 30
