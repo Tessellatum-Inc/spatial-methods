@@ -85,6 +85,8 @@ jobs:
         run: python -m unittest discover -s scripts -p "test_screen_sentinel1_registration.py"
       - name: Test Sentinel-1 local temporal QA screening
         run: python -m unittest discover -s scripts -p "test_screen_sentinel1_temporal_qa.py"
+      - name: Test Sentinel-1 local-incidence-angle auxiliary
+        run: python -m unittest discover -s explorations/radar -p "test_process_sentinel1_geometry_aux.py"
       - name: Test Sentinel-1 built-up reference-area screening
         run: python -m unittest discover -s explorations/radar -p "test_screen_sentinel1_reference_areas.py"
       - name: Test Sentinel-1 acquisition metadata retention
