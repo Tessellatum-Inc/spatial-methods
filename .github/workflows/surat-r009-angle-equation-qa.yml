@@ -1,0 +1,57 @@
+name: Surat R009 radiometric relation QA
+run-name: Validate RTC and ellipsoid gamma-zero relation
+on:
+  workflow_dispatch:
+    inputs:
+      paired_run_id:
+        description: Successful run ID containing paired RTC and ellipsoid rasters
+        required: false
+        default: "45207659088"
+        type: string
+      incidence_run_id:
+        description: Successful run ID containing interpolated source incidence grids
+        required: false
+        default: "45208668994"
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/surat-r009-angle-equation-qa.yml"
+permissions:
+  actions: read
+  contents: read
+jobs:
+  validate-surat-r009-relation:
+    runs-on: ubuntu-latest
+    env:
+      PAIRED_RUN_ID: ${{ github.event.inputs.paired_run_id || '45207659088' }}
+      INCIDENCE_RUN_ID: ${{ github.event.inputs.incidence_run_id || '45208668994' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install raster QA dependencies
+        run: python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
+      - name: Download paired RTC and ellipsoid rasters
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ env.PAIRED_RUN_ID }}
+          name: surat-r009-paired-rtc-ellipsoid-rasters
+          path: data/sentinelhub/surat_basin/processed
+          github-token: ${{ github.token }}
+      - name: Download source incidence grids and QA report
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ env.INCIDENCE_RUN_ID }}
+          name: surat-r009-ellipsoid-incidence-grids
+          path: data/sentinelhub/surat_basin/processed
+          github-token: ${{ github.token }}
+      - name: Validate the RTC and ellipsoid relation
+        run: python explorations/radar/qa_surat_r009_angle_equation.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: surat-r009-radiometric-relation-qa
+          path: data/sentinelhub/surat_basin/processed/surat_r009_independent_angle_equation_qa.json
+          if-no-files-found: error
+          retention-days: 90
