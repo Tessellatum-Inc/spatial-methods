@@ -148,10 +148,32 @@ def build_manifest(rows: list[dict], source_sha256: str, source_inventory: str =
 
     eligible.sort(key=lambda item: item["sensing_start_utc"])
     intervals_days = []
+    interval_records = []
     for previous, current in zip(eligible, eligible[1:]):
         before = datetime.fromisoformat(previous["sensing_start_utc"].replace("Z", "+00:00"))
         after = datetime.fromisoformat(current["sensing_start_utc"].replace("Z", "+00:00"))
-        intervals_days.append((after - before).total_seconds() / 86400)
+        seconds = (after - before).total_seconds()
+        intervals_days.append(seconds / 86400)
+        interval_records.append({
+            "from_product_id": previous["product_id"],
+            "to_product_id": current["product_id"],
+            "from_utc": previous["sensing_start_utc"],
+            "to_utc": current["sensing_start_utc"],
+            "interval_days": round(seconds / 86400, 8),
+            "deviation_from_12_day_revisit_seconds": round(seconds - 12 * 86400, 3),
+        })
+
+    expected_revisit_days = 12
+    cadence_tolerance_seconds = 3600
+    if len(eligible) < 2:
+        cadence_status = "insufficient_acquisitions"
+    elif all(
+        abs(record["deviation_from_12_day_revisit_seconds"]) <= cadence_tolerance_seconds
+        for record in interval_records
+    ):
+        cadence_status = "regular_12_day_candidate_cadence"
+    else:
+        cadence_status = "irregular_or_incomplete_cadence"
 
     return {
         "manifest_schema": "tessellatum.sentinel1.stack-manifest.v1",
@@ -163,6 +185,17 @@ def build_manifest(rows: list[dict], source_sha256: str, source_inventory: str =
         "candidate_count": len(eligible),
         "inventory_row_count": len(rows),
         "candidate_acquisition_intervals_days": intervals_days,
+        "temporal_sampling": {
+            "expected_revisit_days": expected_revisit_days,
+            "cadence_tolerance_seconds": cadence_tolerance_seconds,
+            "status": cadence_status,
+            "intervals": interval_records,
+            "interpretation": (
+                "A regular catalogue cadence is a scheduling consistency check only; "
+                "it does not establish radiometric comparability, co-registration, "
+                "complete datatake coverage, or analysis readiness."
+            ),
+        },
         "stack_status": "catalogue_candidates_only" if eligible else "no_matching_candidates",
         "processing_status": "not_started",
         "analysis_ready": False,

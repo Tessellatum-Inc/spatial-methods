@@ -52,6 +52,56 @@ class StackManifestTests(unittest.TestCase):
                 manifest["excluded_inventory_records"][0]["exclusion_reasons"],
             )
 
+    def test_reports_regular_twelve_day_candidate_cadence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            rows_text = (
+                ELIGIBLE
+                + ELIGIBLE.replace(
+                    "6b4943ac-6e85-4e36-bc25-e271fb5e63a9",
+                    "49e6a094-4ebc-4d89-9674-aea5fdf4283b",
+                ).replace(
+                    "20261009T031112", "20261021T031112"
+                ).replace(
+                    "2026-10-09T03:11:12Z", "2026-10-21T03:11:12Z"
+                )
+            )
+            path = self.write_inventory(directory, rows_text)
+            rows, digest = BUILDER.load_inventory(path)
+            sampling = BUILDER.build_manifest(rows, digest)["temporal_sampling"]
+            self.assertEqual(sampling["status"], "regular_12_day_candidate_cadence")
+            self.assertEqual(len(sampling["intervals"]), 1)
+            self.assertAlmostEqual(sampling["intervals"][0]["interval_days"], 12.0)
+
+    def test_flags_irregular_candidate_cadence_without_dropping_scene(self):
+        with tempfile.TemporaryDirectory() as directory:
+            rows_text = (
+                ELIGIBLE
+                + ELIGIBLE.replace(
+                    "6b4943ac-6e85-4e36-bc25-e271fb5e63a9",
+                    "49e6a094-4ebc-4d89-9674-aea5fdf4283b",
+                ).replace(
+                    "20261009T031112", "20261022T031112"
+                ).replace(
+                    "2026-10-09T03:11:12Z", "2026-10-22T03:11:12Z"
+                )
+            )
+            path = self.write_inventory(directory, rows_text)
+            rows, digest = BUILDER.load_inventory(path)
+            manifest = BUILDER.build_manifest(rows, digest)
+            self.assertEqual(
+                manifest["temporal_sampling"]["status"],
+                "irregular_or_incomplete_cadence",
+            )
+            self.assertEqual(manifest["candidate_count"], 2)
+
+    def test_single_candidate_has_insufficient_cadence_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = self.write_inventory(directory, ELIGIBLE)
+            rows, digest = BUILDER.load_inventory(path)
+            sampling = BUILDER.build_manifest(rows, digest)["temporal_sampling"]
+            self.assertEqual(sampling["status"], "insufficient_acquisitions")
+            self.assertEqual(sampling["intervals"], [])
+
     def test_preserves_slice_context_and_download_links(self):
         with tempfile.TemporaryDirectory() as directory:
             path = self.write_inventory(directory, ELIGIBLE)
