@@ -49,16 +49,19 @@ class PairedComparisonTests(unittest.TestCase):
             )
 
     def test_scattering_area_factor_relation_reports_residuals(self):
-        area = np.array([0.5, 1.0, 2.0], dtype=np.float64)
+        area = np.array([0.25, 0.5, 1.0, 2.0], dtype=np.float64)
         expected = -10.0 * np.log10(area)
-        observed = expected + np.array([0.1, -0.2, 0.05])
+        observed = 2.0 * expected + 0.25
         report = MODULE._area_factor_relation(observed, area)
         self.assertEqual(report["pixels"], 3)
-        self.assertAlmostEqual(report["median_absolute_residual_db"], 0.1, places=6)
-        self.assertAlmostEqual(report["median_observed_minus_predicted_db"], 0.05, places=6)
-        self.assertAlmostEqual(report["median_absolute_centered_residual_db"], 0.05, places=6)
-        self.assertAlmostEqual(report["p95_absolute_centered_residual_db"], 0.23, places=2)
-        self.assertGreater(report["observed_predicted_pearson_r"], 0.99)
+        self.assertAlmostEqual(report["median_absolute_residual_db"], 2.757, places=3)
+        self.assertAlmostEqual(report["median_observed_minus_predicted_db"], 2.757, places=3)
+        self.assertAlmostEqual(report["median_absolute_centered_residual_db"], 0.0, places=6)
+        self.assertAlmostEqual(report["p95_absolute_centered_residual_db"], 0.0, places=6)
+        self.assertAlmostEqual(report["observed_predicted_pearson_r"], 1.0, places=12)
+        self.assertAlmostEqual(report["observed_on_predicted_ols_slope"], 2.0, places=12)
+        self.assertAlmostEqual(report["observed_on_predicted_ols_intercept_db"], 0.25, places=12)
+        self.assertAlmostEqual(report["observed_on_predicted_ols_r_squared"], 1.0, places=12)
 
     def test_rejects_mismatched_grids(self):
         with tempfile.TemporaryDirectory() as tmp:
