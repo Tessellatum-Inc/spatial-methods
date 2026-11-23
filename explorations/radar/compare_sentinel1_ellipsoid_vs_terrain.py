@@ -48,10 +48,36 @@ def _stratified_summary(delta: np.ndarray, strata: np.ndarray,
     return records
 
 
-def _area_factor_relation(delta: np.ndarray, scattering_area: np.ndarray) -> dict:
+
+def _stratified_residual_summary(
+    residual: np.ndarray, strata: np.ndarray, edges: list[float], labels: list[str]
+) -> list[dict]:
+    """Summarize centered factor residuals within geometry strata."""
+    if residual.shape != strata.shape or len(edges) != len(labels) + 1:
+        raise ValueError("Residuals, strata, edges, and labels are inconsistent.")
+    records = []
+    for index, label in enumerate(labels):
+        selected = np.isfinite(residual) & np.isfinite(strata) & (strata >= edges[index])
+        if index == len(labels) - 1:
+            selected &= strata <= edges[index + 1]
+        else:
+            selected &= strata < edges[index + 1]
+        values = residual[selected]
+        records.append({
+            "stratum": label,
+            "pixels": int(values.size),
+            "median_centered_residual_db": float(np.median(values)) if values.size else None,
+            "mean_absolute_centered_residual_db": float(np.mean(np.abs(values))) if values.size else None,
+            "p95_absolute_centered_residual_db": float(np.percentile(np.abs(values), 95)) if values.size else None,
+        })
+    return records
+
+def _area_factor_relation(
+    delta: np.ndarray, scattering_area: np.ndarray, local_incidence_angle: np.ndarray
+) -> dict:
     """Test whether RTC/ellipsoid dB differences follow inverse scattering area."""
-    if scattering_area.shape != delta.shape:
-        raise ValueError("Scattering-area values must align with paired differences.")
+    if scattering_area.shape != delta.shape or local_incidence_angle.shape != delta.shape:
+        raise ValueError("Scattering-area and incidence-angle values must align with paired differences.")
     valid = np.isfinite(delta) & np.isfinite(scattering_area) & (scattering_area > 0)
     if not valid.any():
         raise ValueError("No finite positive scattering-area values for factor diagnostic.")
@@ -80,6 +106,16 @@ def _area_factor_relation(delta: np.ndarray, scattering_area: np.ndarray) -> dic
         "centered_observed_minus_predicted_db_quantiles": _quantiles(centered_residual),
         "median_absolute_centered_residual_db": float(np.median(np.abs(centered_residual))),
         "p95_absolute_centered_residual_db": float(np.percentile(np.abs(centered_residual), 95)),
+        "centered_residual_by_scattering_area": _stratified_residual_summary(
+            centered_residual, scattering_area[valid].astype(np.float64),
+            [0.0, 0.9, 1.0, 1.1, 1.2, float("inf")],
+            ["<0.9", "0.9–1.0", "1.0–1.1", "1.1–1.2", "≥1.2"],
+        ),
+        "centered_residual_by_local_incidence_angle_degrees": _stratified_residual_summary(
+            centered_residual, local_incidence_angle[valid].astype(np.float64),
+            [0.0, 35.0, 40.0, 45.0, 50.0, 90.0],
+            ["<35°", "35–40°", "40–45°", "45–50°", "≥50°"],
+        ),
         "observed_predicted_pearson_r": correlation,
         "observed_on_predicted_ols_slope": slope,
         "observed_on_predicted_ols_intercept_db": intercept,
@@ -141,7 +177,7 @@ def compare_pair(ellipsoid_path: Path, rtc_path: Path) -> dict:
         }
         result["polarizations"][name] = {
             "stratified_differences": stratified,
-            "scattering_area_factor_relation": _area_factor_relation(delta, area_values),
+            "scattering_area_factor_relation": _area_factor_relation(delta, area_values, angle_values),
             "positive_common_pixels": int(positive.sum()),
             "ellipsoid_median_db": float(np.median(ell_db)),
             "rtc_median_db": float(np.median(rtc_db)),
