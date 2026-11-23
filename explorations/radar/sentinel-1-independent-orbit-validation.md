@@ -99,10 +99,10 @@ To remove the Sentinel-1C versus Sentinel-1D platform difference in the 2026 R07
 
 The common mask contains **1,848,662 pixels (58.77% of the requested grid)**. Mean per-scene diagnostics on that same footprint:
 
-| Track | Median local incidence angle | OLS slope | R² (VV / VH) | Median residual offset (VV / VH) | Mean absolute residual (VV / VH) |
-|---|---:|---:|---:|---:|---:|
-| Ascending R130, Sentinel-1A | 45.95° | 0.992 | 0.986 / 0.986 | -0.053 / -0.053 dB | 0.064 / 0.064 dB |
-| Ascending R057, Sentinel-1A | 32.56° | 0.982 | 0.976 / 0.976 | +2.053 / +2.053 dB | 2.054 / 2.054 dB |
+| Track | Median local angle | OLS slope | R² (VV / VH) | Area-factor residual | Local-angle proxy term | Proxy-adjusted median residual | Direct RTC − ellipsoid median / MAE / P95 abs |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Ascending R130, Sentinel-1A | 45.95° | 0.992 | 0.986 / 0.986 | -0.053 dB | -0.144 dB | +0.073 dB | +0.021 / 0.301 / 1.035 dB |
+| Ascending R057, Sentinel-1A | 32.56° | 0.982 | 0.976 / 0.976 | +2.053 dB | +1.948 dB | +0.078 dB | +0.014 / 0.337 / 1.157 dB |
 
 The offset difference persists on identical pixels and is consistent across all four dates and both polarizations. The per-track residual/local-incidence-angle correlations are weak (about -0.05 for R130 and -0.08 for R057). However, the two tracks' central 80% local-incidence-angle ranges barely overlap: approximately 43.3–49.0° for R130 and 29.9–35.6° for R057. Orbit identity and incidence-angle regime therefore remain confounded. These results cannot isolate an orbit effect or an incidence-angle effect.
 
