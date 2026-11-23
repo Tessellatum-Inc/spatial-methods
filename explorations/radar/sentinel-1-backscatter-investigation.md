@@ -260,4 +260,52 @@ The small improvement transfers consistently to each held-out date in this four-
 
 The area-only relation remains the simpler baseline. Neither model is applied to the imagery, and the workflow continues to report `analysis_ready: false`. A next-stage validation would need independent stable targets and/or acquisitions from another relative orbit or study area, plus stronger geodetic and radiometric validation.
 
-The machine-readable QA evidence is retained in the GitHub Actions artifact `sentinelhub-sentinel1-nairobi-qa-reports` from run [45157063999](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45157063999). The full temporal stack is a separate artifact from the same run.
+The machine-readable QA evidence is retained in the GitHub Actions artifact `sentinelhub-sentinel1-nairobi-qa-reports` from run [45160482637](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45160482637). The full temporal stack is a separate artifact from the same run.
+
+
+### Latest full-data rerun and reference-target screening (2026-11-23, run 45160482637)
+
+The complete processing workflow was rerun on commit `e43566496e1068955a9498887a0187e67fd02812`. The workflow completed successfully. The compact QA artifact contains nine JSON reports; the full temporal-stack artifact was also uploaded.
+
+**Processing completion**
+- Four of four Sentinel-1C IW GRD acquisitions were processed through the separate `GAMMA0_TERRAIN` branch; zero scene failures.
+- Each RTC output matched the requested 2048 × 1536 ellipsoid-reference grid and contained 3,145,728 valid pixels.
+- The RTC shadow-mask fraction was zero for all four outputs. This is the provider's reported mask result, not proof that all terrain-related distortions are absent.
+- All four paired ellipsoid/RTC comparisons completed, with zero failed comparisons and full common-valid grid coverage.
+
+**Recomputed temporal transfer screen**
+
+The latest QA report reproduces the leave-one-acquisition-out result. Across the four held-out dates, mean metrics were:
+
+| Polarization | Model | RMSE (dB) | MAE (dB) | P95 absolute error (dB) |
+|---|---|---:|---:|---:|
+| VV | Area only | 0.10457 | 0.09005 | 0.17675 |
+| VV | Area + angle + interaction | 0.10142 | 0.08654 | 0.17463 |
+| VH | Area only | 0.10457 | 0.09005 | 0.17675 |
+| VH | Area + angle + interaction | 0.10142 | 0.08654 | 0.17463 |
+
+The RMSE reduction was approximately 2.98–3.05% in each fold. This confirms a small, consistent within-study-area transfer improvement, not an independently validated correction. The sample design remains systematic (every fourth row and column), and all four acquisitions share the same Nairobi area, descending relative orbit 79, provider and processing setup.
+
+**Geometry and registration diagnostics**
+
+- The local-incidence-angle surfaces remain highly consistent: the P95 absolute difference from the first acquisition was approximately 0.00169°, 0.00447° and 0.00279° for the three later dates.
+- Global phase-correlation shifts were 0.058, 0.118 and 0.105 pixels relative to the first acquisition.
+- The tiled phase-correlation screen showed spatial variation in local image-content shifts. These are image-matching diagnostics, not independent tie-point or geodetic registration measurements. Neither the global nor tiled results establish sub-pixel geolocation accuracy.
+
+**Reference-target screen: an important limitation**
+
+The eroded WorldCover 2021 built-up candidate covers 157,983 pixels, but its temporal backscatter statistics are not invariant across these four 2026 acquisitions. Relative to 9 October, the median changed as follows:
+
+| Acquisition | VV median change (dB) | VH median change (dB) |
+|---|---:|---:|
+| 21 October | -0.032 | -0.049 |
+| 2 November | +0.941 | +0.430 |
+| 14 November | +0.577 | +0.196 |
+
+This does not prove the land cover itself changed; moisture, surface conditions, acquisition effects and residual processing differences can also contribute. It does show that the class mask cannot be treated as a stable radiometric calibration target without further investigation. The JRC Global Surface Water v1.5 screen produced only 26 candidate pixels at 95% occurrence and zero pixels after two erosion iterations; it provides no usable eroded water core in this study window.
+
+**Decision**
+
+The rerun strengthens confidence that the paired processing and diagnostic calculations are repeatable. It does not solve the independent-validation problem. The area-factor relationship remains a strong empirical description, and angle terms remain a modest refinement, but neither is approved as a correction. Keep `analysis_ready: false`; do not normalize the time series or use this relationship for change detection.
+
+The next experiment should prioritize an independent validation design rather than adding more model complexity: identify an alternative relative orbit and/or a second study area, and seek contemporaneous, defensible stable targets or independent geometric/radiometric reference data. Any candidate target must first pass a temporal stability screen; a land-cover label alone is insufficient.
