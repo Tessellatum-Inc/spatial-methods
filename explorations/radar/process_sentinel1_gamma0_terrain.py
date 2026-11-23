@@ -52,7 +52,8 @@ function evaluatePixel(sample) {
 def build_rtc_payload(feature: dict, width: int = _PROCESS.WIDTH,
                       height: int = _PROCESS.HEIGHT,
                       dem_instance: str = "COPERNICUS_30",
-                      oversampling: int = 2,\n                      bbox: list[float] = _PROCESS.NAIROBI_BBOX) -> dict:
+                      oversampling: int = 2,
+                      bbox: list[float] = _PROCESS.NAIROBI_BBOX) -> dict:
     if not 1 <= width <= 2500 or not 1 <= height <= 2500:
         raise ValueError("Output width and height must each be between 1 and 2500.")
     if dem_instance not in {"COPERNICUS_30", "COPERNICUS_90"}:
