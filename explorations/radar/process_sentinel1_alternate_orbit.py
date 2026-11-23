@@ -81,7 +81,8 @@ def process(features,output_dir,token,direction,relative_orbit,min_coverage,time
                 stats=RTC.summarize_rtc(r.read())
                 scenes.append({"catalog_item_id":feature.get("id"),
                     "catalog_item_datetime_utc":stamp_dt.isoformat().replace("+00:00","Z"),
-                    "catalogue_orbit_direction":direction.upper(),"catalogue_relative_orbit":relative_orbit,\n                    "catalogue_platform":feature.get("properties",{}).get("platform"),
+                    "catalogue_orbit_direction":direction.upper(),"catalogue_relative_orbit":relative_orbit,
+                    "catalogue_platform":feature.get("properties",{}).get("platform"),
                     "catalogue_footprint_covers_full_aoi":bool(covers),
                     "catalogue_aoi_intersection_fraction":float(fraction),
                     "ellipsoid_valid_pixels":int(emask.sum()),"rtc_valid_pixels":int(rmask.sum()),
@@ -112,7 +113,8 @@ def process(features,output_dir,token,direction,relative_orbit,min_coverage,time
         with rasterio.open(output_dir/scene["output"]["file"]) as ds: masks.append(ds.read(3)>0.5)
     all_dates=np.logical_and.reduce(masks)
     report={"schema":"tessellatum.sentinel1.alternate-orbit-rtc-screen.v1",
-        "orbit":{"direction":direction.upper(),"relative_orbit":relative_orbit,\n            "platforms_in_scenes":sorted({s["catalogue_platform"] for s in scenes if s.get("catalogue_platform")})},
+        "orbit":{"direction":direction.upper(),"relative_orbit":relative_orbit,
+            "platforms_in_scenes":sorted({s["catalogue_platform"] for s in scenes if s.get("catalogue_platform")})},
         "candidate_count":len(features),"processed_count":len(scenes),"failed_count":len(failures),
         "scenes":scenes,"all_date_common_valid_pixels":int(all_dates.sum()),
         "all_date_common_valid_fraction_of_requested_grid":float(all_dates.mean()),
