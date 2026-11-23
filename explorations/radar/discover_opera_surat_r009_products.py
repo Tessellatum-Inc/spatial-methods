@@ -209,7 +209,7 @@ def main(argv=None) -> int:
         unique[key] = feature
     collection = {"type": "FeatureCollection", "features": list(unique.values())}
     report = summarize(collection)
-    static_params = build_static_query(["T009_019159_IW3", "T009_019160_IW3"])
+    static_params = build_static_query(["T009-019159-IW3", "T009-019160-IW3"])
     try:
         static_raw, static_url = retrieve(static_params, args.timeout)
         static_collection = parse_collection(static_raw)
