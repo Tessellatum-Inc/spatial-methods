@@ -109,6 +109,8 @@ jobs:
         run: python -m unittest discover -s explorations/radar -p "test_discover_sentinel1_intermediate_same_platform_orbits.py"
       - name: Test Sentinel-1 GRD geolocation-grid probe
         run: python -m unittest discover -s explorations/radar -p "test_probe_sentinel1_grd_geolocation_grid.py"
+      - name: Test eight-scene GRD incidence geolocation extraction
+        run: python -m unittest discover -s explorations/radar -p "test_extract_sentinel1_grd_incidence_grids.py"
       - name: Test Sentinel-1 acquisition metadata retention
         run: python -m unittest discover -s scripts -p "test_process_sentinelhub_sentinel1_stack_metadata.py"
       - name: Test Sentinel-1 stack manifest builder
