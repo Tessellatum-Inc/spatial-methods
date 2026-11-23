@@ -1,5 +1,6 @@
 name: Sentinel-1 Nairobi orbit diversity catalogue screen
 # Catalogue-only screening; intentionally separate from the expensive raster workflow.
+# Expanded history helps distinguish platform transitions from orbit-direction effects.
 on:
   push:
     branches: [main]
