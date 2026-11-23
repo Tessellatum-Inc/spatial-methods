@@ -309,3 +309,14 @@ This does not prove the land cover itself changed; moisture, surface conditions,
 The rerun strengthens confidence that the paired processing and diagnostic calculations are repeatable. It does not solve the independent-validation problem. The area-factor relationship remains a strong empirical description, and angle terms remain a modest refinement, but neither is approved as a correction. Keep `analysis_ready: false`; do not normalize the time series or use this relationship for change detection.
 
 The next experiment should prioritize an independent validation design rather than adding more model complexity: identify an alternative relative orbit and/or a second study area, and seek contemporaneous, defensible stable targets or independent geometric/radiometric reference data. Any candidate target must first pass a temporal stability screen; a land-cover label alone is insufficient.
+
+
+### Independent-orbit screening update (2026-11-23)
+
+A separate Sentinel Hub catalogue search identified ascending R130 as a repeatable partial-coverage track: four acquisitions at 12-day intervals, each intersecting approximately 84.2–84.4% of the Nairobi rectangle. Ascending R057 had five repeat acquisitions but covered only about 74.6–74.8%. Neither ascending track fully covers the rectangle, so the new experiment preserved data masks and evaluated only actual common-valid pixels.
+
+The R130 RTC/ellipsoid experiment processed all four acquisitions with zero failures. Its all-date common-valid fraction was 84.19% of the requested grid. The mean per-scene area-factor relation had R² around 0.978 for both VV and VH. Leave-one-acquisition-out angle terms reduced RMSE by about 1.6%.
+
+This is meaningful cross-configuration evidence, but the fit coefficients are not invariant: R130's median residual offset was about -0.010 dB, compared with about +0.282 dB in the original descending R079 stack. R130 is ascending Sentinel-1D, while R079 is descending Sentinel-1C, so platform and orbit direction are confounded. Do not transfer the R079 intercept to R130 or pool the tracks as one time series. See [the independent-orbit experiment record](sentinel-1-independent-orbit-validation.md) and [workflow run 45163757264](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45163757264).
+
+The broader conclusion remains: the scattering-area relationship is strong across both tested acquisition configurations, but the fitted offset/slope vary and independent radiometric/geodetic reference validation is still absent. Keep `analysis_ready: false`.
