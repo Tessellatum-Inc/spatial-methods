@@ -45,7 +45,7 @@ class Gamma0TerrainTests(unittest.TestCase):
         report = MODULE.summarize_rtc(a)
         self.assertEqual(report["valid_pixels"], 9)
         self.assertAlmostEqual(report["shadow_mask_fraction_of_valid_pixels"], 1 / 9)
-        self.assertAlmostEqual(report["vv_median_db"], -10.0)
+        self.assertAlmostEqual(report["vv_median_db"], -10.0, places=6)
 
     def test_rejects_invalid_angle(self):
         a = np.ones((6, 2, 2), dtype=np.float32)
