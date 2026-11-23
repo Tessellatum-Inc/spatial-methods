@@ -53,12 +53,39 @@ def parse_calibration_lut(xml_bytes:bytes)->dict:
         "max_beta_sigma_vs_gamma_sigma_identity_difference_degrees":float(max(v["max_identity_difference_degrees"] for v in vectors)),
         "vectors":vectors}
 
-def extract_calibration_files(features,access_key,secret_key):
+def compare_calibration_to_annotation(calibration_lut:dict,annotation_grid:dict)->dict:
+    from scipy.interpolate import LinearNDInterpolator
+    from scipy.spatial import Delaunay, QhullError
+    source_xy=[]; source_angles=[]
+    for vector in calibration_lut["vectors"]:
+        for pixel,angle in zip(vector["pixels"],vector["incidence_angle_degrees"]):
+            source_xy.append((vector["line"],pixel)); source_angles.append(angle)
+    xy=np.asarray(source_xy,dtype=np.float64); values=np.asarray(source_angles,dtype=np.float64)
+    target=np.asarray([(p["line"],p["pixel"]) for p in annotation_grid["points"]],dtype=np.float64)
+    expected=np.asarray([p["incidenceAngle"] for p in annotation_grid["points"]],dtype=np.float64)
+    try:
+        triangulation=Delaunay(xy)
+        predicted=np.asarray(LinearNDInterpolator(triangulation,values,fill_value=np.nan)(target),dtype=np.float64)
+    except QhullError as exc:
+        raise ValueError(f"Could not triangulate calibration LUT source coordinates: {exc}") from exc
+    valid=np.isfinite(predicted)&np.isfinite(expected)
+    if not valid.any(): raise ValueError("No annotation geolocation points fall inside calibration LUT hull")
+    error=predicted[valid]-expected[valid]
+    return {"method":"linear interpolation of calibration LUT angle samples in source line/pixel coordinates",
+        "annotation_tie_points":int(len(expected)),"matched_tie_points":int(valid.sum()),
+        "annotation_tie_point_coverage_fraction":float(valid.mean()),
+        "mae_degrees":float(np.mean(np.abs(error))),
+        "rmse_degrees":float(np.sqrt(np.mean(error**2))),
+        "p95_absolute_error_degrees":float(np.percentile(np.abs(error),95)),
+        "max_absolute_error_degrees":float(np.max(np.abs(error)))}
+
+def extract_calibration_files(features,annotation_products,access_key,secret_key):
     import boto3
     from botocore.config import Config
     resource=boto3.resource("s3",endpoint_url="https://eodata.dataspace.copernicus.eu",
         aws_access_key_id=access_key,aws_secret_access_key=secret_key,region_name="default",
         config=Config(signature_version="s3v4"))
+    annotations={p["product_id"]:p["geolocation_grid"] for p in annotation_products}
     output=[]
     for product_id in PRODUCT_IDS:
         feature=features.get(product_id)
@@ -73,10 +100,14 @@ def extract_calibration_files(features,access_key,secret_key):
         if len(keys)!=1: raise RuntimeError(f"Expected one calibration XML for {product_id}; found {len(keys)}")
         key=keys[0]; body=bucket.Object(key).get()["Body"].read()
         parsed_lut=parse_calibration_lut(body)
+        annotation=annotations.get(product_id)
+        if annotation is None: raise RuntimeError(f"Annotation geolocation grid missing for {product_id}")
+        comparison=compare_calibration_to_annotation(parsed_lut,annotation)
         props=feature.get("properties",{})
         output.append({"product_id":product_id,"datetime_utc":props.get("datetime"),
             "relative_orbit":props.get("sat:relative_orbit"),"calibration_key":key,
-            "calibration_xml_size_bytes":len(body),"calibration_lut":parsed_lut})
+            "calibration_xml_size_bytes":len(body),"calibration_lut":parsed_lut,
+            "calibration_vs_annotation_angle_qa":comparison})
     return output
 
 def main(argv=None):
@@ -88,7 +119,8 @@ def main(argv=None):
         token=SRC.CAT.request_access_token(os.environ.get("SENTINEL_HUB_CLIENT_ID",""),
             os.environ.get("SENTINEL_HUB_CLIENT_SECRET",""),timeout=30)
         features=SRC.collect_catalog_items(token,"2025-01-01T00:00:00Z","2025-02-20T00:00:00Z")
-        products=extract_calibration_files(features,access,secret)
+        annotations=SRC.extract_all(features,access,secret)
+        products=extract_calibration_files(features,annotations,access,secret)
         if len(products)!=8: raise ValueError(f"Expected 8 calibration files; found {len(products)}")
     except Exception as exc:
         print(f"Calibration LUT extraction failed: {type(exc).__name__}: {exc}",file=sys.stderr); return 2
@@ -98,12 +130,12 @@ def main(argv=None):
             "theta_from_beta_sigma_degrees":"arcsin((betaNought / sigmaNought)^2)",
             "source":"ESA Sentinel-1 Radiometric Calibration technical note; calibration LUT area relationships"},
         "limitations":["This checks internal consistency of the source calibration LUT identities.",
-            "The calibration-derived angle samples have not yet been spatially interpolated or compared with annotation geolocationGridPoint incidenceAngle.",
+            "Calibration LUT angles are linearly interpolated in source line/pixel coordinates and compared with annotation geolocationGridPoint incidenceAngle; this is an internal product-metadata cross-check, not an independent geodetic reference.",
             "No radiometric normalization or change detection is performed."]}
     a.output.parent.mkdir(parents=True,exist_ok=True); a.output.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
     for product in products:
-        lut=product["calibration_lut"]; a0=lut["incidence_angle_degrees"]
-        print(f"R{product['relative_orbit']:03d} {product['datetime_utc']}: vectors={lut['vector_count']}, samples={lut['sample_count']}, angle={a0['min']:.5f}/{a0['median']:.5f}/{a0['max']:.5f} degrees, identity max diff={lut['max_beta_sigma_vs_gamma_sigma_identity_difference_degrees']:.6g} degrees")
+        lut=product["calibration_lut"]; a0=lut["incidence_angle_degrees"]; qa=product["calibration_vs_annotation_angle_qa"]
+        print(f"R{product['relative_orbit']:03d} {product['datetime_utc']}: vectors={lut['vector_count']}, samples={lut['sample_count']}, angle={a0['min']:.5f}/{a0['median']:.5f}/{a0['max']:.5f} degrees, LUT identity max diff={lut['max_beta_sigma_vs_gamma_sigma_identity_difference_degrees']:.6g} degrees, annotation matched={qa['matched_tie_points']}/{qa['annotation_tie_points']}, cross-source MAE/RMSE/P95={qa['mae_degrees']:.5f}/{qa['rmse_degrees']:.5f}/{qa['p95_absolute_error_degrees']:.5f} degrees")
     print(f"Products extracted: {len(products)}; report={a.output}; analysis_ready=false")
     return 0
 if __name__=="__main__": raise SystemExit(main())
