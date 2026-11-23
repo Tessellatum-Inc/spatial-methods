@@ -60,7 +60,7 @@ def build_static_query(max_results: int = 500) -> dict[str, str]:
         raise ValueError("max_results must be positive")
     return {
         "dataset": "OPERA-S1",
-        "processingLevel": "RTC_STATIC",
+        "processingLevel": "RTC-STATIC",
         "intersectsWith": WKT,
         "start": "2014-04-03T00:00:00Z",
         "end": "2014-04-04T00:00:00Z",
