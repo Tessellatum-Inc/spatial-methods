@@ -188,3 +188,59 @@ Choose one extension only when it answers a question you now have:
 - [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/) — Sentinel data discovery and access.
 
 Before publishing a result based on a specific scene, record the exact product identifier, processing parameters, software version, DEM and reference data. Recheck current product-specific guidance. This guide intentionally does not prescribe universal parameter values.
+
+
+---
+
+## 12. Nairobi paired ellipsoid-versus-RTC experiment (2026-11-23)
+
+A four-acquisition Sentinel-1C IW GRD experiment was run over the Nairobi County mask using the same requested output grid for the ellipsoid and terrain-corrected processing branches. The acquisitions were 9 October, 21 October, 2 November and 14 November 2026; all were descending relative orbit 79 with VV/VH. The paired diagnostic compared linear-power outputs on common valid pixels, then expressed differences in dB.
+
+### Question
+
+Does the observed difference follow the inverse scattering-area factor?
+
+`RTC - ellipsoid (dB) = -10 log10(scatteringArea)`
+
+### Result
+
+All four acquisitions completed; each polarization comparison contains approximately 3.145 million common valid pixels. Across the eight VV/VH comparisons:
+
+- Pearson correlation between observed and predicted differences: approximately **0.97618–0.97620**.
+- OLS slope: approximately **0.98299–0.98305**, not exactly 1.
+- OLS intercept: approximately **+0.276 dB**.
+- Median observed-minus-predicted offset: approximately **+0.282 dB**.
+- 95th percentile absolute residual before centering: approximately **0.448 dB**.
+- 95th percentile absolute residual after subtracting the median offset: approximately **0.176 dB**.
+
+This is a strong and repeatable empirical relationship for this processing setup and study window. It is not proof that the two products are radiometrically equivalent, nor that scattering area alone explains the RTC transformation.
+
+### Does the remaining residual depend on terrain geometry?
+
+The residual was centered by subtracting its scene/polarization median, then summarized by fixed scattering-area and local-incidence-angle bins. The pattern was nearly identical across all dates and both polarizations.
+
+| Stratum | Median centered residual by scattering area (dB) | Median centered residual by local incidence angle (dB) |
+|---|---:|---:|
+| First bin: area <0.9 / angle <35° | -0.108 | -0.120 |
+| Second: 0.9–1.0 / 35–40° | -0.074 | -0.057 |
+| Third: 1.0–1.1 / 40–45° | -0.005 | +0.025 |
+| Fourth: 1.1–1.2 / 45–50° | +0.058 | -0.079 |
+| Fifth: area ≥1.2 / angle ≥50° | -0.063 | -0.114 |
+
+The corresponding 95th percentile absolute centered residuals remain tightly grouped: approximately **0.175–0.180 dB** in every bin. The bin medians therefore reveal a small but repeatable structure in the residual location, while the residual spread is comparatively stable. The two stratifications are separate one-variable summaries; they do not establish independent effects because scattering area and incidence geometry may be related.
+
+### Other QA evidence
+
+- All four acquisitions had complete coverage of the requested 2048 × 1536 grid and all paired comparisons completed.
+- Local-incidence-angle surfaces were extremely similar between dates: the 95th percentile absolute difference from the first acquisition ranged from about 0.0017° to 0.0045°. This is geometry-layer consistency, not a geolocation validation.
+- Global image-content phase-correlation shifts relative to the first acquisition ranged from about 0.058 to 0.118 pixels. This is a screening diagnostic only; it does not prove sub-pixel co-registration.
+- The eroded ESA WorldCover 2021 built-up candidate contained 157,983 pixels (about 11.1% of county-valid pixels), but the 2021 class does not prove those surfaces remained invariant in 2026.
+- The JRC Global Surface Water v1.5 95% occurrence candidate had zero pixels after two erosion iterations. It therefore supplied no usable persistent-water core for this study window.
+
+### Interpretation and next experiment
+
+The inverse-area factor is a strong first-order explanation of the observed RTC-minus-ellipsoid difference, but the slope departure, non-zero offset and structured residual medians argue against treating the simple equation as an exact correction. The next useful experiment is a pre-specified, low-complexity residual model using scattering area and local incidence angle jointly, evaluated on spatially separated tiles (not random pixels) and checked for consistency across dates and polarizations. Report the incremental predictive improvement over the area-only relation and retain an untouched spatial holdout.
+
+Do not use the fitted relation to normalize the time series, declare radiometric equivalence, or enable change detection. The current processing and QA reports correctly remain `analysis_ready: false` because independent geometric and radiometric validation is still absent.
+
+The machine-readable QA evidence is retained in the GitHub Actions artifact `sentinelhub-sentinel1-nairobi-qa-reports` from run [45157063999](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45157063999). The full temporal stack is a separate artifact from the same run.
