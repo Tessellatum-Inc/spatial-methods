@@ -53,10 +53,7 @@ jobs:
           github-token: ${{ github.token }}
       - name: Compare RTC and ellipsoid backscatter using source ellipsoid incidence angle
         run: |
-          python explorations/radar/compare_sentinel1_same_platform_orbit_pair.py \\
-            --input-dir data/same_platform_rasters \\
-            --incidence-dir data/sentinelhub/nairobi/ellipsoid_incidence \\
-            --output data/sentinelhub/nairobi/sentinel1a_same_platform_orbit_pair_ellipsoid_angle_qa.json
+          python explorations/radar/compare_sentinel1_same_platform_orbit_pair.py --input-dir data/same_platform_rasters --incidence-dir data/sentinelhub/nairobi/ellipsoid_incidence --output data/sentinelhub/nairobi/sentinel1a_same_platform_orbit_pair_ellipsoid_angle_qa.json
       - uses: actions/upload-artifact@v4
         with:
           name: sentinel1a-same-platform-ellipsoid-angle-qa
