@@ -80,6 +80,15 @@ jobs:
           rasters=(data/sentinelhub/nairobi/stack/sentinel1_nairobi_stack_*_vv-vh.tif)
           python explorations/radar/screen_sentinel1_temporal_qa.py --rasters "${rasters[@]}" --output data/sentinelhub/nairobi/stack/sentinel1_nairobi_temporal_qa_screen.json
 
+      - name: Screen eroded built-up reference areas against ESA WorldCover 2021
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          rasters=(data/sentinelhub/nairobi/stack/sentinel1_nairobi_stack_*_vv-vh.tif)
+          boundaries=(data/sentinelhub/nairobi/stack/nairobi_county_boundary_*.geojson)
+          test "${#boundaries[@]}" -ge 1
+          python explorations/radar/screen_sentinel1_reference_areas.py --rasters "${rasters[@]}" --boundary "${boundaries[0]}" --output data/sentinelhub/nairobi/stack/sentinel1_nairobi_reference_area_screen.json
+
       - name: Upload temporal stack, source rasters, county rasters and QA evidence
         uses: actions/upload-artifact@v4
         with:
@@ -92,5 +101,6 @@ jobs:
             data/sentinelhub/nairobi/stack/*.geojson
             data/sentinelhub/nairobi/stack/sentinel1_nairobi_registration_screen.json
             data/sentinelhub/nairobi/stack/sentinel1_nairobi_temporal_qa_screen.json
+            data/sentinelhub/nairobi/stack/sentinel1_nairobi_reference_area_screen.json
           if-no-files-found: error
           retention-days: 14
