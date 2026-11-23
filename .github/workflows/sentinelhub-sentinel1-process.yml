@@ -12,9 +12,9 @@ concurrency:
 
 jobs:
   process-sample:
-    name: Process latest Nairobi Sentinel-1 GRD scene
+    name: Process and quality-check latest Nairobi Sentinel-1 GRD scene
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -23,6 +23,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+
+      - name: Install raster QA dependencies
+        run: python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
 
       - name: Verify OAuth secrets are configured
         env:
@@ -39,12 +42,20 @@ jobs:
           SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
         run: python explorations/radar/process_sentinelhub_sentinel1.py --limit 100
 
-      - name: Upload processed raster and provenance
+      - name: Inspect raster coverage and backscatter values
+        run: |
+          raster="$(find data/sentinelhub/nairobi -maxdepth 1 -type f -name '*.tif' -print -quit)"
+          test -n "$raster" || { echo "::error::No GeoTIFF was produced"; exit 1; }
+          python explorations/radar/inspect_sentinelhub_sentinel1.py "$raster"
+
+      - name: Upload raster, provenance, quicklook and QA report
         uses: actions/upload-artifact@v4
         with:
           name: sentinelhub-sentinel1-nairobi-raster-sample
           path: |
             data/sentinelhub/nairobi/*.tif
             data/sentinelhub/nairobi/*.metadata.json
+            data/sentinelhub/nairobi/*.quicklook.png
+            data/sentinelhub/nairobi/*.qa.json
           if-no-files-found: error
           retention-days: 14
