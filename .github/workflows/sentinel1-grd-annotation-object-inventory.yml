@@ -1,6 +1,11 @@
 name: Sentinel-1 GRD annotation object inventory
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sentinel1-grd-annotation-object-inventory.yml"
+      - "explorations/radar/list_sentinel1_grd_annotation_objects.py"
 jobs:
   annotation-inventory:
     runs-on: ubuntu-latest
