@@ -52,7 +52,8 @@ class PairedComparisonTests(unittest.TestCase):
         area = np.array([0.25, 0.5, 1.0, 2.0], dtype=np.float64)
         expected = -10.0 * np.log10(area)
         observed = 2.0 * expected + 0.25
-        report = MODULE._area_factor_relation(observed, area)
+        angle = np.array([30.0, 37.0, 42.0, 47.0], dtype=np.float64)
+        report = MODULE._area_factor_relation(observed, area, angle)
         self.assertEqual(report["pixels"], 4)
         self.assertAlmostEqual(report["median_absolute_residual_db"], float(np.median(np.abs(expected + 0.25))), places=12)
         self.assertAlmostEqual(report["median_observed_minus_predicted_db"], float(np.median(expected + 0.25)), places=12)
@@ -69,6 +70,10 @@ class PairedComparisonTests(unittest.TestCase):
         self.assertAlmostEqual(report["observed_on_predicted_ols_slope"], 2.0, places=12)
         self.assertAlmostEqual(report["observed_on_predicted_ols_intercept_db"], 0.25, places=12)
         self.assertAlmostEqual(report["observed_on_predicted_ols_r_squared"], 1.0, places=12)
+        angle_bins = report["centered_residual_by_local_incidence_angle_degrees"]
+        self.assertEqual([item["pixels"] for item in angle_bins], [1, 1, 1, 1, 0])
+        area_bins = report["centered_residual_by_scattering_area"]
+        self.assertEqual([item["pixels"] for item in area_bins], [2, 0, 1, 0, 1])
 
     def test_rejects_mismatched_grids(self):
         with tempfile.TemporaryDirectory() as tmp:
