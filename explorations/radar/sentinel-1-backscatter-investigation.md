@@ -343,3 +343,31 @@ Reproducibility:
 - Same-platform processing artifacts: [workflow run 45165312108](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45165312108).
 - Common-mask analysis and machine-readable metrics: [workflow run 45168656320](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45168656320).
 - Shared-mask analysis code: `compare_sentinel1_same_platform_orbit_pair.py`.
+
+### Radiometric reference-area interpretation correction (2026-11-23)
+
+A review of the provider documentation and the Sentinel Hub-derived Digital Earth Africa RTC method changes the interpretation of the area-only residual. Sentinel Hub describes `scatteringArea` as a normalized area used to convert β⁰ to terrain-corrected γ⁰ ([Sentinel-1 GRD band and processing documentation](https://docs.sentinel-hub.com/api/latest/data/sentinel-1-grd/)). Yuan et al. (2022), describing the Sentinel Hub RTC implementation, state that the normalized illuminated-area factor is used as `γ⁰_RTC = β⁰ / Âγ`; for an ellipsoid reference, the β⁰-to-γ⁰ area ratio is `tan(θE)` ([paper, Remote Sensing 14, 351](https://doi.org/10.3390/rs14020351), especially Section 2.3 and its discussion of the equivalent incidence angle).
+
+Consequently, when comparing terrain-corrected γ⁰ with ellipsoid γ⁰, the area-only identity is incomplete. Under those reference-area definitions:
+
+\[
+\Delta_{dB}=10\log_{10}\left(\frac{\gamma^0_{RTC}}{\gamma^0_E}\right)
+=-10\log_{10}(\widehat A_\gamma)-10\log_{10}(\tan\theta_E).
+\]
+
+The area-only residual is therefore expected to contain the ellipsoid reference-area term `-10 log10(tan(θE))`; it should not automatically be interpreted as a calibration offset or processing error. This explains why the residual offsets differed so strongly between R057 and R130 despite their nearly identical direct RTC-minus-ellipsoid medians.
+
+The common-footprint results support this interpretation at the track-summary level:
+
+| Track | Area-only median residual | Median local-angle proxy term | Median proxy-adjusted residual | Median direct RTC − ellipsoid |
+|---|---:|---:|---:|---:|
+| Sentinel-1A ascending R057 | +2.053 dB | +1.948 dB | +0.078 dB | +0.014 dB |
+| Sentinel-1A ascending R130 | −0.053 dB | −0.144 dB | +0.073 dB | +0.021 dB |
+
+The near-identical proxy-adjusted median residuals (~+0.075 dB) are encouraging. However, the available `localIncidenceAngle` band is the angle relative to the **local terrain normal**, not the ellipsoid incidence angle θE required by the equation. Substituting local angle pixel-by-pixel is not validated: it increases mean absolute residual on R130 (about 0.064 to 0.295 dB) and leaves substantial tails. The current result is a diagnostic consistency check, not an approved per-pixel correction.
+
+Direct RTC-minus-ellipsoid differences also are not identically zero at every pixel: median differences are near +0.01–0.02 dB, but mean absolute differences are about 0.30–0.34 dB and P95 absolute differences about 1.03–1.16 dB. The spatial distribution of these differences still needs investigation.
+
+**Revised scientific question:** obtain or derive the ellipsoid incidence angle θE for each pixel/acquisition, verify the provider's exact `scatteringArea` normalization convention against its processing implementation, and test the complete reference-area equation on flat, low-slope reference areas before extending it to terrain. Keep `analysis_ready: false`; do not normalize or use this as a change-detection correction.
+
+Reproducibility: the direct-difference and local-angle-proxy metrics are in [shared-mask analysis run 45169287651](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45169287651); code is in `compare_sentinel1_same_platform_orbit_pair.py`.
