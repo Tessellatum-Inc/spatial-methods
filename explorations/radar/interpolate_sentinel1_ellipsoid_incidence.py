@@ -105,6 +105,9 @@ def build_report(products,output_dir):
             "output_file":str(out)})
         print(f"R{product['relative_orbit']:03d} {product['datetime_utc']}: coverage={grid['coverage_fraction']:.4f}; CV MAE/RMSE/P95={cv['mae_degrees']:.5f}/{cv['rmse_degrees']:.5f}/{cv['p95_absolute_error_degrees']:.5f} degrees; {out.name}")
     return {"schema":"tessellatum.sentinel1.grd-ellipsoid-incidence-angle-grid.v1",
+        "source_angle_field":"annotation/geolocationGridPoint/incidenceAngle",
+        "source_angle_reference":"Sentinel-1 GRD radar incidence angle relative to the WGS84 ellipsoid (product annotation convention)",
+        "calibration_lut_cross_check":"Each source annotation grid was independently cross-checked against betaNought, sigmaNought and gamma calibration LUT identities; see sentinel1_grd_calibration_lut_incidence_qa.json",
         "products":results,"product_count":len(results),"analysis_ready":False,
         "interpretation":"Source annotation incidenceAngle tie points were linearly interpolated in geographic coordinates to the fixed Nairobi output grid. No extrapolation was permitted.",
         "limitations":["Interpolation is an approximation between sparse annotation tie points.",
