@@ -1,4 +1,5 @@
 name: Sentinel-1A Surat Basin paired RTC and ellipsoid processing
+run-name: Process four R009 acquisitions around three surveyed reflectors
 on:
   workflow_dispatch:
   push:
