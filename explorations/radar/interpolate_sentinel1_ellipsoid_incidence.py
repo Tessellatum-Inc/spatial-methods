@@ -72,7 +72,8 @@ def interpolate_to_grid(points,width=WIDTH,height=HEIGHT,bbox=BBOX,min_coverage_
     return result,{"width":width,"height":height,"bbox_crs84":[west,south,east,north],
         "crs":"EPSG:4326","pixel_size_degrees":[xres,yres],"coverage_fraction":coverage,
         "interpolation":"linear Delaunay interpolation in longitude/latitude; no extrapolation",
-        "valid_pixel_count":int(np.isfinite(result).sum()),\n        "coverage_status":"complete" if coverage>=0.999 else "partial",\n        "extrapolated_pixels":0}
+        "valid_pixel_count":int(np.isfinite(result).sum()),
+        "coverage_status":"complete" if coverage>=0.999 else "partial",\n        "extrapolated_pixels":0}
 
 def write_geotiff(array,path,bbox=BBOX):
     west,south,east,north=bbox
