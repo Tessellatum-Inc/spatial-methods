@@ -23,7 +23,7 @@ jobs:
         run: |
           test -n "$SENTINEL_HUB_CLIENT_ID"
           test -n "$SENTINEL_HUB_CLIENT_SECRET"
-      - name: Find repeated Sentinel-1A ascending tracks
+      - name: Find repeated Sentinel-1A tracks across both orbit directions
         env:
           SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
           SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
