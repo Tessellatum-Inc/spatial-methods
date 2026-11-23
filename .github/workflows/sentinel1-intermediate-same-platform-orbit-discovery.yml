@@ -1,0 +1,42 @@
+name: Sentinel-1 intermediate same-platform orbit discovery
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sentinel1-intermediate-same-platform-orbit-discovery.yml"
+      - "explorations/radar/discover_sentinel1_intermediate_same_platform_orbits.py"
+jobs:
+  catalogue-screen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install catalogue geometry dependencies
+        run: python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
+      - name: Verify OAuth secrets
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          test -n "$SENTINEL_HUB_CLIENT_ID"
+          test -n "$SENTINEL_HUB_CLIENT_SECRET"
+      - name: Find repeated Sentinel-1A ascending tracks
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          python explorations/radar/discover_sentinel1_intermediate_same_platform_orbits.py \
+            --start "2025-01-01T00:00:00Z" \
+            --end "2025-02-20T00:00:00Z" \
+            --min-scenes 4 \
+            --min-fraction 0.70 \
+            --output data/sentinelhub/nairobi/same_platform_intermediate_orbit_candidates.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sentinel1a-intermediate-orbit-catalogue-candidates
+          path: data/sentinelhub/nairobi/same_platform_intermediate_orbit_candidates.json
+          if-no-files-found: error
+          retention-days: 30
