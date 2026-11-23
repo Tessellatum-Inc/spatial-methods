@@ -192,6 +192,17 @@ def main(argv: list[str] | None = None) -> int:
     except (OSError, ValueError, RuntimeError) as exc:
         parser.exit(2, f"Paired comparison failed: {exc}\n")
     print(f"Compared {report['compared_count']} scenes; analysis_ready=false")
+    for comparison in report["comparisons"]:
+        for polarization, diagnostic in comparison["polarizations"].items():
+            factor = diagnostic["scattering_area_factor_relation"]
+            print(
+                "RTC_AREA_FACTOR "
+                f"{comparison['ellipsoid_file']} {polarization} "
+                f"pixels={factor['pixels']} "
+                f"median_abs_residual_db={factor['median_absolute_residual_db']:.6f} "
+                f"p95_abs_residual_db={factor['p95_absolute_residual_db']:.6f} "
+                f"pearson_r={factor['observed_predicted_pearson_r']}"
+            )
     return 0
 
 
