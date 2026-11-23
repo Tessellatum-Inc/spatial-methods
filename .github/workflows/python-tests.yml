@@ -109,6 +109,10 @@ jobs:
         run: python -m unittest discover -s explorations/radar -p "test_discover_sentinel1_intermediate_same_platform_orbits.py"
       - name: Test Sentinel-1 GRD geolocation-grid probe
         run: python -m unittest discover -s explorations/radar -p "test_probe_sentinel1_grd_geolocation_grid.py"
+      - name: Test CEOS Surat corner-reflector inventory
+        run: python -m unittest discover -s explorations/radar -p "test_inventory_ceos_surat_corner_reflectors.py"
+      - name: Test Surat Basin Sentinel-1 catalogue coverage screen
+        run: python -m unittest discover -s explorations/radar -p "test_discover_sentinel1_surat_basin_catalogue.py"
       - name: Test eight-scene GRD incidence geolocation extraction
         run: python -m unittest discover -s explorations/radar -p "test_extract_sentinel1_grd_incidence_grids.py"
       - name: Install incidence interpolation test dependency
