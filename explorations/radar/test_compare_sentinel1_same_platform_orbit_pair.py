@@ -8,7 +8,7 @@ class TestSharedMaskMetrics(unittest.TestCase):
     def test_relation_metrics_recovers_synthetic_area_relation(self):
         area=np.array([0.8,0.9,1.0,1.1,1.2]*100,dtype=float)
         ell=np.full(area.shape,0.01); delta=-10*np.log10(area)+0.2; rtc=ell*10**(delta/10)
-        result=M.summarize_relation(ell,rtc,area,np.ones(area.shape,dtype=bool))
+        angle=np.linspace(30.0,60.0,len(area))\n        result=M.summarize_relation(ell,rtc,area,angle,np.ones(area.shape,dtype=bool))
         self.assertAlmostEqual(result["ols_slope"],1.0,places=8)
         self.assertAlmostEqual(result["median_observed_minus_area_factor_db"],0.2,places=8)
         self.assertAlmostEqual(result["ols_intercept_db"],0.2,places=8)
