@@ -149,6 +149,77 @@ def _spatial_holdout_residual_model(
     }
 
 
+def _temporal_holdout_residual_model(scene_samples: list[dict], polarization: str) -> dict:
+    """Train on three acquisitions and evaluate the fourth, rotating each date."""
+    if len(scene_samples) < 3:
+        return {"status": "insufficient_acquisitions", "acquisition_count": len(scene_samples)}
+    folds = []
+    for held_out_index, held_out in enumerate(scene_samples):
+        test = held_out["polarizations"][polarization]
+        training = [
+            scene["polarizations"][polarization]
+            for index, scene in enumerate(scene_samples) if index != held_out_index
+        ]
+        train_area = np.concatenate([part["scattering_area"] for part in training]).astype(np.float64)
+        train_angle = np.concatenate([part["local_incidence_angle_degrees"] for part in training]).astype(np.float64)
+        train_delta = np.concatenate([part["delta_db"] for part in training]).astype(np.float64)
+        test_area = test["scattering_area"].astype(np.float64)
+        test_angle = test["local_incidence_angle_degrees"].astype(np.float64)
+        test_delta = test["delta_db"].astype(np.float64)
+        train_x = -10.0 * np.log10(train_area)
+        test_x = -10.0 * np.log10(test_area)
+        train_angle_scaled = (train_angle - 45.0) / 10.0
+        test_angle_scaled = (test_angle - 45.0) / 10.0
+        area_design = np.column_stack((np.ones(train_x.size), train_x))
+        joint_design = np.column_stack((np.ones(train_x.size), train_x, train_angle_scaled,
+                                        train_x * train_angle_scaled))
+        area_coefficients, *_ = np.linalg.lstsq(area_design, train_delta, rcond=None)
+        joint_coefficients, *_ = np.linalg.lstsq(joint_design, train_delta, rcond=None)
+        area_prediction = area_coefficients[0] + area_coefficients[1] * test_x
+        joint_prediction = (joint_coefficients[0] + joint_coefficients[1] * test_x
+                            + joint_coefficients[2] * test_angle_scaled
+                            + joint_coefficients[3] * test_x * test_angle_scaled)
+
+        def metrics(prediction: np.ndarray) -> dict:
+            error = test_delta - prediction
+            return {
+                "rmse_db": float(np.sqrt(np.mean(error ** 2))),
+                "mae_db": float(np.mean(np.abs(error))),
+                "p95_absolute_error_db": float(np.percentile(np.abs(error), 95)),
+            }
+
+        area_metrics = metrics(area_prediction)
+        joint_metrics = metrics(joint_prediction)
+        folds.append({
+            "held_out_acquisition": held_out["file"],
+            "training_acquisitions": [scene["file"] for index, scene in enumerate(scene_samples)
+                                      if index != held_out_index],
+            "training_pixels": int(train_delta.size),
+            "test_pixels": int(test_delta.size),
+            "area_only_coefficients_intercept_slope": [float(v) for v in area_coefficients],
+            "area_plus_angle_coefficients_intercept_area_angle_interaction": [
+                float(v) for v in joint_coefficients
+            ],
+            "area_only_test_metrics": area_metrics,
+            "area_plus_angle_test_metrics": joint_metrics,
+            "test_rmse_reduction_fraction": float(
+                (area_metrics["rmse_db"] - joint_metrics["rmse_db"]) / area_metrics["rmse_db"]
+            ) if area_metrics["rmse_db"] > 0 else 0.0,
+        })
+    return {
+        "status": "screening_only",
+        "validation": "leave_one_acquisition_out",
+        "sampling": "systematic every-fourth row and column; approximately 1/16 of eligible pixels",
+        "folds": folds,
+        "limitations": [
+            "All acquisitions are from the same study area, relative orbit and processing configuration.",
+            "A temporal holdout here tests transfer across dates, not independent-site generalization.",
+            "Systematic subsampling may interact with spatial texture or grid periodicity.",
+            "The model is diagnostic only; no normalization or correction is applied.",
+        ],
+    }
+
+
 def _area_factor_relation(
     delta: np.ndarray, scattering_area: np.ndarray, local_incidence_angle: np.ndarray
 ) -> dict:
@@ -200,7 +271,7 @@ def _area_factor_relation(
     }
 
 
-def compare_pair(ellipsoid_path: Path, rtc_path: Path) -> dict:
+def compare_pair(ellipsoid_path: Path, rtc_path: Path, collect_temporal_samples: bool = False) -> dict:
     with rasterio.open(ellipsoid_path) as ell, rasterio.open(rtc_path) as rtc:
         if ell.count < 3 or rtc.count != 6:
             raise ValueError("Expected ellipsoid VV/VH/dataMask (3 bands) and RTC six-band raster.")
@@ -231,6 +302,7 @@ def compare_pair(ellipsoid_path: Path, rtc_path: Path) -> dict:
         ),
     }
     for index, name in ((0, "VV"), (1, "VH")):
+        temporal_samples = {}
         a, b = base[index][common], terrain[index][common]
         positive = (a > 0) & (b > 0)
         if not positive.any():
@@ -240,6 +312,15 @@ def compare_pair(ellipsoid_path: Path, rtc_path: Path) -> dict:
         delta = rtc_db - ell_db
         area_values = terrain[2][common][positive].astype(np.float64)
         angle_values = terrain[3][common][positive].astype(np.float64)
+        flat_indices = np.flatnonzero(common)[positive]
+        sample_rows = flat_indices // base.shape[2]
+        sample_cols = flat_indices % base.shape[2]
+        systematic_sample = (sample_rows % 4 == 0) & (sample_cols % 4 == 0)
+        temporal_samples[name] = {
+            "delta_db": delta[systematic_sample].astype(np.float32),
+            "scattering_area": area_values[systematic_sample].astype(np.float32),
+            "local_incidence_angle_degrees": angle_values[systematic_sample].astype(np.float32),
+        }
         stratified = {
             "scattering_area": _stratified_summary(
                 delta, area_values,
@@ -273,6 +354,8 @@ def compare_pair(ellipsoid_path: Path, rtc_path: Path) -> dict:
                 "quantiles": _quantiles(delta),
             },
         }
+    if collect_temporal_samples:
+        return result, temporal_samples
     return result
 
 
@@ -282,6 +365,7 @@ def run(stack_metadata: Path, ellipsoid_dir: Path, rtc_dir: Path, output: Path) 
     if not isinstance(scenes, list) or len(scenes) < 2:
         raise ValueError("Stack metadata must contain at least two scenes.")
     comparisons = []
+    temporal_samples_by_scene = []
     failures = []
     for scene in scenes:
         try:
@@ -290,7 +374,12 @@ def run(stack_metadata: Path, ellipsoid_dir: Path, rtc_dir: Path, output: Path) 
             ).strftime("%Y%m%dT%H%M%SZ")
             ell_path = ellipsoid_dir / scene["output"]["file"]
             rtc_path = rtc_dir / f"sentinel1_nairobi_{stamp}_gamma0-terrain-rtc.tif"
-            comparisons.append(compare_pair(ell_path, rtc_path))
+            comparison, samples = compare_pair(ell_path, rtc_path, collect_temporal_samples=True)
+            comparisons.append(comparison)
+            temporal_samples_by_scene.append({
+                "file": ell_path.name,
+                "polarizations": samples,
+            })
         except (KeyError, OSError, ValueError) as exc:
             failures.append({"scene": scene.get("catalog_item_datetime_utc"), "error": str(exc)})
     report = {
@@ -299,6 +388,10 @@ def run(stack_metadata: Path, ellipsoid_dir: Path, rtc_dir: Path, output: Path) 
         "compared_count": len(comparisons),
         "failed_count": len(failures),
         "comparisons": comparisons,
+        "temporal_holdout_models": {
+            polarization: _temporal_holdout_residual_model(temporal_samples_by_scene, polarization)
+            for polarization in ("VV", "VH")
+        } if not failures and len(comparisons) == len(scenes) else {},
         "failures": failures,
         "status": "paired_diagnostic_only" if not failures and len(comparisons) == len(scenes) else "incomplete_paired_diagnostic",
         "analysis_ready": False,
