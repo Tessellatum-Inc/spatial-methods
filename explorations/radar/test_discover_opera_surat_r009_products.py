@@ -59,9 +59,9 @@ class OperaSuratDiscoveryTests(unittest.TestCase):
         self.assertTrue(report["matched_features"][0]["within_source_time_tolerance"])
 
     def test_static_query_uses_burst_ids_without_acquisition_date_filter(self):
-        params = build_static_query(["T009_019159_IW3", "T009_019160_IW3"])
+        params = build_static_query(["T009-019159-IW3", "T009-019160-IW3"])
         self.assertEqual(params["processingLevel"], "RTC_STATIC")
-        self.assertEqual(params["operaBurstID"], "T009_019159_IW3,T009_019160_IW3")
+        self.assertEqual(params["operaBurstID"], "T009-019159-IW3,T009-019160-IW3")
         self.assertNotIn("start", params)
         self.assertNotIn("end", params)
 
