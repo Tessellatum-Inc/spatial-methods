@@ -25,6 +25,7 @@ class PairedComparisonTests(unittest.TestCase):
             rtc = np.ones((6, 2, 2), dtype=np.float32)
             rtc[0] = 0.2
             rtc[1] = 0.02
+            rtc[3] = 40  # Exercise the 40–45° local-incidence-angle stratum.
             rtc[4] = 0
             rtc[5] = 1
             rtc[5, 0, 1] = 0
