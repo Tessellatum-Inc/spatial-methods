@@ -54,6 +54,21 @@ def build_query(start: str, end: str, max_results: int = 500) -> dict[str, str]:
     }
 
 
+def build_static_query(burst_ids: list[str], max_results: int = 100) -> dict[str, str]:
+    """Build a date-independent query for OPERA RTC-STATIC layers."""
+    if not burst_ids or any(not item.strip() for item in burst_ids):
+        raise ValueError("At least one non-empty OPERA burst ID is required")
+    if max_results < 1:
+        raise ValueError("max_results must be positive")
+    return {
+        "dataset": "OPERA-S1",
+        "processingLevel": "RTC_STATIC",
+        "operaBurstID": ",".join(burst_ids),
+        "output": "geojson",
+        "maxResults": str(max_results),
+    }
+
+
 def parse_collection(raw: bytes) -> dict:
     payload = json.loads(raw)
     if not isinstance(payload, dict) or payload.get("type") != "FeatureCollection":
@@ -194,6 +209,28 @@ def main(argv=None) -> int:
         unique[key] = feature
     collection = {"type": "FeatureCollection", "features": list(unique.values())}
     report = summarize(collection)
+    static_params = build_static_query(["T009_019159_IW3", "T009_019160_IW3"])
+    try:
+        static_raw, static_url = retrieve(static_params, args.timeout)
+        static_collection = parse_collection(static_raw)
+    except HTTPError as exc:
+        print(f"ASF RTC-STATIC HTTP error {exc.code}: {exc.reason}", file=sys.stderr)
+        return 2
+    except (URLError, TimeoutError, OSError, ValueError, json.JSONDecodeError) as exc:
+        print(f"ASF RTC-STATIC catalogue query failed: {exc}", file=sys.stderr)
+        return 3
+    report["static_layer_query"] = {
+        "query_url": static_url,
+        "response_sha256": hashlib.sha256(static_raw).hexdigest(),
+        "feature_count": len(static_collection["features"]),
+        "features": [{
+            "file_id": value(x["properties"], "fileID", "fileId", "sceneName"),
+            "product_name": value(x["properties"], "fileName", "sceneName"),
+            "burst_id": value(x["properties"], "operaBurstID", "operaBurstId"),
+            "properties": x["properties"],
+            "geometry": x["geometry"],
+        } for x in static_collection["features"]],
+    }
     report["queries"] = queries
     args.output_dir.mkdir(parents=True, exist_ok=True)
     path = args.output_dir / "surat_r009_opera_rtc_catalogue_discovery.json"
