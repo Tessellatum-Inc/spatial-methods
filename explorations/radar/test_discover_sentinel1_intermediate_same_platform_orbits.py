@@ -4,8 +4,10 @@ from pathlib import Path
 P=Path(__file__).with_name("discover_sentinel1_intermediate_same_platform_orbits.py")
 S=importlib.util.spec_from_file_location("intermediate_orbit_discovery",P); M=importlib.util.module_from_spec(S); S.loader.exec_module(M)
 def feature(orbit,stamp,fraction=0.8,platform="sentinel-1a",direction="ASCENDING"):
+    east=36.65+0.4*fraction
     return {"id":f"scene-{orbit}-{stamp}","properties":{"platform":platform,"sat:orbit_state":direction,
-        "sat:relative_orbit":orbit,"datetime":stamp,"sar:polarizations":["VV","VH"]}}
+        "sat:relative_orbit":orbit,"datetime":stamp,"sar:polarizations":["VV","VH"]},
+        "geometry":{"type":"Polygon","coordinates":[[[36.65,-1.45],[east,-1.45],[east,-1.15],[36.65,-1.15],[36.65,-1.45]]]}}
 class TestIntermediateOrbitDiscovery(unittest.TestCase):
     def test_groups_repeated_same_platform_ascending_tracks_and_excludes_existing_tracks(self):
         rows=[feature(57,"2025-01-01T00:00:00Z"),feature(130,"2025-01-02T00:00:00Z")]
