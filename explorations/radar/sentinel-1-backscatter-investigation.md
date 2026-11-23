@@ -493,3 +493,17 @@ This is a useful independent *metadata-path* cross-check: the calibration LUT an
 The calibration LUT is denser than the annotation geolocation grid. A subsequent experiment can test whether using calibration-derived angles mapped through the annotation geolocation grid improves the target-grid angle surface; do not replace the current angle raster until that comparison is validated.
 
 Reproducibility: [calibration-LUT angle validation workflow run 45203702710](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45203702710); code: `probe_sentinel1_grd_calibration_lut.py`.
+
+
+### Latest end-to-end rerun and source-angle provenance (2026-11-23)
+
+The source-angle interpolation and same-platform R057/R130 comparison were rerun after recording the incidence-angle field definition and calibration-LUT cross-check in the output metadata. The full workflow completed successfully in [run 45205416452](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45205416452).
+
+- All eight source-angle rasters were created and compared with the corresponding backscatter products.
+- The eight-scene common valid footprint remained **1,848,662 pixels (58.77%)**.
+- Source-angle interpolation coverage remained **77.25–77.34% for R057** and **94.66–94.79% for R130**.
+- Five-fold source tie-point interpolation CV remained low: MAE 0.00844° (R057) and 0.00737° (R130).
+- The area-plus-ellipsoid-angle adjusted residual remained approximately −0.0018 dB (R057) and +0.0042 dB (R130), with MAE 0.00174 dB and 0.00436 dB respectively.
+- The calibration-LUT identity and annotation cross-check was rerun successfully in [run 45204184611](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45204184611); its focused parser and comparison tests passed in [run 45204294619](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45204294619).
+
+This rerun confirms reproducibility of the diagnostic within the current processing setup. It does not change the scientific scope or readiness decision: the 58.77% shared footprint, partial source-angle coverage, internal-only tie-point validation, provider dependence and lack of independent stable targets remain. Keep `analysis_ready: false`; do not operationalize normalization or change detection.
