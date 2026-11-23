@@ -1,7 +1,7 @@
 name: Sentinel-1 same-platform shared-mask analysis
 # Reuses the successful R057/R130 raster artifacts; no new provider processing.
 # Keep this workflow path-scoped so docs-only changes do not trigger raster work.
-# Re-run after direct gamma0 difference metrics were added.
+# Re-run with the candidate local-angle geometry term; this is a proxy, not ellipsoid-angle validation.
 on:
   workflow_dispatch:
   push:
