@@ -72,6 +72,83 @@ def _stratified_residual_summary(
         })
     return records
 
+def _spatial_holdout_residual_model(
+    delta: np.ndarray, scattering_area: np.ndarray, local_incidence_angle: np.ndarray,
+    rows: np.ndarray, cols: np.ndarray, grid_height: int, grid_width: int,
+    tile_size: int = 512, buffer_pixels: int = 32,
+) -> dict:
+    """Compare area-only and area-plus-angle OLS on spatially separated blocks.
+
+    Checkerboard blocks are split into train/test sets. A buffer is excluded
+    around block edges to reduce direct spatial leakage; this remains a
+    diagnostic holdout, not a substitute for independent acquisitions/sites.
+    """
+    arrays = (scattering_area, local_incidence_angle, rows, cols)
+    if any(values.shape != delta.shape for values in arrays):
+        raise ValueError("Spatial model inputs must align with paired differences.")
+    if tile_size <= 0 or buffer_pixels < 0 or 2 * buffer_pixels >= tile_size:
+        raise ValueError("Spatial tile size and buffer are invalid.")
+    valid = (np.isfinite(delta) & np.isfinite(scattering_area) & (scattering_area > 0)
+             & np.isfinite(local_incidence_angle))
+    valid &= (rows >= 0) & (rows < grid_height) & (cols >= 0) & (cols < grid_width)
+    row_in_tile, col_in_tile = rows % tile_size, cols % tile_size
+    interior = ((row_in_tile >= buffer_pixels) & (row_in_tile < tile_size - buffer_pixels)
+                & (col_in_tile >= buffer_pixels) & (col_in_tile < tile_size - buffer_pixels))
+    tile_parity = (rows // tile_size + cols // tile_size) % 2
+    train = valid & interior & (tile_parity == 0)
+    test = valid & interior & (tile_parity == 1)
+    if train.sum() < 1000 or test.sum() < 1000:
+        return {
+            "status": "insufficient_spatial_holdout_pixels",
+            "train_pixels": int(train.sum()), "test_pixels": int(test.sum()),
+            "tile_size_pixels": tile_size, "buffer_pixels": buffer_pixels,
+        }
+
+    x = -10.0 * np.log10(scattering_area.astype(np.float64))
+    angle_scaled = (local_incidence_angle.astype(np.float64) - 45.0) / 10.0
+    y = delta.astype(np.float64)
+    area_design = np.column_stack((np.ones(train.sum()), x[train]))
+    joint_design = np.column_stack((np.ones(train.sum()), x[train], angle_scaled[train],
+                                    x[train] * angle_scaled[train]))
+    area_coefficients, *_ = np.linalg.lstsq(area_design, y[train], rcond=None)
+    joint_coefficients, *_ = np.linalg.lstsq(joint_design, y[train], rcond=None)
+    area_prediction = area_coefficients[0] + area_coefficients[1] * x[test]
+    joint_prediction = (joint_coefficients[0] + joint_coefficients[1] * x[test]
+                        + joint_coefficients[2] * angle_scaled[test]
+                        + joint_coefficients[3] * x[test] * angle_scaled[test])
+
+    def metrics(prediction: np.ndarray) -> dict:
+        error = y[test] - prediction
+        return {
+            "rmse_db": float(np.sqrt(np.mean(error ** 2))),
+            "mae_db": float(np.mean(np.abs(error))),
+            "p95_absolute_error_db": float(np.percentile(np.abs(error), 95)),
+        }
+
+    area_metrics = metrics(area_prediction)
+    joint_metrics = metrics(joint_prediction)
+    return {
+        "status": "screening_only",
+        "split": "checkerboard spatial blocks with edge buffer",
+        "tile_size_pixels": tile_size,
+        "buffer_pixels": buffer_pixels,
+        "train_pixels": int(train.sum()),
+        "test_pixels": int(test.sum()),
+        "area_only_coefficients_intercept_slope": [float(v) for v in area_coefficients],
+        "area_plus_angle_coefficients_intercept_area_angle_interaction": [float(v) for v in joint_coefficients],
+        "area_only_test_metrics": area_metrics,
+        "area_plus_angle_test_metrics": joint_metrics,
+        "test_rmse_reduction_fraction": float(
+            (area_metrics["rmse_db"] - joint_metrics["rmse_db"]) / area_metrics["rmse_db"]
+        ) if area_metrics["rmse_db"] > 0 else 0.0,
+        "limitations": [
+            "Spatial blocks come from one acquisition and are not independent validation sites or dates.",
+            "A fixed checkerboard split can still be sensitive to spatial gradients and scene structure.",
+            "The model is diagnostic only; no normalization or correction is applied.",
+        ],
+    }
+
+
 def _area_factor_relation(
     delta: np.ndarray, scattering_area: np.ndarray, local_incidence_angle: np.ndarray
 ) -> dict:
@@ -177,7 +254,15 @@ def compare_pair(ellipsoid_path: Path, rtc_path: Path) -> dict:
         }
         result["polarizations"][name] = {
             "stratified_differences": stratified,
-            "scattering_area_factor_relation": _area_factor_relation(delta, area_values, angle_values),
+            "scattering_area_factor_relation": {
+                **_area_factor_relation(delta, area_values, angle_values),
+                "spatial_holdout_residual_model": _spatial_holdout_residual_model(
+                    delta, area_values, angle_values,
+                    (np.flatnonzero(common)[positive] // base.shape[2]).astype(np.int32),
+                    (np.flatnonzero(common)[positive] % base.shape[2]).astype(np.int32),
+                    base.shape[1], base.shape[2],
+                ),
+            },
             "positive_common_pixels": int(positive.sum()),
             "ellipsoid_median_db": float(np.median(ell_db)),
             "rtc_median_db": float(np.median(rtc_db)),
