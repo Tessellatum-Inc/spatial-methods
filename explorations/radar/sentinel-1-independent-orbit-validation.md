@@ -91,3 +91,30 @@ The correct conclusion is therefore narrower: the area-factor relationship remai
 The R130 QA artifact is attached to workflow run [45163757264](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45163757264), artifact `sentinel1-nairobi-alternate-orbit-qa`. The raster artifact is retained separately for 14 days.
 
 The status remains `analysis_ready: false`; no normalization or change detection is authorized by these diagnostics.
+
+
+## Same-platform ascending R057/R130 comparison (2025 acquisitions)
+
+To remove the Sentinel-1C versus Sentinel-1D platform difference in the 2026 R079/R130 comparison, a second paired experiment selected four ascending Sentinel-1A acquisitions on each of R057 and R130 in January–February 2025. Both tracks were processed with the same ellipsoid and RTC code, DEM, oversampling, requested grid and time window. The comparison was then recomputed on the exact intersection of all eight ellipsoid and RTC data masks.
+
+The common mask contains **1,848,662 pixels (58.77% of the requested grid)**. Mean per-scene diagnostics on that same footprint:
+
+| Track | Median local incidence angle | OLS slope | R² (VV / VH) | Median residual offset (VV / VH) | Mean absolute residual (VV / VH) |
+|---|---:|---:|---:|---:|---:|
+| Ascending R130, Sentinel-1A | 45.95° | 0.992 | 0.986 / 0.986 | -0.053 / -0.053 dB | 0.064 / 0.064 dB |
+| Ascending R057, Sentinel-1A | 32.56° | 0.982 | 0.976 / 0.976 | +2.053 / +2.053 dB | 2.054 / 2.054 dB |
+
+The offset difference persists on identical pixels and is consistent across all four dates and both polarizations. The per-track residual/local-incidence-angle correlations are weak (about -0.05 for R130 and -0.08 for R057). However, the two tracks' central 80% local-incidence-angle ranges barely overlap: approximately 43.3–49.0° for R130 and 29.9–35.6° for R057. Orbit identity and incidence-angle regime therefore remain confounded. These results cannot isolate an orbit effect or an incidence-angle effect.
+
+The unusually large and stable +2.05 dB R057 offset is a diagnostic flag, not a correction coefficient. Before physical interpretation, verify the provider's scattering-area definition and whether any track-dependent processing convention or product metadata explains the difference. Do not transfer an intercept, pool the tracks, or normalize the imagery.
+
+Reproducibility:
+- The paired R057/R130 processing artifacts came from successful [workflow run 45165312108](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45165312108).
+- The identical-footprint calculation and per-scene angle diagnostics completed successfully in [workflow run 45168656320](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45168656320).
+- The test suite for the shared-footprint comparator passed in [Python examples run 45168656390](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45168656390).
+
+## Next discriminating experiment
+
+The next catalogue screen should find another ascending Sentinel-1A relative orbit in the same January–February 2025 period with repeated acquisitions and a local-incidence-angle regime between the R057 and R130 ranges. Processing that intermediate track would help determine whether the large residual offset varies systematically with angle or is specific to one track. If no suitable intermediate track exists, the next option is a second study area with overlapping angle distributions. The provider's scattering-area convention should be checked in parallel.
+
+No stable radiometric reference or independent geodetic control has been established. Keep `analysis_ready: false`; do not normalize the time series or use the results for change detection.
