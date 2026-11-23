@@ -24,7 +24,11 @@ def summarize_relation(ellipsoid, rtc, area, angle, mask):
         "median_observed_minus_area_factor_db":float(np.median(residual)),
         "mean_absolute_area_factor_residual_db":float(np.mean(np.abs(residual))),
         "p95_absolute_centered_area_factor_residual_db":float(np.percentile(np.abs(centered),95)),
-        "median_scattering_area":float(np.median(ar)),\n        "median_local_incidence_angle_degrees":float(np.median(ang)),\n        "p10_local_incidence_angle_degrees":float(np.percentile(ang,10)),\n        "p90_local_incidence_angle_degrees":float(np.percentile(ang,90)),\n        "area_factor_residual_vs_angle_correlation":float(np.corrcoef(residual,ang)[0,1]) if np.std(residual)>0 and np.std(ang)>0 else None}
+        "median_scattering_area":float(np.median(ar)),
+        "median_local_incidence_angle_degrees":float(np.median(ang)),
+        "p10_local_incidence_angle_degrees":float(np.percentile(ang,10)),
+        "p90_local_incidence_angle_degrees":float(np.percentile(ang,90)),
+        "area_factor_residual_vs_angle_correlation":float(np.corrcoef(residual,ang)[0,1]) if np.std(residual)>0 and np.std(ang)>0 else None}
 
 def load_tracks(root):
     tracks={}
