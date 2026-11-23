@@ -2,6 +2,8 @@
 import importlib.util
 from pathlib import Path
 import unittest
+import json
+import tempfile
 import numpy as np
 
 SCRIPT=Path(__file__).resolve().parents[1]/'explorations/radar/screen_sentinel1_temporal_qa.py'
@@ -28,6 +30,15 @@ class TemporalQATests(unittest.TestCase):
         rng=np.random.default_rng(2); a=np.exp(rng.normal(size=(128,128))).astype(np.float32)
         mask=np.zeros(a.shape,bool); mask[:20,:]=True
         self.assertIsNone(module._phase_shift(a,a,mask))
+
+    def test_json_report_is_strict_json_with_real_newline(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "report.json"
+            module.write_json_report(path, {"analysis_ready": False})
+            raw = path.read_text(encoding="utf-8")
+            self.assertTrue(raw.endswith("\n"))
+            self.assertFalse(raw.endswith("\\\\n"))
+            self.assertEqual(json.loads(raw), {"analysis_ready": False})
 
     def test_radiometric_statistics_are_in_linear_and_db_units(self):
         a=np.full((10,10),0.1,np.float32); mask=np.ones(a.shape,bool)

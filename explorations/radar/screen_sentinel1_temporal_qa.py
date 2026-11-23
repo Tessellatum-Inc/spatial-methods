@@ -111,6 +111,12 @@ def compare(ref_path, mov_path, tile_size=256, stride=256):
       "interpretation":"screening_only; tile shifts and distribution changes are diagnostics, not validated co-registration or calibrated temporal change"}
 
 
+def write_json_report(path: Path, report: dict) -> None:
+    """Write strict JSON with a normal newline terminator."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--rasters',nargs='+',type=Path,required=True)
