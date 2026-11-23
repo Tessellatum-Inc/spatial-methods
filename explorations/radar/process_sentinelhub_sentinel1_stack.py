@@ -3,7 +3,7 @@
 
 Uses OAuth client_credentials and the Process API. Catalogue candidates come
 from the repository inventory; each date is independently re-resolved against
-the live Sentinel Hub catalogue before processing.
+the live Sentinel Hub catalogue.
 """
 from __future__ import annotations
 
@@ -28,6 +28,48 @@ _PROCESS_SPEC = importlib.util.spec_from_file_location(
 )
 _PROCESS = importlib.util.module_from_spec(_PROCESS_SPEC)
 _PROCESS_SPEC.loader.exec_module(_PROCESS)
+
+CATALOGUE_METADATA_FIELDS = (
+    "platform",
+    "constellation",
+    "instruments",
+    "datetime",
+    "start_datetime",
+    "end_datetime",
+    "sat:orbit_state",
+    "sat:relative_orbit",
+    "sat:absolute_orbit",
+    "sar:instrument_mode",
+    "sar:product_type",
+    "sar:polarizations",
+    "sar:observation_direction",
+    "sar:frequency_band",
+    "sar:center_frequency",
+    "sar:resolution_range",
+    "sar:resolution_azimuth",
+    "sar:pixel_spacing_range",
+    "sar:pixel_spacing_azimuth",
+    "s1:polarization",
+    "s1:resolution",
+    "s1:timeliness",
+    "view:incidence_angle",
+    "processing:datetime",
+    "processing:facility",
+    "processing:software",
+    "processing:version",
+)
+
+
+def catalogue_acquisition_metadata(feature: dict) -> dict:
+    """Retain relevant STAC/Sentinel-1 acquisition properties without inference."""
+    properties = feature.get("properties", {})
+    if not isinstance(properties, dict):
+        return {}
+    return {
+        key: properties[key]
+        for key in CATALOGUE_METADATA_FIELDS
+        if key in properties and properties[key] is not None
+    }
 
 
 def resolve_feature(token: str, target: datetime, timeout: int) -> dict:
@@ -121,6 +163,7 @@ def main(argv: list[str] | None = None) -> int:
             metadata = {
                 "catalog_item_id": feature.get("id"),
                 "catalog_item_datetime_utc": acquired.isoformat().replace("+00:00", "Z"),
+                "catalogue_acquisition_metadata": catalogue_acquisition_metadata(feature),
                 "inventory_product_id": candidate["product_id"],
                 "inventory_product_name": candidate["product_name"],
                 "inventory_sensing_start_utc": candidate["sensing_start_utc"],
@@ -140,6 +183,7 @@ def main(argv: list[str] | None = None) -> int:
                     "Catalogue slice selection may not represent a complete datatake; inspect seams and edge coverage.",
                     "Radiometric comparability and geometric registration remain unvalidated.",
                     "This is a processed subset, not an original SAFE archive.",
+                    "Catalogue metadata availability varies; missing orbit or viewing fields are not inferred.",
                 ],
             }
             (args.output_dir / metadata_name).write_text(

@@ -85,6 +85,8 @@ jobs:
         run: python -m unittest discover -s scripts -p "test_screen_sentinel1_registration.py"
       - name: Test Sentinel-1 local temporal QA screening
         run: python -m unittest discover -s scripts -p "test_screen_sentinel1_temporal_qa.py"
+      - name: Test Sentinel-1 acquisition metadata retention
+        run: python -m unittest discover -s scripts -p "test_process_sentinelhub_sentinel1_stack_metadata.py"
       - name: Test Sentinel-1 stack manifest builder
         run: python -m unittest discover -s scripts -p "test_build_sentinel1_stack_manifest.py"
       - name: Test Sentinel-1 SAFE metadata audit
