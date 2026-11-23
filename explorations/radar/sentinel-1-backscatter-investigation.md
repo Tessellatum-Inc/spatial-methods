@@ -469,3 +469,27 @@ The direct RTC-minus-ellipsoid difference remains more variable (mean absolute d
 **Decision:** the full reference-area equation now has strong within-provider, two-track, two-polarization empirical support over the common footprint. It is a scientific explanation of the observed relationship, not an approved general-purpose correction or a validated change-detection normalization. R057 has only 77.3% source-angle grid coverage, and the study still lacks independent-provider processing, corner-reflector calibration, and independent-site validation. Keep `analysis_ready: false`.
 
 Reproducibility: [source-angle extraction, interpolation and paired comparison workflow run 45201769040](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45201769040); code: `extract_sentinel1_grd_incidence_grids.py`, `interpolate_sentinel1_ellipsoid_incidence.py`, and `compare_sentinel1_same_platform_orbit_pair.py`.
+
+### Calibration-LUT cross-check of source ellipsoid incidence angles (2026-11-23)
+
+A second source of incidence-angle information was extracted from each original GRD product's **VV calibration XML**. Each file contains 27 calibration vectors and approximately 17,300 range samples. Using the ESA calibration-LUT relationships,
+
+\\[
+\\theta_E=\\arccos\\left(\\left(\\frac{A_\\gamma}{A_\\sigma}\\right)^2\\right)
+=\\arcsin\\left(\\left(\\frac{A_\\beta}{A_\\sigma}\\right)^2\\right),
+\\]
+
+the two independently derived angle arrays agree internally to a maximum of about **0.00005°** across the eight products. The identities follow the ESA Sentinel-1 radiometric calibration definitions of the beta, sigma and gamma normalization LUTs ([ESA calibration technical note](https://sentinels.copernicus.eu/documents/247904/685163/S1-Radiometric-Calibration-V1.0.pdf)).
+
+The calibration-derived angles were then linearly interpolated in source image line/pixel coordinates to the 210 geolocation-grid tie points in each product's annotation XML. All **210/210** annotation points were inside the calibration LUT interpolation hull for every acquisition.
+
+| Track | Mean signed difference (calibration − annotation) | MAE | RMSE | P95 absolute difference |
+|---|---:|---:|---:|---:|
+| Ascending R130 | −0.0318° | 0.0553° | 0.0705° | 0.1401° |
+| Ascending R057 | +0.0034° | 0.0661° | 0.0961° | 0.1856° |
+
+This is a useful independent *metadata-path* cross-check: the calibration LUT and annotation geolocation grid agree closely, with a small track-specific bias and bounded tails. It does not establish absolute angle accuracy against an external geodetic instrument, but it substantially reduces the risk that the angle used in the reference-area equation was misinterpreted or read from the wrong field.
+
+The calibration LUT is denser than the annotation geolocation grid. A subsequent experiment can test whether using calibration-derived angles mapped through the annotation geolocation grid improves the target-grid angle surface; do not replace the current angle raster until that comparison is validated.
+
+Reproducibility: [calibration-LUT angle validation workflow run 45203702710](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45203702710); code: `probe_sentinel1_grd_calibration_lut.py`.
