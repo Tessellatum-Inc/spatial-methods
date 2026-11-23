@@ -75,6 +75,32 @@ class PairedComparisonTests(unittest.TestCase):
         area_bins = report["centered_residual_by_scattering_area"]
         self.assertEqual([item["pixels"] for item in area_bins], [2, 0, 1, 0, 1])
 
+
+    def test_spatial_holdout_detects_incremental_angle_dependence(self):
+        height = width = 1024
+        rows, cols = np.indices((height, width))
+        rows, cols = rows.ravel(), cols.ravel()
+        factor = -2.0 + 4.0 * cols / (width - 1)
+        area = 10.0 ** (-factor / 10.0)
+        angle = 35.0 + 15.0 * rows / (height - 1)
+        angle_scaled = (angle - 45.0) / 10.0
+        rng = np.random.default_rng(42)
+        delta = 0.4 + 0.8 * factor + 0.18 * angle_scaled + 0.12 * factor * angle_scaled
+        delta += rng.normal(0.0, 0.03, size=delta.shape)
+
+        report = MODULE._spatial_holdout_residual_model(
+            delta, area, angle, rows, cols, height, width,
+            tile_size=256, buffer_pixels=16,
+        )
+        self.assertEqual(report["status"], "screening_only")
+        self.assertGreater(report["train_pixels"], 1000)
+        self.assertGreater(report["test_pixels"], 1000)
+        self.assertGreater(report["test_rmse_reduction_fraction"], 0.2)
+        self.assertLess(
+            report["area_plus_angle_test_metrics"]["rmse_db"],
+            report["area_only_test_metrics"]["rmse_db"],
+        )
+
     def test_rejects_mismatched_grids(self):
         with tempfile.TemporaryDirectory() as tmp:
             base = np.ones((3, 2, 2), dtype=np.float32)
