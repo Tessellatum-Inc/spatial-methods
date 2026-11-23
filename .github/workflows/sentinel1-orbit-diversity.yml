@@ -1,0 +1,54 @@
+name: Sentinel-1 Nairobi orbit diversity catalogue screen
+on:
+  workflow_dispatch:
+    inputs:
+      start:
+        description: Inclusive UTC start
+        required: true
+        type: string
+        default: "2026-10-01T00:00:00Z"
+      end:
+        description: Exclusive UTC end
+        required: true
+        type: string
+        default: "2026-11-23T00:00:00Z"
+      min_acquisitions:
+        description: Repeated full-AOI items required per track
+        required: true
+        type: number
+        default: 2
+permissions:
+  contents: read
+jobs:
+  catalogue-screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install processing dependencies
+        run: python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
+      - name: Verify OAuth secrets
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          test -n "$SENTINEL_HUB_CLIENT_ID"
+          test -n "$SENTINEL_HUB_CLIENT_SECRET"
+      - name: Discover independent tracks
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: |
+          python explorations/radar/discover_sentinel1_orbit_diversity.py \
+            --start "${{ inputs.start }}" --end "${{ inputs.end }}" \
+            --min-acquisitions "${{ inputs.min_acquisitions }}" \
+            --output data/sentinelhub/nairobi/sentinel1_orbit_diversity_screen.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sentinel1-nairobi-orbit-diversity-screen
+          path: data/sentinelhub/nairobi/sentinel1_orbit_diversity_screen.json
+          if-no-files-found: error
+          retention-days: 30
