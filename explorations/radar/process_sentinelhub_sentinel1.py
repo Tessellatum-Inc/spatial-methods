@@ -57,14 +57,14 @@ def default_interval() -> tuple[str, str]:
     return fmt(start), fmt(end)
 
 
-def feature_coverage(feature: dict) -> tuple[bool, float]:
+def feature_coverage(feature: dict, bbox: list[float] = NAIROBI_BBOX) -> tuple[bool, float]:
     """Return whether a STAC footprint covers the search rectangle and its area fraction."""
     geometry_json = feature.get("geometry")
     if not isinstance(geometry_json, dict):
         return False, 0.0
     try:
         footprint = shape(geometry_json)
-        aoi = box(*NAIROBI_BBOX)
+        aoi = box(*bbox)
         if footprint.is_empty or not footprint.is_valid:
             return False, 0.0
         fraction = float(footprint.intersection(aoi).area / aoi.area)
@@ -108,7 +108,7 @@ def select_latest_feature(collection: dict, allow_partial: bool = False) -> dict
     raise ValueError("Catalogue features had no valid footprints or acquisition timestamps.")
 
 
-def build_process_payload(feature: dict, width: int = WIDTH, height: int = HEIGHT) -> dict:
+def build_process_payload(feature: dict, width: int = WIDTH, height: int = HEIGHT, bbox: list[float] = NAIROBI_BBOX) -> dict:
     if not 1 <= width <= 2500 or not 1 <= height <= 2500:
         raise ValueError("Output width and height must each be between 1 and 2500.")
     properties = feature.get("properties", {})
@@ -127,7 +127,7 @@ def build_process_payload(feature: dict, width: int = WIDTH, height: int = HEIGH
     return {
         "input": {
             "bounds": {
-                "bbox": NAIROBI_BBOX,
+                "bbox": bbox,
                 "properties": {"crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"},
             },
             "data": [{
