@@ -54,7 +54,11 @@ def summarize_relation(ellipsoid, rtc, area, angle, mask, ellipsoid_incidence_an
         "p90_local_incidence_angle_degrees":float(np.percentile(ang,90)),
         "area_factor_residual_vs_angle_correlation":float(np.corrcoef(residual,ang)[0,1]) if np.std(residual)>0 and np.std(ang)>0 else None,
         "median_ellipsoid_incidence_angle_degrees":float(np.median(ellang)) if ellang is not None else None,
-        "median_ellipsoid_geometry_term_db":float(np.median(ellipsoid_geometry_term)) if ellipsoid_geometry_term is not None else None,\n        "median_ellipsoid_reference_area_term_db":float(np.median(ellipsoid_reference_area_term)) if ellipsoid_reference_area_term is not None else None,\n        "median_area_and_ellipsoid_angle_adjusted_residual_db":float(np.median(ellipsoid_adjusted_residual)) if ellipsoid_adjusted_residual is not None else None,\n        "mean_absolute_area_and_ellipsoid_angle_adjusted_residual_db":float(np.mean(np.abs(ellipsoid_adjusted_residual))) if ellipsoid_adjusted_residual is not None else None,\n        "p95_absolute_area_and_ellipsoid_angle_adjusted_residual_db":float(np.percentile(np.abs(ellipsoid_adjusted_residual),95)) if ellipsoid_adjusted_residual is not None else None,
+        "median_ellipsoid_geometry_term_db":float(np.median(ellipsoid_geometry_term)) if ellipsoid_geometry_term is not None else None,
+        "median_ellipsoid_reference_area_term_db":float(np.median(ellipsoid_reference_area_term)) if ellipsoid_reference_area_term is not None else None,
+        "median_area_and_ellipsoid_angle_adjusted_residual_db":float(np.median(ellipsoid_adjusted_residual)) if ellipsoid_adjusted_residual is not None else None,
+        "mean_absolute_area_and_ellipsoid_angle_adjusted_residual_db":float(np.mean(np.abs(ellipsoid_adjusted_residual))) if ellipsoid_adjusted_residual is not None else None,
+        "p95_absolute_area_and_ellipsoid_angle_adjusted_residual_db":float(np.percentile(np.abs(ellipsoid_adjusted_residual),95)) if ellipsoid_adjusted_residual is not None else None,
         "median_local_to_ellipsoid_geometry_term_db":float(np.median(full_geometry_term)) if full_geometry_term is not None else None,
         "median_area_and_geometry_adjusted_residual_db":float(np.median(full_geometry_adjusted)) if full_geometry_adjusted is not None else None,
         "mean_absolute_area_and_geometry_adjusted_residual_db":float(np.mean(np.abs(full_geometry_adjusted))) if full_geometry_adjusted is not None else None,
@@ -127,8 +131,10 @@ def run(input_dir:Path,output:Path,incidence_dir:Path|None=None):
                 "area_factor_residual_vs_angle_correlation","median_ellipsoid_incidence_angle_degrees",
                 "median_ellipsoid_geometry_term_db","median_local_to_ellipsoid_geometry_term_db",
                 "median_area_and_geometry_adjusted_residual_db","mean_absolute_area_and_geometry_adjusted_residual_db",
-                "p95_absolute_area_and_geometry_adjusted_residual_db","median_ellipsoid_reference_area_term_db",\n                "median_area_and_ellipsoid_angle_adjusted_residual_db","mean_absolute_area_and_ellipsoid_angle_adjusted_residual_db",\n                "p95_absolute_area_and_ellipsoid_angle_adjusted_residual_db")
-            if incidence_dir is None: keys=keys[:-6]
+                "p95_absolute_area_and_geometry_adjusted_residual_db","median_ellipsoid_reference_area_term_db",
+                "median_area_and_ellipsoid_angle_adjusted_residual_db","mean_absolute_area_and_ellipsoid_angle_adjusted_residual_db",
+                "p95_absolute_area_and_ellipsoid_angle_adjusted_residual_db")
+            if incidence_dir is None: keys=keys[:-10]
             aggregate[pol]={key:float(np.mean([row[key] for row in rows])) for key in keys}
             aggregate[pol]["pixels_per_scene"]=int(min(row["pixels"] for row in rows))
         results[str(orbit)]={"scene_count":len(scenes),"scenes":per_scene,"mean_metrics_on_shared_mask":aggregate}
