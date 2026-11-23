@@ -101,6 +101,8 @@ jobs:
         run: python -m unittest discover -s explorations/radar -p "test_discover_sentinel1_orbit_diversity.py"
       - name: Test Sentinel-1 alternate-orbit partial-coverage processing
         run: python -m unittest discover -s explorations/radar -p "test_process_sentinel1_alternate_orbit.py"
+      - name: Test same-platform orbit-pair shared-footprint comparison
+        run: python -m unittest discover -s explorations/radar -p "test_compare_sentinel1_same_platform_orbit_pair.py"
       - name: Test Sentinel-1 acquisition metadata retention
         run: python -m unittest discover -s scripts -p "test_process_sentinelhub_sentinel1_stack_metadata.py"
       - name: Test Sentinel-1 stack manifest builder
