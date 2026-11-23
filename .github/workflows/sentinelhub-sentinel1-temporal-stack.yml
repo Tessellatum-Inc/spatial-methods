@@ -74,6 +74,9 @@ jobs:
           SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
         run: python explorations/radar/process_sentinel1_gamma0_terrain.py --stack-metadata data/sentinelhub/nairobi/stack/sentinel1_nairobi_temporal_stack.metadata.json --output-dir data/sentinelhub/nairobi/stack/terrain_aux --dem-instance COPERNICUS_30 --oversampling 2
 
+      - name: Compare ellipsoid and terrain-corrected backscatter on common valid pixels
+        run: python explorations/radar/compare_sentinel1_ellipsoid_vs_terrain.py --stack-metadata data/sentinelhub/nairobi/stack/sentinel1_nairobi_temporal_stack.metadata.json --ellipsoid-dir data/sentinelhub/nairobi/stack --rtc-dir data/sentinelhub/nairobi/stack/terrain_aux --output data/sentinelhub/nairobi/stack/terrain_aux/sentinel1_nairobi_ellipsoid_vs_terrain_paired_screen.json
+
       - name: Inspect each acquisition and create Nairobi county-masked raster
         run: |
           set -euo pipefail
