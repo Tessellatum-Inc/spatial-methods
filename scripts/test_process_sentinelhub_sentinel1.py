@@ -131,14 +131,14 @@ class ProcessClientTests(unittest.TestCase):
         self.assertNotIn("token", str(raised.exception))
 
 
-    @mock.patch.object(CLIENT.time, "sleep")
     @mock.patch.object(CLIENT, "urlopen")
-    def test_does_not_retry_non_transient_http_error(self, mocked, mocked_sleep):
+    def test_does_not_retry_non_transient_http_error(self, mocked):
         mocked.side_effect = HTTPError(
             CLIENT.PROCESS_URL, 400, "Bad Request", {}, io.BytesIO(b"")
         )
-        with self.assertRaisesRegex(RuntimeError, "HTTP 400"):
-            CLIENT.request_geotiff("token", {})
+        with mock.patch.object(CLIENT.time, "sleep") as mocked_sleep:
+            with self.assertRaisesRegex(RuntimeError, "HTTP 400"):
+                CLIENT.request_geotiff("token", {})
         mocked.assert_called_once()
         mocked_sleep.assert_not_called()
 
