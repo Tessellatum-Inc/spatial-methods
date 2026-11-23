@@ -56,8 +56,15 @@ class PairedComparisonTests(unittest.TestCase):
         self.assertEqual(report["pixels"], 4)
         self.assertAlmostEqual(report["median_absolute_residual_db"], float(np.median(np.abs(expected + 0.25))), places=12)
         self.assertAlmostEqual(report["median_observed_minus_predicted_db"], float(np.median(expected + 0.25)), places=12)
-        self.assertAlmostEqual(report["median_absolute_centered_residual_db"], 0.0, places=6)
-        self.assertAlmostEqual(report["p95_absolute_centered_residual_db"], 0.0, places=6)
+        centered_expected = expected - np.median(expected)
+        self.assertAlmostEqual(
+            report["median_absolute_centered_residual_db"],
+            float(np.median(np.abs(centered_expected))), places=12
+        )
+        self.assertAlmostEqual(
+            report["p95_absolute_centered_residual_db"],
+            float(np.percentile(np.abs(centered_expected), 95)), places=12
+        )
         self.assertAlmostEqual(report["observed_predicted_pearson_r"], 1.0, places=12)
         self.assertAlmostEqual(report["observed_on_predicted_ols_slope"], 2.0, places=12)
         self.assertAlmostEqual(report["observed_on_predicted_ols_intercept_db"], 0.25, places=12)
