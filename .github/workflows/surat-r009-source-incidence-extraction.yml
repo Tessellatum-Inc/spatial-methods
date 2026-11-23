@@ -1,0 +1,47 @@
+name: Surat R009 source incidence and calibration metadata
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/surat-r009-source-incidence-extraction.yml"
+      - "explorations/radar/extract_surat_grd_incidence_and_calibration.py"
+jobs:
+  extract-surat-source-incidence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install catalogue, S3 and LUT validation dependencies
+        run: |
+          python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
+          python -m pip install -r explorations/radar/requirements-sentinel1-s3-metadata.txt
+          python -m pip install -r explorations/radar/requirements-sentinel1-incidence-interpolation.txt
+      - name: Verify credentials
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+          CDSE_S3_ACCESS_KEY: ${{ secrets.CDSE_S3_ACCESS_KEY }}
+          CDSE_S3_SECRET_KEY: ${{ secrets.CDSE_S3_SECRET_KEY }}
+        run: |
+          test -n "$SENTINEL_HUB_CLIENT_ID"
+          test -n "$SENTINEL_HUB_CLIENT_SECRET"
+          test -n "$CDSE_S3_ACCESS_KEY"
+          test -n "$CDSE_S3_SECRET_KEY"
+      - name: Extract four R009 GRD incidence and calibration metadata sets
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+          CDSE_S3_ACCESS_KEY: ${{ secrets.CDSE_S3_ACCESS_KEY }}
+          CDSE_S3_SECRET_KEY: ${{ secrets.CDSE_S3_SECRET_KEY }}
+        run: |
+          python explorations/radar/extract_surat_grd_incidence_and_calibration.py \
+            --output data/sentinelhub/surat_basin/surat_r009_source_incidence_metadata.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: surat-r009-source-incidence-metadata
+          path: data/sentinelhub/surat_basin/surat_r009_source_incidence_metadata.json
+          if-no-files-found: error
+          retention-days: 30
