@@ -234,7 +234,7 @@ def main(argv=None) -> int:
     report["queries"] = queries
     args.output_dir.mkdir(parents=True, exist_ok=True)
     path = args.output_dir / "surat_r009_opera_rtc_catalogue_discovery.json"
-    path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\\n", encoding="utf-8")
+    path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"Queries: {len(queries)}; unique catalogue products: {len(unique)}")
     print(f"Time-matched products within +/-{TIME_TOLERANCE_SECONDS}s: {report['time_matched_feature_count']}")
     for row in report["matched_features"][:20]:
