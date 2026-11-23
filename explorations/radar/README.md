@@ -54,3 +54,20 @@ python explorations/radar/mask_sentinelhub_sentinel1_nairobi_county.py data/sent
 ```
 
 The manual [Sentinel Hub raster workflow](../../.github/workflows/sentinelhub-sentinel1-process.yml) now uploads the source GeoTIFF, county-masked GeoTIFF, boundary GeoJSON, source metadata, quicklook, and QA reports together. Its artifact retention is 14 days, so download or persist outputs required for longer-term research.
+
+
+## Surat R009 radiometric relation and independent processor check
+
+The four-scene Sentinel Hub ellipsoid/RTC relationship analysis, equation derivation,
+QA metrics, limitations and OPERA RTC-S1 independent-processor plan are documented in
+[surat-r009-angle-equation.md](surat-r009-angle-equation.md).
+
+- [Equation QA implementation](qa_surat_r009_angle_equation.py)
+- [OPERA RTC/RTC-STATIC catalogue discovery](discover_opera_surat_r009_products.py)
+- [OPERA asset downloader](download_opera_surat_r009_assets.py)
+- [Catalogue discovery workflow](../../.github/workflows/opera-surat-r009-discovery.yml)
+- [Asset download workflow](../../.github/workflows/download-opera-surat-r009-assets.yml)
+
+OPERA catalogue discovery is reproducible without credentials. Raster downloads
+require an Earthdata Login bearer token in the repository Actions secret
+`EARTHDATA_TOKEN`; never commit the token or paste it into source files.
