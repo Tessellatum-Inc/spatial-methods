@@ -18,6 +18,7 @@ jobs:
         run: |
           python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
           python -m pip install -r explorations/radar/requirements-sentinel1-s3-metadata.txt
+          python -m pip install -r explorations/radar/requirements-sentinel1-incidence-interpolation.txt
       - name: Verify credentials
         env:
           SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
