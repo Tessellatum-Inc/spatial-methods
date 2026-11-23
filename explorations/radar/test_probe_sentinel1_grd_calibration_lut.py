@@ -33,6 +33,7 @@ class CalibrationLUTIncidenceTests(unittest.TestCase):
         result=compare_calibration_to_annotation({"vectors":vectors},annotation)
         self.assertEqual(result["matched_tie_points"],3)
         self.assertEqual(result["annotation_tie_point_coverage_fraction"],1.0)
+        self.assertAlmostEqual(result["mean_signed_difference_degrees"],0.0,places=8)
         self.assertLess(result["mae_degrees"],1e-8)
 
     def test_rejects_nonphysical_lut_ratios(self):
