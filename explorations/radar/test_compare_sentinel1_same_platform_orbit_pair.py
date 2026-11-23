@@ -26,8 +26,7 @@ class TestSharedMaskMetrics(unittest.TestCase):
         delta=-10*np.log10(area)+geometry+0.15
         ell=np.full(area.shape,0.01); rtc=ell*10**(delta/10)
         result=M.summarize_relation(ell,rtc,area,local,np.ones(area.shape,dtype=bool),ellipsoid_angle)
-        self.assertAlmostEqual(result["median_area_and_geometry_adjusted_residual_db"],0.15,places=8)
-        self.assertAlmostEqual(result["mean_absolute_area_and_geometry_adjusted_residual_db"],0.15,places=8)
+        self.assertAlmostEqual(result["median_local_to_ellipsoid_geometry_difference_db"],float(np.median(geometry)),places=8)
         self.assertAlmostEqual(result["median_ellipsoid_incidence_angle_degrees"],39.2,places=8)
     def test_ellipsoid_reference_area_term_removes_synthetic_residual(self):
         area=np.array([0.8,0.9,1.0,1.1,1.2]*100,dtype=float)
