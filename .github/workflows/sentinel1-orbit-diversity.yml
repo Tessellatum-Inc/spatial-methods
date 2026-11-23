@@ -1,5 +1,10 @@
 name: Sentinel-1 Nairobi orbit diversity catalogue screen
 on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sentinel1-orbit-diversity.yml"
+      - "explorations/radar/discover_sentinel1_orbit_diversity.py"
   workflow_dispatch:
     inputs:
       start:
