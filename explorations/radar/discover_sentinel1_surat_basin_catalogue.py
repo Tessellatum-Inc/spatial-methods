@@ -75,6 +75,7 @@ def summarize(features,targets,min_scenes=4,min_target_fraction=0.90,min_repeate
             "partial_array_candidate":direction=="ASCENDING" and len(stable_partial)>=min_scenes and len(repeated)>=min_repeated_targets,
             "full_array_candidate":direction=="ASCENDING" and len(full)>=min_scenes,
             "candidate_for_processing":direction=="ASCENDING" and ((len(stable_partial)>=min_scenes and len(repeated)>=min_repeated_targets) or len(full)>=min_scenes),
+            "qualifying_scene_count":len(stable_partial if len(stable_partial)>=min_scenes else full),
             "qualifying_scenes":stable_partial if len(stable_partial)>=min_scenes else full,"scenes":scenes})
     candidates=[t for t in tracks if t["candidate_for_processing"]]
     return {"schema":"tessellatum.sentinel1.surat-basin-corner-reflector-catalogue-screen.v1",
@@ -117,6 +118,12 @@ def main(argv=None):
     print(f"CEOS targets: {len(targets)}; Sentinel-1A IW features: {len(features)}; qualifying tracks: {len(report['tracks'])}; ascending candidates: {len(report['candidates'])}")
     for track in report["tracks"]:
         print(f"{track['orbit_direction']} R{track['relative_orbit']:03d}: scenes={track['scene_count']}; full-array scenes={track['scenes_with_full_array_coverage']}; repeated targets={track['repeated_target_count']}; partial candidate={track['partial_array_candidate']}; candidate={track['candidate_for_processing']}")
+        if track["candidate_for_processing"]:
+            print("  Repeatable reflectors: " + ", ".join(track["repeated_target_names"]))
+            scenes=track["qualifying_scenes"]
+            selected=scenes[:6] if len(scenes)<=12 else scenes[:6]+scenes[-6:]
+            for scene in selected:
+                print(f"  {scene['datetime_utc']}: {scene['covered_target_count']} targets; {scene['item_id']}")
     print(f"Report: {a.output}; analysis_ready=false")
     return 0
 if __name__=="__main__": raise SystemExit(main())
