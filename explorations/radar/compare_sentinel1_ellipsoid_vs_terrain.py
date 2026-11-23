@@ -61,8 +61,14 @@ def _area_factor_relation(delta: np.ndarray, scattering_area: np.ndarray) -> dic
     residual_offset = float(np.median(residual))
     centered_residual = residual - residual_offset
     correlation = None
+    slope = intercept = r_squared = None
     if observed.size > 1 and np.std(observed) > 0 and np.std(predicted) > 0:
         correlation = float(np.corrcoef(observed, predicted)[0, 1])
+        slope, intercept = (float(value) for value in np.polyfit(predicted, observed, 1))
+        fitted = slope * predicted + intercept
+        total_sum_squares = float(np.sum((observed - np.mean(observed)) ** 2))
+        if total_sum_squares > 0:
+            r_squared = float(1.0 - np.sum((observed - fitted) ** 2) / total_sum_squares)
     return {
         "pixels": int(observed.size),
         "hypothesis": "RTC_minus_ellipsoid_dB = -10*log10(scatteringArea)",
@@ -75,6 +81,9 @@ def _area_factor_relation(delta: np.ndarray, scattering_area: np.ndarray) -> dic
         "median_absolute_centered_residual_db": float(np.median(np.abs(centered_residual))),
         "p95_absolute_centered_residual_db": float(np.percentile(np.abs(centered_residual), 95)),
         "observed_predicted_pearson_r": correlation,
+        "observed_on_predicted_ols_slope": slope,
+        "observed_on_predicted_ols_intercept_db": intercept,
+        "observed_on_predicted_ols_r_squared": r_squared,
     }
 
 
@@ -209,6 +218,9 @@ def main(argv: list[str] | None = None) -> int:
                 f"median_offset_db={factor['median_observed_minus_predicted_db']:.6f} "
                 f"p95_abs_residual_db={factor['p95_absolute_residual_db']:.6f} "
                 f"centered_p95_abs_residual_db={factor['p95_absolute_centered_residual_db']:.6f} "
+                f"ols_slope={factor['observed_on_predicted_ols_slope']} "
+                f"ols_intercept_db={factor['observed_on_predicted_ols_intercept_db']} "
+                f"ols_r2={factor['observed_on_predicted_ols_r_squared']} "
                 f"pearson_r={factor['observed_predicted_pearson_r']}"
             )
     return 0
