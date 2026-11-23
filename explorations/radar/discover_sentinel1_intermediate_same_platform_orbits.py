@@ -96,7 +96,7 @@ def main(argv=None):
     a.output.parent.mkdir(parents=True,exist_ok=True); a.output.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
     print(f"Catalogue features: {len(features)}; qualifying tracks: {len(report['tracks'])}; intermediate candidates: {len(report['candidates'])}")
     for track in report["candidates"]:
-        print(f"R{track['relative_orbit']:03d}: {track['scene_count']} scenes; median AOI overlap={track['median_aoi_intersection_fraction']:.3f}")
+        print(f"{track['orbit_direction']} R{track['relative_orbit']:03d}: {track['scene_count']} scenes; median AOI overlap={track['median_aoi_intersection_fraction']:.3f}")
     print(f"Report: {a.output}; analysis_ready=false")
     return 0
 if __name__=="__main__": raise SystemExit(main())
