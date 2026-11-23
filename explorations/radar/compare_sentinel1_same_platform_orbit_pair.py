@@ -19,8 +19,8 @@ def summarize_relation(ellipsoid, rtc, area, angle, mask):
     fitted=slope*x+intercept
     ss_res=float(np.sum((y-fitted)**2)); ss_tot=float(np.sum((y-y.mean())**2))
     residual=y-x; centered=residual-np.median(residual)
-    local_angle_term=-10.0*np.log10(np.tan(np.deg2rad(ang)))
-    geometry_adjusted=residual-local_angle_term
+    local_angle_proxy_term=-10.0*np.log10(np.tan(np.deg2rad(ang)))
+    local_angle_proxy_adjusted=residual-local_angle_proxy_term
     return {"pixels":int(len(x)),"ols_slope":float(slope),"ols_intercept_db":float(intercept),
         "ols_r_squared":float(1-ss_res/ss_tot) if ss_tot>0 else None,
         "median_direct_rtc_minus_ellipsoid_db":float(np.median(y)),
@@ -29,10 +29,10 @@ def summarize_relation(ellipsoid, rtc, area, angle, mask):
         "median_observed_minus_area_factor_db":float(np.median(residual)),
         "mean_absolute_area_factor_residual_db":float(np.mean(np.abs(residual))),
         "p95_absolute_centered_area_factor_residual_db":float(np.percentile(np.abs(centered),95)),
-        "median_local_angle_term_db":float(np.median(local_angle_term)),
-        "median_geometry_adjusted_residual_db":float(np.median(geometry_adjusted)),
-        "mean_absolute_geometry_adjusted_residual_db":float(np.mean(np.abs(geometry_adjusted))),
-        "p95_absolute_geometry_adjusted_residual_db":float(np.percentile(np.abs(geometry_adjusted),95)),
+        "median_local_angle_proxy_term_db":float(np.median(local_angle_proxy_term)),
+        "median_local_angle_proxy_adjusted_residual_db":float(np.median(local_angle_proxy_adjusted)),
+        "mean_absolute_local_angle_proxy_adjusted_residual_db":float(np.mean(np.abs(local_angle_proxy_adjusted))),
+        "p95_absolute_local_angle_proxy_adjusted_residual_db":float(np.percentile(np.abs(local_angle_proxy_adjusted),95)),
         "median_scattering_area":float(np.median(ar)),
         "median_local_incidence_angle_degrees":float(np.median(ang)),
         "p10_local_incidence_angle_degrees":float(np.percentile(ang,10)),
@@ -84,8 +84,8 @@ def run(input_dir:Path,output:Path):
                 "mean_absolute_direct_rtc_minus_ellipsoid_db","p95_absolute_direct_rtc_minus_ellipsoid_db",
                 "median_observed_minus_area_factor_db",
                 "mean_absolute_area_factor_residual_db","p95_absolute_centered_area_factor_residual_db",
-                "median_local_angle_term_db","median_geometry_adjusted_residual_db",
-                "mean_absolute_geometry_adjusted_residual_db","p95_absolute_geometry_adjusted_residual_db","median_scattering_area",
+                "median_local_angle_proxy_term_db","median_local_angle_proxy_adjusted_residual_db",
+                "mean_absolute_local_angle_proxy_adjusted_residual_db","p95_absolute_local_angle_proxy_adjusted_residual_db","median_scattering_area",
                 "median_local_incidence_angle_degrees","p10_local_incidence_angle_degrees","p90_local_incidence_angle_degrees",
                 "area_factor_residual_vs_angle_correlation")
             aggregate[pol]={key:float(np.mean([row[key] for row in rows])) for key in keys}
