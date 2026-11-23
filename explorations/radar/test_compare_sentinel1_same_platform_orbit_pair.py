@@ -17,8 +17,8 @@ class TestSharedMaskMetrics(unittest.TestCase):
         delta=-10*np.log10(area)-10*np.log10(np.tan(np.deg2rad(angle)))+0.1
         rtc=ell*10**(delta/10)
         result=M.summarize_relation(ell,rtc,area,angle,np.ones(area.shape,dtype=bool))
-        self.assertAlmostEqual(result["median_geometry_adjusted_residual_db"],0.1,places=8)
-        self.assertAlmostEqual(result["mean_absolute_geometry_adjusted_residual_db"],0.1,places=8)
+        self.assertAlmostEqual(result["median_local_angle_proxy_adjusted_residual_db"],0.1,places=8)
+        self.assertAlmostEqual(result["mean_absolute_local_angle_proxy_adjusted_residual_db"],0.1,places=8)
     def test_relation_metrics_recovers_synthetic_area_relation(self):
         area=np.array([0.8,0.9,1.0,1.1,1.2]*100,dtype=float)
         ell=np.full(area.shape,0.01); delta=-10*np.log10(area)+0.2; rtc=ell*10**(delta/10)
