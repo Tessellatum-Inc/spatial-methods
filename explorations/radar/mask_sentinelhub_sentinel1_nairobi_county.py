@@ -203,7 +203,9 @@ def mask_raster_to_county(input_path: Path, output_dir: Path) -> tuple[Path, Pat
             dst.set_band_description(2, "VH gamma0 ellipsoid backscatter (linear power)")
             dst.set_band_description(3, "dataMask: 1 = valid county pixel, 0 = outside county or no scene data")
             dst.update_tags(
-                boundary_source="geoBoundaries gbOpen KEN ADM1",\n                boundary_download_url=BOUNDARY_URL,\n                boundary_id=BOUNDARY_ID,
+                boundary_source="geoBoundaries gbOpen KEN ADM1",
+                boundary_download_url=BOUNDARY_URL,
+                boundary_id=BOUNDARY_ID,
                 boundary_feature_name="Nairobi",
                 boundary_crs="EPSG:4326",
                 processing_note="County crop; invalid/outside VV and VH set to -9999; dataMask set to 0.",
