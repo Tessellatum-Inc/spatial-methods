@@ -58,13 +58,13 @@ class Gamma0TerrainTests(unittest.TestCase):
             def __exit__(self, *args):
                 return False
             def read(self):
-                return b"II*\\x00" + b"\\x00" * 8
+                return bytes.fromhex("49492a00") + bytes(8)
 
         with patch.object(MODULE._PROCESS, "urlopen",
                           side_effect=[IncompleteRead(b"", 12), Response()]) as mocked, \
              patch.object(MODULE._PROCESS.time, "sleep") as sleep:
             body = MODULE._PROCESS.request_geotiff("token", {"test": True}, timeout=1)
-        self.assertEqual(body[:4], b"II*\\x00")
+        self.assertEqual(body[:4], bytes.fromhex("49492a00"))
         self.assertEqual(mocked.call_count, 2)
         sleep.assert_called_once_with(2)
 
