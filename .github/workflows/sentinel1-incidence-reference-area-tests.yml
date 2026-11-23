@@ -1,0 +1,43 @@
+name: Sentinel-1 incidence and reference-area tests
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sentinel1-incidence-reference-area-tests.yml"
+      - "explorations/radar/compare_sentinel1_same_platform_orbit_pair.py"
+      - "explorations/radar/extract_sentinel1_grd_incidence_grids.py"
+      - "explorations/radar/interpolate_sentinel1_ellipsoid_incidence.py"
+      - "explorations/radar/probe_sentinel1_grd_calibration_lut.py"
+      - "explorations/radar/probe_sentinel1_grd_geolocation_grid.py"
+      - "explorations/radar/test_compare_sentinel1_same_platform_orbit_pair.py"
+      - "explorations/radar/test_extract_sentinel1_grd_incidence_grids.py"
+      - "explorations/radar/test_interpolate_sentinel1_ellipsoid_incidence.py"
+      - "explorations/radar/test_probe_sentinel1_grd_calibration_lut.py"
+      - "explorations/radar/test_probe_sentinel1_grd_geolocation_grid.py"
+      - "explorations/radar/requirements-sentinelhub-processing.txt"
+      - "explorations/radar/requirements-sentinel1-s3-metadata.txt"
+      - "explorations/radar/requirements-sentinel1-incidence-interpolation.txt"
+jobs:
+  sentinel1-incidence-reference-area-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install focused radar QA dependencies
+        run: |
+          python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
+          python -m pip install -r explorations/radar/requirements-sentinel1-s3-metadata.txt
+          python -m pip install -r explorations/radar/requirements-sentinel1-incidence-interpolation.txt
+      - name: Test GRD geolocation-grid parser
+        run: python -m unittest discover -s explorations/radar -p "test_probe_sentinel1_grd_geolocation_grid.py"
+      - name: Test source GRD annotation extraction
+        run: python -m unittest discover -s explorations/radar -p "test_extract_sentinel1_grd_incidence_grids.py"
+      - name: Test calibration LUT identities and annotation cross-check
+        run: python -m unittest discover -s explorations/radar -p "test_probe_sentinel1_grd_calibration_lut.py"
+      - name: Test incidence-angle interpolation
+        run: python -m unittest discover -s explorations/radar -p "test_interpolate_sentinel1_ellipsoid_incidence.py"
+      - name: Test shared-footprint reference-area comparison
+        run: python -m unittest discover -s explorations/radar -p "test_compare_sentinel1_same_platform_orbit_pair.py"
