@@ -428,3 +428,44 @@ Reproducibility:
 - Targeted tests: [run 45201796311](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45201796311).
 
 This remains a provider-internal, single-site, same-platform/two-orbit validation. The interpolation cross-validation is internal to the source tie-point grids, not independent geodetic control. The common footprint is 58.77% of the requested AOI. Stable radiometric targets, independent geometric control and a second study area/provider are still needed before generalization. Keep `analysis_ready: false`; do not operationalize normalization or change detection from this result alone.
+
+### Source ellipsoid-incidence validation of the RTC reference-area equation (2026-11-23)
+
+The CDSE GRD annotation workflow retrieved the source `incidenceAngle` geolocation-grid points for all eight R057/R130 acquisitions. Linear interpolation to the shared 2048 × 1536 EPSG:4326 Nairobi grid was performed without extrapolation. Five-fold spatially interleaved holdout of the source tie points gave:
+
+| Track | Grid coverage | Tie-point CV MAE | Tie-point CV P95 absolute error |
+|---|---:|---:|---:|
+| Ascending R130 | 94.7% | 0.00737° | 0.01922° |
+| Ascending R057 | 77.3% | 0.00844° | 0.02529° |
+
+Coverage is the fraction of requested output pixels inside the source tie-point convex hull; uncovered pixels remain NoData. The CV figures measure interpolation agreement at held-out source tie points, not independent geodetic accuracy. The R057 coverage limitation is material and must be preserved in every downstream comparison.
+
+Using the source ellipsoid angle \\(\\theta_E\\), the complete reference-area relation is:
+
+\\[
+\\gamma^0_{RTC}=\\frac{\\beta^0}{\\widehat A_\\gamma},
+\\qquad
+\\gamma^0_E=\\beta^0\\tan(\\theta_E)
+\\]
+
+\\[
+\\Delta_{dB}=10\\log_{10}\\left(\\frac{\\gamma^0_{RTC}}{\\gamma^0_E}\\right)
+=-10\\log_{10}(\\widehat A_\\gamma)-10\\log_{10}(\\tan\\theta_E).
+\\]
+
+Thus the residual after removing the scattering-area term must be compared with the **negative** ellipsoid reference-area term, \\(-10\\log_{10}(\\tan\\theta_E)\\). This sign is important; the local terrain incidence angle is not a substitute for \\(\\theta_E\\).
+
+On the 1,848,662-pixel common footprint, the source-angle-adjusted residual was:
+
+| Track | Median adjusted residual (VV / VH) | Mean absolute adjusted residual (VV / VH) | P95 absolute adjusted residual (VV / VH) |
+|---|---:|---:|---:|
+| Ascending R130 | +0.0042 / +0.0042 dB | 0.00436 / 0.00436 dB | 0.00576 / 0.00577 dB |
+| Ascending R057 | −0.0018 / −0.0018 dB | 0.00174 / 0.00174 dB | 0.00309 / 0.00309 dB |
+
+These results are highly consistent with the reference-area equation and explain the apparent +2.05 dB R057 versus −0.053 dB R130 area-only offsets. They are not an independent validation of Sentinel Hub's complete RTC implementation: the RTC and ellipsoid backscatter branches still come from the same provider, and the scattering-area semantics are provider-defined. The source angle is independently read from the original GRD annotation, but its interpolation is internally cross-validated only.
+
+The direct RTC-minus-ellipsoid difference remains more variable (mean absolute difference about 0.30–0.34 dB; P95 absolute difference about 1.03–1.16 dB). The equation explains the systematic reference-area difference; it does not imply the two backscatter rasters are pixelwise identical. Terrain resampling, orthorectification, interpolation, and other processing differences remain.
+
+**Decision:** the full reference-area equation now has strong within-provider, two-track, two-polarization empirical support over the common footprint. It is a scientific explanation of the observed relationship, not an approved general-purpose correction or a validated change-detection normalization. R057 has only 77.3% source-angle grid coverage, and the study still lacks independent-provider processing, corner-reflector calibration, and independent-site validation. Keep `analysis_ready: false`.
+
+Reproducibility: [source-angle extraction, interpolation and paired comparison workflow run 45201769040](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45201769040); code: `extract_sentinel1_grd_incidence_grids.py`, `interpolate_sentinel1_ellipsoid_incidence.py`, and `compare_sentinel1_same_platform_orbit_pair.py`.
