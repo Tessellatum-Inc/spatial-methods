@@ -301,8 +301,8 @@ def compare_pair(ellipsoid_path: Path, rtc_path: Path, collect_temporal_samples:
             "Not evidence of radiometric equivalence, calibration accuracy, or suitability for change detection."
         ),
     }
+    temporal_samples = {}
     for index, name in ((0, "VV"), (1, "VH")):
-        temporal_samples = {}
         a, b = base[index][common], terrain[index][common]
         positive = (a > 0) & (b > 0)
         if not positive.any():
