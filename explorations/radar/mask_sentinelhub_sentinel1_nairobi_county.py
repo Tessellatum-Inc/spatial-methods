@@ -39,30 +39,42 @@ NODATA = -9999.0
 
 def fetch_nairobi_boundary(timeout: int = 60) -> tuple[dict, dict]:
     """Fetch exactly one Nairobi feature as GeoJSON; reject ambiguous responses."""
-    params = urlencode({
-        "where": "1=1",
-        "outFields": "county,area_km2,objectid",
-        "returnGeometry": "true",
-        "outSR": "4326",
-        "f": "geojson",
-    })
-    request = Request(
-        QUERY_URL + "?" + params,
-        headers={"Accept": "application/geo+json, application/json"},
-    )
+    # ArcGIS may cap ordinary feature queries at maxRecordCount. Fetch all
+    # ObjectIDs first, then request features by explicit IDs to avoid truncation.
+    ids_params = urlencode({"where": "1=1", "returnIdsOnly": "true", "f": "json"})
+    ids_request = Request(QUERY_URL + "?" + ids_params, headers={"Accept": "application/json"})
     try:
-        with urlopen(request, timeout=timeout) as response:
-            payload = json.loads(response.read().decode("utf-8"))
+        with urlopen(ids_request, timeout=timeout) as response:
+            ids_payload = json.loads(response.read().decode("utf-8"))
+        if not isinstance(ids_payload, dict) or not isinstance(ids_payload.get("objectIds"), list):
+            raise RuntimeError("County boundary service did not return a valid ObjectID list.")
+        object_ids = ids_payload["objectIds"]
+        if not object_ids:
+            raise RuntimeError("County boundary service returned no county ObjectIDs.")
+        features = []
+        for start in range(0, len(object_ids), 100):
+            batch = object_ids[start:start + 100]
+            params = urlencode({
+                "objectIds": ",".join(str(value) for value in batch),
+                "outFields": "county,area_km2,objectid",
+                "returnGeometry": "true",
+                "outSR": "4326",
+                "f": "geojson",
+            })
+            request = Request(QUERY_URL + "?" + params, headers={"Accept": "application/geo+json, application/json"})
+            with urlopen(request, timeout=timeout) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+            if not isinstance(payload, dict) or payload.get("type") != "FeatureCollection":
+                raise RuntimeError("County boundary service did not return a GeoJSON FeatureCollection.")
+            batch_features = payload.get("features")
+            if not isinstance(batch_features, list):
+                raise RuntimeError("County boundary service returned an invalid feature list.")
+            features.extend(batch_features)
     except HTTPError as exc:
         raise RuntimeError(f"County boundary service returned HTTP {exc.code}.") from None
     except (URLError, TimeoutError, OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise RuntimeError(f"Could not retrieve county boundary ({type(exc).__name__}).") from None
 
-    if not isinstance(payload, dict) or payload.get("type") != "FeatureCollection":
-        raise RuntimeError("County boundary service did not return a GeoJSON FeatureCollection.")
-    features = payload.get("features")
-    if not isinstance(features, list):
-        raise RuntimeError("County boundary service returned an invalid feature list.")
     # Query the small administrative layer and normalize its labels locally.
     # This avoids relying on an exact SQL string match against a service label.
     matches = []
@@ -88,7 +100,7 @@ def fetch_nairobi_boundary(timeout: int = 60) -> tuple[dict, dict]:
     feature["geometry"] = mapping(polygon)
     return feature, {
         "service_layer": LAYER_URL,
-        "query_url": QUERY_URL + "?" + params,
+        "query_url": QUERY_URL + " (complete ObjectID list followed by batched objectIds queries)",
         "description": SOURCE_DESCRIPTION,
         "feature_properties": properties,
         "retrieved_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
