@@ -37,12 +37,13 @@ def collect_track(token,start,end,direction,relative_orbit):
     else: raise RuntimeError("Catalogue pagination exceeded 50 pages")
     return sorted(features.values(),key=lambda f:f.get("properties",{}).get("datetime",""))
 
-def select_candidates(features,direction,relative_orbit,min_coverage=0.8):
+def select_candidates(features,direction,relative_orbit,min_coverage=0.8,platform=None,max_scenes=None):
     selected=[]; seen=set()
     for feature in features:
         p=feature.get("properties",{})
         if str(p.get("sat:orbit_state","")).upper()!=direction.upper(): continue
         if p.get("sat:relative_orbit")!=relative_orbit: continue
+        if platform and str(p.get("platform","")).lower()!=platform.lower(): continue
         stamp=p.get("datetime")
         if not isinstance(stamp,str): continue
         try: dt=datetime.fromisoformat(stamp.replace("Z","+00:00"))
@@ -56,7 +57,7 @@ def select_candidates(features,direction,relative_orbit,min_coverage=0.8):
         if isinstance(polarizations,list) and not {"VV","VH"}.issubset(set(polarizations)): continue
         selected.append((feature,covers,fraction))
         seen.add(key)
-    return selected
+    return selected[:max_scenes] if max_scenes else selected
 
 def process(features,output_dir,token,direction,relative_orbit,min_coverage,timeout):
     output_dir.mkdir(parents=True,exist_ok=True)
@@ -134,11 +135,13 @@ def main(argv=None):
     p.add_argument("--direction",choices=["ascending","descending"],default="ascending")
     p.add_argument("--relative-orbit",type=int,default=130); p.add_argument("--min-coverage",type=float,default=0.8)
     p.add_argument("--output-dir",type=Path,default=Path("data/sentinelhub/nairobi/alternate_orbit"))
+    p.add_argument("--platform",default=None,help="Optional exact STAC platform filter, e.g. sentinel-1a")
+    p.add_argument("--max-scenes",type=int,default=4)
     p.add_argument("--timeout",type=int,default=300); a=p.parse_args(argv)
-    if not 0<float(a.min_coverage)<=1 or a.relative_orbit<1 or a.timeout<30: p.error("Invalid coverage, orbit or timeout")
+    if not 0<float(a.min_coverage)<=1 or a.relative_orbit<1 or a.timeout<30 or a.max_scenes<2: p.error("Invalid coverage, orbit, scene count or timeout")
     try:
         token=CAT.request_access_token(os.environ.get("SENTINEL_HUB_CLIENT_ID",""),os.environ.get("SENTINEL_HUB_CLIENT_SECRET",""),timeout=30)
-        candidates=select_candidates(collect_track(token,a.start,a.end,a.direction,a.relative_orbit),a.direction,a.relative_orbit,a.min_coverage)
+        candidates=select_candidates(collect_track(token,a.start,a.end,a.direction,a.relative_orbit),a.direction,a.relative_orbit,a.min_coverage,a.platform,a.max_scenes)
         if len(candidates)<2: raise ValueError(f"Only {len(candidates)} qualifying acquisitions; at least two are required")
         process(candidates,a.output_dir,token,a.direction,a.relative_orbit,a.min_coverage,a.timeout)
     except (OSError,ValueError,RuntimeError) as e:
