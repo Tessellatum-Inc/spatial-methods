@@ -1,4 +1,5 @@
 name: Surat R009 source incidence and calibration metadata
+run-name: Extract and cross-check four source ellipsoid-angle grids
 on:
   workflow_dispatch:
   push:
