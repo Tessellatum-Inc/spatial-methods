@@ -42,20 +42,27 @@ jobs:
           SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
         run: python explorations/radar/process_sentinelhub_sentinel1.py --limit 100
 
-      - name: Inspect raster coverage and backscatter values
+      - name: Inspect rectangular raster coverage and backscatter values
         run: |
           raster="$(find data/sentinelhub/nairobi -maxdepth 1 -type f -name '*.tif' -print -quit)"
           test -n "$raster" || { echo "::error::No GeoTIFF was produced"; exit 1; }
           python explorations/radar/inspect_sentinelhub_sentinel1.py "$raster"
 
-      - name: Upload raster, provenance, quicklook and QA report
+      - name: Retrieve Nairobi County boundary and create county-masked raster
+        run: |
+          raster="$(find data/sentinelhub/nairobi -maxdepth 1 -type f -name '*.tif' ! -name '*_county_*' -print -quit)"
+          test -n "$raster" || { echo "::error::No source GeoTIFF was produced"; exit 1; }
+          python explorations/radar/mask_sentinelhub_sentinel1_nairobi_county.py "$raster"
+
+      - name: Upload source, county raster, boundary, quicklooks and QA reports
         uses: actions/upload-artifact@v4
         with:
-          name: sentinelhub-sentinel1-nairobi-raster-sample
+          name: sentinelhub-sentinel1-nairobi-county-product
           path: |
             data/sentinelhub/nairobi/*.tif
             data/sentinelhub/nairobi/*.metadata.json
             data/sentinelhub/nairobi/*.quicklook.png
             data/sentinelhub/nairobi/*.qa.json
+            data/sentinelhub/nairobi/*.geojson
           if-no-files-found: error
           retention-days: 14

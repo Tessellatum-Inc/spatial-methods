@@ -1,5 +1,3 @@
-undefined
-
 ## Independent Sentinel Hub access route
 
 The repository also contains a separate OAuth2 client-credentials route for Sentinel Hub. It does not replace or modify the OData SAFE downloader.
@@ -43,4 +41,16 @@ python explorations/radar/inspect_sentinelhub_sentinel1.py data/sentinelhub/nair
 
 The first experimental sample (18 November 2026) covered approximately 74.70% of the requested rectangular extent. Catalogue review found a full-coverage acquisition from 14 November 2026. The selection logic now prefers that full-footprint scene. Any downstream analysis must still intersect the raster data mask with a defined study-area boundary and report coverage within that AOI. The requested 2048 × 1536 grid corresponds to approximately 21.7 m pixel spacing at the raster centre; this is the output grid spacing, not a native-resolution guarantee.
 
-The manual [Sentinel Hub raster workflow](../../.github/workflows/sentinelhub-sentinel1-process.yml) now uploads the GeoTIFF, source metadata, quicklook, and QA report together. Its artifact retention is 14 days, so download or persist outputs required for longer-term research.
+### Nairobi County boundary mask
+
+The [county masking script](mask_sentinelhub_sentinel1_nairobi_county.py) fetches exactly one Nairobi County polygon from the WWF-Kenya ArcGIS FeatureServer, validates it, saves the returned GeoJSON, and creates a separate county-cropped GeoTIFF. The service states that its 47-county boundary layer was supplied by Survey of Kenya and shared to WWF-Kenya by the Ministry of Lands - Directorate of Physical Planning; the service credits Ministry of Lands and WWF-Kenya. See the [service description](https://wwfke-giscoe.wwfkenya.org/arcgis/rest/services/Basedata_Kenya/KenyaCountyBoundary/FeatureServer) and [layer schema](https://wwfke-giscoe.wwfkenya.org/arcgis/rest/services/Basedata_Kenya/KenyaCountyBoundary/FeatureServer/0).
+
+This is an exploratory administrative boundary, not a legal survey/cadastral boundary. The exact GeoJSON used is retained beside the output so the run can be reproduced even if the live service changes. The county QA report calculates valid scene coverage only among pixel centres inside the polygon. VV/VH are set to nodata outside the county or where the source dataMask is invalid; the output dataMask is 1 only for valid county pixels. This is a separate derivative: the original rectangular GeoTIFF is preserved unchanged.
+
+Run the mask after acquiring a raster:
+
+```bash
+python explorations/radar/mask_sentinelhub_sentinel1_nairobi_county.py data/sentinelhub/nairobi/<raster-file>.tif
+```
+
+The manual [Sentinel Hub raster workflow](../../.github/workflows/sentinelhub-sentinel1-process.yml) now uploads the source GeoTIFF, county-masked GeoTIFF, boundary GeoJSON, source metadata, quicklook, and QA reports together. Its artifact retention is 14 days, so download or persist outputs required for longer-term research.
