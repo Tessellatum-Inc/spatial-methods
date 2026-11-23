@@ -37,7 +37,7 @@ class TemporalQATests(unittest.TestCase):
             module.write_json_report(path, {"analysis_ready": False})
             raw = path.read_text(encoding="utf-8")
             self.assertTrue(raw.endswith("\n"))
-            self.assertFalse(raw.endswith("\\\\n"))
+            self.assertFalse(raw.endswith("\\n"))
             self.assertEqual(json.loads(raw), {"analysis_ready": False})
 
     def test_radiometric_statistics_are_in_linear_and_db_units(self):

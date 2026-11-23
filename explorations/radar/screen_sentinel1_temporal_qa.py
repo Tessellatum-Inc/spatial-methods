@@ -130,7 +130,7 @@ def main():
     try:
         comparisons=[compare(a.rasters[0],f,a.tile_size,a.stride) for f in a.rasters[1:]]
     except (ValueError,OSError,rasterio.errors.RasterioError) as e:
-        p.exit(2,f'QA failed: {e}\\n')
+        p.exit(2, f"QA failed: {e}\n")
     report={"schema":"tessellatum.sentinel1.temporal-qa-screen.v1",
       "created_at_utc":datetime.now(timezone.utc).isoformat().replace('+00:00','Z'),
       "reference_file":a.rasters[0].name,"comparison_count":len(comparisons),
@@ -141,7 +141,7 @@ def main():
         "Backscatter distribution differences can reflect real change, incidence geometry, moisture, processing or calibration effects.",
         "No precise-orbit verification, DEM-assisted geometric validation, border-noise assessment or absolute geolocation accuracy test is performed.",
         "Radiometric statistics are descriptive and are not a radiometric normalization or calibration validation."]}
-    a.output.parent.mkdir(parents=True,exist_ok=True); a.output.write_text(json.dumps(report,indent=2)+'\\n')
+    write_json_report(a.output, report)
     print(f"Wrote {a.output}; {len(comparisons)} comparisons; analysis_ready=false")
 
 if __name__=='__main__': main()
