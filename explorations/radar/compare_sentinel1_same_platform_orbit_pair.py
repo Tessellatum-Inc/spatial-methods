@@ -50,7 +50,13 @@ def summarize_relation(ellipsoid, rtc, area, angle, mask, ellipsoid_incidence_an
         "median_local_incidence_angle_degrees":float(np.median(ang)),
         "p10_local_incidence_angle_degrees":float(np.percentile(ang,10)),
         "p90_local_incidence_angle_degrees":float(np.percentile(ang,90)),
-        "area_factor_residual_vs_angle_correlation":float(np.corrcoef(residual,ang)[0,1]) if np.std(residual)>0 and np.std(ang)>0 else None,\n        "median_ellipsoid_incidence_angle_degrees":float(np.median(ellang)) if ellang is not None else None,\n        "median_ellipsoid_geometry_term_db":float(np.median(ellipsoid_geometry_term)) if ellipsoid_geometry_term is not None else None,\n        "median_local_to_ellipsoid_geometry_term_db":float(np.median(full_geometry_term)) if full_geometry_term is not None else None,\n        "median_area_and_geometry_adjusted_residual_db":float(np.median(full_geometry_adjusted)) if full_geometry_adjusted is not None else None,\n        "mean_absolute_area_and_geometry_adjusted_residual_db":float(np.mean(np.abs(full_geometry_adjusted))) if full_geometry_adjusted is not None else None,\n        "p95_absolute_area_and_geometry_adjusted_residual_db":float(np.percentile(np.abs(full_geometry_adjusted),95)) if full_geometry_adjusted is not None else None}
+        "area_factor_residual_vs_angle_correlation":float(np.corrcoef(residual,ang)[0,1]) if np.std(residual)>0 and np.std(ang)>0 else None,
+        "median_ellipsoid_incidence_angle_degrees":float(np.median(ellang)) if ellang is not None else None,
+        "median_ellipsoid_geometry_term_db":float(np.median(ellipsoid_geometry_term)) if ellipsoid_geometry_term is not None else None,
+        "median_local_to_ellipsoid_geometry_term_db":float(np.median(full_geometry_term)) if full_geometry_term is not None else None,
+        "median_area_and_geometry_adjusted_residual_db":float(np.median(full_geometry_adjusted)) if full_geometry_adjusted is not None else None,
+        "mean_absolute_area_and_geometry_adjusted_residual_db":float(np.mean(np.abs(full_geometry_adjusted))) if full_geometry_adjusted is not None else None,
+        "p95_absolute_area_and_geometry_adjusted_residual_db":float(np.percentile(np.abs(full_geometry_adjusted),95)) if full_geometry_adjusted is not None else None}
 
 def load_tracks(root,incidence_dir=None):
     tracks={}
@@ -64,7 +70,13 @@ def load_tracks(root,incidence_dir=None):
             ell=stack_path.parent/scene["output"]["file"]
             rtc=stack_path.parent/"terrain_aux"/f"sentinel1_nairobi_{stamp}_gamma0-terrain-rtc.tif"
             if not ell.exists() or not rtc.exists(): raise FileNotFoundError(f"Missing raster pair for {stamp}")
-            row={"datetime_utc":scene["catalog_item_datetime_utc"],"ellipsoid":ell,"rtc":rtc}\n            if incidence_dir is not None:\n                date=scene["catalog_item_datetime_utc"][:10]\n                angle=incidence_dir/f"sentinel1_{int(orbit):03d}_{date}_ellipsoid_incidence_angle.tif"\n                if not angle.exists(): raise FileNotFoundError(f"Missing source incidence-angle raster for R{orbit:03d} {date}")\n                row["incidence_angle"]=angle\n            scenes.append(row)
+            row={"datetime_utc":scene["catalog_item_datetime_utc"],"ellipsoid":ell,"rtc":rtc}
+            if incidence_dir is not None:
+                date=scene["catalog_item_datetime_utc"][:10]
+                angle=incidence_dir/f"sentinel1_{int(orbit):03d}_{date}_ellipsoid_incidence_angle.tif"
+                if not angle.exists(): raise FileNotFoundError(f"Missing source incidence-angle raster for R{orbit:03d} {date}")
+                row["incidence_angle"]=angle
+            scenes.append(row)
         if len(scenes)<2: raise ValueError(f"Orbit {orbit} has fewer than two scenes")
         tracks[int(orbit)]=scenes
     if set(tracks)!={57,130}: raise ValueError(f"Expected R057 and R130 artifacts; found {sorted(tracks)}")
@@ -79,7 +91,14 @@ def run(input_dir:Path,output:Path):
                 if grid is None: grid=signature
                 if signature!=grid or signature!=(r.crs,r.transform,r.width,r.height):
                     raise ValueError("Orbit artifacts do not share an identical ellipsoid/RTC grid")
-                valid=(e.read(3)>0.5)&(r.read(6)>0.5)\n                if incidence_dir is not None:\n                    with rasterio.open(scene["incidence_angle"]) as a:\n                        angle_signature=(a.crs,a.transform,a.width,a.height)\n                        if angle_signature!=signature: raise ValueError("Source incidence-angle raster does not match backscatter grid")\n                        angle=a.read(1)\n                        valid &= np.isfinite(angle)&(angle>0)&(angle<90)&(angle!=a.nodata)\n                masks.append(valid)
+                valid=(e.read(3)>0.5)&(r.read(6)>0.5)
+                if incidence_dir is not None:
+                    with rasterio.open(scene["incidence_angle"]) as a:
+                        angle_signature=(a.crs,a.transform,a.width,a.height)
+                        if angle_signature!=signature: raise ValueError("Source incidence-angle raster does not match backscatter grid")
+                        angle=a.read(1)
+                        valid &= np.isfinite(angle)&(angle>0)&(angle<90)&(angle!=a.nodata)
+                masks.append(valid)
     common=np.logical_and.reduce(masks)
     if not common.any(): raise ValueError("No pixels are common to all scenes and both processing branches")
     results={}
@@ -87,7 +106,10 @@ def run(input_dir:Path,output:Path):
         per_scene=[]
         for scene in scenes:
             with rasterio.open(scene["ellipsoid"]) as e, rasterio.open(scene["rtc"]) as r:
-                eb=e.read([1,2]); rb=r.read([1,2,3,4])\n                ellipsoid_angle=None\n                if incidence_dir is not None:\n                    with rasterio.open(scene["incidence_angle"]) as a: ellipsoid_angle=a.read(1)
+                eb=e.read([1,2]); rb=r.read([1,2,3,4])
+                ellipsoid_angle=None
+                if incidence_dir is not None:
+                    with rasterio.open(scene["incidence_angle"]) as a: ellipsoid_angle=a.read(1)
             per_scene.append({"datetime_utc":scene["datetime_utc"],"polarizations":{
                 pol:summarize_relation(eb[i],rb[i],rb[2],rb[3],common,ellipsoid_angle) for i,pol in enumerate(("VV","VH"))}})
         aggregate={}
