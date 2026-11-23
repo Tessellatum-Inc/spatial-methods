@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Fetch a Nairobi County boundary and mask a Sentinel-1 VV/VH GeoTIFF to it.
+"""Fetch a pinned geoBoundaries Kenya ADM1 boundary and mask Sentinel-1 data to Nairobi.
 
-The source is the WWF-Kenya ArcGIS service, which attributes the county layer
-to Survey of Kenya and says it was shared by the Ministry of Lands, Directorate
-of Physical Planning. This is an exploratory research boundary, not a legal
-survey/cadastral boundary.
+The selected gbOpen boundary is sourced from RCMRD GeoPortal / Africa GeoPortal.
+The upstream GeoJSON is pinned by commit and verified with its Git LFS SHA-256.
+This is an exploratory reference boundary, not a legal survey/cadastral boundary.
 """
 from __future__ import annotations
 
@@ -24,73 +23,83 @@ from rasterio.mask import mask
 from shapely.geometry import mapping, shape
 from shapely.validation import make_valid
 
-LAYER_URL = (
-    "https://wwfke-giscoe.wwfkenya.org/arcgis/rest/services/"
-    "Basedata_Kenya/KenyaCountyBoundary/FeatureServer/0"
+# geoBoundaries gbOpen Kenya ADM1, pinned to the upstream Git LFS object.
+# API metadata snapshot: https://www.geoboundaries.org/api/current/gbOpen/KEN/ADM1/
+BOUNDARY_ID = "KEN-ADM1-32016919"
+BOUNDARY_YEAR = "2020"
+BOUNDARY_SOURCE = "RCMRD GeoPortal, Africa GeoPortal"
+BOUNDARY_LICENSE = "Public Domain"
+BOUNDARY_LICENSE_SOURCE = "https://rcmrd.africageoportal.com/datasets/africageoportal"
+BOUNDARY_BUILD_DATE = "Dec 12, 2023"
+BOUNDARY_SOURCE_UPDATE_DATE = "Thu Jan 19 07:31:04 2023"
+BOUNDARY_FEATURE_COUNT = 47
+BOUNDARY_LFS_SHA256 = "a3e073594494eb740e42fadec63acda982f6a745bb64ee4aa152453ccc46f94e"
+BOUNDARY_SIZE_BYTES = 7956137
+BOUNDARY_URL = (
+    "https://media.githubusercontent.com/media/wmgeolab/geoBoundaries/"
+    "9469f09/releaseData/gbOpen/KEN/ADM1/geoBoundaries-KEN-ADM1.geojson"
 )
-QUERY_URL = LAYER_URL + "/query"
-SOURCE_DESCRIPTION = (
-    "WWF-Kenya ArcGIS FeatureServer; county boundaries attributed to "
-    "Survey of Kenya (SOK), shared by Ministry of Lands - Directorate of "
-    "Physical Planning (MOL-DPP); service copyright Ministry of Lands, WWF-Kenya"
-)
+BOUNDARY_METADATA_URL = "https://www.geoboundaries.org/api/current/gbOpen/KEN/ADM1/"
+LAYER_URL = BOUNDARY_URL
 NODATA = -9999.0
 
 
-def fetch_nairobi_boundary(timeout: int = 60) -> tuple[dict, dict]:
-    """Fetch exactly one Nairobi feature as GeoJSON; reject ambiguous responses."""
-    # ArcGIS may cap ordinary feature queries at maxRecordCount. Fetch all
-    # ObjectIDs first, then request features by explicit IDs to avoid truncation.
-    ids_params = urlencode({"where": "1=1", "returnIdsOnly": "true", "f": "json"})
-    ids_request = Request(QUERY_URL + "?" + ids_params, headers={"Accept": "application/json"})
-    try:
-        with urlopen(ids_request, timeout=timeout) as response:
-            ids_payload = json.loads(response.read().decode("utf-8"))
-        if not isinstance(ids_payload, dict) or not isinstance(ids_payload.get("objectIds"), list):
-            raise RuntimeError("County boundary service did not return a valid ObjectID list.")
-        object_ids = ids_payload["objectIds"]
-        if not object_ids:
-            raise RuntimeError("County boundary service returned no county ObjectIDs.")
-        features = []
-        for start in range(0, len(object_ids), 100):
-            batch = object_ids[start:start + 100]
-            params = urlencode({
-                "objectIds": ",".join(str(value) for value in batch),
-                "outFields": "county,area_km2,objectid",
-                "returnGeometry": "true",
-                "outSR": "4326",
-                "f": "geojson",
-            })
-            request = Request(QUERY_URL + "?" + params, headers={"Accept": "application/geo+json, application/json"})
-            with urlopen(request, timeout=timeout) as response:
-                payload = json.loads(response.read().decode("utf-8"))
-            if not isinstance(payload, dict) or payload.get("type") != "FeatureCollection":
-                raise RuntimeError("County boundary service did not return a GeoJSON FeatureCollection.")
-            batch_features = payload.get("features")
-            if not isinstance(batch_features, list):
-                raise RuntimeError("County boundary service returned an invalid feature list.")
-            features.extend(batch_features)
-    except HTTPError as exc:
-        raise RuntimeError(f"County boundary service returned HTTP {exc.code}.") from None
-    except (URLError, TimeoutError, OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
-        raise RuntimeError(f"Could not retrieve county boundary ({type(exc).__name__}).") from None
 
-    # Query the small administrative layer and normalize its labels locally.
-    # This avoids relying on an exact SQL string match against a service label.
+def fetch_nairobi_boundary(timeout: int = 120) -> tuple[dict, dict]:
+    """Download a pinned Kenya ADM1 source and select exactly one Nairobi feature."""
+    request = Request(BOUNDARY_URL, headers={"Accept": "application/geo+json, application/json"})
+    try:
+        with urlopen(request, timeout=timeout) as response:
+            raw = response.read()
+        if len(raw) != BOUNDARY_SIZE_BYTES:
+            raise RuntimeError(
+                f"geoBoundaries file size mismatch: expected {BOUNDARY_SIZE_BYTES}, received {len(raw)}."
+            )
+        digest = hashlib.sha256(raw).hexdigest()
+        if digest != BOUNDARY_LFS_SHA256:
+            raise RuntimeError(
+                "Pinned geoBoundaries file checksum mismatch; refusing unverified boundary geometry."
+            )
+        payload = json.loads(raw.decode("utf-8"))
+    except HTTPError as exc:
+        raise RuntimeError(f"geoBoundaries download returned HTTP {exc.code}.") from None
+    except (URLError, TimeoutError, OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError(f"Could not retrieve geoBoundaries boundary ({type(exc).__name__}).") from None
+
+    if not isinstance(payload, dict) or payload.get("type") != "FeatureCollection":
+        raise RuntimeError("geoBoundaries source did not return a GeoJSON FeatureCollection.")
+    features = payload.get("features")
+    if not isinstance(features, list) or len(features) != BOUNDARY_FEATURE_COUNT:
+        received = len(features) if isinstance(features, list) else "invalid"
+        raise RuntimeError(
+            f"Expected {BOUNDARY_FEATURE_COUNT} Kenya ADM1 features; received {received}."
+        )
+
     matches = []
     for candidate in features:
         properties = (candidate or {}).get("properties") or {}
-        label = " ".join(str(properties.get("county", "")).strip().casefold().split())
-        if label in {"nairobi", "nairobi city"}:
+        labels = (
+            properties.get("shapeName"), properties.get("shapeNameAlt"),
+            properties.get("name"), properties.get("NAME_1"),
+            properties.get("county"), properties.get("County"),
+        )
+        normalized = {
+            " ".join(str(value or "").strip().casefold().split())
+            for value in labels
+        }
+        if "nairobi" in normalized or "nairobi city" in normalized:
             matches.append(candidate)
     if len(matches) != 1:
-        labels = sorted({str(((item or {}).get("properties") or {}).get("county", "")) for item in features})
+        labels = sorted({
+            str(((item or {}).get("properties") or {}).get("shapeName", ""))
+            for item in features
+        })
         raise RuntimeError(
-            "Expected exactly one Nairobi county feature after normalized matching; "
-            f"received {len(matches)}. Service labels: {labels[:60]}"
+            "Expected exactly one Nairobi county feature in the pinned geoBoundaries dataset; "
+            f"received {len(matches)}. ADM1 labels: {labels[:60]}"
         )
+
     feature = matches[0]
-    properties = feature.get("properties") or {}
     geometry = feature.get("geometry")
     if not isinstance(geometry, dict):
         raise RuntimeError("Nairobi county feature has no polygon geometry.")
@@ -98,17 +107,33 @@ def fetch_nairobi_boundary(timeout: int = 60) -> tuple[dict, dict]:
     if polygon.is_empty or polygon.geom_type not in ("Polygon", "MultiPolygon"):
         raise RuntimeError("Nairobi county boundary is empty or not polygonal.")
     feature["geometry"] = mapping(polygon)
+
     return feature, {
-        "service_layer": LAYER_URL,
-        "query_url": QUERY_URL + " (complete ObjectID list followed by batched objectIds queries)",
-        "description": SOURCE_DESCRIPTION,
-        "feature_properties": properties,
+        "provider": "geoBoundaries",
+        "product": "gbOpen",
+        "boundary_id": BOUNDARY_ID,
+        "boundary_name": "Kenya",
+        "administrative_level": "ADM1 (counties)",
+        "represented_year": BOUNDARY_YEAR,
+        "feature_count": BOUNDARY_FEATURE_COUNT,
+        "source": BOUNDARY_SOURCE,
+        "license": BOUNDARY_LICENSE,
+        "license_source": BOUNDARY_LICENSE_SOURCE,
+        "metadata_url": BOUNDARY_METADATA_URL,
+        "download_url": BOUNDARY_URL,
+        "upstream_git_commit": "9469f09",
+        "upstream_lfs_sha256": BOUNDARY_LFS_SHA256,
+        "downloaded_file_sha256": digest,
+        "downloaded_file_size_bytes": len(raw),
+        "source_data_update_date": BOUNDARY_SOURCE_UPDATE_DATE,
+        "build_date": BOUNDARY_BUILD_DATE,
+        "feature_properties": feature.get("properties") or {},
         "retrieved_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "geometry_crs": "EPSG:4326",
         "limitations": [
-            "Exploratory administrative boundary; not a legal survey or cadastral boundary.",
-            "Boundary provenance is attributed by the service to Survey of Kenya and Ministry of Lands, and shared with WWF-Kenya.",
-            "Boundary is retrieved live at processing time; retain the saved GeoJSON to reproduce this exact run."
+            "Open reference administrative boundary; not a legal survey or cadastral boundary.",
+            "Source metadata identifies RCMRD GeoPortal and Africa GeoPortal; represented year is 2020.",
+            "Full source dataset is pinned by upstream commit and verified against its Git LFS SHA-256.",
         ],
     }
 
@@ -178,7 +203,7 @@ def mask_raster_to_county(input_path: Path, output_dir: Path) -> tuple[Path, Pat
             dst.set_band_description(2, "VH gamma0 ellipsoid backscatter (linear power)")
             dst.set_band_description(3, "dataMask: 1 = valid county pixel, 0 = outside county or no scene data")
             dst.update_tags(
-                boundary_source=LAYER_URL,
+                boundary_source="geoBoundaries gbOpen KEN ADM1",\n                boundary_download_url=BOUNDARY_URL,\n                boundary_id=BOUNDARY_ID,
                 boundary_feature_name="Nairobi",
                 boundary_crs="EPSG:4326",
                 processing_note="County crop; invalid/outside VV and VH set to -9999; dataMask set to 0.",

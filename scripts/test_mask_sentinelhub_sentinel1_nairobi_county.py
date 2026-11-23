@@ -1,4 +1,5 @@
 """Offline tests for Nairobi County Sentinel-1 masking."""
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -32,65 +33,79 @@ class CountyMaskTests(unittest.TestCase):
     def setUp(self):
         self.feature = {
             "type": "Feature",
-            "properties": {"county": "Nairobi", "area_km2": 696.1, "objectid": 1},
+            "properties": {"shapeName": "Nairobi", "shapeISO": "KEN-030", "shapeID": "KEN-ADM1-030"},
             "geometry": {
                 "type": "Polygon",
                 "coordinates": [[[36.70,-1.40],[37.00,-1.40],[37.00,-1.20],
                                  [36.70,-1.20],[36.70,-1.40]]],
             },
         }
+        self.features = [self.feature] + [
+            {
+                "type": "Feature",
+                "properties": {"shapeName": f"County {index}"},
+                "geometry": self.feature["geometry"],
+            }
+            for index in range(1, CLIENT.BOUNDARY_FEATURE_COUNT)
+        ]
+        self.raw = json.dumps({"type": "FeatureCollection", "features": self.features}).encode()
+        self.digest = hashlib.sha256(self.raw).hexdigest()
 
     @mock.patch.object(CLIENT, "urlopen")
-    def test_fetches_and_validates_one_nairobi_feature(self, mocked):
-        payload = {"type": "FeatureCollection", "features": [self.feature]}
-        mocked.side_effect = [
-            FakeResponse(json.dumps({"objectIds": [1, 2, 3]}).encode()),
-            FakeResponse(json.dumps(payload).encode()),
-        ]
-        feature, provenance = CLIENT.fetch_nairobi_boundary()
-        self.assertEqual(feature["properties"]["county"], "Nairobi")
-        self.assertEqual(provenance["geometry_crs"], "EPSG:4326")
-        self.assertEqual(mocked.call_count, 2)
-        self.assertIn("returnIdsOnly=true", mocked.call_args_list[0].args[0].full_url)
-        self.assertIn("objectIds=1%2C2%2C3", mocked.call_args_list[1].args[0].full_url)
+    def test_downloads_pinned_dataset_and_selects_one_nairobi_feature(self, mocked):
+        mocked.return_value = FakeResponse(self.raw)
+        with mock.patch.object(CLIENT, "BOUNDARY_SIZE_BYTES", len(self.raw)), \
+             mock.patch.object(CLIENT, "BOUNDARY_LFS_SHA256", self.digest):
+            feature, provenance = CLIENT.fetch_nairobi_boundary()
+        self.assertEqual(feature["properties"]["shapeName"], "Nairobi")
+        self.assertEqual(provenance["boundary_id"], "KEN-ADM1-32016919")
+        self.assertEqual(provenance["feature_count"], 47)
+        self.assertEqual(provenance["downloaded_file_sha256"], self.digest)
+        self.assertIn("media.githubusercontent.com", mocked.call_args.args[0].full_url)
 
     @mock.patch.object(CLIENT, "urlopen")
-    def test_accepts_normalized_nairobi_city_label(self, mocked):
-        feature = dict(self.feature, properties={"county": " Nairobi City "})
-        mocked.side_effect = [
-            FakeResponse(json.dumps({"objectIds": [1]}).encode()),
-            FakeResponse(json.dumps({
-                "type": "FeatureCollection", "features": [feature]
-            }).encode()),
-        ]
-        selected, _ = CLIENT.fetch_nairobi_boundary()
-        self.assertEqual(selected["properties"]["county"], " Nairobi City ")
+    def test_rejects_checksum_mismatch(self, mocked):
+        mocked.return_value = FakeResponse(self.raw)
+        with mock.patch.object(CLIENT, "BOUNDARY_SIZE_BYTES", len(self.raw)):
+            with self.assertRaisesRegex(RuntimeError, "checksum mismatch"):
+                CLIENT.fetch_nairobi_boundary()
+
+    @mock.patch.object(CLIENT, "urlopen")
+    def test_rejects_wrong_feature_count(self, mocked):
+        raw = json.dumps({"type": "FeatureCollection", "features": self.features[:-1]}).encode()
+        mocked.return_value = FakeResponse(raw)
+        with mock.patch.object(CLIENT, "BOUNDARY_SIZE_BYTES", len(raw)), \
+             mock.patch.object(CLIENT, "BOUNDARY_LFS_SHA256", hashlib.sha256(raw).hexdigest()):
+            with self.assertRaisesRegex(RuntimeError, "Expected 47"):
+                CLIENT.fetch_nairobi_boundary()
 
     @mock.patch.object(CLIENT, "urlopen")
     def test_rejects_ambiguous_or_missing_nairobi_county(self, mocked):
-        mocked.side_effect = [
-            FakeResponse(json.dumps({"objectIds": [1, 2]}).encode()),
-            FakeResponse(json.dumps({
-                "type": "FeatureCollection", "features": [self.feature, self.feature]
-            }).encode()),
-        ]
-        with self.assertRaisesRegex(RuntimeError, "received 2"):
-            CLIENT.fetch_nairobi_boundary()
-        wrong = dict(self.feature, properties={"county": "Kiambu"})
-        mocked.side_effect = [
-            FakeResponse(json.dumps({"objectIds": [3]}).encode()),
-            FakeResponse(json.dumps({
-                "type": "FeatureCollection", "features": [wrong]
-            }).encode()),
-        ]
-        with self.assertRaisesRegex(RuntimeError, "received 0"):
-            CLIENT.fetch_nairobi_boundary()
+        duplicate = dict(self.feature, properties={"shapeName": "Nairobi City"})
+        duplicate_payload = json.dumps({
+            "type": "FeatureCollection", "features": [self.feature, duplicate] + self.features[2:]
+        }).encode()
+        mocked.return_value = FakeResponse(duplicate_payload)
+        with mock.patch.object(CLIENT, "BOUNDARY_SIZE_BYTES", len(duplicate_payload)), \
+             mock.patch.object(CLIENT, "BOUNDARY_LFS_SHA256", hashlib.sha256(duplicate_payload).hexdigest()):
+            with self.assertRaisesRegex(RuntimeError, "received 2"):
+                CLIENT.fetch_nairobi_boundary()
+
+        wrong_features = [dict(item, properties={"shapeName": f"County {index}"})
+                          for index, item in enumerate(self.features)]
+        wrong_payload = json.dumps({"type": "FeatureCollection", "features": wrong_features}).encode()
+        mocked.return_value = FakeResponse(wrong_payload)
+        with mock.patch.object(CLIENT, "BOUNDARY_SIZE_BYTES", len(wrong_payload)), \
+             mock.patch.object(CLIENT, "BOUNDARY_LFS_SHA256", hashlib.sha256(wrong_payload).hexdigest()):
+            with self.assertRaisesRegex(RuntimeError, "received 0"):
+                CLIENT.fetch_nairobi_boundary()
 
     @mock.patch.object(CLIENT, "fetch_nairobi_boundary")
     def test_masks_outside_county_and_reports_county_coverage(self, mocked_fetch):
         mocked_fetch.return_value = (
             self.feature,
-            {"service_layer": CLIENT.LAYER_URL, "geometry_crs": "EPSG:4326"},
+            {"provider": "geoBoundaries", "boundary_id": CLIENT.BOUNDARY_ID,
+             "download_url": CLIENT.BOUNDARY_URL, "geometry_crs": "EPSG:4326"},
         )
         with tempfile.TemporaryDirectory() as tmp:
             source = Path(tmp) / "source.tif"
@@ -110,6 +125,7 @@ class CountyMaskTests(unittest.TestCase):
             self.assertTrue(boundary.is_file())
             self.assertTrue(report_path.is_file())
             self.assertGreater(report["county_pixel_coverage"]["valid_percent"], 99)
+            self.assertEqual(report["boundary_provenance"]["provider"], "geoBoundaries")
             with rasterio.open(output) as ds:
                 vv = ds.read(1)
                 mask = ds.read(3)

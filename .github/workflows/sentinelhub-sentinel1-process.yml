@@ -48,7 +48,7 @@ jobs:
           test -n "$raster" || { echo "::error::No GeoTIFF was produced"; exit 1; }
           python explorations/radar/inspect_sentinelhub_sentinel1.py "$raster"
 
-      - name: Retrieve Nairobi County boundary and create county-masked raster
+      - name: Download pinned geoBoundaries Kenya ADM1 boundary, verify checksum, and create county mask
         run: |
           raster="$(find data/sentinelhub/nairobi -maxdepth 1 -type f -name '*.tif' ! -name '*_county_*' -print -quit)"
           test -n "$raster" || { echo "::error::No source GeoTIFF was produced"; exit 1; }
