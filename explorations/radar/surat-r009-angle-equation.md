@@ -122,3 +122,100 @@ Other limitations:
 The next validation step is a processor-independent comparison over a second
 site or with an independently generated RTC product, preserving the same
 equation, input/output contracts, masks, and diagnostics.
+
+
+## Independent processor validation: OPERA RTC-S1 (in progress)
+
+### Catalogue discovery
+
+ASF's OPERA RTC-S1 catalogue was queried for the four Sentinel-1A R009 source
+acquisitions. Eight matching RTC-S1 burst products were found: two adjacent
+IW3 bursts for each date. The burst identifiers are
+`T009_019159_IW3` and `T009_019160_IW3`; all products contain VV and VH.
+
+| Expected source acquisition (UTC) | OPERA burst start times (UTC) | Difference from expected |
+|---|---|---:|
+| 2025-12-19 08:41:12 | 08:41:23, 08:41:25 | +11 s, +13 s |
+| 2025-12-31 08:41:11 | 08:41:21, 08:41:24 | +10 s, +13 s |
+| 2026-01-12 08:41:10 | 08:41:20, 08:41:23 | +10 s, +13 s |
+| 2026-01-24 08:41:08 | 08:41:19, 08:41:22 | +11 s, +14 s |
+
+The product group metadata identifies the same Sentinel-1A relative orbit and
+the expected source orbit sequence. Catalogue-footprint intersections with
+the Surat study rectangle are:
+
+| Acquisition date | AOI footprint coverage |
+|---|---:|
+| 2025-12-19 | 97.43% |
+| 2025-12-31 | 97.60% |
+| 2026-01-12 | 97.54% |
+| 2026-01-24 | 97.89% |
+
+The four-date common footprint covers 97.43% of the rectangle and contains all
+three corner-reflector coordinates. These percentages are computed from
+catalogue polygons in geographic coordinates; they are discovery-level
+coverage estimates, not valid-pixel coverage from the delivered rasters.
+
+Two matching RTC-STATIC products were also found for the same burst IDs. They
+provide the gamma0-to-beta0 area-normalization factor, local incidence angle,
+number of looks and layover/shadow masks. The OPERA product specification
+defines beta-zero reconstruction as RTC gamma-zero multiplied by the
+gamma0-to-beta0 ANF.
+
+### Why this is an independent check
+
+OPERA RTC-S1 is a 30 m, burst-based product generated from Sentinel-1 SLC
+inputs with the JPL/ISCE3 RTC chain and Copernicus GLO-30 DEM. The existing
+Sentinel Hub case uses GRD inputs and its own RTC processing chain. The
+acquisitions are time- and orbit-matched, but the input product level,
+multilooking, grid spacing and processor differ. Therefore this is a
+cross-processor comparison, not a claim that native pixels should be
+identical.
+
+Product documentation:
+
+- [ASF OPERA RTC-S1 Product Guide](https://hyp3-docs.asf.alaska.edu/guides/opera_rtc_product_guide/)
+- [JPL OPERA RTC-S1 Product Specification](https://d2pn8kiwq2w21t.cloudfront.net/documents/ProductSpec_RTC-S1.pdf)
+- [JPL OPERA RTC-S1 Static Layers Specification](https://d2pn8kiwq2w21t.cloudfront.net/documents/ProductSpec_RTC-S1-STATIC.pdf)
+
+### Planned comparison
+
+1. Download the eight RTC burst products and the two static-layer products.
+2. Verify the source orbit, burst ID, acquisition time, product version,
+   CRS, affine transform, pixel spacing, nodata and raster dimensions.
+3. Mosaic adjacent bursts only after proving their grids and overlap behaviour.
+4. Decode each acquisition's dynamic RTC mask. For the strict comparison,
+   retain mask class 0 (valid and unaffected by layover or shadow); exclude
+   classes 1, 2, 3 and 255. The static mask is not substituted for the
+   acquisition-specific RTC mask.
+5. Aggregate Sentinel Hub values to the OPERA 30 m grid in linear power,
+   using valid-area weighting. Do not average dB values or use nearest-neighbour
+   resampling for backscatter.
+6. Compare OPERA RTC gamma-zero with Sentinel Hub terrain gamma-zero over the
+   common valid footprint, separately by polarization and acquisition.
+7. Reconstruct beta-zero using the OPERA gamma0-to-beta0 ANF, then reconstruct
+   an ellipsoid-referenced gamma-zero using the ellipsoid incidence-angle
+   term. Compare this result with Sentinel Hub ellipsoid gamma-zero while
+   retaining the residual bias and spatial diagnostics.
+8. Exclude reflector neighbourhoods using metric buffers, not a fixed number
+   of pixels, and report sample count, valid fraction, bias, MAE, RMSE,
+   quantiles and spatial residual structure.
+
+The OPERA static incidence-angle layer is specified as ellipsoid-referenced.
+The current automated asset selection includes the ANF and local-incidence
+layers; the independent incidence-angle asset link still needs to be resolved
+before that layer can be used. The source GRD angle interpolation is retained
+as the interim angle input, and this limitation will be explicit in the QA.
+
+### Data access status
+
+The ASF catalogue and asset metadata are accessible, but anonymous requests
+to both the Cumulus and ASF Data Pool asset endpoints returned HTTP 401.
+The downloader now supports an Earthdata Login bearer token supplied as the
+GitHub Actions secret `EARTHDATA_TOKEN`. The token is not stored in the
+repository or printed in workflow logs. NASA documents user tokens as valid
+for 60 days; renew the secret when the token expires.
+
+**Status:** catalogue discovery and asset selection are complete; raster
+download and cross-processor numerical validation are blocked until the
+repository secret is configured.
