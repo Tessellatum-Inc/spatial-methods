@@ -91,11 +91,34 @@ Evidence workflows:
 - [Cross-provider catalogue matching](../../.github/workflows/match-opera-nairobi-r130-sentinelhub.yml)
 - [OPERA asset download](../../.github/workflows/download-opera-nairobi-r130-assets.yml)
 
+## Source datatake identity and raster-grid QA (2026-11-24)
+
+The OPERA HDF5 field `/metadata/processingInformation/inputs/l1SlcGranules` identifies the SLC source granule used for each burst. These identifiers were reconciled against the Sentinel Hub GRD catalogue item names. A two-second start-time tolerance is used because the SLC and GRD product start timestamps differ by one second on two dates; platform, absolute orbit, datatake identifier, and IW mode must still agree.
+
+| UTC date | Absolute orbit | OPERA SLC datatake ID | Sentinel Hub GRD datatake ID | Start-time difference | OPERA bursts linked |
+|---|---:|---|---|---:|---:|
+| 2026-10-06 | 4896 | `009371` | `009371` | 0 s | 3/3 |
+| 2026-10-18 | 5071 | `009986` | `009986` | 0 s | 3/3 |
+| 2026-10-30 | 5246 | `009F7F` | `009F7F` | 1 s | 3/3 |
+| 2026-11-11 | 5421 | `00A58B` | `00A58B` | 1 s | 3/3 |
+| 2026-11-23 | 5596 | `00AB9A` | `00AB9A` | 0 s | 3/3 |
+
+<badge>5/5 datatakes verified</badge>
+
+All 15 OPERA burst HDF5 records link to the same corresponding Sentinel-1D GRD datatake as their date's Sentinel Hub catalogue item. This establishes acquisition-level source correspondence across the two processing chains. It does **not** mean that the SLC and GRD products are identical or that their pixels should match.
+
+The raster audit also confirms 45 dynamic RTC rasters and 18 static rasters. Each burst has 21 associated rasters (15 dynamic across five dates plus six static layers), and all 21 have identical CRS, dimensions, and affine transform within that burst. Adjacent bursts remain separate grids.
+
+Evidence:
+- [OPERA asset download run](../../../../actions/runs/45345864969)
+- [HDF5, grid and source-datatake audit run](../../../../actions/runs/45351526923)
+- [Source and raster audit artifact](../../../../actions/runs/45351526923/artifacts/14900500808)
+
 ## Current status
 
-`CATALOGUE_MATCHED_5_OF_5; HDF5_ORBIT_AND_PLATFORM_MATCHED; RASTER_GRID_QA_PASSED; SOURCE_SLC_IDENTIFIER_EXTRACTION_PENDING`
+`SOURCE_DATATAKE_IDENTITY_VERIFIED_5_OF_5; HDF5_AND_RASTER_GRID_QA_PASSED; PIXEL_COVERAGE_AND_MASK_QA_PENDING`
 
-No second-orbit pixel comparison or scientific validation result is claimed. The Nairobi R130 work remains a candidate cross-provider study until the source-scene identity and raster QA gates pass.
+No second-orbit pixel comparison or scientific validation result is claimed. Source datatake identity and within-burst grid QA have passed; next is pixel-level footprint, validity-mask, and reflector/exclusion QA before any radiometric comparison.
 
 ## Source documentation
 
