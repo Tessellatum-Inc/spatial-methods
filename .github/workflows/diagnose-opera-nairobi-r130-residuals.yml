@@ -1,5 +1,11 @@
 name: Diagnose Nairobi R130 cross-processor residuals
 on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/diagnose-opera-nairobi-r130-residuals.yml"
+      - "explorations/radar/diagnose_opera_nairobi_r130_residuals.py"
+      - "explorations/radar/test_diagnose_opera_nairobi_r130_residuals.py"
   workflow_dispatch:
     inputs:
       opera_run_id:
@@ -36,14 +42,14 @@ jobs:
         with:
           name: nairobi-r130-opera-rtc-science-assets
           path: opera-assets
-          run-id: ${{ inputs.opera_run_id }}
+          run-id: ${{ inputs.opera_run_id || '45345864969' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Download Sentinel Hub pairs and support QA
         uses: actions/download-artifact@v4
         with:
           name: nairobi-r130-sentinelhub-paired-gamma0-rasters-and-support-qa
           path: sentinelhub-assets
-          run-id: ${{ inputs.process_run_id }}
+          run-id: ${{ inputs.process_run_id || '45352163781' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate georeferenced residual maps and stratified report
         run: |
