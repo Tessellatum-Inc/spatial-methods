@@ -21,6 +21,7 @@ WINDOW_DAYS=15
 OUTPUT_SCALE_M=30
 DOWNLOAD_TILES_X=4
 DOWNLOAD_TILES_Y=4
+MAX_TILE_SPLIT_DEPTH=4
 
 def date_window(day:str,half_window:int=WINDOW_DAYS):
     d=date.fromisoformat(day)
@@ -34,6 +35,37 @@ def make_download_tiles(bbox=BBOX,nx=DOWNLOAD_TILES_X,ny=DOWNLOAD_TILES_Y):
     dx=(east-west)/nx;dy=(north-south)/ny
     return [[west+i*dx,south+j*dy,west+(i+1)*dx,south+(j+1)*dy]
       for j in range(ny) for i in range(nx)]
+
+def split_bbox(bbox):
+    """Split a CRS84 bounding box into four equal quadrants."""
+    west,south,east,north=map(float,bbox)
+    if not west<east or not south<north:raise ValueError("Invalid bounding box")
+    mid_x=(west+east)/2;mid_y=(south+north)/2
+    return [[west,south,mid_x,mid_y],[mid_x,south,east,mid_y],
+      [west,mid_y,mid_x,north],[mid_x,mid_y,east,north]]
+
+def download_tile(image,ee,day,bbox,tmp_dir,tile_name,depth=0):
+    """Download a tile, recursively subdividing only on Earth Engine 503s."""
+    region=ee.Geometry.Rectangle(bbox,proj="EPSG:4326",geodesic=False)
+    params={"name":f"dynamic-world-nairobi-r130-{day}-{tile_name}",
+      "scale":OUTPUT_SCALE_M,"region":region,"crs":"EPSG:4326","format":"GEO_TIFF"}
+    try:
+        url=image.getDownloadURL(params)
+        body=urlopen(url,timeout=300).read()
+    except HTTPError as exc:
+        if exc.code==503 and depth<MAX_TILE_SPLIT_DEPTH:
+            # Consume the failed response before retrying smaller spatial requests.
+            try:exc.read(4096)
+            except Exception:pass
+            children=[]
+            for child_index,child_bbox in enumerate(split_bbox(bbox)):
+                children.extend(download_tile(image,ee,day,child_bbox,tmp_dir,
+                  f"{tile_name}-{child_index}",depth+1))
+            return children
+        raise RuntimeError(format_download_http_error(exc,day,params,bbox)) from exc
+    path=Path(tmp_dir)/f"{tile_name}.tif"
+    path.write_bytes(body)
+    return [path]
 
 def build_composite(ee,day:str):
     start,end=date_window(day)
@@ -129,18 +161,8 @@ def acquire(output_dir:Path):
         with TemporaryDirectory(prefix=f"dw-{day}-") as tmp:
             tile_paths=[]
             for tile_index,tile_bbox in enumerate(tiles):
-                tile_region=ee.Geometry.Rectangle(tile_bbox,proj="EPSG:4326",geodesic=False)
-                params={"name":f"dynamic-world-nairobi-r130-{day}-tile-{tile_index:02d}",
-                  "scale":OUTPUT_SCALE_M,"region":tile_region,"crs":"EPSG:4326",
-                  "format":"GEO_TIFF"}
-                try:
-                    url=image.getDownloadURL(params)
-                    body=urlopen(url,timeout=300).read()
-                except HTTPError as exc:
-                    raise RuntimeError(format_download_http_error(exc,day,params,tile_bbox)) from exc
-                tile_path=Path(tmp)/f"tile-{tile_index:02d}.tif"
-                tile_path.write_bytes(body)
-                tile_paths.append(tile_path)
+                tile_paths.extend(download_tile(image,ee,day,tile_bbox,tmp,
+                  f"tile-{tile_index:02d}"))
             # Earth Engine may round tile edges to its output grid. Merge the
             # georeferenced pieces locally; downstream QA reprojects the mosaic
             # to the residual-map grid, so no exact source-grid match is needed.
@@ -168,7 +190,7 @@ def acquire(output_dir:Path):
         print(f"{day}: scenes={window['source_scene_count']}; valid={q['valid_fraction']:.3%}; conf>=0.7={q['fraction_confidence_ge_0_7']:.3%}",flush=True)
     report={"schema":"tessellatum.nairobi-r130-dynamic-world.v1",
       "provider":"Google / World Resources Institute Dynamic World",
-      "collection":COLLECTION,"bbox_crs84":BBOX,"window_half_width_days":WINDOW_DAYS,"download_tiling":{"nx":DOWNLOAD_TILES_X,"ny":DOWNLOAD_TILES_Y,"tile_count":len(tiles)},
+      "collection":COLLECTION,"bbox_crs84":BBOX,"window_half_width_days":WINDOW_DAYS,"download_tiling":{"nx":DOWNLOAD_TILES_X,"ny":DOWNLOAD_TILES_Y,"tile_count":len(tiles),"adaptive_split_max_depth":MAX_TILE_SPLIT_DEPTH},
       "probability_bands":list(PROBABILITY_BANDS),
       "class_codes":{"0":"water","1":"trees","2":"grass","3":"flooded_vegetation",
         "4":"crops","5":"shrub_and_scrub","6":"built","7":"bare","8":"snow_and_ice"},
