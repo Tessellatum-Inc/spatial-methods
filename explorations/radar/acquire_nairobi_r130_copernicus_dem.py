@@ -1,70 +1,95 @@
 #!/usr/bin/env python3
-"""Acquire the Copernicus DEM used by the Nairobi R130 terrain-correction workflow."""
+"""Acquire Copernicus GLO-30 public COG tiles for Nairobi without credentials."""
 from __future__ import annotations
-import argparse, hashlib, importlib.util, json, os, sys
-from datetime import datetime, timezone
+import argparse,hashlib,json,re,sys
+from datetime import datetime,timezone
 from pathlib import Path
-
-RADAR=Path(__file__).resolve().parent
-spec=importlib.util.spec_from_file_location("process_sentinelhub_sentinel1",RADAR/"process_sentinelhub_sentinel1.py")
-if spec is None or spec.loader is None: raise RuntimeError("Cannot load Sentinel Hub Process API client")
-PROCESS=importlib.util.module_from_spec(spec);spec.loader.exec_module(PROCESS)
+from urllib.request import Request,urlopen
+import numpy as np
+import rasterio
+from rasterio.merge import merge
+from rasterio.transform import from_bounds
+from rasterio.warp import reproject,Resampling
 
 BBOX=[36.65,-1.45,37.05,-1.15]
-WIDTH=2500;HEIGHT=2200;DEM_INSTANCE="COPERNICUS_30"
-EVALSCRIPT="""//VERSION=3
-function setup() {
-  return { input: [{ bands: ["DEM", "dataMask"] }],
-    output: { bands: 2, sampleType: SampleType.FLOAT32 } };
-}
-function evaluatePixel(sample) { return [sample.DEM, sample.dataMask]; }
-"""
+WIDTH=2500;HEIGHT=2200
+BUCKET="https://copernicus-dem-30m.s3.eu-central-1.amazonaws.com"
+TILE_RE=re.compile(r"(Copernicus_DSM_COG_10_[NS]\\d{2}_00_[EW]\\d{3}_00_DEM)",re.I)
 
-def build_payload():
-    return {
-      "input":{"bounds":{"bbox":BBOX,"properties":{"crs":"http://www.opengis.net/def/crs/OGC/1.3/CRS84"}},
-        "data":[{"type":"dem","dataFilter":{"demInstance":DEM_INSTANCE},
-          "processing":{"upsampling":"BILINEAR","downsampling":"BILINEAR"}}]},
-      "output":{"width":WIDTH,"height":HEIGHT,
-        "responses":[{"identifier":"default","format":{"type":"image/tiff"}}]},
-      "evalscript":EVALSCRIPT}
+def tile_bounds(name):
+    m=re.search(r"_([NS])(\\d{2})_00_([EW])(\\d{3})_00_DEM$",name,re.I)
+    if not m:raise ValueError(f"Unrecognized Copernicus tile name: {name}")
+    lat=int(m.group(2))*(1 if m.group(1).upper()=="N" else -1)
+    lon=int(m.group(4))*(1 if m.group(3).upper()=="E" else -1)
+    return (lon,lat,lon+1,lat+1)
+
+def intersect(a,b):
+    return a[0]<b[2] and a[2]>b[0] and a[1]<b[3] and a[3]>b[1]
+
+def fetch(url,timeout=300):
+    req=Request(url,headers={"User-Agent":"Tessellatum-Spatial-Methods/1.0"})
+    with urlopen(req,timeout=timeout) as response:return response.read()
+
+def select_tiles():
+    listing=fetch(f"{BUCKET}/tileList.txt").decode("utf-8")
+    names=sorted(set(TILE_RE.findall(listing)))
+    selected=[n for n in names if intersect(tile_bounds(n),BBOX)]
+    if not selected:raise RuntimeError("No public GLO-30 tiles intersect the Nairobi study extent")
+    return selected
 
 def run(output_dir:Path,timeout:int):
-    client=os.environ.get("SENTINEL_HUB_CLIENT_ID","")
-    secret=os.environ.get("SENTINEL_HUB_CLIENT_SECRET","")
-    token=PROCESS._CATALOG.request_access_token(client,secret,timeout=min(timeout,30))
-    payload=build_payload()
-    body=PROCESS.request_geotiff(token,payload,timeout=timeout)
     output_dir.mkdir(parents=True,exist_ok=True)
-    raster=output_dir/"nairobi_copernicus_dem_glo30.tif"
-    raster.write_bytes(body)
-    import rasterio
-    with rasterio.open(raster) as ds:
-        if ds.count!=2 or ds.width!=WIDTH or ds.height!=HEIGHT:
-            raise ValueError(f"Unexpected DEM output schema/grid: {ds.count} bands, {ds.width}x{ds.height}")
-        mask=ds.read(2)>0.5
-        elevation=ds.read(1)
-        valid=mask & (elevation!=ds.nodata if ds.nodata is not None else True)
-        if valid.mean()<0.80: raise ValueError(f"DEM valid coverage too low: {valid.mean():.3%}")
+    tiles=select_tiles();tile_paths=[]
+    for name in tiles:
+        path=output_dir/f"{name}.tif"
+        if not path.exists():
+            path.write_bytes(fetch(f"{BUCKET}/{name}/{name}.tif",timeout))
+        if path.stat().st_size<1024:raise ValueError(f"Downloaded tile is unexpectedly small: {name}")
+        with rasterio.open(path) as ds:
+            if ds.crs is None or ds.count!=1:raise ValueError(f"Unexpected tile schema: {name}")
+        tile_paths.append(path)
+        print(f"Verified {name}: {path.stat().st_size:,} bytes",flush=True)
+    with rasterio.open(tile_paths[0]) as first:
+        mosaic,transform=merge([rasterio.open(p) for p in tile_paths],bounds=BBOX)
+        crs=first.crs;nodata=first.nodata
+    source=mosaic[0].astype(np.float32)
+    if nodata is not None:source[source==nodata]=np.nan
+    destination=np.full((HEIGHT,WIDTH),np.nan,dtype=np.float32)
+    dst_transform=from_bounds(*BBOX,WIDTH,HEIGHT)
+    reproject(source,destination,src_transform=transform,src_crs=crs,src_nodata=np.nan,
+      dst_transform=dst_transform,dst_crs="EPSG:4326",dst_nodata=np.nan,
+      resampling=Resampling.bilinear)
+    valid=np.isfinite(destination)
+    if valid.mean()<0.80:raise ValueError(f"DEM coverage too low: {valid.mean():.3%}")
+    output=output_dir/"nairobi_copernicus_dem_glo30.tif"
+    profile={"driver":"GTiff","width":WIDTH,"height":HEIGHT,"count":2,"dtype":"float32",
+      "crs":"EPSG:4326","transform":dst_transform,"nodata":-9999.0,
+      "compress":"deflate","predictor":3,"tiled":True}
+    with rasterio.open(output,"w",**profile) as dst:
+        dst.write(np.where(valid,destination,-9999).astype(np.float32),1)
+        dst.write(valid.astype(np.float32),2)
+        dst.set_band_description(1,"elevation_m")
+        dst.set_band_description(2,"dataMask")
+    with rasterio.open(output) as ds:
         qa={"crs":ds.crs.to_string(),"width":ds.width,"height":ds.height,
-          "transform":list(ds.transform)[:6],"bands":["elevation_m","dataMask"],
-          "valid_pixels":int(valid.sum()),"valid_fraction":float(valid.mean()),
-          "elevation_min_m":float(elevation[valid].min()),
-          "elevation_median_m":float(__import__("numpy").median(elevation[valid])),
-          "elevation_max_m":float(elevation[valid].max())}
-    digest=hashlib.sha256(body).hexdigest()
+          "transform":list(ds.transform)[:6],"valid_pixels":int(valid.sum()),
+          "valid_fraction":float(valid.mean()),"elevation_min_m":float(np.nanmin(destination)),
+          "elevation_median_m":float(np.nanmedian(destination)),
+          "elevation_max_m":float(np.nanmax(destination))}
+    digest=hashlib.sha256(output.read_bytes()).hexdigest()
     metadata={"schema":"tessellatum.nairobi-r130-copernicus-dem.v1",
-      "provider":"Copernicus DEM via Sentinel Hub Process API",
-      "dem_instance":DEM_INSTANCE,"nominal_source":"Copernicus DEM GLO-30 Public, with GLO-90 infill where GLO-30 is unavailable",
-      "bbox_crs84":BBOX,"output_grid":{"width":WIDTH,"height":HEIGHT,"crs":"EPSG:4326"},
+      "provider":"Copernicus DEM GLO-30 Public via AWS Open Data",
+      "bucket":BUCKET,"tiles":tiles,"bbox_crs84":BBOX,
+      "source_release":"Public AWS registry copy described as Copernicus DEM 2021 release",
+      "output_grid":{"width":WIDTH,"height":HEIGHT,"crs":"EPSG:4326"},
       "retrieved_at_utc":datetime.now(timezone.utc).isoformat(),"sha256":digest,
-      "raster":raster.name,"qa":qa,
+      "raster":output.name,"qa":qa,
       "limitations":["The source is a digital surface model (DSM), not a bare-earth terrain model.",
-        "The output grid oversamples the nominal DEM and does not increase source resolution.",
-        "The provider documents GLO-30 with GLO-90 infill where 30m public tiles are unavailable.",
-        "The elevation product is static and represents source acquisitions primarily from 2011-2015."]}
-    (output_dir/"dem-qa.json").write_text(json.dumps(metadata,indent=2)+"\n")
-    print(json.dumps({"raster":raster.name,"sha256":digest,"qa":qa},sort_keys=True),flush=True)
+        "The public GLO-30 bucket has limited global coverage; only listed tiles are selected.",
+        "The output grid oversamples the nominal 1 arc-second DEM and does not increase source resolution.",
+        "The source DEM represents TanDEM-X acquisitions from 2011-2015 and is static."]}
+    (output_dir/"dem-qa.json").write_text(json.dumps(metadata,indent=2)+"\\n")
+    print(json.dumps({"tiles":tiles,"sha256":digest,"qa":qa},sort_keys=True),flush=True)
     return metadata
 
 def main():
@@ -72,8 +97,8 @@ def main():
     p.add_argument("--output-dir",type=Path,default=Path("dem-assets"))
     p.add_argument("--timeout",type=int,default=300)
     a=p.parse_args()
-    try: run(a.output_dir,a.timeout)
+    try:run(a.output_dir,a.timeout)
     except Exception as exc:
         print(f"DEM acquisition failed: {type(exc).__name__}: {exc}",file=sys.stderr);return 2
     return 0
-if __name__=="__main__": raise SystemExit(main())
+if __name__=="__main__":raise SystemExit(main())
