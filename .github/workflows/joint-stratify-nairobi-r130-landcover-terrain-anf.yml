@@ -38,7 +38,7 @@ jobs:
   analyze:
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    # Workflow changes intentionally trigger a fresh validation run.
+    # Workflow changes intentionally trigger a fresh validation run after code fixes.
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
