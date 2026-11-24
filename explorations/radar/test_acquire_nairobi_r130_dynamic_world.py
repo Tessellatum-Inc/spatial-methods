@@ -12,4 +12,23 @@ class DynamicWorldWindowTests(unittest.TestCase):
         self.assertIn("built",PROBABILITY_BANDS)
         self.assertIn("shrub_and_scrub",PROBABILITY_BANDS)
 
+    def test_project_identity_normalizes_resource_manager_path_and_reports_match(self):
+        from explorations.radar.acquire_nairobi_r130_dynamic_world import diagnose_project_identity
+        project = diagnose_project_identity(
+            {"project_id": "sample-project-123"}, "projects/sample-project-123"
+        )
+        self.assertEqual(project, "sample-project-123")
+
+    def test_project_identity_keeps_explicit_project_when_service_account_differs(self):
+        from explorations.radar.acquire_nairobi_r130_dynamic_world import diagnose_project_identity
+        project = diagnose_project_identity(
+            {"project_id": "service-account-project"}, "earth-engine-project"
+        )
+        self.assertEqual(project, "earth-engine-project")
+
+    def test_project_identity_rejects_missing_configured_project(self):
+        from explorations.radar.acquire_nairobi_r130_dynamic_world import diagnose_project_identity
+        with self.assertRaises(ValueError):
+            diagnose_project_identity({"project_id": "sample-project"}, "   ")
+
 if __name__=="__main__":unittest.main()
