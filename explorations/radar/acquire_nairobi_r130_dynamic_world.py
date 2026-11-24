@@ -40,11 +40,11 @@ def build_composite(ee,day:str):
 
 def acquire(output_dir:Path):
     import ee
-    import google.auth
+    from google.oauth2 import service_account
     info=json.loads(os.environ.get("GEE_SERVICE_ACCOUNT_JSON",""))
     project=os.environ.get("GEE_PROJECT_ID","").strip()
     if not project:raise ValueError("GEE_PROJECT_ID secret is required")
-    credentials=google.oauth2.service_account.Credentials.from_service_account_info(
+    credentials=service_account.Credentials.from_service_account_info(
       info,scopes=["https://www.googleapis.com/auth/earthengine"])
     ee.Initialize(credentials=credentials,project=project)
     output_dir.mkdir(parents=True,exist_ok=True)
