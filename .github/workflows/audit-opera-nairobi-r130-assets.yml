@@ -7,6 +7,8 @@ on:
       - ".github/workflows/audit-opera-nairobi-r130-assets.yml"
       - "explorations/radar/audit_opera_nairobi_r130_assets.py"
       - "explorations/radar/test_audit_opera_nairobi_r130_assets.py"
+      - "explorations/radar/verify_opera_nairobi_r130_source_match.py"
+      - "explorations/radar/test_verify_opera_nairobi_r130_source_match.py"
 permissions:
   contents: read
 jobs:
