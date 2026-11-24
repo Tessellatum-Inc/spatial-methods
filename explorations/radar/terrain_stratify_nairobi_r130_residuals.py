@@ -62,7 +62,7 @@ def run(dem_path:Path,residual_dir:Path,output:Path):
         parts=path.name.split("_")
         date=parts[0];burst=parts[1];pol=parts[2]
         with rasterio.open(path) as residual:
-            key=(date,burst)
+            key=burst
             if key not in cache:
                 elev,valid=reproject_dem(dem_path,residual)
                 slope,aspect,terrain_valid=terrain_derivatives(elev,valid,pixel_size=abs(residual.res[0]))
@@ -101,6 +101,17 @@ def run(dem_path:Path,residual_dir:Path,output:Path):
         n=sum(x["overall"]["count"] for x in rows)
         mae=sum(x["overall"]["count"]*x["overall"]["mae_db"] for x in rows)/n
         print(f"{b} {pol}: terrain-valid={n:,}; pixel-weighted MAE={mae:.4f} dB",flush=True)
+        for field in ("slope_strata","aspect_strata"):
+          agg={}
+          for row in rows:
+            for item in row[field]:
+              if item["count"]:
+                acc=agg.setdefault(item["bin"],[0,0.0,0.0])
+                acc[0]+=item["count"];acc[1]+=item["count"]*item["mae_db"]
+                acc[2]+=item["count"]*item["rmse_db"]
+          summary=[{"bin":k,"count":v[0],"mae_db":round(v[1]/v[0],4),
+                    "rmse_db":round(v[2]/v[0],4)} for k,v in agg.items()]
+          print(f"{b} {pol} {field}: {json.dumps(summary,separators=(',',':'))}",flush=True)
     return report
 
 def main():
