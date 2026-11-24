@@ -77,3 +77,7 @@ require an Earthdata Login bearer token in the repository Actions secret
 cross-processor workflow retrieves the two existing raster artifacts by run ID,
 reprojects Sentinel Hub linear-power values to each OPERA burst grid, and writes
 a JSON report without storing large rasters in Git.
+
+## Second independent-orbit validation
+
+The [second-orbit validation protocol](second-orbit-validation-protocol.md) defines the scientific question, candidate source, admission gates and stop/go rules before additional raster processing. The existing Nairobi ascending R130 Sentinel Hub workflow is a candidate acquisition source only; OPERA RTC-S1 source identity, matching static layers and valid raster overlap still need to be established. No second cross-processor validation is claimed yet.
