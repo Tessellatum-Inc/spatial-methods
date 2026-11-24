@@ -1,0 +1,57 @@
+name: Compare independent OPERA RTC-S1 and Sentinel Hub Surat outputs
+run-name: Cross-processor gamma0 comparison for Surat R009
+on:
+  workflow_dispatch:
+    inputs:
+      opera_run_id:
+        description: GitHub Actions run containing the OPERA science asset artifact
+        required: true
+        default: "45336118084"
+      sentinelhub_run_id:
+        description: GitHub Actions run containing the paired Sentinel Hub raster artifact
+        required: true
+        default: "45207659088"
+permissions:
+  actions: read
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install raster processing dependencies
+        run: python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
+      - name: Download OPERA science assets
+        uses: actions/download-artifact@v4
+        with:
+          name: surat-r009-opera-rtc-science-assets
+          path: data/opera/
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ inputs.opera_run_id }}
+      - name: Download paired Sentinel Hub rasters
+        uses: actions/download-artifact@v4
+        with:
+          name: surat-r009-paired-rtc-ellipsoid-rasters
+          path: data/sentinelhub/
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ inputs.sentinelhub_run_id }}
+      - name: Inspect retrieved bundle layout
+        run: |
+          find data/opera data/sentinelhub -maxdepth 4 -type f | sort
+      - name: Run cross-processor comparison
+        run: |
+          python explorations/radar/compare_opera_surat_r009_processors.py \
+            --opera-dir data/opera \
+            --sentinelhub-dir data/sentinelhub \
+            --output data/comparison/surat_r009_opera_sentinelhub_cross_processor_qa.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: surat-r009-opera-sentinelhub-cross-processor-report
+          path: data/comparison/
+          if-no-files-found: error
+          retention-days: 30
