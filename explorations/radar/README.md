@@ -67,7 +67,13 @@ QA metrics, limitations and OPERA RTC-S1 independent-processor plan are document
 - [OPERA asset downloader](download_opera_surat_r009_assets.py)
 - [Catalogue discovery workflow](../../.github/workflows/opera-surat-r009-discovery.yml)
 - [Asset download workflow](../../.github/workflows/download-opera-surat-r009-assets.yml)
+- [Cross-processor comparison implementation](compare_opera_surat_r009_processors.py)
+- [Cross-processor comparison tests](test_compare_opera_surat_r009_processors.py)
+- [Cross-processor comparison workflow](../../.github/workflows/compare-opera-surat-r009-processors.yml)
 
 OPERA catalogue discovery is reproducible without credentials. Raster downloads
 require an Earthdata Login bearer token in the repository Actions secret
-`EARTHDATA_TOKEN`; never commit the token or paste it into source files.
+`EARTHDATA_TOKEN`; never commit the token or paste it into source files. The
+cross-processor workflow retrieves the two existing raster artifacts by run ID,
+reprojects Sentinel Hub linear-power values to each OPERA burst grid, and writes
+a JSON report without storing large rasters in Git.
