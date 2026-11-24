@@ -84,7 +84,7 @@ All five Sentinel Hub candidates are Sentinel-1D, R130 ascending, IW, VV/VH. The
 
 **Metadata/raster audit (2026-11-24):** all 96 selected OPERA assets downloaded successfully (15 RTC HDF5 files, 45 dynamic GeoTIFFs, and 18 static GeoTIFFs). The 15 HDF5 files each report the expected Sentinel-1D platform, R130 track, burst ID, source acquisition start time, and absolute orbit number. The five absolute orbit numbers are 4896, 5071, 5246, 5421, and 5596, exactly matching the Sentinel Hub candidate catalogue. For each of the three bursts, all 21 associated dynamic/static rasters have one identical CRS, shape, and affine transform. These checks pass within each burst; adjacent bursts are not forced onto one grid.
 
-**Still unverified:** the audit has not yet extracted a source SLC SAFE identifier from the HDF5 processing-input metadata. The next step is to inspect the exact input-dataset names and values in these HDF5 files. The Sentinel Hub GRD source product and OPERA SLC source product remain different processing-level products; matching orbit/platform/time establishes acquisition correspondence, not pixel-level identity.
+The source SLC identifiers were subsequently extracted from the documented `l1SlcGranules` field and cross-checked against the Sentinel Hub GRD product identifiers. See the verified source-datatake crosswalk below.
 
 Evidence workflows:
 - [OPERA RTC/RTC-STATIC discovery](../../.github/workflows/discover-opera-nairobi-r130.yml)
@@ -114,9 +114,15 @@ Evidence:
 - [HDF5, grid and source-datatake audit run](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45351556417)
 - [Source and raster audit artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45351526923/artifacts/14900656138)
 
+## Sentinel Hub paired-raster processing
+
+A paired processing workflow now requests both `GAMMA0_ELLIPSOID` and `GAMMA0_TERRAIN` for the five source-verified Sentinel-1D R130 GRD scenes. It uses the same Nairobi study rectangle, the same Process API output grid for both branches, linear-power VV/VH values, Copernicus DEM GLO-30, and radiometric terrain oversampling 2. It records catalogue footprint intersection separately from Process API data-mask coverage, plus SHA-256 hashes and per-scene QA summaries. The outputs remain provisional until each OPERA burst is compared against the Sentinel Hub rasters on its native grid.
+
+Workflow: [Process Nairobi R130 paired gamma0 rasters](../../.github/workflows/process-nairobi-r130-sentinelhub-pairs.yml)
+
 ## Current status
 
-`SOURCE_DATATAKE_IDENTITY_VERIFIED_5_OF_5; HDF5_AND_RASTER_GRID_QA_PASSED; PIXEL_COVERAGE_AND_MASK_QA_PENDING`
+`SOURCE_DATATAKE_IDENTITY_VERIFIED_5_OF_5; HDF5_AND_RASTER_GRID_QA_PASSED; SENTINEL_HUB_PAIRED_PROCESSING_QUEUED; OPERA_TO_SENTINELHUB_PIXEL_SUPPORT_QA_PENDING`
 
 No second-orbit pixel comparison or scientific validation result is claimed. Source datatake identity and within-burst grid QA have passed; next is pixel-level footprint, validity-mask, and reflector/exclusion QA before any radiometric comparison.
 
