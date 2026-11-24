@@ -1,0 +1,45 @@
+name: Discover OPERA RTC-S1 for Nairobi alternate orbit R130
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/discover-opera-nairobi-r130.yml"
+      - "explorations/radar/discover_opera_nairobi_r130_products.py"
+      - "explorations/radar/test_discover_opera_nairobi_r130_products.py"
+  workflow_dispatch:
+    inputs:
+      start:
+        description: Inclusive UTC start
+        required: true
+        type: string
+        default: "2026-10-01T00:00:00Z"
+      end:
+        description: Exclusive UTC end
+        required: true
+        type: string
+        default: "2026-11-24T00:00:00Z"
+permissions:
+  contents: read
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Test catalogue parsing and orbit screening
+        run: python -m unittest explorations.radar.test_discover_opera_nairobi_r130_products -v
+      - name: Query ASF OPERA RTC-S1 catalogue
+        env:
+          START: ${{ inputs.start || '2026-10-01T00:00:00Z' }}
+          END: ${{ inputs.end || '2026-11-24T00:00:00Z' }}
+        run: |
+          python explorations/radar/discover_opera_nairobi_r130_products.py --start "$START" --end "$END"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nairobi-r130-opera-rtc-catalogue
+          path: data/asf/nairobi_r130/opera_rtc_catalogue.json
+          if-no-files-found: error
+          retention-days: 30
