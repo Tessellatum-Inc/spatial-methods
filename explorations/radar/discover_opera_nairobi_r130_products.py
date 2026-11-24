@@ -92,7 +92,9 @@ def summarize(collection:dict) -> dict:
     rows.sort(key=lambda x:(x["acquisition_datetime_utc"] or "",x["burst_id"],str(x["polarization"])))
     groups={}
     for row in rows:
-        key=row["acquisition_datetime_utc"] or "unknown"
+        # Burst start times differ by seconds within one Sentinel-1 pass.
+        # Group by UTC acquisition date; retain each burst's exact timestamp.
+        key=row["acquisition_datetime_utc"][:10] if row["acquisition_datetime_utc"] else "unknown"
         groups.setdefault(key,[]).append(row)
     return {"schema":"tessellatum.opera-nairobi-r130-catalogue-discovery.v1",
         "query":{"source":API_URL,"aoi_bbox_wgs84":list(BBOX),"wkt":WKT,
@@ -102,9 +104,10 @@ def summarize(collection:dict) -> dict:
         "observed_relative_orbit_counts":{str(k):sum(1 for x in all_identified if x["relative_orbit_from_burst"]==k)
             for k in sorted({x["relative_orbit_from_burst"] for x in all_identified if x["relative_orbit_from_burst"] is not None})},
         "target_orbit_feature_count":len(rows),
-        "acquisition_groups":[{"acquisition_datetime_utc":k,"feature_count":len(v),
+        "acquisition_groups":[{"acquisition_date_utc":k,"feature_count":len(v),
              "burst_ids":sorted({x["burst_id"] for x in v}),
-             "polarizations":sorted({str(x["polarization"]) for x in v if x["polarization"]}),
+             "burst_start_times_utc":sorted({x["acquisition_datetime_utc"] for x in v if x["acquisition_datetime_utc"]}),
+             "polarizations":sorted({pol for x in v for pol in (x["polarization"] if isinstance(x["polarization"],list) else [x["polarization"]]) if pol}),
              "products":v} for k,v in groups.items()],
         "features":rows,
         "limitations":["Burst track number is used as a relative-orbit candidate and must be cross-checked against source Sentinel-1 metadata.",
