@@ -4,10 +4,12 @@ from __future__ import annotations
 import argparse,hashlib,json,os,sys
 from datetime import date,timedelta,datetime,timezone
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from urllib.request import urlopen
 from urllib.error import HTTPError
 import numpy as np
 import rasterio
+from rasterio.merge import merge
 
 BBOX=[36.65,-1.45,37.05,-1.15]
 DATES=("2026-10-06","2026-10-18","2026-10-30","2026-11-11","2026-11-23")
@@ -16,10 +18,21 @@ PROBABILITY_BANDS=("water","trees","grass","flooded_vegetation","crops",
 COLLECTION="GOOGLE/DYNAMICWORLD/V1"
 WINDOW_DAYS=15
 OUTPUT_SCALE_M=30
+DOWNLOAD_TILES_X=4
+DOWNLOAD_TILES_Y=4
 
 def date_window(day:str,half_window:int=WINDOW_DAYS):
     d=date.fromisoformat(day)
     return (d-timedelta(days=half_window)).isoformat(),(d+timedelta(days=half_window+1)).isoformat()
+
+def make_download_tiles(bbox=BBOX,nx=DOWNLOAD_TILES_X,ny=DOWNLOAD_TILES_Y):
+    """Partition a CRS84 bounding box into deterministic, gap-free tiles."""
+    if nx<1 or ny<1:raise ValueError("Tile counts must be positive")
+    west,south,east,north=map(float,bbox)
+    if not west<east or not south<north:raise ValueError("Invalid bounding box")
+    dx=(east-west)/nx;dy=(north-south)/ny
+    return [[west+i*dx,south+j*dy,west+(i+1)*dx,south+(j+1)*dy]
+      for j in range(ny) for i in range(nx)]
 
 def build_composite(ee,day:str):
     start,end=date_window(day)
@@ -78,7 +91,7 @@ def diagnose_project_identity(info:dict,raw_project:str)->str:
     print("  project passed to ee.Initialize(): configured GEE_PROJECT_ID",flush=True)
     return project
 
-def format_download_http_error(exc:HTTPError,day:str,params:dict)->str:
+def format_download_http_error(exc:HTTPError,day:str,params:dict,tile_bbox=None)->str:
     """Expose a bounded, non-secret Earth Engine error and request summary."""
     try:
         raw=exc.read(4096)
@@ -95,7 +108,7 @@ def format_download_http_error(exc:HTTPError,day:str,params:dict)->str:
         f"content_type={content_type}; content_length={content_length}; "
         f"request_name={params.get('name')}; scale_m={params.get('scale')}; "
         f"crs={params.get('crs')}; format={params.get('format')}; "
-        f"region_bbox_crs84={BBOX}; response={detail or '<empty>'}"
+        f"region_bbox_crs84={tile_bbox if tile_bbox is not None else BBOX}; response={detail or '<empty>'}"
     )
 
 def acquire(output_dir:Path):
@@ -108,19 +121,35 @@ def acquire(output_dir:Path):
     ee.Initialize(credentials=credentials,project=project)
     output_dir.mkdir(parents=True,exist_ok=True)
     records=[]
-    region=ee.Geometry.Rectangle(BBOX,proj="EPSG:4326",geodesic=False)
+    tiles=make_download_tiles()
     for day in DATES:
         image,window=build_composite(ee,day)
-        params={"name":f"dynamic-world-nairobi-r130-{day}",
-          "scale":OUTPUT_SCALE_M,"region":region,"crs":"EPSG:4326",
-          "format":"GEO_TIFF"}
-        try:
-            url=image.getDownloadURL(params)
-            body=urlopen(url,timeout=300).read()
-        except HTTPError as exc:
-            raise RuntimeError(format_download_http_error(exc,day,params)) from exc
         path=output_dir/f"nairobi_r130_{day}_dynamic-world-30m.tif"
-        path.write_bytes(body)
+        with TemporaryDirectory(prefix=f"dw-{day}-") as tmp:
+            tile_paths=[]
+            for tile_index,tile_bbox in enumerate(tiles):
+                tile_region=ee.Geometry.Rectangle(tile_bbox,proj="EPSG:4326",geodesic=False)
+                params={"name":f"dynamic-world-nairobi-r130-{day}-tile-{tile_index:02d}",
+                  "scale":OUTPUT_SCALE_M,"region":tile_region,"crs":"EPSG:4326",
+                  "format":"GEO_TIFF"}
+                try:
+                    url=image.getDownloadURL(params)
+                    body=urlopen(url,timeout=300).read()
+                except HTTPError as exc:
+                    raise RuntimeError(format_download_http_error(exc,day,params,tile_bbox)) from exc
+                tile_path=Path(tmp)/f"tile-{tile_index:02d}.tif"
+                tile_path.write_bytes(body)
+                tile_paths.append(tile_path)
+            # Earth Engine may round tile edges to its output grid. Merge the
+            # georeferenced pieces locally; downstream QA reprojects the mosaic
+            # to the residual-map grid, so no exact source-grid match is needed.
+            with rasterio.open(tile_paths[0]) as first:
+                mosaic,transform=merge([rasterio.open(p) for p in tile_paths])
+                profile=first.profile.copy()
+                profile.update(driver="GTiff",height=mosaic.shape[1],width=mosaic.shape[2],
+                  transform=transform,count=2,compress="deflate")
+            with rasterio.open(path,"w",**profile) as dst:
+                dst.write(mosaic)
         with rasterio.open(path) as ds:
             if ds.count!=2 or ds.crs is None:raise ValueError(f"Unexpected Dynamic World raster schema for {day}")
             klass=ds.read(1);conf=ds.read(2)
@@ -137,7 +166,7 @@ def acquire(output_dir:Path):
         print(f"{day}: scenes={window['source_scene_count']}; valid={q['valid_fraction']:.3%}; conf>=0.7={q['fraction_confidence_ge_0_7']:.3%}",flush=True)
     report={"schema":"tessellatum.nairobi-r130-dynamic-world.v1",
       "provider":"Google / World Resources Institute Dynamic World",
-      "collection":COLLECTION,"bbox_crs84":BBOX,"window_half_width_days":WINDOW_DAYS,
+      "collection":COLLECTION,"bbox_crs84":BBOX,"window_half_width_days":WINDOW_DAYS,"download_tiling":{"nx":DOWNLOAD_TILES_X,"ny":DOWNLOAD_TILES_Y,"tile_count":len(tiles)},
       "probability_bands":list(PROBABILITY_BANDS),
       "class_codes":{"0":"water","1":"trees","2":"grass","3":"flooded_vegetation",
         "4":"crops","5":"shrub_and_scrub","6":"built","7":"bare","8":"snow_and_ice"},
