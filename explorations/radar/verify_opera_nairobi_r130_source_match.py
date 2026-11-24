@@ -40,6 +40,8 @@ def verify(audit,catalogue,start_tolerance_seconds=2):
             linked=[x for x in opera if x["source_slc"]["absolute_orbit"]==grd["absolute_orbit"]
                 and x["source_slc"]["datatake_id"]==grd["datatake_id"]
                 and x["source_slc"]["platform"]==grd["platform"]
+                and int(x["hdf5_absolute_orbit"])==grd["absolute_orbit"]
+                and str(x["hdf5_platform"]).replace("Sentinel-1","S1").upper()==grd["platform"]
                 and abs((parse_product_start(x["source_slc"]["start_time"])-parse_product_start(grd["start_time"])).total_seconds())<=start_tolerance_seconds]
             matches.append({"acquisition_date_utc":group.get("acquisition_date_utc"),
                 "sentinelhub_grd":grd,"linked_opera_burst_count":len(linked),
