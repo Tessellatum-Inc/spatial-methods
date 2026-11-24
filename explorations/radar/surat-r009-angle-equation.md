@@ -179,11 +179,10 @@ degrees across the two bursts. This is a useful sanity check, not a substitute
 for pixel-level alignment and convention checks. The static gamma0-to-beta0
 area-normalization factor is also present.
 
-**Status:** independent source identity, download integrity, product
-normalization metadata, grid CRS/resolution, and required static angle/ANF
-asset availability are verified. Cross-processor radiometric comparison is
-not yet complete. In particular, no residual, bias, RMSE, or equation
-validation claim should be made from these metadata checks alone.
+**Status at the metadata-QA stage:** independent source identity, download
+integrity, product normalization metadata, grid CRS/resolution, and required
+static angle/ANF availability were verified. The cross-processor comparison
+was subsequently completed; its results are recorded below.
 
 ## Independent processor validation: OPERA RTC-S1 (metadata verified; comparison pending)
 
@@ -280,3 +279,73 @@ for 60 days; renew the secret when the token expires.
 **Status:** catalogue discovery and asset selection are complete; raster
 download and cross-processor numerical validation are blocked until the
 repository secret is configured.
+
+### Cross-processor comparison result (2026-11-24)
+
+The comparison was executed successfully by GitHub Actions run
+[45338888272](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45338888272).
+The machine-readable report is preserved in the
+[surat-r009-opera-sentinelhub-cross-processor-report artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45338888272/artifacts/14895676556)
+(30-day retention).
+
+The workflow processed all eight OPERA burst rasters (two adjacent bursts for
+each of four dates). Sentinel Hub ellipsoid and terrain backscatter were
+masked and area-averaged in **linear power** onto each native OPERA burst grid;
+dB conversion happened only after aggregation. It used OPERA dynamic RTC
+mask class 0 and static mask class 0, the common Sentinel Hub data masks, the
+Sentinel Hub RTC shadow mask, and 450 m circular exclusions around the three
+surveyed reflector locations.
+
+The primary diagnostic is the difference between the processors' terrain-
+minus-ellipsoid gamma-zero changes:
+
+`residual = (SH gamma0_terrain - SH gamma0_ellipsoid)
+          - (OPERA gamma0_terrain - reconstructed OPERA gamma0_ellipsoid)`
+
+All terms are in dB after linear-power aggregation to the common OPERA grid.
+The OPERA ellipsoid gamma-zero is reconstructed from the RTC gamma-zero,
+gamma0-to-beta0 ANF, and ellipsoid incidence angle as derived above.
+
+| Polarization | Burst-pixel samples | Mean residual bias | MAE | RMSE |
+|---|---:|---:|---:|---:|
+| VV | 2,391,980 | -0.05373 dB | 0.06059 dB | 0.07165 dB |
+| VH | 2,391,932 | -0.05352 dB | 0.06142 dB | 0.07373 dB |
+
+The bias is the mean of the per-burst mean residuals weighted by each burst's
+valid sample count; MAE and RMSE are likewise count-weighted summaries of the
+eight per-burst statistics. They are descriptive summaries, not a single
+pooled-pixel statistic. Per-date and per-burst metrics, direct reconstructed
+ellipsoid/terrain backscatter comparisons, and regression diagnostics are
+retained in the JSON artifact.
+
+**Interpretation:** the cross-processor terrain-minus-ellipsoid difference is
+closely aligned, with a small systematic offset of roughly -0.054 dB and
+count-weighted MAE around 0.061 dB for both polarizations. This is encouraging
+independent-processor evidence for the geometric relationship. It is not
+evidence that OPERA and Sentinel Hub absolute backscatter values are
+interchangeable: the processors use different source product levels,
+processing chains, grids and effective spatial resolutions.
+
+Important limitations remain:
+
+- OPERA is SLC-derived, burst-based, 30 m and processed with JPL/ISCE3; the
+  Sentinel Hub branch uses GRD and a separate processing chain.
+- Sentinel Hub's 10 m requested grid is averaged to OPERA's 30 m grid. The
+  aggregation changes the statistics relative to a direct native-resolution
+  comparison, and the two products' effective resolution is not identical.
+- The residual includes processor differences, acquisition-time differences
+  of several seconds, area-averaging effects, mask differences and any
+  differences in the providers' noise/calibration conventions.
+- The weighted aggregate is not a pooled-pixel residual distribution. Use the
+  per-burst JSON records for spatial heterogeneity and scene-specific
+  interpretation.
+- This does not validate absolute radiometric calibration, corner-reflector
+  RCS, DEM accuracy, or performance in steep terrain, layover or shadow.
+
+**Conclusion:** the equation has passed a first independent-provider,
+four-date/two-polarization cross-check over this Surat footprint, with a
+small but non-zero systematic residual. Treat it as supported within this
+case-study scope, not universally validated. The next useful stress test is a
+different relative orbit or terrain regime, followed by independent point-
+target or distributed-target calibration evidence.
+
