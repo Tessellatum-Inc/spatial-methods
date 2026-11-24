@@ -4,7 +4,7 @@
 
 The Surat Basin R009 study has completed a four-date, two-polarization comparison between Sentinel Hub Sentinel-1 GRD processing and NASA/JPL OPERA RTC-S1. The next experiment must add independent acquisition geometry or terrain conditions. It must not simply increase the number of R009 dates and describe that as independent validation.
 
-This document defines the next experiment before any new raster processing. It is a protocol and candidate-screening decision, not a report of a completed second validation.
+This document records the admission protocol, source crosswalk, raster QA, and first cross-processor results for the second independent-orbit case study. The comparison is complete at the first-pass level; residual spatial diagnostics remain outstanding.
 
 ## Candidate direction
 
@@ -17,7 +17,7 @@ The repository already contains an alternate-orbit Sentinel Hub experiment for N
 - minimum catalogue footprint intersection: 0.80
 - outputs are explicitly partial-coverage diagnostics, not an analysis-ready full-AOI stack.
 
-This is a useful candidate source of alternate-geometry Sentinel Hub acquisitions. It is **not yet an OPERA cross-processor validation**: OPERA RTC-S1 and matching RTC-STATIC layers must first be discovered for the same source acquisitions and actual overlap.
+This candidate set was subsequently matched to OPERA RTC-S1 and RTC-STATIC products, reconciled to the same source datatakes, processed in both Sentinel Hub gamma0 conventions, and compared on native OPERA burst grids. The admission and result records below supersede the initial candidate-only status.
 
 ## Scientific question
 
