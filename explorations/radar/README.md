@@ -138,10 +138,10 @@ The residual dispersion increases consistently from burst 279214 to 279216. Acro
 
 #### Terrain covariate stage
 
-- [Copernicus DEM acquisition](acquire_nairobi_r130_copernicus_dem.py) uses the same Sentinel Hub `COPERNICUS_30` DEM instance configured for the RTC processing, with a two-band elevation/dataMask GeoTIFF.
+- [Copernicus DEM acquisition](acquire_nairobi_r130_copernicus_dem.py) downloads the public Copernicus GLO-30 COG tiles from the AWS Open Data bucket, then resamples the masked DEM to the study grid. This avoids the Sentinel Hub DEM Process API's account-restricted COPERNICUS_30 access.
 - [Terrain residual stratifier](terrain_stratify_nairobi_r130_residuals.py) reprojects the masked DEM to each native OPERA grid and summarizes residuals by slope and downslope aspect.
 - [Terrain derivative tests](test_terrain_stratify_nairobi_r130_residuals.py)
 - [DEM acquisition workflow](../../.github/workflows/acquire-nairobi-r130-dem.yml)
 - [Terrain stratification workflow](../../.github/workflows/terrain-stratify-nairobi-r130-residuals.yml)
 
-The DEM is a surface model, not a bare-earth terrain model, and the nominal GLO-30 source is infilled with GLO-90 where public GLO-30 is unavailable. The output sampling grid does not create new terrain detail. The acquisition and stratification workflows are separate so the DEM is retained as a versioned, short-lived artifact and can be reused. Dynamic World is a candidate for date-specific land-cover context, but it requires an Earth Engine-backed acquisition route; no land-cover attribution is claimed until that dependency and confidence filtering are addressed.
+The Copernicus DEM is a surface model, not a bare-earth terrain model. The public GLO-30 AWS copy has limited tile coverage and represents the 2021 public release; the output sampling grid does not create new terrain detail. Source: [AWS Open Data registry](https://registry.opendata.aws/copernicus-dem/) and [tile/readme specification](https://copernicus-dem-30m.s3.amazonaws.com/readme.html). The acquisition and stratification workflows are separate so the DEM is retained as a versioned, short-lived artifact and can be reused. Dynamic World is a candidate for date-specific land-cover context, but it requires an Earth Engine-backed acquisition route; no land-cover attribution is claimed until that dependency and confidence filtering are addressed.
