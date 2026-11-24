@@ -140,7 +140,7 @@ def main(argv=None):
     print(f"Observed relative-orbit counts: {report['observed_relative_orbit_counts']}")
     print(f"First catalogue samples: {report['catalogue_burst_id_samples'][:5]}")
     for g in report["acquisition_groups"]:
-        print(f"{g['acquisition_datetime_utc']} | bursts={len(g['burst_ids'])} | pols={','.join(g['polarizations'])}")
+        print(f"{g['acquisition_date_utc']} | bursts={len(g['burst_ids'])} | pols={','.join(g['polarizations'])}")
     print(f"Report: {a.output}")
     return 0
 
