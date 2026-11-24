@@ -27,6 +27,10 @@ def build_composite(ee,day:str):
       .filterDate(start,end).select(list(PROBABILITY_BANDS)))
     count=collection.size().getInfo()
     if not count:raise ValueError(f"No Dynamic World scenes in {start} to {end} for Nairobi")
+    first_ms=collection.aggregate_min("system:time_start").getInfo()
+    last_ms=collection.aggregate_max("system:time_start").getInfo()
+    first_date=datetime.fromtimestamp(first_ms/1000,timezone.utc).date().isoformat()
+    last_date=datetime.fromtimestamp(last_ms/1000,timezone.utc).date().isoformat()
     probabilities=collection.median()
     predicted=(probabilities.toArray().arrayArgmax().arrayGet([0])
       .rename("dw_class").toByte())
@@ -36,7 +40,8 @@ def build_composite(ee,day:str):
     class30=predicted.reduceResolution(reducer=ee.Reducer.mode(),maxPixels=64)
     conf30=confidence.reduceResolution(reducer=ee.Reducer.mean(),maxPixels=64)
     output=ee.Image.cat([class30,conf30]).rename(["dw_class","dw_confidence"])
-    return output,{"window_start":start,"window_end_exclusive":end,"source_scene_count":int(count)}
+    return output,{"window_start":start,"window_end_exclusive":end,"source_scene_count":int(count),
+      "first_source_scene_date":first_date,"last_source_scene_date":last_date}
 
 def acquire(output_dir:Path):
     import ee
