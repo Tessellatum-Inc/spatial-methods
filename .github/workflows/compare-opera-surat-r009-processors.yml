@@ -11,6 +11,12 @@ on:
         description: GitHub Actions run containing the paired Sentinel Hub raster artifact
         required: true
         default: "45207659088"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/compare-opera-surat-r009-processors.yml"
+      - "explorations/radar/compare_opera_surat_r009_processors.py"
+      - "explorations/radar/test_compare_opera_surat_r009_processors.py"
 permissions:
   actions: read
   contents: read
@@ -31,7 +37,7 @@ jobs:
           path: data/opera/
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
-          run-id: ${{ inputs.opera_run_id }}
+          run-id: ${{ inputs.opera_run_id || '45336118084' }}
       - name: Download paired Sentinel Hub rasters
         uses: actions/download-artifact@v4
         with:
@@ -39,7 +45,7 @@ jobs:
           path: data/sentinelhub/
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
-          run-id: ${{ inputs.sentinelhub_run_id }}
+          run-id: ${{ inputs.sentinelhub_run_id || '45207659088' }}
       - name: Inspect retrieved bundle layout
         run: |
           find data/opera data/sentinelhub -maxdepth 4 -type f | sort
