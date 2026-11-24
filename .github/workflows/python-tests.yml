@@ -93,6 +93,16 @@ jobs:
         run: python -m unittest discover -s explorations/radar -p "test_screen_sentinel1_angle_consistency.py"
       - name: Test Sentinel-1 gamma0 terrain processing
         run: python -m unittest discover -s explorations/radar -p "test_process_sentinel1_gamma0_terrain.py"
+      - name: Test Nairobi R130 residual diagnostics
+        run: python -m unittest explorations.radar.test_diagnose_opera_nairobi_r130_residuals -v
+      - name: Test Nairobi R130 terrain residual stratification
+        run: python -m unittest explorations.radar.test_terrain_stratify_nairobi_r130_residuals -v
+      - name: Test Nairobi R130 support-edge diagnostics
+        run: python -m unittest explorations.radar.test_diagnose_nairobi_r130_support_edges -v
+      - name: Test Nairobi R130 Dynamic World date windows
+        run: python -m unittest explorations.radar.test_acquire_nairobi_r130_dynamic_world -v
+      - name: Test Nairobi R130 Dynamic World residual stratification
+        run: python -m unittest explorations.radar.test_stratify_nairobi_r130_dynamic_world -v
       - name: Test paired ellipsoid and terrain backscatter comparison
         run: python -m unittest discover -s explorations/radar -p "test_compare_sentinel1_ellipsoid_vs_terrain.py"
       - name: Test Sentinel-1 persistent-water reference screen
