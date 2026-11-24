@@ -96,6 +96,12 @@ The matcher screens the OPERA R130 dates against Sentinel Hub STAC items using r
 
 The download workflow requires the existing `EARTHDATA_TOKEN` Actions secret. It verifies byte counts where ASF supplies them and records SHA-256 checksums; downloaded rasters remain in a 14-day Actions artifact rather than Git.
 
+- [OPERA R130 metadata and raster-grid audit](audit_opera_nairobi_r130_assets.py)
+- [Audit tests](test_audit_opera_nairobi_r130_assets.py)
+- [Audit workflow](../../.github/workflows/audit-opera-nairobi-r130-assets.yml)
+
+The audit downloads the retained OPERA asset artifact from workflow run `45345864969`, inspects the HDF5 identification/source-data/processing-input metadata, and checks that all dynamic and static rasters for each burst share the same grid. It deliberately checks grid consistency within each burst, not across adjacent bursts.
+
 ## Second independent-orbit validation
 
 The [second-orbit validation protocol](second-orbit-validation-protocol.md) defines the scientific question, candidate source, admission gates and stop/go rules before additional raster processing. The existing Nairobi ascending R130 Sentinel Hub workflow is a candidate acquisition source only; OPERA RTC-S1 source identity, matching static layers and valid raster overlap still need to be established. No second cross-processor validation is claimed yet.
