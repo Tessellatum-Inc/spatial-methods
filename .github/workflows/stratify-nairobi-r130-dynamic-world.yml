@@ -5,7 +5,7 @@ on:
       dynamic_world_run_id:
         description: Successful Dynamic World acquisition workflow run ID
         required: true
-        default: "0"
+        default: "45400510881"
         type: string
 permissions:
   actions: read
