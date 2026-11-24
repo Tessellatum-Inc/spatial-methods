@@ -118,6 +118,12 @@ The processor requests five source-verified GRD datatakes in both ellipsoid and 
 
 This QA resamples Sentinel Hub validity support and linear-power VV/VH onto each native OPERA burst grid, applies documented OPERA dynamic/static mask semantics and a 95% source-support threshold, and reports valid/common sample counts separately for each date, burst, and polarization. It is a precondition for radiometric comparison, not itself a validation result.
 
+- [Nairobi R130 cross-processor comparator](compare_opera_nairobi_r130_processors.py)
+- [Comparator tests](test_compare_opera_nairobi_r130_processors.py)
+- [Comparison workflow](../../.github/workflows/compare-opera-nairobi-r130-processors.yml)
+
+The comparator reconstructs OPERA ellipsoid gamma0 from terrain gamma0, ANF and ellipsoid incidence angle, then compares the terrain-minus-ellipsoid delta against Sentinel Hub. It area-averages masked linear power onto native OPERA burst grids before dB conversion and reports per-date/per-burst/per-polarization plus pooled-pixel residual metrics. The workflow runs only after paired-raster processing and common-support QA succeed.
+
 ## Second independent-orbit validation
 
 The [second-orbit validation protocol](second-orbit-validation-protocol.md) defines the scientific question, candidate source, admission gates and stop/go rules before additional raster processing. The existing Nairobi ascending R130 Sentinel Hub workflow is a candidate acquisition source only; OPERA RTC-S1 source identity, matching static layers and valid raster overlap still need to be established. No second cross-processor validation is claimed yet.
