@@ -17,7 +17,7 @@ BBOX = (36.65, -1.45, 37.05, -1.15)
 WKT = ("polygon((36.65 -1.45, 37.05 -1.45, 37.05 -1.15, "
        "36.65 -1.15, 36.65 -1.45))")
 TARGET_RELATIVE_ORBIT = 130
-BURST_RE = re.compile(r"T(\d{3})-(\d{6})-IW(\d)", re.I)
+BURST_RE = re.compile(r"T(\d{3})[-_](\d{6})[-_]IW(\d)", re.I)
 STAMP_RE = re.compile(r"(20\d{6})T(\d{6})Z?")
 
 
