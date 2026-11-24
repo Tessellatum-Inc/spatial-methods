@@ -4,6 +4,12 @@ on:
     workflows: ["Process Nairobi R130 Sentinel Hub paired gamma0 rasters"]
     types: [completed]
     branches: [main]
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/compare-opera-nairobi-r130-processors.yml"
+      - "explorations/radar/compare_opera_nairobi_r130_processors.py"
+      - "explorations/radar/test_compare_opera_nairobi_r130_processors.py"
   workflow_dispatch:
     inputs:
       process_run_id:
@@ -22,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
-      PROCESS_RUN_ID: ${{ github.event_name == 'workflow_dispatch' && inputs.process_run_id || github.event.workflow_run.id }}
+      PROCESS_RUN_ID: ${{ github.event_name == 'workflow_dispatch' && inputs.process_run_id || (github.event_name == 'workflow_run' && github.event.workflow_run.id) || '45352163781' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
