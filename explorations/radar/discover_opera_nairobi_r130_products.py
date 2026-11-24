@@ -134,6 +134,8 @@ def main(argv=None):
     a.output.parent.mkdir(parents=True,exist_ok=True)
     a.output.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
     print(f"ASF features: {report['catalogue_feature_count']}; R130 burst features: {report['target_orbit_feature_count']}; acquisition groups: {len(report['acquisition_groups'])}")
+    print(f"Observed relative-orbit counts: {report['observed_relative_orbit_counts']}")
+    print(f"First catalogue samples: {report['catalogue_burst_id_samples'][:5]}")
     for g in report["acquisition_groups"]:
         print(f"{g['acquisition_datetime_utc']} | bursts={len(g['burst_ids'])} | pols={','.join(g['polarizations'])}")
     print(f"Report: {a.output}")
