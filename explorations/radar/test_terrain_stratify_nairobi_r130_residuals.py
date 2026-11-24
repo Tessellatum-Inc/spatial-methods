@@ -1,8 +1,13 @@
 import unittest
 import numpy as np
-from explorations.radar.terrain_stratify_nairobi_r130_residuals import terrain_derivatives, summarize, strata
+from explorations.radar.terrain_stratify_nairobi_r130_residuals import terrain_derivatives, summarize, strata, report_date
 
 class TerrainResidualTests(unittest.TestCase):
+    def test_report_date_preserves_iso_date_tokens(self):
+        self.assertEqual(report_date("2026-10-06"), "2026-10-06")
+        with self.assertRaises(ValueError):
+            report_date("20261006")
+
     def test_planar_eastward_rise_has_expected_slope(self):
         y,x=np.mgrid[0:9,0:9]
         z=2.0*x
