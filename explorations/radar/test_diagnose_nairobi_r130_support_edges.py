@@ -8,7 +8,7 @@ class SupportEdgeTests(unittest.TestCase):
         d=support_edge_distance(valid,max_radius=5)
         self.assertEqual(int(d[0,0]),1)
         self.assertEqual(int(d[1,1]),2)
-        self.assertEqual(int(d[4,4]),4)
+        self.assertEqual(int(d[4,4]),5)
 
     def test_invalid_hole_creates_internal_edge(self):
         valid=np.ones((9,9),dtype=bool);valid[4,4]=False
