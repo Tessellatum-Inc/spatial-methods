@@ -1,0 +1,52 @@
+name: Stratify Nairobi R130 residuals by Dynamic World land cover
+on:
+  workflow_dispatch:
+    inputs:
+      dynamic_world_run_id:
+        description: Successful Dynamic World acquisition workflow run ID
+        required: true
+        default: "0"
+        type: string
+permissions:
+  actions: read
+  contents: read
+concurrency:
+  group: stratify-nairobi-r130-dynamic-world
+  cancel-in-progress: false
+jobs:
+  stratify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install raster dependencies
+        run: python -m pip install numpy rasterio
+      - name: Test land-cover summary schema
+        run: python -m unittest explorations.radar.test_stratify_nairobi_r130_dynamic_world -v
+      - name: Download residual maps
+        uses: actions/download-artifact@v4
+        with:
+          name: nairobi-r130-residual-maps-and-diagnostics
+          path: residual-artifact
+          run-id: 45360551227
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Locate residual GeoTIFFs
+        run: mkdir residual-maps && cp residual-artifact/residual-maps/*.tif residual-maps/
+      - name: Download Dynamic World date-window composites
+        uses: actions/download-artifact@v4
+        with:
+          name: nairobi-r130-dynamic-world-date-window-composites
+          path: dynamic-world-assets
+          run-id: ${{ inputs.dynamic_world_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Stratify residuals by class and confidence
+        run: python explorations/radar/stratify_nairobi_r130_dynamic_world.py --residual-dir residual-maps --dynamic-world-dir dynamic-world-assets --report dynamic-world-residual-stratification.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nairobi-r130-dynamic-world-residual-stratification
+          path: dynamic-world-residual-stratification.json
+          if-no-files-found: error
+          retention-days: 30
