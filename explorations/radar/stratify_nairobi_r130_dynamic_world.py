@@ -22,6 +22,13 @@ def summarize(values):
       "fraction_abs_gt_0_5_db":float(np.mean(a>0.5)),
       "fraction_abs_gt_1_db":float(np.mean(a>1.0))}
 
+def valid_landcover_support(residual_values,residual_nodata,klass,confidence):
+    """Keep only residual pixels with an observed, nonzero-confidence DW label."""
+    valid=np.isfinite(residual_values)
+    if residual_nodata is not None:valid &= residual_values!=residual_nodata
+    valid &= (klass<=8)&np.isfinite(confidence)&(confidence>0)&(confidence<=1)
+    return valid
+
 def align_dynamic_world(path,template):
     with rasterio.open(path) as src:
         if src.count!=2:raise ValueError(f"Expected class/confidence bands in {path.name}")
@@ -47,8 +54,7 @@ def run(residual_dir:Path,dynamic_dir:Path,output:Path):
             if date not in cache:cache[date]=align_dynamic_world(dw_path,residual)
             klass,confidence=cache[date]
             residual_values=residual.read(1).astype(np.float32)
-            valid=(residual_values!=residual.nodata)&np.isfinite(residual_values)
-            valid &= (klass<=8)&np.isfinite(confidence)&(confidence>=0)&(confidence<=1)
+            valid=valid_landcover_support(residual_values,residual.nodata,klass,confidence)
             total=int(valid.sum())
             thresholds=[]
             for threshold in CONFIDENCE_THRESHOLDS:
