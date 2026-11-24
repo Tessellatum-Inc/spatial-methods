@@ -124,6 +124,8 @@ This QA resamples Sentinel Hub validity support and linear-power VV/VH onto each
 
 The comparator reconstructs OPERA ellipsoid gamma0 from terrain gamma0, ANF and ellipsoid incidence angle, then compares the terrain-minus-ellipsoid delta against Sentinel Hub. It area-averages masked linear power onto native OPERA burst grids before dB conversion and reports per-date/per-burst/per-polarization plus pooled-pixel residual metrics. The workflow runs only after paired-raster processing and common-support QA succeed.
 
+**First independent-orbit result:** the Nairobi R130 cross-processor comparison completed for five dates, three IW3 bursts and VV/VH. Pooled residual bias is approximately +0.004 dB in both polarizations; MAE is approximately 0.090 dB (VV) and 0.092 dB (VH). The full per-burst diagnostics, limitations and follow-on residual investigation are recorded in [the second-orbit protocol and results](second-orbit-validation-protocol.md). This is case-bounded evidence, not universal validation.
+
 ## Second independent-orbit validation
 
 The [second-orbit validation protocol](second-orbit-validation-protocol.md) defines the scientific question, candidate source, admission gates and stop/go rules before additional raster processing. The existing Nairobi ascending R130 Sentinel Hub workflow is a candidate acquisition source only; OPERA RTC-S1 source identity, matching static layers and valid raster overlap still need to be established. No second cross-processor validation is claimed yet.
