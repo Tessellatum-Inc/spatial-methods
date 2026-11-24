@@ -5,6 +5,7 @@ import argparse,hashlib,json,os,sys
 from datetime import date,timedelta,datetime,timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from contextlib import ExitStack
 from urllib.request import urlopen
 from urllib.error import HTTPError
 import numpy as np
@@ -143,9 +144,10 @@ def acquire(output_dir:Path):
             # Earth Engine may round tile edges to its output grid. Merge the
             # georeferenced pieces locally; downstream QA reprojects the mosaic
             # to the residual-map grid, so no exact source-grid match is needed.
-            with rasterio.open(tile_paths[0]) as first:
-                mosaic,transform=merge([rasterio.open(p) for p in tile_paths])
-                profile=first.profile.copy()
+            with ExitStack() as stack:
+                sources=[stack.enter_context(rasterio.open(p)) for p in tile_paths]
+                mosaic,transform=merge(sources)
+                profile=sources[0].profile.copy()
                 profile.update(driver="GTiff",height=mosaic.shape[1],width=mosaic.shape[2],
                   transform=transform,count=2,compress="deflate")
             with rasterio.open(path,"w",**profile) as dst:
