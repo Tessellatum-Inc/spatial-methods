@@ -13,7 +13,7 @@ class DiscoveryTests(unittest.TestCase):
         with self.assertRaises(ValueError): build_query("2026-11-24T00:00:00Z","2026-11-24T00:00:00Z")
 
     def test_extracts_relative_orbit_and_timestamp_from_burst_name(self):
-        got=identify({"fileName":"OPERA_L2_RTC-S1_T130-019159-IW3_20261110T041200Z_20261110T180000Z_S1A_30_v1.0"})
+        got=identify({"fileName":"OPERA_L2_RTC-S1_T130_279159_IW3_20261110T041200Z_20261110T180000Z_S1A_30_v1.0"})
         self.assertEqual(got["relative_orbit_from_burst"],130)
         self.assertEqual(got["acquisition_datetime_utc"],"2026-11-10T04:12:00Z")
 
