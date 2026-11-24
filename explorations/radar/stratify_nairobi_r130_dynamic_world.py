@@ -2,6 +2,7 @@
 """Stratify Nairobi R130 residuals by date-window Dynamic World class/confidence."""
 from __future__ import annotations
 import argparse,json,sys
+from datetime import date as calendar_date
 from pathlib import Path
 import numpy as np
 import rasterio
@@ -21,6 +22,10 @@ def summarize(values):
       "p95_absolute_db":float(np.percentile(a,95)),
       "fraction_abs_gt_0_5_db":float(np.mean(a>0.5)),
       "fraction_abs_gt_1_db":float(np.mean(a>1.0))}
+
+def report_date(date_token):
+    """Validate and preserve the ISO date token parsed from residual filenames."""
+    return calendar_date.fromisoformat(date_token).isoformat()
 
 def valid_landcover_support(residual_values,residual_nodata,klass,confidence):
     """Keep only residual pixels with an observed, nonzero-confidence DW label."""
@@ -71,7 +76,7 @@ def run(residual_dir:Path,dynamic_dir:Path,output:Path):
                   "valid_pixels":int(threshold_mask.sum()),
                   "coverage_of_residual_valid_pixels":float(threshold_mask.sum()/total) if total else 0,
                   "classes":classes})
-            records.append({"date":f"{date[:4]}-{date[4:6]}-{date[6:8]}",
+            records.append({"date":report_date(date),
               "burst_id":burst,"polarization":pol,"residual_pixels_with_landcover":total,
               "landcover_confidence_quantiles":{str(q):float(np.quantile(confidence[valid],q)) for q in (.1,.5,.9)} if total else {},
               "threshold_summaries":thresholds})
