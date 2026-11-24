@@ -78,6 +78,12 @@ cross-processor workflow retrieves the two existing raster artifacts by run ID,
 reprojects Sentinel Hub linear-power values to each OPERA burst grid, and writes
 a JSON report without storing large rasters in Git.
 
+- [OPERA Nairobi R130 catalogue discovery](discover_opera_nairobi_r130_products.py)
+- [Discovery tests](test_discover_opera_nairobi_r130_products.py)
+- [Discovery workflow](../../.github/workflows/discover-opera-nairobi-r130.yml)
+
+The discovery workflow screens OPERA RTC-S1 burst products for the Nairobi ascending R130 candidate window and uploads a compact catalogue report. It does not download raster data or prove a Sentinel Hub source-scene match; those remain separate admission gates.
+
 ## Second independent-orbit validation
 
 The [second-orbit validation protocol](second-orbit-validation-protocol.md) defines the scientific question, candidate source, admission gates and stop/go rules before additional raster processing. The existing Nairobi ascending R130 Sentinel Hub workflow is a candidate acquisition source only; OPERA RTC-S1 source identity, matching static layers and valid raster overlap still need to be established. No second cross-processor validation is claimed yet.
