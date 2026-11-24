@@ -1,0 +1,60 @@
+name: Compare OPERA and Sentinel Hub Nairobi R130 gamma0
+on:
+  workflow_run:
+    workflows: ["Process Nairobi R130 Sentinel Hub paired gamma0 rasters"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      process_run_id:
+        description: Successful paired-processing workflow run ID
+        required: true
+        type: string
+permissions:
+  actions: read
+  contents: read
+concurrency:
+  group: compare-opera-nairobi-r130
+  cancel-in-progress: false
+jobs:
+  compare:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PROCESS_RUN_ID: ${{ github.event_name == 'workflow_dispatch' && inputs.process_run_id || github.event.workflow_run.id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install raster comparison dependencies
+        run: python -m pip install numpy rasterio
+      - name: Test comparison math and support gates
+        run: python -m unittest explorations.radar.test_compare_opera_nairobi_r130_processors -v
+      - name: Download OPERA RTC and RTC-STATIC assets
+        uses: actions/download-artifact@v4
+        with:
+          name: nairobi-r130-opera-rtc-science-assets
+          path: opera-assets
+          run-id: 45345864969
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download Sentinel Hub paired rasters and common-support QA
+        uses: actions/download-artifact@v4
+        with:
+          name: nairobi-r130-sentinelhub-paired-gamma0-rasters-and-support-qa
+          path: sentinelhub-assets
+          run-id: ${{ env.PROCESS_RUN_ID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Compare terrain-to-ellipsoid deltas on native OPERA grids
+        run: |
+          python explorations/radar/compare_opera_nairobi_r130_processors.py \
+            --opera-dir opera-assets \
+            --sentinelhub-dir sentinelhub-assets \
+            --output comparison-report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nairobi-r130-cross-processor-comparison-report
+          path: comparison-report.json
+          if-no-files-found: error
+          retention-days: 30
