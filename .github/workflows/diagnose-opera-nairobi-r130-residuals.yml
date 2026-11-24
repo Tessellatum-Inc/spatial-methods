@@ -53,11 +53,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate georeferenced residual maps and stratified report
         run: |
-          python explorations/radar/diagnose_opera_nairobi_r130_residuals.py \\
-            --opera-dir opera-assets \\
-            --sentinelhub-dir sentinelhub-assets \\
-            --output-dir residual-maps \\
-            --report residual-diagnostics.json
+          python explorations/radar/diagnose_opera_nairobi_r130_residuals.py --opera-dir opera-assets --sentinelhub-dir sentinelhub-assets --output-dir residual-maps --report residual-diagnostics.json
       - name: Upload residual diagnostics
         uses: actions/upload-artifact@v4
         with:
