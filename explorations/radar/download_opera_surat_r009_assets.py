@@ -17,6 +17,7 @@ ALLOWED_HOSTS = {"cumulus.asf.earthdatacloud.nasa.gov", "datapool.asf.alaska.edu
 RTC_SUFFIXES = (".h5", ".iso.xml", "_VV.tif", "_VH.tif", "_mask.tif")
 STATIC_SUFFIXES = (
     ".iso.xml",
+    "_incidence_angle.tif",
     "_local_incidence_angle.tif",
     "_mask.tif",
     "_number_of_looks.tif",
@@ -42,7 +43,9 @@ def select_assets(report: dict) -> list[dict]:
         for feature in features:
             props = feature["properties"]
             candidates = list(props.get("additionalUrls", []))
-            if product_type == "rtc" and props.get("url"):
+            if props.get("url"):
+                # RTC uses its primary URL for the HDF5 product; RTC-STATIC
+                # exposes ellipsoid incidence_angle.tif only through this URL.
                 candidates.append(props["url"])
             selected = set()
             for url in candidates:
@@ -146,7 +149,7 @@ def main(argv=None) -> int:
             "Successful downloads and size checks do not establish raster-grid alignment or radiometric equivalence.",
             "The RTC-S1 products are 30 m burst-based gamma0 power products; reconcile CRS, transform, source acquisition, mask and effective resolution before comparison.",
             "RTC-STATIC masks are ancillary geometry masks; use each acquisition's RTC product mask to screen the corresponding dynamic RTC raster.",
-            "The ellipsoid incidence-angle layer is taken from the separately interpolated source GRD angle grids; the RTC-STATIC local incidence angle is not a substitute for ellipsoid incidence angle.",
+            "RTC-STATIC incidence_angle.tif is ellipsoid-referenced; local_incidence_angle.tif is terrain-normal referenced. Keep the two conventions distinct.",
         ],
     }
     args.output_dir.mkdir(parents=True, exist_ok=True)
