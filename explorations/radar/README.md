@@ -113,6 +113,11 @@ The verifier crosswalks OPERA's documented `l1SlcGranules` HDF5 input field agai
 
 The processor requests five source-verified GRD datatakes in both ellipsoid and terrain gamma0 conventions, retains linear VV/VH, and emits per-scene data-mask and grid QA. It does not claim radiometric validation; comparison to OPERA native burst grids is a separate downstream gate.
 
+- [Nairobi R130 OPERA/Sentinel Hub common-support QA](qa_nairobi_r130_common_support.py)
+- [Common-support QA tests](test_qa_nairobi_r130_common_support.py)
+
+This QA resamples Sentinel Hub validity support and linear-power VV/VH onto each native OPERA burst grid, applies documented OPERA dynamic/static mask semantics and a 95% source-support threshold, and reports valid/common sample counts separately for each date, burst, and polarization. It is a precondition for radiometric comparison, not itself a validation result.
+
 ## Second independent-orbit validation
 
 The [second-orbit validation protocol](second-orbit-validation-protocol.md) defines the scientific question, candidate source, admission gates and stop/go rules before additional raster processing. The existing Nairobi ascending R130 Sentinel Hub workflow is a candidate acquisition source only; OPERA RTC-S1 source identity, matching static layers and valid raster overlap still need to be established. No second cross-processor validation is claimed yet.
