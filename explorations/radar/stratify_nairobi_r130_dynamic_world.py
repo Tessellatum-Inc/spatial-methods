@@ -51,8 +51,12 @@ def run(residual_dir:Path,dynamic_dir:Path,output:Path):
         dw_path=dynamic_dir/f"nairobi_r130_{date}_dynamic-world-30m.tif"
         if not dw_path.is_file():raise FileNotFoundError(f"Missing date-window Dynamic World raster: {dw_path}")
         with rasterio.open(path) as residual:
-            if date not in cache:cache[date]=align_dynamic_world(dw_path,residual)
-            klass,confidence=cache[date]
+            # Each burst can have a slightly different raster grid/extent. Cache
+            # by the complete target grid, not date alone, or a prior burst's
+            # aligned arrays may have a different shape.
+            grid_key=(date,residual.width,residual.height,str(residual.crs),tuple(residual.transform))
+            if grid_key not in cache:cache[grid_key]=align_dynamic_world(dw_path,residual)
+            klass,confidence=cache[grid_key]
             residual_values=residual.read(1).astype(np.float32)
             valid=valid_landcover_support(residual_values,residual.nodata,klass,confidence)
             total=int(valid.sum())
