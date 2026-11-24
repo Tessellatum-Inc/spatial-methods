@@ -63,6 +63,9 @@ def run(residual_dir:Path,dynamic_dir:Path,output:Path):
             if grid_key not in cache:cache[grid_key]=align_dynamic_world(dw_path,residual)
             klass,confidence=cache[grid_key]
             residual_values=residual.read(1).astype(np.float32)
+            residual_valid=np.isfinite(residual_values)
+            if residual.nodata is not None:residual_valid &= residual_values!=residual.nodata
+            residual_total=int(residual_valid.sum())
             valid=valid_landcover_support(residual_values,residual.nodata,klass,confidence)
             total=int(valid.sum())
             thresholds=[]
@@ -74,10 +77,10 @@ def run(residual_dir:Path,dynamic_dir:Path,output:Path):
                     classes.append({"class_code":code,"class_name":name,**summarize(residual_values[m])})
                 thresholds.append({"minimum_top1_confidence":threshold,
                   "valid_pixels":int(threshold_mask.sum()),
-                  "coverage_of_residual_valid_pixels":float(threshold_mask.sum()/total) if total else 0,
+                  "coverage_of_residual_valid_pixels":float(threshold_mask.sum()/residual_total) if residual_total else 0,
                   "classes":classes})
             records.append({"date":report_date(date),
-              "burst_id":burst,"polarization":pol,"residual_pixels_with_landcover":total,
+              "burst_id":burst,"polarization":pol,"residual_valid_pixels":residual_total,"residual_pixels_with_landcover":total,
               "landcover_confidence_quantiles":{str(q):float(np.quantile(confidence[valid],q)) for q in (.1,.5,.9)} if total else {},
               "threshold_summaries":thresholds})
     report={"schema":"tessellatum.nairobi-r130-dynamic-world-residual-stratification.v1",
