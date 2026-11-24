@@ -3,6 +3,12 @@ on:
   workflow_run:
     workflows: ["Acquire Nairobi R130 Copernicus DEM"]
     types: [completed]
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/terrain-stratify-nairobi-r130-residuals.yml"
+      - "explorations/radar/terrain_stratify_nairobi_r130_residuals.py"
+      - "explorations/radar/test_terrain_stratify_nairobi_r130_residuals.py"
   workflow_dispatch:
     inputs:
       dem_run_id:
@@ -44,7 +50,7 @@ jobs:
         with:
           name: nairobi-r130-copernicus-dem
           path: dem-assets
-          run-id: ${{ github.event.workflow_run.id || inputs.dem_run_id }}
+          run-id: ${{ github.event.workflow_run.id || inputs.dem_run_id || '45364142134' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Calculate terrain derivatives and residual strata
         run: python explorations/radar/terrain_stratify_nairobi_r130_residuals.py --dem dem-assets/nairobi_copernicus_dem_glo30.tif --residual-dir residual-maps --report terrain-stratification.json
