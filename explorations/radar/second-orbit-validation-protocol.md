@@ -253,17 +253,29 @@ These patterns make terrain geometry a plausible contributor to the burst-depend
 
 Next: use date-matched Dynamic World land-cover probabilities (not a single hard label), apply confidence thresholds, and evaluate whether the ANF/slope/aspect associations persist within surface classes. Dynamic World is available near-real-time at 10m through Google Earth Engine; that acquisition route still needs credentials and QA before use. No land-cover attribution or residual exclusion is claimed.
 
+
+#### Common-support edge proximity test (2026-11-24)
+
+A separate test measured residual exceedances within 1, 5, 10, and 20 native pixels of any invalid 8-neighbour in each residual map. Invalid cells combine OPERA masks and Sentinel Hub common-support failures, so the test evaluates the combined comparison footprint rather than attributing a boundary to one provider.
+
+- [Support-edge diagnostic workflow](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45365267484)
+- [Support-edge diagnostic report](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45365267484/artifacts/14905309441)
+
+There is a narrow one-pixel edge effect: the fraction above 1 dB in the outermost pixel is higher than in the interior for each burst. For burst 279216, for example, it is 0.280% VV / 0.268% VH in the first edge pixel, versus 0.080% / 0.075% more than 20 pixels inward. But when the edge buffer expands to 20 pixels (approximately 600 m), the >1 dB fraction falls to 0.063% / 0.058%, below the deep-interior fraction. Burst 279215 has the same broad pattern (0.019% / 0.018% within 20 pixels versus 0.028% / 0.027% in the interior). Burst 279214's 20-pixel edge and interior rates are similar and very low.
+
+Thus, immediate support-boundary pixels deserve special inspection, but broad mask-edge proximity does **not** explain the burst-wide residual dispersion or the majority of >1 dB residuals. Outliers also occur well inside common support. No edge buffer is excluded from the comparison; the result is diagnostic only.
+
 #### Spatial interpretation and next work
 
-Residual maps show spatial texture rather than purely isolated single-pixel noise. A preview of burst 279216 shows coherent fine-scale patterns, but this visual inspection alone does not identify whether they arise from land cover, terrain, scene geometry, or processing differences. No land-cover attribution has been made because a date-appropriate independently validated classification has not yet been admitted.
+Residual maps show spatial texture rather than purely isolated single-pixel noise. A preview of burst 279216 shows coherent fine-scale patterns. The edge test finds some enrichment in the outermost pixel but shows that the bulk of the residual dispersion persists well inside the common-support footprint. Terrain slope/aspect and ANF are now plausible covariates, but land cover and processing effects remain unresolved. No land-cover attribution has been made because a date-appropriate independently validated classification has not yet been admitted.
 
 The next gate should therefore test ANF-tail pixels against terrain slope/aspect and a defensible land-cover layer, then inspect high-residual coordinates against source masks and support edges. Keep the three bursts separate. Do not remove outliers or introduce exclusions unless a physical/methodological criterion is justified before re-estimating agreement.
 
 ## Current status
 
-`SOURCE_DATATAKE_IDENTITY_VERIFIED_5_OF_5; HDF5_AND_RASTER_GRID_QA_PASSED; COMMON_PIXEL_SUPPORT_QA_PASSED_15_OF_15; R130_CROSS_PROCESSOR_COMPARISON_COMPLETE; RESIDUAL_MAPS_COMPLETE; ANF_AND_TERRAIN_STRATIFICATION_COMPLETE; DATE_MATCHED_LANDCOVER_ATTRIBUTION_PENDING`
+`SOURCE_DATATAKE_IDENTITY_VERIFIED_5_OF_5; HDF5_AND_RASTER_GRID_QA_PASSED; COMMON_PIXEL_SUPPORT_QA_PASSED_15_OF_15; R130_CROSS_PROCESSOR_COMPARISON_COMPLETE; RESIDUAL_MAPS_COMPLETE; ANF_TERRAIN_AND_SUPPORT_EDGE_DIAGNOSTICS_COMPLETE; DATE_MATCHED_LANDCOVER_ATTRIBUTION_PENDING`
 
-The source, raster-grid, common-pixel-support, cross-processor comparison, residual mapping, and first terrain-covariate gates have passed. The terrain-to-ellipsoid relationship remains supported within this case, but residual dispersion is associated with burst, ANF quartiles, slope, and aspect. Date-matched land-cover attribution and a further independent test remain outstanding; no universal validation claim is made.
+The source, raster-grid, common-pixel-support, cross-processor comparison, residual mapping, ANF/terrain stratification, and support-edge diagnostics have passed. The terrain-to-ellipsoid relationship remains supported within this case, but residual dispersion is associated with burst, ANF quartiles, slope, and aspect; immediate support edges contain some additional outliers but do not explain the broad effect. Date-matched land-cover attribution and a further independent test remain outstanding; no universal validation claim is made.
 
 ## Source documentation
 
