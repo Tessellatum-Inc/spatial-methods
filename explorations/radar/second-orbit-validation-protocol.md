@@ -224,6 +224,35 @@ Incidence-angle values are concentrated almost entirely in the 44–46° bin. Th
 
 ANF quartiles show a more repeatable pattern. In every burst and both polarizations, the lowest and highest within-scene ANF quartiles have higher MAE than the middle two quartiles. For example, burst 279216 VV MAE is about 0.116, 0.079, 0.082, and 0.139 dB in Q1–Q4; VH is about 0.116, 0.080, 0.083, and 0.139 dB. The same U-shaped pattern appears in the other bursts. Mean residual bias also tends negative in Q1 and positive in Q4. This is a strong diagnostic association, not evidence that ANF itself causes the error: ANF may covary with terrain slope, aspect, local scattering regime, or resampling geometry. Quartile boundaries are burst-specific and must not be interpreted as common physical thresholds.
 
+
+#### Terrain slope/aspect stratification (2026-11-24)
+
+A Copernicus GLO-30 Public DEM was acquired from the AWS Open Data COG bucket, using the two 1° tiles intersecting the Nairobi processing rectangle: `S02_00_E036_00` and `S02_00_E037_00`. Both tiles passed GeoTIFF checks. The resulting 2500 × 2200 EPSG:4326 study-grid raster has 100% data-mask coverage, elevation range 0–2267.64 m and median 1642.69 m. Its SHA-256 and tile list are retained in the DEM QA sidecar.
+
+- [DEM acquisition workflow](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45364142134)
+- [DEM artifact (92.5 MB; 30-day retention)](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45364142134/artifacts/14906256438)
+- [Terrain stratification workflow](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45364890793)
+- [Terrain-stratified JSON report](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45364890793/artifacts/14906925618)
+
+Slope and downslope aspect were calculated from the DEM after reprojection to each native OPERA grid. All 30 residual maps passed terrain stratification. The slope relationship is consistent across bursts and polarizations: MAE generally increases with slope. Illustrative pooled-by-date bins:
+
+| Burst | Polarization | 0–1° slope MAE | 5–10° slope MAE | 10–15° slope MAE | 15–30° slope MAE |
+|---|---|---:|---:|---:|---:|
+| 279214 | VV | 0.0613 | 0.0926 | 0.1262 | 0.1770* |
+| 279214 | VH | 0.0659 | 0.0980 | 0.1384 | 0.2136* |
+| 279215 | VV | 0.0642 | 0.1089 | 0.1296 | 0.1596 |
+| 279215 | VH | 0.0675 | 0.1091 | 0.1297 | 0.1603 |
+| 279216 | VV | 0.0762 | 0.1129 | 0.1503 | 0.2143 |
+| 279216 | VH | 0.0783 | 0.1126 | 0.1498 | 0.2139 |
+
+*Burst 279214 has only 80 samples in the 15–30° bin, so those values are unstable and should not be generalized.*
+
+Aspect also shows a repeated directional pattern: south- and southwest-facing bins have higher MAE than north-facing bins. For example, burst 279215 VV MAE is 0.0805 dB in the N bin and 0.1167 dB in SW; burst 279216 is 0.1007 dB in N and 0.1461 dB in SW. VH shows the same pattern. Aspect is defined as downslope azimuth clockwise from north, with low-slope pixels excluded from directional bins.
+
+These patterns make terrain geometry a plausible contributor to the burst-dependent residual spread, but they do not establish causality. The DEM is a DSM, not a bare-earth DTM; buildings and vegetation can influence its derivatives. The public AWS COGs are the Copernicus 2021 release with source acquisition dates primarily 2011–2015, and the 30m source is resampled to the OPERA grids. Slope/aspect may also covary with ANF, land cover, local incidence angle, and the spatial distribution of valid pixels. The strong ANF-quartile pattern and slope/aspect pattern must therefore be tested jointly rather than treated as independent effects.
+
+Next: use date-matched Dynamic World land-cover probabilities (not a single hard label), apply confidence thresholds, and evaluate whether the ANF/slope/aspect associations persist within surface classes. Dynamic World is available near-real-time at 10m through Google Earth Engine; that acquisition route still needs credentials and QA before use. No land-cover attribution or residual exclusion is claimed.
+
 #### Spatial interpretation and next work
 
 Residual maps show spatial texture rather than purely isolated single-pixel noise. A preview of burst 279216 shows coherent fine-scale patterns, but this visual inspection alone does not identify whether they arise from land cover, terrain, scene geometry, or processing differences. No land-cover attribution has been made because a date-appropriate independently validated classification has not yet been admitted.
@@ -232,9 +261,9 @@ The next gate should therefore test ANF-tail pixels against terrain slope/aspect
 
 ## Current status
 
-`SOURCE_DATATAKE_IDENTITY_VERIFIED_5_OF_5; HDF5_AND_RASTER_GRID_QA_PASSED; COMMON_PIXEL_SUPPORT_QA_PASSED_15_OF_15; R130_CROSS_PROCESSOR_COMPARISON_COMPLETE; RESIDUAL_MAPS_AND_COVARIATE_STRATIFICATION_COMPLETE; TERRAIN_AND_LANDCOVER_ATTRIBUTION_PENDING`
+`SOURCE_DATATAKE_IDENTITY_VERIFIED_5_OF_5; HDF5_AND_RASTER_GRID_QA_PASSED; COMMON_PIXEL_SUPPORT_QA_PASSED_15_OF_15; R130_CROSS_PROCESSOR_COMPARISON_COMPLETE; RESIDUAL_MAPS_COMPLETE; ANF_AND_TERRAIN_STRATIFICATION_COMPLETE; DATE_MATCHED_LANDCOVER_ATTRIBUTION_PENDING`
 
-The source, raster-grid, common-pixel-support, cross-processor comparison, and first residual spatial-diagnostic gates have passed. The terrain-to-ellipsoid relationship remains supported within this case, but dispersion varies systematically by burst and by ANF quartile. Terrain/land-cover attribution and a further independent test remain outstanding; no universal validation claim is made.
+The source, raster-grid, common-pixel-support, cross-processor comparison, residual mapping, and first terrain-covariate gates have passed. The terrain-to-ellipsoid relationship remains supported within this case, but residual dispersion is associated with burst, ANF quartiles, slope, and aspect. Date-matched land-cover attribution and a further independent test remain outstanding; no universal validation claim is made.
 
 ## Source documentation
 
@@ -243,3 +272,6 @@ The source, raster-grid, common-pixel-support, cross-processor comparison, and f
 - [NASA/JPL OPERA RTC product overview](https://www.jpl.nasa.gov/go/opera/products/rtc-product/)
 - [Sentinel Hub Catalog API](https://docs.sentinel-hub.com/api/latest/api/catalog/)
 - [Sentinel Hub Sentinel-1 GRD collection and processing notes](https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Data/S1GRD.html)
+- [Copernicus DEM AWS Open Data registry](https://registry.opendata.aws/copernicus-dem/)
+- [Copernicus DEM COG tile naming and specifications](https://copernicus-dem-30m.s3.amazonaws.com/readme.html)
+- [Dynamic World Earth Engine data catalogue](https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_DYNAMICWORLD_V1)
