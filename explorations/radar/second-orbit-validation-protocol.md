@@ -111,8 +111,8 @@ The raster audit also confirms 45 dynamic RTC rasters and 18 static rasters. Eac
 
 Evidence:
 - [OPERA asset download run](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45345864969)
-- [HDF5, grid and source-datatake audit run](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45351526923)
-- [Source and raster audit artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45351526923/artifacts/14900820845)
+- [HDF5, grid and source-datatake audit run](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45351556417)
+- [Source and raster audit artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45351526923/artifacts/14900656138)
 
 ## Current status
 
