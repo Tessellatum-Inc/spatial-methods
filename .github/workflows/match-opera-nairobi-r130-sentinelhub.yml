@@ -3,6 +3,7 @@ on:
   push:
     branches: [main]
     paths:
+      - ".github/workflows/match-opera-nairobi-r130-sentinelhub.yml"
       - ".github/workflows/discover-opera-nairobi-r130.yml"
       - "explorations/radar/discover_opera_nairobi_r130_products.py"
       - "explorations/radar/match_opera_nairobi_r130_sentinelhub.py"
