@@ -156,11 +156,62 @@ Evidence:
 - [Paired processing and common-support QA workflow](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45352163781)
 - [Paired rasters and common-support QA artifact (534.7 MB)](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45352163781/artifacts/14900862117)
 
+## First R130 cross-processor comparison (2026-11-24)
+
+The comparison workflow completed for all 15 date/burst combinations and both polarizations. It reconstructs OPERA ellipsoid gamma0 as
+
+`gamma0_ellipsoid = gamma0_RTC * ANF_gamma0_to_beta0 * tan(ellipsoid_incidence_angle)`
+
+and compares `Sentinel Hub (terrain - ellipsoid)` against `OPERA (terrain - reconstructed ellipsoid)`. All inputs are linear-power averages on each native OPERA burst grid before dB conversion.
+
+### Pooled pixel-level residuals
+
+| Metric | VV | VH |
+|---|---:|---:|
+| Pooled pixels | 7,452,890 | 7,452,850 |
+| Mean residual bias | +0.0040 dB | +0.0045 dB |
+| MAE | 0.0901 dB | 0.0916 dB |
+| RMSE | 0.1294 dB | 0.1302 dB |
+| 95th-percentile absolute residual | 0.2541 dB | 0.2543 dB |
+| Maximum absolute residual | 3.4023 dB | 3.1613 dB |
+
+The pooled mean bias is very close to zero, and the 95th-percentile absolute residual is about 0.25 dB. However, maximum absolute residuals exceed 3 dB, so the near-zero mean must not be mistaken for uniformly small local differences.
+
+### Burst structure
+
+The per-burst MAE/RMSE pattern is consistent across all five dates:
+
+| Burst | VV MAE range | VH MAE range | Approximate RMSE range |
+|---|---:|---:|---:|
+| T130-279214-IW3 | 0.064–0.065 dB | 0.069–0.072 dB | 0.085–0.094 dB |
+| T130-279215-IW3 | 0.083 dB | 0.084–0.086 dB | 0.117–0.120 dB |
+| T130-279216-IW3 | 0.104 dB | 0.104–0.105 dB | 0.148–0.150 dB |
+
+This stable burst-dependent pattern deserves investigation. It may reflect spatial differences in scattering regime, terrain, incidence geometry, or residual processor/resampling effects; the current results do not identify which explanation is responsible. The first burst has much lower dispersion than the third, despite similarly small mean biases.
+
+### Interpretation and limits
+
+This is positive evidence that the terrain-to-ellipsoid gamma0 relationship remains closely aligned between OPERA and Sentinel Hub on a second relative orbit, five dates, three IW3 bursts, and two polarizations. It is not evidence that absolute backscatter products are interchangeable. It is also not an absolute calibration experiment: no Nairobi corner-reflector inventory or absolute RCS target was used. The broad AOI includes urban and peri-urban surfaces.
+
+The Surat R009 study had lower pooled MAE/RMSE (about 0.061/0.072 dB for VV and 0.061/0.074 dB for VH). Nairobi R130's pooled errors are larger (about 0.090/0.129 dB for VV and 0.092/0.130 dB for VH), even though its mean bias is closer to zero. The two sites/orbits should remain separate case studies rather than be pooled.
+
+Evidence:
+- [Cross-processor comparison workflow](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45353189679)
+- [Cross-processor report artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45353189679/artifacts/14901316555)
+
+### Next diagnostic gate
+
+Before calling this a strong second-case validation, investigate the burst-dependent spread and extreme tails:
+1. Produce georeferenced residual maps per burst/date/polarization.
+2. Stratify residuals by ellipsoid incidence angle, ANF, and land-cover/surface class where defensible data are available.
+3. Locate the largest residuals and test whether they cluster at mask edges, low-support boundaries, or particular surface regimes.
+4. Recompute robust summaries after any exclusions are justified *a priori* and documented; do not discard outliers merely to improve agreement.
+
 ## Current status
 
-`SOURCE_DATATAKE_IDENTITY_VERIFIED_5_OF_5; HDF5_AND_RASTER_GRID_QA_PASSED; SENTINEL_HUB_PAIRS_PROCESSED_5_OF_5; COMMON_PIXEL_SUPPORT_QA_PASSED_15_OF_15; CROSS_PROCESSOR_COMPARISON_RUNNING`
+`SOURCE_DATATAKE_IDENTITY_VERIFIED_5_OF_5; HDF5_AND_RASTER_GRID_QA_PASSED; COMMON_PIXEL_SUPPORT_QA_PASSED_15_OF_15; R130_CROSS_PROCESSOR_COMPARISON_COMPLETE; RESIDUAL_SPATIAL_DIAGNOSTICS_PENDING`
 
-The source, raster-grid, and common-pixel-support admission gates have passed. The cross-processor comparison is now running. No radiometric validation result is claimed until its metrics and limitations are reviewed.
+The source, raster-grid, and common-pixel-support gates have passed, and the first R130 cross-processor comparison is complete. It provides positive but case-bounded evidence. Burst-dependent residual spread and extreme tails remain under investigation; no universal validation claim is made.
 
 ## Source documentation
 
