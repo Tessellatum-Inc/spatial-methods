@@ -99,14 +99,16 @@ def reproject_average(source: np.ndarray, src, dst) -> np.ndarray:
 
 def reflector_exclusion(ds) -> np.ndarray:
     excluded = np.zeros((ds.height, ds.width), dtype=bool)
+    transform = ds.transform
+    x_centres = transform.c + (np.arange(ds.width) + 0.5) * transform.a
+    y_centres = transform.f + (np.arange(ds.height) + 0.5) * transform.e
     for _, lon, lat in TARGETS:
         xs, ys = transform_coords("EPSG:4326", ds.crs, [lon], [lat])
         x, y = xs[0], ys[0]
-        row, col = ds.index(x, y)
-        # A circular buffer in map units; works for the projected OPERA UTM grid.
-        rows, cols = np.ogrid[:ds.height, :ds.width]
-        xx, yy = rasterio.transform.xy(ds.transform, rows, cols, offset="center")
-        excluded |= (np.asarray(xx) - x) ** 2 + (np.asarray(yy) - y) ** 2 <= REFLECTOR_EXCLUSION_M ** 2
+        excluded |= ((x_centres[None, :] - x) ** 2
+                     + (y_centres[:, None] - y) ** 2 <= REFLECTOR_EXCLUSION_M ** 2)
+
+
     return excluded
 
 
