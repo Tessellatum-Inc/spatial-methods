@@ -102,6 +102,11 @@ The download workflow requires the existing `EARTHDATA_TOKEN` Actions secret. It
 
 The audit downloads the retained OPERA asset artifact from workflow run `45345864969`, inspects the HDF5 identification/source-data/processing-input metadata, and checks that all dynamic and static rasters for each burst share the same grid. It deliberately checks grid consistency within each burst, not across adjacent bursts.
 
+- [OPERA SLC / Sentinel Hub GRD datatake verifier](verify_opera_nairobi_r130_source_match.py)
+- [Datatake verifier tests](test_verify_opera_nairobi_r130_source_match.py)
+
+The verifier crosswalks OPERA's documented `l1SlcGranules` HDF5 input field against Sentinel Hub GRD catalogue item identifiers using platform, IW mode, acquisition start time, absolute orbit and datatake identifier. It distinguishes source-acquisition correspondence from equality of the two processed products.
+
 ## Second independent-orbit validation
 
 The [second-orbit validation protocol](second-orbit-validation-protocol.md) defines the scientific question, candidate source, admission gates and stop/go rules before additional raster processing. The existing Nairobi ascending R130 Sentinel Hub workflow is a candidate acquisition source only; OPERA RTC-S1 source identity, matching static layers and valid raster overlap still need to be established. No second cross-processor validation is claimed yet.
