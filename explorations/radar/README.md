@@ -126,6 +126,12 @@ The comparator reconstructs OPERA ellipsoid gamma0 from terrain gamma0, ANF and 
 
 **First independent-orbit result:** the Nairobi R130 cross-processor comparison completed for five dates, three IW3 bursts and VV/VH. Pooled residual bias is approximately +0.004 dB in both polarizations; MAE is approximately 0.090 dB (VV) and 0.092 dB (VH). The full per-burst diagnostics, limitations and follow-on residual investigation are recorded in [the second-orbit protocol and results](second-orbit-validation-protocol.md). This is case-bounded evidence, not universal validation.
 
-## Second independent-orbit validation
+## Nairobi R130 residual spatial diagnostics
 
-The [second-orbit validation protocol](second-orbit-validation-protocol.md) defines the scientific question, candidate source, admission gates and stop/go rules before additional raster processing. The existing Nairobi ascending R130 Sentinel Hub workflow is a candidate acquisition source only; OPERA RTC-S1 source identity, matching static layers and valid raster overlap still need to be established. No second cross-processor validation is claimed yet.
+- [Residual diagnostic implementation](diagnose_opera_nairobi_r130_residuals.py)
+- [Residual diagnostic tests](test_diagnose_opera_nairobi_r130_residuals.py)
+- [Residual maps and stratification workflow](../../.github/workflows/diagnose-opera-nairobi-r130-residuals.yml)
+
+The diagnostic stage exports 30 float32 GeoTIFF residual maps (five dates × three native OPERA bursts × VV/VH) with source CRS, affine transform and nodata preserved. Its compact JSON report includes per-scene residual distributions, exceedance fractions above 0.5/1/2 dB, fixed incidence-angle strata, scene-local ANF quartiles and coordinates of the ten largest absolute residuals per scene/polarization. It applies the same masks and 95% valid-support threshold as the first-pass comparator. No outliers are removed and no land-cover attribution is made without an independently admitted, date-appropriate layer.
+
+The [second-orbit validation protocol](second-orbit-validation-protocol.md) records the completed source-identity, raster-support and first-pass cross-processor gates. The first-pass comparison is complete; the spatial residual diagnostics are the next gate. This remains case-bounded evidence, not universal validation.
