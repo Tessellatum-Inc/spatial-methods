@@ -124,7 +124,68 @@ site or with an independently generated RTC product, preserving the same
 equation, input/output contracts, masks, and diagnostics.
 
 
-## Independent processor validation: OPERA RTC-S1 (in progress)
+
+### OPERA asset retrieval and metadata QA (2026-11-24)
+
+The ASF catalogue candidates were downloaded after Earthdata application/EULA
+authorization. The final GitHub Actions run
+[45336118084](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45336118084)
+completed successfully and produced the short-lived artifact
+`surat-r009-opera-rtc-science-assets` (54 files; approximately 235 MB; 7-day
+retention). The manifest records the source URLs, expected and actual byte
+counts, and SHA-256 for every file. A local verification of all 54 files found
+no missing files, size mismatches, or checksum mismatches.
+
+The final asset set contains 8 RTC HDF5 products, 8 RTC XML sidecars, 16 VV/VH
+GeoTIFFs, 8 dynamic RTC masks, and 14 static assets (2 XML sidecars and 12
+GeoTIFFs). The latter includes both the ellipsoid-referenced
+`incidence_angle.tif` and terrain-normal-referenced
+`local_incidence_angle.tif` for each burst. These angle conventions must not
+be interchanged.
+
+HDF5 provenance confirms that the four acquisition dates use these original
+Sentinel-1A SLC granules:
+
+| Date | Source SLC granule start (UTC) |
+|---|---|
+| 2025-12-19 | 08:41:11 |
+| 2025-12-31 | 08:41:09 |
+| 2026-01-12 | 08:41:08 |
+| 2026-01-24 | 08:41:07 |
+
+Both adjacent burst products for a date reference the same source SLC granule.
+The HDF5 processing metadata records beta-zero input normalization, gamma-zero
+output normalization, linear backscatter intensity, and radiometric terrain
+correction enabled. The delivered GeoTIFFs are float32, 30 m, UTM zone 55S
+(`EPSG:32755`); the two burst grids have different origins and dimensions,
+so they must be mosaicked or explicitly aligned before pixelwise comparison.
+
+Using the two burst masks reprojected by nearest neighbour to a 30 m grid over
+the rectangular AOI, the union of valid mask-class-0 pixels covers:
+
+| Acquisition | Valid AOI grid cells | Valid fraction |
+|---|---:|---:|
+| 2025-12-19 | 569,818 / 634,678 | 89.78% |
+| 2025-12-31 | 572,028 / 634,678 | 90.13% |
+| 2026-01-12 | 571,254 / 634,678 | 90.01% |
+| 2026-01-24 | 575,624 / 634,678 | 90.70% |
+
+These are raster-mask coverage estimates on the stated 30 m comparison grid,
+not catalogue-footprint percentages. The remaining AOI cells must remain
+excluded from paired statistics; do not fill them or infer values.
+
+The static ellipsoid incidence-angle rasters span approximately 40.48–46.01
+degrees across the two bursts. This is a useful sanity check, not a substitute
+for pixel-level alignment and convention checks. The static gamma0-to-beta0
+area-normalization factor is also present.
+
+**Status:** independent source identity, download integrity, product
+normalization metadata, grid CRS/resolution, and required static angle/ANF
+asset availability are verified. Cross-processor radiometric comparison is
+not yet complete. In particular, no residual, bias, RMSE, or equation
+validation claim should be made from these metadata checks alone.
+
+## Independent processor validation: OPERA RTC-S1 (metadata verified; comparison pending)
 
 ### Catalogue discovery
 
