@@ -85,7 +85,7 @@ def run(dem_path:Path,residual_dir:Path,output:Path):
               "valid_terrain_pixels":int(valid.sum()),"slope_median_deg":float(np.median(sl)),
               "slope_p95_deg":float(np.percentile(sl,95))})
     report={"schema":"tessellatum.nairobi-r130-terrain-residual-stratification.v1",
-      "terrain_source":"Copernicus DEM GLO-30 via Sentinel Hub COPERNICUS_30; GLO-90 infill where public GLO-30 unavailable.",
+      "terrain_source":"Copernicus DEM GLO-30 Public 2021 release via public AWS Open Data COG tiles.",
       "terrain_derivatives":"Central differences on each native OPERA grid at 30m pixel spacing; aspect is downslope azimuth clockwise from north; aspect omitted for slope below 1 degree.",
       "slope_edges_degrees":SLOPE_EDGES.tolist(),"aspect_bins_degrees":45,
       "records":records,"checks":{"records":len(records),"all_30_maps_stratified":len(records)==30},
