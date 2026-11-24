@@ -68,11 +68,32 @@ A candidate acquisition may enter processing only when all of the following are 
 - **Revise candidate:** OPERA products exist but the Sentinel Hub match, static layers, or spatial overlap are inadequate; search another orbit/date window without relaxing source-identity requirements.
 - **Stop and document:** no defensible match exists. Do not manufacture a comparison by matching only on date or by using a different Sentinel-1 acquisition.
 
+## Candidate discovery results (2026-11-24)
+
+The ASF and Sentinel Hub catalogue workflows found a consistent R130 candidate set:
+
+| UTC acquisition date | OPERA RTC burst products | Sentinel Hub GRD candidate | Difference to nearest OPERA burst start | Sentinel Hub absolute orbit |
+|---|---:|---|---:|---:|
+| 2026-10-06 | 3 | `S1D_IW_GRDH_1SDV_20261006T155531_20261006T155556_004896_009371_B797_COG.SAFE` | 11 s | 4896 |
+| 2026-10-18 | 3 | `S1D_IW_GRDH_1SDV_20261018T155531_20261018T155556_005071_009986_8434_COG.SAFE` | 11 s | 5071 |
+| 2026-10-30 | 3 | `S1D_IW_GRDH_1SDV_20261030T155531_20261030T155556_005246_009F7F_498E_COG.SAFE` | 10 s | 5246 |
+| 2026-11-11 | 3 | `S1D_IW_GRDH_1SDV_20261111T155531_20261111T155556_005421_00A58B_0CEC_COG.SAFE` | 10 s | 5421 |
+| 2026-11-23 | 3 | `S1D_IW_GRDH_1SDV_20261123T155530_20261123T155555_005596_00AB9A_AA88_COG.SAFE` | 11 s | 5596 |
+
+All five Sentinel Hub candidates are Sentinel-1D, R130 ascending, IW, VV/VH. The OPERA RTC catalogue identifies the same dates and platform, with three IW3 bursts per date. The nearest burst-start differences are only 10–11 seconds. This is a strong catalogue-level pairing signal.
+
+**Still unverified:** the original Sentinel-1 SLC product identifiers recorded in each OPERA HDF5 metadata file have not yet been reconciled with the corresponding Sentinel Hub GRD product identifiers. The OPERA RTC-STATIC layers must also be downloaded and matched to all three bursts. Do not proceed to pixel comparison until these checks pass.
+
+Evidence workflows:
+- [OPERA RTC/RTC-STATIC discovery](../../.github/workflows/discover-opera-nairobi-r130.yml)
+- [Cross-provider catalogue matching](../../.github/workflows/match-opera-nairobi-r130-sentinelhub.yml)
+- [OPERA asset download](../../.github/workflows/download-opera-nairobi-r130-assets.yml)
+
 ## Current status
 
-`DESIGN_READY; DATA_DISCOVERY_PENDING`
+`CATALOGUE_CANDIDATES_MATCHED_5_OF_5; HDF5_SOURCE_IDENTITY_PENDING; RTC_STATIC_AND_RASTER_DOWNLOAD_PENDING`
 
-No second-orbit OPERA/ Sentinel Hub comparison has been claimed or run by this protocol. The Nairobi R130 alternate-orbit Sentinel Hub experiment is a candidate, not proof of OPERA coverage.
+No second-orbit pixel comparison or scientific validation result is claimed. The Nairobi R130 work remains a candidate cross-provider study until the source-scene identity and raster QA gates pass.
 
 ## Source documentation
 
