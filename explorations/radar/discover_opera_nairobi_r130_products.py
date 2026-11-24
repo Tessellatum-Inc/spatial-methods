@@ -82,9 +82,11 @@ def identify(p:dict) -> dict:
 
 def summarize(collection:dict) -> dict:
     rows=[]
+    all_identified=[]
     for feature in collection["features"]:
         p=feature.get("properties") or {}
         item=identify(p)
+        all_identified.append(item)
         if item["relative_orbit_from_burst"] != TARGET_RELATIVE_ORBIT: continue
         rows.append({**item,"properties":p,"geometry":feature.get("geometry")})
     rows.sort(key=lambda x:(x["acquisition_datetime_utc"] or "",x["burst_id"],str(x["polarization"])))
@@ -96,6 +98,9 @@ def summarize(collection:dict) -> dict:
         "query":{"source":API_URL,"aoi_bbox_wgs84":list(BBOX),"wkt":WKT,
                  "target_relative_orbit":TARGET_RELATIVE_ORBIT},
         "catalogue_feature_count":len(collection["features"]),
+        "catalogue_burst_id_samples":all_identified[:20],
+        "observed_relative_orbit_counts":{str(k):sum(1 for x in all_identified if x["relative_orbit_from_burst"]==k)
+            for k in sorted({x["relative_orbit_from_burst"] for x in all_identified if x["relative_orbit_from_burst"] is not None})},
         "target_orbit_feature_count":len(rows),
         "acquisition_groups":[{"acquisition_datetime_utc":k,"feature_count":len(v),
              "burst_ids":sorted({x["burst_id"] for x in v}),
