@@ -2,7 +2,7 @@ import unittest
 from urllib.error import HTTPError
 from email.message import Message
 from io import BytesIO
-from explorations.radar.acquire_nairobi_r130_dynamic_world import date_window, DATES, PROBABILITY_BANDS, BBOX, make_download_tiles
+from explorations.radar.acquire_nairobi_r130_dynamic_world import date_window, DATES, PROBABILITY_BANDS, BBOX, make_download_tiles, split_bbox
 
 class DynamicWorldWindowTests(unittest.TestCase):
     def test_acquisition_windows_are_symmetric_calendar_windows(self):
@@ -27,6 +27,15 @@ class DynamicWorldWindowTests(unittest.TestCase):
                 ox=max(0,min(a[2],b[2])-max(a[0],b[0]))
                 oy=max(0,min(a[3],b[3])-max(a[1],b[1]))
                 self.assertFalse(ox>1e-12 and oy>1e-12)
+
+    def test_split_bbox_returns_four_gap_free_quadrants(self):
+        children=split_bbox(BBOX)
+        self.assertEqual(len(children),4)
+        self.assertAlmostEqual(min(x[0] for x in children),BBOX[0])
+        self.assertAlmostEqual(min(x[1] for x in children),BBOX[1])
+        self.assertAlmostEqual(max(x[2] for x in children),BBOX[2])
+        self.assertAlmostEqual(max(x[3] for x in children),BBOX[3])
+        self.assertTrue(all(x[0]<x[2] and x[1]<x[3] for x in children))
 
     def test_download_tiles_reject_invalid_dimensions_and_bounds(self):
         with self.assertRaises(ValueError):make_download_tiles(BBOX,0,4)
