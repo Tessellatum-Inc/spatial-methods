@@ -1,0 +1,45 @@
+name: Diagnose Nairobi R130 residual proximity to support edges
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/diagnose-nairobi-r130-support-edges.yml"
+      - "explorations/radar/diagnose_nairobi_r130_support_edges.py"
+      - "explorations/radar/test_diagnose_nairobi_r130_support_edges.py"
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: read
+concurrency:
+  group: diagnose-nairobi-r130-support-edges
+  cancel-in-progress: false
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install raster dependencies
+        run: python -m pip install numpy rasterio
+      - name: Test support-edge distance and metrics
+        run: python -m unittest explorations.radar.test_diagnose_nairobi_r130_support_edges -v
+      - name: Download residual maps
+        uses: actions/download-artifact@v4
+        with:
+          name: nairobi-r130-residual-maps-and-diagnostics
+          path: residual-artifact
+          run-id: 45360551227
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Locate residual GeoTIFFs
+        run: mkdir residual-maps && cp residual-artifact/residual-maps/*.tif residual-maps/
+      - name: Quantify residual concentration near support edges
+        run: python explorations/radar/diagnose_nairobi_r130_support_edges.py --residual-dir residual-maps --report support-edge-diagnostics.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nairobi-r130-support-edge-diagnostics
+          path: support-edge-diagnostics.json
+          if-no-files-found: error
+          retention-days: 30
