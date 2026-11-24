@@ -9,8 +9,14 @@ on:
       - "explorations/radar/test_process_nairobi_r130_sentinel1_validation.py"
       - "explorations/radar/process_sentinelhub_sentinel1.py"
       - "explorations/radar/process_sentinel1_gamma0_terrain.py"
+      - "explorations/radar/qa_nairobi_r130_common_support.py"
+      - "explorations/radar/test_qa_nairobi_r130_common_support.py"
 permissions:
   contents: read
+
+concurrency:
+  group: process-nairobi-r130-sentinelhub-pairs
+  cancel-in-progress: false
 jobs:
   process:
     runs-on: ubuntu-latest
@@ -22,8 +28,10 @@ jobs:
           python-version: "3.13"
       - name: Install Sentinel Hub processing dependencies
         run: python -m pip install -r explorations/radar/requirements-sentinelhub-processing.txt
-      - name: Test Nairobi R130 scene manifest and process limits
-        run: python -m unittest explorations.radar.test_process_nairobi_r130_sentinel1_validation -v
+      - name: Test Nairobi R130 processing and common-support QA
+        run: |
+          python -m unittest explorations.radar.test_process_nairobi_r130_sentinel1_validation -v
+          python -m unittest explorations.radar.test_qa_nairobi_r130_common_support -v
       - name: Verify Sentinel Hub OAuth credentials
         env:
           SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
@@ -36,9 +44,18 @@ jobs:
           SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
           SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
         run: python explorations/radar/process_nairobi_r130_sentinel1_validation.py --timeout 300
+      - name: Download verified OPERA RTC and RTC-STATIC assets
+        uses: actions/download-artifact@v4
+        with:
+          name: nairobi-r130-opera-rtc-science-assets
+          path: opera-assets
+          run-id: 45345864969
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Audit OPERA to Sentinel Hub common pixel support
+        run: python explorations/radar/qa_nairobi_r130_common_support.py --opera-dir opera-assets --sentinelhub-dir data/sentinelhub/nairobi/r130 --output data/sentinelhub/nairobi/r130/common-support-qa.json
       - uses: actions/upload-artifact@v4
         with:
-          name: nairobi-r130-sentinelhub-paired-gamma0-rasters
+          name: nairobi-r130-sentinelhub-paired-gamma0-rasters-and-support-qa
           path: data/sentinelhub/nairobi/r130/
           if-no-files-found: error
           retention-days: 30
