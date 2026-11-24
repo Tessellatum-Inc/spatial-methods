@@ -34,6 +34,14 @@ def build_query(start: str, end: str, max_results: int = 2000) -> dict[str, str]
             "start":start,"end":end,"output":"geojson","maxResults":str(max_results)}
 
 
+def build_static_query(max_results: int = 500) -> dict[str,str]:
+    """Query the static geometry catalogue using ASF's RTC-STATIC date convention."""
+    if max_results < 1: raise ValueError("max_results must be positive")
+    return {"dataset":"OPERA-S1","processingLevel":"RTC-STATIC","intersectsWith":WKT,
+            "start":"2014-04-03T00:00:00Z","end":"2014-04-04T00:00:00Z",
+            "output":"geojson","maxResults":str(max_results)}
+
+
 def retrieve(params: dict[str,str], timeout: int) -> tuple[bytes,str]:
     url = API_URL + "?" + urlencode(params)
     req = Request(url, headers={"Accept":"application/geo+json, application/json",
@@ -127,6 +135,19 @@ def main(argv=None):
     try:
         raw,url=retrieve(build_query(a.start,a.end,a.max_results),a.timeout)
         collection=parse_collection(raw); report=summarize(collection)
+        static_raw,static_url=retrieve(build_static_query(a.max_results),a.timeout)
+        static_collection=parse_collection(static_raw)
+        wanted={x.replace("-","_") for g in report["acquisition_groups"] for x in g["burst_ids"]}
+        static_rows=[]
+        for feature in static_collection["features"]:
+            p=feature.get("properties") or {}
+            item=identify(p)
+            if item["burst_id"].replace("-","_") in wanted:
+                static_rows.append({**item,"properties":p,"geometry":feature.get("geometry")})
+        report["static_layer_query"]={"url":static_url,"response_sha256":hashlib.sha256(static_raw).hexdigest(),
+            "catalogue_feature_count":len(static_collection["features"]),
+            "matched_burst_ids":sorted({x["burst_id"] for x in static_rows}),
+            "feature_count":len(static_rows),"features":static_rows}
     except HTTPError as e:
         print(f"ASF HTTP error {e.code}: {e.reason}",file=sys.stderr); return 2
     except (URLError,TimeoutError,OSError,ValueError,json.JSONDecodeError) as e:
