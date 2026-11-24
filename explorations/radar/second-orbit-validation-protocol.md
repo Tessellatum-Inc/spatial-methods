@@ -82,7 +82,9 @@ The ASF and Sentinel Hub catalogue workflows found a consistent R130 candidate s
 
 All five Sentinel Hub candidates are Sentinel-1D, R130 ascending, IW, VV/VH. The OPERA RTC catalogue identifies the same dates and platform, with three IW3 bursts per date. The nearest burst-start differences are only 10–11 seconds. This is a strong catalogue-level pairing signal.
 
-**Still unverified:** the original Sentinel-1 SLC product identifiers recorded in each OPERA HDF5 metadata file have not yet been reconciled with the corresponding Sentinel Hub GRD product identifiers. The OPERA RTC-STATIC layers must also be downloaded and matched to all three bursts. Do not proceed to pixel comparison until these checks pass.
+**Metadata/raster audit (2026-11-24):** all 96 selected OPERA assets downloaded successfully (15 RTC HDF5 files, 45 dynamic GeoTIFFs, and 18 static GeoTIFFs). The 15 HDF5 files each report the expected Sentinel-1D platform, R130 track, burst ID, source acquisition start time, and absolute orbit number. The five absolute orbit numbers are 4896, 5071, 5246, 5421, and 5596, exactly matching the Sentinel Hub candidate catalogue. For each of the three bursts, all 21 associated dynamic/static rasters have one identical CRS, shape, and affine transform. These checks pass within each burst; adjacent bursts are not forced onto one grid.
+
+**Still unverified:** the audit has not yet extracted a source SLC SAFE identifier from the HDF5 processing-input metadata. The next step is to inspect the exact input-dataset names and values in these HDF5 files. The Sentinel Hub GRD source product and OPERA SLC source product remain different processing-level products; matching orbit/platform/time establishes acquisition correspondence, not pixel-level identity.
 
 Evidence workflows:
 - [OPERA RTC/RTC-STATIC discovery](../../.github/workflows/discover-opera-nairobi-r130.yml)
@@ -91,7 +93,7 @@ Evidence workflows:
 
 ## Current status
 
-`CATALOGUE_CANDIDATES_MATCHED_5_OF_5; HDF5_SOURCE_IDENTITY_PENDING; RTC_STATIC_AND_RASTER_DOWNLOAD_PENDING`
+`CATALOGUE_MATCHED_5_OF_5; HDF5_ORBIT_AND_PLATFORM_MATCHED; RASTER_GRID_QA_PASSED; SOURCE_SLC_IDENTIFIER_EXTRACTION_PENDING`
 
 No second-orbit pixel comparison or scientific validation result is claimed. The Nairobi R130 work remains a candidate cross-provider study until the source-scene identity and raster QA gates pass.
 
