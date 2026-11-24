@@ -61,7 +61,7 @@ def analyze_map(path:Path):
             selected=valid&(distance>0)&(distance<=radius)
             buffers.append({"within_pixels":radius,"within_meters_approx":radius*abs(ds.res[0]),
               **metrics(a[selected])})
-        interior=valid&(distance>max(RADII))
+        interior=valid&(distance==0)
         return {"file":path.name,"overall":overall,"edge_buffers":buffers,
           "interior_beyond_20_pixels":metrics(a[interior]),
           "edge_pixel_count":int(np.sum(valid&(distance==1))),
