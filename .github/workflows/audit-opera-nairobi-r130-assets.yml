@@ -20,8 +20,10 @@ jobs:
           python-version: "3.13"
       - name: Install raster metadata libraries
         run: python -m pip install --disable-pip-version-check h5py rasterio numpy
-      - name: Test audit helpers
-        run: python -m unittest explorations.radar.test_audit_opera_nairobi_r130_assets -v
+      - name: Test audit and source-match helpers
+        run: |
+          python -m unittest explorations.radar.test_audit_opera_nairobi_r130_assets -v
+          python -m unittest explorations.radar.test_verify_opera_nairobi_r130_source_match -v
       - name: Download OPERA assets from prior workflow run
         uses: actions/download-artifact@v4
         with:
@@ -31,9 +33,20 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Audit HDF5 metadata and raster grids
         run: python explorations/radar/audit_opera_nairobi_r130_assets.py --root opera-assets --output opera-assets-audit.json
+      - name: Download Sentinel Hub candidate catalogue report
+        uses: actions/download-artifact@v4
+        with:
+          name: nairobi-r130-cross-provider-catalogue-matches
+          path: candidate-catalogue
+          run-id: 45345279164
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify OPERA SLC and Sentinel Hub GRD datatake identity
+        run: python explorations/radar/verify_opera_nairobi_r130_source_match.py --audit opera-assets-audit.json --catalogue candidate-catalogue/opera_sentinelhub_candidate_matches.json --output source-datatake-verification.json
       - uses: actions/upload-artifact@v4
         with:
-          name: nairobi-r130-opera-metadata-raster-audit
-          path: opera-assets-audit.json
+          name: nairobi-r130-opera-source-and-raster-audit
+          path: |
+            opera-assets-audit.json
+            source-datatake-verification.json
           if-no-files-found: error
           retention-days: 30
