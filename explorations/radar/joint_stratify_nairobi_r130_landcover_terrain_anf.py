@@ -6,6 +6,7 @@ from datetime import date as calendar_date
 from pathlib import Path
 import numpy as np
 import rasterio
+from pyproj import Geod
 from rasterio.enums import Resampling
 from rasterio.warp import reproject
 
@@ -37,7 +38,21 @@ def align(src_path,template,band,resampling,dtype,nodata):
         reproject(src.read(band),out,src_transform=src.transform,src_crs=src.crs,src_nodata=src.nodata,
           dst_transform=template.transform,dst_crs=template.crs,dst_nodata=nodata,resampling=resampling)
     return out
-def terrain(elev,valid,pixel_size):
+def pixel_spacing_metres(template):
+    """Measure native grid spacing at its centre, including geographic grids."""
+    t=template.transform
+    row=template.height//2;col=template.width//2
+    x0,y0=t*(col+0.5,row+0.5)
+    xx,yx=t*(col+1.5,row+0.5)
+    xy,yy=t*(col+0.5,row+1.5)
+    if template.crs and template.crs.is_projected:
+        units=template.crs.linear_units_factor[1]
+        return abs((xx-x0)*units),abs((yy-y0)*units)
+    geod=Geod(ellps="WGS84")
+    dx=abs(geod.inv(x0,y0,xx,yx)[2]);dy=abs(geod.inv(x0,y0,xy,yy)[2])
+    if dx<=0 or dy<=0:raise ValueError("Could not determine metric raster pixel spacing")
+    return dx,dy
+def terrain(elev,valid,pixel_size_x,pixel_size_y):
     z=np.asarray(elev,dtype=np.float64);ok=np.asarray(valid,bool)&np.isfinite(z)
     dx=np.full(z.shape,np.nan);dy=np.full(z.shape,np.nan)
     core=ok[1:-1,1:-1]&ok[1:-1,:-2]&ok[1:-1,2:]&ok[:-2,1:-1]&ok[2:,1:-1]
@@ -72,7 +87,7 @@ def process(residual_path,opera_dir,dw_dir,dem_path):
       anf=align(anf_path,residual,1,Resampling.nearest,np.float32,np.nan)
       # DEM-derived slope is calculated on the target native OPERA burst grid.
       elev,dem_valid=reproject_dem(dem_path,residual)
-      slope=terrain(elev,dem_valid,abs(residual.res[0]))
+      pixel_x_m,pixel_y_m=pixel_spacing_metres(residual)\n      slope=terrain(elev,dem_valid,pixel_x_m,pixel_y_m)
       klass=align(dw_path,residual,1,Resampling.nearest,np.uint8,255)
       conf=align(dw_path,residual,2,Resampling.average,np.float32,np.nan)
       valid=rv&np.isfinite(anf)&(anf>0)&np.isfinite(slope)&(klass<=8)&np.isfinite(conf)&(conf>0)&(conf<=1)
@@ -129,7 +144,7 @@ def process(residual_path,opera_dir,dw_dir,dem_path):
           "class_totals":totals,"matched_to_built":matched})
       return {"date":report_date(date),"burst_id":burst,"polarization":pol,
         "residual_valid_pixels":int(rv.sum()),"joint_valid_pixels":int(valid.sum()),
-        "slope_bins_degrees":SLOPE_EDGES.tolist(),"anf_quartile_edges_scene_specific":[float(x) for x in anf_edges],
+        "native_pixel_spacing_metres":[pixel_x_m,pixel_y_m],"slope_bins_degrees":SLOPE_EDGES.tolist(),"anf_quartile_edges_scene_specific":[float(x) for x in anf_edges],
         "confidence_sensitivity":rows}
 def run(residual_dir,opera_dir,dw_dir,dem_path,out):
     maps=sorted(residual_dir.glob("*_delta-residual-db.tif"))
