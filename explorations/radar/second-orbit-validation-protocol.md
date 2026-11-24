@@ -110,9 +110,9 @@ All 15 OPERA burst HDF5 records link to the same corresponding Sentinel-1D GRD d
 The raster audit also confirms 45 dynamic RTC rasters and 18 static rasters. Each burst has 21 associated rasters (15 dynamic across five dates plus six static layers), and all 21 have identical CRS, dimensions, and affine transform within that burst. Adjacent bursts remain separate grids.
 
 Evidence:
-- [OPERA asset download run](../../../../actions/runs/45345864969)
-- [HDF5, grid and source-datatake audit run](../../../../actions/runs/45351526923)
-- [Source and raster audit artifact](../../../../actions/runs/45351526923/artifacts/14900500808)
+- [OPERA asset download run](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45345864969)
+- [HDF5, grid and source-datatake audit run](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45351526923)
+- [Source and raster audit artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45351526923/artifacts/14900820845)
 
 ## Current status
 
