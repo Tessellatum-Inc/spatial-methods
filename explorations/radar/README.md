@@ -84,6 +84,12 @@ a JSON report without storing large rasters in Git.
 
 The discovery workflow screens OPERA RTC-S1 burst products for the Nairobi ascending R130 candidate window and uploads a compact catalogue report. It does not download raster data or prove a Sentinel Hub source-scene match; those remain separate admission gates.
 
+- [OPERA/Sentinel Hub candidate matcher](match_opera_nairobi_r130_sentinelhub.py)
+- [Candidate matcher tests](test_match_opera_nairobi_r130_sentinelhub.py)
+- [Cross-provider catalogue workflow](../../.github/workflows/match-opera-nairobi-r130-sentinelhub.yml)
+
+The matcher screens the OPERA R130 dates against Sentinel Hub STAC items using relative orbit, orbit direction, platform, dual polarization and a five-minute source-time window. Qualified records are still catalogue candidates; original source-scene identity must be verified before any raster comparison.
+
 ## Second independent-orbit validation
 
 The [second-orbit validation protocol](second-orbit-validation-protocol.md) defines the scientific question, candidate source, admission gates and stop/go rules before additional raster processing. The existing Nairobi ascending R130 Sentinel Hub workflow is a candidate acquisition source only; OPERA RTC-S1 source identity, matching static layers and valid raster overlap still need to be established. No second cross-processor validation is claimed yet.
