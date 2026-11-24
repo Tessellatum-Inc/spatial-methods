@@ -20,12 +20,13 @@ class DiscoveryTests(unittest.TestCase):
     def test_filters_other_orbits_and_groups_target_bursts(self):
         features=[
           {"properties":{"fileName":"OPERA_T130-019159-IW3_20261110T041200Z","polarization":"VV"},"geometry":{"type":"Polygon","coordinates":[]}},
-          {"properties":{"fileName":"OPERA_T130-019159-IW3_20261110T041200Z","polarization":"VH"},"geometry":{"type":"Polygon","coordinates":[]}},
+          {"properties":{"fileName":"OPERA_T130-019159-IW3_20261110T041204Z","polarization":"VH"},"geometry":{"type":"Polygon","coordinates":[]}},
           {"properties":{"fileName":"OPERA_T009-019159-IW3_20261110T041200Z","polarization":"VV"},"geometry":{"type":"Polygon","coordinates":[]}},
         ]
         report=summarize(parse_collection(b'{"type":"FeatureCollection","features":[]}')) if False else summarize({"type":"FeatureCollection","features":features})
         self.assertEqual(report["target_orbit_feature_count"],2)
         self.assertEqual(len(report["acquisition_groups"]),1)
         self.assertEqual(report["acquisition_groups"][0]["polarizations"],["VH","VV"])
+        self.assertEqual(len(report["acquisition_groups"][0]["burst_start_times_utc"]),2)
 
 if __name__=="__main__": unittest.main()
