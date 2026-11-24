@@ -14,10 +14,10 @@ from rasterio.warp import reproject,Resampling
 BBOX=[36.65,-1.45,37.05,-1.15]
 WIDTH=2500;HEIGHT=2200
 BUCKET="https://copernicus-dem-30m.s3.eu-central-1.amazonaws.com"
-TILE_RE=re.compile(r"(Copernicus_DSM_COG_10_[NS]\\d{2}_00_[EW]\\d{3}_00_DEM)",re.I)
+TILE_RE=re.compile(r"(Copernicus_DSM_COG_10_[NS]\d{2}_00_[EW]\d{3}_00_DEM)",re.I)
 
 def tile_bounds(name):
-    m=re.search(r"_([NS])(\\d{2})_00_([EW])(\\d{3})_00_DEM$",name,re.I)
+    m=re.search(r"_([NS])(\d{2})_00_([EW])(\d{3})_00_DEM$",name,re.I)
     if not m:raise ValueError(f"Unrecognized Copernicus tile name: {name}")
     lat=int(m.group(2))*(1 if m.group(1).upper()=="N" else -1)
     lon=int(m.group(4))*(1 if m.group(3).upper()=="E" else -1)
