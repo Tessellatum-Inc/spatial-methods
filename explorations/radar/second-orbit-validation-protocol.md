@@ -199,19 +199,42 @@ Evidence:
 - [Cross-processor comparison workflow](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45353189679)
 - [Cross-processor report artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45353189679/artifacts/14901316555)
 
-### Next diagnostic gate
+### Residual spatial diagnostics (2026-11-24)
 
-Before calling this a strong second-case validation, investigate the burst-dependent spread and extreme tails:
-1. Produce georeferenced residual maps per burst/date/polarization.
-2. Stratify residuals by ellipsoid incidence angle, ANF, and land-cover/surface class where defensible data are available.
-3. Locate the largest residuals and test whether they cluster at mask edges, low-support boundaries, or particular surface regimes.
-4. Recompute robust summaries after any exclusions are justified *a priori* and documented; do not discard outliers merely to improve agreement.
+The next diagnostic workflow completed successfully. It generated 30 single-band float32 GeoTIFFs (five dates × three native OPERA burst grids × VV/VH) and a JSON report. Maps preserve each native OPERA CRS, transform, dimensions, and -9999 nodata; no burst mosaicking or outlier removal was performed. The exact comparison masks and 0.95 Sentinel Hub valid-support threshold from the first-pass comparator were retained. The report includes per-scene metrics, fractions exceeding 0.5/1/2 dB, incidence-angle bins, within-scene ANF quartiles, and coordinates of the ten largest absolute residuals per scene/polarization.
+
+Workflow: [Nairobi R130 residual diagnostics](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45360551227)  
+Artifact: [30 residual maps and diagnostic JSON (55.3 MB; 30-day retention)](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45360551227/artifacts/14904975668)
+
+#### Reconfirmed burst effect and residual tails
+
+The residual-map report independently reproduces the first-pass per-burst pattern. Equal-date means of the per-scene metrics are:
+
+| Burst | VV MAE | VH MAE | VV RMSE | VH RMSE |
+|---|---:|---:|---:|---:|
+| T130-279214-IW3 | 0.0646 dB | 0.0701 dB | 0.0853 dB | 0.0920 dB |
+| T130-279215-IW3 | 0.0831 dB | 0.0849 dB | 0.1176 dB | 0.1188 dB |
+| T130-279216-IW3 | 0.1041 dB | 0.1044 dB | 0.1496 dB | 0.1494 dB |
+
+Across all common pixels, weighted fractions above 1 dB are approximately 0.0452% (VV) and 0.0432% (VH); above 2 dB they are approximately 0.00086% and 0.00082%, respectively. The maps retain maximum absolute residuals of 3.402 dB (VV) and 3.161 dB (VH). Thus, the tails are rare but real, and the burst-dependent dispersion is systematic across dates and polarizations.
+
+#### Covariate stratification
+
+Incidence-angle values are concentrated almost entirely in the 44–46° bin. The 46–48° bin has much lower MAE in bursts 279215 and 279216, but contains only a small minority of common pixels. This is not enough angular spread to infer a reliable incidence-angle response; the apparent lower error at the high-angle edge may also reflect a different spatial subset.
+
+ANF quartiles show a more repeatable pattern. In every burst and both polarizations, the lowest and highest within-scene ANF quartiles have higher MAE than the middle two quartiles. For example, burst 279216 VV MAE is about 0.116, 0.079, 0.082, and 0.139 dB in Q1–Q4; VH is about 0.116, 0.080, 0.083, and 0.139 dB. The same U-shaped pattern appears in the other bursts. Mean residual bias also tends negative in Q1 and positive in Q4. This is a strong diagnostic association, not evidence that ANF itself causes the error: ANF may covary with terrain slope, aspect, local scattering regime, or resampling geometry. Quartile boundaries are burst-specific and must not be interpreted as common physical thresholds.
+
+#### Spatial interpretation and next work
+
+Residual maps show spatial texture rather than purely isolated single-pixel noise. A preview of burst 279216 shows coherent fine-scale patterns, but this visual inspection alone does not identify whether they arise from land cover, terrain, scene geometry, or processing differences. No land-cover attribution has been made because a date-appropriate independently validated classification has not yet been admitted.
+
+The next gate should therefore test ANF-tail pixels against terrain slope/aspect and a defensible land-cover layer, then inspect high-residual coordinates against source masks and support edges. Keep the three bursts separate. Do not remove outliers or introduce exclusions unless a physical/methodological criterion is justified before re-estimating agreement.
 
 ## Current status
 
-`SOURCE_DATATAKE_IDENTITY_VERIFIED_5_OF_5; HDF5_AND_RASTER_GRID_QA_PASSED; COMMON_PIXEL_SUPPORT_QA_PASSED_15_OF_15; R130_CROSS_PROCESSOR_COMPARISON_COMPLETE; RESIDUAL_SPATIAL_DIAGNOSTICS_PENDING`
+`SOURCE_DATATAKE_IDENTITY_VERIFIED_5_OF_5; HDF5_AND_RASTER_GRID_QA_PASSED; COMMON_PIXEL_SUPPORT_QA_PASSED_15_OF_15; R130_CROSS_PROCESSOR_COMPARISON_COMPLETE; RESIDUAL_MAPS_AND_COVARIATE_STRATIFICATION_COMPLETE; TERRAIN_AND_LANDCOVER_ATTRIBUTION_PENDING`
 
-The source, raster-grid, and common-pixel-support gates have passed, and the first R130 cross-processor comparison is complete. It provides positive but case-bounded evidence. Burst-dependent residual spread and extreme tails remain under investigation; no universal validation claim is made.
+The source, raster-grid, common-pixel-support, cross-processor comparison, and first residual spatial-diagnostic gates have passed. The terrain-to-ellipsoid relationship remains supported within this case, but dispersion varies systematically by burst and by ANF quartile. Terrain/land-cover attribution and a further independent test remain outstanding; no universal validation claim is made.
 
 ## Source documentation
 
