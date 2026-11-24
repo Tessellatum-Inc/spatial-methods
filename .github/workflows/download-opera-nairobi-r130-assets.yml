@@ -1,0 +1,36 @@
+name: Download OPERA Nairobi R130 science assets
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/download-opera-nairobi-r130-assets.yml"
+      - "explorations/radar/discover_opera_nairobi_r130_products.py"
+      - "explorations/radar/match_opera_nairobi_r130_sentinelhub.py"
+      - "explorations/radar/download_opera_nairobi_r130_assets.py"
+      - "explorations/radar/test_download_opera_nairobi_r130_assets.py"
+permissions:
+  contents: read
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Test asset selection
+        run: python -m unittest explorations.radar.test_download_opera_nairobi_r130_assets -v
+      - name: Discover OPERA RTC and RTC-STATIC products
+        run: python explorations/radar/discover_opera_nairobi_r130_products.py
+      - name: Download and verify OPERA assets
+        env:
+          EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
+        run: python explorations/radar/download_opera_nairobi_r130_assets.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nairobi-r130-opera-rtc-science-assets
+          path: data/asf/nairobi_r130/downloaded/
+          if-no-files-found: error
+          retention-days: 14
