@@ -1,5 +1,5 @@
 import unittest
-from explorations.radar.discover_opera_nairobi_r130_products import build_query, identify, parse_collection, summarize
+from explorations.radar.discover_opera_nairobi_r130_products import build_query, build_static_query, identify, parse_collection, summarize
 
 class DiscoveryTests(unittest.TestCase):
     def test_query_is_rtc_for_aoi(self):
@@ -7,6 +7,11 @@ class DiscoveryTests(unittest.TestCase):
         self.assertEqual(q["dataset"],"OPERA-S1")
         self.assertEqual(q["processingLevel"],"RTC")
         self.assertIn("36.65",q["intersectsWith"])
+
+    def test_static_query_uses_rtc_static_catalogue(self):
+        q=build_static_query()
+        self.assertEqual(q["processingLevel"],"RTC-STATIC")
+        self.assertEqual(q["start"],"2014-04-03T00:00:00Z")
 
     def test_rejects_non_utc_and_empty_interval(self):
         with self.assertRaises(ValueError): build_query("2026-10-01T00:00:00","2026-11-24T00:00:00Z")
