@@ -59,7 +59,9 @@ def candidate_matches(opera_report,features,orbit=130,direction="ASCENDING",tole
         if dt is None: continue
         selected.append({"catalog_item_id":f.get("id"),"datetime_utc":dt.isoformat().replace("+00:00","Z"),
             "platform":p.get("platform"),"relative_orbit":rel,"orbit_state":direction,
-            "polarizations":sorted(pols),"geometry":f.get("geometry")})
+            "polarizations":sorted(pols),"source_product_identifier":p.get("s1:product_identifier"),
+            "datatake_id":p.get("s1:datatake_id"),"absolute_orbit":p.get("sat:absolute_orbit"),
+            "geometry":f.get("geometry")})
     groups=[]
     for g in opera_report.get("acquisition_groups",[]):
         date=g.get("acquisition_date_utc")
@@ -115,6 +117,8 @@ def main(argv=None):
     print(f"OPERA dates with qualified platform/time candidates: {report['qualified_date_count']}/{len(report['acquisition_date_matches'])}")
     for g in report["acquisition_date_matches"]:
         print(f"{g['acquisition_date_utc']} | OPERA bursts={g['opera_burst_count']} | SH candidates={g['sentinelhub_candidate_count']} | qualified={g['qualified_candidate_count']}")
+        for scene in g["qualified_candidates"]:
+            print(f"  {scene['catalog_item_id']} | {scene['datetime_utc']} | dt={scene['nearest_opera_burst_difference_seconds']}s | product={scene['source_product_identifier']} | datatake={scene['datatake_id']} | abs_orbit={scene['absolute_orbit']}")
     print(f"Report: {a.output}")
     return 0
 
