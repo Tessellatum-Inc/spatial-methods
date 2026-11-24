@@ -135,3 +135,13 @@ The comparator reconstructs OPERA ellipsoid gamma0 from terrain gamma0, ANF and 
 The diagnostic stage has completed and exported 30 float32 GeoTIFF residual maps (five dates × three native OPERA bursts × VV/VH), preserving each source CRS, affine transform and nodata. The JSON report includes per-scene distributions, exceedance fractions above 0.5/1/2 dB, fixed incidence-angle strata, scene-local ANF quartiles and the ten largest absolute residual coordinates per scene/polarization. It applies the same masks and 95% valid-support threshold as the first-pass comparator. [Workflow run](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45360551227) · [30 maps + JSON artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45360551227/artifacts/14904975668).
 
 The residual dispersion increases consistently from burst 279214 to 279216. Across all three bursts, the lowest and highest ANF quartiles have higher MAE than the middle quartiles, while incidence-angle coverage is too concentrated to support a robust angular-response conclusion. This is an association, not causation; terrain/slope/aspect and independently validated land-cover attribution remain to be tested. No outliers are removed. The [second-orbit validation protocol](second-orbit-validation-protocol.md) records the evidence and limitations. This remains case-bounded evidence, not universal validation.
+
+#### Terrain covariate stage
+
+- [Copernicus DEM acquisition](acquire_nairobi_r130_copernicus_dem.py) uses the same Sentinel Hub `COPERNICUS_30` DEM instance configured for the RTC processing, with a two-band elevation/dataMask GeoTIFF.
+- [Terrain residual stratifier](terrain_stratify_nairobi_r130_residuals.py) reprojects the masked DEM to each native OPERA grid and summarizes residuals by slope and downslope aspect.
+- [Terrain derivative tests](test_terrain_stratify_nairobi_r130_residuals.py)
+- [DEM acquisition workflow](../../.github/workflows/acquire-nairobi-r130-dem.yml)
+- [Terrain stratification workflow](../../.github/workflows/terrain-stratify-nairobi-r130-residuals.yml)
+
+The DEM is a surface model, not a bare-earth terrain model, and the nominal GLO-30 source is infilled with GLO-90 where public GLO-30 is unavailable. The output sampling grid does not create new terrain detail. The acquisition and stratification workflows are separate so the DEM is retained as a versioned, short-lived artifact and can be reused. Dynamic World is a candidate for date-specific land-cover context, but it requires an Earth Engine-backed acquisition route; no land-cover attribution is claimed until that dependency and confidence filtering are addressed.
