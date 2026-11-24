@@ -24,7 +24,10 @@ def summarize(values):
       "fraction_abs_gt_1_db":float(np.mean(a>1.0))}
 
 def report_date(date_token):
-    """Validate and preserve the ISO date token parsed from residual filenames."""
+    """Validate and preserve the YYYY-MM-DD date token parsed from residual filenames."""
+    if (not isinstance(date_token,str) or len(date_token)!=10
+            or date_token[4]!="-" or date_token[7]!="-"):
+        raise ValueError(f"Expected YYYY-MM-DD date token, got {date_token!r}")
     return calendar_date.fromisoformat(date_token).isoformat()
 
 def valid_landcover_support(residual_values,residual_nodata,klass,confidence):
