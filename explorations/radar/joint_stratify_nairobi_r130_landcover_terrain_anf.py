@@ -87,7 +87,8 @@ def process(residual_path,opera_dir,dw_dir,dem_path):
       anf=align(anf_path,residual,1,Resampling.nearest,np.float32,np.nan)
       # DEM-derived slope is calculated on the target native OPERA burst grid.
       elev,dem_valid=reproject_dem(dem_path,residual)
-      pixel_x_m,pixel_y_m=pixel_spacing_metres(residual)\n      slope=terrain(elev,dem_valid,pixel_x_m,pixel_y_m)
+      pixel_x_m,pixel_y_m=pixel_spacing_metres(residual)
+      slope=terrain(elev,dem_valid,pixel_x_m,pixel_y_m)
       klass=align(dw_path,residual,1,Resampling.nearest,np.uint8,255)
       conf=align(dw_path,residual,2,Resampling.average,np.float32,np.nan)
       valid=rv&np.isfinite(anf)&(anf>0)&np.isfinite(slope)&(klass<=8)&np.isfinite(conf)&(conf>0)&(conf<=1)
