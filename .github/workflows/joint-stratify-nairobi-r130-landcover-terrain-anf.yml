@@ -1,5 +1,11 @@
 name: Jointly stratify Nairobi R130 residuals by land cover, terrain and ANF
 on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/joint-stratify-nairobi-r130-landcover-terrain-anf.yml"
+      - "explorations/radar/joint_stratify_nairobi_r130_landcover_terrain_anf.py"
+      - "explorations/radar/test_joint_stratify_nairobi_r130_landcover_terrain_anf.py"
   workflow_dispatch:
     inputs:
       residual_run_id:
@@ -46,7 +52,7 @@ jobs:
         with:
           name: nairobi-r130-residual-maps-and-diagnostics
           path: residual-artifact
-          run-id: ${{ inputs.residual_run_id }}
+          run-id: ${{ inputs.residual_run_id || '45360551227' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Locate residual GeoTIFFs
         run: mkdir residual-maps && cp residual-artifact/residual-maps/*.tif residual-maps/
@@ -55,21 +61,21 @@ jobs:
         with:
           name: nairobi-r130-opera-rtc-science-assets
           path: opera-assets
-          run-id: ${{ inputs.opera_run_id }}
+          run-id: ${{ inputs.opera_run_id || '45345864969' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Download Dynamic World composites
         uses: actions/download-artifact@v4
         with:
           name: nairobi-r130-dynamic-world-date-window-composites
           path: dynamic-world-assets
-          run-id: ${{ inputs.dynamic_world_run_id }}
+          run-id: ${{ inputs.dynamic_world_run_id || '45400510881' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Download Copernicus DEM
         uses: actions/download-artifact@v4
         with:
-          name: nairoi-r130-copernicus-dem
+          name: nairobi-r130-copernicus-dem
           path: dem-assets
-          run-id: ${{ inputs.dem_run_id }}
+          run-id: ${{ inputs.dem_run_id || '45364142134' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Validate DEM artifact filename
         run: test -f dem-assets/nairobi_copernicus_dem_glo30.tif
