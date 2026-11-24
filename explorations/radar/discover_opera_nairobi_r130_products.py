@@ -63,7 +63,7 @@ def identify(p:dict) -> dict:
     stamp=prop(p,"startTime","starttime","acquisitionDate","sceneDate")
     if not stamp:
         m=STAMP_RE.search(text)
-        if m: stamp="".join(m.groups())
+        if m: stamp=datetime.strptime("".join(m.groups()),"%Y%m%d%H%M%S").replace(tzinfo=timezone.utc).isoformat().replace("+00:00","Z")
     acquired=None
     if stamp:
         try:
