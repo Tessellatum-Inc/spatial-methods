@@ -1,0 +1,38 @@
+name: Match OPERA Nairobi R130 with Sentinel Hub catalogue
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/discover-opera-nairobi-r130.yml"
+      - "explorations/radar/discover_opera_nairobi_r130_products.py"
+      - "explorations/radar/match_opera_nairobi_r130_sentinelhub.py"
+      - "explorations/radar/test_match_opera_nairobi_r130_sentinelhub.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  match:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Test cross-provider candidate matching
+        run: python -m unittest explorations.radar.test_match_opera_nairobi_r130_sentinelhub -v
+      - name: Discover OPERA RTC-S1 products
+        run: python explorations/radar/discover_opera_nairobi_r130_products.py --start "2026-10-01T00:00:00Z" --end "2026-11-24T00:00:00Z"
+      - name: Match Sentinel Hub catalogue acquisitions
+        env:
+          SENTINEL_HUB_CLIENT_ID: ${{ secrets.SENTINEL_HUB_CLIENT_ID }}
+          SENTINEL_HUB_CLIENT_SECRET: ${{ secrets.SENTINEL_HUB_CLIENT_SECRET }}
+        run: python explorations/radar/match_opera_nairobi_r130_sentinelhub.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nairobi-r130-cross-provider-catalogue-matches
+          path: |
+            data/asf/nairobi_r130/opera_rtc_catalogue.json
+            data/asf/nairobi_r130/opera_sentinelhub_candidate_matches.json
+          if-no-files-found: error
+          retention-days: 30
