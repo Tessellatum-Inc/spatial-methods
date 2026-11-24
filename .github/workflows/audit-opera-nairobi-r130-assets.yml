@@ -1,0 +1,39 @@
+name: Audit OPERA Nairobi R130 source metadata and raster grids
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/audit-opera-nairobi-r130-assets.yml"
+      - "explorations/radar/audit_opera_nairobi_r130_assets.py"
+      - "explorations/radar/test_audit_opera_nairobi_r130_assets.py"
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install raster metadata libraries
+        run: python -m pip install --disable-pip-version-check h5py rasterio numpy
+      - name: Test audit helpers
+        run: python -m unittest explorations.radar.test_audit_opera_nairobi_r130_assets -v
+      - name: Download OPERA assets from prior workflow run
+        uses: actions/download-artifact@v4
+        with:
+          name: nairobi-r130-opera-rtc-science-assets
+          path: opera-assets
+          run-id: 45345864969
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Audit HDF5 metadata and raster grids
+        run: python explorations/radar/audit_opera_nairobi_r130_assets.py --root opera-assets --output opera-assets-audit.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nairobi-r130-opera-metadata-raster-audit
+          path: opera-assets-audit.json
+          if-no-files-found: error
+          retention-days: 30
