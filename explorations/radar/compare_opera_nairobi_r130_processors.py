@@ -106,6 +106,10 @@ def run(opera_dir,sh_dir,output):
     for pol in POLARIZATIONS:
         vals=np.concatenate(pooled[pol]).astype(np.float64)
         aggregate[pol]=metrics(vals)
+    for record in records:
+        for pol in POLARIZATIONS:
+            m=record["polarizations"][pol]["cross_processor_delta_residual_db"]
+            print(f"{record['date']} {record['burst_id']} {pol} | n={m['count']:,} | bias={m['bias_mean_db']:+.4f} dB | MAE={m['mae_db']:.4f} dB | RMSE={m['rmse_db']:.4f} dB | p95abs={m['p95_absolute_db']:.4f} dB | maxabs={m['max_absolute_db']:.4f} dB",flush=True)
     report={"schema":"tessellatum.opera-nairobi-r130-cross-processor-comparison.v1",
       "study_area":"Nairobi County and environs, Kenya","platform":"Sentinel-1D","relative_orbit":130,
       "orbit_direction":"ASCENDING","date_count":5,"burst_count":3,"date_burst_count":len(records),
