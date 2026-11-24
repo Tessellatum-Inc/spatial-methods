@@ -124,7 +124,8 @@ def locate_scene_files(opera_dir: Path, vv_path: Path) -> dict:
         return find_unique(rtc_dir, lambda p: p.name == stem + suffix, f"{burst} {date} {suffix}")
 
     def static_layer(suffix):
-        return find_unique(static_dir, lambda p: burst in p.name and p.name.endswith(suffix),
+        return find_unique(static_dir, lambda p: burst in p.name and p.name.endswith(suffix)
+                           and not (suffix == "_incidence_angle.tif" and p.name.endswith("_local_incidence_angle.tif")),
                            f"{burst} static {suffix}")
 
     return {
