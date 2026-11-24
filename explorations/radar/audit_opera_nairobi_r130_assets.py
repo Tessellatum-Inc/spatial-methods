@@ -102,7 +102,7 @@ def main():
       "checks":{"all_15_hdf5_have_absolute_orbit":all(x["metadata"].get("absolute_orbit") is not None for x in h5_reports),
         "all_15_hdf5_have_burst_id":all(x["metadata"].get("burst_id") is not None for x in h5_reports),
         "all_15_hdf5_have_source_start":all(x["metadata"].get("source_start") is not None for x in h5_reports),
-        "all_three_bursts_have_complete_grid_sets":len(grid_checks)==3 and all(x["raster_count"]==20 for x in grid_checks.values()),
+        "all_three_bursts_have_complete_grid_sets":len(grid_checks)==3 and all(x["raster_count"]==21 for x in grid_checks.values()),
         "each_burst_has_one_shared_grid":len(grid_checks)==3 and all(x["same_grid_within_burst"] for x in grid_checks.values())},
       "limitations":["HDF5 input SAFE references may be absent or represented as input file basenames; report preserves all candidate strings.",
         "Matching absolute orbit, platform, burst and acquisition timing is stronger than matching date/time alone but still does not prove pixel equivalence.",
