@@ -56,8 +56,8 @@ def terrain(elev,valid,pixel_size_x,pixel_size_y):
     z=np.asarray(elev,dtype=np.float64);ok=np.asarray(valid,bool)&np.isfinite(z)
     dx=np.full(z.shape,np.nan);dy=np.full(z.shape,np.nan)
     core=ok[1:-1,1:-1]&ok[1:-1,:-2]&ok[1:-1,2:]&ok[:-2,1:-1]&ok[2:,1:-1]
-    east=(z[1:-1,2:]-z[1:-1,:-2])/(2*pixel_size)
-    north=(z[:-2,1:-1]-z[2:,1:-1])/(2*pixel_size)
+    east=(z[1:-1,2:]-z[1:-1,:-2])/(2*pixel_size_x)
+    north=(z[:-2,1:-1]-z[2:,1:-1])/(2*pixel_size_y)
     dx[1:-1,1:-1][core]=east[core];dy[1:-1,1:-1][core]=north[core]
     slope=np.degrees(np.arctan(np.hypot(dx,dy)))
     slope[~np.isfinite(dx)|~np.isfinite(dy)]=np.nan
