@@ -8,8 +8,8 @@ import rasterio
 from rasterio.enums import Resampling
 from rasterio.warp import reproject
 
-BURST_RE = re.compile(r"(T130[-_]\\d{6}[-_]IW3)", re.I)
-DATE_RE = re.compile(r"(20\\d{6})T\\d{6}Z")
+BURST_RE = re.compile(r"(T130[-_]\d{6}[-_]IW3)", re.I)
+DATE_RE = re.compile(r"(20\d{6})T\d{6}Z")
 POLS = ("VV", "VH")
 SUPPORT_THRESHOLD = 0.95
 DB_FLOOR = 1e-12
@@ -175,7 +175,7 @@ def run(opera_dir, sh_dir, output_dir, report_path):
         "No outliers are removed. Largest residual coordinates are reported for inspection.",
         "Adjacent OPERA bursts remain on separate native grids; no mosaicking is performed."]}
     report_path.parent.mkdir(parents=True,exist_ok=True)
-    report_path.write_text(json.dumps(report,indent=2)+"\\n")
+    report_path.write_text(json.dumps(report,indent=2)+"\n")
     print("Diagnostic checks:",json.dumps(report["checks"],sort_keys=True),flush=True)
     for rec in records:
         for pol,item in rec["polarizations"].items():
