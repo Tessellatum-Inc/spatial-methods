@@ -24,6 +24,7 @@ KEYS={
  "source_processing_time":"/metadata/sourceData/processingDateTime",
  "source_acquisition_count":"/metadata/sourceData/numberOfAcquisitions",
  "input_l1_count":"/metadata/processingInformation/inputs/numberOfInputL1Files",
+ "source_slc_granules":"/metadata/processingInformation/inputs/l1SlcGranules",
 }
 
 def decode(v):
