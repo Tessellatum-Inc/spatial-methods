@@ -177,10 +177,10 @@ def acquire(output_dir:Path):
         with rasterio.open(path) as ds:
             if ds.count!=2 or ds.crs is None:raise ValueError(f"Unexpected Dynamic World raster schema for {day}")
             klass=ds.read(1);conf=ds.read(2)
-            valid=np.isfinite(klass)&np.isfinite(conf)&(klass>=0)&(klass<=8)&(conf>=0)&(conf<=1)
+            valid=np.isfinite(klass)&np.isfinite(conf)&(klass>=0)&(klass<=8)&(conf>0)&(conf<=1)
             if valid.mean()<0.70:raise ValueError(f"Low valid Dynamic World coverage for {day}: {valid.mean():.3%}")
             q={"crs":ds.crs.to_string(),"width":ds.width,"height":ds.height,
-              "transform":list(ds.transform)[:6],"valid_fraction":float(valid.mean()),
+              "transform":list(ds.transform)[:6],"valid_fraction":float(valid.mean()),"zero_confidence_fraction":float(np.mean(np.isfinite(conf)&(conf<=0))),
               "class_counts":{str(k):int(np.sum(valid&(klass==k))) for k in range(9)},
               "confidence_quantiles":{str(q):float(np.quantile(conf[valid],q)) for q in (.1,.25,.5,.75,.9)},
               "fraction_confidence_ge_0_5":float(np.mean(conf[valid]>=.5)),
