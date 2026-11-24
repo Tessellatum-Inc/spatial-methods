@@ -70,7 +70,7 @@ def inspect_pair(ell_path,rtc_path):
           "common_valid_fraction":float(common.mean()),
           "vv_ellipsoid_linear_power":stats(e[0]),"vh_ellipsoid_linear_power":stats(e[1]),
           "vv_rtc_linear_power":stats(r[0]),"vh_rtc_linear_power":stats(r[1]),
-          "shadow_flag_fraction_of_rtc_valid":float(np.mean(r[4][rmask]>0.5)) if rmask.any() else None}
+          "shadow_flag_fraction_of_rtc_data_valid":float(np.mean(r[4][(r[5]>0.5)]>0.5)) if np.any(r[5]>0.5) else None}
 
 def process_all(output_dir,timeout):
     cid=os.environ.get("SENTINEL_HUB_CLIENT_ID","");secret=os.environ.get("SENTINEL_HUB_CLIENT_SECRET","")
