@@ -164,7 +164,7 @@ def acquire(output_dir:Path):
               "fraction_confidence_ge_0_5":float(np.mean(conf[valid]>=.5)),
               "fraction_confidence_ge_0_7":float(np.mean(conf[valid]>=.7))}
         records.append({"sentinel1_date":day,**window,"file":path.name,
-          "sha256":hashlib.sha256(body).hexdigest(),"qa":q})
+          "sha256":hashlib.sha256(path.read_bytes()).hexdigest(),"qa":q})
         print(f"{day}: scenes={window['source_scene_count']}; valid={q['valid_fraction']:.3%}; conf>=0.7={q['fraction_confidence_ge_0_7']:.3%}",flush=True)
     report={"schema":"tessellatum.nairobi-r130-dynamic-world.v1",
       "provider":"Google / World Resources Institute Dynamic World",
