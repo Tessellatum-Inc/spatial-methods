@@ -107,6 +107,12 @@ The audit downloads the retained OPERA asset artifact from workflow run `4534586
 
 The verifier crosswalks OPERA's documented `l1SlcGranules` HDF5 input field against Sentinel Hub GRD catalogue item identifiers using platform, IW mode, acquisition start time, absolute orbit and datatake identifier. It distinguishes source-acquisition correspondence from equality of the two processed products.
 
+- [Nairobi R130 paired Sentinel Hub processor](process_nairobi_r130_sentinel1_validation.py)
+- [Nairobi R130 processor tests](test_process_nairobi_r130_sentinel1_validation.py)
+- [Nairobi R130 paired-processing workflow](../../.github/workflows/process-nairobi-r130-sentinelhub-pairs.yml)
+
+The processor requests five source-verified GRD datatakes in both ellipsoid and terrain gamma0 conventions, retains linear VV/VH, and emits per-scene data-mask and grid QA. It does not claim radiometric validation; comparison to OPERA native burst grids is a separate downstream gate.
+
 ## Second independent-orbit validation
 
 The [second-orbit validation protocol](second-orbit-validation-protocol.md) defines the scientific question, candidate source, admission gates and stop/go rules before additional raster processing. The existing Nairobi ascending R130 Sentinel Hub workflow is a candidate acquisition source only; OPERA RTC-S1 source identity, matching static layers and valid raster overlap still need to be established. No second cross-processor validation is claimed yet.
