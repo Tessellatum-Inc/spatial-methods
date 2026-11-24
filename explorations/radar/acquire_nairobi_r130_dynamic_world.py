@@ -5,6 +5,7 @@ import argparse,hashlib,json,os,sys
 from datetime import date,timedelta,datetime,timezone
 from pathlib import Path
 from urllib.request import urlopen
+from urllib.error import HTTPError
 import numpy as np
 import rasterio
 
@@ -77,6 +78,26 @@ def diagnose_project_identity(info:dict,raw_project:str)->str:
     print("  project passed to ee.Initialize(): configured GEE_PROJECT_ID",flush=True)
     return project
 
+def format_download_http_error(exc:HTTPError,day:str,params:dict)->str:
+    """Expose a bounded, non-secret Earth Engine error and request summary."""
+    try:
+        raw=exc.read(4096)
+        detail=raw.decode("utf-8","replace").strip()
+    except Exception as read_exc:
+        detail=f"<could not read response body: {type(read_exc).__name__}>"
+    if len(detail)>3000:
+        detail=detail[:3000]+"… [truncated]"
+    headers=exc.headers or {}
+    content_type=headers.get("Content-Type","unknown")
+    content_length=headers.get("Content-Length","unknown")
+    return (
+        f"Earth Engine download HTTP {exc.code} for {day}; "
+        f"content_type={content_type}; content_length={content_length}; "
+        f"request_name={params.get('name')}; scale_m={params.get('scale')}; "
+        f"crs={params.get('crs')}; format={params.get('format')}; "
+        f"region_bbox_crs84={BBOX}; response={detail or '<empty>'}"
+    )
+
 def acquire(output_dir:Path):
     import ee
     from google.oauth2 import service_account
@@ -93,8 +114,11 @@ def acquire(output_dir:Path):
         params={"name":f"dynamic-world-nairobi-r130-{day}",
           "scale":OUTPUT_SCALE_M,"region":region,"crs":"EPSG:4326",
           "format":"GEO_TIFF"}
-        url=image.getDownloadURL(params)
-        body=urlopen(url,timeout=300).read()
+        try:
+            url=image.getDownloadURL(params)
+            body=urlopen(url,timeout=300).read()
+        except HTTPError as exc:
+            raise RuntimeError(format_download_http_error(exc,day,params)) from exc
         path=output_dir/f"nairobi_r130_{day}_dynamic-world-30m.tif"
         path.write_bytes(body)
         with rasterio.open(path) as ds:
