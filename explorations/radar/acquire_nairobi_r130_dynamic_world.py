@@ -43,12 +43,39 @@ def build_composite(ee,day:str):
     return output,{"window_start":start,"window_end_exclusive":end,"source_scene_count":int(count),
       "first_source_scene_date":first_date,"last_source_scene_date":last_date}
 
+def _project_fingerprint(value:str)->str:
+    """Return a non-reversible identifier for comparing project IDs in CI logs."""
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()[:12]
+
+def diagnose_project_identity(info:dict,raw_project:str)->str:
+    """Validate and safely compare the configured and service-account project IDs."""
+    configured=(raw_project or "").strip()
+    if not configured:
+        raise ValueError("GEE_PROJECT_ID secret is required")
+    # Earth Engine expects the project ID, not the Resource Manager projects/<id> path.
+    project=configured.removeprefix("projects/").strip()
+    if not project:
+        raise ValueError("GEE_PROJECT_ID must contain a project ID")
+    service_project=str(info.get("project_id","")).strip()
+    print("Earth Engine project identity diagnostics:",flush=True)
+    print(f"  configured project fingerprint: {_project_fingerprint(project)}",flush=True)
+    print(f"  configured project suffix: ...{project[-6:]}",flush=True)
+    if configured != project:
+        print("  note: removed a leading 'projects/' prefix from GEE_PROJECT_ID",flush=True)
+    if service_project:
+        print(f"  service-account project fingerprint: {_project_fingerprint(service_project)}",flush=True)
+        print(f"  service-account project suffix: ...{service_project[-6:]}",flush=True)
+        print(f"  configured/service-account project IDs match: {project == service_project}",flush=True)
+    else:
+        print("  service-account JSON has no project_id field",flush=True)
+    print("  project passed to ee.Initialize(): configured GEE_PROJECT_ID",flush=True)
+    return project
+
 def acquire(output_dir:Path):
     import ee
     from google.oauth2 import service_account
     info=json.loads(os.environ.get("GEE_SERVICE_ACCOUNT_JSON",""))
-    project=os.environ.get("GEE_PROJECT_ID","").strip()
-    if not project:raise ValueError("GEE_PROJECT_ID secret is required")
+    project=diagnose_project_identity(info,os.environ.get("GEE_PROJECT_ID",""))
     credentials=service_account.Credentials.from_service_account_info(
       info,scopes=["https://www.googleapis.com/auth/earthengine"])
     ee.Initialize(credentials=credentials,project=project)
