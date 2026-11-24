@@ -31,10 +31,16 @@ def build_composite(ee,day:str):
     last_ms=collection.aggregate_max("system:time_start").getInfo()
     first_date=datetime.fromtimestamp(first_ms/1000,timezone.utc).date().isoformat()
     last_date=datetime.fromtimestamp(last_ms/1000,timezone.utc).date().isoformat()
-    probabilities=collection.median()
+    # ImageCollection reductions can lose a meaningful default projection.
+    # Restore the native 10 m projection from an actual Dynamic World scene
+    # before calling reduceResolution; otherwise Earth Engine may attempt to
+    # aggregate from its generic WGS84 one-degree default.
+    native_projection=ee.Image(collection.first()).select("water").projection()
+    probabilities=collection.median().setDefaultProjection(native_projection)
     predicted=(probabilities.toArray().arrayArgmax().arrayGet([0])
-      .rename("dw_class").toByte())
-    confidence=probabilities.reduce(ee.Reducer.max()).rename("dw_confidence").toFloat()
+      .rename("dw_class").toByte().setDefaultProjection(native_projection))
+    confidence=(probabilities.reduce(ee.Reducer.max())
+      .rename("dw_confidence").toFloat().setDefaultProjection(native_projection))
     # Reduce the 10m predictions to a nominal 30m grid. Keep confidence rather
     # than hard-filtering it so uncertainty thresholds remain explicit downstream.
     class30=predicted.reduceResolution(reducer=ee.Reducer.mode(),maxPixels=64)
