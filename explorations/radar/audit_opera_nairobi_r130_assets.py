@@ -65,6 +65,11 @@ def inspect_h5(path):
         strings=walk_strings(h)
     safe_names=sorted({m.group(0) for item in strings for m in SAFE_RE.finditer(item["value"])})
     metadata["source_safe_identifiers"]=safe_names
+    if "source_slc_granules" in metadata:
+        raw=metadata["source_slc_granules"]
+        metadata["source_slc_granules"]=raw if isinstance(raw,list) else [raw]
+        safe_names=sorted({m.group(0) for value in metadata["source_slc_granules"] for m in SAFE_RE.finditer(str(value))})
+        metadata["source_safe_identifiers"]=safe_names
     metadata["source_file_references"]=[x for x in strings if any(k in x["value"].lower() for k in (".safe","manifest","measurement","annotation","calibration"))]
     return {"file":path.name,"metadata":metadata}
 
@@ -110,7 +115,7 @@ def main():
     a.output.write_text(json.dumps(report,indent=2,default=str)+"\n",encoding="utf-8")
     print("HDF5 products:",len(h5_reports),"dynamic rasters:",len(dynamic),"static rasters:",len(static))
     for x in h5_reports:
-        m=x["metadata"]; print(f"{x['file']} | orbit={m.get('absolute_orbit')} | platform={m.get('platform')} | burst={m.get('burst_id')} | start={m.get('source_start')} | source SAFE={m.get('source_safe_identifiers')}")
+        m=x["metadata"]; print(f"{x['file']} | orbit={m.get('absolute_orbit')} | platform={m.get('platform')} | burst={m.get('burst_id')} | start={m.get('source_start')} | source SLC granules={m.get('source_slc_granules')} | source SAFE={m.get('source_safe_identifiers')}")
     for burst,x in grid_checks.items(): print(f"{burst} | rasters={x['raster_count']} | unique grids={x['unique_grid_count']} | same-grid={x['same_grid_within_burst']}")
     print("Checks:",json.dumps(report["checks"],sort_keys=True))
     return 0 if all(report["checks"].values()) else 1
