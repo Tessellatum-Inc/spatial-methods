@@ -45,8 +45,9 @@ def reproject_dem(dem,template):
     with rasterio.open(dem) as src:
         elev=np.full((template.height,template.width),np.nan,dtype=np.float32)
         mask=np.full((template.height,template.width),0,dtype=np.uint8)
-        reproject(src.read(1),elev,src_transform=src.transform,src_crs=src.crs,
-          src_nodata=src.nodata,dst_transform=template.transform,dst_crs=template.crs,
+        source=np.where(src.read(2)>0.5,src.read(1),np.nan).astype(np.float32)
+        reproject(source,elev,src_transform=src.transform,src_crs=src.crs,
+          src_nodata=np.nan,dst_transform=template.transform,dst_crs=template.crs,
           dst_nodata=np.nan,resampling=Resampling.bilinear)
         reproject(src.read(2),mask,src_transform=src.transform,src_crs=src.crs,
           dst_transform=template.transform,dst_crs=template.crs,dst_nodata=0,
