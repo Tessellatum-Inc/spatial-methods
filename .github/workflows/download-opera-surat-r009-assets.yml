@@ -57,4 +57,4 @@ jobs:
           name: surat-r009-opera-rtc-science-assets
           path: data/asf/surat_r009_opera/downloaded
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 7
