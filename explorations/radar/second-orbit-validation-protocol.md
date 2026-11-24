@@ -120,11 +120,29 @@ A paired processing workflow now requests both `GAMMA0_ELLIPSOID` and `GAMMA0_TE
 
 Workflow: [Process Nairobi R130 paired gamma0 rasters](../../.github/workflows/process-nairobi-r130-sentinelhub-pairs.yml)
 
+## Sentinel Hub paired-raster results (2026-11-24)
+
+All five source-verified Sentinel-1D R130 scenes were processed in both ellipsoid gamma0 and terrain gamma0 modes using the same 2500 x 2200 EPSG:4326 output grid, linear-power VV/VH, Copernicus GLO-30 DEM, and terrain oversampling 2.
+
+| Date | Catalogue footprint intersection with AOI | Common Sentinel Hub valid pixels | Valid fraction |
+|---|---:|---:|---:|
+| 2026-10-06 | 84.249% | 4,631,316 | 84.206% |
+| 2026-10-18 | 84.219% | 4,629,651 | 84.175% |
+| 2026-10-30 | 84.356% | 4,637,344 | 84.315% |
+| 2026-11-11 | 84.305% | 4,634,377 | 84.261% |
+| 2026-11-23 | 84.260% | 4,631,887 | 84.216% |
+
+The close agreement between catalogue footprint intersection and the Process API's common valid fraction is a useful internal consistency check. These counts describe validity shared by the Sentinel Hub ellipsoid and RTC branches only; they are **not** yet the pixel overlap with OPERA.
+
+Evidence:
+- [Sentinel Hub paired-processing workflow](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45351938186)
+- [Paired raster artifact (534.7 MB)](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45351938186/artifacts/14901395344)
+
 ## Current status
 
-`SOURCE_DATATAKE_IDENTITY_VERIFIED_5_OF_5; HDF5_AND_RASTER_GRID_QA_PASSED; SENTINEL_HUB_PAIRED_PROCESSING_QUEUED; OPERA_TO_SENTINELHUB_PIXEL_SUPPORT_QA_PENDING`
+`SOURCE_DATATAKE_IDENTITY_VERIFIED_5_OF_5; HDF5_AND_RASTER_GRID_QA_PASSED; SENTINEL_HUB_PAIRS_PROCESSED_5_OF_5; OPERA_TO_SENTINELHUB_PIXEL_SUPPORT_QA_RUNNING`
 
-No second-orbit pixel comparison or scientific validation result is claimed. Source datatake identity and within-burst grid QA have passed; next is pixel-level footprint, validity-mask, and reflector/exclusion QA before any radiometric comparison.
+No second-orbit radiometric comparison or scientific validation result is claimed yet. Source datatake identity and within-burst grid QA have passed, and Sentinel Hub's paired rasters are ready. The OPERA-to-Sentinel Hub common-support QA must pass before computing the radiometric residuals.
 
 ## Source documentation
 
