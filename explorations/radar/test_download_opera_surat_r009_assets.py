@@ -29,6 +29,7 @@ class OperaAssetSelectionTests(unittest.TestCase):
             static_features.append({
                 "file_id": base,
                 "properties": {
+                    "url": f"https://datapool.asf.alaska.edu/path/{base}_incidence_angle.tif",
                     "additionalUrls": [
                         f"https://datapool.asf.alaska.edu/path/{base}.iso.xml",
                         f"https://datapool.asf.alaska.edu/path/{base}_local_incidence_angle.tif",
@@ -49,9 +50,10 @@ class OperaAssetSelectionTests(unittest.TestCase):
         rtc = [x for x in assets if x["product_type"] == "rtc"]
         static = [x for x in assets if x["product_type"] == "static"]
         self.assertEqual(len(rtc), 40)
-        self.assertEqual(len(static), 12)
+        self.assertEqual(len(static), 14)
         self.assertFalse(any(x["filename"].endswith(".md5") for x in assets))
         self.assertFalse(any("BROWSE" in x["filename"] for x in assets))
+        self.assertTrue(any(x["filename"].endswith("_incidence_angle.tif") for x in static))
         self.assertTrue(any(x["filename"].endswith("_local_incidence_angle.tif") for x in static))
         self.assertTrue(any(x["filename"].endswith("_rtc_anf_gamma0_to_beta0.tif") for x in static))
 
