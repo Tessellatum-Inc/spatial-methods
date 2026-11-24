@@ -85,7 +85,7 @@ def run(residual_dir:Path,dynamic_dir:Path,output:Path):
         "The temporal window may mix land-cover change and varying surface conditions.",
         "Confidence values are not assumed to be calibrated probabilities.",
         "Class-specific residual associations may be confounded by slope, aspect, ANF, incidence geometry and sample support.",
-        "No residual pixels are excluded from the primary comparison."]}
+        "The primary cross-processor residual comparison is unchanged; land-cover stratification is limited to pixels with observed Dynamic World support (positive top-1 confidence)."]}
     output.parent.mkdir(parents=True,exist_ok=True);output.write_text(json.dumps(report,indent=2)+"\n")
     print("Land-cover stratification checks:",json.dumps(report["checks"],sort_keys=True),flush=True)
     for burst in sorted({r["burst_id"] for r in records}):
@@ -93,7 +93,7 @@ def run(residual_dir:Path,dynamic_dir:Path,output:Path):
         rows=[r for r in records if r["burst_id"]==burst and r["polarization"]==pol]
         summary=[]
         for code,name in enumerate(CLASS_NAMES):
-          selected=[x for row in rows for x in row["threshold_summaries"][2]["classes"] if x["class_code"]==code]
+          selected=[x for row in rows for x in row["threshold_summaries"][2]["classes"] if x["class_code"]==code and x["count"]>0]
           n=sum(x["count"] for x in selected)
           if n:
             mae=sum(x["count"]*x["mae_db"] for x in selected)/n
