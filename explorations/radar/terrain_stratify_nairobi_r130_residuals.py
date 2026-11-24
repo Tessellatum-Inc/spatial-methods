@@ -2,6 +2,7 @@
 """Stratify Nairobi R130 residuals by Copernicus DEM slope and aspect."""
 from __future__ import annotations
 import argparse,json,sys
+from datetime import date as calendar_date
 from pathlib import Path
 import numpy as np
 import rasterio
@@ -54,6 +55,13 @@ def reproject_dem(dem,template):
           resampling=Resampling.nearest)
         return elev,(mask>0)&np.isfinite(elev)
 
+def report_date(date_token):
+    """Validate and preserve the YYYY-MM-DD token parsed from residual filenames."""
+    if (not isinstance(date_token,str) or len(date_token)!=10
+            or date_token[4]!="-" or date_token[7]!="-"):
+        raise ValueError(f"Expected YYYY-MM-DD date token, got {date_token!r}")
+    return calendar_date.fromisoformat(date_token).isoformat()
+
 def run(dem_path:Path,residual_dir:Path,output:Path):
     maps=sorted(residual_dir.glob("*_delta-residual-db.tif"))
     if len(maps)!=30:raise ValueError(f"Expected 30 residual maps, found {len(maps)}")
@@ -79,7 +87,7 @@ def run(dem_path:Path,residual_dir:Path,output:Path):
                 m=valid&(slope>=1)&(aspect>=i*45)&(aspect<(i+1)*45)
                 aspect_bins.append({"bin":name,"azimuth_from_deg":i*45,"azimuth_to_deg":(i+1)*45,**summarize(values[m])})
             flat=valid&(slope<1)
-            records.append({"date":f"{date[:4]}-{date[4:6]}-{date[6:8]}","burst_id":burst,
+            records.append({"date":report_date(date),"burst_id":burst,
               "polarization":pol,"overall":summarize(v),"slope_strata":slope_bins,
               "aspect_strata":aspect_bins,"flat_or_low_slope":summarize(values[flat]),
               "valid_terrain_pixels":int(valid.sum()),"slope_median_deg":float(np.median(sl)),
