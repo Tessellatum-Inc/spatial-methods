@@ -1,0 +1,39 @@
+name: Acquire Nairobi R130 Dynamic World composites
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: acquire-nairobi-r130-dynamic-world
+  cancel-in-progress: false
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install Dynamic World and raster dependencies
+        run: python -m pip install earthengine-api google-auth numpy rasterio
+      - name: Test date windows and class schema
+        run: python -m unittest explorations.radar.test_acquire_nairobi_r130_dynamic_world -v
+      - name: Verify Earth Engine credentials
+        env:
+          GEE_SERVICE_ACCOUNT_JSON: ${{ secrets.GEE_SERVICE_ACCOUNT_JSON }}
+          GEE_PROJECT_ID: ${{ secrets.GEE_PROJECT_ID }}
+        run: |
+          test -n "$GEE_SERVICE_ACCOUNT_JSON"
+          test -n "$GEE_PROJECT_ID"
+      - name: Acquire date-window Dynamic World composites
+        env:
+          GEE_SERVICE_ACCOUNT_JSON: ${{ secrets.GEE_SERVICE_ACCOUNT_JSON }}
+          GEE_PROJECT_ID: ${{ secrets.GEE_PROJECT_ID }}
+        run: python explorations/radar/acquire_nairobi_r130_dynamic_world.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nairobi-r130-dynamic-world-date-window-composites
+          path: dynamic-world-assets/
+          if-no-files-found: error
+          retention-days: 30
