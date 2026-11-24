@@ -138,11 +138,29 @@ Evidence:
 - [Sentinel Hub paired-processing workflow](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45351938186)
 - [Paired raster artifact (534.7 MB)](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45351938186/artifacts/14901395344)
 
+## OPERA-to-Sentinel Hub common pixel-support QA (2026-11-24)
+
+The five paired Sentinel Hub scenes were reprojected to each native OPERA burst grid using area averaging of linear power and valid-support threshold 0.95. OPERA dynamic mask class 0 and static mask class 0 were treated as valid; Sentinel Hub support required valid ellipsoid and RTC data masks and unflagged RTC shadow mask.
+
+All 15 date/burst combinations and all 30 date/burst/polarization combinations passed the minimum 1,000 common-pixel gate. Common VV/VH sample counts were:
+
+| OPERA burst | VV common pixels across five dates | VH common pixels across five dates |
+|---|---:|---:|
+| T130-279214-IW3 | 85,447–86,700 | 85,445–86,697 |
+| T130-279215-IW3 | 827,865–829,538 | 827,854–829,538 |
+| T130-279216-IW3 | 574,926–576,584 | 574,924–576,584 |
+
+The large difference in sample counts between bursts reflects their different native grid footprints and valid overlap with the Sentinel Hub output. The comparison retains each burst separately; it does not mosaic adjacent bursts or treat their sample counts as equivalent areas.
+
+Evidence:
+- [Paired processing and common-support QA workflow](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45352163781)
+- [Paired rasters and common-support QA artifact (534.7 MB)](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45352163781/artifacts/14900862117)
+
 ## Current status
 
-`SOURCE_DATATAKE_IDENTITY_VERIFIED_5_OF_5; HDF5_AND_RASTER_GRID_QA_PASSED; SENTINEL_HUB_PAIRS_PROCESSED_5_OF_5; OPERA_TO_SENTINELHUB_PIXEL_SUPPORT_QA_RUNNING`
+`SOURCE_DATATAKE_IDENTITY_VERIFIED_5_OF_5; HDF5_AND_RASTER_GRID_QA_PASSED; SENTINEL_HUB_PAIRS_PROCESSED_5_OF_5; COMMON_PIXEL_SUPPORT_QA_PASSED_15_OF_15; CROSS_PROCESSOR_COMPARISON_RUNNING`
 
-No second-orbit radiometric comparison or scientific validation result is claimed yet. Source datatake identity and within-burst grid QA have passed, and Sentinel Hub's paired rasters are ready. The OPERA-to-Sentinel Hub common-support QA must pass before computing the radiometric residuals.
+The source, raster-grid, and common-pixel-support admission gates have passed. The cross-processor comparison is now running. No radiometric validation result is claimed until its metrics and limitations are reviewed.
 
 ## Source documentation
 
