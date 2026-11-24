@@ -1,4 +1,7 @@
-import unittest\nfrom urllib.error import HTTPError\nfrom email.message import Message\nfrom io import BytesIO
+import unittest
+from urllib.error import HTTPError
+from email.message import Message
+from io import BytesIO
 from explorations.radar.acquire_nairobi_r130_dynamic_world import date_window, DATES, PROBABILITY_BANDS
 
 class DynamicWorldWindowTests(unittest.TestCase):
