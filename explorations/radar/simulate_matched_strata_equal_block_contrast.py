@@ -32,6 +32,16 @@ def wilson(successes,trials,z=1.959963984540054):
     return [float(centre-half),float(centre+half)]
 
 
+def draw_pixel_noise(rng, size, scale, degrees_freedom=4):
+    """Draw zero-mean, unit-variance Student-t noise with spatial scale."""
+    if size < 0 or scale < 0 or degrees_freedom <= 2:
+        raise ValueError("size and scale must be non-negative; degrees_freedom must exceed 2")
+    unit_variance_t = rng.standard_t(degrees_freedom, size=size) * np.sqrt(
+        (degrees_freedom - 2) / degrees_freedom
+    )
+    return unit_variance_t * scale
+
+
 def equal_stratum_block_contrast(stratum_contrasts):
     """Average shared-stratum contrasts equally within one block."""
     values=np.asarray(stratum_contrasts,dtype=float)
@@ -62,7 +72,10 @@ def one_realization(size,rho,rng,informative=False):
     block_observed=[]; kept_ids=[]
     for bid in ids[eligible]:
         r,c=divmod(int(bid),size)
-        n_strata=int(rng.integers(2,6))
+        # Support varies smoothly over space: blocks in the upper half of
+        # the grid tend to have fewer matched strata and smaller pixel samples.
+        support_factor=1.0-0.35*(r/max(1,size-1))
+        n_strata=max(2,int(rng.integers(2,6)*support_factor))
         # Heterogeneous stratum effects, centered within each block so their
         # equal-stratum mean is exactly the latent block contrast.
         heterogeneity=rng.normal(0,0.25,size=n_strata)
@@ -71,9 +84,13 @@ def one_realization(size,rho,rng,informative=False):
         estimated=[]
         for delta in true_strata:
             # Unequal pixel counts across target/reference and strata.
-            nt=int(rng.integers(8,80)); nr=int(rng.integers(8,80))
-            target=delta+rng.normal(0,1.0,size=nt)
-            reference=rng.normal(0,1.0,size=nr)
+            nt=max(5,int(rng.integers(8,80)*support_factor))
+            nr=max(5,int(rng.integers(8,80)*support_factor))
+            # Heteroskedasticity varies by row; heavy-tailed noise makes a
+            # few within-stratum pixels more influential than under Gaussian noise.
+            noise_scale=0.65+0.9*(r/max(1,size-1))
+            target=delta+draw_pixel_noise(rng,nt,noise_scale)
+            reference=draw_pixel_noise(rng,nr,noise_scale)
             estimated.append(float(target.mean()-reference.mean()))
         block_observed.append(equal_stratum_block_contrast(estimated))
         kept_ids.append(int(bid))
@@ -137,8 +154,10 @@ def run(simulations=100,size=24,correlations=(0.3,0.6,0.8),
       "grid_size":[size,size],"seed":seed,"results":results,
       "target":"Finite-population mean of latent equal-stratum block contrasts among baseline-eligible blocks, before any informative selection.",
       "informative_eligibility":"When enabled, blocks above the 80th percentile of latent contrast are preferentially excluded after the baseline target population is defined; intervals are judged against that pre-selection target.",
+      "pixel_noise":"Independent Student-t noise with 4 degrees of freedom, standardized to unit variance before a row-varying scale is applied.",
+      "spatial_support":"The number of matched strata and within-stratum sample sizes decrease with row position; this is a stylized spatially varying support mechanism.",
       "limitations":["Synthetic block/stratum structure; not the Nairobi R130 data-generating process.",
-        "Pixel-level noise is Gaussian and independent within strata.",
+        "Pixel noise is independent within strata; cross-scene, burst and polarization dependence and class-label misclassification are not modelled.",
         "Only moving-window bootstrap and spatial HAC are compared; subsampling is omitted because its irregular-mask contract is restrictive.",
         "Informative eligibility is not corrected; under that condition coverage is assessed against the pre-selection population target.",
         "No nominal coverage claim or automatic tuning selection."]}
