@@ -60,3 +60,5 @@ Intervals describe variability under the specified block-resampling scheme. They
 - [Bootstrap primitives](../explorations/radar/spatial_block_bootstrap.py)
 - [Nairobi protocol and current limits](../explorations/radar/NAIROBI_R130_SPATIAL_BLOCK_UNCERTAINTY_PROTOCOL.md)
 - [Automated workflow](../.github/workflows/spatial-block-uncertainty-nairobi-r130.yml)
+
+An empirical block-contrast semivariogram can complement Moran's I by summarizing half the mean squared difference between block contrasts over distance-lag bins. Use block-centroid distances and report pair counts for every lag. Treat it as descriptive: sparse bins, irregular eligible-block geometry, anisotropy and nonstationarity can make the curve unstable. Do not infer a dependence range from a single noisy rise or plateau; inspect maps and test sensitivity to lag width and direction.
