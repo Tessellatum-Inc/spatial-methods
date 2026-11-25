@@ -1,0 +1,31 @@
+name: Tree-built class-label error sensitivity
+on:
+  push:
+    branches: [main]
+    paths:
+      - "explorations/radar/simulate_tree_built_label_error.py"
+      - "explorations/radar/test_tree_built_label_error.py"
+      - ".github/workflows/tree-built-label-error-validation.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  label-error:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install numpy
+      - name: Run label-error unit tests
+        run: python -m unittest explorations.radar.test_tree_built_label_error -v
+      - name: Run label-error sensitivity experiment
+        run: python -m explorations.radar.simulate_tree_built_label_error > tree-built-label-error.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tree-built-label-error-sensitivity
+          path: tree-built-label-error.json
+          if-no-files-found: error
