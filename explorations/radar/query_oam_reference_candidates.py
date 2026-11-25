@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Discover OpenAerialMap STAC imagery candidates intersecting Nairobi R130.
 
-This is a discovery/metadata audit only. It does not download imagery or
-establish positional accuracy, licence validity, or reference-label quality.
+Metadata discovery only: no imagery downloads, visual interpretation, licence
+validation, positional-accuracy assessment, or reference-label production.
 """
 from __future__ import annotations
 
@@ -31,8 +31,8 @@ def validate_asset_href(href: str) -> bool:
 def search_items(session=requests, bbox=R130_BBOX, start=START, end=END):
     """Fetch STAC search pages, honoring GET/POST next-link instructions.
 
-    Pagination links are treated as untrusted input: only HTTPS links to the
-    configured STAC host are followed.
+    Pagination links are untrusted input: only HTTPS links to the configured
+    STAC host are followed.
     """
     url = f"{STAC_ROOT}/search"
     params = {"bbox": ",".join(map(str, bbox)),
@@ -69,7 +69,86 @@ def search_items(session=requests, bbox=R130_BBOX, start=START, end=END):
         method = (next_link.get("method") or "GET").upper()
         body = next_link.get("body") or {}
         if next_link.get("merge"):
-            body = {**params, **body}
+            body = {**(params or {}), **body}
         next_request = (method, body, next_link.get("headers") or {})
         params = None
     return items, pages
+
+
+def audit(items, bbox=R130_BBOX):
+    """Normalize candidate metadata and screen geometry against discovery bbox."""
+    discovery_area = box(*bbox)
+    rows = []
+    for item in items:
+        properties = item.get("properties") or {}
+        geometry = item.get("geometry")
+        geometry_present = geometry is not None
+        intersects = None
+        if geometry_present:
+            try:
+                intersects = bool(shape(geometry).intersects(discovery_area))
+            except (TypeError, ValueError):
+                intersects = None
+        assets = item.get("assets") or {}
+        hrefs = [asset.get("href", "") for asset in assets.values()
+                 if isinstance(asset, dict)]
+        rows.append({
+            "id": item.get("id"),
+            "collection": item.get("collection"),
+            "datetime": properties.get("datetime"),
+            "start_datetime": properties.get("start_datetime"),
+            "end_datetime": properties.get("end_datetime"),
+            "platform": properties.get("platform"),
+            "platform_type": properties.get("oam:platform_type"),
+            "producer_name": properties.get("oam:producer_name"),
+            "gsd": properties.get("gsd"),
+            "license": properties.get("license") or item.get("license"),
+            "acquisition_time_estimated": properties.get("oam:acquisition_time_estimated"),
+            "acquisition_source": properties.get("oam:acquisition_source"),
+            "footprint_source": properties.get("oam:footprint_source"),
+            "footprint_area": properties.get("oam:footprint_area"),
+            "geometry_present": geometry_present,
+            "intersects_r130_bbox": intersects,
+            "bbox": item.get("bbox"),
+            "asset_keys": sorted(assets),
+            "https_asset_hrefs_available": sum(validate_asset_href(href) for href in hrefs),
+        })
+    return rows
+
+
+def build_report(items, pages, bbox=R130_BBOX, start=START, end=END):
+    rows = audit(items, bbox=bbox)
+    return {
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "catalogue": STAC_ROOT,
+        "query": {"bbox": bbox, "datetime": [start, end]},
+        "pages": pages,
+        "item_count": len(rows),
+        "items": rows,
+        "limitations": [
+            "Discovery rectangle is not the frozen exact R130 analysis mask.",
+            "Geometry intersection is a screening result, not proof of usable pixel overlap or positional alignment.",
+            "Metadata, acquisition dates, platform, GSD, licence and asset availability require source-level confirmation.",
+            "HTTPS asset URL presence does not validate the asset or authorize its use.",
+            "No imagery was downloaded or visually interpreted; no reference labels or accuracy estimates were produced.",
+        ],
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--start", default=START)
+    parser.add_argument("--end", default=END)
+    parser.add_argument("--output", type=Path,
+                        default=Path("data/reference/nairobi-r130-oam-stac-audit.json"))
+    args = parser.parse_args()
+    items, pages = search_items(start=args.start, end=args.end)
+    report = build_report(items, pages, start=args.start, end=args.end)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n",
+                           encoding="utf-8")
+    print(f"Wrote {report['item_count']} STAC items across {len(pages)} pages to {args.output}")
+
+
+if __name__ == "__main__":
+    main()
