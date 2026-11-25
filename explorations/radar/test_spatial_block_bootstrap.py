@@ -111,7 +111,7 @@ class SpatialBlockBootstrapTests(unittest.TestCase):
         shifted, shifted_cols, _ = fixed_origin_block_ids(
             east, north, 100, origin_east_m=50, origin_north_m=50
         )
-        self.assertEqual(base_cols, 2)
+        self.assertEqual(base_cols, 1)
         self.assertEqual(shifted_cols, 2)
         self.assertEqual(len(np.unique(base)), 1)
         self.assertEqual(len(np.unique(shifted)), 2)
