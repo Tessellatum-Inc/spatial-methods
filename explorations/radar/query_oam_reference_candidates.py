@@ -50,11 +50,11 @@ def audit(items, bbox=R130_BBOX):
     rows = []
     for item in items:
         geom = item.get("geometry")
-        intersection_fraction = None
+        intersects_r130_bbox = None
         if geom:
             footprint = shape(geom)
             if not footprint.is_empty and footprint.is_valid:
-                intersection_fraction = float(footprint.intersection(aoi).area / aoi.area)
+                intersects_r130_bbox = bool(footprint.intersects(aoi))
         props = item.get("properties") or {}
         assets = item.get("assets") or {}
         hrefs = [a.get("href", "") for a in assets.values()]
@@ -70,7 +70,7 @@ def audit(items, bbox=R130_BBOX):
             "gsd": props.get("gsd"),
             "license": item.get("license") or props.get("license"),
             "bbox": item.get("bbox"),
-            "r130_bbox_intersection_fraction": intersection_fraction,
+            "intersects_r130_bbox": intersects_r130_bbox,
             "asset_keys": sorted(assets),
             "https_asset_hrefs_available": sum(validate_asset_href(x) for x in hrefs),
             "geometry_present": bool(geom),
