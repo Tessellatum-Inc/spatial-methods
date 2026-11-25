@@ -21,6 +21,10 @@ For each scene (date × burst × polarization), compare tree-class MAE with buil
 - If a scene has too few eligible blocks for a stable bootstrap, mark its interval as unreliable; do not silently combine scenes to inflate sample size.
 - Provide a pooled descriptive estimate across scenes separately from any uncertainty interval. A pooled interval requires a clearly stated target weighting and hierarchical resampling of scenes and blocks.
 
+## Remaining block dependence
+
+For each scene/configuration, retain each eligible block's matched contrast and its row/column on the fixed metric grid. Calculate descriptive rook-neighbour Moran's I from immediately adjacent eligible blocks, and report eligible-block count and neighbour-pair count. Do not attach a p-value or interpret the statistic as proof of independence. It is a local dependence diagnostic; it does not replace variograms, residual-map inspection or sensitivity to alternative neighbourhood definitions.
+
 ## Sensitivity
 Run at 500 m, 1 km, and 2 km block sizes. Also repeat Dynamic World confidence thresholds 0, 0.5, and 0.7. Record support loss and whether the sign and magnitude of contrast are stable.
 
