@@ -30,6 +30,12 @@ Within each scene, resample eligible block contrasts with replacement and calcul
 
 The Nairobi R130 implementation uses 2,000 replicates and suppresses intervals with fewer than 20 eligible blocks. Twenty is an exploratory minimum, not a universal adequacy threshold. Repeated random seeds across scene records are used for reproducibility; the per-scene intervals are not a pooled joint confidence interval.
 
+## Residual dependence diagnostics
+
+Where eligible block contrasts occupy a regular grid, calculate a descriptive rook-neighbour Moran's I using only immediately adjacent north/south/east/west eligible blocks. Report the number of eligible blocks and neighbour pairs alongside the statistic. Suppress the statistic below the pre-specified minimum block count or when there are no neighbour pairs or no variation.
+
+This is a diagnostic, not a formal independence test: no p-value is implied, and a low or negative value does not prove independence. Rook adjacency captures only one neighbourhood definition and one spatial scale. Consider variograms, alternative distance bands and sensitivity to block size where the study warrants them. A bootstrap interval should be interpreted cautiously when material positive local autocorrelation remains among block contrasts.
+
 ## Multi-scene inference
 
 Do not treat date × burst × polarization records as independent when they share acquisition dates, orbital geometry, processing inputs or spatial footprints. A cross-scene interval requires an explicitly defined target population and a resampling design that respects the crossed or nested dependence structure (for example, date-level and spatial cluster structure). Until justified, report per-scene intervals and descriptive distributions across scenes only.
