@@ -301,3 +301,25 @@ The catalogue polygon, projected to UTM zone 37S (EPSG:32737), has an approximat
 
 **Current decision:** the asset is now a strong retrieval candidate for the 2026-11-11 date because its catalogue interval is 2026-11-04 21:00 UTC to 2026-11-05 08:30:51 UTC, its reported GSD is 2.379 cm, and its advertised licence is CC-BY-4.0. These remain catalogue assertions pending metadata/provider verification. Its geographic footprint is small relative to the R130 acquisition rectangle and must not be treated as representative of all bursts, dates or the full study area.
 
+
+
+## 9H. Exact candidate-footprint intersection with the R130 residual support (2026-11-25)
+
+The live STAC candidate audit was extended from a broad bounding-box screen to a raster-grid intersection against the archived 30 R130 residual maps (five dates × three bursts × two polarizations). The candidate geometry was transformed from CRS84 into each residual raster CRS (EPSG:32736), then pixel centres inside the catalogue footprint were counted against valid residual pixels. This uses the residual maps' common-support mask as the available support proxy.
+
+**Result for item `6aec5e73b093219a6d913430`:**
+
+- The footprint intersects **one burst only**: `T130-279215-IW3`. It has no footprint pixel-centre overlap with burst `279214`.
+- The footprint also intersects the grid of burst `279216`, but **zero** of those candidate-footprint pixel centres are valid in the residual maps there.
+- Within burst `279215`, all **3,667** candidate-footprint pixel centres are valid residual-support pixels in every date and both VV/VH maps: 100% of the candidate footprint under this pixel-centre test.
+- At 30 m × 30 m, that is approximately **3.3003 km²** of supported area per date/polarization map. This is a raster-grid area calculation, not an independent measurement of the source COG's valid-data footprint.
+- Spatial support is therefore demonstrated for a small subset of the study: one burst and approximately 3.3 km². It is not representative of the other two bursts or the full R130 footprint.
+
+The item acquisition interval in STAC is **2026-11-04 21:00 UTC to 2026-11-05 08:30:51 UTC**. It is temporally close to the 2026-11-11 R130 acquisition (about six days earlier), so it is a conditional reference-imagery candidate for that date and burst only. The same footprint's intersection with other R130 dates does not make the image temporally admissible for those dates.
+
+**Provenance blocker:** the STAC metadata asset URL returned HTTP 404 in the live bounded metadata fetch. The item-level catalogue fields currently report producer Kenya Flying Labs, UAV platform, 2.379 cm GSD and CC-BY-4.0, but these remain unconfirmed catalogue assertions. The source COG has not been downloaded or visually interpreted; source georeferencing, CRS, positional accuracy, capture provenance and provider attribution have not been independently verified.
+
+**Decision:** advance this item from a broad spatial lead to a **spatially intersecting, date-specific conditional candidate** for 2026-11-11 / burst 279215. Do not call it a validated reference source and do not start sample interpretation yet. Gate A remains open pending provider/source confirmation and source-image registration/quality review. If those checks pass, any sample and inference must be explicitly limited to the supported 3.3 km² / burst-279215 subpopulation; the candidate cannot validate all five dates or the full study.
+
+The reproducible implementation is `audit_oam_candidate_against_r130_residuals.py`; the integrated workflow tests it, retrieves the archived residual-map artifact, and emits a combined feasibility artifact. The overlap method and its limitations are recorded in the JSON output.
+
