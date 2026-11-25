@@ -53,7 +53,7 @@ def analyze_scene(residual_path,opera_dir,dw_dir,dem_path,block_sizes,thresholds
     ci=bootstrap_interval([x["contrast_db"] for x in contrasts],replicates=2000,seed=20261125,min_blocks=20)
     results.append({"minimum_dw_confidence":threshold,**meta,"trees_vs_built_mae_contrast":ci,
       "tree_pixels_in_eligible_blocks":sum(x["target_pixels"] for x in contrasts),"built_pixels_in_eligible_blocks":sum(x["built_pixels"] for x in contrasts),
-      "matched_strata_total":sum(x["matched_strata"] for x in contrasts),"block_details":contrasts})
+      "matched_strata_total":sum(x["matched_strata"] for x in contrasts)})
   return {"date":date,"burst_id":burst,"polarization":pol,"valid_joint_pixels":int(joint.sum()),"results":results}
 def run(residual_dir,opera_dir,dw_dir,dem,out):
  maps=sorted(residual_dir.glob("*_delta-residual-db.tif"));
