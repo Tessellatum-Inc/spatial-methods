@@ -93,6 +93,10 @@ jobs:
         run: python -m unittest discover -s explorations/radar -p "test_screen_sentinel1_angle_consistency.py"
       - name: Test Sentinel-1 gamma0 terrain processing
         run: python -m unittest discover -s explorations/radar -p "test_process_sentinel1_gamma0_terrain.py"
+      - name: Test Nairobi R130 OAM reference imagery audit
+        run: |
+          python -m pip install requests shapely
+          python -m unittest explorations.radar.test_query_oam_reference_candidates -v
       - name: Test Nairobi R130 residual diagnostics
         run: python -m unittest explorations.radar.test_diagnose_opera_nairobi_r130_residuals -v
       - name: Test Nairobi R130 terrain residual stratification
