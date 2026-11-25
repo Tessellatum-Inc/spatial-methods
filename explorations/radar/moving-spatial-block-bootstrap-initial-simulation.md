@@ -6,7 +6,11 @@
 **Design:** 30 × 30 mean-zero separable Gaussian AR(1) fields; 150 Monte Carlo fields per correlation/window-width combination; 400 bootstrap replicates per field; fixed seed 20261126.  
 **Known estimand:** population mean = 0.
 
-## Results
+## Status: numerical results superseded
+
+The table below is retained as an historical record only and **must not be interpreted as valid evidence for the current implementation**. A code review identified that the earlier replicate statistic divided by the random number of sampled block occurrences. With irregular or boundary-truncated windows, window sizes vary and this ratio can introduce finite-sample weighting bias. The implementation has since been corrected to divide by the fixed number of sampled windows multiplied by $k^2$, consistent with equal first-order inclusion of every eligible block. The coverage experiment must be rerun before reporting numerical conclusions.
+
+## Historical results (superseded)
 
 The table reports empirical coverage of nominal 95% percentile intervals and mean interval width. Window width 1 is the ordinary independent-block bootstrap comparator.
 
