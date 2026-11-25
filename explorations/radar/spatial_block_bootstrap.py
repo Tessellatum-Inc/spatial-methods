@@ -58,6 +58,67 @@ def bootstrap_interval(block_contrasts, *, replicates=2000, seed=20261125, min_b
 
 
 
+
+def spatial_cluster_bootstrap_interval(block_ids, block_values, *, grid_columns,
+                                       cluster_width_blocks, replicates=2000,
+                                       seed=20261125, min_clusters=20):
+    """Bootstrap contiguous grid superblocks while preserving the equal-block estimand.
+
+    Eligible base-block contrasts are grouped by a fixed-origin square supergrid.
+    Each replicate samples superblocks with replacement; the replicate statistic
+    is the ratio of the sampled sum of block contrasts to the sampled number of
+    base blocks. This retains equal weighting of base blocks despite partial
+    superblocks at the study boundary. It does not remove dependence between
+    adjacent superblocks and is a sensitivity analysis, not a coverage guarantee.
+    """
+    ids = np.asarray(block_ids, dtype=np.int64)
+    values = np.asarray(block_values, dtype=float)
+    if ids.shape != values.shape:
+        raise ValueError("Block IDs and values must have matching shapes")
+    if grid_columns < 1 or cluster_width_blocks < 1:
+        raise ValueError("grid_columns and cluster_width_blocks must be positive")
+    valid = np.isfinite(values) & (ids >= 0)
+    ids, values = ids[valid], values[valid]
+    if np.unique(ids).size != ids.size:
+        raise ValueError("Each eligible block ID must occur once")
+    n_blocks = int(values.size)
+    cluster_columns = int(np.ceil(grid_columns / cluster_width_blocks))
+    rows = ids // int(grid_columns)
+    cols = ids % int(grid_columns)
+    cluster_ids = (rows // cluster_width_blocks) * cluster_columns + (cols // cluster_width_blocks)
+    unique_clusters, inverse = np.unique(cluster_ids, return_inverse=True)
+    n_clusters = int(unique_clusters.size)
+    base = {
+        "estimate_db": block_mean_contrast(values),
+        "lower_95_db": None,
+        "upper_95_db": None,
+        "eligible_blocks": n_blocks,
+        "eligible_clusters": n_clusters,
+        "cluster_width_blocks": int(cluster_width_blocks),
+        "interval_status": "insufficient_clusters",
+        "minimum_clusters": int(min_clusters),
+        "replicates": 0,
+        "seed": int(seed),
+    }
+    if n_clusters < min_clusters:
+        return base
+    cluster_sums = np.bincount(inverse, weights=values, minlength=n_clusters)
+    cluster_counts = np.bincount(inverse, minlength=n_clusters)
+    rng = np.random.default_rng(seed)
+    draws_index = rng.integers(0, n_clusters, size=(replicates, n_clusters))
+    draw_sums = cluster_sums[draws_index].sum(axis=1)
+    draw_counts = cluster_counts[draws_index].sum(axis=1)
+    draws = draw_sums / draw_counts
+    lo, hi = np.quantile(draws, [0.025, 0.975])
+    return {
+        **base,
+        "lower_95_db": float(lo),
+        "upper_95_db": float(hi),
+        "interval_status": "percentile_spatial_cluster_bootstrap",
+        "replicates": int(replicates),
+    }
+
+
 def rook_morans_i(block_ids, block_values, *, grid_columns, min_blocks=20):
     """Descriptive rook-neighbour Moran's I for a regular block grid.
 
