@@ -12,7 +12,8 @@ class MatchedBlockTests(unittest.TestCase):
   b=np.array([1,1,2,2]);c=np.array([6,1,6,1]);s=np.array([3,3,3,3]);r=np.array([.1,.3,.2,.6])
   rows=matched_block_contrasts(b,c,s,r)
   self.assertEqual([x["block_id"] for x in rows],[1,2])
-  self.assertEqual([x["contrast_db"] for x in rows],[.2,.4])
+  self.assertAlmostEqual(rows[0]["contrast_db"],.2)
+  self.assertAlmostEqual(rows[1]["contrast_db"],.4)
  def test_nan_residual_excluded(self):
   rows=matched_block_contrasts(np.array([1,1]),np.array([6,1]),np.array([1,1]),np.array([.1,np.nan]))
   self.assertEqual(rows,[])
