@@ -46,3 +46,27 @@ class SpatialBlockBootstrapTests(unittest.TestCase):
         self.assertEqual(a,b)
         self.assertLessEqual(a["lower_95_db"],a["estimate_db"])
         self.assertGreaterEqual(a["upper_95_db"],a["estimate_db"])
+
+
+    def test_rook_morans_i_detects_positive_and_negative_neighbour_patterns(self):
+        from explorations.radar.spatial_block_bootstrap import rook_morans_i
+        positive = rook_morans_i([0, 1, 2, 3], [1., 2., 2., 3.], grid_columns=2, min_blocks=4)
+        negative = rook_morans_i([0, 1, 2, 3], [1., -1., -1., 1.], grid_columns=2, min_blocks=4)
+        self.assertEqual(positive["status"], "computed")
+        self.assertEqual(negative["status"], "computed")
+        self.assertGreater(positive["moran_i"], 0)
+        self.assertLess(negative["moran_i"], 0)
+        self.assertEqual(positive["neighbor_pairs"], 4)
+
+    def test_rook_morans_i_flags_constant_values_and_disconnected_blocks(self):
+        from explorations.radar.spatial_block_bootstrap import rook_morans_i
+        constant = rook_morans_i([0, 1, 2, 3], [2., 2., 2., 2.], grid_columns=2, min_blocks=4)
+        disconnected = rook_morans_i([0, 3], [1., 2.], grid_columns=2, min_blocks=2)
+        self.assertEqual(constant["status"], "no_variation")
+        self.assertEqual(disconnected["status"], "no_neighbour_pairs")
+
+    def test_rook_morans_i_suppresses_small_block_sets(self):
+        from explorations.radar.spatial_block_bootstrap import rook_morans_i
+        result = rook_morans_i([0, 1, 2], [1., 2., 3.], grid_columns=2, min_blocks=4)
+        self.assertEqual(result["status"], "insufficient_blocks")
+        self.assertIsNone(result["moran_i"])
