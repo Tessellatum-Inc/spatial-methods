@@ -145,3 +145,11 @@ The first anisotropic experiment uses separable Gaussian fields with row/column 
 ## Irregular-mask coverage diagnostic
 
 A first mask experiment tests random 20% holes, a single clustered hole, edge truncation with additional holes, and multiple clustered holes. The moving-window and product-Bartlett HAC estimators execute on all these sparse grids, but both continue to under-cover under strong spatial dependence. The fixed-size subsampling implementation explicitly reports irregular masks as unsupported. See [irregular-mask results](../explorations/radar/spatial-uncertainty-irregular-mask-results.md) and [simulation source](../explorations/radar/simulate_spatial_uncertainty_irregular_masks.py). These masks are independent of field values; informative missingness and nonstationarity remain untested.
+
+
+
+## Nonstationarity and informative-missingness stress test
+
+A follow-on simulation evaluates whether the mean-interval candidates remain defensible when the field departs from the stationary, independently masked Gaussian designs used above. The finite full-grid mean is the target; all methods receive only eligible cells. Scenarios include a smooth spatial mean gradient, spatially varying variance, an abrupt two-region mean boundary, and a correlated field whose upper tail is selectively removed by a value-dependent eligibility rule. The last scenario deliberately makes missingness informative: the observed-cell mean is not generally the full-grid mean, and the interval methods do not apply a missingness correction.
+
+The experiment uses common realizations across supported methods and records coverage, Wilson Monte Carlo intervals, interval width, estimate bias and eligible-cell counts. Spatial subsampling is expected to refuse the irregular informative-missingness mask under its current complete-grid contract. This is a stress test, not a tuning exercise or a calibration claim. Even good performance in these stylized scenarios would not establish validity for matched-strata block contrasts, informative masks in real imagery, or spatially varying dependence. See [simulation source](../explorations/radar/simulate_spatial_uncertainty_nonstationarity.py) and the [validation workflow](../.github/workflows/spatial-uncertainty-nonstationarity-validation.yml).
