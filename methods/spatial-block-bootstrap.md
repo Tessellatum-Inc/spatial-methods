@@ -140,3 +140,8 @@ The first paired comparison passes identical stationary Gaussian field realizati
 ## Directional dependence diagnostic
 
 The first anisotropic experiment uses separable Gaussian fields with row/column correlations $(0.8,0.3)$ and $(0.3,0.8)$. HAC coverage improves when the longer bandwidth is aligned with the axis of stronger dependence (12 × 4 versus 4 × 12 in the first orientation, and vice versa in the second). This supports retaining separate directional bandwidths as a sensitivity dimension, but the best observed coverage remains below 0.95. See [directional dependence results](../explorations/radar/spatial-uncertainty-anisotropy-results.md) and the reproducible [simulation](../explorations/radar/simulate_spatial_uncertainty_anisotropy.py). Do not interpret the best observed pair as an automatic selector or calibration result.
+
+
+## Irregular-mask coverage diagnostic
+
+A first mask experiment tests random 20% holes, a single clustered hole, edge truncation with additional holes, and multiple clustered holes. The moving-window and product-Bartlett HAC estimators execute on all these sparse grids, but both continue to under-cover under strong spatial dependence. The fixed-size subsampling implementation explicitly reports irregular masks as unsupported. See [irregular-mask results](../explorations/radar/spatial-uncertainty-irregular-mask-results.md) and [simulation source](../explorations/radar/simulate_spatial_uncertainty_irregular_masks.py). These masks are independent of field values; informative missingness and nonstationarity remain untested.
