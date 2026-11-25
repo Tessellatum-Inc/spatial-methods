@@ -14,8 +14,8 @@ import rasterio
 from rasterio.features import geometry_mask
 from rasterio.warp import transform_geom
 
-DATE_RE = re.compile(r"(20\\d{2})-(\\d{2})-(\\d{2})")
-BURST_RE = re.compile(r"(T130-\\d{6}-IW3)")
+DATE_RE = re.compile(r"(20\d{2})-(\d{2})-(\d{2})")
+BURST_RE = re.compile(r"(T130-\d{6}-IW3)")
 POL_RE = re.compile(r"_(VV|VH)_")
 
 
@@ -112,7 +112,7 @@ def main():
     a = p.parse_args()
     report = audit(a.audit_json, a.residual_dir)
     a.output.parent.mkdir(parents=True, exist_ok=True)
-    a.output.write_text(json.dumps(report, indent=2) + "\\n", encoding="utf-8")
+    a.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     for item in report["candidate_audits"]:
         supported = sum(x["VV_candidate_pixels"] for x in item["date_burst_support"])
         both = sum(x["both_polarizations_supported"] for x in item["date_burst_support"])
