@@ -109,3 +109,60 @@ def rook_morans_i(block_ids, block_values, *, grid_columns, min_blocks=20):
         "moran_i": float(moran),
         "status": "computed",
     }
+
+
+def empirical_block_semivariogram(block_ids, block_values, *, grid_columns, block_size_m,
+                                  lag_edges_blocks=(0.0, 1.5, 2.5, 4.5, 8.5, 16.5, float("inf")),
+                                  min_pairs=10):
+    """Descriptive empirical semivariogram of block contrasts on a regular grid.
+
+    Distances are between block centroids, expressed in block-width units.
+    Lag bins are left-closed/right-open. No model fitting or inferential
+    uncertainty is implied; sparse bins are retained with an explicit status.
+    """
+    ids = np.asarray(block_ids, dtype=np.int64)
+    values = np.asarray(block_values, dtype=float)
+    edges = np.asarray(lag_edges_blocks, dtype=float)
+    if ids.shape != values.shape:
+        raise ValueError("Block IDs and values must have matching shapes")
+    if grid_columns < 1 or block_size_m <= 0:
+        raise ValueError("grid_columns and block_size_m must be positive")
+    if edges.ndim != 1 or edges.size < 2 or edges[0] < 0 or np.any(np.diff(edges) <= 0):
+        raise ValueError("lag_edges_blocks must be strictly increasing and non-negative")
+    valid = np.isfinite(values) & (ids >= 0)
+    ids, values = ids[valid], values[valid]
+    if np.unique(ids).size != ids.size:
+        raise ValueError("Each eligible block ID must occur once")
+    x = ids // int(grid_columns)
+    y = ids % int(grid_columns)
+    n_bins = edges.size - 1
+    pair_counts = np.zeros(n_bins, dtype=np.int64)
+    semivariance_sums = np.zeros(n_bins, dtype=float)
+    for i in range(max(0, len(ids) - 1)):
+        dx = x[i + 1:] - x[i]
+        dy = y[i + 1:] - y[i]
+        distance = np.hypot(dx, dy).astype(float)
+        squared_difference = 0.5 * np.square(values[i + 1:] - values[i])
+        bins = np.searchsorted(edges, distance, side="right") - 1
+        valid_bins = (bins >= 0) & (bins < n_bins)
+        if np.any(valid_bins):
+            pair_counts += np.bincount(bins[valid_bins], minlength=n_bins)
+            semivariance_sums += np.bincount(
+                bins[valid_bins], weights=squared_difference[valid_bins], minlength=n_bins
+            )
+    result = []
+    for i in range(n_bins):
+        count = int(pair_counts[i])
+        result.append({
+            "lag_min_blocks": float(edges[i]),
+            "lag_max_blocks": None if np.isinf(edges[i + 1]) else float(edges[i + 1]),
+            "pair_count": count,
+            "semivariance": float(semivariance_sums[i] / count) if count else None,
+            "status": "computed" if count >= min_pairs else "insufficient_pairs",
+        })
+    return {
+        "eligible_blocks": int(len(ids)),
+        "block_size_m": int(block_size_m),
+        "distance_unit": "block widths",
+        "bins": result,
+    }
