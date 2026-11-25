@@ -17,6 +17,24 @@ class LabelErrorTests(unittest.TestCase):
         b = apply_label_confusion(labels, np.random.default_rng(8), .2, .1)
         np.testing.assert_array_equal(a, b)
 
+    def test_ambiguity_increases_flip_probability(self):
+        labels = np.array(["T"] * 5000)
+        ambiguity = np.concatenate([np.zeros(2500), np.ones(2500)])
+        observed = apply_label_confusion(
+            labels, np.random.default_rng(31), .1, .1,
+            ambiguity=ambiguity, ambiguity_multiplier=3.0)
+        low_flip = np.mean(observed[:2500] == "B")
+        high_flip = np.mean(observed[2500:] == "B")
+        self.assertGreater(high_flip, low_flip + .15)
+
+    def test_ambiguity_shape_and_range_are_validated(self):
+        with self.assertRaises(ValueError):
+            apply_label_confusion(["T", "B"], np.random.default_rng(1),
+                                  .1, .1, ambiguity=[0.2])
+        with self.assertRaises(ValueError):
+            apply_label_confusion(["T"], np.random.default_rng(1),
+                                  .1, .1, ambiguity=[1.2])
+
     def test_confusion_rejects_invalid_probabilities(self):
         with self.assertRaises(ValueError):
             apply_label_confusion(["T"], np.random.default_rng(1), 1.1, 0)
