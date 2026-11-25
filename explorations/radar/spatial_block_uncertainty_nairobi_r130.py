@@ -3,6 +3,10 @@
 from __future__ import annotations
 import argparse,json
 from pathlib import Path
+import sys
+# Executing this file directly places explorations/radar on sys.path; add repository root for package-style imports.
+_REPO_ROOT=Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:sys.path.insert(0,str(_REPO_ROOT))
 import numpy as np
 import rasterio
 from rasterio.enums import Resampling
