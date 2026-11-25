@@ -75,3 +75,20 @@ An empirical block-contrast semivariogram complements Moran's I by summarizing h
 ## Grid-origin sensitivity
 
 A fixed-origin grid introduces arbitrary boundaries: a small translation can regroup pixels, alter matched-block eligibility and change the block-level estimand. Where conclusions may depend on this choice, repeat block assignment under pre-specified translations (for example, half a block width along each axis and diagonally). Recompute block support, the equal-block estimate and spatial diagnostics for each origin. Keep the unshifted origin as a declared reference and report all offsets in ground-distance units. This is a sensitivity analysis, not a method for selecting the most favourable origin. Stable point estimates do not establish independence; changed estimates indicate that block aggregation and boundary placement materially affect the result.
+
+
+## Superblock lattice-phase sensitivity
+
+A fixed-origin non-overlapping superblock lattice has an additional arbitrary choice beyond cluster width: its row and column phase relative to the base-block grid. Where this choice could affect uncertainty, enumerate every distinct phase for the chosen square width (for width $k$, there are $k^2$ phases). For each phase:
+
+1. Reassign eligible base blocks to square superblocks using the phase offsets.
+2. Record eligible base-block and superblock counts separately.
+3. If the superblock count meets the pre-specified minimum, resample superblocks with replacement.
+4. Preserve equal weighting of base blocks using the ratio of sampled contrast sum to sampled base-block count, including partial edge superblocks.
+5. Record phase offsets, replicate count, seed, interval bounds and suppression status.
+
+The phase enumeration is a sensitivity diagnostic, not a way to choose a favourable lattice. Report the fraction of phase intervals available, the distribution of interval widths, and paired comparisons with the zero-offset reference. The point estimate should remain invariant across phases when the ratio estimator preserves the same equal-base-block estimand; a change indicates a weighting or implementation problem that needs investigation.
+
+In the Nairobi R130 experiment, 2×2 and 3×3 superblocks were evaluated across all phases. The point estimate was invariant, but interval availability was 58.1% and 49.0%, respectively. Median interval-width ratios against the zero-offset phase were near one, while individual ratios showed appreciable variation. These findings reinforce that one fixed lattice phase does not capture the full uncertainty-design sensitivity. See [the phase-aware results](../explorations/radar/nairobi-r130-spatial-cluster-phase-sensitivity-results.md).
+
+This remains exploratory. Enumerating lattice phases does not make superblocks independent, and the minimum cluster count is not a coverage guarantee. A dependence-aware alternative (such as a properly specified moving-block or distance-constrained design) still requires estimand, edge, support and coverage validation before it can be called calibrated.
