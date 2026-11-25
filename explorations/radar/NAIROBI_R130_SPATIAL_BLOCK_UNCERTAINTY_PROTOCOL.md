@@ -50,3 +50,10 @@ The 30 scene records are not 30 fully independent replicates: dates, bursts, and
 ## Semivariogram rerun (2026-11-25)
 
 The full 30-scene workflow now emits semivariograms for all nine block-size/confidence configurations. The current exploratory curves show distance-related increases in several configurations but no stable common sill or defensible single dependence range. Far-lag support is sparse in some larger-block/high-confidence subsets. See `nairobi-r130-spatial-block-uncertainty-results.md` for the scene-summary table and interpretation. The independent-block percentile bootstrap remains exploratory; these diagnostics do not calibrate its coverage.
+
+
+## Contiguous superblock sensitivity (2026-11-25)
+
+A second resampling design is being tested alongside the independent-base-block bootstrap. Eligible base blocks are assigned to fixed-origin square superblocks of 2 or 3 base-block widths. Each replicate samples superblocks with replacement and calculates a ratio of sampled contrast sum to sampled base-block count, preserving equal weighting of the original base blocks despite partial superblocks. The output reports eligible superblocks separately from eligible base blocks and suppresses intervals below 20 eligible superblocks.
+
+This is a sensitivity experiment, not a claim that superblocks are independent. Adjacent superblocks may remain dependent; larger superblocks reduce the number of resampling units and may cause substantial support loss. Compare interval widths, interval availability, and point-estimate preservation across widths. Do not call the intervals calibrated or use the 20-superblock threshold as a universal guarantee. The integration run is pending; results will be added only after the full raster workflow completes and its artifact is inspected.
