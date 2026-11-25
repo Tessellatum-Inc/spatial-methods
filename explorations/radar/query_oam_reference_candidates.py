@@ -29,84 +29,47 @@ def validate_asset_href(href: str) -> bool:
 
 
 def search_items(session=requests, bbox=R130_BBOX, start=START, end=END):
+    """Fetch STAC search pages, honoring GET/POST next-link instructions.
+
+    Pagination links are treated as untrusted input: only HTTPS links to the
+    configured STAC host are followed.
+    """
     url = f"{STAC_ROOT}/search"
     params = {"bbox": ",".join(map(str, bbox)),
               "datetime": f"{start}/{end}", "limit": 100}
     items, pages = [], []
+    root_host = urlparse(STAC_ROOT).netloc
+    next_request = None
     while url:
-        response = session.get(url, params=params, timeout=TIMEOUT)
+        if next_request is None:
+            response = session.get(url, params=params, timeout=TIMEOUT)
+        else:
+            method, body, headers = next_request
+            if method == "GET":
+                response = session.get(url, params=body or None,
+                                       headers=headers or None, timeout=TIMEOUT)
+            elif method == "POST":
+                response = session.post(url, json=body or {},
+                                        headers=headers or None, timeout=TIMEOUT)
+            else:
+                raise ValueError(f"Unsupported STAC pagination method: {method}")
         response.raise_for_status()
         page = response.json()
         pages.append({"url": response.url, "returned": len(page.get("features", []))})
         items.extend(page.get("features", []))
-        next_link = next((x for x in page.get("links", []) if x.get("rel") == "next"), None)
-        url = next_link.get("href") if next_link else None
+        next_link = next((x for x in page.get("links", [])
+                          if x.get("rel") == "next"), None)
+        if not next_link:
+            url, next_request = None, None
+            continue
+        url = next_link.get("href", "")
+        parsed = urlparse(url)
+        if parsed.scheme != "https" or parsed.netloc != root_host:
+            raise ValueError("Refusing STAC next link outside configured HTTPS host")
+        method = (next_link.get("method") or "GET").upper()
+        body = next_link.get("body") or {}
+        if next_link.get("merge"):
+            body = {**params, **body}
+        next_request = (method, body, next_link.get("headers") or {})
         params = None
     return items, pages
-
-
-def audit(items, bbox=R130_BBOX):
-    aoi = box(*bbox)
-    rows = []
-    for item in items:
-        geom = item.get("geometry")
-        intersects_r130_bbox = None
-        if geom:
-            footprint = shape(geom)
-            if not footprint.is_empty and footprint.is_valid:
-                intersects_r130_bbox = bool(footprint.intersects(aoi))
-        props = item.get("properties") or {}
-        assets = item.get("assets") or {}
-        hrefs = [a.get("href", "") for a in assets.values()]
-        rows.append({
-            "id": item.get("id"),
-            "collection": item.get("collection"),
-            "datetime": props.get("datetime"),
-            "start_datetime": props.get("start_datetime"),
-            "end_datetime": props.get("end_datetime"),
-            "title": props.get("title") or props.get("oam:imagery_title"),
-            "platform": props.get("platform") or props.get("oam:platform"),
-            "platform_type": props.get("oam:platform_type"),
-            "gsd": props.get("gsd"),
-            "license": item.get("license") or props.get("license"),
-            "bbox": item.get("bbox"),
-            "intersects_r130_bbox": intersects_r130_bbox,
-            "asset_keys": sorted(assets),
-            "https_asset_hrefs_available": sum(validate_asset_href(x) for x in hrefs),
-            "geometry_present": bool(geom),
-        })
-    return rows
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path,
-                        default=Path("data/reference/nairobi-r130-oam-stac-audit.json"))
-    parser.add_argument("--start", default=START)
-    parser.add_argument("--end", default=END)
-    args = parser.parse_args()
-    items, pages = search_items(start=args.start, end=args.end)
-    report = {
-        "schema": "tessellatum.nairobi-r130.oam-stac-audit.v1",
-        "retrieved_at": datetime.now(timezone.utc).isoformat(),
-        "stac_root": STAC_ROOT,
-        "bbox_crs84": R130_BBOX,
-        "datetime_interval": [args.start, args.end],
-        "pages": pages,
-        "item_count": len(items),
-        "items": audit(items),
-        "limitations": [
-            "STAC bbox search is a candidate screen; inspect full item geometry.",
-            "No imagery asset is downloaded or visually interpreted.",
-            "Reported GSD, acquisition time and licence require item/source verification.",
-            "R130 rectangular search AOI is not the final analysis mask.",
-            "No reference labels or empirical accuracy estimates are produced."
-        ]
-    }
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(report, indent=2) + "\n")
-    print(f"Items: {len(items)}; pages: {len(pages)}; report: {args.output}")
-
-
-if __name__ == "__main__":
-    main()
