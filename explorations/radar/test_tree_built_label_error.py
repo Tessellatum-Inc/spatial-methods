@@ -23,7 +23,7 @@ class LabelErrorTests(unittest.TestCase):
 
     def test_class_mae_contrast_uses_labels_not_pixel_weights_between_strata(self):
         self.assertAlmostEqual(class_mae_contrast(
-            ["T", "T", "B", "B"], [2, 4, 1, 1]), 2.0)
+            ["T", "T", "B", "B"], [2, 4, 1, 1], min_class_pixels=2), 2.0)
 
     def test_missing_class_support_returns_none(self):
         self.assertIsNone(class_mae_contrast(["T", "T"], [1, 2]))
