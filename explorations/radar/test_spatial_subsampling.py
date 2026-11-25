@@ -29,7 +29,7 @@ class SpatialSubsamplingTests(unittest.TestCase):
     def test_constant_grid_returns_zero_width_interval(self):
         result = spatial_subsampling_mean_interval(
             np.arange(25), np.full(25, 2.5), grid_rows=5, grid_columns=5,
-            subsample_width_blocks=2,
+            subsample_width_blocks=2, min_subwindows=1,
         )
         self.assertEqual(result["interval_status"], "spatial_subsampling")
         self.assertEqual(result["lower"], 2.5)
