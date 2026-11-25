@@ -3,6 +3,32 @@ from __future__ import annotations
 import numpy as np
 
 
+
+
+def fixed_origin_block_ids(east, north, block_size_m, *, origin_east_m=0.0, origin_north_m=0.0):
+    """Assign projected pixel centres to a fixed-origin square metric grid.
+
+    Returns flattened row-major IDs plus grid dimensions. Easting is the row
+    axis and northing the column axis, matching the study's existing encoding.
+    """
+    x = np.asarray(east, dtype=float)
+    y = np.asarray(north, dtype=float)
+    if x.shape != y.shape:
+        raise ValueError("Easting and northing arrays must have matching shapes")
+    if block_size_m <= 0:
+        raise ValueError("block_size_m must be positive")
+    valid = np.isfinite(x) & np.isfinite(y)
+    if not valid.any():
+        raise ValueError("At least one finite coordinate is required")
+    bx = np.floor((x[valid] - origin_east_m) / block_size_m).astype(np.int64)
+    by = np.floor((y[valid] - origin_north_m) / block_size_m).astype(np.int64)
+    bx_min, by_min = int(bx.min()), int(by.min())
+    n_rows = int(bx.max() - bx_min + 1)
+    n_columns = int(by.max() - by_min + 1)
+    ids = np.full(x.shape, -1, dtype=np.int64)
+    ids[valid] = (bx - bx_min) * n_columns + (by - by_min)
+    return ids, n_columns, n_rows
+
 def block_mean_contrast(block_contrasts):
     """Return equal-block mean of finite contrasts; each block is one replicate."""
     x=np.asarray(block_contrasts,dtype=float);x=x[np.isfinite(x)]
