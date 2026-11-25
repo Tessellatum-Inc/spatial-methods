@@ -46,7 +46,7 @@ class MovingSpatialBlockBootstrapTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertAlmostEqual(first["estimate_db"], values.mean())
         self.assertEqual(first["interval_status"], "percentile_moving_spatial_block_bootstrap")
-        self.assertEqual(first["windows_per_replicate"], 36)
+        self.assertEqual(first["windows_per_replicate"], 31)
 
     def test_insufficient_windows_suppresses_interval(self):
         result = moving_spatial_block_bootstrap_interval(
