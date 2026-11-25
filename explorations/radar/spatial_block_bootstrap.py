@@ -55,3 +55,57 @@ def bootstrap_interval(block_contrasts, *, replicates=2000, seed=20261125, min_b
     return {"estimate_db":float(x.mean()),"lower_95_db":float(lo),"upper_95_db":float(hi),
             "eligible_blocks":n,"interval_status":"percentile_block_bootstrap","minimum_blocks":int(min_blocks),
             "replicates":int(replicates),"seed":int(seed)}
+
+
+
+def rook_morans_i(block_ids, block_values, *, grid_columns, min_blocks=20):
+    """Descriptive rook-neighbour Moran's I for a regular block grid.
+
+    Block IDs use the deterministic key row * grid_columns + column.
+    Only immediately adjacent north/south/east/west eligible blocks are linked.
+    No p-value is returned: this diagnostic describes remaining local spatial
+    structure and does not establish independence or bootstrap validity.
+    """
+    ids = np.asarray(block_ids, dtype=np.int64)
+    values = np.asarray(block_values, dtype=float)
+    if ids.shape != values.shape:
+        raise ValueError("Block IDs and values must have matching shapes")
+    if grid_columns < 1:
+        raise ValueError("grid_columns must be positive")
+    valid = np.isfinite(values) & (ids >= 0)
+    ids, values = ids[valid], values[valid]
+    if np.unique(ids).size != ids.size:
+        raise ValueError("Each eligible block ID must occur once")
+    n = int(values.size)
+    base = {"eligible_blocks": n, "neighbor_pairs": 0, "moran_i": None}
+    if n < min_blocks:
+        return {**base, "status": "insufficient_blocks"}
+    if n < 2:
+        return {**base, "status": "no_neighbour_pairs"}
+
+    rows = ids // int(grid_columns)
+    cols = ids % int(grid_columns)
+    index = {(int(row), int(col)): i for i, (row, col) in enumerate(zip(rows, cols))}
+    pairs = []
+    for i, (row, col) in enumerate(zip(rows, cols)):
+        for neighbour in ((int(row) + 1, int(col)), (int(row), int(col) + 1)):
+            j = index.get(neighbour)
+            if j is not None:
+                pairs.append((i, j))
+    pair_count = len(pairs)
+    if pair_count == 0:
+        return {**base, "status": "no_neighbour_pairs"}
+    centred = values - values.mean()
+    denominator = float(np.dot(centred, centred))
+    if denominator <= 0:
+        return {**base, "neighbor_pairs": pair_count, "status": "no_variation"}
+    cross_product = sum(float(centred[i] * centred[j]) for i, j in pairs)
+    # Symmetric binary weights: each undirected pair contributes twice to W
+    # and twice to the cross-product numerator.
+    moran = (n / pair_count) * (cross_product / denominator)
+    return {
+        "eligible_blocks": n,
+        "neighbor_pairs": pair_count,
+        "moran_i": float(moran),
+        "status": "computed",
+    }
