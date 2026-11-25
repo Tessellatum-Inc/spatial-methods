@@ -270,3 +270,24 @@ Sources:
 - [OpenAerialMap STAC catalogue root](https://api.imagery.hotosm.org/stac) (live root and advertised search endpoint).
 - [OrionGIS Limuru–Kwambira indexed record](https://orionterrametrics.com/data/kenya/imagery-land-cover/limuru-kwambira-customised-aviation-training-ground-9gf6) (secondary metadata record; no item geometry exposed in the page text).
 - [STAC API Item Search standard](https://docs.ogc.org/cs/25-005/25-005.html) (bbox, datetime and pagination semantics).
+
+## 9F. First live OpenAerialMap STAC audit result (2026-11-25)
+
+The manually dispatched catalogue audit completed successfully (workflow run [45673737646](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45673737646)). It queried the R130 discovery rectangle and 2026-10-01 through 2026-11-24 interval, and returned **one** candidate item:
+
+- STAC collection: `openaerialmap`
+- Item ID: `6aec5e73b093219a6d913430`
+- Producer metadata: `Kenya Flying Labs`
+- Platform type: `uav`
+- Reported GSD: `0.02379` m (approximately 2.38 cm)
+- Item licence field: `CC-BY-4.0`
+- Acquisition interval: `2026-11-04T21:00:00Z` to `2026-11-05T08:30:51.775Z`
+- Item bbox (CRS84): `[36.864017, -1.321417, 36.885078, -1.308559]`
+- Geometry: present; intersects the **broad discovery rectangle**.
+
+The acquisition interval is approximately six days before the 2026-11-11 R130 date and is therefore a promising temporal candidate for that date only. It does not provide evidence for the other four R130 dates.
+
+**Important limitations:** this is one catalogue item, not yet an admissible reference source. The audit did not download or inspect the source COG, verify the reported licence with the provider, assess georeferencing/positional accuracy, or intersect the item geometry with the frozen valid-pixel R130 mask. The broad rectangle intersection is only a discovery screen. The item has three catalogue asset keys (`metadata`, `thumbnail`, `visual`); asset presence alone does not establish that a usable full-resolution source asset is available.
+
+**Gate A remains open.** Next steps are to preserve the full STAC item geometry and asset metadata in the audit output, intersect the candidate with the exact R130 mask, retrieve and inspect the source metadata/COG, and confirm acquisition provenance and reuse rights. If the item covers only a small subset of the R130 mask, any eventual reference sample must be explicitly restricted to that supported subset; it cannot be represented as validation of the full study footprint.
+
