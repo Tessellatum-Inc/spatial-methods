@@ -52,6 +52,22 @@ class LabelErrorTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             equal_mean([1, np.nan])
 
+    def test_factorial_cells_share_paired_latent_target(self):
+        kwargs = {"tree_to_built": .1, "built_to_tree": .1}
+        neutral = one_realization(np.random.default_rng(2026), **kwargs)
+        label_only = one_realization(np.random.default_rng(2026),
+                                     ambiguity_label_error=True, **kwargs)
+        residual_only = one_realization(np.random.default_rng(2026),
+                                        ambiguity_residual_effect=True, **kwargs)
+        joint = one_realization(np.random.default_rng(2026),
+                                ambiguity_sensitive=True, **kwargs)
+        self.assertEqual(neutral[0], label_only[0])
+        self.assertEqual(neutral[0], residual_only[0])
+        self.assertEqual(neutral[0], joint[0])
+        self.assertEqual(neutral[2], label_only[2])
+        self.assertEqual(neutral[2], residual_only[2])
+        self.assertEqual(neutral[2], joint[2])
+
     def test_generator_is_reproducible(self):
         a = one_realization(np.random.default_rng(9))
         b = one_realization(np.random.default_rng(9))
