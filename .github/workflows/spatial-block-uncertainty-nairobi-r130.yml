@@ -41,7 +41,7 @@ jobs:
           python-version: "3.13"
       - run: python -m pip install numpy rasterio pyproj
       - name: Test block methods
-        run: python -m unittest explorations.radar.test_spatial_block_bootstrap explorations.radar.test_matched_spatial_block_contrasts -v
+        run: python -m unittest explorations.radar.test_spatial_block_bootstrap explorations.radar.test_spatial_cluster_partition_bootstrap explorations.radar.test_matched_spatial_block_contrasts -v
       - uses: actions/download-artifact@v4
         with:
           name: nairobi-r130-residual-maps-and-diagnostics
