@@ -15,7 +15,7 @@ This experiment is deliberately about label contamination, not the spatial inter
 - 20 × 20 blocks, 3 strata per block, 80 pixels per stratum.
 - Tree prevalence varies over rows and is bounded to preserve both classes.
 - Absolute residuals are exponential with class-specific means (trees 0.82, built 0.52) plus a small spatial block effect.
-- Confusion scenarios: perfect labels; symmetric 5%; asymmetric tree-to-built 15% / built-to-tree 5%; spatially varying 10% base rates; symmetric 20%; and an ambiguity-dependent scenario where ambiguous pixels have larger residuals and higher flip probabilities.
+- Confusion scenarios: perfect labels; symmetric 5%; asymmetric tree-to-built 15% / built-to-tree 5%; spatially varying 10% base rates; symmetric 20%; a joint ambiguity scenario; an ambiguity-only label-flip scenario; and an ambiguity-only residual-inflation scenario.
 - 200 Monte Carlo replications per scenario.
 - Fixed seed: 20261205.
 
