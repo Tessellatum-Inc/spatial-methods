@@ -60,7 +60,7 @@ class MovingSpatialBlockBootstrapTests(unittest.TestCase):
     def test_insufficient_windows_suppresses_interval(self):
         result = moving_spatial_block_bootstrap_interval(
             [0, 1], [1., 2.], grid_columns=2,
-            window_width_blocks=1, min_windows=20,
+            window_width_blocks=1, min_windows=20, min_blocks=1,
         )
         self.assertEqual(result["interval_status"], "insufficient_windows")
         self.assertIsNone(result["lower_95_db"])
