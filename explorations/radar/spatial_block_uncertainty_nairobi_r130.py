@@ -42,10 +42,13 @@ def analyze_scene(residual_path,opera_dir,dw_dir,dem_path,block_sizes,thresholds
   q=np.unique(np.quantile(anf[joint],[0,.25,.5,.75,1]));ab=np.digitize(anf,q[1:-1]);sb=np.digitize(sl,SLOPE_EDGES[1:-1]);strata=sb*4+ab
   flatvalid=joint.ravel();v=val.ravel();c=klass.ravel();f=conf.ravel();st=strata.ravel()
   results=[]
+  # Block coordinates depend only on the raster grid and block size, not on
+  # confidence threshold. Compute each grid once and reuse it across thresholds.
+  block_grids={size:(*metric_block_ids(r,size),) for size in block_sizes}
   for threshold in thresholds:
    select=flatvalid&(f>=threshold)&((c==TREE_CODE)|(c==BUILT_CODE))
    for size in block_sizes:
-    block,meta=metric_block_ids(r,size);b=block.ravel()
+    block,meta=block_grids[size];b=block.ravel()
     contrasts=matched_block_contrasts(b[select],c[select],st[select],v[select],built_code=BUILT_CODE,target_code=TREE_CODE)
     ci=bootstrap_interval([x["contrast_db"] for x in contrasts],replicates=2000,seed=20261125,min_blocks=20)
     results.append({"minimum_dw_confidence":threshold,**meta,"trees_vs_built_mae_contrast":ci,
