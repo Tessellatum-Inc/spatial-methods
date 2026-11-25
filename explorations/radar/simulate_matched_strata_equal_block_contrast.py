@@ -93,6 +93,10 @@ def run(simulations=100,size=24,correlations=(0.3,0.6,0.8),
         for trial in range(simulations):
             ids,observed,truth=one_realization(size,rho,rng,informative)
             support.append(len(ids))
+            # Both interval procedures must preserve the pre-declared
+            # equal-eligible-block point estimand. Fail loudly if a future
+            # estimator edit silently changes its weighting.
+            expected_estimate=equal_eligible_block_mean(observed)
             for method,w in configs:
                 if method=="moving_window":
                     res=moving_spatial_block_bootstrap_interval(ids,observed,
@@ -104,6 +108,13 @@ def run(simulations=100,size=24,correlations=(0.3,0.6,0.8),
                     res=spatial_hac_mean_interval(ids,observed,grid_columns=size,
                         bandwidth_rows=w,bandwidth_columns=w,min_blocks=20)
                     lo,hi,estimate=res["lower"],res["upper"],res["estimate"]
+                if estimate is not None and not np.isclose(
+                    estimate,expected_estimate,rtol=1e-12,atol=1e-12
+                ):
+                    raise AssertionError(
+                        f"{method} point estimate changed the equal-block estimand: "
+                        f"{estimate} != {expected_estimate}"
+                    )
                 s=stats[(method,w)]
                 if lo is None or hi is None:
                     s["unsupported"]+=1; continue
