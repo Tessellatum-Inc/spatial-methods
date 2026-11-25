@@ -2,37 +2,46 @@
 from __future__ import annotations
 import numpy as np
 
+
 def block_mean_contrast(block_contrasts):
     """Return equal-block mean of finite contrasts; each block is one replicate."""
     x=np.asarray(block_contrasts,dtype=float);x=x[np.isfinite(x)]
     if x.size==0:return None
     return float(x.mean())
 
+
 def matched_block_contrasts(block_ids, class_codes, stratum_ids, residual_db, *, built_code=6, target_code=1):
     """Compute per-block target-minus-built MAE using only shared strata.
 
-    A stratum is a joint slope/ANF bin. Within each block, each shared stratum
-    contributes equally to the block contrast. Pixel counts are retained as support,
-    not weights, preventing dense strata from dominating the contrast.
+    Uses grouped bincount aggregation rather than rescanning all pixels for every
+    block/stratum. Within each block, shared strata contribute equally.
     """
-    b=np.asarray(block_ids);c=np.asarray(class_codes);s=np.asarray(stratum_ids);r=np.asarray(residual_db,dtype=float)
+    b=np.asarray(block_ids,dtype=np.int64);c=np.asarray(class_codes);s=np.asarray(stratum_ids,dtype=np.int64);r=np.asarray(residual_db,dtype=float)
     if not (b.shape==c.shape==s.shape==r.shape):raise ValueError("Inputs must have matching shapes")
-    valid=np.isfinite(r)&(b>=0)&(c>=0)&(s>=0)
+    valid=np.isfinite(r)&(b>=0)&(s>=0)&((c==built_code)|(c==target_code))
     b,c,s,r=b[valid],c[valid],s[valid],r[valid]
-    rows=[]
-    for block in np.unique(b):
-        in_block=b==block;details=[]
-        for stratum in np.unique(s[in_block]):
-            m=in_block&(s==stratum);built=r[m&(c==built_code)];target=r[m&(c==target_code)]
-            if built.size and target.size:
-                details.append({"stratum_id":int(stratum),"built_n":int(built.size),"target_n":int(target.size),
-                  "built_mae_db":float(np.abs(built).mean()),"target_mae_db":float(np.abs(target).mean()),
-                  "difference_db":float(np.abs(target).mean()-np.abs(built).mean())})
-        if details:
-            rows.append({"block_id":int(block),"matched_strata":len(details),
-              "built_pixels":sum(d["built_n"] for d in details),"target_pixels":sum(d["target_n"] for d in details),
-              "contrast_db":float(np.mean([d["difference_db"] for d in details])),"strata":details})
-    return rows
+    if b.size==0:return []
+    nstrata=int(s.max())+1
+    nblocks=int(b.max())+1
+    # Last key dimension is class: 0=built, 1=target.
+    key=((b*nstrata+s)*2)+(c==target_code).astype(np.int64)
+    total=nblocks*nstrata*2
+    sums=np.bincount(key,weights=np.abs(r),minlength=total).reshape(nblocks,nstrata,2)
+    counts=np.bincount(key,minlength=total).reshape(nblocks,nstrata,2)
+    shared=(counts[:,:,0]>0)&(counts[:,:,1]>0)
+    block_rows=[]
+    for block in np.flatnonzero(shared.any(axis=1)):
+        strata=np.flatnonzero(shared[block]);built_n=counts[block,strata,0];target_n=counts[block,strata,1]
+        built_mae=sums[block,strata,0]/built_n;target_mae=sums[block,strata,1]/target_n
+        diffs=target_mae-built_mae
+        details=[{"stratum_id":int(st),"built_n":int(bn),"target_n":int(tn),
+                  "built_mae_db":float(bm),"target_mae_db":float(tm),"difference_db":float(df)}
+                 for st,bn,tn,bm,tm,df in zip(strata,built_n,target_n,built_mae,target_mae,diffs)]
+        block_rows.append({"block_id":int(block),"matched_strata":len(details),
+            "built_pixels":int(built_n.sum()),"target_pixels":int(target_n.sum()),
+            "contrast_db":float(diffs.mean()),"strata":details})
+    return block_rows
+
 
 def bootstrap_interval(block_contrasts, *, replicates=2000, seed=20261125, min_blocks=20):
     """Percentile bootstrap resampling blocks, never individual pixels."""
