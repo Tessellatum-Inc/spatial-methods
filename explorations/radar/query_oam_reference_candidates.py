@@ -68,7 +68,7 @@ def audit(items, bbox=R130_BBOX):
             "platform": props.get("platform") or props.get("oam:platform"),
             "platform_type": props.get("oam:platform_type"),
             "gsd": props.get("gsd"),
-            "license": item.get("links", []),
+            "license": item.get("license") or props.get("license"),
             "bbox": item.get("bbox"),
             "r130_bbox_intersection_fraction": intersection_fraction,
             "asset_keys": sorted(assets),
