@@ -1,0 +1,78 @@
+name: Nairobi R130 spatial-block uncertainty analysis
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/spatial-block-uncertainty-nairobi-r130.yml"
+      - "explorations/radar/spatial_block_uncertainty_nairobi_r130.py"
+      - "explorations/radar/spatial_block_bootstrap.py"
+  workflow_dispatch:
+    inputs:
+      residual_run_id:
+        description: Residual maps run ID
+        required: true
+        default: "45360551227"
+      opera_run_id:
+        description: OPERA assets run ID
+        required: true
+        default: "45345864969"
+      dynamic_world_run_id:
+        description: Dynamic World run ID
+        required: true
+        default: "45400510881"
+      dem_run_id:
+        description: DEM run ID
+        required: true
+        default: "45364142134"
+permissions:
+  actions: read
+  contents: read
+concurrency:
+  group: nairobi-r130-spatial-block-uncertainty
+  cancel-in-progress: false
+jobs:
+  analysis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install numpy rasterio pyproj
+      - name: Test block methods
+        run: python -m unittest explorations.radar.test_spatial_block_bootstrap explorations.radar.test_matched_spatial_block_contrasts -v
+      - uses: actions/download-artifact@v4
+        with:
+          name: nairobi-r130-residual-maps-and-diagnostics
+          path: residual-artifact
+          run-id: ${{ inputs.residual_run_id || '45360551227' }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - run: mkdir residual-maps && cp residual-artifact/residual-maps/*.tif residual-maps/
+      - uses: actions/download-artifact@v4
+        with:
+          name: nairobi-r130-opera-rtc-science-assets
+          path: opera-assets
+          run-id: ${{ inputs.opera_run_id || '45345864969' }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: nairobi-r130-dynamic-world-date-window-composites
+          path: dynamic-world-assets
+          run-id: ${{ inputs.dynamic_world_run_id || '45400510881' }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: nairobi-r130-copernicus-dem
+          path: dem-assets
+          run-id: ${{ inputs.dem_run_id || '45364142134' }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - run: test -f dem-assets/nairobi_copernicus_dem_glo30.tif
+      - name: Run block-size and confidence sensitivity analysis
+        run: python explorations/radar/spatial_block_uncertainty_nairobi_r130.py --residual-dir residual-maps --opera-dir opera-assets --dynamic-world-dir dynamic-world-assets --dem dem-assets/nairobi_copernicus_dem_glo30.tif --output spatial-block-uncertainty.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nairobi-r130-spatial-block-uncertainty
+          path: spatial-block-uncertainty.json
+          if-no-files-found: error
+          retention-days: 30
