@@ -54,9 +54,42 @@ The independent eligibility condition tests the estimator under ordinary common-
 - Workflow: [matched-strata-equal-block-contrast-validation.yml](../../.github/workflows/matched-strata-equal-block-contrast-validation.yml)
 - Expected artifact: `matched-strata-equal-block-contrast`
 
-## Results
+## Results (artifact-backed)
 
-Pending workflow completion. Append artifact-backed coverage, Wilson intervals, interval widths, estimate bias and eligible-block counts here.
+The heavy-tailed, spatially varying-support workflow completed successfully on 2026-11-25 (run 45666402622; commit d16f78f). Its artifact contains 100 replications per condition, 18 interval configurations per eligibility condition, and no unsupported intervals.
+
+### Independent common-support loss
+
+All 18 configurations achieved 100/100 empirical coverage in each dependence setting (rho = 0.3, 0.6, 0.8). The Wilson 95% interval for 100/100 is approximately [0.963, 1.000]. Mean interval-width ranges across methods and tuning values were:
+
+| Spatial rho | Mean interval width range | Mean estimate bias |
+|---:|---:|---:|
+| 0.3 | 0.168–0.184 | -0.00045 |
+| 0.6 | 0.221–0.301 | -0.00070 |
+| 0.8 | 0.259–0.411 | +0.00052 |
+
+This is evidence only for this specified generator and tuning grid. The perfect observed coverage, paired with widening intervals as dependence strengthens, is not a general calibration result. One hundred replications leave substantial Monte Carlo uncertainty, and the intervals can be conservative.
+
+### Informative high-contrast exclusion
+
+Coverage was assessed against the pre-selection baseline-eligible population target, while the estimator saw only the selected blocks.
+
+| Spatial rho | Moving-window coverage (widths 3 / 5 / 7) | Spatial-HAC coverage (bandwidths 3 / 5 / 7) | Mean estimate bias |
+|---:|---:|---:|---:|
+| 0.3 | 0 / 0 / 0% | 0 / 0 / 0% | -0.245 |
+| 0.6 | 0 / 0 / 0% | 0 / 0 / 0% | -0.239 |
+| 0.8 | 0 / 2 / 6% | 0 / 0 / 0% | -0.229 |
+
+Mean eligible blocks fell from about 529 under independent common-support loss to about 424 under informative exclusion. The intervals remained comparatively narrow relative to the roughly 0.23–0.25 downward bias. This is the expected failure mode when selection changes the observed population but the interval procedure has no selection model or correction.
+
+### Interpretation
+
+The simulation separates two issues that must not be conflated:
+
+1. Under independent support loss, the point estimator remained nearly unbiased for the defined baseline-eligible target, and all tested intervals covered it in this finite experiment.
+2. Under value-dependent exclusion, both methods estimated the selected population while being judged against the pre-selection target. Their poor coverage is a target-population/selection problem, not evidence that a different spatial bandwidth alone would solve it.
+
+No method or bandwidth is selected as a winner. Do not generalize these results to the Nairobi R130 study or claim 95% calibration from 100 replications.
 
 
 ## Generator sanity check (not interval validation)
