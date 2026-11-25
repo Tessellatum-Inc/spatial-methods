@@ -1,0 +1,32 @@
+name: Spatial subsampling coverage validation
+on:
+  push:
+    branches: [main]
+    paths:
+      - "explorations/radar/spatial_subsampling.py"
+      - "explorations/radar/test_spatial_subsampling.py"
+      - "explorations/radar/simulate_spatial_subsampling.py"
+      - ".github/workflows/spatial-subsampling-validation.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  validate-and-simulate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install numpy
+      - name: Test spatial subsampling estimator
+        run: python -m unittest explorations.radar.test_spatial_subsampling -v
+      - name: Run Monte Carlo coverage diagnostic
+        run: python -m explorations.radar.simulate_spatial_subsampling > spatial-subsampling-coverage.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spatial-subsampling-coverage
+          path: spatial-subsampling-coverage.json
+          if-no-files-found: error
