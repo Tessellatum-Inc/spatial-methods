@@ -32,6 +32,22 @@ def wilson(successes,trials,z=1.959963984540054):
     return [float(centre-half),float(centre+half)]
 
 
+def equal_stratum_block_contrast(stratum_contrasts):
+    """Average shared-stratum contrasts equally within one block."""
+    values=np.asarray(stratum_contrasts,dtype=float)
+    if values.ndim!=1 or values.size==0 or not np.isfinite(values).all():
+        raise ValueError("stratum_contrasts must be a non-empty finite vector")
+    return float(values.mean())
+
+
+def equal_eligible_block_mean(block_contrasts):
+    """Average eligible block contrasts equally, never pixel-weighting blocks."""
+    values=np.asarray(block_contrasts,dtype=float)
+    if values.ndim!=1 or values.size==0 or not np.isfinite(values).all():
+        raise ValueError("block_contrasts must be a non-empty finite vector")
+    return float(values.mean())
+
+
 def one_realization(size,rho,rng,informative=False):
     latent=spatial_field(size,rho,rng)*0.7
     ids=np.arange(size*size,dtype=np.int64)
@@ -59,7 +75,7 @@ def one_realization(size,rho,rng,informative=False):
             target=delta+rng.normal(0,1.0,size=nt)
             reference=rng.normal(0,1.0,size=nr)
             estimated.append(float(target.mean()-reference.mean()))
-        block_observed.append(float(np.mean(estimated)))
+        block_observed.append(equal_stratum_block_contrast(estimated))
         kept_ids.append(int(bid))
     return np.asarray(kept_ids),np.asarray(block_observed),population_truth
 
