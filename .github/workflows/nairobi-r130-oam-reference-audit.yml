@@ -1,6 +1,11 @@
 name: Nairobi R130 OpenAerialMap reference imagery audit
 
 on:
+  push:
+    paths:
+      - "explorations/radar/query_oam_reference_candidates.py"
+      - "explorations/radar/test_query_oam_reference_candidates.py"
+      - ".github/workflows/nairobi-r130-oam-reference-audit.yml"
   workflow_dispatch:
     inputs:
       start:
@@ -31,8 +36,8 @@ jobs:
       - name: Run live STAC candidate audit
         run: |
           python explorations/radar/query_oam_reference_candidates.py \
-            --start "${{ inputs.start }}" \
-            --end "${{ inputs.end }}" \
+            --start "${{ inputs.start || '2026-10-01T00:00:00Z' }}" \
+            --end "${{ inputs.end || '2026-11-24T23:59:59Z' }}" \
             --output data/reference/nairobi-r130-oam-stac-audit.json
       - name: Upload raw candidate audit
         uses: actions/upload-artifact@v4
