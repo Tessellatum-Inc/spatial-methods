@@ -1,4 +1,7 @@
 import unittest
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from shapely.geometry import box, mapping
 from query_oam_reference_candidates import audit, validate_asset_href
 
