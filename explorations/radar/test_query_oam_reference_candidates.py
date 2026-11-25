@@ -30,6 +30,28 @@ class OAMReferenceAuditTests(unittest.TestCase):
         self.assertEqual(row["platform_type"], "uav")
         self.assertFalse(row["acquisition_time_estimated"])
         self.assertEqual(row["https_asset_hrefs_available"], 1)
+        self.assertEqual(row["geometry"], item["geometry"])
+        self.assertEqual(row["assets"]["visual"]["href"], "https://example.org/a.tif")
+        self.assertFalse(row["assets"]["visual"]["href_query_redacted"])
+
+
+    def test_asset_query_string_is_redacted_but_provenance_is_retained(self):
+        item = {
+            "id": "signed",
+            "geometry": mapping(box(36.7, -1.4, 36.8, -1.3)),
+            "properties": {},
+            "assets": {"metadata": {
+                "href": "https://example.org/item.json?token=secret",
+                "type": "application/json",
+                "roles": ["metadata"],
+                "title": "Item metadata",
+            }},
+        }
+        row = audit([item])[0]
+        asset = row["assets"]["metadata"]
+        self.assertEqual(asset["href"], "https://example.org/item.json")
+        self.assertTrue(asset["href_query_redacted"])
+        self.assertNotIn("secret", str(row))
 
     def test_missing_geometry_is_not_overlap(self):
         row = audit([{"id": "unknown", "properties": {}, "assets": {}}])[0]
