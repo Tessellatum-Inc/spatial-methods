@@ -5,6 +5,8 @@ on:
     paths:
       - "explorations/radar/query_oam_reference_candidates.py"
       - "explorations/radar/test_query_oam_reference_candidates.py"
+      - "explorations/radar/audit_oam_candidate_against_r130_residuals.py"
+      - "explorations/radar/test_audit_oam_candidate_against_r130_residuals.py"
       - ".github/workflows/nairobi-r130-oam-reference-audit.yml"
   workflow_dispatch:
     inputs:
@@ -28,7 +30,7 @@ permissions:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
