@@ -26,6 +26,8 @@ jobs:
           python-version: "3.12"
       - name: Install audit dependencies
         run: python -m pip install requests shapely
+      - name: Test audit logic
+        run: python -m unittest explorations/radar/test_query_oam_reference_candidates.py -v
       - name: Run live STAC candidate audit
         run: |
           python explorations/radar/query_oam_reference_candidates.py \
