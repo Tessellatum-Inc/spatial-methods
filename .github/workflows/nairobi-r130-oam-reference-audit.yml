@@ -16,8 +16,13 @@ on:
         description: Inclusive acquisition interval end (UTC ISO 8601)
         required: false
         default: "2026-11-24T23:59:59Z"
+      residual_run_id:
+        description: Successful R130 residual maps run ID used for exact footprint/support intersection
+        required: false
+        default: "45360551227"
 
 permissions:
+  actions: read
   contents: read
 
 jobs:
@@ -30,9 +35,11 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install audit dependencies
-        run: python -m pip install requests shapely
+        run: python -m pip install requests shapely rasterio numpy
       - name: Test audit logic
         run: python -m unittest explorations/radar/test_query_oam_reference_candidates.py -v
+      - name: Test exact residual-support intersection
+        run: python -m unittest explorations/radar/test_audit_oam_candidate_against_r130_residuals.py -v
       - name: Run live STAC candidate audit
         run: |
           python explorations/radar/query_oam_reference_candidates.py \
@@ -40,10 +47,25 @@ jobs:
             --start "${{ inputs.start || '2026-10-01T00:00:00Z' }}" \
             --end "${{ inputs.end || '2026-11-24T23:59:59Z' }}" \
             --output data/reference/nairobi-r130-oam-stac-audit.json
-      - name: Upload raw candidate audit
+      - name: Download R130 residual maps for exact support intersection
+        uses: actions/download-artifact@v4
+        with:
+          name: nairobi-r130-residual-maps-and-diagnostics
+          path: residual-artifact
+          run-id: ${{ inputs.residual_run_id || '45360551227' }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Intersect candidate footprint with all 30 residual maps
+        run: |
+          python explorations/radar/audit_oam_candidate_against_r130_residuals.py \\
+            --audit-json data/reference/nairobi-r130-oam-stac-audit.json \\
+            --residual-dir residual-artifact/residual-maps \\
+            --output data/reference/nairobi-r130-oam-residual-support-audit.json
+      - name: Upload candidate and support audits
         uses: actions/upload-artifact@v4
         with:
-          name: nairobi-r130-oam-stac-audit
-          path: data/reference/nairobi-r130-oam-stac-audit.json
+          name: nairobi-r130-oam-reference-feasibility-audit
+          path: |
+            data/reference/nairobi-r130-oam-stac-audit.json
+            data/reference/nairobi-r130-oam-residual-support-audit.json
           if-no-files-found: error
           retention-days: 30
