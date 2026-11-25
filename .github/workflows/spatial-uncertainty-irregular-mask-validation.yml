@@ -1,0 +1,36 @@
+name: Irregular mask spatial uncertainty validation
+on:
+  push:
+    branches: [main]
+    paths:
+      - "explorations/radar/simulate_spatial_uncertainty_irregular_masks.py"
+      - "explorations/radar/spatial_moving_block_bootstrap.py"
+      - "explorations/radar/spatial_hac.py"
+      - "explorations/radar/spatial_subsampling.py"
+      - ".github/workflows/spatial-uncertainty-irregular-mask-validation.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  irregular-mask:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install numpy
+      - name: Run estimator unit tests
+        run: |
+          python -m unittest explorations.radar.test_spatial_moving_block_bootstrap -v
+          python -m unittest explorations.radar.test_spatial_hac -v
+          python -m unittest explorations.radar.test_spatial_subsampling -v
+      - name: Run irregular mask coverage experiment
+        run: python -m explorations.radar.simulate_spatial_uncertainty_irregular_masks > spatial-uncertainty-irregular-masks.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spatial-uncertainty-irregular-masks
+          path: spatial-uncertainty-irregular-masks.json
+          if-no-files-found: error
