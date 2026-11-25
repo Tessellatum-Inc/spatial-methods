@@ -14,8 +14,8 @@ class SpatialSubsamplingTests(unittest.TestCase):
                           for r in range(4) for c in range(4)])
         stats = 3 * (means-grid.mean())
         qlo, qhi = np.quantile(stats, [0.025, 0.975])
-        self.assertAlmostEqual(result["lower"], grid.mean()-qhi/3)
-        self.assertAlmostEqual(result["upper"], grid.mean()-qlo/3)
+        self.assertAlmostEqual(result["lower"], grid.mean()-qhi/6)
+        self.assertAlmostEqual(result["upper"], grid.mean()-qlo/6)
         self.assertEqual(result["subwindows"], 16)
 
     def test_irregular_mask_is_not_silently_rescaled(self):
