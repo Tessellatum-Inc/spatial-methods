@@ -13,9 +13,9 @@ from rasterio.enums import Resampling
 from pyproj import Transformer
 from explorations.radar.joint_stratify_nairobi_r130_landcover_terrain_anf import (
  align,static_file,reproject_dem,pixel_spacing_metres,terrain,SLOPE_EDGES,report_date)
-from explorations.radar.spatial_block_bootstrap import matched_block_contrasts,bootstrap_interval,rook_morans_i,empirical_block_semivariogram
+from explorations.radar.spatial_block_bootstrap import matched_block_contrasts,bootstrap_interval,rook_morans_i,empirical_block_semivariogram,spatial_cluster_bootstrap_interval
 
-BLOCK_SIZES=(500,1000,2000);THRESHOLDS=(0.0,0.5,0.7);TREE_CODE=1;BUILT_CODE=6
+BLOCK_SIZES=(500,1000,2000);THRESHOLDS=(0.0,0.5,0.7);CLUSTER_WIDTHS=(2,3);TREE_CODE=1;BUILT_CODE=6
 
 def metric_block_ids(template,block_size_m):
     """Fixed-origin square grid in EPSG:32737, assigned by pixel-centre coordinates."""
@@ -59,7 +59,13 @@ def analyze_scene(residual_path,opera_dir,dw_dir,dem_path,block_sizes,thresholds
     variogram=empirical_block_semivariogram(
       [x["block_id"] for x in contrasts],block_values,
       grid_columns=meta["block_grid_columns"],block_size_m=size,min_pairs=10)
+    cluster_intervals=[spatial_cluster_bootstrap_interval(
+      [x["block_id"] for x in contrasts],block_values,
+      grid_columns=meta["block_grid_columns"],cluster_width_blocks=width,
+      replicates=2000,seed=20261125+width,min_clusters=20)
+      for width in CLUSTER_WIDTHS]
     results.append({"minimum_dw_confidence":threshold,**meta,"trees_vs_built_mae_contrast":ci,
+      "spatial_cluster_bootstrap_sensitivity":cluster_intervals,
       "block_contrast_spatial_autocorrelation":spatial_dependence,
       "block_contrast_empirical_semivariogram":variogram,
       "tree_pixels_in_eligible_blocks":sum(x["target_pixels"] for x in contrasts),"built_pixels_in_eligible_blocks":sum(x["built_pixels"] for x in contrasts),
