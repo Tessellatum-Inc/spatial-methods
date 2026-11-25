@@ -10,18 +10,29 @@ import json
 import numpy as np
 
 
-def apply_label_confusion(true_labels, rng, tree_to_built, built_to_tree):
-    """Flip true T/B labels with class-conditional error probabilities."""
+def apply_label_confusion(true_labels, rng, tree_to_built, built_to_tree,
+                          ambiguity=None, ambiguity_multiplier=0.0):
+    """Flip labels; optionally increase error odds for ambiguous pixels."""
     labels = np.asarray(true_labels)
     if labels.ndim != 1 or not np.isin(labels, ["T", "B"]).all():
         raise ValueError("true_labels must be a one-dimensional T/B vector")
     if not (0 <= tree_to_built <= 1 and 0 <= built_to_tree <= 1):
         raise ValueError("confusion probabilities must be in [0, 1]")
+    if ambiguity is None:
+        ambiguity = np.zeros(labels.size, dtype=float)
+    ambiguity = np.asarray(ambiguity, dtype=float)
+    if (ambiguity.shape != labels.shape or not np.isfinite(ambiguity).all()
+            or np.any((ambiguity < 0) | (ambiguity > 1))):
+        raise ValueError("ambiguity must match labels and lie in [0, 1]")
+    if ambiguity_multiplier < 0:
+        raise ValueError("ambiguity_multiplier must be non-negative")
+    tree_probability = np.minimum(1.0, tree_to_built * (1 + ambiguity_multiplier * ambiguity))
+    built_probability = np.minimum(1.0, built_to_tree * (1 + ambiguity_multiplier * ambiguity))
     observed = labels.copy()
     tree = labels == "T"
     built = ~tree
-    observed[tree & (rng.random(labels.size) < tree_to_built)] = "B"
-    observed[built & (rng.random(labels.size) < built_to_tree)] = "T"
+    observed[tree & (rng.random(labels.size) < tree_probability)] = "B"
+    observed[built & (rng.random(labels.size) < built_probability)] = "T"
     return observed
 
 
@@ -49,7 +60,7 @@ def equal_mean(values):
 
 def one_realization(rng, size=20, strata=3, pixels_per_stratum=80,
                     tree_to_built=0.0, built_to_tree=0.0,
-                    spatially_varying=False):
+                    spatially_varying=False, ambiguity_sensitive=False):
     true_block, observed_block = [], []
     for block in range(size * size):
         row, col = divmod(block, size)
@@ -62,14 +73,21 @@ def one_realization(rng, size=20, strata=3, pixels_per_stratum=80,
             # A modest block-level effect plus distinct class means.
             block_effect = 0.05 * np.sin(row / 3) + 0.03 * np.cos(col / 4)
             means = np.where(true == "T", 0.82 + block_effect, 0.52 + block_effect)
+            ambiguity = rng.beta(2, 5, pixels_per_stratum) if ambiguity_sensitive else None
             errors = rng.exponential(means)
+            if ambiguity_sensitive:
+                # Boundary/mixed-pixel proxy: ambiguous observations have larger
+                # residual magnitudes as well as higher label-flip probabilities.
+                errors = errors * (1.0 + 0.8 * ambiguity)
             t2b = tree_to_built
             b2t = built_to_tree
             if spatially_varying:
                 gradient = row / max(1, size-1)
                 t2b = min(0.95, tree_to_built * (0.5 + gradient))
                 b2t = min(0.95, built_to_tree * (1.5 - gradient))
-            observed = apply_label_confusion(true, rng, t2b, b2t)
+            observed = apply_label_confusion(
+                true, rng, t2b, b2t, ambiguity=ambiguity,
+                ambiguity_multiplier=3.0 if ambiguity_sensitive else 0.0)
             truth = class_mae_contrast(true, errors)
             estimate = class_mae_contrast(observed, errors)
             if truth is not None:
@@ -90,16 +108,18 @@ def run(simulations=200, seed=20261205):
         ("symmetric_5pct", 0.05, 0.05, False),
         ("asymmetric_15_5pct", 0.15, 0.05, False),
         ("spatially_varying_10pct", 0.10, 0.10, True),
-        ("symmetric_20pct", 0.20, 0.20, False),
+        ("symmetric_20pct", 0.20, 0.20, False, False),
+        ("ambiguous_high_residual_pixels", 0.10, 0.10, False, True),
     ]
     results = []
-    for name, t2b, b2t, varying in scenarios:
+    for name, t2b, b2t, varying, ambiguity_sensitive in scenarios:
         rng = np.random.default_rng(seed)
         differences, true_values, observed_values, supports = [], [], [], []
         for _ in range(simulations):
             truth, observed, support = one_realization(
                 rng, tree_to_built=t2b, built_to_tree=b2t,
-                spatially_varying=varying)
+                spatially_varying=varying,
+                ambiguity_sensitive=ambiguity_sensitive)
             differences.append(observed - truth)
             true_values.append(truth)
             observed_values.append(observed)
@@ -107,6 +127,7 @@ def run(simulations=200, seed=20261205):
         results.append({
             "scenario": name, "tree_to_built": t2b,
             "built_to_tree": b2t, "spatially_varying": varying,
+            "ambiguity_sensitive": ambiguity_sensitive,
             "simulations": simulations,
             "mean_true_contrast": float(np.mean(true_values)),
             "mean_observed_label_contrast": float(np.mean(observed_values)),
@@ -118,13 +139,14 @@ def run(simulations=200, seed=20261205):
         "schema": "tessellatum.tree-built-label-error-sensitivity.v1",
         "target": "Equal-stratum trees-minus-built mean absolute residual error, then equal-block mean, under latent true labels.",
         "observed_estimator": "Same estimand form but computed using noisy T/B labels; blocks are retained only when all strata have both true and observed class support.",
-        "design": "20x20 blocks; 3 strata per block; 80 pixels per stratum; class prevalence varies by row; exponential absolute errors with class-specific means.",
+        "design": "20x20 blocks; 3 strata per block; 80 pixels per stratum; class prevalence varies by row; exponential absolute errors with class-specific means. An added ambiguity scenario raises both residual magnitude and label-flip probability for a beta-distributed ambiguous-pixel proxy.",
         "limitations": [
             "Synthetic sensitivity analysis only; not Dynamic World validation or a Nairobi R130 result.",
             "No spatial confidence interval or coverage assessment is attempted.",
             "Confusion probabilities are assumed rather than estimated; real label errors may depend on season, class mixture, geometry and image conditions.",
             "Conditioning on common true/observed stratum support changes the retained block population; reported support counts must be read alongside bias.",
-            "No probabilistic label calibration, abstention, or correction method is evaluated."
+            "No probabilistic label calibration, abstention, or correction method is evaluated.",
+            "Ambiguity is a synthetic proxy, not an observed boundary or mixed-pixel score."
         ],
         "results": results
     }
