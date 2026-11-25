@@ -156,3 +156,15 @@ The Copernicus DEM is a surface model, not a bare-earth terrain model. The publi
 - [Residual-by-class workflow](../../.github/workflows/stratify-nairobi-r130-dynamic-world.yml)
 
 The workflow is manual and not yet run. It requires two GitHub Actions secrets: `GEE_SERVICE_ACCOUNT_JSON` (Earth Engine-enabled service account key JSON) and `GEE_PROJECT_ID` (the registered Google Cloud project). The service account must be authorized to use Earth Engine. Once those are configured, dispatch the acquisition workflow, then dispatch the class/confidence stratification workflow with the acquisition run ID. The analysis keeps all classes and reports confidence thresholds of 0, 0.5, and 0.7; no pixels are excluded from the primary comparison. Dynamic World is a near-real-time 10m Sentinel-2-derived product with nine class probabilities; quality varies with cloud masking and surface type. Dynamic World is the next candidate for date-specific land-cover context; it requires an Earth Engine-backed acquisition route and confidence filtering, so no land-cover attribution is claimed yet.
+
+
+#### Spatial-block uncertainty analysis (completed)
+
+- [Study protocol](NAIROBI_R130_SPATIAL_BLOCK_UNCERTAINTY_PROTOCOL.md)
+- [Verified results report](nairobi-r130-spatial-block-uncertainty-results.md)
+- [Reusable bootstrap method](../../methods/spatial-block-bootstrap.md)
+- [Raster integration implementation](spatial_block_uncertainty_nairobi_r130.py)
+- [Bootstrap primitives and tests](spatial_block_bootstrap.py) · [tests](test_spatial_block_bootstrap.py)
+- [Workflow](../../.github/workflows/spatial-block-uncertainty-nairobi-r130.yml) · [successful run](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45627570253) · [JSON artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45627570253/artifacts/15030370525)
+
+The completed run reports 30 date × burst × polarization records, each evaluated at three block sizes and three Dynamic World confidence thresholds. The result is a within-scene block-bootstrap analysis; the report explicitly avoids treating repeated scene records as independent replicates for pooled inference.
