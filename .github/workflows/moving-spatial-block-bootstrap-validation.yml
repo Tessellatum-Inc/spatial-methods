@@ -1,0 +1,36 @@
+name: Moving spatial-block bootstrap validation
+on:
+  push:
+    branches: [main]
+    paths:
+      - "explorations/radar/spatial_moving_block_bootstrap.py"
+      - "explorations/radar/test_spatial_moving_block_bootstrap.py"
+      - "explorations/radar/simulate_moving_spatial_block_bootstrap.py"
+      - ".github/workflows/moving-spatial-block-bootstrap-validation.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  validate-and-simulate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install numpy
+      - name: Test moving-window membership and estimator
+        run: python -m unittest explorations.radar.test_spatial_moving_block_bootstrap -v
+      - name: Run corrected Monte Carlo coverage experiment
+        run: |
+          python explorations/radar/simulate_moving_spatial_block_bootstrap.py \
+            --simulations 150 \
+            --bootstrap-replicates 400 \
+            --grid-size 30 > moving-spatial-block-bootstrap-simulation.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: moving-spatial-block-bootstrap-corrected-simulation
+          path: moving-spatial-block-bootstrap-simulation.json
+          if-no-files-found: error
