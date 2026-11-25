@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from shapely.geometry import box, mapping
-from query_oam_reference_candidates import audit, search_items, validate_asset_href, STAC_ROOT
+from query_oam_reference_candidates import (audit, search_items, validate_asset_href,\n    fetch_source_metadata, STAC_ROOT)
 
 
 class OAMReferenceAuditTests(unittest.TestCase):
@@ -58,6 +58,48 @@ class OAMReferenceAuditTests(unittest.TestCase):
         self.assertIsNone(row["intersects_r130_bbox"])
         self.assertFalse(row["geometry_present"])
 
+
+
+    def test_fetch_source_metadata_from_allowlisted_host(self):
+        class Response:
+            status_code = 200
+            headers = {"Content-Length": "22"}
+            def iter_content(self, chunk_size):
+                yield b'{"capture":"2026-11-05"}'
+        class Session:
+            def get(self, href, **kwargs):
+                self.href, self.kwargs = href, kwargs
+                return Response()
+        session = Session()
+        result = fetch_source_metadata(
+            "https://oin-hotosm-prod.s3.us-east-1.amazonaws.com/item_meta.json",
+            session=session)
+        self.assertEqual(result["status"], "ok")
+        self.assertEqual(result["metadata"]["capture"], "2026-11-05")
+        self.assertFalse(session.kwargs["allow_redirects"])
+
+    def test_fetch_source_metadata_blocks_untrusted_host(self):
+        class Session:
+            def get(self, *args, **kwargs):
+                raise AssertionError("untrusted host must not be requested")
+        result = fetch_source_metadata("https://example.org/meta.json", session=Session())
+        self.assertEqual(result["status"], "blocked_untrusted_metadata_host")
+
+    def test_audit_can_attach_source_metadata(self):
+        class Response:
+            status_code = 200
+            headers = {"Content-Length": "17"}
+            def iter_content(self, chunk_size):
+                yield b'{"source":"OAM"}'
+        class Session:
+            def get(self, href, **kwargs):
+                return Response()
+        item = {"id": "metadata-item", "geometry": None, "properties": {},
+                "assets": {"metadata": {"href":
+                    "https://oin-hotosm-prod.s3.us-east-1.amazonaws.com/meta.json"}}}
+        row = audit([item], fetch_metadata=True, session=Session())[0]
+        self.assertEqual(row["source_metadata"]["status"], "ok")
+        self.assertEqual(row["source_metadata"]["metadata"]["source"], "OAM")
 
     def test_post_pagination_link_is_followed(self):
         class Response:
