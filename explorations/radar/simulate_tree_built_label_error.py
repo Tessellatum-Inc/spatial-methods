@@ -60,7 +60,8 @@ def equal_mean(values):
 
 def one_realization(rng, size=20, strata=3, pixels_per_stratum=80,
                     tree_to_built=0.0, built_to_tree=0.0,
-                    spatially_varying=False, ambiguity_sensitive=False):
+                    spatially_varying=False, ambiguity_sensitive=False,
+                    ambiguity_label_error=False, ambiguity_residual_effect=False):
     true_block, observed_block = [], []
     for block in range(size * size):
         row, col = divmod(block, size)
@@ -73,11 +74,11 @@ def one_realization(rng, size=20, strata=3, pixels_per_stratum=80,
             # A modest block-level effect plus distinct class means.
             block_effect = 0.05 * np.sin(row / 3) + 0.03 * np.cos(col / 4)
             means = np.where(true == "T", 0.82 + block_effect, 0.52 + block_effect)
-            ambiguity = rng.beta(2, 5, pixels_per_stratum) if ambiguity_sensitive else None
+            use_ambiguity = ambiguity_sensitive or ambiguity_label_error or ambiguity_residual_effect
+            ambiguity = rng.beta(2, 5, pixels_per_stratum) if use_ambiguity else None
             errors = rng.exponential(means)
-            if ambiguity_sensitive:
-                # Boundary/mixed-pixel proxy: ambiguous observations have larger
-                # residual magnitudes as well as higher label-flip probabilities.
+            if ambiguity_sensitive or ambiguity_residual_effect:
+                # Isolate ambiguity-linked residual inflation when requested.
                 errors = errors * (1.0 + 0.8 * ambiguity)
             t2b = tree_to_built
             b2t = built_to_tree
@@ -87,7 +88,7 @@ def one_realization(rng, size=20, strata=3, pixels_per_stratum=80,
                 b2t = min(0.95, built_to_tree * (1.5 - gradient))
             observed = apply_label_confusion(
                 true, rng, t2b, b2t, ambiguity=ambiguity,
-                ambiguity_multiplier=3.0 if ambiguity_sensitive else 0.0)
+                ambiguity_multiplier=3.0 if (ambiguity_sensitive or ambiguity_label_error) else 0.0)
             truth = class_mae_contrast(true, errors)
             estimate = class_mae_contrast(observed, errors)
             if truth is not None:
@@ -109,17 +110,21 @@ def run(simulations=200, seed=20261205):
         ("asymmetric_15_5pct", 0.15, 0.05, False, False),
         ("spatially_varying_10pct", 0.10, 0.10, True, False),
         ("symmetric_20pct", 0.20, 0.20, False, False),
-        ("ambiguous_high_residual_pixels", 0.10, 0.10, False, True),
+        ("ambiguous_high_residual_pixels", 0.10, 0.10, False, True, False, False),
+        ("ambiguity_label_error_only", 0.10, 0.10, False, False, True, False),
+        ("ambiguity_residual_inflation_only", 0.10, 0.10, False, False, False, True),
     ]
     results = []
-    for name, t2b, b2t, varying, ambiguity_sensitive in scenarios:
+    for name, t2b, b2t, varying, ambiguity_sensitive, ambiguity_label_error, ambiguity_residual_effect in scenarios:
         rng = np.random.default_rng(seed)
         differences, true_values, observed_values, supports = [], [], [], []
         for _ in range(simulations):
             truth, observed, support = one_realization(
                 rng, tree_to_built=t2b, built_to_tree=b2t,
                 spatially_varying=varying,
-                ambiguity_sensitive=ambiguity_sensitive)
+                ambiguity_sensitive=ambiguity_sensitive,
+                ambiguity_label_error=ambiguity_label_error,
+                ambiguity_residual_effect=ambiguity_residual_effect)
             differences.append(observed - truth)
             true_values.append(truth)
             observed_values.append(observed)
@@ -128,6 +133,8 @@ def run(simulations=200, seed=20261205):
             "scenario": name, "tree_to_built": t2b,
             "built_to_tree": b2t, "spatially_varying": varying,
             "ambiguity_sensitive": ambiguity_sensitive,
+            "ambiguity_label_error": ambiguity_label_error,
+            "ambiguity_residual_effect": ambiguity_residual_effect,
             "simulations": simulations,
             "mean_true_contrast": float(np.mean(true_values)),
             "mean_observed_label_contrast": float(np.mean(observed_values)),
@@ -139,7 +146,7 @@ def run(simulations=200, seed=20261205):
         "schema": "tessellatum.tree-built-label-error-sensitivity.v1",
         "target": "Equal-stratum trees-minus-built mean absolute residual error, then equal-block mean, under latent true labels.",
         "observed_estimator": "Same estimand form but computed using noisy T/B labels; blocks are retained only when all strata have both true and observed class support.",
-        "design": "20x20 blocks; 3 strata per block; 80 pixels per stratum; class prevalence varies by row; exponential absolute errors with class-specific means. An added ambiguity scenario raises both residual magnitude and label-flip probability for a beta-distributed ambiguous-pixel proxy.",
+        "design": "20x20 blocks; 3 strata per block; 80 pixels per stratum; class prevalence varies by row; exponential absolute errors with class-specific means. Ambiguity sensitivity includes a joint scenario and factorial follow-ups isolating label-flip probability and residual-magnitude inflation for a beta-distributed ambiguous-pixel proxy.",
         "limitations": [
             "Synthetic sensitivity analysis only; not Dynamic World validation or a Nairobi R130 result.",
             "No spatial confidence interval or coverage assessment is attempted.",
