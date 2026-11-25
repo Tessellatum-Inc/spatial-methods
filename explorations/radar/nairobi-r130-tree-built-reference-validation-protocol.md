@@ -247,3 +247,26 @@ Sources:
 - [OrionGIS Limuru–Kwambira dataset record](https://orionterrametrics.com/data/kenya/imagery-land-cover/limuru-kwambira-customised-aviation-training-ground-9gf6) (acquisition, platform, sensor, GSD and licence as indexed; not authoritative geometry).
 - [OpenAerialMap STAC API documentation](https://docs.imagery.hotosm.org/dev/backend/stac-api/).
 - [OpenAerialMap STAC schema](https://docs.imagery.hotosm.org/dev/ingest/schema/) (required imagery metadata fields).
+
+
+## 9E. OpenAerialMap STAC endpoint and reproducible candidate query (2026-11-25)
+
+The OpenAerialMap STAC service root was directly inspected and returned a valid STAC Catalog with a declared `/search` endpoint (GET and POST). This confirms the catalogue route is live; it does **not** confirm that the Limuru–Kwambira item is present in that catalogue or that it overlaps the R130 study area.
+
+A reproducible discovery client has been added at `query_oam_reference_candidates.py`. From the repository root, run:
+
+```bash
+python -m pip install requests shapely
+python explorations/radar/query_oam_reference_candidates.py
+```
+
+The client searches the R130 discovery rectangle and the October–November 2026 date interval, follows STAC `rel=next` pagination, and writes a JSON audit containing item IDs, acquisition datetime fields, platform/GSD metadata, item licence field, geometry/bbox, and asset-key availability. It does not download imagery. The reported intersection fraction is a rough coordinate-plane screening statistic in longitude/latitude, not an area measurement; use a suitable projected CRS and the frozen analysis mask for definitive overlap calculations. The client records no item as validated merely because it appears in the search results.
+
+**Execution status:** the STAC root request was verified during this review. The live `/search` request could not be executed from the available review runtime, so no item count, item ID, geometry overlap, or asset availability is claimed. The OrionGIS index entry continues to report 12–13 October acquisition, 4 cm GSD, DJI Mini 4 Pro, and CC BY 4.0, but its own displayed coverage is country-level and is not a substitute for item geometry. Treat all those attributes as indexed metadata pending confirmation in the authoritative STAC Item and source GeoTIFF.
+
+**Next gate:** run the committed query in repository Actions or a network-enabled environment, inspect the exact Limuru item and any overlapping candidates, then perform geometry intersection against the frozen R130 analysis mask. Only after that should the source COG be downloaded and inspected for CRS, affine transform, pixel size, nodata, footprint, acquisition provenance, visual interpretability, and positional alignment.
+
+Sources:
+- [OpenAerialMap STAC catalogue root](https://api.imagery.hotosm.org/stac) (live root and advertised search endpoint).
+- [OrionGIS Limuru–Kwambira indexed record](https://orionterrametrics.com/data/kenya/imagery-land-cover/limuru-kwambira-customised-aviation-training-ground-9gf6) (secondary metadata record; no item geometry exposed in the page text).
+- [STAC API Item Search standard](https://docs.ogc.org/cs/25-005/25-005.html) (bbox, datetime and pagination semantics).
