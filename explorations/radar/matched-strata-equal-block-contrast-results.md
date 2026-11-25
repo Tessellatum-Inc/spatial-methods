@@ -17,8 +17,10 @@ This is deliberately not a pooled pixel-weighted contrast.
 - Grid: 24 × 24 candidate blocks.
 - Replications: 100 per condition.
 - Spatial dependence: separable Gaussian AR(1), correlations 0.3, 0.6 and 0.8.
-- Pixel-level target/reference sample sizes: independently varied from 8 to 79 per stratum.
-- Strata per block: 2–5, equally weighted within block.
+- Pixel-level target/reference sample sizes: independently varied from 8 to 79 before a spatial support factor is applied; a minimum of 5 is retained.
+- Strata per block: 2–5 before a row-dependent support factor is applied; at least 2 are retained and equally weighted within block.
+- Pixel noise: independent Student-t draws with 4 degrees of freedom, standardized to unit variance and multiplied by a row-varying scale (0.65–1.55).
+- Spatially varying support: the number of matched strata and within-stratum sample sizes tend to decrease with row position.
 - Stratum heterogeneity: zero-mean within block, so the latent equal-stratum block contrast equals the spatial block effect.
 - Baseline common-support loss: 8% of candidate blocks, independent of the latent contrast.
 - Informative-selection stress condition: blocks above the 80th percentile of latent contrast are additionally excluded, after the target population is defined.
@@ -33,14 +35,14 @@ For every simulated realization, the committed experiment now computes the direc
 
 ## Why this experiment matters
 
-The earlier experiments treated block values as directly observed means. This design adds a layer closer to the actual study: within-block matched-stratum contrasts are estimated from unequal pixel samples, strata are equally weighted within blocks, and blocks are equally weighted in the final estimand.
+The earlier experiments treated block values as directly observed means. This design adds a layer closer to the actual study: within-block matched-stratum contrasts are estimated from unequal pixel samples, strata are equally weighted within blocks, and blocks are equally weighted in the final estimand. The latest version adds heavy-tailed pixel noise, spatially varying noise scale, and spatially varying matched-support quantity. These are deliberately separate stress dimensions from informative selection.
 
 The independent eligibility condition tests the estimator under ordinary common-support loss. The informative-selection condition deliberately violates that assumption and assesses intervals against the pre-selection target population. Neither method includes a missingness correction, so bias and undercoverage are expected possibilities.
 
 ## Guardrails
 
 - The synthetic process is not the Nairobi R130 data-generating process.
-- Pixel noise is Gaussian and independent within strata; more realistic heteroskedasticity, heavy tails, class-label error and spatially varying support remain open.
+- Pixel noise is heavy-tailed and heteroskedastic but independent within strata; dependence across scenes, bursts and polarizations and class-label error remain open.
 - The informative-selection condition is a stress test, not a proposed model of Dynamic World or raster missingness.
 - A 100-replication simulation and three tuning values cannot establish 95% calibration.
 - Do not select a method or bandwidth by the best observed coverage.
