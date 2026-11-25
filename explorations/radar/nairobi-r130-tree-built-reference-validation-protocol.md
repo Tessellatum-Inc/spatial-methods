@@ -118,6 +118,30 @@ The original residual estimand is an equal-stratum then equal-eligible-block mea
 
 No empirical accuracy claim is permitted until Gates A–E are passed.
 
+
+## 9A. Initial public-source feasibility inventory (desk review, 2026-11-25)
+
+This is a source-screening inventory, not evidence that any imagery covers the R130 sample frame. Exact footprint intersections, per-scene acquisition dates, positional accuracy and reuse rights remain to be verified.
+
+| Candidate | What is currently documented | Assessment for the five 2026 target dates |
+|---|---|---|
+| OpenAerialMap / HOT Nairobi Open Drone Imagery (SDI RIA project) | A Nairobi project map is publicly listed and links to a downloadable GeoTIFF/TMS. The map page identifies a collaboration and project creation in April 2026, but the accessible metadata does not establish the imagery acquisition date, exact footprint overlap with R130, ground resolution or licence. | **First candidate to inspect.** Could provide independent aerial/drone reference if acquisition dates, footprint, resolution and licence pass the protocol. Not yet admissible. |
+| Kenya Space Agency high-resolution imagery request | KSA provides a formal request route for high-resolution satellite/aerial imagery and asks for area, time period and resolution. The form does not guarantee availability. | **Potential direct route.** Request coverage for the five exact dates and the R130 mask; confirm provenance, GSD, acquisition timestamps, positional accuracy and research/commercial-use terms before acceptance. |
+| Planet NICFI basemaps | Planet NICFI offers 4.77 m mosaics, but the program closure notice says no new monthly basemaps after December 2024; historical imagery remains. The current Earth Engine publisher-catalog metadata also displays a later availability endpoint, so actual asset timestamps and current access terms need reconciliation. | **Not a primary candidate for 2026 date matching.** At best historical context; do not treat an older mosaic as contemporaneous reference. Verify exact asset dates and terms if considered. |
+| Ramani Geosystems Citi Data | Advertises orthorectified aerial imagery at 10–20 cm and historical Nairobi imagery, with the published collection described as extending through 2017. | **Not date-matched to 2026.** Could help with stable context or positional checks, not primary validation for these acquisitions. Confirm area coverage and licence before any use. |
+| ESA WorldCover / other land-cover products | Published products can provide comparison context, but they are classified land-cover maps rather than independent visual reference observations for the exact R130 dates. | **Comparison only.** Do not score DW against these products as if they were ground truth. |
+
+### Desk-review decision
+
+No source is yet verified as both (a) spatially covering the actual R130 analysis mask and (b) temporally suitable for any of the five 2026 target dates with acceptable rights and resolution. **Gate A remains not passed.** The highest-value next actions are to inspect the Nairobi OpenAerialMap GeoTIFF metadata and request exact-date coverage from Kenya Space Agency. If neither yields qualifying evidence, the honest outcome is that date-specific empirical validation cannot currently be completed with accessible evidence.
+
+Source notes:
+- [Nairobi Open Drone Imagery project map](https://umap.hotosm.org/ar/map/nairobi-open-drone-imagery-sdi-ria-project_2646) (metadata currently exposed by the map page is incomplete).
+- [Kenya Space Agency imagery request](https://ksaforms.ksa.go.ke/request_imagery/).
+- [NICFI program notice](https://openforis.org/fileadmin/planet.html) and [Planet NICFI catalog entry](https://developers.google.com/earth-engine/datasets/catalog/projects_planet-nicfi_assets_basemaps_africa).
+- [Ramani Citi Data](https://ramani.co.ke/citidata).
+- [ESA WorldCover validation context](https://esa-worldcover.org/en/data-access).
+
 ## 9. Current status and next action
 
 Current status: **Gate A not yet passed.** No qualifying local reference imagery inventory or interpreted sample has been established in this repository. The next operational task is a source-feasibility inventory for the five dates and study footprint, recording candidate imagery coverage, date, resolution, registration, licence and access. Only after that inventory should a sample be drawn.
