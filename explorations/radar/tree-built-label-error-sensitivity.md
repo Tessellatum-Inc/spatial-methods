@@ -48,3 +48,46 @@ Under this particular generator, label contamination attenuated the positive tre
 The percentile ranges above describe variation across simulated replicate shifts; they are not confidence intervals for a real-world effect or estimates of uncertainty in Dynamic World accuracy. These results demonstrate sensitivity to assumed label error, not the actual direction or magnitude of bias in Nairobi.
 
 The initial scenarios assume label flips are conditionally random within each class (apart from the specified row gradient). A follow-on scenario now uses a beta-distributed ambiguity proxy: ambiguous pixels have larger residual magnitudes and a higher flip probability. This is a deliberately stylized mixed-pixel/boundary stress test, not a measured ambiguity score. Its results will be appended after workflow validation.
+
+
+## Factorial follow-up: separating ambiguity mechanisms (validated 2026-11-25)
+
+The follow-up isolates two mechanisms using a paired 2 × 2 design:
+
+| Cell | Ambiguity-linked label flips | Ambiguity-linked residual inflation |
+|---|---|---|
+| Neutral baseline | Off | Off |
+| Label only | On | Off |
+| Residual only | Off | On |
+| Joint | On | On |
+
+All four cells use the same latent labels, ambiguity-proxy draws, base residual draws and random streams within each Monte Carlo replicate. Each cell's outcome is its label-induced shift (noisy-label estimate minus that cell's latent-label target). The interaction is calculated per replicate as:
+
+`joint - label\_only - residual\_only + neutral`
+
+This difference-in-differences isolates non-additivity between the two mechanisms in this generator. It does not estimate a real-world causal effect.
+
+### Validated results
+
+- GitHub Actions run: [45669390116](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45669390116)
+- Commit: `d0c9c5db7a39cbf4b68117741717134931fcbfc1`
+- Unit tests: passed.
+- Simulation: passed; artifact uploaded.
+- Replications: 200 per scenario; seed `20261205`.
+- Paired interaction mean: **−0.01474**.
+- 2.5th–97.5th percentiles across the 200 replicate interaction values: **−0.01660 to −0.01321**. These are Monte Carlo replicate percentiles, not a confidence interval.
+
+| Factorial cell | Mean latent-label contrast | Mean label-induced shift |
+|---|---:|---:|
+| Neutral baseline | 0.30055 | −0.06324 |
+| Label-error only | 0.30055 | −0.11544 |
+| Residual inflation only | 0.36933 | −0.07773 |
+| Joint | 0.36933 | −0.14467 |
+
+The residual-inflation cells have a different latent-label contrast because residual inflation changes the underlying residual magnitudes. The factorial comparison therefore uses label-induced shifts (observed minus latent target), not raw observed contrasts. This distinction is essential to the interaction calculation.
+
+### Interpretation and limits
+
+The negative interaction indicates that, in this synthetic setup, combining ambiguity-linked label flips with ambiguity-linked residual inflation produces an additional negative shift beyond the sum of their separate shifts. The magnitude is small relative to the main label-error shifts in these scenarios.
+
+The earlier joint-only ambiguity scenario is not a clean mechanism-isolation result; the paired factorial cells supersede it for that purpose. The generator still uses assumed flip probabilities and a beta-distributed ambiguity proxy. It does not estimate Dynamic World confusion, model actual boundary pixels, assess spatial confidence-interval coverage, or establish a Nairobi R130 bias correction. The replicate percentiles describe this simulation's paired outcomes only.
