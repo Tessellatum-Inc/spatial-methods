@@ -101,6 +101,28 @@ class SpatialBlockBootstrapTests(unittest.TestCase):
         self.assertIsNone(result["moran_i"])
 
 
+    def test_fixed_origin_block_assignment_and_offset_shift(self):
+        from explorations.radar.spatial_block_bootstrap import fixed_origin_block_ids
+        east = np.array([10., 20., 110., 120.])
+        north = np.array([10., 20., 10., 20.])
+        base, base_cols, _ = fixed_origin_block_ids(
+            east, north, 100, origin_east_m=0, origin_north_m=0
+        )
+        shifted, shifted_cols, _ = fixed_origin_block_ids(
+            east, north, 100, origin_east_m=50, origin_north_m=50
+        )
+        self.assertEqual(base_cols, 1)
+        self.assertEqual(shifted_cols, 2)
+        self.assertEqual(len(np.unique(base)), 2)
+        self.assertEqual(len(np.unique(shifted)), 4)
+
+    def test_fixed_origin_block_assignment_rejects_invalid_inputs(self):
+        from explorations.radar.spatial_block_bootstrap import fixed_origin_block_ids
+        with self.assertRaises(ValueError):
+            fixed_origin_block_ids([1, 2], [1], 100)
+        with self.assertRaises(ValueError):
+            fixed_origin_block_ids([1], [1], 0)
+
     def test_empirical_semivariogram_counts_pairs_and_increases_for_gradient(self):
         from explorations.radar.spatial_block_bootstrap import empirical_block_semivariogram
         result = empirical_block_semivariogram(
