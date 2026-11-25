@@ -15,7 +15,7 @@ This experiment is deliberately about label contamination, not the spatial inter
 - 20 × 20 blocks, 3 strata per block, 80 pixels per stratum.
 - Tree prevalence varies over rows and is bounded to preserve both classes.
 - Absolute residuals are exponential with class-specific means (trees 0.82, built 0.52) plus a small spatial block effect.
-- Confusion scenarios: perfect labels; symmetric 5%; asymmetric tree-to-built 15% / built-to-tree 5%; spatially varying 10% base rates; symmetric 20%.
+- Confusion scenarios: perfect labels; symmetric 5%; asymmetric tree-to-built 15% / built-to-tree 5%; spatially varying 10% base rates; symmetric 20%; and an ambiguity-dependent scenario where ambiguous pixels have larger residuals and higher flip probabilities.
 - 200 Monte Carlo replications per scenario.
 - Fixed seed: 20261205.
 
@@ -47,4 +47,4 @@ Under this particular generator, label contamination attenuated the positive tre
 
 The percentile ranges above describe variation across simulated replicate shifts; they are not confidence intervals for a real-world effect or estimates of uncertainty in Dynamic World accuracy. These results demonstrate sensitivity to assumed label error, not the actual direction or magnitude of bias in Nairobi.
 
-The experiment currently assumes label flips are conditionally random within each class (apart from the specified row gradient). It does not yet model errors concentrated in mixed pixels, boundaries or high-residual observations. Those are important next sensitivity dimensions.
+The initial scenarios assume label flips are conditionally random within each class (apart from the specified row gradient). A follow-on scenario now uses a beta-distributed ambiguity proxy: ambiguous pixels have larger residual magnitudes and a higher flip probability. This is a deliberately stylized mixed-pixel/boundary stress test, not a measured ambiguity score. Its results will be appended after workflow validation.
