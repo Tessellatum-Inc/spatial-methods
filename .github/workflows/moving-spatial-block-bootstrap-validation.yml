@@ -25,7 +25,7 @@ jobs:
         run: python -m unittest explorations.radar.test_spatial_moving_block_bootstrap -v
       - name: Run corrected Monte Carlo coverage experiment
         run: |
-          python explorations/radar/simulate_moving_spatial_block_bootstrap.py \
+          python -m explorations.radar.simulate_moving_spatial_block_bootstrap \
             --simulations 150 \
             --bootstrap-replicates 400 \
             --grid-size 30 > moving-spatial-block-bootstrap-simulation.json
