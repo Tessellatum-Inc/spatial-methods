@@ -177,3 +177,10 @@ The label-error sensitivity experiment now includes a paired 2 × 2 factorial fo
 A protocol now defines independent reference-source requirements, temporal matching, probability sampling, blind double interpretation, mixed/indeterminate handling, weighted accuracy estimates and stop/go gates for the five R130 dates. It explicitly prohibits treating agreement with another Sentinel-2-derived classification as independent ground truth and prohibits propagating a global confusion matrix into the matched-strata residual estimand without preserving its weighting and target population.
 
 The protocol is currently at **Gate A not passed**: no qualifying local reference imagery inventory or interpreted sample has been established. No empirical Dynamic World accuracy claim is available yet. See [Nairobi R130 tree/built reference-validation protocol](../explorations/radar/nairobi-r130-tree-built-reference-validation-protocol.md) and the [sample ledger schema](../explorations/radar/nairobi-r130-reference-sample-schema.csv).
+
+
+## Nairobi R130 empirical tree/built reference validation
+
+The [reference-validation protocol](../explorations/radar/nairobi-r130-tree-built-reference-validation-protocol.md) now includes an initial public-source feasibility inventory and an auditable sample-ledger schema. The desk review found candidate routes through Nairobi OpenAerialMap imagery and the Kenya Space Agency imagery request service, but neither is yet verified for exact R130 footprint coverage, date, resolution, positional accuracy and reuse rights. Historical NICFI/Ramani products are not date-matched to the 2026 target dates; land-cover products remain comparison layers, not reference truth.
+
+**Gate A remains not passed.** No local empirical accuracy result is claimed. The next step is to inspect the candidate OpenAerialMap asset metadata and seek exact-date availability from KSA before drawing any sample.
