@@ -36,7 +36,7 @@ jobs:
       - name: Run live STAC candidate audit
         run: |
           python explorations/radar/query_oam_reference_candidates.py \
-            --fetch-metadata \\
+            --fetch-metadata \
             --start "${{ inputs.start || '2026-10-01T00:00:00Z' }}" \
             --end "${{ inputs.end || '2026-11-24T23:59:59Z' }}" \
             --output data/reference/nairobi-r130-oam-stac-audit.json
