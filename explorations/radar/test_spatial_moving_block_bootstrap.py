@@ -63,8 +63,9 @@ class MovingSpatialBlockBootstrapTests(unittest.TestCase):
         sampled = rng.integers(
             0, len(windows), size=(replicates, draws_per_replicate)
         )
-        expected_draws = window_sums[sampled].sum(axis=1) / (
-            draws_per_replicate * width**2
+        expected_draws = (
+            window_sums[sampled].sum(axis=1) * len(windows)
+            / (draws_per_replicate * width**2 * values.size)
         )
         result = moving_spatial_block_bootstrap_interval(
             ids, values, grid_columns=4, window_width_blocks=width,
@@ -75,6 +76,32 @@ class MovingSpatialBlockBootstrapTests(unittest.TestCase):
         )
         self.assertAlmostEqual(result["lower_95_db"], expected_lower)
         self.assertAlmostEqual(result["upper_95_db"], expected_upper)
+
+
+    def test_complete_window_average_has_exact_equal_block_normalization(self):
+        # This identity catches a missing candidate-window / eligible-block
+        # factor, which a zero-mean coverage experiment cannot detect.
+        ids = np.array([0, 1, 3, 4, 7, 8, 11])
+        values = np.array([2.0, 3.0, 11.0, 4.0, 14.0, 5.0, 22.0])
+        width = 2
+        windows = moving_window_membership(
+            ids, grid_columns=4, window_width_blocks=width
+        )
+        window_sums = np.array([values[index].sum() for index in windows])
+        normalized_complete_average = (
+            window_sums.mean() * len(windows) / (width**2 * values.size)
+        )
+        self.assertAlmostEqual(normalized_complete_average, values.mean(), places=12)
+
+    def test_nonzero_mean_bootstrap_distribution_is_centered_on_point_estimate(self):
+        ids = np.array([0, 1, 3, 4, 7, 8, 11])
+        values = np.array([2.0, 3.0, 11.0, 4.0, 14.0, 5.0, 22.0])
+        result = moving_spatial_block_bootstrap_interval(
+            ids, values, grid_columns=4, window_width_blocks=2,
+            replicates=50000, seed=91, min_windows=1, min_blocks=1,
+        )
+        midpoint = (result["lower_95_db"] + result["upper_95_db"]) / 2
+        self.assertLess(abs(midpoint - result["estimate_db"]), 1.0)
 
     def test_insufficient_base_blocks_suppress_interval_even_with_many_windows(self):
         result = moving_spatial_block_bootstrap_interval(
