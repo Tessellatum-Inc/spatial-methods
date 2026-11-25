@@ -119,6 +119,11 @@ def empirical_block_semivariogram(block_ids, block_values, *, grid_columns, bloc
     Distances are between block centroids, expressed in block-width units.
     Lag bins are left-closed/right-open. No model fitting or inferential
     uncertainty is implied; sparse bins are retained with an explicit status.
+
+    Finite-distance pairs are enumerated through grid-neighbour lookups rather
+    than all-pairs arrays. If the final lag edge is infinite, its count and
+    semivariance are obtained by subtracting enumerated near pairs from the
+    closed-form totals, avoiding quadratic work for the far-distance bin.
     """
     ids = np.asarray(block_ids, dtype=np.int64)
     values = np.asarray(block_values, dtype=float)
@@ -133,23 +138,48 @@ def empirical_block_semivariogram(block_ids, block_values, *, grid_columns, bloc
     ids, values = ids[valid], values[valid]
     if np.unique(ids).size != ids.size:
         raise ValueError("Each eligible block ID must occur once")
-    x = ids // int(grid_columns)
-    y = ids % int(grid_columns)
+
+    rows = ids // int(grid_columns)
+    cols = ids % int(grid_columns)
     n_bins = edges.size - 1
     pair_counts = np.zeros(n_bins, dtype=np.int64)
     semivariance_sums = np.zeros(n_bins, dtype=float)
-    for i in range(max(0, len(ids) - 1)):
-        dx = x[i + 1:] - x[i]
-        dy = y[i + 1:] - y[i]
-        distance = np.hypot(dx, dy).astype(float)
-        squared_difference = 0.5 * np.square(values[i + 1:] - values[i])
-        bins = np.searchsorted(edges, distance, side="right") - 1
-        valid_bins = (bins >= 0) & (bins < n_bins)
-        if np.any(valid_bins):
-            pair_counts += np.bincount(bins[valid_bins], minlength=n_bins)
-            semivariance_sums += np.bincount(
-                bins[valid_bins], weights=squared_difference[valid_bins], minlength=n_bins
-            )
+    positions = {(int(row), int(col)): float(value)
+                 for row, col, value in zip(rows, cols, values)}
+
+    # The last bin is handled analytically when unbounded. Enumerate only
+    # pairs strictly below its lower edge; otherwise enumerate to its upper edge.
+    unbounded_tail = bool(np.isinf(edges[-1]))
+    search_radius = float(edges[-2] if unbounded_tail else edges[-1])
+    max_offset = int(np.ceil(search_radius))
+    offsets = []
+    for dr in range(-max_offset, max_offset + 1):
+        for dc in range(-max_offset, max_offset + 1):
+            distance = float(np.hypot(dr, dc))
+            if distance <= 0 or distance >= search_radius:
+                continue
+            if dr > 0 or (dr == 0 and dc > 0):
+                offsets.append((dr, dc, distance))
+
+    for (row, col), value in positions.items():
+        for dr, dc, distance in offsets:
+            other = positions.get((row + dr, col + dc))
+            if other is None:
+                continue
+            bin_index = int(np.searchsorted(edges, distance, side="right") - 1)
+            if 0 <= bin_index < n_bins:
+                pair_counts[bin_index] += 1
+                semivariance_sums[bin_index] += 0.5 * (value - other) ** 2
+
+    if unbounded_tail:
+        n = int(values.size)
+        total_pairs = n * (n - 1) // 2
+        total_semivariance = 0.5 * (
+            n * float(np.dot(values, values)) - float(values.sum()) ** 2
+        )
+        pair_counts[-1] = total_pairs - int(pair_counts[:-1].sum())
+        semivariance_sums[-1] = total_semivariance - float(semivariance_sums[:-1].sum())
+
     result = []
     for i in range(n_bins):
         count = int(pair_counts[i])
