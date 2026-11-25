@@ -6,6 +6,7 @@ on:
       - "explorations/radar/spatial_moving_block_bootstrap.py"
       - "explorations/radar/test_spatial_moving_block_bootstrap.py"
       - "explorations/radar/simulate_moving_spatial_block_bootstrap.py"
+      - "explorations/radar/simulate_moving_spatial_block_bootstrap_expanded.py"
       - ".github/workflows/moving-spatial-block-bootstrap-validation.yml"
   workflow_dispatch:
 permissions:
@@ -29,8 +30,17 @@ jobs:
             --simulations 150 \
             --bootstrap-replicates 400 \
             --grid-size 30 > moving-spatial-block-bootstrap-simulation.json
+      - name: Run expanded window-width diagnostic
+        run: |
+          python -m explorations.radar.simulate_moving_spatial_block_bootstrap_expanded \
+            > moving-spatial-block-bootstrap-expanded-widths.json
       - uses: actions/upload-artifact@v4
         with:
           name: moving-spatial-block-bootstrap-corrected-simulation
           path: moving-spatial-block-bootstrap-simulation.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: moving-spatial-block-bootstrap-expanded-widths
+          path: moving-spatial-block-bootstrap-expanded-widths.json
           if-no-files-found: error
