@@ -104,10 +104,10 @@ def one_realization(rng, size=20, strata=3, pixels_per_stratum=80,
 
 def run(simulations=200, seed=20261205):
     scenarios = [
-        ("perfect_labels", 0.00, 0.00, False),
-        ("symmetric_5pct", 0.05, 0.05, False),
-        ("asymmetric_15_5pct", 0.15, 0.05, False),
-        ("spatially_varying_10pct", 0.10, 0.10, True),
+        ("perfect_labels", 0.00, 0.00, False, False),
+        ("symmetric_5pct", 0.05, 0.05, False, False),
+        ("asymmetric_15_5pct", 0.15, 0.05, False, False),
+        ("spatially_varying_10pct", 0.10, 0.10, True, False),
         ("symmetric_20pct", 0.20, 0.20, False, False),
         ("ambiguous_high_residual_pixels", 0.10, 0.10, False, True),
     ]
