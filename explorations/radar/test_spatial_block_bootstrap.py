@@ -48,6 +48,35 @@ class SpatialBlockBootstrapTests(unittest.TestCase):
         self.assertGreaterEqual(a["upper_95_db"],a["estimate_db"])
 
 
+
+    def test_spatial_cluster_bootstrap_preserves_equal_block_estimand_and_is_reproducible(self):
+        from explorations.radar.spatial_block_bootstrap import spatial_cluster_bootstrap_interval
+        ids = [0, 1, 2]
+        values = [0., 0., 10.]
+        a = spatial_cluster_bootstrap_interval(
+            ids, values, grid_columns=4, cluster_width_blocks=2,
+            replicates=500, seed=17, min_clusters=2
+        )
+        b = spatial_cluster_bootstrap_interval(
+            ids, values, grid_columns=4, cluster_width_blocks=2,
+            replicates=500, seed=17, min_clusters=2
+        )
+        self.assertEqual(a, b)
+        self.assertAlmostEqual(a["estimate_db"], np.mean(values))
+        self.assertEqual(a["eligible_clusters"], 2)
+        self.assertEqual(a["eligible_blocks"], 3)
+        self.assertEqual(a["interval_status"], "percentile_spatial_cluster_bootstrap")
+
+    def test_spatial_cluster_bootstrap_suppresses_too_few_clusters(self):
+        from explorations.radar.spatial_block_bootstrap import spatial_cluster_bootstrap_interval
+        result = spatial_cluster_bootstrap_interval(
+            [0, 1, 4, 5], [1., 2., 3., 4.], grid_columns=4,
+            cluster_width_blocks=2, min_clusters=3
+        )
+        self.assertEqual(result["interval_status"], "insufficient_clusters")
+        self.assertIsNone(result["lower_95_db"])
+        self.assertEqual(result["eligible_clusters"], 1)
+
     def test_rook_morans_i_detects_positive_and_negative_neighbour_patterns(self):
         from explorations.radar.spatial_block_bootstrap import rook_morans_i
         positive = rook_morans_i(list(range(9)), [1., 2., 3., 2., 3., 4., 3., 4., 5.], grid_columns=3, min_blocks=9)
