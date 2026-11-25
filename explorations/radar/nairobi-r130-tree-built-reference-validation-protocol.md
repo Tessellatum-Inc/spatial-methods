@@ -152,3 +152,18 @@ Current status: **Gate A not yet passed.** No qualifying local reference imagery
 - The Dynamic World paper describes expert reference annotations and its test dataset; those global test data are useful methodological context but are not automatically a local Nairobi reference sample: [Brown et al. (2022), Scientific Data](https://doi.org/10.1038/s41597-022-01307-4).
 - Independent validation requires higher-resolution reference data not used in map production, as summarized by the Copernicus Land Monitoring Service: [How are European CLC data validated?](https://land.copernicus.eu/en/faq/products/corine-land-cover/how-are-european-clc-data-validated).
 - Probability sampling, response design and design-aware accuracy assessment are core components of rigorous land-cover validation: [CEOS WGCV LPV Land Cover Validation Protocol (2025)](https://lpvs.gsfc.nasa.gov/PDF/CEOS_WGCV_LPV_Land_Cover_protocol_Sept2025_V1.pdf).
+
+
+## 9B. OpenAerialMap metadata follow-up (desk review, 2026-11-25)
+
+The first candidate was traced one step further, but it still does not pass Gate A.
+
+- The Nairobi uMap page points to a legacy OpenAerialMap image/TIFF identifier `69ed845c45781de300a01b25` and a TMS view. The page says the imagery was produced through HOT and SDI Kenya's Resilience Initiative Africa collaboration.
+- The page's own user-content credit block says **“No licence has been set.”** This is a material reuse-rights gap. General OpenAerialMap descriptions of the platform's licensing do not override the item-specific metadata shown for this candidate.
+- The map page's April 27–28, 2026 dates are the project-map creation/modification dates, not verified image acquisition dates. They cannot be used as the capture date.
+- OpenAerialMap's current imagery service documents a STAC-native catalogue and exposes a STAC API. The public documentation says item metadata/assets should be inspected through the catalogue and that per-image tile endpoints use a STAC item ID. The legacy identifier in the uMap URL has not been verified as a current STAC item ID; do not assume the two identifier systems are interchangeable.
+- A direct catalogue lookup for the legacy identifier was not successfully resolved in this desk review. Therefore no claim is made about the asset's capture date, GSD, footprint, CRS, positional accuracy or downloadable source metadata.
+
+**Decision:** keep this asset as a lead, not a reference source. Before using it, obtain the underlying item record/GeoTIFF and verify: (1) acquisition start/end time, (2) polygon footprint intersection with the frozen R130 mask, (3) pixel size/GSD and CRS, (4) georeferencing/positional accuracy, (5) explicit licence and attribution terms. If the licence remains unset, obtain written permission or exclude the imagery from any reproducible validation dataset.
+
+The current OAM documentation also describes a newer STAC catalogue/API, so future source audits should search that catalogue by Nairobi bbox and date rather than relying only on legacy map URLs.
