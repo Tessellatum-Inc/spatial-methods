@@ -108,3 +108,18 @@ Since every eligible block belongs to exactly $k^2$ candidate windows, the $M/N$
 The initial implementation is in [spatial_moving_block_bootstrap.py](../explorations/radar/spatial_moving_block_bootstrap.py), with membership and reproducibility tests in [test_spatial_moving_block_bootstrap.py](../explorations/radar/test_spatial_moving_block_bootstrap.py). A first stationary Gaussian AR(1) simulation showed coverage improving as window width increased, but remaining below 0.95 under moderate and strong spatial dependence. See [initial coverage simulation](../explorations/radar/moving-spatial-block-bootstrap-initial-simulation.md) and its reproducible script. This is a warning against treating the method as calibrated.
 
 Before empirical use, extend the simulation to irregular masks, anisotropy, nonstationarity, heavy tails and the matched-strata/block-contrast estimand. Predeclare dependence scales and candidate widths; do not tune the width to the observed Nairobi results. The implementation also suppresses intervals when fewer than 20 eligible base blocks remain, independently of the candidate-window count; a large number of overlapping windows generated from a tiny sample is not treated as adequate support. The method remains experimental until a defensible coverage envelope is demonstrated.
+
+
+## Experimental spatial HAC alternative
+
+A second candidate estimates uncertainty for the equal-block mean using a spatial heteroskedasticity-and-autocorrelation-consistent (HAC) long-run variance estimator. For eligible block contrasts $y_i$ at grid coordinates $(r_i,c_i)$, let $u_i=y_i-\bar y$ and use the separable product-Bartlett kernel
+\[
+K_{ij}=\left(1-\frac{|r_i-r_j|}{h_r}\right)_+\left(1-\frac{|c_i-c_j|}{h_c}\right)_+.
+\]
+The estimated variance of the equal-block mean is
+\[
+\widehat{\mathrm{Var}}(\bar y)=\frac{1}{N^2}\sum_i\sum_j K_{ij}u_i u_j.
+\]
+The product of one-dimensional Bartlett kernels is positive semidefinite on the integer lattice; restricting it to an irregular eligible-block subset preserves that property. The implementation reports a normal-approximation interval and accepts separate row and column bandwidths. Bandwidths are sensitivity parameters, not automatically selected or known dependence ranges.
+
+The implementation is [spatial_hac.py](../explorations/radar/spatial_hac.py), with unit tests in [test_spatial_hac.py](../explorations/radar/test_spatial_hac.py) and a reproducible stationary Gaussian coverage experiment in [simulate_spatial_hac.py](../explorations/radar/simulate_spatial_hac.py). Results are exploratory until coverage is evaluated across dependence strengths, anisotropy, irregular masks, nonstationarity and the matched-strata/block-contrast estimand. A positive-semidefinite covariance kernel does not guarantee a well-calibrated finite-sample interval. Do not choose bandwidths by selecting the most favourable empirical result.
