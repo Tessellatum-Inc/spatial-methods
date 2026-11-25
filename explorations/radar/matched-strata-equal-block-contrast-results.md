@@ -27,6 +27,10 @@ This is deliberately not a pooled pixel-weighted contrast.
 - Moving-window replicates: 250 per realization.
 - Monte Carlo uncertainty: 95% Wilson intervals.
 
+## Estimand-preservation invariant
+
+For every simulated realization, the committed experiment now computes the direct arithmetic mean of the observed eligible block contrasts and checks that both the moving-window and spatial-HAC procedures return exactly that point estimate (within floating-point tolerance). This is an implementation invariant, not evidence that either interval has correct coverage. A mismatch stops the experiment rather than allowing an interval comparison under a silently altered estimand.
+
 ## Why this experiment matters
 
 The earlier experiments treated block values as directly observed means. This design adds a layer closer to the actual study: within-block matched-stratum contrasts are estimated from unequal pixel samples, strata are equally weighted within blocks, and blocks are equally weighted in the final estimand.
