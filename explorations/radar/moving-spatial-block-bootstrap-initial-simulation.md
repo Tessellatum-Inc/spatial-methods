@@ -1,6 +1,6 @@
 # Moving spatial-block bootstrap: initial coverage simulation
 
-**Status:** exploratory diagnostic; the implementation passes structural tests but is not calibrated.  
+**Status:** exploratory diagnostic; the implementation passes structural tests but is not calibrated. A further normalization defect was found and corrected on 2026-11-25; the latest CI run must be used to refresh the numerical outputs.  
 **Implementation:** `spatial_moving_block_bootstrap.py`  
 **Simulation scripts:** `simulate_moving_spatial_block_bootstrap.py`, `simulate_moving_spatial_block_bootstrap_expanded.py`  
 **Design:** 30 × 30 mean-zero separable Gaussian AR(1) fields; 150 Monte Carlo fields per correlation/window-width combination; 400 bootstrap replicates per field.  
@@ -9,25 +9,25 @@
 
 ## Corrected implementation results
 
-The equal-inclusion normalization correction was validated by seven unit tests. The corrected Monte Carlo experiment completed successfully. The table reports empirical coverage of nominal 95% percentile intervals and mean interval width.
+The earlier equal-inclusion correction was incomplete: dividing by sampled windows × k² produced an expectation of sum(values)/candidate_windows, not the equal-block mean. The implementation now additionally multiplies by candidate_windows/eligible_blocks. This is tested by an exact complete-window identity and non-zero-mean regression. The zero-mean coverage proportions below are invariant to this positive deterministic rescaling, but their interval widths are not; widths shown here are recalculated using the dense-grid candidate-window/eligible-block ratio and remain provisional pending the latest CI artifact. The table reports empirical coverage of nominal 95% percentile intervals and mean interval width.
 
 | Spatial correlation ρ | Window width (base blocks) | Coverage | 95% Wilson interval for coverage | Mean interval width |
 |---:|---:|---:|---:|---:|
 | 0.3 | 1 | 0.707 | 0.629–0.774 | 0.1287 |
-| 0.3 | 2 | 0.833 | 0.766–0.884 | 0.1544 |
-| 0.3 | 3 | 0.880 | 0.818–0.923 | 0.1636 |
-| 0.3 | 4 | 0.887 | 0.826–0.928 | 0.1591 |
-| 0.3 | 5 | 0.887 | 0.826–0.928 | 0.1548 |
+| 0.3 | 2 | 0.833 | 0.766–0.884 | 0.1649 |
+| 0.3 | 3 | 0.880 | 0.818–0.923 | 0.1861 |
+| 0.3 | 4 | 0.887 | 0.826–0.928 | 0.1925 |
+| 0.3 | 5 | 0.887 | 0.826–0.928 | 0.1988 |
 | 0.6 | 1 | 0.373 | 0.300–0.453 | 0.1283 |
-| 0.6 | 2 | 0.567 | 0.487–0.643 | 0.1874 |
-| 0.6 | 3 | 0.647 | 0.567–0.719 | 0.2222 |
-| 0.6 | 4 | 0.720 | 0.643–0.786 | 0.2378 |
-| 0.6 | 5 | 0.780 | 0.707–0.839 | 0.2490 |
+| 0.6 | 2 | 0.567 | 0.487–0.643 | 0.2001 |
+| 0.6 | 3 | 0.647 | 0.567–0.719 | 0.2528 |
+| 0.6 | 4 | 0.720 | 0.643–0.786 | 0.2877 |
+| 0.6 | 5 | 0.780 | 0.707–0.839 | 0.3198 |
 | 0.8 | 1 | 0.193 | 0.138–0.264 | 0.1255 |
-| 0.8 | 2 | 0.380 | 0.306–0.460 | 0.2044 |
-| 0.8 | 3 | 0.460 | 0.382–0.540 | 0.2582 |
-| 0.8 | 4 | 0.540 | 0.460–0.618 | 0.3014 |
-| 0.8 | 5 | 0.593 | 0.513–0.669 | 0.3186 |
+| 0.8 | 2 | 0.380 | 0.306–0.460 | 0.2183 |
+| 0.8 | 3 | 0.460 | 0.382–0.540 | 0.2938 |
+| 0.8 | 4 | 0.540 | 0.460–0.618 | 0.3647 |
+| 0.8 | 5 | 0.593 | 0.513–0.669 | 0.4092 |
 
 The Wilson intervals quantify Monte Carlo uncertainty in the estimated coverage proportion; they are not confidence intervals for the bootstrap estimand. Even the upper endpoints remain below 0.95 in every tested condition. The undercoverage is therefore not plausibly explained by the finite 150-simulation Monte Carlo sample alone.
 
@@ -47,7 +47,7 @@ A second experiment evaluated widths 1, 2, 3, 4, 5, 6, 8, 10 and 12 on the same 
 | 0.8 | 8 | 0.647 | 0.567–0.719 |
 | 0.8 | 12 | 0.807 | 0.736–0.862 |
 
-The wider-window experiment reinforces the same conclusion: coverage can improve substantially as windows widen, but no tested setting reaches 0.95. Even at width 12, coverage under ρ=0.8 is only 0.807 (Wilson upper bound 0.862). Width 12 also leaves very few sampled windows per replicate, so simply increasing width is not a defensible general solution. Width 4 under ρ=0.3 approaches nominal coverage but does not establish robustness across dependence structures.
+The wider-window experiment's zero-mean coverage proportions are likewise invariant to the positive correction factor; its interval widths must be interpreted after applying candidate_windows/eligible_blocks. The wider-window experiment reinforces the same conclusion: coverage can improve substantially as windows widen, but no tested setting reaches 0.95. Even at width 12, coverage under ρ=0.8 is only 0.807 (Wilson upper bound 0.862). Width 12 also leaves very few sampled windows per replicate, so simply increasing width is not a defensible general solution. Width 4 under ρ=0.3 approaches nominal coverage but does not establish robustness across dependence structures.
 
 The two experiments use different seeds, so small differences in overlapping conditions are expected. Do not interpret them as contradictory; both show material undercoverage under moderate and strong dependence.
 
@@ -64,7 +64,7 @@ The two experiments use different seeds, so small differences in overlapping con
 - The data-generating process is stationary, Gaussian and separable with the same AR(1) parameter along both axes.
 - Both experiments use complete square grids; irregular eligibility masks, holes, anisotropy, nonstationarity, heavy tails and spatially varying variance remain untested for coverage.
 - The target is the global mean of a stationary zero-mean field, not the matched land-cover contrast or full Nairobi analysis pipeline.
-- The bootstrap windows overlap by design. Equal first-order inclusion and unbiased replicate expectation do not guarantee correct variance estimation or nominal coverage.
+- The bootstrap windows overlap by design. Equal first-order inclusion and an unbiased replicate mean do not guarantee correct variance estimation or nominal coverage.
 - The simulations do not establish that any single window width is suitable for empirical data.
 
 ## Decision
