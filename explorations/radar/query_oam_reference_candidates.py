@@ -37,6 +37,7 @@ def search_items(session=requests, bbox=R130_BBOX, start=START, end=END):
     url = f"{STAC_ROOT}/search"
     params = {"bbox": ",".join(map(str, bbox)),
               "datetime": f"{start}/{end}", "limit": 100}
+    initial_params = dict(params)
     items, pages = [], []
     root_host = urlparse(STAC_ROOT).netloc
     next_request = None
@@ -69,7 +70,7 @@ def search_items(session=requests, bbox=R130_BBOX, start=START, end=END):
         method = (next_link.get("method") or "GET").upper()
         body = next_link.get("body") or {}
         if next_link.get("merge"):
-            body = {**(params or {}), **body}
+            body = {**initial_params, **body}
         next_request = (method, body, next_link.get("headers") or {})
         params = None
     return items, pages
