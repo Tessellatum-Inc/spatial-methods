@@ -19,4 +19,22 @@ class MatchedBlockTests(unittest.TestCase):
   self.assertEqual(rows,[])
  def test_shape_mismatch_rejected(self):
   with self.assertRaises(ValueError):matched_block_contrasts([1],[6,1],[1],[.1])
+
+ def test_vectorized_results_match_reference_aggregation(self):
+  rng=np.random.default_rng(17);n=500
+  b=rng.integers(0,12,n);c=rng.choice([1,6,2],n);st=rng.integers(0,8,n);r=rng.normal(0,.2,n)
+  got=matched_block_contrasts(b,c,st,r)
+  expected=[]
+  for block in np.unique(b):
+   diffs=[];bn=tn=0
+   for stratum in np.unique(st[b==block]):
+    m=(b==block)&(st==stratum);built=r[m&(c==6)];target=r[m&(c==1)]
+    if built.size and target.size:
+     bn+=built.size;tn+=target.size;diffs.append(np.abs(target).mean()-np.abs(built).mean())
+   if diffs:expected.append((int(block),float(np.mean(diffs)),int(bn),int(tn)))
+  actual=[(x["block_id"],x["contrast_db"],x["built_pixels"],x["target_pixels"]) for x in got]
+  self.assertEqual([x[0] for x in actual],[x[0] for x in expected])
+  for a,e in zip(actual,expected):
+   self.assertAlmostEqual(a[1],e[1],places=12);self.assertEqual(a[2:],e[2:])
+
 if __name__=="__main__":unittest.main()
