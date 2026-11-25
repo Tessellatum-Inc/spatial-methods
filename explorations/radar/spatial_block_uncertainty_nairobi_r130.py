@@ -13,21 +13,21 @@ from rasterio.enums import Resampling
 from pyproj import Transformer
 from explorations.radar.joint_stratify_nairobi_r130_landcover_terrain_anf import (
  align,static_file,reproject_dem,pixel_spacing_metres,terrain,SLOPE_EDGES,report_date)
-from explorations.radar.spatial_block_bootstrap import matched_block_contrasts,bootstrap_interval,rook_morans_i,empirical_block_semivariogram,spatial_cluster_bootstrap_interval
+from explorations.radar.spatial_block_bootstrap import matched_block_contrasts,bootstrap_interval,rook_morans_i,empirical_block_semivariogram,spatial_cluster_bootstrap_interval,fixed_origin_block_ids,block_mean_contrast
 
 BLOCK_SIZES=(500,1000,2000);THRESHOLDS=(0.0,0.5,0.7);CLUSTER_WIDTHS=(2,3);TREE_CODE=1;BUILT_CODE=6
 
-def metric_block_ids(template,block_size_m):
-    """Fixed-origin square grid in EPSG:32737, assigned by pixel-centre coordinates."""
+def metric_block_ids(template,block_size_m,origin_east_m=0.0,origin_north_m=0.0):
+    """Assign pixel centres to a square grid in EPSG:32737."""
     if template.crs is None:raise ValueError("Raster CRS is missing")
     transformer=Transformer.from_crs(template.crs,"EPSG:32737",always_xy=True)
     rows,cols=np.indices((template.height,template.width));x,y=template.transform*(cols+.5,rows+.5)
     east,north=transformer.transform(x,y)
-    bx=np.floor(east/block_size_m).astype(np.int64);by=np.floor(north/block_size_m).astype(np.int64)
-    # Unique deterministic signed integer key for 2-D block coordinates.
-    key=(bx-bx.min())*(by.max()-by.min()+1)+(by-by.min())
-    grid_columns=int(by.max()-by.min()+1)
-    return key.astype(np.int64),{"metric_crs":"EPSG:32737","grid_origin":"metric coordinate 0,0","block_size_m":int(block_size_m),"block_grid_columns":grid_columns}
+    ids,grid_columns,grid_rows=fixed_origin_block_ids(
+        east,north,block_size_m,origin_east_m=origin_east_m,origin_north_m=origin_north_m)
+    return ids,{"metric_crs":"EPSG:32737","grid_origin_east_m":float(origin_east_m),
+        "grid_origin_north_m":float(origin_north_m),"block_size_m":int(block_size_m),
+        "block_grid_columns":grid_columns,"block_grid_rows":grid_rows}
 
 def analyze_scene(residual_path,opera_dir,dw_dir,dem_path,block_sizes,thresholds):
  date,burst,pol=residual_path.name.split("_")[:3];report_date(date);dw=dw_dir/f"nairobi_r130_{date}_dynamic-world-30m.tif"
@@ -64,10 +64,25 @@ def analyze_scene(residual_path,opera_dir,dw_dir,dem_path,block_sizes,thresholds
       grid_columns=meta["block_grid_columns"],cluster_width_blocks=width,
       replicates=2000,seed=20261125+width,min_clusters=20)
       for width in CLUSTER_WIDTHS]
+    # Shift the fixed grid origin by half a block in each axis. Recompute
+    # matching and diagnostics because block membership itself changes.
+    origin_sensitivity=[]
+    for ox_fraction,oy_fraction in ((0.5,0.0),(0.0,0.5),(0.5,0.5)):
+     shifted_block,shifted_meta=metric_block_ids(
+       r,size,origin_east_m=ox_fraction*size,origin_north_m=oy_fraction*size)
+     shifted=matched_block_contrasts(shifted_block.ravel()[select],c[select],st[select],v[select],
+       built_code=BUILT_CODE,target_code=TREE_CODE)
+     shifted_values=[x["contrast_db"] for x in shifted]
+     shifted_moran=rook_morans_i([x["block_id"] for x in shifted],shifted_values,
+       grid_columns=shifted_meta["block_grid_columns"],min_blocks=20)
+     origin_sensitivity.append({"origin_offset_fraction_of_block":{"easting":ox_fraction,"northing":oy_fraction},
+       "eligible_blocks":len(shifted),"estimate_db":block_mean_contrast(shifted_values),
+       "moran_i":shifted_moran["moran_i"],"moran_status":shifted_moran["status"]})
     results.append({"minimum_dw_confidence":threshold,**meta,"trees_vs_built_mae_contrast":ci,
       "spatial_cluster_bootstrap_sensitivity":cluster_intervals,
       "block_contrast_spatial_autocorrelation":spatial_dependence,
       "block_contrast_empirical_semivariogram":variogram,
+      "grid_origin_sensitivity":origin_sensitivity,
       "tree_pixels_in_eligible_blocks":sum(x["target_pixels"] for x in contrasts),"built_pixels_in_eligible_blocks":sum(x["built_pixels"] for x in contrasts),
       "matched_strata_total":sum(x["matched_strata"] for x in contrasts)})
   return {"date":date,"burst_id":burst,"polarization":pol,"valid_joint_pixels":int(joint.sum()),"results":results}
@@ -75,7 +90,7 @@ def run(residual_dir,opera_dir,dw_dir,dem,out):
  maps=sorted(residual_dir.glob("*_delta-residual-db.tif"));
  if len(maps)!=30:raise ValueError(f"Expected 30 maps; found {len(maps)}")
  records=[analyze_scene(p,opera_dir,dw_dir,dem,BLOCK_SIZES,THRESHOLDS) for p in maps]
- report={"schema":"tessellatum.nairobi-r130-spatial-block-bootstrap.v1","estimand":"Within scene, trees-minus-built MAE difference, matched by slope bins and scene ANF quartile; equal weighting of matched strata within blocks and equal weighting of eligible blocks.","bootstrap":{"method":"percentile resampling of spatial blocks within each scene","replicates":2000,"seed":20261125,"minimum_eligible_blocks":20},"cluster_bootstrap":{"method":"percentile resampling of contiguous fixed-origin square superblocks within each scene","cluster_widths_in_base_blocks":[2,3],"replicates":2000,"seed_base":20261125,"minimum_eligible_clusters":20,"estimand":"equal-base-block weighted scene contrast"},"block_sizes_m":list(BLOCK_SIZES),"confidence_thresholds":list(THRESHOLDS),"metric_crs":"EPSG:32737","records":records,"limitations":["Spatial blocks may remain dependent; intervals are exploratory and block-size sensitivity is essential.","Dynamic World predictions are not reference labels; confidence is uncalibrated and date composites can mix surface conditions.","Slope is DSM-derived; matching is only on coarse slope and scene ANF strata.","Results are descriptive processor residual contrasts, not absolute calibration, causal land-cover effects, or universal processor interchangeability.","Only blocks containing both target and built classes in shared strata are eligible; small eligible-block counts suppress intervals."]}
+ report={"schema":"tessellatum.nairobi-r130-spatial-block-bootstrap.v1","estimand":"Within scene, trees-minus-built MAE difference, matched by slope bins and scene ANF quartile; equal weighting of matched strata within blocks and equal weighting of eligible blocks.","bootstrap":{"method":"percentile resampling of spatial blocks within each scene","replicates":2000,"seed":20261125,"minimum_eligible_blocks":20},"grid_origin_sensitivity":{"method":"recompute block membership at three half-block shifted origins","offsets_fraction_of_block":[[0.5,0.0],[0.0,0.5],[0.5,0.5]],"outputs":["eligible_blocks","equal_block_estimate_db","rook_morans_i"],"bootstrap_intervals":false},"cluster_bootstrap":{"method":"percentile resampling of contiguous fixed-origin square superblocks within each scene","cluster_widths_in_base_blocks":[2,3],"replicates":2000,"seed_base":20261125,"minimum_eligible_clusters":20,"estimand":"equal-base-block weighted scene contrast"},"block_sizes_m":list(BLOCK_SIZES),"confidence_thresholds":list(THRESHOLDS),"metric_crs":"EPSG:32737","records":records,"limitations":["Spatial blocks may remain dependent; intervals are exploratory and block-size sensitivity is essential.","Dynamic World predictions are not reference labels; confidence is uncalibrated and date composites can mix surface conditions.","Slope is DSM-derived; matching is only on coarse slope and scene ANF strata.","Results are descriptive processor residual contrasts, not absolute calibration, causal land-cover effects, or universal processor interchangeability.","Only blocks containing both target and built classes in shared strata are eligible; small eligible-block counts suppress intervals."]}
  out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(report,indent=2)+"\n")
  print("Processed",len(records),"scene records; block sizes",BLOCK_SIZES,"confidence thresholds",THRESHOLDS,flush=True)
  return report
