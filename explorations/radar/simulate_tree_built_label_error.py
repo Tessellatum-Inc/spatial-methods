@@ -105,6 +105,20 @@ def one_realization(rng, size=20, strata=3, pixels_per_stratum=80,
     return equal_mean(true_block), equal_mean(observed_block), len(true_block)
 
 
+
+def paired_factorial_interaction(neutral, label_only, residual_only, joint):
+    """Return paired 2x2 interaction in label-induced shifts."""
+    arrays = [np.asarray(x, dtype=float) for x in
+              (neutral, label_only, residual_only, joint)]
+    if any(x.ndim != 1 or x.size == 0 or not np.isfinite(x).all()
+           for x in arrays):
+        raise ValueError("factorial cells must be non-empty finite vectors")
+    if len({x.shape for x in arrays}) != 1:
+        raise ValueError("factorial cells must have identical shapes")
+    neutral, label_only, residual_only, joint = arrays
+    return joint - label_only - residual_only + neutral
+
+
 def run(simulations=200, seed=20261205):
     scenarios = [
         ("perfect_labels", 0.00, 0.00, False, False, False, False),
@@ -148,10 +162,11 @@ def run(simulations=200, seed=20261205):
             "mean_blocks_with_common_support": float(np.mean(supports)),
         })
     # Paired 2x2 contrast: (label + residual) - label-only - residual-only + neutral.
-    interaction = (paired_shifts["ambiguous_high_residual_pixels"]
-                   - paired_shifts["ambiguity_label_error_only"]
-                   - paired_shifts["ambiguity_residual_inflation_only"]
-                   + paired_shifts["ambiguity_neutral_10pct"])
+    interaction = paired_factorial_interaction(
+        paired_shifts["ambiguity_neutral_10pct"],
+        paired_shifts["ambiguity_label_error_only"],
+        paired_shifts["ambiguity_residual_inflation_only"],
+        paired_shifts["ambiguous_high_residual_pixels"])
     factorial = {
         "baseline": "ambiguity_neutral_10pct",
         "label_error_only": "ambiguity_label_error_only",
