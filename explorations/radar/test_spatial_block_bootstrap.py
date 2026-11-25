@@ -70,3 +70,25 @@ class SpatialBlockBootstrapTests(unittest.TestCase):
         result = rook_morans_i([0, 1, 2], [1., 2., 3.], grid_columns=2, min_blocks=4)
         self.assertEqual(result["status"], "insufficient_blocks")
         self.assertIsNone(result["moran_i"])
+
+
+    def test_empirical_semivariogram_counts_pairs_and_increases_for_gradient(self):
+        from explorations.radar.spatial_block_bootstrap import empirical_block_semivariogram
+        result = empirical_block_semivariogram(
+            list(range(9)), [0., 1., 2., 1., 2., 3., 2., 3., 4.],
+            grid_columns=3, block_size_m=500, min_pairs=1
+        )
+        self.assertEqual(result["eligible_blocks"], 9)
+        self.assertEqual(result["bins"][0]["pair_count"], 12)
+        self.assertEqual(result["bins"][0]["status"], "computed")
+        self.assertGreater(result["bins"][0]["semivariance"], 0)
+
+    def test_empirical_semivariogram_handles_empty_bins_and_invalid_inputs(self):
+        from explorations.radar.spatial_block_bootstrap import empirical_block_semivariogram
+        result = empirical_block_semivariogram(
+            [0, 100], [1., 2.], grid_columns=10, block_size_m=1000, min_pairs=2
+        )
+        self.assertEqual(result["bins"][0]["status"], "insufficient_pairs")
+        self.assertIsNone(result["bins"][0]["semivariance"])
+        with self.assertRaises(ValueError):
+            empirical_block_semivariogram([0, 1], [1.], grid_columns=2, block_size_m=500)
