@@ -21,13 +21,13 @@ class OAMReferenceAuditTests(unittest.TestCase):
             "license": "CC-BY-4.0",
         }
         row = audit([item])[0]
-        self.assertGreater(row["r130_bbox_intersection_fraction"], 0)
+        self.assertTrue(row["intersects_r130_bbox"])
         self.assertEqual(row["license"], "CC-BY-4.0")
         self.assertEqual(row["https_asset_hrefs_available"], 1)
 
     def test_missing_geometry_is_not_overlap(self):
         row = audit([{"id": "unknown", "properties": {}, "assets": {}}])[0]
-        self.assertIsNone(row["r130_bbox_intersection_fraction"])
+        self.assertIsNone(row["intersects_r130_bbox"])
         self.assertFalse(row["geometry_present"])
 
 
