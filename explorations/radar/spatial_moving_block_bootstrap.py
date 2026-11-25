@@ -128,14 +128,18 @@ def moving_spatial_block_bootstrap_interval(
     sampled = rng.integers(
         0, n_windows, size=(int(replicates), draws_per_replicate)
     )
-    # Every eligible block appears in exactly width_squared candidate
-    # windows. Therefore a uniformly sampled window sum divided by
-    # width_squared is an unbiased estimate of the equal-block population
-    # mean, even when irregular masks make window sizes differ. Do not divide
-    # by the random number of sampled block occurrences: that ratio can
-    # reweight sparse and dense windows under irregular eligibility masks.
+    # Across the complete candidate-window set, each eligible block appears
+    # exactly width_squared times, so sum(window_sums) = width_squared * sum(values).
+    # A uniformly sampled window has expected sum width_squared * sum(values) / n_windows.
+    # Therefore multiply the sampled-window average by n_windows/(N*width_squared)
+    # to estimate the equal-block mean. Omitting n_windows/N gives sum(values)/n_windows,
+    # not the reported equal-block mean, and mis-centres the bootstrap distribution
+    # whenever the eligible-block mean is nonzero.
     sums = window_sums[sampled].sum(axis=1)
-    estimates = sums / (draws_per_replicate * width_squared)
+    estimates = (
+        sums * n_windows
+        / (draws_per_replicate * width_squared * values.size)
+    )
     lower, upper = np.quantile(estimates, [0.025, 0.975])
     return {
         **base,
