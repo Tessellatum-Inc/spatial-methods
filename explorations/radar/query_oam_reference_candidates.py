@@ -20,6 +20,8 @@ R130_BBOX = [36.65, -1.45, 37.05, -1.15]
 START = "2026-10-01T00:00:00Z"
 END = "2026-11-24T23:59:59Z"
 TIMEOUT = 45
+MAX_METADATA_BYTES = 1_000_000
+METADATA_HOSTS = {"oin-hotosm-prod.s3.us-east-1.amazonaws.com"}
 
 
 def validate_asset_href(href: str) -> bool:
@@ -76,7 +78,41 @@ def search_items(session=requests, bbox=R130_BBOX, start=START, end=END):
     return items, pages
 
 
-def audit(items, bbox=R130_BBOX):
+def fetch_source_metadata(href: str, session=requests):
+    """Fetch only the small OAM metadata JSON from the known asset host.
+
+    Never fetch the large visual/COG asset here. Redirects and non-allowlisted
+    hosts are refused; response size is capped before JSON parsing.
+    """
+    parsed = urlparse(href)
+    if parsed.scheme != "https" or parsed.netloc not in METADATA_HOSTS:
+        return {"status": "blocked_untrusted_metadata_host"}
+    try:
+        response = session.get(href, timeout=TIMEOUT, stream=True,
+                               allow_redirects=False)
+        if response.status_code != 200:
+            return {"status": "http_error", "http_status": response.status_code}
+        declared = response.headers.get("Content-Length")
+        if declared and int(declared) > MAX_METADATA_BYTES:
+            return {"status": "too_large", "declared_bytes": int(declared)}
+        chunks = []
+        total = 0
+        for chunk in response.iter_content(chunk_size=65536):
+            if not chunk:
+                continue
+            total += len(chunk)
+            if total > MAX_METADATA_BYTES:
+                return {"status": "too_large", "received_bytes_at_least": total}
+            chunks.append(chunk)
+        payload = json.loads(b"".join(chunks).decode("utf-8"))
+        if not isinstance(payload, dict):
+            return {"status": "invalid_json_shape"}
+        return {"status": "ok", "bytes": total, "metadata": payload}
+    except (requests.RequestException, ValueError, UnicodeDecodeError) as exc:
+        return {"status": "fetch_error", "error_type": type(exc).__name__}
+
+
+def audit(items, bbox=R130_BBOX, fetch_metadata=False, session=requests):
     """Normalize candidate metadata and screen geometry against discovery bbox."""
     discovery_area = box(*bbox)
     rows = []
@@ -132,14 +168,16 @@ def audit(items, bbox=R130_BBOX):
                 }
                 for key, asset in assets.items() if isinstance(asset, dict)
             },
+            "source_metadata": (fetch_source_metadata(assets.get("metadata", {}).get("href", ""), session=session)
+                                if fetch_metadata and isinstance(assets.get("metadata"), dict) else None),
             "asset_keys": sorted(assets),
             "https_asset_hrefs_available": sum(validate_asset_href(href) for href in hrefs),
         })
     return rows
 
 
-def build_report(items, pages, bbox=R130_BBOX, start=START, end=END):
-    rows = audit(items, bbox=bbox)
+def build_report(items, pages, bbox=R130_BBOX, start=START, end=END, fetch_metadata=False):
+    rows = audit(items, bbox=bbox, fetch_metadata=fetch_metadata)
     return {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "catalogue": STAC_ROOT,
@@ -151,7 +189,7 @@ def build_report(items, pages, bbox=R130_BBOX, start=START, end=END):
             "Discovery rectangle is not the frozen exact R130 analysis mask.",
             "Geometry intersection is a screening result, not proof of usable pixel overlap or positional alignment.",
             "Catalogue geometry and metadata are preserved for follow-up but require source/provider confirmation and positional-quality assessment.",
-            "Asset URL query strings are redacted; URL presence does not validate asset contents or authorize its use.",
+            "Asset URL query strings are redacted; only bounded metadata JSON from the allowlisted OAM S3 host is optionally fetched; the visual COG is never downloaded by this client.",
             "No imagery was downloaded or visually interpreted; no reference labels or accuracy estimates were produced.",
         ],
     }
@@ -161,11 +199,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--start", default=START)
     parser.add_argument("--end", default=END)
+    parser.add_argument("--fetch-metadata", action="store_true",
+                        help="Fetch bounded metadata JSON from the allowlisted OAM asset host; never fetch the visual COG.")
     parser.add_argument("--output", type=Path,
                         default=Path("data/reference/nairobi-r130-oam-stac-audit.json"))
     args = parser.parse_args()
     items, pages = search_items(start=args.start, end=args.end)
-    report = build_report(items, pages, start=args.start, end=args.end)
+    report = build_report(items, pages, start=args.start, end=args.end,
+                          fetch_metadata=args.fetch_metadata)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n",
                            encoding="utf-8")
