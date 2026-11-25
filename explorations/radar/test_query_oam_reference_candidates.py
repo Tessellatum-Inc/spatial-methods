@@ -3,7 +3,8 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from shapely.geometry import box, mapping
-from query_oam_reference_candidates import (audit, search_items, validate_asset_href,\n    fetch_source_metadata, STAC_ROOT)
+from query_oam_reference_candidates import (audit, search_items, validate_asset_href,
+    fetch_source_metadata, STAC_ROOT)
 
 
 class OAMReferenceAuditTests(unittest.TestCase):
