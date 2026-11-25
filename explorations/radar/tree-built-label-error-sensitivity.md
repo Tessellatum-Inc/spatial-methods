@@ -29,7 +29,7 @@ This experiment is deliberately about label contamination, not the spatial inter
 
 ## Results (artifact-backed)
 
-The GitHub Actions workflow completed successfully on 2026-11-25 (run 45667166729; commit b589160). Unit tests passed and the 200-replication simulation artifact was generated.
+The GitHub Actions workflow completed successfully on 2026-11-25 (latest run 45667688603; commit 7de5840). Unit tests passed and the 200-replication simulation artifact was generated.
 
 | Scenario | Mean observed contrast | Mean shift from latent-label target | 2.5th–97.5th percentiles of replicate shifts |
 |---|---:|---:|---:|
