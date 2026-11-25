@@ -36,5 +36,8 @@ JSON with schema/version, block size, metric CRS, bootstrap seed and replicate c
 - Do not report pixel-level p-values.
 - Suppress or flag intervals where eligible block counts are too small (pre-register a minimum, recommended 20 blocks for exploratory interval reporting; this is a rule of thumb, not a guarantee).
 
-## Status
-Protocol specification only. Implementation and validation against the Nairobi study remain pending.
+## Implementation status
+Implemented in `spatial_block_bootstrap.py` and `spatial_block_uncertainty_nairobi_r130.py`, with unit tests and the `spatial-block-uncertainty-nairobi-r130.yml` workflow. The workflow evaluates 500 m, 1 km, and 2 km blocks at Dynamic World confidence thresholds 0, 0.5, and 0.7, with 2,000 within-scene block-bootstrap replicates and a 20-block interval suppression rule. The current implementation reports per-scene intervals only; it does not produce a pooled cross-scene confidence interval. Outputs are retained as compact JSON artifacts rather than committed raster/data files.
+
+## Current inferential boundary
+The 30 scene records are not 30 fully independent replicates: dates, bursts, and polarizations have repeated/crossed structure. Therefore, do not treat a simple resampling of the 30 records as a valid hierarchical bootstrap. A cross-scene interval requires a pre-specified target population and a resampling design that respects date/burst dependence; until that design is justified, report per-scene intervals and descriptive cross-scene distributions only.
