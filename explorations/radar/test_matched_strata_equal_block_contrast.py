@@ -4,10 +4,21 @@ import numpy as np
 from explorations.radar.simulate_matched_strata_equal_block_contrast import (
     equal_stratum_block_contrast,
     equal_eligible_block_mean,
+    draw_pixel_noise,
 )
 
 
 class MatchedStrataEstimandTests(unittest.TestCase):
+    def test_pixel_noise_is_reproducible_and_finite(self):
+        first = draw_pixel_noise(np.random.default_rng(17), 100, 1.2)
+        second = draw_pixel_noise(np.random.default_rng(17), 100, 1.2)
+        np.testing.assert_array_equal(first, second)
+        self.assertTrue(np.isfinite(first).all())
+
+    def test_pixel_noise_rejects_invalid_parameters(self):
+        with self.assertRaises(ValueError):
+            draw_pixel_noise(np.random.default_rng(1), 10, 1.0, degrees_freedom=2)
+
     def test_strata_are_equally_weighted_not_pixel_weighted(self):
         # The second stratum may contain many more pixels; the block estimand
         # is the arithmetic mean of its within-stratum contrasts.
