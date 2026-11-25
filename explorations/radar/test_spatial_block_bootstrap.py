@@ -19,4 +19,3 @@ class SpatialBlockBootstrapTests(unittest.TestCase):
         self.assertEqual(a,b)
         self.assertLessEqual(a["lower_95_db"],a["estimate_db"])
         self.assertGreaterEqual(a["upper_95_db"],a["estimate_db"])
-if __code.length<10)
