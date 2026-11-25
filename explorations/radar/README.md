@@ -146,7 +146,7 @@ The residual dispersion increases consistently from burst 279214 to 279216. Acro
 
 The Copernicus DEM is a surface model, not a bare-earth terrain model. The public GLO-30 AWS copy has limited tile coverage and represents the 2021 public release; the output sampling grid does not create new terrain detail. Source: [AWS Open Data registry](https://registry.opendata.aws/copernicus-dem/) and [tile/readme specification](https://copernicus-dem-30m.s3.amazonaws.com/readme.html). The acquisition and stratification workflows are separate so the DEM is retained as a versioned, short-lived artifact and can be reused. MAE rises with slope in all three bursts and both polarizations; south/southwest aspect bins also show higher errors than north-facing bins. These are associations, not causal explanations: the DEM is a DSM, and slope/aspect may covary with ANF and land cover. A support-edge test found higher >1 dB exceedance fractions in the outermost valid pixel, but the 20-pixel (~600 m) edge buffer generally has lower exceedance rates than the deep interior; edge proximity does not explain the broad burst effect. [Edge diagnostic report](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45365267484/artifacts/14905309441).
 
-#### Date-matched land-cover stage (prepared; credentials required)
+#### Date-matched land-cover stage (completed)
 
 - [Dynamic World acquisition](acquire_nairobi_r130_dynamic_world.py) builds a 31-day probability composite around each of the five Sentinel-1 dates, retaining the top-class confidence rather than applying a hard confidence mask.
 - [Dynamic World acquisition tests](test_acquire_nairobi_r130_dynamic_world.py)
@@ -155,7 +155,7 @@ The Copernicus DEM is a surface model, not a bare-earth terrain model. The publi
 - [Residual-by-class tests](test_stratify_nairobi_r130_dynamic_world.py)
 - [Residual-by-class workflow](../../.github/workflows/stratify-nairobi-r130-dynamic-world.yml)
 
-The workflow is manual and not yet run. It requires two GitHub Actions secrets: `GEE_SERVICE_ACCOUNT_JSON` (Earth Engine-enabled service account key JSON) and `GEE_PROJECT_ID` (the registered Google Cloud project). The service account must be authorized to use Earth Engine. Once those are configured, dispatch the acquisition workflow, then dispatch the class/confidence stratification workflow with the acquisition run ID. The analysis keeps all classes and reports confidence thresholds of 0, 0.5, and 0.7; no pixels are excluded from the primary comparison. Dynamic World is a near-real-time 10m Sentinel-2-derived product with nine class probabilities; quality varies with cloud masking and surface type. Dynamic World is the next candidate for date-specific land-cover context; it requires an Earth Engine-backed acquisition route and confidence filtering, so no land-cover attribution is claimed yet.
+The Earth Engine acquisition and downstream class/confidence stratification have completed. The 31-day probability composites are retained as workflow artifacts, and the Nairobi R130 analysis reports confidence thresholds of 0, 0.5, and 0.7. The resulting class labels and confidence scores are model-derived covariates, not ground truth or calibrated probabilities. Their spatial/temporal support changes substantially with threshold; see the linked study reports before interpreting class-specific contrasts.
 
 
 #### Spatial-block uncertainty analysis (completed)
