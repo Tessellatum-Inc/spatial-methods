@@ -1,7 +1,8 @@
 import unittest
 import numpy as np
 from explorations.radar.simulate_tree_built_label_error import (
-    apply_label_confusion, class_mae_contrast, equal_mean, one_realization
+    apply_label_confusion, class_mae_contrast, equal_mean, one_realization,
+    paired_factorial_interaction
 )
 
 
@@ -51,6 +52,16 @@ class LabelErrorTests(unittest.TestCase):
             equal_mean([])
         with self.assertRaises(ValueError):
             equal_mean([1, np.nan])
+
+    def test_factorial_interaction_uses_paired_difference_in_differences(self):
+        out = paired_factorial_interaction(
+            [0.0, 1.0], [1.0, 2.0], [2.0, 3.0], [4.0, 6.0])
+        np.testing.assert_allclose(out, [1.0, 2.0])
+
+    def test_factorial_interaction_rejects_unpaired_shapes(self):
+        with self.assertRaises(ValueError):
+            paired_factorial_interaction([0.0], [0.0, 1.0],
+                                         [0.0], [0.0])
 
     def test_factorial_cells_share_paired_latent_target(self):
         kwargs = {"tree_to_built": .1, "built_to_tree": .1}
