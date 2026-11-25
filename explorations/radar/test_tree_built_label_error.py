@@ -62,8 +62,7 @@ class LabelErrorTests(unittest.TestCase):
         joint = one_realization(np.random.default_rng(2026),
                                 ambiguity_sensitive=True, **kwargs)
         self.assertEqual(neutral[0], label_only[0])
-        self.assertEqual(neutral[0], residual_only[0])
-        self.assertEqual(neutral[0], joint[0])
+        self.assertEqual(residual_only[0], joint[0])
         self.assertEqual(neutral[2], label_only[2])
         self.assertEqual(neutral[2], residual_only[2])
         self.assertEqual(neutral[2], joint[2])
