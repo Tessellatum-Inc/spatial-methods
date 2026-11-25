@@ -53,6 +53,7 @@ def moving_spatial_block_bootstrap_interval(
     replicates: int = 2000,
     seed: int = 20261125,
     min_windows: int = 20,
+    min_blocks: int = 20,
 ):
     """Percentile bootstrap by sampling overlapping k-by-k spatial windows.
 
@@ -70,8 +71,8 @@ def moving_spatial_block_bootstrap_interval(
     values = np.asarray(block_values, dtype=float)
     if ids.ndim != 1 or values.ndim != 1 or ids.shape != values.shape:
         raise ValueError("Block IDs and values must be matching one-dimensional arrays")
-    if replicates < 1 or min_windows < 1:
-        raise ValueError("replicates and min_windows must be positive")
+    if replicates < 1 or min_windows < 1 or min_blocks < 1:
+        raise ValueError("replicates, min_windows and min_blocks must be positive")
     if grid_columns < 1 or window_width_blocks < 1:
         raise ValueError("grid_columns and window_width_blocks must be positive")
     if np.any(ids < 0):
@@ -91,10 +92,15 @@ def moving_spatial_block_bootstrap_interval(
         "windows_per_replicate": 0,
         "interval_status": "insufficient_windows",
         "minimum_windows": int(min_windows),
+        "minimum_blocks": int(min_blocks),
         "replicates": 0,
         "seed": int(seed),
     }
     if values.size == 0:
+        return base
+
+    if values.size < min_blocks:
+        base["interval_status"] = "insufficient_blocks"
         return base
 
     windows = moving_window_membership(
