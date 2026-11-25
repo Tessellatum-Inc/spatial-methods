@@ -35,14 +35,15 @@ def wilson(successes,trials,z=1.959963984540054):
 def one_realization(size,rho,rng,informative=False):
     latent=spatial_field(size,rho,rng)*0.7
     ids=np.arange(size*size,dtype=np.int64)
-    eligible=np.ones(size*size,dtype=bool)
-    # Some blocks lack common support; missingness is independent in baseline.
-    eligible &= rng.random(size*size)>=0.08
+    # Baseline eligible population represents blocks with common matched support.
+    baseline_eligible=rng.random(size*size)>=0.08
+    population_truth=float(latent.ravel()[baseline_eligible].mean())
+    eligible=baseline_eligible.copy()
     if informative:
-        # Deliberately remove blocks with high latent contrast.
-        cutoff=np.quantile(latent,0.20)
+        # Deliberately remove high-contrast blocks after defining the target population.
+        cutoff=np.quantile(latent,0.80)
         eligible &= latent.ravel()<=cutoff
-    block_observed=[]; block_truth=[]; kept_ids=[]
+    block_observed=[]; kept_ids=[]
     for bid in ids[eligible]:
         r,c=divmod(int(bid),size)
         n_strata=int(rng.integers(2,6))
@@ -58,10 +59,9 @@ def one_realization(size,rho,rng,informative=False):
             target=delta+rng.normal(0,1.0,size=nt)
             reference=rng.normal(0,1.0,size=nr)
             estimated.append(float(target.mean()-reference.mean()))
-        block_truth.append(float(true_strata.mean()))
         block_observed.append(float(np.mean(estimated)))
         kept_ids.append(int(bid))
-    return np.asarray(kept_ids),np.asarray(block_observed),np.asarray(block_truth)
+    return np.asarray(kept_ids),np.asarray(block_observed),population_truth
 
 
 def run(simulations=100,size=24,correlations=(0.3,0.6,0.8),
@@ -75,8 +75,7 @@ def run(simulations=100,size=24,correlations=(0.3,0.6,0.8),
                for m,w in configs}
         support=[]
         for trial in range(simulations):
-            ids,observed,truth_blocks=one_realization(size,rho,rng,informative)
-            truth=float(truth_blocks.mean())
+            ids,observed,truth=one_realization(size,rho,rng,informative)
             support.append(len(ids))
             for method,w in configs:
                 if method=="moving_window":
@@ -109,8 +108,8 @@ def run(simulations=100,size=24,correlations=(0.3,0.6,0.8),
     return {"schema":"tessellatum.matched-strata-equal-block-contrast.v1",
       "design":"Matched stratum contrasts averaged equally within block; eligible block contrasts averaged equally across blocks.",
       "grid_size":[size,size],"seed":seed,"results":results,
-      "target":"Finite-population mean of latent equal-stratum block contrasts among eligible blocks.",
-      "informative_eligibility":"When enabled, blocks with high latent contrasts are preferentially excluded; target is the full eligible-population mean before this selection.",
+      "target":"Finite-population mean of latent equal-stratum block contrasts among baseline-eligible blocks, before any informative selection.",
+      "informative_eligibility":"When enabled, blocks above the 80th percentile of latent contrast are preferentially excluded after the baseline target population is defined; intervals are judged against that pre-selection target.",
       "limitations":["Synthetic block/stratum structure; not the Nairobi R130 data-generating process.",
         "Pixel-level noise is Gaussian and independent within strata.",
         "Only moving-window bootstrap and spatial HAC are compared; subsampling is omitted because its irregular-mask contract is restrictive.",
