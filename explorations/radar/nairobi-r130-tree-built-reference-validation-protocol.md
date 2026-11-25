@@ -291,3 +291,13 @@ The acquisition interval is approximately six days before the 2026-11-11 R130 da
 
 **Gate A remains open.** Next steps are to preserve the full STAC item geometry and asset metadata in the audit output, intersect the candidate with the exact R130 mask, retrieve and inspect the source metadata/COG, and confirm acquisition provenance and reuse rights. If the item covers only a small subset of the R130 mask, any eventual reference sample must be explicitly restricted to that supported subset; it cannot be represented as validation of the full study footprint.
 
+## 9G. Full geometry and source-asset inventory (2026-11-25)
+
+The rerun after preserving STAC geometry and asset metadata confirms the same single candidate, item `6aec5e73b093219a6d913430`. The item record identifies the visual asset title as **“Informal settlements Mapping, Nairobi Kenya”**, with a Cloud Optimized GeoTIFF media type and a catalogue-reported size of **870,378,149 bytes** (approximately 830 MiB). The item also advertises a small JSON metadata asset and a PNG thumbnail. The audit preserves the item geometry and the asset descriptors; it does not download the large visual COG.
+
+The catalogue polygon, projected to UTM zone 37S (EPSG:32737), has an approximate footprint area of **3.33 km²** and dimensions of about **2.34 km by 1.42 km**. This is a geometric calculation from the catalogue coordinates, not a measurement of usable valid imagery pixels. The footprint is fully within the broad acquisition rectangle, but exact overlap with the R130 valid-pixel mask remains untested.
+
+**Source retrieval discipline:** inspect the small metadata JSON first, then assess the COG using HTTP range / cloud-optimized access only after the metadata, licence and spatial scope are acceptable. Do not download an 830 MiB image just to discover its acquisition date or CRS. The source metadata fetcher has been added with a 1 MB response cap, an explicit host allowlist, redirect refusal, and no path to the visual COG; its tests cover successful metadata retrieval and untrusted-host rejection.
+
+**Current decision:** the asset is now a strong retrieval candidate for the 2026-11-11 date because its catalogue interval is 2026-11-04 21:00 UTC to 2026-11-05 08:30:51 UTC, its reported GSD is 2.379 cm, and its advertised licence is CC-BY-4.0. These remain catalogue assertions pending metadata/provider verification. Its geographic footprint is small relative to the R130 acquisition rectangle and must not be treated as representative of all bursts, dates or the full study area.
+
