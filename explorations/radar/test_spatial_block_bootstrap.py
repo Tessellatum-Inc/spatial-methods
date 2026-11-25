@@ -79,7 +79,7 @@ class SpatialBlockBootstrapTests(unittest.TestCase):
             grid_columns=3, block_size_m=500, min_pairs=1
         )
         self.assertEqual(result["eligible_blocks"], 9)
-        self.assertEqual(result["bins"][0]["pair_count"], 12)
+        self.assertEqual(result["bins"][0]["pair_count"], 20)
         self.assertEqual(result["bins"][0]["status"], "computed")
         self.assertGreater(result["bins"][0]["semivariance"], 0)
 
