@@ -1,7 +1,7 @@
 # Nairobi R130 spatial-block uncertainty results
 
-**Latest analysis run:** [GitHub Actions run 45632101713](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45632101713)  
-**Artifact:** [spatial-block-uncertainty JSON artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45632101713/artifacts/15031388245)  
+**Latest analysis run:** [GitHub Actions run 45633442093](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45633442093)  
+**Artifact:** [spatial-block-uncertainty JSON artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45633442093/artifacts/15031588502)  
 **Workflow conclusion:** success  
 **Study window:** 2026-10-06 to 2026-11-23  
 **Records:** 30 date × burst × polarization records  
@@ -99,3 +99,54 @@ The latest rerun completed successfully and produced 30 scene records with nine 
 ## Reproducibility
 
 See the [general spatial-block bootstrap method](../../methods/spatial-block-bootstrap.md), [study protocol](NAIROBI_R130_SPATIAL_BLOCK_UNCERTAINTY_PROTOCOL.md), [implementation](spatial_block_uncertainty_nairobi_r130.py), and [workflow](../../.github/workflows/spatial-block-uncertainty-nairobi-r130.yml).
+
+
+## Contiguous spatial-cluster bootstrap sensitivity (2026-11-25)
+
+**Latest integration run:** [GitHub Actions run 45633442093](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45633442093)  
+**Artifact:** [spatial-block-uncertainty JSON artifact](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45633442093/artifacts/15031588502)  
+**Workflow conclusion:** success  
+**Commit:** d52877c163631a15cf3d0e1ed049dd246e1a0bb3
+
+The integration now reports two sensitivity variants alongside the original individual-block percentile bootstrap. Eligible base blocks are grouped into fixed-origin contiguous square superblocks of 2×2 or 3×3 base-block cells. Each replicate samples eligible superblocks with replacement and calculates a ratio of sampled block-contrast sums to sampled base-block counts, preserving the equal-base-block estimand when edge superblocks contain fewer eligible blocks. The same 2,000-replicate count is used when at least 20 eligible superblocks exist; otherwise the interval is suppressed.
+
+### Availability and interval-width comparison
+
+The table reports the number of scene/configuration intervals available out of 30, the median eligible superblock count, and the median interval width among scene/configurations where **both** the individual-block and cluster intervals are available. Width ratios are paired cluster width divided by individual-block width. Values are descriptive summaries of per-scene intervals, not cross-scene confidence intervals.
+
+| Base block | DW confidence | Cluster width | Cluster intervals | Median eligible clusters | Paired intervals | Median individual-block width (dB) | Median cluster width (dB) | Median width ratio |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 500 m | 0.0 | 2×2 | 26/30 | 109 | 26 | 0.01579 | 0.01793 | 1.08 |
+| 500 m | 0.0 | 3×3 | 26/30 | 70 | 26 | 0.01579 | 0.01815 | 1.10 |
+| 500 m | 0.5 | 2×2 | 20/30 | 61 | 20 | 0.02455 | 0.02814 | 1.08 |
+| 500 m | 0.5 | 3×3 | 20/30 | 49 | 20 | 0.02455 | 0.02998 | 1.14 |
+| 500 m | 0.7 | 2×2 | 16/30 | 26 | 16 | 0.05754 | 0.05952 | 1.01 |
+| 500 m | 0.7 | 3×3 | 16/30 | 21 | 16 | 0.05754 | 0.06114 | 1.04 |
+| 1,000 m | 0.0 | 2×2 | 22/30 | 53 | 22 | 0.01470 | 0.01682 | 1.09 |
+| 1,000 m | 0.0 | 3×3 | 20/30 | 35 | 20 | 0.01345 | 0.02028 | 1.19 |
+| 1,000 m | 0.5 | 2×2 | 18/30 | 37 | 18 | 0.02430 | 0.02699 | 1.15 |
+| 1,000 m | 0.5 | 3×3 | 18/30 | 23 | 18 | 0.02430 | 0.02787 | 1.23 |
+| 1,000 m | 0.7 | 2×2 | 16/30 | 25 | 16 | 0.06033 | 0.05973 | 1.01 |
+| 1,000 m | 0.7 | 3×3 | 12/30 | 14 | 12 | 0.05009 | 0.05921 | 1.08 |
+| 2,000 m | 0.0 | 2×2 | 20/30 | 24 | 20 | 0.01696 | 0.02367 | 1.14 |
+| 2,000 m | 0.0 | 3×3 | 12/30 | 16 | 12 | 0.01357 | 0.01948 | 1.45 |
+| 2,000 m | 0.5 | 2×2 | 16/30 | 20 | 16 | 0.02476 | 0.02800 | 1.22 |
+| 2,000 m | 0.5 | 3×3 | 6/30 | 13 | 6 | 0.02066 | 0.02658 | 1.25 |
+| 2,000 m | 0.7 | 2×2 | 6/30 | 14 | 6 | 0.04494 | 0.05257 | 1.21 |
+| 2,000 m | 0.7 | 3×3 | 0/30 | 10 | 0 | — | — | — |
+
+### What changed
+
+1. **Cluster intervals are generally wider.** Among paired available intervals, median width ratios range from about 1.01 to 1.45. The increase is most pronounced for 2 km base blocks grouped into 3×3 superblocks at confidence 0.0, where the median width is about 45% larger. This is consistent with the individual-block bootstrap understating uncertainty in some configurations, but it is not a coverage calibration experiment.
+2. **Larger superblocks sharply reduce support.** At 2 km base-block size and confidence 0.7, no scene has 20 eligible 3×3 superblocks. Even the 2×2 variant produces only 6 intervals. A method that respects larger spatial units can become uninformative when the spatial footprint contains too few such units.
+3. **The point estimate is unchanged by construction.** Both resampling approaches target the same equal-base-block weighted scene estimate. The sensitivity is about the interval distribution, not a different estimated contrast.
+4. **The number of intervals does not mean the available subset is representative.** More stringent confidence thresholds and larger blocks change which scenes/configurations pass the minimum-cluster rule. Do not compare interval counts as if they were independent evidence of stronger or weaker effects.
+5. **This is not a final dependence-aware solution.** Adjacent superblocks may themselves remain correlated. Fixed-origin square grouping is one sensitivity design, not an empirically proven optimal cluster geometry or a guarantee of independent resampling units.
+
+Across available cluster intervals, the sign classifications are broadly similar to the individual-block intervals in most matched configurations, while widths tend to increase. This does not rescue inferential claims: the original Moran's I and semivariogram diagnostics still show spatial structure, and neither the 2×2 nor 3×3 grouping establishes independence between sampled superblocks.
+
+### Method decision
+
+Retain the individual-block bootstrap as a documented baseline only. Report the contiguous-cluster results beside it as sensitivity analysis, with eligible cluster counts and suppressed intervals visible. Do not choose a cluster width because it gives the widest, narrowest, or most favourable interval. The current evidence supports the conclusion that uncertainty is sensitive to spatial resampling-unit size and that the available spatial support is sometimes too limited for larger clusters.
+
+The next defensible step is to investigate resampling designs that account for the observed dependence structure more explicitly—such as spatial moving-block or distance-constrained resampling—and to assess stability under shifted grid origins and alternative neighbourhood definitions. Any such design must still state its assumptions and cannot manufacture independent information from a limited footprint.
