@@ -209,3 +209,14 @@ Sources:
 ### Updated source-feasibility decision
 
 Gate A remains **not passed**. We now have one temporally close October lead, but its study-mask intersection and platform metadata are unresolved, and it cannot cover the full five-date design. The next efficient action is to obtain the frozen R130 mask geometry and compare it against the STAC item geometry for the Limuru asset. If the intersection is empty, stop pursuing it for this study. If non-empty, inspect the original COG metadata and confirm the acquisition/platform details directly with the provider before sampling.
+
+
+## 9E. Study-footprint screening against the acquisition configuration (2026-11-25)
+
+The current Dynamic World acquisition script records the R130 working extent as CRS84 bounding box **[36.65, -1.45, 37.05, -1.15]**. This is a rectangular acquisition extent, not a substitute for the exact valid-pixel/study mask; it is nevertheless a useful first-pass spatial screen.
+
+The Limuru–Kwambira asset is explicitly named for a Limuru aviation training ground. Its catalogue page provides a thumbnail but no machine-readable geometry in the page text reviewed here. Limuru lies north-west of the Nairobi study area, so the item is not assumed to intersect the R130 extent. It must be checked by its authoritative STAC geometry or COG geotransform before any further work. If its footprint does not intersect the bounding box above, it is out of scope and should be dropped immediately.
+
+The OAM STAC landing page is reachable and advertises a GET/POST search endpoint. The current documentation supports filtering by spatial bbox and datetime; however, the web inspection path used in this desk review did not return a usable search response for the R130 bounding box. This is a tooling/retrieval limitation, not evidence that the catalogue contains no matching imagery. A reproducible local STAC query should be run against the endpoint with the exact R130 bbox and date interval, then each returned item's full geometry and properties should be retained.
+
+**Operational conclusion:** we have narrowed the search, but have not demonstrated that any October OAM item intersects the R130 frame. Do not describe the Limuru asset as coverage of Nairobi. The next gate is a geometry-first STAC query using the acquisition script's bbox, followed by exact intersection with the frozen valid-pixel mask if one is available.
