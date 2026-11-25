@@ -10,7 +10,7 @@ import argparse
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunsplit
 
 import requests
 from shapely.geometry import box, shape
@@ -111,6 +111,27 @@ def audit(items, bbox=R130_BBOX):
             "geometry_present": geometry_present,
             "intersects_r130_bbox": intersects,
             "bbox": item.get("bbox"),
+            # Preserve source geometry so a later step can intersect the exact
+            # item footprint with the frozen R130 mask. This remains unverified
+            # catalogue metadata, not a positional-accuracy assessment.
+            "geometry": geometry,
+            "assets": {
+                key: {
+                    "href": (urlunsplit((urlparse(asset.get("href", "")).scheme,
+                                         urlparse(asset.get("href", "")).netloc,
+                                         urlparse(asset.get("href", "")).path, "", ""))
+                            if isinstance(asset, dict) and validate_asset_href(asset.get("href", ""))
+                            else None),
+                    "href_query_redacted": bool(urlparse(asset.get("href", "")).query)
+                        if isinstance(asset, dict) else False,
+                    "type": asset.get("type"),
+                    "roles": asset.get("roles"),
+                    "title": asset.get("title"),
+                    "file:size": asset.get("file:size"),
+                    "raster:bands": asset.get("raster:bands"),
+                }
+                for key, asset in assets.items() if isinstance(asset, dict)
+            },
             "asset_keys": sorted(assets),
             "https_asset_hrefs_available": sum(validate_asset_href(href) for href in hrefs),
         })
@@ -129,8 +150,8 @@ def build_report(items, pages, bbox=R130_BBOX, start=START, end=END):
         "limitations": [
             "Discovery rectangle is not the frozen exact R130 analysis mask.",
             "Geometry intersection is a screening result, not proof of usable pixel overlap or positional alignment.",
-            "Metadata, acquisition dates, platform, GSD, licence and asset availability require source-level confirmation.",
-            "HTTPS asset URL presence does not validate the asset or authorize its use.",
+            "Catalogue geometry and metadata are preserved for follow-up but require source/provider confirmation and positional-quality assessment.",
+            "Asset URL query strings are redacted; URL presence does not validate asset contents or authorize its use.",
             "No imagery was downloaded or visually interpreted; no reference labels or accuracy estimates were produced.",
         ],
     }
