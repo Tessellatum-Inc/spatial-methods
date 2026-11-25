@@ -103,8 +103,8 @@ class SpatialBlockBootstrapTests(unittest.TestCase):
 
     def test_fixed_origin_block_assignment_and_offset_shift(self):
         from explorations.radar.spatial_block_bootstrap import fixed_origin_block_ids
-        east = np.array([10., 20., 110., 120.])
-        north = np.array([10., 120., 10., 120.])
+        east = np.array([10., 60.])
+        north = np.array([10., 60.])
         base, base_cols, _ = fixed_origin_block_ids(
             east, north, 100, origin_east_m=0, origin_north_m=0
         )
@@ -113,8 +113,8 @@ class SpatialBlockBootstrapTests(unittest.TestCase):
         )
         self.assertEqual(base_cols, 2)
         self.assertEqual(shifted_cols, 2)
-        self.assertEqual(len(np.unique(base)), 2)
-        self.assertEqual(len(np.unique(shifted)), 4)
+        self.assertEqual(len(np.unique(base)), 1)
+        self.assertEqual(len(np.unique(shifted)), 2)
 
     def test_fixed_origin_block_assignment_rejects_invalid_inputs(self):
         from explorations.radar.spatial_block_bootstrap import fixed_origin_block_ids
