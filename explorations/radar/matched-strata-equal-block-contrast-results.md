@@ -51,3 +51,8 @@ The independent eligibility condition tests the estimator under ordinary common-
 ## Results
 
 Pending workflow completion. Append artifact-backed coverage, Wilson intervals, interval widths, estimate bias and eligible-block counts here.
+
+
+## Generator sanity check (not interval validation)
+
+An independent local smoke-check of the specified generator found near-zero average estimation bias under independent common-support loss (absolute mean bias below 0.001 across the tested dependence settings). Under the deliberately informative high-contrast exclusion, the observed equal-block estimate shifted downward by approximately 0.24 in the tested settings. This confirms that the selection stress condition creates a material target/observed-population gap. It is not a run of the committed coverage script, does not test interval coverage, and is not a workflow artifact.
