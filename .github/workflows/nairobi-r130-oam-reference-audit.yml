@@ -58,9 +58,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Intersect candidate footprint with all 30 residual maps
         run: |
-          python explorations/radar/audit_oam_candidate_against_r130_residuals.py \\
-            --audit-json data/reference/nairobi-r130-oam-stac-audit.json \\
-            --residual-dir residual-artifact/residual-maps \\
+          python explorations/radar/audit_oam_candidate_against_r130_residuals.py \
+            --audit-json data/reference/nairobi-r130-oam-stac-audit.json \
+            --residual-dir residual-artifact/residual-maps \
             --output data/reference/nairobi-r130-oam-residual-support-audit.json
       - name: Upload candidate and support audits
         uses: actions/upload-artifact@v4
