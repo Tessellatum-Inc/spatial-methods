@@ -92,3 +92,14 @@ The phase enumeration is a sensitivity diagnostic, not a way to choose a favoura
 In the Nairobi R130 experiment, 2×2 and 3×3 superblocks were evaluated across all phases. The point estimate was invariant, but interval availability was 58.1% and 49.0%, respectively. Median interval-width ratios against the zero-offset phase were near one, while individual ratios showed appreciable variation. These findings reinforce that one fixed lattice phase does not capture the full uncertainty-design sensitivity. See [the phase-aware results](../explorations/radar/nairobi-r130-spatial-cluster-phase-sensitivity-results.md).
 
 This remains exploratory. Enumerating lattice phases does not make superblocks independent, and the minimum cluster count is not a coverage guarantee. A dependence-aware alternative (such as a properly specified moving-block or distance-constrained design) still requires estimand, edge, support and coverage validation before it can be called calibrated.
+
+
+## Experimental overlapping moving-window bootstrap
+
+An alternative to a non-overlapping superblock lattice is to enumerate overlapping square windows of width $k$ base blocks and sample windows with replacement. A boundary-safe candidate set can be constructed by allowing window origins to extend $k-1$ cells beyond the observed grid. Every eligible base block then belongs to exactly $k^2$ candidate windows, even when the eligible-block mask has holes. This gives equal first-order inclusion probability across eligible blocks and avoids clipping-induced edge under-representation.
+
+For each replicate, sample approximately one window per $k^2$ candidate windows (rounded up), aggregate the sampled block contrasts and divide by the sampled number of block occurrences. The windows overlap, so nearby blocks can co-occur in multiple sampled windows. This is intended to carry local spatial dependence into the resampling distribution; it does not guarantee nominal coverage.
+
+The initial implementation is in [spatial_moving_block_bootstrap.py](../explorations/radar/spatial_moving_block_bootstrap.py), with membership and reproducibility tests in [test_spatial_moving_block_bootstrap.py](../explorations/radar/test_spatial_moving_block_bootstrap.py). A first stationary Gaussian AR(1) simulation showed coverage improving as window width increased, but remaining below 0.95 under moderate and strong spatial dependence. See [initial coverage simulation](../explorations/radar/moving-spatial-block-bootstrap-initial-simulation.md) and its reproducible script. This is a warning against treating the method as calibrated.
+
+Before empirical use, extend the simulation to irregular masks, anisotropy, nonstationarity, heavy tails and the matched-strata/block-contrast estimand. Predeclare dependence scales and candidate widths; do not tune the width to the observed Nairobi results. The method remains experimental until a defensible coverage envelope is demonstrated.
