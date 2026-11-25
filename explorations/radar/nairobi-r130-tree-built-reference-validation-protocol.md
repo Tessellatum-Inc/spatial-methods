@@ -180,3 +180,32 @@ HOT's project page describes drone acquisition across 33 Nairobi villages (appro
 Sources:
 - [Dandora, Nairobi Drone Imagery uMap listing](https://umap.hotosm.org/ar/map/dandora-nairobi-drone-imagery_7933) (published 2026-10-23; capture metadata not exposed in the indexed page).
 - [HOT KYC Nairobi project description](https://www.hotosm.org/en/projects/building-resilience-through-risk-informed-community-led-urban-development-kyc-nairobi/) (describes the 33-village drone mapping programme; does not provide per-asset capture metadata).
+
+
+## 9D. Date-resolved OpenAerialMap leads (desk review, 2026-11-25)
+
+The catalogue search surfaced a correction to the earlier Dandora lead and one additional October acquisition.
+
+### Dandora UAV imagery — not temporally admissible for primary scoring
+
+The OrionGIS catalogue record identifies the HOTOSM East and Southern Africa Hub Dandora UAV asset as acquired **2026-04-01**, at **5.0 cm/pixel**, with **CC BY 4.0** stated on the catalogue record. A second Dandora Mar–Apr asset is dated **2026-03-26 to 2026-04-03**, at **7.7 cm/pixel**, also listed as CC BY 4.0. These are useful high-resolution historical context, but they are more than 90 days before all five October–November R130 dates. They therefore fail the protocol's temporal rule for primary-date reference scoring. The earlier uMap publication date must not be mistaken for acquisition date.
+
+### Limuru–Kwambira aviation training-ground imagery — promising date, unproven footprint
+
+An SDI Kenya–Muungano wa Wanavijiji catalogue record reports acquisition **2026-10-13 to 2026-10-14**, **4.0 cm/pixel**, GeoTIFF/COG, 17 MB, and **CC BY 4.0**. This is temporally close to the 2026-10-18 R130 date (4–5 days) and potentially useful if the footprint intersects the frozen R130 mask. However:
+- The record names Limuru–Kwambira / an aviation training ground, not the R130 study area.
+- The record reports “Platform satellite” while naming a DJI Mini 4 Pro sensor; this metadata inconsistency must be resolved with the provider.
+- The page gives only country-level coverage in its summary; exact geometry, CRS, positional accuracy and asset acquisition metadata still require inspection.
+- A separate set of similarly named catalogue entries appears to describe the same or overlapping project; deduplicate by source item ID and footprint before counting assets.
+
+**Decision:** Dandora is excluded from primary date-specific validation on temporal grounds. Limuru–Kwambira becomes a conditional retrieval lead for the 2026-10-18 date only; do not infer coverage of Nairobi R130 from its Kenya catalogue listing. Even if it intersects the frame, the resulting reference subset may be geographically selective and must be reported as such. It cannot validate the other four dates without separate admissible evidence.
+
+Sources:
+- [Dandora UAV imagery record](https://orionterrametrics.com/data/kenya/imagery-land-cover/dandora-uav-imagery-q2sw) — acquisition 2026-04-01, 5.0 cm/pixel, CC BY 4.0 as listed.
+- [Dandora Mar–Apr 2026 record](https://orionterrametrics.com/data/kenya/imagery-land-cover/dandora-mar-apr-2026-ufur) — acquisition 2026-03-26 to 2026-04-03, 7.7 cm/pixel, CC BY 4.0 as listed.
+- [Limuru–Kwambira record](https://orionterrametrics.com/data/kenya/imagery-land-cover/limuru-kwambira-customized-aviation-training-ground-znt5) — acquisition 2026-10-13 to 2026-10-14, 4.0 cm/pixel, CC BY 4.0 as listed; provider metadata needs reconciliation.
+- [Kenya imagery catalogue listing](https://orionterrametrics.com/data/kenya/imagery-land-cover) — additional similarly named Limuru entries, not yet deduplicated.
+
+### Updated source-feasibility decision
+
+Gate A remains **not passed**. We now have one temporally close October lead, but its study-mask intersection and platform metadata are unresolved, and it cannot cover the full five-date design. The next efficient action is to obtain the frozen R130 mask geometry and compare it against the STAC item geometry for the Limuru asset. If the intersection is empty, stop pursuing it for this study. If non-empty, inspect the original COG metadata and confirm the acquisition/platform details directly with the provider before sampling.
