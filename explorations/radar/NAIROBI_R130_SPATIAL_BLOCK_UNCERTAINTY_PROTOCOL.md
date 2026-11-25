@@ -23,7 +23,7 @@ For each scene (date × burst × polarization), compare tree-class MAE with buil
 
 ## Remaining block dependence
 
-For each scene/configuration, retain each eligible block's matched contrast and its row/column on the fixed metric grid. Calculate descriptive rook-neighbour Moran's I from immediately adjacent eligible blocks, and report eligible-block count and neighbour-pair count. Do not attach a p-value or interpret the statistic as proof of independence. It is a local dependence diagnostic; it does not replace variograms, residual-map inspection or sensitivity to alternative neighbourhood definitions.
+For each scene/configuration, retain each eligible block's matched contrast and its row/column on the fixed metric grid. Calculate descriptive rook-neighbour Moran's I from immediately adjacent eligible blocks, and report eligible-block count and neighbour-pair count. Also calculate an empirical block-contrast semivariogram over pre-specified centroid-distance bins; report bin edges, pair counts and semivariance, and flag bins below the minimum pair count. Do not attach p-values or interpret either diagnostic as proof of independence. Inspect residual/block-contrast maps and test sensitivity to lag widths and neighbourhood definitions.
 
 ## Sensitivity
 Run at 500 m, 1 km, and 2 km block sizes. Also repeat Dynamic World confidence thresholds 0, 0.5, and 0.7. Record support loss and whether the sign and magnitude of contrast are stable.
@@ -45,3 +45,8 @@ Implemented in `spatial_block_bootstrap.py` and `spatial_block_uncertainty_nairo
 
 ## Current inferential boundary
 The 30 scene records are not 30 fully independent replicates: dates, bursts, and polarizations have repeated/crossed structure. Therefore, do not treat a simple resampling of the 30 records as a valid hierarchical bootstrap. A cross-scene interval requires a pre-specified target population and a resampling design that respects date/burst dependence; until that design is justified, report per-scene intervals and descriptive cross-scene distributions only.
+
+
+## Semivariogram rerun (2026-11-25)
+
+The full 30-scene workflow now emits semivariograms for all nine block-size/confidence configurations. The current exploratory curves show distance-related increases in several configurations but no stable common sill or defensible single dependence range. Far-lag support is sparse in some larger-block/high-confidence subsets. See `nairobi-r130-spatial-block-uncertainty-results.md` for the scene-summary table and interpretation. The independent-block percentile bootstrap remains exploratory; these diagnostics do not calibrate its coverage.
