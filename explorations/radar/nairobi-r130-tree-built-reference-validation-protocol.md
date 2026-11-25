@@ -220,3 +220,30 @@ The Limuru–Kwambira asset is explicitly named for a Limuru aviation training g
 The OAM STAC landing page is reachable and advertises a GET/POST search endpoint. The current documentation supports filtering by spatial bbox and datetime; however, the web inspection path used in this desk review did not return a usable search response for the R130 bounding box. This is a tooling/retrieval limitation, not evidence that the catalogue contains no matching imagery. A reproducible local STAC query should be run against the endpoint with the exact R130 bbox and date interval, then each returned item's full geometry and properties should be retained.
 
 **Operational conclusion:** we have narrowed the search, but have not demonstrated that any October OAM item intersects the R130 frame. Do not describe the Limuru asset as coverage of Nairobi. The next gate is a geometry-first STAC query using the acquisition script's bbox, followed by exact intersection with the frozen valid-pixel mask if one is available.
+
+
+## 9D. Limuru–Kwambira imagery metadata reconciliation (desk review, 2026-11-25)
+
+A better metadata record was located for the Limuru–Kwambira UAV imagery. The previously noted variant that described the platform as satellite should not be used as the canonical record. The more detailed OrionGIS index entry reports:
+
+- acquisition interval: **2026-10-12 to 2026-10-13**;
+- platform: **UAV**;
+- sensor: **DJI Mini 4 Pro**;
+- reported ground resolution: **4.0 cm/pixel**;
+- provider/publisher: **SDI Kenya–Muungano Wa Wanavijiji**;
+- source platform: OpenAerialMap;
+- reported licence: **CC BY 4.0**;
+- format: GeoTIFF Cloud Optimized GeoTIFF; reported size 16 MB.
+
+This is a material improvement over the earlier ambiguous metadata and is temporally close to the 2026-10-18 R130 acquisition (5–6 days earlier). The indexed record is a third-party discovery/index page, however, not the authoritative STAC Item or source GeoTIFF metadata. Its displayed thumbnail is not georeferenced evidence and cannot establish footprint overlap or positional accuracy.
+
+**Spatial decision remains unresolved.** The R130 search rectangle is [36.65, -1.45, 37.05, -1.15] in CRS84, but the index page reports only country-level coverage (KEN), not a machine-readable footprint. The dataset name suggests a Limuru/Kwambira locality; do not infer intersection or non-intersection from the place name. Retrieve the exact OpenAerialMap STAC Item and inspect its geometry, bbox, acquisition datetime or start/end fields, GSD, platform metadata, asset hrefs and licence. Then compute polygon intersection against the frozen R130 mask, not just the broad discovery rectangle.
+
+The OAM STAC documentation specifies gsd, oam:platform_type, oam:producer_name, item geometry and bbox as core imagery metadata. The public STAC API is documented at https://api.imagery.hotosm.org/stac; search by the R130 bbox and acquisition window, then fetch individual item records. A successful bbox search is only a candidate screen: retain the exact item geometry and test actual overlap.
+
+**Gate A update:** the Limuru–Kwambira record is now a *high-priority, temporally admissible candidate for 2026-10-18 only*, subject to authoritative item-level confirmation. It does not yet establish coverage for the other four dates, nor does it justify any empirical accuracy claim. Its licence is reported as CC BY 4.0 by the index, but confirm the item-specific source licence and attribution in the authoritative record before redistribution.
+
+Sources:
+- [OrionGIS Limuru–Kwambira dataset record](https://orionterrametrics.com/data/kenya/imagery-land-cover/limuru-kwambira-customised-aviation-training-ground-9gf6) (acquisition, platform, sensor, GSD and licence as indexed; not authoritative geometry).
+- [OpenAerialMap STAC API documentation](https://docs.imagery.hotosm.org/dev/backend/stac-api/).
+- [OpenAerialMap STAC schema](https://docs.imagery.hotosm.org/dev/ingest/schema/) (required imagery metadata fields).
