@@ -60,7 +60,7 @@ def run(residual_dir,opera_dir,dw_dir,dem,out):
  if len(maps)!=30:raise ValueError(f"Expected 30 maps; found {len(maps)}")
  records=[analyze_scene(p,opera_dir,dw_dir,dem,BLOCK_SIZES,THRESHOLDS) for p in maps]
  report={"schema":"tessellatum.nairobi-r130-spatial-block-bootstrap.v1","estimand":"Within scene, trees-minus-built MAE difference, matched by slope bins and scene ANF quartile; equal weighting of matched strata within blocks and equal weighting of eligible blocks.","bootstrap":{"method":"percentile resampling of spatial blocks within each scene","replicates":2000,"seed":20261125,"minimum_eligible_blocks":20},"block_sizes_m":list(BLOCK_SIZES),"confidence_thresholds":list(THRESHOLDS),"metric_crs":"EPSG:32737","records":records,"limitations":["Spatial blocks may remain dependent; intervals are exploratory and block-size sensitivity is essential.","Dynamic World predictions are not reference labels; confidence is uncalibrated and date composites can mix surface conditions.","Slope is DSM-derived; matching is only on coarse slope and scene ANF strata.","Results are descriptive processor residual contrasts, not absolute calibration, causal land-cover effects, or universal processor interchangeability.","Only blocks containing both target and built classes in shared strata are eligible; small eligible-block counts suppress intervals."]}
- out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(report,indent=2)+"\\n")
+ out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(report,indent=2)+"\n")
  print("Processed",len(records),"scene records; block sizes",BLOCK_SIZES,"confidence thresholds",THRESHOLDS,flush=True)
  return report
 if __name__=="__main__":
