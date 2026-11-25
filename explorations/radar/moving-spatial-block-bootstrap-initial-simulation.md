@@ -1,11 +1,11 @@
 # Moving spatial-block bootstrap: initial coverage simulation
 
-**Status:** exploratory diagnostic; the implementation passes structural tests but is not calibrated. A further normalization defect was found and corrected on 2026-11-25; the latest CI run must be used to refresh the numerical outputs.  
+**Status:** exploratory diagnostic; the implementation passes structural tests but is not calibrated. A further normalization defect was found and corrected on 2026-11-25; the reported zero-mean coverage is invariant to that positive scale correction, while interval widths below use the corrected artifact from run 45660812352.  
 **Implementation:** `spatial_moving_block_bootstrap.py`  
 **Simulation scripts:** `simulate_moving_spatial_block_bootstrap.py`, `simulate_moving_spatial_block_bootstrap_expanded.py`  
 **Design:** 30 × 30 mean-zero separable Gaussian AR(1) fields; 150 Monte Carlo fields per correlation/window-width combination; 400 bootstrap replicates per field.  
 **Known estimand:** population mean = 0.  
-**Validation run:** [GitHub Actions run 45660180206](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45660180206)
+**Validation run:** [latest normalization-validation run 45660812352](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45660812352)
 
 ## Corrected implementation results
 
