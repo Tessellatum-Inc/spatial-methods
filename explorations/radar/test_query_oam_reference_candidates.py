@@ -17,11 +17,11 @@ class OAMReferenceAuditTests(unittest.TestCase):
             "id": "inside",
             "geometry": mapping(box(36.7, -1.4, 36.8, -1.3)),
             "properties": {"datetime": "2026-10-13T10:00:00Z", "gsd": 0.04,
-                          "license": "PROPRIETARY-OUTER", "oam:producer_name": "SDI Kenya",
+                          "license": "CC-BY-4.0", "oam:producer_name": "SDI Kenya",
                           "oam:platform_type": "uav",
                           "oam:acquisition_time_estimated": False},
             "assets": {"visual": {"href": "https://example.org/a.tif"}},
-            "license": "CC-BY-4.0",
+            "license": "PROPRIETARY-OUTER",
         }
         row = audit([item])[0]
         self.assertTrue(row["intersects_r130_bbox"])
