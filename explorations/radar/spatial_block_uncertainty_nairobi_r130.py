@@ -14,6 +14,7 @@ from pyproj import Transformer
 from explorations.radar.joint_stratify_nairobi_r130_landcover_terrain_anf import (
  align,static_file,reproject_dem,pixel_spacing_metres,terrain,SLOPE_EDGES,report_date)
 from explorations.radar.spatial_block_bootstrap import matched_block_contrasts,bootstrap_interval,rook_morans_i,empirical_block_semivariogram,spatial_cluster_bootstrap_interval,fixed_origin_block_ids,block_mean_contrast
+from explorations.radar.spatial_cluster_partition_bootstrap import spatial_cluster_bootstrap_interval as phase_cluster_bootstrap_interval
 
 BLOCK_SIZES=(500,1000,2000);THRESHOLDS=(0.0,0.5,0.7);CLUSTER_WIDTHS=(2,3);TREE_CODE=1;BUILT_CODE=6
 
@@ -71,6 +72,19 @@ def analyze_scene(residual_path,opera_dir,dw_dir,dem_path,block_sizes,thresholds
       grid_columns=meta["block_grid_columns"],cluster_width_blocks=width,
       replicates=2000,seed=20261125+width,min_clusters=20)
       for width in CLUSTER_WIDTHS]
+    # Enumerate every distinct lattice phase for each square superblock width.
+    # The (0, 0) phase is retained as the reference and should reproduce the
+    # legacy fixed-origin cluster bootstrap interval.
+    phase_cluster_intervals=[]
+    for width in CLUSTER_WIDTHS:
+     for row_offset in range(width):
+      for col_offset in range(width):
+       phase_cluster_intervals.append(phase_cluster_bootstrap_interval(
+        [x["block_id"] for x in contrasts],block_values,
+        grid_columns=meta["block_grid_columns"],cluster_width_blocks=width,
+        origin_row_offset=row_offset,origin_col_offset=col_offset,
+        replicates=2000,seed=20261125+width*100+row_offset*10+col_offset,
+        min_clusters=20))
     # Shift the fixed grid origin by half a block in each axis. Recompute
     # matching and diagnostics because block membership itself changes.
     origin_sensitivity=[]
@@ -85,6 +99,7 @@ def analyze_scene(residual_path,opera_dir,dw_dir,dem_path,block_sizes,thresholds
        "moran_i":shifted_moran["moran_i"],"moran_status":shifted_moran["status"]})
     results.append({"minimum_dw_confidence":threshold,**meta,"trees_vs_built_mae_contrast":ci,
       "spatial_cluster_bootstrap_sensitivity":cluster_intervals,
+      "spatial_cluster_phase_sensitivity":phase_cluster_intervals,
       "block_contrast_spatial_autocorrelation":spatial_dependence,
       "block_contrast_empirical_semivariogram":variogram,
       "grid_origin_sensitivity":origin_sensitivity,
@@ -95,7 +110,7 @@ def run(residual_dir,opera_dir,dw_dir,dem,out):
  maps=sorted(residual_dir.glob("*_delta-residual-db.tif"));
  if len(maps)!=30:raise ValueError(f"Expected 30 maps; found {len(maps)}")
  records=[analyze_scene(p,opera_dir,dw_dir,dem,BLOCK_SIZES,THRESHOLDS) for p in maps]
- report={"schema":"tessellatum.nairobi-r130-spatial-block-bootstrap.v1","estimand":"Within scene, trees-minus-built MAE difference, matched by slope bins and scene ANF quartile; equal weighting of matched strata within blocks and equal weighting of eligible blocks.","bootstrap":{"method":"percentile resampling of spatial blocks within each scene","replicates":2000,"seed":20261125,"minimum_eligible_blocks":20},"grid_origin_sensitivity":{"method":"recompute block membership at three half-block shifted origins","offsets_fraction_of_block":[[0.5,0.0],[0.0,0.5],[0.5,0.5]],"outputs":["eligible_blocks","equal_block_estimate_db","rook_morans_i"],"bootstrap_intervals":False},"cluster_bootstrap":{"method":"percentile resampling of contiguous fixed-origin square superblocks within each scene","cluster_widths_in_base_blocks":[2,3],"replicates":2000,"seed_base":20261125,"minimum_eligible_clusters":20,"estimand":"equal-base-block weighted scene contrast"},"block_sizes_m":list(BLOCK_SIZES),"confidence_thresholds":list(THRESHOLDS),"metric_crs":"EPSG:32737","records":records,"limitations":["Spatial blocks may remain dependent; intervals are exploratory and block-size sensitivity is essential.","Dynamic World predictions are not reference labels; confidence is uncalibrated and date composites can mix surface conditions.","Slope is DSM-derived; matching is only on coarse slope and scene ANF strata.","Results are descriptive processor residual contrasts, not absolute calibration, causal land-cover effects, or universal processor interchangeability.","Only blocks containing both target and built classes in shared strata are eligible; small eligible-block counts suppress intervals."]}
+ report={"schema":"tessellatum.nairobi-r130-spatial-block-bootstrap.v1","estimand":"Within scene, trees-minus-built MAE difference, matched by slope bins and scene ANF quartile; equal weighting of matched strata within blocks and equal weighting of eligible blocks.","bootstrap":{"method":"percentile resampling of spatial blocks within each scene","replicates":2000,"seed":20261125,"minimum_eligible_blocks":20},"grid_origin_sensitivity":{"method":"recompute block membership at three half-block shifted origins","offsets_fraction_of_block":[[0.5,0.0],[0.0,0.5],[0.5,0.5]],"outputs":["eligible_blocks","equal_block_estimate_db","rook_morans_i"],"bootstrap_intervals":False},"cluster_bootstrap":{"method":"percentile resampling of contiguous fixed-origin square superblocks within each scene","cluster_widths_in_base_blocks":[2,3],"replicates":2000,"seed_base":20261125,"minimum_eligible_clusters":20,"estimand":"equal-base-block weighted scene contrast"},"cluster_phase_sensitivity":{"method":"enumerate every row/column phase of the non-overlapping square superblock lattice; bootstrap eligible superblocks with replacement","cluster_widths_in_base_blocks":[2,3],"phases_per_width":{"2":4,"3":9},"total_phases_per_scene_configuration":13,"replicates":2000,"minimum_eligible_clusters":20,"includes_zero_phase_reference":true},"block_sizes_m":list(BLOCK_SIZES),"confidence_thresholds":list(THRESHOLDS),"metric_crs":"EPSG:32737","records":records,"limitations":["Spatial blocks may remain dependent; intervals are exploratory and block-size sensitivity is essential.","Dynamic World predictions are not reference labels; confidence is uncalibrated and date composites can mix surface conditions.","Slope is DSM-derived; matching is only on coarse slope and scene ANF strata.","Results are descriptive processor residual contrasts, not absolute calibration, causal land-cover effects, or universal processor interchangeability.","Only blocks containing both target and built classes in shared strata are eligible; small eligible-block counts suppress intervals."]}
  out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(report,indent=2)+"\n")
  print("Processed",len(records),"scene records; block sizes",BLOCK_SIZES,"confidence thresholds",THRESHOLDS,flush=True)
  return report
