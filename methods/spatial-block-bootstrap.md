@@ -36,6 +36,14 @@ Where eligible block contrasts occupy a regular grid, calculate a descriptive ro
 
 This is a diagnostic, not a formal independence test: no p-value is implied, and a low or negative value does not prove independence. Rook adjacency captures only one neighbourhood definition and one spatial scale. Consider variograms, alternative distance bands and sensitivity to block size where the study warrants them. A bootstrap interval should be interpreted cautiously when material positive local autocorrelation remains among block contrasts.
 
+## Contiguous spatial-cluster sensitivity
+
+A complementary sensitivity analysis can aggregate adjacent base blocks into fixed-origin square superblocks, then resample those superblocks with replacement. For each replicate, calculate the ratio of the sampled sum of base-block contrasts to the sampled number of base blocks. This preserves the equal-base-block point estimand even when edge superblocks contain fewer eligible blocks.
+
+The cluster width must be reported in base-block units and converted to ground distance for interpretation. Report eligible base blocks and eligible superblocks separately, along with interval suppression. A cluster-width sensitivity does not prove independence: neighbouring superblocks can remain spatially dependent, and large clusters can leave too few independent resampling units. Do not describe the resulting percentile interval as calibrated without coverage validation or a defensible dependence design. Compare widths and support loss rather than choosing the interval that best supports a preferred conclusion.
+
+The Nairobi R130 experiment tests 2- and 3-base-block supercells with 2,000 replicates. Its minimum eligible-supercell rule is a computational reporting threshold, not a universal statistical guarantee. These results are intended to diagnose how much the independent-base-block interval depends on local grouping.
+
 ## Multi-scene inference
 
 Do not treat date × burst × polarization records as independent when they share acquisition dates, orbital geometry, processing inputs or spatial footprints. A cross-scene interval requires an explicitly defined target population and a resampling design that respects the crossed or nested dependence structure (for example, date-level and spatial cluster structure). Until justified, report per-scene intervals and descriptive distributions across scenes only.
