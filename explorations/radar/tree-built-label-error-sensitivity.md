@@ -27,6 +27,24 @@ This experiment is deliberately about label contamination, not the spatial inter
 - No confidence intervals, spatial coverage claims, correction estimator, or Nairobi-specific conclusion are produced.
 - Do not retroactively tune the Nairobi study using this synthetic design.
 
-## Results
+## Results (artifact-backed)
 
-Pending GitHub Actions completion and artifact inspection.
+The GitHub Actions workflow completed successfully on 2026-11-25 (run 45667166729; commit b589160). Unit tests passed and the 200-replication simulation artifact was generated.
+
+| Scenario | Mean observed contrast | Mean shift from latent-label target | 2.5th–97.5th percentiles of replicate shifts |
+|---|---:|---:|---:|
+| Perfect labels | 0.3000 | 0.0000 | 0.0000 to 0.0000 |
+| Symmetric 5% flips | 0.2683 | -0.0317 | -0.0371 to -0.0279 |
+| Asymmetric 15% T→B, 5% B→T | 0.2417 | -0.0584 | -0.0643 to -0.0523 |
+| Spatially varying 10% base rates | 0.2345 | -0.0656 | -0.0723 to -0.0602 |
+| Symmetric 20% flips | 0.1763 | -0.1238 | -0.1314 to -0.1161 |
+
+The latent-label target averaged 0.30003 in every scenario because the scenarios share the same generated latent data stream. All 400 blocks retained common true/observed support in this design.
+
+### Interpretation
+
+Under this particular generator, label contamination attenuated the positive trees-minus-built contrast toward zero. The shift increased with the assumed flip rates and was larger under the spatially varying confusion scenario than under symmetric 10% base rates would be expected to be, given the row-dependent class prevalence and class-conditional flip pattern.
+
+The percentile ranges above describe variation across simulated replicate shifts; they are not confidence intervals for a real-world effect or estimates of uncertainty in Dynamic World accuracy. These results demonstrate sensitivity to assumed label error, not the actual direction or magnitude of bias in Nairobi.
+
+The experiment currently assumes label flips are conditionally random within each class (apart from the specified row gradient). It does not yet model errors concentrated in mixed pixels, boundaries or high-residual observations. Those are important next sensitivity dimensions.
