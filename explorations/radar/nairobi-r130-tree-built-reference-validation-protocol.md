@@ -167,3 +167,16 @@ The first candidate was traced one step further, but it still does not pass Gate
 **Decision:** keep this asset as a lead, not a reference source. Before using it, obtain the underlying item record/GeoTIFF and verify: (1) acquisition start/end time, (2) polygon footprint intersection with the frozen R130 mask, (3) pixel size/GSD and CRS, (4) georeferencing/positional accuracy, (5) explicit licence and attribution terms. If the licence remains unset, obtain written permission or exclude the imagery from any reproducible validation dataset.
 
 The current OAM documentation also describes a newer STAC catalogue/API, so future source audits should search that catalogue by Nairobi bbox and date rather than relying only on legacy map URLs.
+
+
+## 9C. Additional Nairobi drone-imagery lead (desk review, 2026-11-25)
+
+A second, potentially more date-relevant lead was found: [Dandora, Nairobi Drone Imagery](https://umap.hotosm.org/ar/map/dandora-nairobi-drone-imagery_7933), published as a uMap map by a named contributor on 2026-10-23. The page describes it as drone imagery and links to OpenAerialMap. This is closer in calendar time to the 2026-10-18 and 2026-10-30 R130 dates than the April map listing, but **the map publication date is not the drone acquisition date**.
+
+HOT's project page describes drone acquisition across 33 Nairobi villages (approximately 2.7 km²) under its SDI Kenya partnership and says imagery is to be published on OpenAerialMap. That supports the existence of a broader Nairobi drone-imagery programme, but does not establish that the Dandora asset overlaps the R130 mask or was captured near any particular R130 date.
+
+**Decision:** add Dandora as a higher-priority retrieval lead, not as admissible reference evidence. The same checks remain mandatory: actual capture timestamp, image footprint, GSD, CRS/georeferencing, positional accuracy and item-specific licence. Its local footprint may cover only a small part of the study frame; any resulting validation would need to report the covered subpopulation and must not imply citywide representativeness.
+
+Sources:
+- [Dandora, Nairobi Drone Imagery uMap listing](https://umap.hotosm.org/ar/map/dandora-nairobi-drone-imagery_7933) (published 2026-10-23; capture metadata not exposed in the indexed page).
+- [HOT KYC Nairobi project description](https://www.hotosm.org/en/projects/building-resilience-through-risk-informed-community-led-urban-development-kyc-nairobi/) (describes the 33-village drone mapping programme; does not provide per-asset capture metadata).
