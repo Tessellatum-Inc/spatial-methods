@@ -46,11 +46,9 @@ Implemented in `spatial_block_bootstrap.py` and `spatial_block_uncertainty_nairo
 ## Current inferential boundary
 The 30 scene records are not 30 fully independent replicates: dates, bursts, and polarizations have repeated/crossed structure. Therefore, do not treat a simple resampling of the 30 records as a valid hierarchical bootstrap. A cross-scene interval requires a pre-specified target population and a resampling design that respects date/burst dependence; until that design is justified, report per-scene intervals and descriptive cross-scene distributions only.
 
-
 ## Semivariogram rerun (2026-11-25)
 
 The full 30-scene workflow now emits semivariograms for all nine block-size/confidence configurations. The current exploratory curves show distance-related increases in several configurations but no stable common sill or defensible single dependence range. Far-lag support is sparse in some larger-block/high-confidence subsets. See `nairobi-r130-spatial-block-uncertainty-results.md` for the scene-summary table and interpretation. The independent-block percentile bootstrap remains exploratory; these diagnostics do not calibrate its coverage.
-
 
 ## Contiguous superblock sensitivity (2026-11-25)
 
@@ -58,9 +56,16 @@ A second resampling design is being tested alongside the independent-base-block 
 
 This is a sensitivity experiment, not a claim that superblocks are independent. Adjacent superblocks may remain dependent; larger superblocks reduce the number of resampling units and may cause substantial support loss. Compare interval widths, interval availability, and point-estimate preservation across widths. Do not call the intervals calibrated or use the 20-superblock threshold as a universal guarantee. The full raster integration completed successfully in workflow run [45633442093](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45633442093); the artifact was inspected and summarized in `nairobi-r130-spatial-block-uncertainty-results.md`. Cluster intervals are generally wider than the individual-block intervals, while larger clusters reduce interval availability. This remains a sensitivity analysis: adjacent superblocks may still be dependent.
 
-
 ## Grid-origin sensitivity (2026-11-25)
 
-Fixed-origin square grids can change which pixels and matched strata contribute to each block when the origin moves. To expose this arbitrary-boundary sensitivity, the Nairobi implementation now repeats block assignment at three pre-specified half-cell shifts: (0.5, 0), (0, 0.5), and (0.5, 0.5) times the block width in EPSG:32737. For each shifted grid it recomputes eligible blocks, the equal-block point estimate, and descriptive rook-neighbour Moran's I. These are geometry/estimand sensitivity summaries only; no shifted-origin bootstrap intervals are calculated in this pass. The unshifted grid remains the reference configuration.
+Fixed-origin square grids can change which pixels and matched strata contribute to each block when the origin moves. To expose this arbitrary-boundary sensitivity, the Nairobi implementation repeats block assignment at three pre-specified half-cell shifts: (0.5, 0), (0, 0.5), and (0.5, 0.5) times the block width in EPSG:32737. For each shifted grid it recomputes eligible blocks, the equal-block point estimate, and descriptive rook-neighbour Moran's I. These are geometry/estimand sensitivity summaries only; no shifted-origin bootstrap intervals are calculated in this pass. The unshifted grid remains the reference configuration.
 
 Do not interpret a stable point estimate as proof of independent blocks, or a change in Moran's I as a formal test. The shift experiment diagnoses whether conclusions depend on arbitrary grid alignment. Results are only reported after the full raster workflow artifact has been inspected.
+
+### Completed results
+
+The full raster analysis completed successfully in [workflow run 45643535785](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45643535785), with artifact [15036643524](https://github.com/Tessellatum-Inc/spatial-methods/actions/runs/45643535785/artifacts/15036643524). The inspected output contains 30 date × burst × polarization records, nine configurations per record, and three shifted-origin results per configuration (810 shifted outputs).
+
+Across configurations, median absolute estimate changes range from 0.0030 to 0.0107 dB. Sign reversals occur in every configuration: 2–13 of the 60–84 valid shifted comparisons, with 2–10 of 30 scene records per configuration showing at least one reversal. The largest absolute change is 0.1437 dB (1 km, confidence 0.5). Median eligible-block counts also change with origin. These results demonstrate that grid alignment can affect scene-level estimates and support; the magnitude and direction are scene/configuration dependent.
+
+The full configuration table and interpretation are in [the grid-origin sensitivity results](nairobi-r130-grid-origin-sensitivity-results.md). These remain point-estimate/support/Moran diagnostics only—not shifted-origin bootstrap intervals, not cross-scene inference, and not a test of block independence. The unshifted grid is retained as the reproducible reference, not asserted to be uniquely correct. Do not select an origin based on preferred results.
