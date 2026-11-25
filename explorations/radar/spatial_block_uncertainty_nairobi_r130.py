@@ -13,7 +13,7 @@ from rasterio.enums import Resampling
 from pyproj import Transformer
 from explorations.radar.joint_stratify_nairobi_r130_landcover_terrain_anf import (
  align,static_file,reproject_dem,pixel_spacing_metres,terrain,SLOPE_EDGES,report_date)
-from explorations.radar.spatial_block_bootstrap import matched_block_contrasts,bootstrap_interval
+from explorations.radar.spatial_block_bootstrap import matched_block_contrasts,bootstrap_interval,rook_morans_i
 
 BLOCK_SIZES=(500,1000,2000);THRESHOLDS=(0.0,0.5,0.7);TREE_CODE=1;BUILT_CODE=6
 
@@ -26,7 +26,8 @@ def metric_block_ids(template,block_size_m):
     bx=np.floor(east/block_size_m).astype(np.int64);by=np.floor(north/block_size_m).astype(np.int64)
     # Unique deterministic signed integer key for 2-D block coordinates.
     key=(bx-bx.min())*(by.max()-by.min()+1)+(by-by.min())
-    return key.astype(np.int64),{"metric_crs":"EPSG:32737","grid_origin":"metric coordinate 0,0","block_size_m":int(block_size_m)}
+    grid_columns=int(by.max()-by.min()+1)
+    return key.astype(np.int64),{"metric_crs":"EPSG:32737","grid_origin":"metric coordinate 0,0","block_size_m":int(block_size_m),"block_grid_columns":grid_columns}
 
 def analyze_scene(residual_path,opera_dir,dw_dir,dem_path,block_sizes,thresholds):
  date,burst,pol=residual_path.name.split("_")[:3];report_date(date);dw=dw_dir/f"nairobi_r130_{date}_dynamic-world-30m.tif"
@@ -50,8 +51,13 @@ def analyze_scene(residual_path,opera_dir,dw_dir,dem_path,block_sizes,thresholds
    for size in block_sizes:
     block,meta=block_grids[size];b=block.ravel()
     contrasts=matched_block_contrasts(b[select],c[select],st[select],v[select],built_code=BUILT_CODE,target_code=TREE_CODE)
-    ci=bootstrap_interval([x["contrast_db"] for x in contrasts],replicates=2000,seed=20261125,min_blocks=20)
+    block_values=[x["contrast_db"] for x in contrasts]
+    ci=bootstrap_interval(block_values,replicates=2000,seed=20261125,min_blocks=20)
+    spatial_dependence=rook_morans_i(
+      [x["block_id"] for x in contrasts],block_values,
+      grid_columns=meta["block_grid_columns"],min_blocks=20)
     results.append({"minimum_dw_confidence":threshold,**meta,"trees_vs_built_mae_contrast":ci,
+      "block_contrast_spatial_autocorrelation":spatial_dependence,
       "tree_pixels_in_eligible_blocks":sum(x["target_pixels"] for x in contrasts),"built_pixels_in_eligible_blocks":sum(x["built_pixels"] for x in contrasts),
       "matched_strata_total":sum(x["matched_strata"] for x in contrasts)})
   return {"date":date,"burst_id":burst,"polarization":pol,"valid_joint_pixels":int(joint.sum()),"results":results}
