@@ -17,8 +17,9 @@ def spatial_subsampling_mean_interval(
     """Enumerate every b-by-b window and invert the subsampling distribution.
 
     Statistics are sqrt(m)*(mean_window - mean_full), m=b². If q_lo and q_hi
-    are their alpha/2 and 1-alpha/2 quantiles, the interval is
-    [mean_full-q_hi/sqrt(m), mean_full-q_lo/sqrt(m)].
+    are their alpha/2 and 1-alpha/2 quantiles, the interval for the full-grid
+    mean uses the full sample size N: [mean_full-q_hi/sqrt(N),
+    mean_full-q_lo/sqrt(N)].
     """
     ids = np.asarray(block_ids, dtype=np.int64)
     values = np.asarray(block_values, dtype=float)
@@ -61,9 +62,9 @@ def spatial_subsampling_mean_interval(
         return base
     alpha = 1.0-confidence_level
     q_lo, q_hi = np.quantile(stats, [alpha/2, 1-alpha/2])
-    scale = math.sqrt(m)
+    full_sample_scale = math.sqrt(n)
     return {
-        **base, "lower": float(estimate-q_hi/scale),
-        "upper": float(estimate-q_lo/scale),
+        **base, "lower": float(estimate-q_hi/full_sample_scale),
+        "upper": float(estimate-q_lo/full_sample_scale),
         "interval_status": "spatial_subsampling",
     }
