@@ -8,6 +8,7 @@ on:
       - "explorations/radar/spatial_hac.py"
       - "explorations/radar/test_spatial_moving_block_bootstrap.py"
       - "explorations/radar/test_spatial_hac.py"
+      - "explorations/radar/test_matched_strata_equal_block_contrast.py"
       - ".github/workflows/matched-strata-equal-block-contrast-validation.yml"
   workflow_dispatch:
 permissions:
@@ -27,6 +28,7 @@ jobs:
         run: |
           python -m unittest explorations.radar.test_spatial_moving_block_bootstrap -v
           python -m unittest explorations.radar.test_spatial_hac -v
+          python -m unittest explorations.radar.test_matched_strata_equal_block_contrast -v
       - name: Run matched-strata equal-block contrast experiment
         run: python -m explorations.radar.simulate_matched_strata_equal_block_contrast > matched-strata-equal-block-contrast.json
       - uses: actions/upload-artifact@v4
