@@ -48,6 +48,34 @@ class MovingSpatialBlockBootstrapTests(unittest.TestCase):
         self.assertEqual(first["interval_status"], "percentile_moving_spatial_block_bootstrap")
         self.assertEqual(first["windows_per_replicate"], 31)
 
+    def test_irregular_mask_uses_fixed_equal_inclusion_normalization(self):
+        ids = np.array([0, 1, 3, 4, 7, 8, 11])
+        values = np.array([0.0, 1.0, 9.0, 2.0, 12.0, 3.0, 20.0])
+        width = 2
+        replicates = 500
+        seed = 73
+        windows = moving_window_membership(
+            ids, grid_columns=4, window_width_blocks=width
+        )
+        draws_per_replicate = int(np.ceil(len(windows) / width**2))
+        window_sums = np.array([values[index].sum() for index in windows])
+        rng = np.random.default_rng(seed)
+        sampled = rng.integers(
+            0, len(windows), size=(replicates, draws_per_replicate)
+        )
+        expected_draws = window_sums[sampled].sum(axis=1) / (
+            draws_per_replicate * width**2
+        )
+        result = moving_spatial_block_bootstrap_interval(
+            ids, values, grid_columns=4, window_width_blocks=width,
+            replicates=replicates, seed=seed, min_windows=1, min_blocks=1,
+        )
+        expected_lower, expected_upper = np.quantile(
+            expected_draws, [0.025, 0.975]
+        )
+        self.assertAlmostEqual(result["lower_95_db"], expected_lower)
+        self.assertAlmostEqual(result["upper_95_db"], expected_upper)
+
     def test_insufficient_base_blocks_suppress_interval_even_with_many_windows(self):
         result = moving_spatial_block_bootstrap_interval(
             [0], [1.], grid_columns=1, window_width_blocks=5,
