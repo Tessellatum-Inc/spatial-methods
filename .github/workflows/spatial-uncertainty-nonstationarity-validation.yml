@@ -1,0 +1,36 @@
+name: Nonstationarity and informative missingness validation
+on:
+  push:
+    branches: [main]
+    paths:
+      - "explorations/radar/simulate_spatial_uncertainty_nonstationarity.py"
+      - "explorations/radar/spatial_moving_block_bootstrap.py"
+      - "explorations/radar/spatial_hac.py"
+      - "explorations/radar/spatial_subsampling.py"
+      - ".github/workflows/spatial-uncertainty-nonstationarity-validation.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  nonstationarity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install numpy
+      - name: Run estimator unit tests
+        run: |
+          python -m unittest explorations.radar.test_spatial_moving_block_bootstrap -v
+          python -m unittest explorations.radar.test_spatial_hac -v
+          python -m unittest explorations.radar.test_spatial_subsampling -v
+      - name: Run nonstationarity and informative missingness experiment
+        run: python -m explorations.radar.simulate_spatial_uncertainty_nonstationarity > spatial-uncertainty-nonstationarity.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spatial-uncertainty-nonstationarity
+          path: spatial-uncertainty-nonstationarity.json
+          if-no-files-found: error
