@@ -135,3 +135,8 @@ See [spatial_subsampling.py](../explorations/radar/spatial_subsampling.py), [tes
 ## Paired comparison of uncertainty candidates
 
 The first paired comparison passes identical stationary Gaussian field realizations to the moving-window percentile bootstrap, product-Bartlett spatial HAC and fixed-size spatial subsampling. All three candidates under-cover, and their Monte Carlo Wilson intervals overlap. See [paired comparison results](../explorations/radar/paired-spatial-uncertainty-comparison-results.md) and the reproducible [comparison script](../explorations/radar/compare_spatial_uncertainty_methods.py). This does not support selecting a winner. The next useful discriminator is directional/anisotropic dependence and then irregular masks, nonstationarity and the actual matched-block estimand.
+
+
+## Directional dependence diagnostic
+
+The first anisotropic experiment uses separable Gaussian fields with row/column correlations $(0.8,0.3)$ and $(0.3,0.8)$. HAC coverage improves when the longer bandwidth is aligned with the axis of stronger dependence (12 × 4 versus 4 × 12 in the first orientation, and vice versa in the second). This supports retaining separate directional bandwidths as a sensitivity dimension, but the best observed coverage remains below 0.95. See [directional dependence results](../explorations/radar/spatial-uncertainty-anisotropy-results.md) and the reproducible [simulation](../explorations/radar/simulate_spatial_uncertainty_anisotropy.py). Do not interpret the best observed pair as an automatic selector or calibration result.
