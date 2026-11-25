@@ -1,0 +1,41 @@
+name: Nairobi R130 OpenAerialMap reference imagery audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      start:
+        description: Inclusive acquisition interval start (UTC ISO 8601)
+        required: false
+        default: "2026-10-01T00:00:00Z"
+      end:
+        description: Inclusive acquisition interval end (UTC ISO 8601)
+        required: false
+        default: "2026-11-24T23:59:59Z"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install audit dependencies
+        run: python -m pip install requests shapely
+      - name: Run live STAC candidate audit
+        run: |
+          python explorations/radar/query_oam_reference_candidates.py \
+            --start "${{ inputs.start }}" \
+            --end "${{ inputs.end }}" \
+            --output data/reference/nairobi-r130-oam-stac-audit.json
+      - name: Upload raw candidate audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: nairobi-r130-oam-stac-audit
+          path: data/reference/nairobi-r130-oam-stac-audit.json
+          if-no-files-found: error
+          retention-days: 30
