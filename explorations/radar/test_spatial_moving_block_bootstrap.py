@@ -48,6 +48,15 @@ class MovingSpatialBlockBootstrapTests(unittest.TestCase):
         self.assertEqual(first["interval_status"], "percentile_moving_spatial_block_bootstrap")
         self.assertEqual(first["windows_per_replicate"], 31)
 
+    def test_insufficient_base_blocks_suppress_interval_even_with_many_windows(self):
+        result = moving_spatial_block_bootstrap_interval(
+            [0], [1.], grid_columns=1, window_width_blocks=5,
+            min_windows=1, min_blocks=2,
+        )
+        self.assertEqual(result["candidate_windows"], 0)
+        self.assertEqual(result["interval_status"], "insufficient_blocks")
+        self.assertIsNone(result["lower_95_db"])
+
     def test_insufficient_windows_suppresses_interval(self):
         result = moving_spatial_block_bootstrap_interval(
             [0, 1], [1., 2.], grid_columns=2,
