@@ -323,3 +323,26 @@ The item acquisition interval in STAC is **2026-11-04 21:00 UTC to 2026-11-05 08
 
 The reproducible implementation is `audit_oam_candidate_against_r130_residuals.py`; the integrated workflow tests it, retrieves the archived residual-map artifact, and emits a combined feasibility artifact. The overlap method and its limitations are recorded in the JSON output.
 
+
+
+## 9I. Consolidated decision and provider verification path (2026-11-26)
+
+### Correct interpretation of the overlap audit
+
+The 3,667 valid residual-support pixel centres (approximately 3.3003 km² at the residual grid's 30 m spacing) are a **spatial intersection count repeated across the five residual-map dates**, not five temporally admissible reference observations. The candidate imagery acquisition interval is 2026-11-04 to 2026-11-05. Under the temporal protocol, it is a conditional candidate only for **2026-11-11**, and only within burst T130-279215-IW3. The four other dates' residual maps show where the same geometry overlaps the analysis grid; they do not establish reference-date suitability.
+
+The audit counts pixel centres inside the catalogue polygon and valid residual cells. This is an overlap/support proxy, not source-COG pixel validity, positional accuracy, image registration or visual interpretability. No reference sample has been drawn or scored.
+
+### Source verification outcome
+
+The integrated GitHub Actions workflow completed successfully on 2026-11-25 (run 45676133372), including tests, live STAC search, retrieval of the archived 30 residual maps, and candidate-footprint intersection. The combined artifact is named `nairobi-r130-oam-reference-feasibility-audit`. The bounded metadata-asset fetch returned **HTTP 404**. Catalogue assertions (producer Kenya Flying Labs, UAV, reported 2.379 cm GSD, CC-BY-4.0) therefore remain unverified. The visual COG is about 870 MB and was not downloaded.
+
+### Decision and next operational action
+
+**Gate A remains OPEN.** Do not interpret or label samples yet. Provider verification is now the limiting step, not spatial discovery. Request from Kenya Flying Labs / HOT or SDI Kenya the source metadata or a corrected metadata link, acquisition date/time and sensor/platform confirmation, CRS and georeferencing/positional-quality statement, explicit licence/attribution, and confirmation that the asset can be used for independent research validation. If these cannot be confirmed, reject this item as a reference source and continue searching only for date-matched, independently interpretable imagery.
+
+Potential official contact routes:
+- Kenya Flying Labs: https://flyinglabs.org/kenya/ (official team/contact page)
+- HOT project contact: esahub@hotosm.org, listed on the Nairobi KYC project page: https://hotosm.org/en/projects/building-resilience-through-risk-informed-community-led-urban-development-kyc-nairobi/
+
+No outreach has been sent. Once source metadata and rights are confirmed, the next work package is to freeze the exact supported subpopulation, create the probability-sampling frame and pilot sample, then proceed to blinded interpretation. If source verification fails, close this candidate path rather than extending it with more exploratory code.
